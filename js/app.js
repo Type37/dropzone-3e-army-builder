@@ -951,11 +951,6 @@ let activeGroupId = null;
         }
         navigate('fleets');
         break;
-      case 'calc':
-        show('view-calc');
-        topContext.innerHTML = `<a href="#landing" class="topbar-back" onclick="App.navigate('landing'); return false;"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2L4 8l6 6"/></svg></a> Combat Calculator`;
-        if (window.Calc) Calc.openStandalone(param);
-        break;
       default:
         show('view-landing');
     }
@@ -3611,7 +3606,7 @@ let activeGroupId = null;
     return /^\d+$/.test(s) ? s + DICE_SVG : esc(s);
   }
 
-  function renderWeaponRow(w, omitName, withCalc) {
+  function renderWeaponRow(w, omitName) {
     const special = w.special && w.special !== '-' ? w.special : '';
     const typeLabel = WEAPON_TYPE_LABELS[w.type] || w.type || '?';
     // Critical-on value (Lock + 2) — shown under the Lock only for weapons whose
@@ -3621,17 +3616,7 @@ let activeGroupId = null;
     // Damage carries its type as a colour-coded letter (e.g. 1E, 2K, 1C) — the
     // type is part of the damage, not a separate "special".
     const typeTag = w.type ? `<span class="dmg-type dmg-type-${esc(w.type)}">${esc(w.type)}</span>` : '';
-    // In the builder main pane (withCalc), the DAMAGE cell is the click target
-    // that sends the weapon to the Combat Calculator pane. Data rides on that
-    // cell; rule chips elsewhere are untouched.
-    const dmgCell = withCalc === true
-      ? `<span class="weapon-col weapon-col-dmg weapon-col-dmg--calc" role="button" tabindex="0"`
-        + ` title="Damage odds, open in the Combat Calculator"`
-        + ` onclick="Calc.addBuilderWeapon(this)"`
-        + ` onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();Calc.addBuilderWeapon(this)}"`
-        + ` data-cn="${esc(w.name || '')}" data-ca="${esc(w.attack)}" data-cl="${esc(w.lock)}" data-cd="${esc(w.damage)}" data-ct="${esc(w.type || '')}" data-cs="${esc(w.special || '')}" data-carc="${esc(w.arc || '')}">`
-        + `${w.damage}${typeTag}</span>`
-      : `<span class="weapon-col weapon-col-dmg" title="${w.damage} ${typeLabel}">${w.damage}${typeTag}</span>`;
+    const dmgCell = `<span class="weapon-col weapon-col-dmg" title="${w.damage} ${typeLabel}">${w.damage}${typeTag}</span>`;
     return `<div class="weapon-row">
       ${omitName === true ? '' : `<span class="weapon-col weapon-col-name">${esc(w.name)}</span>`}
       <span class="weapon-col weapon-col-arc" title="${ARC_LABELS[w.arc] || 'Firing Arc: ' + (w.arc || '')}">${ARC_ICONS[w.arc] ? ARC_ICONS[w.arc] + '<span class="arc-label">' + esc(w.arc || '') + '</span>' : esc(w.arc || '')}</span>
@@ -3923,7 +3908,7 @@ let activeGroupId = null;
             <span class="weapon-col weapon-col-arc" title="${esc(ARC_LABELS[w.arc] || w.arc || '')}">${arcCell}</span>
             <span class="weapon-col weapon-col-att">${attackHtml(w.attack)}</span>
             <span class="weapon-col weapon-col-lock">${esc(String(w.lock))}${weaponCritOn(w) ? `<span class="weapon-col-crit" title="Scores a critical on ${esc(weaponCritOn(w))} (2 over Lock); this weapon has rules that use criticals">crit ${esc(weaponCritOn(w))}</span>` : ''}</span>
-            <span class="weapon-col weapon-col-dmg weapon-col-dmg--calc" role="button" tabindex="0" title="Damage odds, open in the Combat Calculator" onclick="event.stopPropagation();Calc.addBuilderWeapon(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();Calc.addBuilderWeapon(this)}" data-cn="${esc(w.name || o.name || '')}" data-ca="${esc(String(w.attack))}" data-cl="${esc(String(w.lock))}" data-cd="${esc(String(w.damage))}" data-ct="${esc(w.type || '')}" data-cs="${esc(w.special || '')}" data-carc="${esc(w.arc || '')}">${esc(String(w.damage))}${typeTag}</span>
+            <span class="weapon-col weapon-col-dmg">${esc(String(w.damage))}${typeTag}</span>
             <span class="weapon-col weapon-col-special">${w.special && w.special !== '-' ? renderWeaponSpecialChips(w.special) : ''}</span>
             <span class="weapon-col station-arm-qty">${sysStepper(o, c, canAdd)}</span>
           </div>`;
@@ -4046,7 +4031,7 @@ let activeGroupId = null;
       if (opt && Array.isArray(opt.weapons)) wpns.push(...opt.weapons);
     });
     if (wpns.length > 0) {
-      weaponsHtml = '<div class="weapon-list weapon-list--calc">' + renderWeaponHeader() + wpns.map(w => renderWeaponRow(w, false, true)).join('') + '</div>';
+      weaponsHtml = '<div class="weapon-list">' + renderWeaponHeader() + wpns.map(w => renderWeaponRow(w, false)).join('') + '</div>';
     }
 
     // Loadout options — an either/or weapon swap (e.g. UCM Laser Refit). Present

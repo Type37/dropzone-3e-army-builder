@@ -194,9 +194,36 @@ def matcher_for(name):
     for i, part in enumerate(PLACEHOLDER_RE.split(name)):
         if i:
             out.append(r"(.+?)")
-        # A run of spaces in the heading may be absent on the card.
-        out.append(r"\s*".join(re.escape(p) for p in part.split()))
+        out.append(_literal(part))
     return re.compile(r"^\s*" + "".join(out) + r"\s*$", re.I)
+
+
+def _literal(part):
+    """
+    Turn a literal fragment of a heading into a forgiving pattern.
+
+    Letters and digits stay strict -- they are what identifies the rule. Only
+    the punctuation between them is loosened, because the heading and the card
+    routinely disagree about it:
+
+        Repair X/Y      heading    ->  "Repair 1: Vehicles"     card
+        Dissipate -X    heading    ->  "Dissipate 1"            card
+        Shield: X Y Z+  heading    ->  "Shield friendly ..."    card
+
+    So a separator may be any of : / - or nothing, and the inches mark may be
+    the curly glyph, a straight quote, or absent.
+    """
+    out = []
+    for ch in part:
+        if ch.isspace():
+            out.append(r"\s*")
+        elif ch in ":/-":
+            out.append(r"[:/\-\s]*")
+        elif ch in "”″\"":
+            out.append(r"[”″\"]?")
+        else:
+            out.append(re.escape(ch))
+    return "".join(out)
 
 
 def parse(doc, pages):

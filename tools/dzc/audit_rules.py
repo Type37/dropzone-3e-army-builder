@@ -27,6 +27,24 @@ FACTIONS = os.path.join("data", "dzc", "faction-*.json")
 # A trailing bracket on a CARD is the variant the rule is restricted to.
 VARIANT_TAIL = re.compile(r"\s*\([^)]*\)\s*$")
 
+# Misspellings in TTCombat's own published PDFs, corrected on lookup only --
+# the scanned data keeps what the card actually says.
+#
+# Listed explicitly rather than fuzzy-matched on purpose. A near-miss matcher
+# would also silently absorb a genuine future RENAME, turning a rule that needs
+# attention into one that quietly resolves to the wrong text. Each entry here
+# is a decision someone made, and a new typo still fails the audit loudly.
+KNOWN_TYPOS = {
+    "infliltrate": "Infiltrate",     # Scourge Battle/Support Beetle
+    "devastor": "Devastator",        # Remote Bomb Bus, UCM Artillery Vehicle
+    "precison": "Precision",         # UCM Heavy Tank
+}
+TYPO_RE = re.compile(r"\b(" + "|".join(KNOWN_TYPOS) + r")\b", re.I)
+
+
+def fix_typos(s):
+    return TYPO_RE.sub(lambda m: KNOWN_TYPOS[m.group(1).lower()], s)
+
 
 def load_rules():
     with open(RULES, encoding="utf-8") as fh:
@@ -52,7 +70,7 @@ def resolve(token, rules, faction=None):
     Exact names beat wildcard templates, or "Ev X" would swallow anything
     starting "Ev".
     """
-    t = token.strip()
+    t = fix_typos(token.strip())
     if not t:
         return None
     pools = ([r for r in rules if r["faction"] == faction] if faction else [],

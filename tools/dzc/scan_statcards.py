@@ -690,7 +690,8 @@ def parse_stat_table(page, lines):
         if row.get("Type") in ("Vehicle", "Aircraft", "Infantry"):
             special = row.pop("Special", "") or ""
             utype = row.pop("Type")
-            return utype, {k: v for k, v in row.items() if v}, special.strip(" -")
+            return (utype, {k: v for k, v in row.items() if v},
+                    join_broken_hyphen(special.strip(" -")))
     return None, None, None
 
 
@@ -725,6 +726,43 @@ def weapon_swatches(page):
     return out
 
 
+# Flavour text under a card's tables is set in an OBLIQUE face; every table
+# cell is RobotoSlab. Nothing else on a card is italic, so the font is a safe
+# marker for "the data has ended and the prose has begun".
+LORE_FONT_RE = re.compile(r"(Obl|Italic)", re.I)
+
+
+def join_broken_hyphen(s):
+    """
+    Rejoin a hyphenated rule name split across a cell's line wrap.
+
+    "Self-Destruct" and "Drive-by" wrap inside the narrow Special column and
+    come back as "Self- Destruct" and "Drive- by", which then match no rule in
+    the glossary. Only a hyphen followed by whitespace is closed up, so a
+    genuine spaced compound is left alone.
+    """
+    return re.sub(r"(\w)-\s+(\w)", r"\1-\2", s)
+
+
+def lore_top(page, below_y):
+    """
+    Y of the first flavour-text line under the tables, or None.
+
+    The last weapon's band runs to the bottom-most word on the page, so without
+    this the lore paragraph is swallowed into that weapon's cells -- the
+    Bioficer Drones ended up with a weapon named "Decon Rifles Drones are
+    standard Bioficer infantry, and pure muscle, bone, and sinew...".
+    """
+    ys = []
+    for blk in page.get_text("dict")["blocks"]:
+        for ln in blk.get("lines", []):
+            for sp in ln["spans"]:
+                if (sp["text"].strip() and LORE_FONT_RE.search(sp["font"])
+                        and sp["bbox"][1] > below_y):
+                    ys.append(sp["bbox"][1])
+    return min(ys) if ys else None
+
+
 def parse_weapons(page, lines):
     i, hdr = find_header_row(lines, WEAPON_HEADERS, need=5)
     if hdr is None:
@@ -741,7 +779,12 @@ def parse_weapons(page, lines):
     hdr_bottom = max(w[3] for w in hdr)
     xs = [c[1] for c in cols]
     tbl = fitz.Rect(min(xs) - 40, hdr_bottom, max(xs) + 60, page.rect.height)
-    below = [w for w in words_in(page, tbl) if w[1] > hdr_bottom]
+    # Stop at the flavour text. Everything below it is prose, not table data.
+    lore_y = lore_top(page, hdr_bottom)
+    if lore_y is not None:
+        tbl.y1 = min(tbl.y1, lore_y)
+    below = [w for w in words_in(page, tbl) if w[1] > hdr_bottom
+             and (lore_y is None or w[3] <= lore_y + 1)]
     if not boxes or not below:
         return []
     last_y = max(w[3] for w in below) + 2
@@ -767,7 +810,8 @@ def parse_weapons(page, lines):
             "att": joined.get("Att") or None,
             "ac": joined.get("Ac") or None,
             "e": joined.get("E") or None,
-            "special": re.sub(r"\s+", " ", joined.get("Special", "")).strip(" -"),
+            "special": join_broken_hyphen(
+                re.sub(r"\s+", " ", joined.get("Special", "")).strip(" -")),
             "box": kind,
         })
 

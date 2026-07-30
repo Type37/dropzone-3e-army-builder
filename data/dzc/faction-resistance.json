@@ -1016,7 +1016,7 @@
           "att": "1",
           "ac": "2+",
           "e": "8",
-          "special": "Demo 3, Devastor 2, Self- Destruct",
+          "special": "Demo 3, Devastor 2, Self-Destruct",
           "box": "all",
           "variants": [],
           "upgradePoints": null,
@@ -2102,7 +2102,7 @@
           "att": "1",
           "ac": "3+",
           "e": "4",
-          "special": "Alt 1, Battery 1, Blast, Drive- by",
+          "special": "Alt 1, Battery 1, Blast, Drive-by",
           "box": "variant",
           "variants": [
             "Attack ATV"

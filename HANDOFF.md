@@ -76,11 +76,34 @@ a new release is re-ingested rather than re-typed.
 
 ```sh
 python -m pip install pymupdf pillow
-python tools/dzc/scan_statcards.py --pdf-dir rules --out data/dzc --art assets/units
-python tools/dzc/audit_data.py
-python tools/dzc/audit_transport.py
-python tools/dzc/audit_art.py
+python tools/dzc/rebuild.py          # scan both sources, then run all four audits
+python tools/dzc/rebuild.py --skip-scan   # re-audit data already on disk
 ```
+
+`rebuild.py` is the whole pipeline and the only thing a new stat-card release
+should need. Stages run in order and the first failure stops the run, because
+each consumes the one before it:
+
+| Stage | In | Out |
+|---|---|---|
+| `scan_statcards.py` | the six faction PDFs | `data/dzc/faction-*.json`, `assets/units/*.webp` |
+| `scan_rulebook.py` | rulebook ch.10/11 **and** each faction PDF's front matter | `data/dzc/rules.json` |
+| `audit_data.py` | | shape, categories, weapon boxes |
+| `audit_transport.py` | | symbol shapes and carrier/passenger lineages |
+| `audit_art.py` | | every unit has art, every art file has a unit |
+| `audit_rules.py` | | every keyword a card prints resolves to glossary text |
+
+`data/dzc/index.json` is the one file **not** scanned. Game sizes, category
+caps, commander levels and the Command Card deck rules are prose tables in
+chapter 3, not stat cards, and they change only with an edition — so they are
+transcribed, each entry citing its rulebook section.
+
+> **There is no adapter, and there should not be one.** An earlier plan had a
+> `build_app_data.py` reshaping DZC JSON into the Dropfleet format. That means
+> two canonical shapes forever and a mapping layer that has to lie
+> (`Mv`→`thrust`, `DP`→`hull`) to keep the old renderers quiet. The app has to
+> change anyway for columns, nesting and validation, so it reads `data/dzc/`
+> **natively**. One source of truth.
 
 **Status: 178 units across all six factions, 0 pages skipped, all three audits
 clean.** Plus 178 transparent WebP unit photos (12.5 MB total).
@@ -274,14 +297,48 @@ pattern DZC **variants** need.
 
 ### Order of work
 
-1. Adapter: `tools/dzc/build_app_data.py` → emit `data/faction-*.json` in the
-   app's shape from `data/dzc/*.json`, plus a DZC `fleet-index.json`.
-2. Terminology sweep: Fleet→Army, Ship→Unit, Admiral→Commander, Battlegroup→Group.
-3. Stats/weapons columns → DZC columns; arcs are **90° wedges** (rulebook 6.1.2),
+1. ~~Adapter~~ — **dropped.** The app reads `data/dzc/` natively; see §3.
+2. Data layer: repoint `init()` and `ensureFactionLoaded()` at `data/dzc/`, and
+   rewrite `transformIndex()` / `transformFaction()` to build a DZC-native
+   model. **These two functions are the choke point** — every renderer reads
+   the model they produce, so nothing else can be migrated until they are.
+3. Terminology sweep: Fleet→Army, Ship→Unit, Admiral→Commander, Battlegroup→Group.
+4. Stats/weapons columns → DZC columns; arcs are **90° wedges** (rulebook 6.1.2),
    including the Side Left / Side Right split.
-4. Validation → DZC rules (§4). Add transport nesting + capacity.
-5. Unify desktop + mobile into one responsive app.
-6. Appearance: Fluent tokens, tighter spacing, faction accents.
+5. Validation → DZC rules (§4). Add transport nesting + capacity.
+6. Unify desktop + mobile into one responsive app.
+7. Appearance: Fluent tokens, tighter spacing, faction accents.
+
+### How big step 2 really is
+
+Measured, not guessed — occurrences of Dropfleet-only vocabulary:
+
+| | `app.js` | `mobile.js` |
+|---|---|---|
+| `admiral` | 577 | 261 |
+| `launch` | 262 | 135 |
+| `battlegroup` | 160 | 95 |
+| `loads` | 131 | 66 |
+| `hull` | 121 | 90 |
+| `tonnage` | 99 | 32 |
+| `colossal` | 83 | 30 |
+
+~2,500 references across 26,000 lines. So "swap the data and the app follows"
+is not true, and planning as though it were is how the schedule gets lost.
+
+What that does **not** mean is a rewrite. The split is:
+
+- **Keep, essentially untouched** — `sw.js`, `fleet-sync.js`, `offline-sync.js`,
+  `count.js`, storage/settings/theme/routing, the modal and action-sheet
+  system, print scaffolding, the CSS design system. None of it knows what a
+  ship is.
+- **Rewrite** — the domain model and the views that render ships, stats,
+  launch assets and admirals. Those encode Dropfleet's *game*, and no amount of
+  data reshaping makes them describe Dropzone.
+
+Cut first (decided, see §9): Combat Calculator, Space Stations, Secondary
+Objectives. That deletes a meaningful slice of the above before any of it needs
+migrating.
 
 ---
 

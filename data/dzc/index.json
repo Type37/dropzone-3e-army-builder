@@ -1,0 +1,126 @@
+{
+  "game": "Dropzone Commander",
+  "edition": "3rd Edition",
+  "rulebook": "3.01",
+  "note": "Force-construction constants, transcribed from the rulebook rather than scanned: these are prose tables, not stat cards, and they change only with an edition. Every entry cites its section so it can be re-checked against a new printing.",
+
+  "gameSizes": [
+    { "id": "skirmish",   "label": "Skirmish",   "min": 501,  "max": 1000, "maxGroups": 9,  "source": "3.1" },
+    { "id": "clash",      "label": "Clash",      "min": 1001, "max": 2000, "maxGroups": 12, "source": "3.1" },
+    { "id": "battle",     "label": "Battle",     "min": 2001, "max": 3000, "maxGroups": 16, "source": "3.1" },
+    { "id": "reconquest", "label": "Reconquest", "min": 3001, "max": null, "maxGroups": 20,
+      "groupsPerExtra": { "per": 1000, "above": 3000, "add": 4 },
+      "source": "3.1" }
+  ],
+
+  "categories": [
+    { "id": "standard",  "label": "Standard",  "selectable": true,  "cappedByStandard": false },
+    { "id": "vanguard",  "label": "Vanguard",  "selectable": true,  "cappedByStandard": true  },
+    { "id": "heavy",     "label": "Heavy",     "selectable": true,  "cappedByStandard": true  },
+    { "id": "support",   "label": "Support",   "selectable": true,  "cappedByStandard": true  },
+    { "id": "transport", "label": "Transport", "selectable": true,  "cappedByStandard": false,
+      "note": "May only be taken alongside a Squad it can carry, and must be taken full (3.2.4)." },
+    { "id": "generated", "label": "Generated", "selectable": false, "cappedByStandard": false,
+      "note": "Bioficer Drones and Hulks. Produced in play, never chosen when building." }
+  ],
+
+  "armyRules": {
+    "categoryCap": {
+      "rule": "Points spent on Vanguard, on Heavy, and on Support may EACH not exceed points spent on Standard.",
+      "applies": ["vanguard", "heavy", "support"],
+      "against": "standard",
+      "source": "3.2"
+    },
+    "groupCostCap": {
+      "rule": "No Group may cost more than a quarter of the agreed points limit.",
+      "fraction": 0.25,
+      "ofAgreedLimit": true,
+      "note": "A quarter of the number the players agreed, NOT the top of the band -- so the limit must be an input, not derived from the game size.",
+      "source": "3.2"
+    },
+    "rare": {
+      "rule": "Only this many Rare Squads of the SAME NAME may be taken.",
+      "limits": { "skirmish": 1, "clash": 2, "battle": 3, "reconquest": 3 },
+      "source": "3.2.1"
+    },
+    "unique": { "rule": "Only one Unique Squad of the same name.", "limit": 1, "source": "3.2.1" },
+    "variants": {
+      "rule": "A Squad may contain any mixture of Variants.",
+      "perModel": true,
+      "note": "Variants are chosen per MODEL, so a Squad's cost is the sum of its models.",
+      "source": "3.2.2"
+    },
+    "weaponUpgrades": {
+      "rule": "All Units of the same Variant within a Squad must be upgraded equally.",
+      "perVariant": true,
+      "note": "Different granularity from Variants themselves, which are per model.",
+      "source": "3.2.3"
+    },
+    "sharedTransport": {
+      "rule": "Up to 4 Squads, plus their own Transport Squads, may share ONE larger Transport. They all form one Group.",
+      "maxSquads": 4,
+      "source": "3.2.4.1"
+    },
+    "auxiliaryTransport": {
+      "rule": "A hollow Transport Symbol on a Unit whose category is NOT Transport. Taken as a normal Squad, need not be full.",
+      "mustBeFull": false,
+      "carriedSquadMayNotSplit": true,
+      "source": "3.2.4.3"
+    },
+    "commanders": {
+      "rule": "At least one Commander must be taken. Assigned to a Unit; a Squad may contain only one.",
+      "minimum": 1,
+      "onePerSquad": true,
+      "ignoredForCategoryRatios": true,
+      "note": "Commander points count toward the total allowed points but are ignored when comparing category spend.",
+      "levels": [
+        { "level": 4, "points": 50,  "allowedIn": ["skirmish", "clash", "battle", "reconquest"] },
+        { "level": 5, "points": 90,  "allowedIn": ["skirmish", "clash", "battle", "reconquest"] },
+        { "level": 6, "points": 150, "allowedIn": ["clash", "battle", "reconquest"] },
+        { "level": 7, "points": 230, "allowedIn": ["battle", "reconquest"] }
+      ],
+      "source": "3.2.5"
+    },
+    "commandCards": {
+      "rule": "Optional at Skirmish size. Otherwise build a 45-card deck from the 33-card Core Set plus your faction's 33-card Faction Set, or combine both Sets for a 66-card casual deck.",
+      "optionalAtSkirmish": true,
+      "deckSize": 45,
+      "coreSetSize": 33,
+      "factionSetSize": 33,
+      "casualDeckSize": 66,
+      "note": "No card data is published anywhere, so the deck builder is deferred. The rules are recorded here so it can be built without re-reading the book.",
+      "source": "3.2.6"
+    }
+  },
+
+  "transportSymbols": {
+    "note": "Hollow = capacity offered, solid = space filled. A Transport may only carry Units whose symbol SHAPE matches its own. Colour is 1:1 with shape and is decoration -- except that it is the only reliable way to tell an upright triangle from an inverted one, whose convex hulls are identical.",
+    "source": "3.2.4.2",
+    "shapes": [
+      { "id": "square",        "label": "Square",             "ink": "green"  },
+      { "id": "diamond",       "label": "Diamond",            "ink": "yellow" },
+      { "id": "triangle",      "label": "Triangle",           "ink": "red"    },
+      { "id": "triangle-down", "label": "Inverted triangle",  "ink": "purple" },
+      { "id": "circle",        "label": "Circle",             "ink": "blue"   },
+      { "id": "pentagon",      "label": "Pentagon",           "ink": "orange" }
+    ],
+    "capacityModes": {
+      "both":   { "printed": "+", "rule": "Carries both shapes simultaneously." },
+      "either": { "printed": "/", "rule": "Either shape, never a mixture." }
+    },
+    "nestedCargoIgnored": {
+      "rule": "When a Transport carries another Transport, the smaller one's cargo is ignored -- it is already aboard.",
+      "source": "3.2.4.2"
+    }
+  },
+
+  "entry": {
+    "note": "Vehicles and Infantry that do not begin the game aboard an Aircraft, or in a Transport aboard an Aircraft, always begin Reserved -- off the table until Round 2. This is why air transports earn their points, and the builder should surface it.",
+    "source": "9.4"
+  },
+
+  "activation": {
+    "note": "A Group containing only non-auxiliary Transports cannot be picked for a normal activation and is ignored when generating Pass tokens; those Groups activate together in the Orphaned Transport step. So Group count is NOT the activation count.",
+    "source": "4.1.2, 4.2.1, 4.2.2"
+  }
+}
