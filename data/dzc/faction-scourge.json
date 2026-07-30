@@ -24,6 +24,7 @@
       "variants": [],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": [
           {
             "shape": "circle",
@@ -123,6 +124,7 @@
       ],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": [
           {
             "shape": "diamond",
@@ -220,6 +222,7 @@
       ],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": [
           {
             "shape": "triangle",
@@ -327,9 +330,10 @@
       ],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": [
           {
-            "shape": "triangle",
+            "shape": "triangle-down",
             "n": 1
           }
         ]
@@ -395,6 +399,7 @@
       "variants": [],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": [
           {
             "shape": "square",
@@ -457,6 +462,7 @@
       "variants": [],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": [
           {
             "shape": "diamond",
@@ -742,6 +748,7 @@
       ],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": [
           {
             "shape": "diamond",
@@ -831,6 +838,7 @@
       ],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": [
           {
             "shape": "circle",
@@ -913,6 +921,7 @@
       "variants": [],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": [
           {
             "shape": "square",
@@ -977,6 +986,7 @@
       "variants": [],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": [
           {
             "shape": "square",
@@ -1034,6 +1044,7 @@
       ],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": [
           {
             "shape": "triangle",
@@ -1130,6 +1141,7 @@
             "n": 1
           }
         ],
+        "capacityMode": null,
         "fills": [
           {
             "shape": "triangle",
@@ -1336,6 +1348,7 @@
       "variants": [],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": [
           {
             "shape": "diamond",
@@ -1414,6 +1427,7 @@
       "variants": [],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": [
           {
             "shape": "pentagon",
@@ -1471,6 +1485,7 @@
       ],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": [
           {
             "shape": "diamond",
@@ -1590,6 +1605,7 @@
       ],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": [
           {
             "shape": "circle",
@@ -1740,9 +1756,10 @@
       "variants": [],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": [
           {
-            "shape": "triangle",
+            "shape": "triangle-down",
             "n": 2
           }
         ]
@@ -1811,6 +1828,7 @@
       ],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": [
           {
             "shape": "circle",
@@ -1925,6 +1943,7 @@
             "n": 18
           }
         ],
+        "capacityMode": null,
         "fills": []
       },
       "weapons": [
@@ -1973,6 +1992,7 @@
             "n": 3
           }
         ],
+        "capacityMode": null,
         "fills": []
       },
       "weapons": [
@@ -2037,10 +2057,11 @@
             "n": 3
           },
           {
-            "shape": "triangle",
+            "shape": "triangle-down",
             "n": 4
           }
         ],
+        "capacityMode": "either",
         "fills": []
       },
       "weapons": [
@@ -2089,6 +2110,7 @@
             "n": 4
           }
         ],
+        "capacityMode": null,
         "fills": []
       },
       "weapons": [
@@ -2137,6 +2159,7 @@
             "n": 2
           }
         ],
+        "capacityMode": null,
         "fills": []
       },
       "weapons": [
@@ -2185,6 +2208,7 @@
             "n": 3
           }
         ],
+        "capacityMode": null,
         "fills": [
           {
             "shape": "triangle",
@@ -2223,6 +2247,7 @@
             "n": 6
           }
         ],
+        "capacityMode": null,
         "fills": []
       },
       "weapons": [

@@ -14,7 +14,7 @@ problems = []
 warnings = []
 stats = Counter()
 
-for path in sorted(glob.glob(os.path.join("data", "faction-*.json"))):
+for path in sorted(glob.glob(os.path.join("data", "dzc", "faction-*.json"))):
     with open(path, encoding="utf-8") as fh:
         data = json.load(fh)
     fid = data["faction"]

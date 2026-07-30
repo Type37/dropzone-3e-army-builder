@@ -54,9 +54,35 @@ BOX_COLOURS = {
     "upgrade": (0.30, 0.70, 0.35),  # green
 }
 
-# Transport symbol fills. Shape is what actually matters (it says which
-# transports may carry the unit); colour is corroborating.
+# Transport symbol fills. Shape says which transports may carry the unit, so a
+# merge here silently permits illegal armies.
 SHAPE_BY_SIDES = {3: "triangle", 4: "square", 5: "pentagon", 6: "hexagon"}
+
+# Symbol ink, sampled from the 260730 cards. Six symbols, each with ONE colour.
+#
+# This is load-bearing, not decoration. An upright triangle and an inverted one
+# have identical convex hulls -- 3 corners either way -- so geometry alone
+# cannot separate the red triangle from the purple inverted triangle, and the
+# scanner merged them. That let a Condor (6 red) load a K9 Pack (1 purple) and
+# a Harbinger (4 purple) load Sabres (2 red). Both illegal, both silent.
+#
+# Orientation is read geometrically and the colour must agree. If a re-export
+# shifts the palette the two disagree and the scan FAILS rather than quietly
+# collapsing the symbols again.
+SYMBOL_INK = {
+    "square":        (0.000, 0.553, 0.212),   # green
+    "diamond":       (0.976, 0.698, 0.200),   # yellow
+    "triangle":      (0.745, 0.086, 0.133),   # red, apex up
+    "triangle-down": (0.400, 0.141, 0.514),   # purple, apex down
+    "circle":        (0.233, 0.542, 0.791),   # blue
+    "pentagon":      (0.914, 0.306, 0.106),   # orange
+}
+
+# Separator glyphs printed between badges (real text on the card, not inferred).
+#   "+"  carry both shapes simultaneously
+#   "/"  either shape, never mixed
+#   ","  ends the capacity group; what follows is what this unit FILLS
+SEP_BOTH, SEP_EITHER, SEP_FILLS = "+", "/", ","
 
 ART_DIR = "assets/units"
 
@@ -293,9 +319,60 @@ def _corners(hull, tol=0.30):
     return keep
 
 
+def _corner_points(hull, tol=0.30):
+    """As _corners, but returns the surviving vertices rather than a count."""
+    n = len(hull)
+    if n < 3:
+        return list(hull)
+    keep = []
+    for i in range(n):
+        a, b, c = hull[i - 1], hull[i], hull[(i + 1) % n]
+        v1 = (b[0] - a[0], b[1] - a[1])
+        v2 = (c[0] - b[0], c[1] - b[1])
+        m1 = (v1[0] ** 2 + v1[1] ** 2) ** 0.5
+        m2 = (v2[0] ** 2 + v2[1] ** 2) ** 0.5
+        if m1 < 0.5 or m2 < 0.5:
+            continue
+        cosang = (v1[0] * v2[0] + v1[1] * v2[1]) / (m1 * m2)
+        if cosang < 1 - tol:
+            keep.append(b)
+    return keep
+
+
+def triangle_points_down(corners):
+    """
+    True for an inverted triangle, from the lone vertex's side.
+
+    Page y grows DOWNWARD. An upright triangle has one vertex alone at the top
+    and two level along the bottom, so sorting the three y values leaves the big
+    gap between the first and second. An inverted one puts two level at the top
+    and the lone vertex at the bottom, moving the gap to the far end.
+    """
+    if len(corners) != 3:
+        return None
+    ys = sorted(p[1] for p in corners)
+    gap_top, gap_bottom = ys[1] - ys[0], ys[2] - ys[1]
+    if abs(gap_top - gap_bottom) < 0.5:      # too close to call
+        return None
+    return gap_bottom > gap_top
+
+
+def nearest_symbol(rgb):
+    """Nearest SYMBOL_INK entry, with its squared distance."""
+    if rgb is None:
+        return None, 1e9
+    best, bestd = None, 1e9
+    for name, ref in SYMBOL_INK.items():
+        d = sum((a - b) ** 2 for a, b in zip(rgb, ref))
+        if d < bestd:
+            best, bestd = name, d
+    return best, bestd
+
+
 def classify_shape(drawing):
     """
-    Return ('square'|'triangle'|'circle'|'pentagon'|None, solid: bool).
+    Return ('square'|'triangle'|'triangle-down'|'diamond'|'circle'|'pentagon'
+    |None, solid: bool).
 
     Classified from the OUTER boundary, not the path-item count. A hollow badge
     is drawn as nested outlines, so a hollow triangle has 6 line items and a
@@ -341,6 +418,12 @@ def classify_shape(drawing):
                 )
                 if on_axis >= len(hull) * 0.6:
                     shape = "diamond"
+        if shape == "triangle":
+            # Upright and inverted triangles are the SAME convex hull, so this
+            # is decided by which side the lone vertex sits on -- then checked
+            # against the ink below.
+            if triangle_points_down(_corner_points(_hull(pts))):
+                shape = "triangle-down"
         if shape is None and rects:
             shape = "square"
     elif rects:
@@ -349,6 +432,23 @@ def classify_shape(drawing):
     fill = drawing.get("fill")
     # Hollow badges are drawn as a white/near-white body with a coloured stroke.
     solid = bool(fill) and not all(c > 0.9 for c in fill)
+
+    # Cross-check geometry against ink. Only the badge's own coloured path
+    # carries a usable colour -- white bodies and near-black plates are backing,
+    # not the symbol -- so anything else is left to the geometry unchallenged.
+    ink = fill if (fill and not all(c > 0.9 for c in fill)
+                   and not all(c < 0.2 for c in fill)) else drawing.get("color")
+    if shape and ink and not all(c > 0.9 for c in ink):
+        by_ink, dist = nearest_symbol(ink)
+        if dist < 0.05 and by_ink != shape:
+            # Both readings are confident and they disagree. Refusing to guess
+            # is the point: a wrong symbol permits an illegal army in silence,
+            # which is far worse than a scan that stops and says so.
+            raise ValueError(
+                f"transport symbol mismatch: geometry says {shape!r}, ink "
+                f"{tuple(round(c, 3) for c in ink)} says {by_ink!r}. The card "
+                f"palette may have changed -- check SYMBOL_INK."
+            )
     return shape, solid
 
 
@@ -394,14 +494,19 @@ def parse_transport(page):
     # leftover template glyph at ~19.9pt and the real value at ~14.2pt drawn
     # over it. Reading by position alone yields the template "1" on every card.
     digits = []
+    seps = []
     for blk in page.get_text("dict", clip=panel)["blocks"]:
         for ln in blk.get("lines", []):
             for sp in ln["spans"]:
                 t = sp["text"].strip()
                 if re.fullmatch(r"\d{1,2}", t):
                     digits.append((int(t), fitz.Rect(sp["bbox"]), sp["size"]))
+                elif t in (SEP_BOTH, SEP_EITHER, SEP_FILLS):
+                    # Printed between badges; x-order is what links them.
+                    seps.append((t, fitz.Rect(sp["bbox"])))
     if not digits:
         return {"capacity": [], "fills": []}
+    seps.sort(key=lambda s: s[1].x0)
 
     badges = []
     for g in page.get_drawings():
@@ -412,7 +517,7 @@ def parse_transport(page):
             continue
         badges.append(g)
 
-    capacity, fills, claimed = [], [], []
+    capacity, fills, claimed, placed = [], [], [], []
     for g in sorted(badges, key=lambda g: g["rect"].x0):
         r = g["rect"]
         inside = [d for d in digits
@@ -431,7 +536,29 @@ def parse_transport(page):
             continue
         entry = {"shape": shape, "n": value}
         (capacity if badge_is_hollow(page, r) else fills).append(entry)
-    return {"capacity": capacity, "fills": fills}
+        placed.append(r)
+
+    # How the capacity symbols combine. "+" means both at once, "/" means either
+    # but never mixed -- the difference between a legal load and an illegal one,
+    # so it is read from the printed glyph rather than assumed. A separator
+    # counts only when it sits BETWEEN two capacity badges; the "," before a
+    # fills badge is a different statement and must not be mistaken for one.
+    mode = None
+    if len(capacity) > 1:
+        spans = sorted(placed[:len(capacity)], key=lambda r: r.x0)
+        between = [t for t, sr in seps
+                   if spans[0].x1 <= sr.x0 and sr.x1 <= spans[len(capacity) - 1].x0
+                   and t in (SEP_BOTH, SEP_EITHER)]
+        if not between:
+            raise ValueError(
+                f"{len(capacity)} capacity symbols but no '+' or '/' between "
+                f"them -- cannot tell 'carries both' from 'either, not mixed'."
+            )
+        if len(set(between)) > 1:
+            raise ValueError(f"mixed capacity separators {between!r}")
+        mode = "both" if between[0] == SEP_BOTH else "either"
+
+    return {"capacity": capacity, "capacityMode": mode, "fills": fills}
 
 
 # ------------------------------------------------------------- tables

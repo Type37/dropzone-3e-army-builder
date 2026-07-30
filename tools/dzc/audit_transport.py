@@ -25,7 +25,7 @@ import sys
 problems, warnings = [], []
 units = {}
 
-for path in sorted(glob.glob(os.path.join("data", "faction-*.json"))):
+for path in sorted(glob.glob(os.path.join("data", "dzc", "faction-*.json"))):
     data = json.load(open(path, encoding="utf-8"))
     for u in data["units"]:
         units[(data["faction"], u["name"])] = u

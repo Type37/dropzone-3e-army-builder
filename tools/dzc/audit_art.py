@@ -24,7 +24,7 @@ NEAR_SQUARE = 0.02  # logos are drawn as exact squares
 import json
 
 missing_ref, missing_file = [], []
-for dp in sorted(glob.glob(os.path.join("data", "faction-*.json"))):
+for dp in sorted(glob.glob(os.path.join("data", "dzc", "faction-*.json"))):
     data = json.load(open(dp, encoding="utf-8"))
     for u in data["units"]:
         if not u.get("art"):
