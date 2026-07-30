@@ -91,6 +91,9 @@
     if (!g) return null;
     const u = window.DZC.unit(army.faction, unitId);
     if (!u) return null;
+    // Refuse rather than record-and-report. The picker already hides anything
+    // illegal; this is the backstop for a direct call.
+    if (!canAddUnit(army, groupId, unitId).ok) return null;
     // A new Squad starts at its minimum legal size, or one model where the
     // card gives no size (Transports: you take as many as the cargo needs).
     const n = count || u.squadMin || 1;
@@ -113,12 +116,19 @@
 
   function setModelCount(army, squadId, n) {
     const s = findSquad(army, squadId);
-    if (!s) return;
+    if (!s) return { ok: false, reason: 'Unknown Squad.' };
     const u = unitOf(army, s);
     n = Math.max(0, n);
+    if (n === 0) { removeSquad(army, squadId); return { ok: true, reason: null }; }
+    const chk = canSetCount(army, squadId, n);
+    if (!chk.ok) return chk;
     while (s.models.length < n) s.models.push({ variant: defaultVariant(u) });
     s.models.length = n;
-    if (!n) removeSquad(army, squadId); else touch(army);
+    // A Transport carrying this Squad must still be full afterwards, so its
+    // derived count is recomputed rather than left stale.
+    refitTransports(army);
+    touch(army);
+    return { ok: true, reason: null };
   }
 
   function setModelVariant(army, squadId, index, variantName) {
@@ -140,12 +150,187 @@
     if (s) { s.carriedBy = carrierSquadId || null; touch(army); }
   }
 
+  /* 3.2.5: a Squad may contain only one Commander, and the level must be one
+   * the game size allows. Both are enforced here as well as in the UI. */
   function setCommander(army, squadId, level) {
     const s = findSquad(army, squadId);
-    if (!s) return;
-    // 3.2.5: a Squad may contain only one Commander.
-    s.commander = level ? { level: level } : null;
+    if (!s) return { ok: false, reason: 'Unknown Squad.' };
+    if (!level) { s.commander = null; touch(army); return { ok: true, reason: null }; }
+    const size = window.DZC.gameSizeFor(army.pointsLimit);
+    const allowed = size ? window.DZC.commanderLevels(size.id).map(l => l.level) : [];
+    if (allowed.indexOf(level) === -1) {
+      return { ok: false, reason: `A Level ${level} Commander is not allowed in ${size ? size.label : 'this game size'} (3.2.5).` };
+    }
+    const u = unitOf(army, s);
+    if (u && u.category === 'Transport') {
+      return { ok: false, reason: 'A Commander is assigned to a fighting Unit, not to a Transport Squad.' };
+    }
+    s.commander = { level: level };
     touch(army);
+    return { ok: true, reason: null };
+  }
+
+  // ═══════════════════════════════════════════════════════════ ENFORCEMENT
+  //
+  // The builder refuses illegal actions rather than reporting them after the
+  // fact. Anything that can be made unreachable is made unreachable; the
+  // issues list is only for states that depend on an army being finished
+  // (no Commander yet, a category ratio that the build order inverts).
+
+  /* Rare and Unique are counted per SQUAD of the same name (3.2.1), not per
+   * model -- a Squad of three Archangels is one Rare choice, not three. */
+  function squadsNamed(army, name) {
+    let n = 0;
+    army.groups.forEach(g => g.squads.forEach(s => {
+      const u = unitOf(army, s);
+      if (u && u.name === name) n++;
+    }));
+    return n;
+  }
+
+  /* May this unit be added to this Group right now? */
+  function canAddUnit(army, groupId, unitId) {
+    const u = window.DZC.unit(army.faction, unitId);
+    if (!u) return { ok: false, reason: 'Unknown unit.' };
+
+    if (u.selectable === false) {
+      return { ok: false, reason: `${u.name} is Generated in play and can never be chosen.` };
+    }
+
+    // "Units with the category Transport may only be chosen ALONG WITH a Squad
+    // they may transport" (3.2.4). So a Transport is never picked on its own --
+    // it is assigned to a Squad, which also fixes how many you get.
+    if (u.category === 'Transport') {
+      return { ok: false, reason: `${u.name} is a Transport — add the Squad it carries first, then assign it.` };
+    }
+
+    const taken = squadsNamed(army, u.name);
+    if (u.unique && taken >= 1) {
+      return { ok: false, reason: `${u.name} is Unique — one per Army (3.2.1).` };
+    }
+    if (u.rare) {
+      const size = window.DZC.gameSizeFor(army.pointsLimit);
+      const lim = size ? window.DZC.rareLimit(size.id) : 1;
+      if (taken >= lim) {
+        return { ok: false, reason: `${u.name} is Rare — ${size ? size.label : 'this size'} allows ${lim} (3.2.1).` };
+      }
+    }
+    return { ok: true, reason: null };
+  }
+
+  /* Squad size limits (the card's own min/max). Transports are exempt: they
+   * have no squad size, and their count is derived from their cargo. */
+  function canSetCount(army, squadId, n) {
+    const s = findSquad(army, squadId);
+    if (!s) return { ok: false, reason: 'Unknown Squad.' };
+    const u = unitOf(army, s);
+    if (!u) return { ok: false, reason: 'Unknown unit.' };
+    if (u.category === 'Transport') {
+      return { ok: false, reason: 'A Transport’s count follows its cargo — change the Squad it carries.' };
+    }
+    if (u.squadMax != null && n > u.squadMax) {
+      return { ok: false, reason: `${u.name} has a maximum Squad size of ${u.squadMax}.` };
+    }
+    if (u.squadMin != null && n < u.squadMin && n > 0) {
+      return { ok: false, reason: `${u.name} has a minimum Squad size of ${u.squadMin}.` };
+    }
+    return { ok: true, reason: null };
+  }
+
+  /* Total capacity space a Squad occupies, in its cheapest legal shape.
+   * A Unit with two solid symbols may use either (3.2.4.2). */
+  function squadFill(army, squad, shape) {
+    const u = unitOf(army, squad);
+    if (!u) return 0;
+    const f = (window.DZC.fillsOf(u) || []).filter(x => !shape || x.shape === shape);
+    if (!f.length) return 0;
+    const best = f.reduce((a, b) => (b.n < a.n ? b : a));
+    return best.n * squad.models.length;
+  }
+
+  /* Which Transports in this faction could carry this Squad, and how many of
+   * each it would take. "You may take as many identical Transports as needed"
+   * (3.2.4), so the number is computed -- never typed by the user. */
+  function transportOptions(army, squadId) {
+    const s = findSquad(army, squadId);
+    const u = s && unitOf(army, s);
+    const f = window.DZC.faction(army.faction);
+    if (!u || !f) return [];
+    return f.units.filter(t => t.category === 'Transport' && window.DZC.canCarry(t, u))
+      .map(t => {
+        const shape = (window.DZC.fillsOf(u).find(x => window.DZC.capacityFor(t, x.shape) > 0) || {}).shape;
+        const per = window.DZC.capacityFor(t, shape);
+        const fill = squadFill(army, s, shape);
+        const need = per ? Math.ceil(fill / per) : 0;
+        return {
+          unit: t, shape: shape, per: per, need: need,
+          // "Transports must be taken full" (3.2.4). With identical Transports
+          // that means the Squad's fill must divide exactly into their
+          // capacity -- 5 Legionnaires cannot fill two Bear APCs.
+          exact: per > 0 && fill % per === 0,
+          fill: fill
+        };
+      });
+  }
+
+  /* Assign (or clear) the Transport carrying a Squad. Creates the Transport
+   * Squad, sets its count to exactly what the cargo needs, and links them --
+   * "Those Transport(s) form a Squad. Those two Squads form one Group." */
+  function assignTransport(army, squadId, transportUnitId) {
+    const s = findSquad(army, squadId);
+    const g = groupOf(army, squadId);
+    if (!s || !g) return { ok: false, reason: 'Unknown Squad.' };
+
+    // Drop any Transport Squad that exists only to carry this one.
+    const old = g.squads.find(x => x.id === s.carriedBy);
+    if (old) {
+      const ou = unitOf(army, old);
+      const others = g.squads.filter(x => x.carriedBy === old.id && x.id !== s.id);
+      s.carriedBy = null;
+      if (ou && ou.category === 'Transport' && !others.length) {
+        g.squads = g.squads.filter(x => x.id !== old.id);
+      }
+    }
+    if (!transportUnitId) { touch(army); return { ok: true, reason: null }; }
+
+    const opt = transportOptions(army, squadId).find(o => o.unit.id === transportUnitId);
+    if (!opt) return { ok: false, reason: 'That Transport cannot carry this Squad (3.2.4.2).' };
+    if (!opt.exact) {
+      return {
+        ok: false,
+        reason: `${opt.need} × ${opt.unit.name} would not all be full — ${opt.unit.name} carries `
+          + `${opt.per} and this Squad fills ${opt.fill}. Transports must be taken full (3.2.4).`
+      };
+    }
+    const t = {
+      id: uid(), unitId: opt.unit.id,
+      models: Array.from({ length: opt.need }, () => ({ variant: defaultVariant(opt.unit) })),
+      carriedBy: null, commander: null
+    };
+    g.squads.push(t);
+    s.carriedBy = t.id;
+    touch(army);
+    return { ok: true, reason: null };
+  }
+
+  /* Keep a Transport Squad's count in step after its cargo changes. Called on
+   * every model-count change so the derived number can never drift. */
+  function refitTransports(army) {
+    army.groups.forEach(g => {
+      g.squads.slice().forEach(t => {
+        const tu = unitOf(army, t);
+        if (!tu || tu.category !== 'Transport') return;
+        const riders = g.squads.filter(x => x.carriedBy === t.id);
+        if (!riders.length) { g.squads = g.squads.filter(x => x.id !== t.id); return; }
+        const shape = (window.DZC.fillsOf(unitOf(army, riders[0]) || {})
+          .find(x => window.DZC.capacityFor(tu, x.shape) > 0) || {}).shape;
+        const per = window.DZC.capacityFor(tu, shape);
+        const fill = riders.reduce((n, r) => n + squadFill(army, r, shape), 0);
+        const need = per ? Math.ceil(fill / per) : t.models.length;
+        while (t.models.length < need) t.models.push({ variant: defaultVariant(tu) });
+        t.models.length = Math.max(1, need);
+      });
+    });
   }
 
   function findSquad(army, squadId) {
@@ -377,7 +562,10 @@
     load, save, all, get, create, remove, touch,
     addGroup, removeGroup, addSquad, removeSquad, setModelCount, setModelVariant,
     setCarrier, setCommander, findSquad, groupOf, unitOf,
-    modelCost, squadCost, groupCost, armyCost, categorySpend, validate
+    modelCost, squadCost, groupCost, armyCost, categorySpend, validate,
+    // enforcement
+    canAddUnit, canSetCount, squadsNamed, squadFill,
+    transportOptions, assignTransport, refitTransports
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = window.DZCArmy;
 })();

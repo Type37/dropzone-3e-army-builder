@@ -88,7 +88,7 @@
       <div class="deco-divider"><div class="deco-diamond"></div></div>
     </div>
     <div class="landing-grid stagger">
-      <div class="tool-card tool-card--builder card-deco" onclick="App.navigate('fleets')">
+      <div class="tool-card tool-card--builder card-deco" onclick="App.navigate('armies')">
         <div class="tool-card-icon">
           <svg width="32" height="32" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM19 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM21 19a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM5 21a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" fill="currentColor"/><path d="M7.83 6a2.995 2.995 0 0 0 0-2h4.67A2.5 2.5 0 0 1 15 6.5V9h2.5a2.5 2.5 0 0 1 2.5 2.5v4.67a2.997 2.997 0 0 0-2 0V11.5a.5.5 0 0 0-.5-.5H15v1.5a2.5 2.5 0 0 1-2.5 2.5H11v2.5a.5.5 0 0 0 .5.5h4.67a2.997 2.997 0 0 0 0 2H11.5A2.5 2.5 0 0 1 9 17.5V15H6.5A2.5 2.5 0 0 1 4 12.5V7.83a2.995 2.995 0 0 0 2 0v4.67a.5.5 0 0 0 .5.5H9v-1.5A2.5 2.5 0 0 1 11.5 9H13V6.5a.5.5 0 0 0-.5-.5H7.83ZM13 12.5V11h-1.5a.5.5 0 0 0-.5.5V13h1.5a.5.5 0 0 0 .5-.5Z" fill="currentColor"/></svg>
         </div>
@@ -228,6 +228,36 @@
   <!-- ── DZC Unit Reference ── the first screen rendered from data/dzc/.
        Populated by js/dzc-units.js; nothing here comes from the Dropfleet model. -->
   <section class="hidden" id="view-units"></section>
+
+  <!-- ── DZC Army Builder ── -->
+  <section class="hidden" id="view-armies"></section>
+  <section class="hidden" id="view-army"></section>
+</div>
+
+<!-- New army -->
+<div class="modal-overlay" id="dzc-new" onclick="if(event.target===this)DZCBuilder.closeNew()">
+  <div class="modal-panel">
+    <div class="modal-header">
+      <h2 class="modal-title">New Army</h2>
+      <button class="modal-close" type="button" onclick="DZCBuilder.closeNew()" aria-label="Close"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+    </div>
+    <div class="modal-body" id="dzc-new-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" type="button" onclick="DZCBuilder.closeNew()">Cancel</button>
+      <button class="btn btn-primary" type="button" onclick="DZCBuilder.createArmy()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add a Squad -->
+<div class="modal-overlay" id="dzc-picker" onclick="if(event.target===this)DZCBuilder.closePicker()">
+  <div class="modal-panel modal-panel--lg">
+    <div class="modal-header">
+      <h2 class="modal-title">Add a Squad</h2>
+      <button class="modal-close" type="button" onclick="DZCBuilder.closePicker()" aria-label="Close"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+    </div>
+    <div class="modal-body" id="dzc-picker-body"></div>
+  </div>
 </div>
 
 <!-- DZC unit detail. Its own overlay rather than #modal-ship-detail, which is
@@ -536,8 +566,11 @@
 <script src="js/rank-insignia.js"></script>
 <script src="js/offline-sync.js"></script>
 <script src="js/fleet-sync.js"></script>
+<script src="js/dzc-icons.js"></script>
 <script src="js/dzc-data.js"></script>
+<script src="js/dzc-army.js"></script>
 <script src="js/dzc-units.js"></script>
+<script src="js/dzc-builder.js"></script>
 <script src="js/app.js"></script>
 <script>
   // Service worker is PRODUCTION-ONLY. On localhost we skip registration AND

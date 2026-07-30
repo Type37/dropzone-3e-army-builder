@@ -156,3 +156,115 @@
   .dzc-grid { grid-template-columns: 1fr; }
   .dzc-detail-art { flex-basis: 110px; max-width: 110px; }
 }
+
+/* ═══ Army list ═══ */
+.dzc-list-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.dzc-list-head h1 { font: 800 24px/1.2 var(--font-display, 'Roboto Slab', serif); margin: 0; }
+.dzc-army-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.dzc-army-card { padding: 14px; cursor: pointer; border: 1px solid var(--line, #d8d0c0); border-left: 4px solid var(--acc); border-radius: 8px; background: var(--surface-2, #fff); }
+.dzc-army-card:hover { border-color: var(--acc); }
+.dzc-army-card:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+.dzc-army-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.dzc-army-top h3 { margin: 0 0 4px; font: 700 16px/1.25 var(--font-ui, 'Jost', sans-serif); overflow-wrap: anywhere; }
+.dzc-army-meta { margin: 0 0 6px; font-size: 12px; color: var(--ink-2, #6b6459); }
+.dzc-army-pts { margin: 0 0 6px; font-size: 15px; }
+.dzc-army-pts b { font-size: 19px; }
+.dzc-army-ok { margin: 0; font-size: 12px; font-weight: 600; color: var(--success-ink, #2f7a37); }
+.dzc-army-bad { margin: 0; font-size: 12px; font-weight: 600; color: #b3261e; }
+
+/* ═══ Builder ═══ */
+.dzc-b-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
+.dzc-b-name { font: 800 24px/1.2 var(--font-display, 'Roboto Slab', serif); margin: 0 0 4px; overflow-wrap: anywhere; }
+.dzc-b-name:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; }
+.dzc-b-sub { margin: 0; font-size: 12.5px; color: var(--ink-2, #6b6459); }
+.dzc-b-pts { text-align: right; white-space: nowrap; }
+.dzc-b-pts b { font: 800 30px/1 var(--font-display, 'Roboto Slab', serif); }
+.dzc-b-pts span { display: block; font-size: 12px; color: var(--ink-2, #6b6459); }
+.dzc-b-pts.is-over b { color: #b3261e; }
+
+.dzc-ratios { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.dzc-ratio { padding: 6px 12px; border-radius: 6px; background: var(--surface-3, #f2ece0); font-size: 12px; }
+.dzc-ratio span { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2, #6b6459); }
+.dzc-ratio b { font-size: 16px; }
+.dzc-ratio i { font-style: normal; color: var(--ink-2, #6b6459); }
+.dzc-ratio.is-std { background: var(--acc); color: #fff; }
+.dzc-ratio.is-std span, .dzc-ratio.is-std i { color: rgba(255,255,255,.85); }
+.dzc-ratio.is-over { background: #fde8e6; color: #7a1c15; }
+
+.dzc-issues { list-style: none; margin: 0 0 12px; padding: 10px 12px; border-radius: 6px; font-size: 13px; }
+.dzc-issues li { display: flex; gap: 8px; align-items: baseline; padding: 3px 0; }
+.dzc-issues--err { background: #fde8e6; color: #7a1c15; }
+.dzc-issues--warn { background: var(--warn-bg, #fdf3d8); color: var(--warn-ink, #6b4e00); }
+.dzc-rulenum { flex: 0 0 auto; font: 700 10px/1.6 var(--font-ui, 'Jost', sans-serif); padding: 0 5px; border-radius: 3px; background: rgba(0,0,0,.10); }
+.dzc-legal { margin: 0 0 12px; font-size: 13px; font-weight: 600; color: var(--success-ink, #2f7a37); }
+
+.dzc-group-card { border: 1px solid var(--line, #d8d0c0); border-radius: 8px; padding: 12px; margin-bottom: 12px; background: var(--surface-2, #fff); }
+.dzc-group-card.is-over { border-color: #b3261e; }
+.dzc-g-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.dzc-g-head h2 { flex: 1 1 auto; margin: 0; font: 700 15px/1.2 var(--font-ui, 'Jost', sans-serif); overflow-wrap: anywhere; }
+.dzc-g-head h2:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; }
+.dzc-g-cost { font-size: 13px; font-weight: 700; white-space: nowrap; }
+.dzc-g-cost i { font-style: normal; font-weight: 500; font-size: 11px; color: var(--ink-2, #6b6459); }
+.dzc-g-empty { margin: 4px 0 8px; font-size: 12px; color: var(--ink-2, #6b6459); }
+
+/* Nesting is drawn: a carried Squad is indented under its carrier. */
+.dzc-squad { margin-left: calc(var(--depth) * 22px); padding: 6px 0; border-top: 1px solid var(--line, #eee5d6); }
+.dzc-squad:first-of-type { border-top: 0; }
+.dzc-squad .dzc-squad { border-left: 2px solid var(--acc); padding-left: 10px; }
+.dzc-sq-main { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.dzc-sq-cat { font: 700 9px/1.6 var(--font-ui, 'Jost', sans-serif); text-transform: uppercase; letter-spacing: .06em; padding: 0 6px; border-radius: 3px; background: var(--surface-3, #f2ece0); color: var(--ink-2, #5b544a); }
+.dzc-sq-cat[data-cat="Transport"] { background: #dbe9f5; color: #16466e; }
+.dzc-sq-name { flex: 1 1 160px; font-weight: 600; font-size: 14px; overflow-wrap: anywhere; }
+.dzc-sq-cost { font-weight: 700; font-size: 13px; white-space: nowrap; }
+.dzc-stepper { display: inline-flex; align-items: center; gap: 2px; }
+.dzc-stepper button { width: 24px; height: 24px; border-radius: 4px; cursor: pointer; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); font-size: 15px; line-height: 1; }
+.dzc-stepper button:hover { border-color: var(--acc); }
+.dzc-stepper b { min-width: 20px; text-align: center; font-size: 14px; }
+.dzc-sq-opts { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 5px; }
+.dzc-variant, .dzc-carry select, .dzc-cmdr select { font-size: 11.5px; padding: 3px 6px; border-radius: 4px; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); color: var(--ink, #24201c); max-width: 100%; }
+.dzc-carry, .dzc-cmdr { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-2, #6b6459); display: inline-flex; align-items: center; gap: 4px; }
+.dzc-capacity { margin: 4px 0 0; font-size: 11px; font-style: italic; color: var(--ink-2, #6b6459); }
+.dzc-add-group { margin-top: 4px; }
+
+.dzc-icon-btn { flex: 0 0 auto; width: 24px; height: 24px; border: 0; border-radius: 4px; cursor: pointer; background: transparent; color: var(--ink-2, #6b6459); font-size: 18px; line-height: 1; }
+.dzc-icon-btn:hover { background: #fde8e6; color: #b3261e; }
+
+/* ── new-army dialog ── */
+.dzc-field { display: block; margin-bottom: 12px; }
+.dzc-field span { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2, #6b6459); margin-bottom: 4px; }
+.dzc-field input, .dzc-field select { width: 100%; padding: 8px 10px; font-size: 14px; border-radius: 6px; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); color: var(--ink, #24201c); }
+.dzc-field-note { font-size: 12px; color: var(--ink-2, #6b6459); margin: 0; }
+
+/* ── unit picker ── */
+.dzc-pick-list { display: grid; gap: 6px; margin-top: 10px; }
+.dzc-pick { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; cursor: pointer; padding: 8px; border: 1px solid var(--line, #d8d0c0); border-radius: 6px; background: var(--surface-2, #fff); }
+.dzc-pick:hover { border-color: var(--acc); }
+.dzc-pick img, .dzc-pick-noart { flex: 0 0 52px; width: 52px; height: 52px; object-fit: contain; }
+.dzc-pick-body { min-width: 0; }
+.dzc-pick-name { display: block; font-weight: 600; font-size: 14px; overflow-wrap: anywhere; }
+.dzc-pick-meta { display: block; font-size: 11.5px; color: var(--ink-2, #6b6459); }
+
+/* ── enforcement affordances ── */
+.dzc-pick.is-blocked { opacity: .55; cursor: not-allowed; }
+.dzc-pick.is-blocked:hover { border-color: var(--line, #d8d0c0); }
+.dzc-pick-blocked { display: flex; align-items: center; gap: 4px; margin-top: 3px; font-size: 11px; font-weight: 600; color: #8a4b12; }
+.dzc-pick-note { display: flex; align-items: center; gap: 6px; margin: 8px 0 2px; font-size: 11.5px; color: var(--ink-2, #6b6459); }
+.dzc-search-row { display: flex; align-items: center; gap: 8px; }
+.dzc-search-row .dzc-i { flex: 0 0 auto; color: var(--ink-2, #6b6459); }
+.dzc-stepper button:disabled { opacity: .35; cursor: not-allowed; }
+.dzc-stepper.is-derived { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 4px; background: var(--surface-3, #f2ece0); color: var(--ink-2, #6b6459); }
+.dzc-squad.is-transport > .dzc-sq-main .dzc-sq-name { font-style: italic; }
+.dzc-cmdr-tag { display: inline-flex; align-items: center; gap: 2px; margin-left: 6px; padding: 1px 5px; border-radius: 3px; background: var(--gold, #c9a92c); color: #221c00; font-size: 10px; font-weight: 700; }
+.dzc-i { vertical-align: middle; flex: 0 0 auto; }
+
+/* Refusals appear as a bar, not a dialog: a rule explanation should not be
+   something you have to dismiss before carrying on. */
+.dzc-toast {
+  position: fixed; left: 50%; bottom: 20px; transform: translate(-50%, 12px);
+  z-index: 9500; display: flex; align-items: center; gap: 9px;
+  max-width: min(560px, calc(100vw - 24px)); padding: 11px 15px; border-radius: 8px;
+  background: #2b2118; color: #fff8ec; font-size: 13px; line-height: 1.45;
+  box-shadow: 0 10px 30px rgba(0,0,0,.28);
+  opacity: 0; visibility: hidden; transition: opacity .16s, transform .16s, visibility .16s;
+}
+.dzc-toast.is-on { opacity: 1; visibility: visible; transform: translate(-50%, 0); }

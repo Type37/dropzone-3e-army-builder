@@ -898,6 +898,16 @@ let activeGroupId = null;
         topContext.innerHTML = `<a href="#landing" class="topbar-back" onclick="App.navigate('landing'); return false;"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2L4 8l6 6"/></svg></a> Unit Reference`;
         if (window.DZCUnits) DZCUnits.open();
         break;
+      case 'armies':
+        show('view-armies');
+        topContext.innerHTML = `<a href="#landing" class="topbar-back" onclick="App.navigate('landing'); return false;"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2L4 8l6 6"/></svg></a> Your Armies`;
+        if (window.DZCBuilder) DZCBuilder.renderList();
+        break;
+      case 'army':
+        show('view-army');
+        topContext.innerHTML = `<a href="#armies" class="topbar-back" onclick="App.navigate('armies'); return false;"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2L4 8l6 6"/></svg></a> Army Builder`;
+        if (window.DZCBuilder) DZCBuilder.renderBuilder(param);
+        break;
       case 'builder':
         if (param) {
           currentFleet = fleets.find(f => f.id === param);
