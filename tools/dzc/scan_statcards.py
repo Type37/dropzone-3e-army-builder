@@ -742,10 +742,13 @@ def weapon_swatches(page):
     return out
 
 
-# Flavour text under a card's tables is set in an OBLIQUE face; every table
-# cell is RobotoSlab. Nothing else on a card is italic, so the font is a safe
-# marker for "the data has ended and the prose has begun".
-LORE_FONT_RE = re.compile(r"(Obl|Italic)", re.I)
+# Flavour text under a card's tables is the only italic thing on a card, so it
+# marks where the data ends and the prose begins.
+#
+# Read from the span's ITALIC FLAG rather than by matching "Obl" or "Italic" in
+# a font name: the flag is a property of the type, whereas the name is whatever
+# the foundry chose and whatever TTCombat licenses next.
+ITALIC_FLAG = 1 << 1
 
 
 def join_broken_hyphen(s):
@@ -773,7 +776,7 @@ def lore_top(page, below_y):
     for blk in page.get_text("dict")["blocks"]:
         for ln in blk.get("lines", []):
             for sp in ln["spans"]:
-                if (sp["text"].strip() and LORE_FONT_RE.search(sp["font"])
+                if (sp["text"].strip() and (sp["flags"] & ITALIC_FLAG)
                         and sp["bbox"][1] > below_y):
                     ys.append(sp["bbox"][1])
     return min(ys) if ys else None

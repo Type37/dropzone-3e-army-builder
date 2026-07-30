@@ -7,14 +7,19 @@ verbatim text for every keyword a stat card can print. The cards themselves
 carry rule NAMES only -- "Surveyor", "Aegis 6", "AWACS 12 (Lynx)" -- so
 without this the app can show a keyword but never what it does.
 
-Structure, which the cards' own typography makes unambiguous:
+Structure is read from LAYOUT, never from font names. A rule runs from its
+numbered heading to the next:
 
-    MorrisSansW01-Medium   8pt   section number    "10.1.1"
-    MorrisSansW01-Medium  12pt   rule name         "Aegis X"
-    RobotoSlab-Regular     9pt   body text
+    a section number   at the column's left margin      "10.1.1"
+    its rule name      beside it, to the right          "Aegis X"
+    body              back at the margin, smaller
 
-so a rule runs from its number to the next number. Chapter 12 is deliberately
-NOT read: it is a token icon legend, not rules text a card can reference.
+Nothing here asks what typeface TTCombat licensed, because that is not a fact
+about the rules -- and it has already changed under us once, when a single
+heading came back set in the body face.
+
+Chapter 12 is deliberately NOT read: it is a token icon legend, not rules text
+a card can reference.
 
 Usage:
     python tools/dzc/scan_rulebook.py \
@@ -55,37 +60,21 @@ import fitz
 # is never a name.
 SIZE_TOL = 0.35
 
+# A span that is nothing but a bracketed phrase, e.g. "(Anti-Aircraft-Reactive)".
+PAREN_ONLY = re.compile(r"^\([^)]*\)$")
 
-def measure_faces(doc, pages):
-    """
-    Work out which face is body and which is heading, by usage.
 
-    Body is whatever sets the most characters. The heading face is whatever the
-    chapter title (the largest span) uses. Both are read from the document, so
-    nothing here depends on a font being called MorrisSans or RobotoSlab.
-    """
-    weight = collections.Counter()
-    biggest = (0, None)
-    for pno in range(pages[0], pages[1] + 1):
-        for sp in spans_in_order(doc[pno]):
-            t = sp["text"].strip()
-            if not t:
-                continue
-            weight[sp["font"]] += len(t)
-            if sp["size"] > biggest[0]:
-                biggest = (sp["size"], sp["font"])
-    body_font = weight.most_common(1)[0][0]
-    head_font = biggest[1] or body_font
+def max_size(doc, pages):
+    """Largest type in the chapter -- the chapter title, which is not a rule."""
+    return max((sp["size"]
+                for pno in range(pages[0], pages[1] + 1)
+                for sp in spans_in_order(doc[pno]) if sp["text"].strip()),
+               default=0)
 
-    sizes = collections.Counter()
-    for pno in range(pages[0], pages[1] + 1):
-        for sp in spans_in_order(doc[pno]):
-            if sp["text"].strip() and sp["font"] == head_font:
-                sizes[round(sp["size"], 1)] += 1
-    # The section number is the smallest thing set in the heading face.
-    num_size = min(sizes) if sizes else 8.0
-    return {"body": body_font, "head": head_font, "num_size": num_size,
-            "title_size": biggest[0]}
+
+def overlaps_vertically(a, b):
+    """Do two spans share a line? Compared by extent, not baseline."""
+    return a["bbox"][1] < b["bbox"][3] and b["bbox"][1] < a["bbox"][3]
 
 # Chapters worth reading, by their >=19pt title. Anything outside these page
 # ranges is prose, scenarios or the token legend.
@@ -183,21 +172,6 @@ def spans_in_order(page):
     return out
 
 
-def kind(sp, faces):
-    """Classify a span as 'num', 'name', 'body' or None, relative to the faces."""
-    font, size, txt = sp["font"], sp["size"], sp["text"].strip()
-    if font == faces["head"]:
-        if abs(size - faces["num_size"]) < SIZE_TOL and SECTION_RE.match(txt):
-            return "num"
-        # Anything in the heading face between the section number and the
-        # chapter title is a rule name -- except a bare page number.
-        if (faces["num_size"] + SIZE_TOL <= size < faces["title_size"] - SIZE_TOL
-                and not txt.isdigit()):
-            return "name"
-        return None
-    if font == faces["body"]:
-        return "body"
-    return None
 
 
 def tidy(s):
@@ -283,30 +257,76 @@ def _literal(part):
 
 
 def parse(doc, pages):
-    """Walk a chapter's spans, emitting one record per numbered rule."""
-    faces = measure_faces(doc, pages)
+    """
+    Walk a chapter's spans, emitting one record per numbered rule.
+
+    Structure comes from POSITION, not from type. The page states it plainly:
+    a section number sits at the column's left margin and its heading sits to
+    the RIGHT of that number, sharing the line. Body then returns to the
+    margin. So a heading is "whatever is beside the number", which holds no
+    matter what the text is set in.
+
+    That matters because the alternatives are both fragile. Font names break on
+    a re-export -- and one heading is already set in the wrong face. Absolute x
+    breaks too: chapter 11 is laid out in TWO columns, so body sits at x=25 on
+    one page and x=217 on another, and the heading indent shifts with the width
+    of its own number (10.1.1 -> 66.5, but 10.1.12.1 -> 88.4). Only the
+    relationship between the number and its heading is stable.
+
+    Position finds where a heading STARTS. It cannot find where one ends,
+    because a long heading wraps and the continuation returns to the margin --
+    "FS X(First" is beside its number but "Strike)" sits at x=22.7, exactly
+    where body sits. What separates them there is that the continuation is
+    still set at the heading's size, 12pt against body's 9pt. So the run
+    continues while the type stays as large as the heading did. That is the
+    same kind of relative contrast as the indent, and equally indifferent to
+    which typeface is used.
+
+    One more thing neither can settle: the spelled-out alias. "AA-R" is
+    followed by "(Anti-Aircraft-Reactive)" at the margin AND at body size.
+    That one is decided on content -- a span which is nothing but a bracketed
+    phrase, immediately after a heading, belongs to the heading.
+    """
+    title_size = max_size(doc, pages)
     rules = []
     cur = None
-    mode = None
     for pno in range(pages[0], pages[1] + 1):
-        for sp in spans_in_order(doc[pno]):
-            k = kind(sp, faces)
-            txt = sp["text"]
-            if k == "num":
+        spans = spans_in_order(doc[pno])
+        i = 0
+        while i < len(spans):
+            sp = spans[i]
+            txt = sp["text"].strip()
+            if not txt or sp["size"] >= title_size - SIZE_TOL:
+                i += 1                       # chapter title, never a rule
+                continue
+            if SECTION_RE.match(txt):
                 if cur:
                     rules.append(cur)
-                cur = {"section": txt.strip(), "name": "", "text": "", "page": pno + 1}
-                mode = "num"
-            elif k == "name" and cur is not None:
-                # Headings wrap: "FS X(First" then "Strike)". Consecutive name
-                # spans belong to the same heading and are joined with a space.
-                cur["name"] = tidy(cur["name"] + " " + txt)
-                mode = "name"
-            elif k == "body" and cur is not None:
-                cur["text"] = (cur["text"] + " " + txt) if cur["text"] else txt
-                mode = "body"
-            # Anything else (page numbers, chapter titles, the odd caption) is
-            # not part of a rule and is skipped without disturbing `cur`.
+                cur = {"section": txt, "name": "", "text": "", "page": pno + 1}
+                j = i + 1
+                # Where the heading starts: beside the number, right of it.
+                head_size = 0
+                while (j < len(spans) and overlaps_vertically(spans[j], sp)
+                       and spans[j]["bbox"][0] > sp["bbox"][0]):
+                    head_size = max(head_size, spans[j]["size"])
+                    cur["name"] = tidy(cur["name"] + " " + spans[j]["text"])
+                    j += 1
+                # Where it ends: a wrapped continuation drops back to the
+                # margin but keeps the heading's size.
+                while (j < len(spans) and head_size
+                       and spans[j]["size"] >= head_size - SIZE_TOL
+                       and spans[j]["size"] < title_size - SIZE_TOL
+                       and not SECTION_RE.match(spans[j]["text"].strip())):
+                    cur["name"] = tidy(cur["name"] + " " + spans[j]["text"])
+                    j += 1
+                if j < len(spans) and PAREN_ONLY.match(spans[j]["text"].strip()):
+                    cur["name"] = tidy(cur["name"] + " " + spans[j]["text"])
+                    j += 1
+                i = j
+                continue
+            if cur is not None and not txt.isdigit():   # skip page numbers
+                cur["text"] = (cur["text"] + " " + sp["text"]) if cur["text"] else sp["text"]
+            i += 1
     if cur:
         rules.append(cur)
     return rules
@@ -317,9 +337,11 @@ def parse_front_matter(doc):
     Read a faction stat-card PDF's leading rules pages.
 
     Yields (section_title, rule_name, body). Unlike the rulebook these entries
-    have no numbers, so a rule simply runs from one FuturaPT-Bold heading to
-    the next. Stops at the first page with no Futura on it -- that is the first
-    card, and everything after is unit data.
+    have no numbers and no indent -- title, heading and body all sit flush at
+    the same x -- so position tells you nothing here and WEIGHT is the only
+    signal: a rule name is what is bold. Stops at the first page carrying
+    neither the body face nor a bold span; that is the first card, and
+    everything after it is unit data.
     """
     # The body face of the front matter: whatever sets the most text on page 1.
     weight = collections.Counter()
