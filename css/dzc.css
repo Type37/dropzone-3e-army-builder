@@ -287,3 +287,13 @@
   .dzc-ratios { gap: 6px; }
   .dzc-ratio { flex: 1 1 calc(50% - 3px); }
 }
+
+/* The squad name is the way into its stats, weapons and rules. Styled as text
+   so the row still reads as a roster line, not a toolbar. */
+button.dzc-sq-name {
+  border: 0; background: transparent; padding: 0; cursor: pointer; text-align: left;
+  font: 600 14px/1.3 var(--font-ui, 'Jost', sans-serif); color: var(--ink, #24201c);
+  border-bottom: 1px dotted var(--ink-2, #9a9285);
+}
+button.dzc-sq-name:hover { color: var(--acc); border-bottom-color: var(--acc); }
+button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }

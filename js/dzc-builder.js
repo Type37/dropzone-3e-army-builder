@@ -222,7 +222,8 @@
     return `<div class="dzc-squad${isTransport ? ' is-transport' : ''}" style="--depth:${depth}">
       <div class="dzc-sq-main">
         <span class="dzc-sq-cat" data-cat="${esc(u.category)}">${isTransport ? window.DZCIcon('local_shipping', { size: 12 }) : ''}${esc(u.category)}</span>
-        <span class="dzc-sq-name">${esc(u.name)}${s.commander ? `<span class="dzc-cmdr-tag">${window.DZCIcon('military_tech', { size: 12 })}L${s.commander.level}</span>` : ''}</span>
+        <button type="button" class="dzc-sq-name" title="Stats, weapons and rules"
+                onclick="DZCUnits.openDetail('${esc(u.id)}','${esc(a.faction)}')">${esc(u.name)}${s.commander ? `<span class="dzc-cmdr-tag">${window.DZCIcon('military_tech', { size: 12 })}L${s.commander.level}</span>` : ''}</button>
         ${stepper}
         <span class="dzc-sq-cost">${cost}pts</span>
         <button class="dzc-icon-btn" type="button" title="Remove Squad"

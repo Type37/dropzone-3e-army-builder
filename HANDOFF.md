@@ -298,16 +298,53 @@ pattern DZC **variants** need.
 ### Order of work
 
 1. ~~Adapter~~ — **dropped.** The app reads `data/dzc/` natively; see §3.
-2. Data layer: repoint `init()` and `ensureFactionLoaded()` at `data/dzc/`, and
-   rewrite `transformIndex()` / `transformFaction()` to build a DZC-native
-   model. **These two functions are the choke point** — every renderer reads
-   the model they produce, so nothing else can be migrated until they are.
-3. Terminology sweep: Fleet→Army, Ship→Unit, Admiral→Commander, Battlegroup→Group.
-4. Stats/weapons columns → DZC columns; arcs are **90° wedges** (rulebook 6.1.2),
-   including the Side Left / Side Right split.
-5. Validation → DZC rules (§4). Add transport nesting + capacity.
-6. Unify desktop + mobile into one responsive app.
-7. Appearance: Fluent tokens, tighter spacing, faction accents.
+2. ~~Data layer~~ — **done.** `js/dzc-data.js` reads `data/dzc/` directly.
+   The Dropfleet `transformIndex`/`transformFaction` were left alone rather
+   than rewritten: the DZC app is built beside them and the old views are being
+   retired, which is less risky than mutating 9,600 lines in place.
+3. ~~Terminology~~ — **done in the DZC views.** They never used Dropfleet's
+   vocabulary; they were written against Army / Group / Squad / Unit /
+   Commander from the start.
+4. Stats/weapons columns — **done for the reference, builder and print.**
+   Arcs still to do: DZC arcs are **90° wedges** (6.1.2) with a Side Left /
+   Side Right split, so Dropfleet's arc icons do NOT carry over.
+5. ~~Validation~~ → superseded by **enforcement**; see below.
+6. ~~Unify desktop + mobile~~ — **done.** The `/mobile/` redirect is gone.
+   `mobile/` still exists and is still the Dropfleet build; it is now
+   unreachable from the site and should be deleted once nothing wants it.
+7. Appearance: Fluent tokens, tighter spacing, faction accents. Outstanding.
+
+### Enforce, don't validate
+
+The builder refuses illegal actions at the point of action. Anything that can
+be made unreachable is unreachable, and only what genuinely depends on a
+finished list is reported:
+
+| Enforced (cannot happen) | Reported (only knowable when done) |
+|---|---|
+| Transports never appear in the picker; they are assigned to a Squad (3.2.4) | No Commander yet (3.2.5) |
+| Only Transports that can carry that Squad are offered | Category ratios — you add Vanguard before the Standard paying for it |
+| Transport COUNT is derived, never typed; the stepper is a locked readout | Points/Group-count over the limit |
+| An option that cannot be taken **full** is disabled, with the arithmetic | A Group of only Transports (4.2.2) |
+| Rare/Unique disabled with the limit quoted (3.2.1) | Squads beginning Reserved (9.4) |
+| Squad min/max disables the stepper | |
+| Commander levels filtered by game size (3.2.5) | |
+
+### What exists now
+
+| | |
+|---|---|
+| `js/dzc-data.js` | glossary resolution, transport capacity, army limits |
+| `js/dzc-army.js` | army model, costing, enforcement, validation |
+| `js/dzc-builder.js` | army list, builder, unit picker, print sheet |
+| `js/dzc-units.js` | unit reference (all 178) |
+| `js/dzc-icons.js` | inlined Material Symbols — see `ICONS.md` |
+| `css/dzc.css`, `css/dzc-print.css` | |
+| `scripts/test-dzc-data.mjs` | 48 assertions |
+| `scripts/test-dzc-army.mjs` | 38 assertions |
+
+Routes: `#armies`, `#army/<id>`, `#units`. The Dropfleet routes (`#fleets`,
+`#builder/<id>`) still work but are no longer linked from anywhere.
 
 ### How big step 2 really is
 

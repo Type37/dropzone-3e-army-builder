@@ -8,7 +8,21 @@ An army builder for [Dropzone Commander](https://www.ttcombat.com/games/dropzone
 
 </div>
 
-> **Under construction.** This is a fork of the [Dropfleet Commander Fleet Builder](https://github.com/Type37/dropfleet-builder), being converted from the space game to the ground game. The **data pipeline is finished and audited**; the app itself still renders Dropfleet's ships and rules while its domain layer is migrated. What is live today is not yet a working Dropzone builder — follow the changelog below.
+> **Under construction**, but usable. A fork of the [Dropfleet Commander Fleet Builder](https://github.com/Type37/dropfleet-builder), converted from the space game to the ground game. The data pipeline, the unit reference, the army builder and the print sheet all run on Dropzone data. Play Mode, sharing and the collection tracker are still the Dropfleet versions and are not linked yet.
+
+## What works
+
+- **Army builder** — Groups, Squads, per-model variants, transport nesting, live points and category ratios.
+- **Unit reference** — all 178 units with stats, weapons, variants, transport symbols and rules text one tap away.
+- **Print sheet** — the deployment plan, with the nesting tree and a verbatim rules appendix.
+
+### It enforces the rules rather than grading you afterwards
+
+Transports never appear in the picker, because a Transport "may only be chosen along with a Squad they may transport" (3.2.4) — you add the Squad, then assign what carries it. Only transports that can *actually* carry that Squad are offered, and the number you get is computed, not typed: 3 Legionnaires derive 1 Bear APC, 6 derive 2. An option that could never be taken full is offered disabled with the arithmetic, because "6 Legionnaires cannot fill transports that carry 4" is not obvious.
+
+The same everywhere else: Rare and Unique disable with the limit quoted, squad min/max disables the stepper, and Commander levels are filtered to those your game size allows.
+
+Only what genuinely depends on a finished list is reported instead — you have no Commander yet, or your Vanguard spend has outrun the Standard that pays for it, which it always does while you're still building.
 
 ## The data
 
@@ -52,6 +66,14 @@ node scripts/test-dzc-data.mjs
 Fonts: [Jost](https://fonts.google.com/specimen/Jost), [Libre Baskerville](https://fonts.google.com/specimen/Libre+Baskerville), [Roboto Slab](https://fonts.google.com/specimen/Roboto+Slab).
 
 ## Changelog
+
+### 2026-07-30 — The army builder
+- **Builds Dropzone armies.** Groups, Squads and per-model variants, with transport nesting drawn as a tree — a Bear APC with its Legionnaires indented beneath it, because that is the deployment plan.
+- **The rules are enforced, not validated.** Illegal choices are unreachable rather than flagged after the fact; see above.
+- **Print sheet** keeps the nesting tree and appends the verbatim text of every rule the list actually uses. Groups never split across a page and no rule breaks mid-sentence.
+- **Unit reference** for all 178 units.
+- **One responsive app.** The phone redirect to `/mobile/` is gone — it still served the *Dropfleet* builder, so every phone was landing in the wrong game. Verified at 320/375/414 with no horizontal overflow.
+- 86 tests across the data layer and army construction, run against the real scanned units rather than fixtures.
 
 ### 2026-07-30 — The data pipeline
 - **178 units ingested from the stat-card PDFs**, with transparent art for every one, plus a **106-rule glossary** drawn from the rulebook and the faction front matter. Four audits, one of which proves every rule keyword a card prints resolves to real text.

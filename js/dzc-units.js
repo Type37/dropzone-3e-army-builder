@@ -179,7 +179,10 @@
       </div>`;
   }
 
-  function openDetail(unitId) {
+  /* `faction` is optional: the reference browses one at a time, but the army
+   * builder opens a unit from whatever faction that army is. */
+  function openDetail(unitId, faction) {
+    if (faction) state.faction = faction;
     const f = window.DZC.faction(state.faction);
     const u = f && f.byId[unitId];
     if (!u) return;
