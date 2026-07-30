@@ -71,3 +71,5 @@ USER-PERSONAS.md
 NOTES.md
 # Reference copy of the pre-fork hand-built app; superseded by this fork.
 upstream/
+# Python bytecode from the DZC scanner
+tools/dzc/__pycache__/

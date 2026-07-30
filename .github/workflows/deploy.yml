@@ -27,13 +27,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      # Stage ONLY the site. The repo carries ~317 MB of rules and lore PDFs the
+      # app never fetches, plus the scanner, the one-off scripts and the
+      # reference pages. Uploading those made every deploy slow for nothing.
+      # Anything the running site fetches MUST be listed here.
+      - name: Stage site
+        run: |
+          mkdir -p _site
+          cp -r index.html favicon.ico manifest.webmanifest sw.js \
+                css js data assets mobile \
+                _site/
+          echo "--- staged: $(du -sh _site | cut -f1) ---"
+          du -sh _site/* | sort -h
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # The whole repo root is the site (static HTML/JS/CSS/data).
-          path: "."
+          path: "_site"
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
