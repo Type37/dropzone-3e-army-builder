@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Layout check — Arsenal</title>
+<style>
+  body { font: 13px/1.4 ui-monospace, Consolas, monospace; margin: 0; padding: 12px;
+         background: #111; color: #eee; }
+  h1 { font-size: 15px; margin: 0 0 8px; }
+  .row { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px; }
+  iframe { border: 1px solid #444; background: #fff; flex: none; height: 720px; }
+  pre { margin: 0; white-space: pre-wrap; }
+  .ok { color: #6ecf75; } .bad { color: #ff8f98; }
+</style>
+</head>
+<body>
+<h1>Layout check — each frame is a REAL viewport width</h1>
+<p>
+  Built because <code>resize_window</code> reports success while
+  <code>window.innerWidth</code> stays at the desktop width, so any responsive
+  check run against it is measuring the wrong viewport. An iframe's width is
+  genuinely the width its content lays out against.
+</p>
+<div id="out"></div>
+
+<script>
+const WIDTHS = [320, 375, 414, 768];
+const TARGET = new URLSearchParams(location.search).get("url") || "../index.html";
+const out = document.getElementById("out");
+const results = [];
+
+function audit(doc, win, width) {
+  const de = doc.documentElement;
+  const bad = [];
+  // The failure that actually happens: content running off the right edge.
+  // Note this needs no overflow:hidden anywhere, which is why an
+  // "overflow:hidden + scrollWidth>clientWidth" sweep returns 0 by construction.
+  for (const n of doc.querySelectorAll("body *")) {
+    const r = n.getBoundingClientRect();
+    if (r.width === 0 && r.height === 0) continue;
+    if (r.right > width + 1 || r.left < -1) {
+      bad.push({
+        sel: n.tagName.toLowerCase() + (n.id ? "#" + n.id : "") +
+             (n.className && typeof n.className === "string"
+               ? "." + n.className.trim().split(/\s+/).slice(0, 2).join(".") : ""),
+        left: Math.round(r.left), right: Math.round(r.right),
+        text: (n.textContent || "").trim().slice(0, 28),
+      });
+    }
+  }
+  // de-dupe: report the outermost offender per selector
+  const seen = new Set();
+  const uniq = bad.filter((b) => !seen.has(b.sel) && seen.add(b.sel));
+  return {
+    width,
+    innerWidth: win.innerWidth,
+    instrumentOk: win.innerWidth === width,
+    pageScrollWidth: de.scrollWidth,
+    horizontalScroll: de.scrollWidth > width + 1,
+    offendersTotal: bad.length,
+    offenders: uniq.slice(0, 12),
+  };
+}
+
+let pending = WIDTHS.length;
+for (const w of WIDTHS) {
+  const row = document.createElement("div");
+  row.className = "row";
+  const f = document.createElement("iframe");
+  f.width = w;
+  f.src = TARGET;
+  const pre = document.createElement("pre");
+  pre.textContent = "loading " + w + "px…";
+  row.append(f, pre);
+  out.append(row);
+
+  f.addEventListener("load", () => {
+    setTimeout(() => {                       // let fonts + data settle
+      let r;
+      try {
+        r = audit(f.contentDocument, f.contentWindow, w);
+      } catch (e) {
+        r = { width: w, error: String(e) };
+      }
+      results.push(r);
+      const clean = !r.error && !r.horizontalScroll && r.offendersTotal === 0;
+      pre.className = clean ? "ok" : "bad";
+      pre.textContent = (clean ? "PASS " : "FAIL ") + JSON.stringify(r, null, 1);
+      if (--pending === 0) {
+        window.LAYOUT_RESULTS = results.sort((a, b) => a.width - b.width);
+        window.LAYOUT_DONE = true;
+      }
+    }, 700);
+  });
+}
+</script>
+</body>
+</html>

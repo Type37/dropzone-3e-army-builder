@@ -1,13 +1,18 @@
 # Source data & build tools (not needed for the live site)
 mirror_extract/
 bsdata-repo/
-tools/
+# tools/ is ignored EXCEPT the DZC pipeline, which is core infrastructure
+tools/*
+!tools/dzc/
 Faction Icons/
 .claude/
 
 # Source archives & reference PDFs
 *.zip
+# Rules PDFs are ignored except the DZC set: TTCombat publish them free and
+# publicly, and tools/dzc/scan_statcards.py reads them to build the data.
 *.pdf
+!rules/**
 
 # Concept art / reference images in root
 robert-mallinson-*
@@ -59,3 +64,10 @@ scripts/_pdfpages/
 scripts/*-ingest.json
 scripts/__pycache__/
 USER-PERSONAS.md
+
+
+# --- DZC fork ---
+# Working notes: decisions, open problems, scratch. Deliberately not public.
+NOTES.md
+# Reference copy of the pre-fork hand-built app; superseded by this fork.
+upstream/

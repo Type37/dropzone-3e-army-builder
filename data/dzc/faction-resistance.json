@@ -1,0 +1,3260 @@
+{
+  "faction": "resistance",
+  "name": "Resistance",
+  "sourcePdf": "DZC_Resistance_Stat_Cards_260730.pdf",
+  "version": "260730",
+  "units": [
+    {
+      "id": "mcclellan-command-bunker",
+      "name": "McClellan Command Bunker",
+      "category": "Standard",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 50,
+      "pointsRaw": "50pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "N/A",
+        "A": "8",
+        "DP": "4"
+      },
+      "special": "AWACS 18”, Command Centre",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 2
+          }
+        ],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 3
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Jamming Beam",
+          "arc": "F/S/R",
+          "ma": "0”",
+          "r": "∞",
+          "att": "1",
+          "ac": "3+",
+          "e": "0",
+          "special": "Jammer",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 3,
+      "auxiliaryTransport": true,
+      "selectable": true,
+      "art": "assets/units/mcclellan-command-bunker.webp"
+    },
+    {
+      "id": "resistance-command-hovercraft",
+      "name": "Resistance Command Hovercraft",
+      "category": "Standard",
+      "squadMin": 1,
+      "squadMax": 2,
+      "points": null,
+      "pointsRaw": "65pts (Hydra), 75pts (Circe), Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "10”",
+        "A": "5",
+        "DP": "3 AWACS"
+      },
+      "special": "6”, Command Centre, Ev1, Skimmer, Strike",
+      "variants": [
+        {
+          "name": "Hydra",
+          "points": 65
+        },
+        {
+          "name": "Circe",
+          "points": 75
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "MM-8 Multi Missiles",
+          "arc": "F",
+          "ma": "Full",
+          "r": "24/9”",
+          "att": "6",
+          "ac": "3+",
+          "e": "4",
+          "special": "Pen 5+, Demo 0",
+          "box": "variant",
+          "variants": [
+            "Hydra"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MC-180 Vengeance Cannon",
+          "arc": "F/S",
+          "ma": "5”",
+          "r": "∞/18”",
+          "att": "1",
+          "ac": "2+",
+          "e": "7",
+          "special": "Critical 1, Demo 1",
+          "box": "variant",
+          "variants": [
+            "Circe"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MF-1 Flamethrower",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "6”",
+          "att": "6",
+          "ac": "3+",
+          "e": "S2",
+          "special": "Flame",
+          "box": "variant",
+          "variants": [
+            "Circe"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 4,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/resistance-command-hovercraft.webp"
+    },
+    {
+      "id": "resistance-fighters",
+      "name": "Resistance Fighters",
+      "category": "Standard",
+      "squadMin": 2,
+      "squadMax": 3,
+      "points": 25,
+      "pointsRaw": "25pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "2”",
+        "OF": "5",
+        "DF": "5+",
+        "B": "3+",
+        "DP": "5"
+      },
+      "special": "",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Assault Rifles",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "24/9”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S1",
+          "special": "Alt-1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Homemade RPGs",
+          "arc": "F/S/R",
+          "ma": "0”",
+          "r": "18/6”",
+          "att": "5",
+          "ac": "3+",
+          "e": "3",
+          "special": "Alt-1, Focus 1, L1, Pen 6+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 5,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/resistance-fighters.webp"
+    },
+    {
+      "id": "resistance-main-battle-tank",
+      "name": "Resistance Main Battle Tank",
+      "category": "Standard",
+      "squadMin": 1,
+      "squadMax": 4,
+      "points": null,
+      "pointsRaw": "35pts (Constantine), 45pts (Hannibal, Mehmed, Saladin), 60pts (Zhukov)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "3”",
+        "A": "7",
+        "DP": "2"
+      },
+      "special": "Aegis 6”, Scanner (Constantine)",
+      "variants": [
+        {
+          "name": "Constantine",
+          "points": 35
+        },
+        {
+          "name": "Hannibal",
+          "points": 45
+        },
+        {
+          "name": "Mehmed",
+          "points": 45
+        },
+        {
+          "name": "Saladin",
+          "points": 45
+        },
+        {
+          "name": "Zhukov",
+          "points": 60
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 3
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "MC-90 Cannon",
+          "arc": "F",
+          "ma": "Full",
+          "r": "∞/18”",
+          "att": "1",
+          "ac": "2+",
+          "e": "5",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MG-3 Machine Gun",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "3",
+          "ac": "3+",
+          "e": "S1",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MC-120 Punisher Cannon",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "∞/18”",
+          "att": "1",
+          "ac": "2+",
+          "e": "6",
+          "special": "Demo 0",
+          "box": "variant",
+          "variants": [
+            "Hannibal"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MS-7 Hammer Bombard",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "12”",
+          "att": "1",
+          "ac": "2+",
+          "e": "7",
+          "special": "Demo 3",
+          "box": "variant",
+          "variants": [
+            "Mehmed"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MX-202 Shock Bombard",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "18”",
+          "att": "1",
+          "ac": "2+",
+          "e": "2",
+          "special": "Indirect, Ineffective: Zones, Overcharge 5, Suppress",
+          "box": "variant",
+          "variants": [
+            "Saladin"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MR-32 Rail Cannon",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "∞/24”",
+          "att": "1",
+          "ac": "2+",
+          "e": "4",
+          "special": "AA, Critical 1, Devastator 1",
+          "box": "variant",
+          "variants": [
+            "Zhukov"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 6,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/resistance-main-battle-tank.webp"
+    },
+    {
+      "id": "resistance-technical",
+      "name": "Resistance Technical",
+      "category": "Standard",
+      "squadMin": 6,
+      "squadMax": 12,
+      "points": 10,
+      "pointsRaw": "10pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "9”",
+        "A": "2",
+        "DP": "1"
+      },
+      "special": "Ev1, UC",
+      "variants": [
+        {
+          "name": "Rocket Technical",
+          "points": 10
+        },
+        {
+          "name": "Gun Technical",
+          "points": 10
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Rocket Launcher",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "18/6”",
+          "att": "1",
+          "ac": "2+",
+          "e": "3",
+          "special": "Focus 2, Pen 6+",
+          "box": "variant",
+          "variants": [
+            "Rocket Technical"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Heavy Machine Gun",
+          "arc": "F/S",
+          "ma": "6”",
+          "r": "36/12”",
+          "att": "2",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA",
+          "box": "variant",
+          "variants": [
+            "Gun Technical"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 7,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/resistance-technical.webp"
+    },
+    {
+      "id": "resistance-wagon",
+      "name": "Resistance Wagon",
+      "category": "Standard",
+      "squadMin": 3,
+      "squadMax": 9,
+      "points": null,
+      "pointsRaw": "25pts (Gun Wagon), 20pts (Flame Wagon)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "3",
+        "DP": "2"
+      },
+      "special": "Resilient, UC",
+      "variants": [
+        {
+          "name": "Gun Wagon",
+          "points": 25
+        },
+        {
+          "name": "Flame Wagon",
+          "points": 20
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 2
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Ram",
+          "arc": "F",
+          "ma": "Full",
+          "r": "CC",
+          "att": "1",
+          "ac": "2+",
+          "e": "4",
+          "special": "Demo 0, Ram",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin Autocannons",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "36/18”",
+          "att": "2",
+          "ac": "2+",
+          "e": "2",
+          "special": "AA",
+          "box": "variant",
+          "variants": [
+            "Gun Wagon"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Flamethrower",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "6”",
+          "att": "4",
+          "ac": "3+",
+          "e": "S2",
+          "special": "Flame",
+          "box": "variant",
+          "variants": [
+            "Flame Wagon"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 8,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/resistance-wagon.webp"
+    },
+    {
+      "id": "artillery-wagon",
+      "name": "Artillery Wagon",
+      "category": "Support",
+      "squadMin": 3,
+      "squadMax": 6,
+      "points": 20,
+      "pointsRaw": "20pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "3",
+        "DP": "2"
+      },
+      "special": "Resilient, UC",
+      "variants": [
+        {
+          "name": "Thunder Wagon",
+          "points": 20
+        },
+        {
+          "name": "Storm Wagon",
+          "points": 20
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 2
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Ram",
+          "arc": "F",
+          "ma": "Full",
+          "r": "CC",
+          "att": "1",
+          "ac": "2+",
+          "e": "4",
+          "special": "Demo 0, Ram",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Golgotha Missile",
+          "arc": "F/S/R",
+          "ma": "0”",
+          "r": "∞/24”",
+          "att": "1",
+          "ac": "3+",
+          "e": "10",
+          "special": "Demo 2, Devastator 2, Indirect, L1",
+          "box": "variant",
+          "variants": [
+            "Thunder Wagon"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Rocket Rack",
+          "arc": "F/S/R",
+          "ma": "0”",
+          "r": "∞/36”",
+          "att": "1",
+          "ac": "3+",
+          "e": "3",
+          "special": "Battery 1, Blast, Indirect, Pen 6+",
+          "box": "variant",
+          "variants": [
+            "Storm Wagon"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 9,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/artillery-wagon.webp"
+    },
+    {
+      "id": "attack-helicopter",
+      "name": "Attack Helicopter",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 2,
+      "points": null,
+      "pointsRaw": "60pts (Typhoon, Cyclone), 65pts (Hurricane)",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "16”",
+        "A": "3",
+        "DP": "2"
+      },
+      "special": "Aegis 3” (Hurricane)",
+      "variants": [
+        {
+          "name": "Typhoon",
+          "points": 60
+        },
+        {
+          "name": "Cyclone",
+          "points": 60
+        },
+        {
+          "name": "Hurricane",
+          "points": 65
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "MG-12 Gatling",
+          "arc": "F",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "10",
+          "ac": "3+",
+          "e": "S1",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MC-25 Azrael Chainguns",
+          "arc": "F",
+          "ma": "Full",
+          "r": "48/18”",
+          "att": "4",
+          "ac": "3+",
+          "e": "5",
+          "special": "Focus 1, Strafe",
+          "box": "variant",
+          "variants": [
+            "Typhoon"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "ML-18 Wyrmfire Lasers",
+          "arc": "F",
+          "ma": "2”",
+          "r": "∞",
+          "att": "4",
+          "ac": "2+",
+          "e": "1",
+          "special": "AA-S, Pen 6+, T2",
+          "box": "variant",
+          "variants": [
+            "Hurricane"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MM-2 Hornet Missiles",
+          "arc": "F",
+          "ma": "8”",
+          "r": "36/24”",
+          "att": "1",
+          "ac": "3+",
+          "e": "3",
+          "special": "Blast, Indirect, Pen 6+",
+          "box": "variant",
+          "variants": [
+            "Cyclone"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MM-70 Beowulf Missile",
+          "arc": "F/S",
+          "ma": "8”",
+          "r": "36/18”",
+          "att": "2",
+          "ac": "3+",
+          "e": "6",
+          "special": "Demo 0, Strafe",
+          "box": "variant",
+          "variants": [
+            "Cyclone"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 10,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/attack-helicopter.webp"
+    },
+    {
+      "id": "berserkers",
+      "name": "Berserkers",
+      "category": "Support",
+      "squadMin": 2,
+      "squadMax": 4,
+      "points": 35,
+      "pointsRaw": "35pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "3”",
+        "OF": "8",
+        "DF": "6+",
+        "B": "A",
+        "DP": "5"
+      },
+      "special": "Bloodthirsty, Lethal, Terror",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Assorted Nasties",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "CC",
+          "att": "10",
+          "ac": "3+",
+          "e": "S0",
+          "special": "Assault",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 11,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/berserkers.webp"
+    },
+    {
+      "id": "lifthawk-gunship",
+      "name": "Lifthawk Gunship",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": null,
+      "pointsRaw": "70pts (Barrel Bomber), 85pts (Sky Terror), Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "16”",
+        "A": "3",
+        "DP": "4"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "Barrel Bomber",
+          "points": 70
+        },
+        {
+          "name": "Sky Terror",
+          "points": 85
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Goliath Bomb",
+          "arc": "F/S/R",
+          "ma": "8”",
+          "r": "GB",
+          "att": "1",
+          "ac": "5+",
+          "e": "9",
+          "special": "Alt 1, Blast, Demo 7, Devastator 1, L1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MM-3 Missile Pod",
+          "arc": "F",
+          "ma": "8”",
+          "r": "36/6”",
+          "att": "1",
+          "ac": "3+",
+          "e": "5",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MG-6 Twin Heavy Machineguns",
+          "arc": "F",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Frag Barrel",
+          "arc": "F/S/R",
+          "ma": "8”",
+          "r": "GB",
+          "att": "1",
+          "ac": "3+",
+          "e": "6",
+          "special": "Alt 1, Blast, L2",
+          "box": "variant",
+          "variants": [
+            "Barrel Bomber"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MC-20 Chaingun Pair, extended feed",
+          "arc": "F/S",
+          "ma": "8”",
+          "r": "36”/18”",
+          "att": "20",
+          "ac": "3+",
+          "e": "S5",
+          "special": "Ignores Cover, Strafe",
+          "box": "variant",
+          "variants": [
+            "Sky Terror"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin Autocannons",
+          "arc": "F/S/R",
+          "ma": "8”",
+          "r": "36/18”",
+          "att": "2",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA",
+          "box": "upgrade",
+          "variants": [
+            "+10pts"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 12,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/lifthawk-gunship.webp"
+    },
+    {
+      "id": "mech-loader",
+      "name": "Mech Loader",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 6,
+      "points": 20,
+      "pointsRaw": "20pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "3”",
+        "A": "4",
+        "DP": "2"
+      },
+      "special": "UC",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 2
+          },
+          {
+            "shape": "diamond",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "HMG",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "5",
+          "ac": "4+",
+          "e": "S3",
+          "special": "Assault, Concussion, Ignores Cover, Precision 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Power Grabber",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "CC",
+          "att": "3",
+          "ac": "2+",
+          "e": "4",
+          "special": "Assault, Pen 6+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 13,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/mech-loader.webp"
+    },
+    {
+      "id": "remote-bomb-bus",
+      "name": "Remote Bomb Bus",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 2,
+      "points": 25,
+      "pointsRaw": "25pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "3",
+        "DP": "4"
+      },
+      "special": "UC, Wide 6”",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 3
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Rigged Explosives",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "4”",
+          "att": "1",
+          "ac": "2+",
+          "e": "8",
+          "special": "Demo 3, Devastor 2, Self- Destruct",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 14,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/remote-bomb-bus.webp"
+    },
+    {
+      "id": "repair-technical",
+      "name": "Repair Technical",
+      "category": "Support",
+      "squadMin": 3,
+      "squadMax": 6,
+      "points": 15,
+      "pointsRaw": "15pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "9”",
+        "A": "2",
+        "DP": "1"
+      },
+      "special": "UC, Ev1",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Repair Clamps",
+          "arc": "F/S/R",
+          "ma": "4”",
+          "r": "CC",
+          "att": "1",
+          "ac": "2+",
+          "e": "0",
+          "special": "Repair 1: Vehicles",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 15,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/repair-technical.webp"
+    },
+    {
+      "id": "resistance-sentry-unit",
+      "name": "Resistance Sentry Unit",
+      "category": "Support",
+      "squadMin": 2,
+      "squadMax": 4,
+      "points": 15,
+      "pointsRaw": "15pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "N/A",
+        "A": "3",
+        "DP": "1"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "Sentinel",
+          "points": 15
+        },
+        {
+          "name": "Guardian",
+          "points": 15
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "circle",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "MM-1 Wasp Missile Hive",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "24/9”",
+          "att": "4",
+          "ac": "2+",
+          "e": "3",
+          "special": "AA-R, Assault",
+          "box": "variant",
+          "variants": [
+            "Sentinel"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MC-32 Quad Short Autocannons",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "36/18”",
+          "att": "4",
+          "ac": "2+",
+          "e": "5",
+          "special": "Assault, Overwatch",
+          "box": "variant",
+          "variants": [
+            "Guardian"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 16,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/resistance-sentry-unit.webp"
+    },
+    {
+      "id": "strikehawk-tilt-rotor",
+      "name": "Strikehawk Tilt-Rotor",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 55,
+      "pointsRaw": "55pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "20”",
+        "A": "3",
+        "DP": "5"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "+25pts*",
+          "points": 55
+        }
+      ],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 4
+          },
+          {
+            "shape": "circle",
+            "n": 2
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "MM-4 Missile Pod",
+          "arc": "F",
+          "ma": "10”",
+          "r": "36/6”",
+          "att": "2",
+          "ac": "3+",
+          "e": "3",
+          "special": "AA-S, Pen 6+, T1",
+          "box": "upgrade",
+          "variants": [
+            "+10pts"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MM-3 Missile Boxes",
+          "arc": "F",
+          "ma": "5”",
+          "r": "36/9”",
+          "att": "6",
+          "ac": "3+",
+          "e": "5",
+          "special": "Pen 6+, Strafe",
+          "box": "upgrade",
+          "variants": [
+            "+25pts*"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MC-30 Heavy Gatlings (+35pts*) replace transport capacity of",
+          "arc": "F 2 with",
+          "ma": "5” MM-3",
+          "r": "36/18” Missile Boxes or",
+          "att": "20 MC-30",
+          "ac": "3+ Heavy",
+          "e": "S6 Gatlings.",
+          "special": "Ignores Cover, Strafe",
+          "box": "upgrade",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 17,
+      "auxiliaryTransport": true,
+      "selectable": true,
+      "art": "assets/units/strikehawk-tilt-rotor.webp"
+    },
+    {
+      "id": "atilla-trackwalker",
+      "name": "Atilla Trackwalker",
+      "category": "Heavy",
+      "squadMin": 2,
+      "squadMax": 4,
+      "points": 35,
+      "pointsRaw": "35pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "5",
+        "DP": "2"
+      },
+      "special": "Surveyor",
+      "variants": [
+        {
+          "name": "Atilla A",
+          "points": 35
+        },
+        {
+          "name": "Atilla B",
+          "points": 35
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 3
+          },
+          {
+            "shape": "diamond",
+            "n": 3
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "MD-1 Spider Drone Launcher",
+          "arc": "F",
+          "ma": "Full",
+          "r": "12/6”",
+          "att": "4",
+          "ac": "2+",
+          "e": "S1",
+          "special": "Seeker",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Welding Clamps",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "CC",
+          "att": "2",
+          "ac": "2+",
+          "e": "7",
+          "special": "Assault, Demo 1",
+          "box": "variant",
+          "variants": [
+            "Atilla A"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MC-45 Anti-Material Cannons",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞/24”",
+          "att": "2",
+          "ac": "2+",
+          "e": "4",
+          "special": "Articulated, Pen 6+",
+          "box": "variant",
+          "variants": [
+            "Atilla B"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 18,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/atilla-trackwalker.webp"
+    },
+    {
+      "id": "carryhawk-tilt-rotor",
+      "name": "Carryhawk Tilt-Rotor",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 2,
+      "points": 45,
+      "pointsRaw": "45pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "20”",
+        "A": "3",
+        "DP": "5"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "+25pts*",
+          "points": 45
+        }
+      ],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "triangle",
+            "n": 3
+          },
+          {
+            "shape": "circle",
+            "n": 2
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "MM-4 Missile Pod",
+          "arc": "F",
+          "ma": "10”",
+          "r": "36/6”",
+          "att": "2",
+          "ac": "3+",
+          "e": "3",
+          "special": "AA-S, Pen 6+, T1",
+          "box": "upgrade",
+          "variants": [
+            "+10pts"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MM-3 Missile Boxes",
+          "arc": "F",
+          "ma": "5”",
+          "r": "36/9”",
+          "att": "6",
+          "ac": "3+",
+          "e": "5",
+          "special": "Pen 6+, Strafe",
+          "box": "upgrade",
+          "variants": [
+            "+25pts*"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MC-30 Heavy Gatlings (+35pts*) replace transport capacity of",
+          "arc": "F 2 with",
+          "ma": "5” MM-3",
+          "r": "36/18” Missile Boxes or",
+          "att": "20 MC-30",
+          "ac": "3+ Heavy",
+          "e": "S6 Gatlings.",
+          "special": "Ignores Cover, Strafe",
+          "box": "upgrade",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 19,
+      "auxiliaryTransport": true,
+      "selectable": true,
+      "art": "assets/units/carryhawk-tilt-rotor.webp"
+    },
+    {
+      "id": "hellhog-jumpjet",
+      "name": "Hellhog Jumpjet",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 2,
+      "points": 110,
+      "pointsRaw": "110pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "6”-30”",
+        "A": "3",
+        "DP": "3"
+      },
+      "special": "Ev1, Fast Mover",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "FC-75 Satan Chainguns",
+          "arc": "F",
+          "ma": "15”",
+          "r": "36/18”",
+          "att": "8",
+          "ac": "3+",
+          "e": "3",
+          "special": "Focus 2, Strafe",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "FM-12 Cobra Missile",
+          "arc": "F",
+          "ma": "15”",
+          "r": "∞/12”",
+          "att": "1",
+          "ac": "2+",
+          "e": "4",
+          "special": "AA, Critical-1, L1, T2",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "FM-12 Cobra Missile",
+          "arc": "F",
+          "ma": "15”",
+          "r": "∞/12”",
+          "att": "1",
+          "ac": "2+",
+          "e": "4",
+          "special": "AA, Critical-1, L1, T2",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "FM-4 Asp Missile Pods",
+          "arc": "F",
+          "ma": "15”",
+          "r": "36/9”",
+          "att": "1",
+          "ac": "2+",
+          "e": "4",
+          "special": "Blast, Pen 6+",
+          "box": "upgrade",
+          "variants": [
+            "+20pts"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 20,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/hellhog-jumpjet.webp"
+    },
+    {
+      "id": "occupation-veterans",
+      "name": "Occupation Veterans",
+      "category": "Heavy",
+      "squadMin": 2,
+      "squadMax": 3,
+      "points": 40,
+      "pointsRaw": "40pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "2”",
+        "OF": "4",
+        "DF": "4+",
+        "B": "3+",
+        "DP": "5"
+      },
+      "special": "Agile 1, FS2",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Overcharged Plasma Rifles, fire at will",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "15”",
+          "att": "5",
+          "ac": "2+",
+          "e": "S4",
+          "special": "Alt 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Overcharged Plasma Rifles, volley",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "15”",
+          "att": "1",
+          "ac": "2+",
+          "e": "7",
+          "special": "Alt 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 21,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/occupation-veterans.webp"
+    },
+    {
+      "id": "ordnance-bus",
+      "name": "Ordnance Bus",
+      "category": "Heavy",
+      "squadMin": 2,
+      "squadMax": 4,
+      "points": 35,
+      "pointsRaw": "35pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "3",
+        "DP": "4"
+      },
+      "special": "UC",
+      "variants": [
+        {
+          "name": "Gun Bus A",
+          "points": 35
+        },
+        {
+          "name": "Gun Bus B",
+          "points": 35
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 3
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "MC-88 Flak Cannon, Airburst",
+          "arc": "F/S",
+          "ma": "0”",
+          "r": "36/18”",
+          "att": "1",
+          "ac": "2+",
+          "e": "4",
+          "special": "AA-S, Alt 1, Blast",
+          "box": "variant",
+          "variants": [
+            "Gun Bus A"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MC-88 Flak Cannon, Slug",
+          "arc": "F/S",
+          "ma": "0”",
+          "r": "36/18”",
+          "att": "1",
+          "ac": "3+",
+          "e": "6",
+          "special": "Alt 1, Demo 0",
+          "box": "variant",
+          "variants": [
+            "Gun Bus A"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Multi-Spectra Projector, Beam",
+          "arc": "F/S",
+          "ma": "0”",
+          "r": "24”",
+          "att": "1",
+          "ac": "2+",
+          "e": "1",
+          "special": "Alt 1, Concussion, Ignores Cover, Jammer, Pen 5+",
+          "box": "variant",
+          "variants": [
+            "Gun Bus B"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Multi-Spectra Projector, Oscilate",
+          "arc": "F/S",
+          "ma": "0”",
+          "r": "24”",
+          "att": "2",
+          "ac": "2+",
+          "e": "S1",
+          "special": "Alt 1, Flame",
+          "box": "variant",
+          "variants": [
+            "Gun Bus B"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Ram",
+          "arc": "F",
+          "ma": "Full",
+          "r": "CC",
+          "att": "1",
+          "ac": "2+",
+          "e": "4",
+          "special": "Demo 0, Ram",
+          "box": "upgrade",
+          "variants": [
+            "+5pts"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 22,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/ordnance-bus.webp"
+    },
+    {
+      "id": "resistance-super-heavy-tank",
+      "name": "Resistance Super Heavy Tank",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": null,
+      "pointsRaw": "100pts (Alexander, Genghis), 120pts (Belisarius), 130pts (Napoleon)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "2”",
+        "A": "7",
+        "DP": "5"
+      },
+      "special": "Command Centre",
+      "variants": [
+        {
+          "name": "Alexander",
+          "points": 100
+        },
+        {
+          "name": "Genghis",
+          "points": 100
+        },
+        {
+          "name": "Belisarius",
+          "points": 120
+        },
+        {
+          "name": "Napoleon",
+          "points": 130
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 6
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "MC-20 Chaingun",
+          "arc": "F/Sl",
+          "ma": "Full",
+          "r": "36/18”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S5",
+          "special": "Ignores Cover",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MC-20 Chaingun",
+          "arc": "F/Sr",
+          "ma": "Full",
+          "r": "36/18”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S5",
+          "special": "Ignores Cover",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MC-220 Equaliser Cannon",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "∞/24”",
+          "att": "1",
+          "ac": "3+",
+          "e": "8",
+          "special": "Demo 3, Devastator 3, Precision 1",
+          "box": "variant",
+          "variants": [
+            "Alexander"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MF-13 Giga-Flamethrower",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "9”",
+          "att": "20",
+          "ac": "3+",
+          "e": "S4",
+          "special": "Concussion, Flame, Strafe",
+          "box": "variant",
+          "variants": [
+            "Genghis"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MX-907 Thermal Ram",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "3”",
+          "att": "1",
+          "ac": "2+",
+          "e": "10",
+          "special": "Assault, Demo D6, Destroyer 5+, Devastator 3, Dissipate 1",
+          "box": "variant",
+          "variants": [
+            "Belisarius"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MM-7 Maelstrom Launcher",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "18/9”",
+          "att": "1",
+          "ac": "2+",
+          "e": "4",
+          "special": "Blast, L1, Pen 5+",
+          "box": "variant",
+          "variants": [
+            "Alexander",
+            "Belisarius",
+            "Genghis"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MC-42 Banisher Gatling Cannons",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "36/18”",
+          "att": "20",
+          "ac": "3+",
+          "e": "S7",
+          "special": "Ignores Cover, Precision 1, Strafe",
+          "box": "variant",
+          "variants": [
+            "Napoleon"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MM-15 Sidearm Missiles (+0pts*) replace both its MC-20",
+          "arc": "F/S Chainguns with",
+          "ma": "Full MM-15",
+          "r": "36/9” Sidearm Missiles.",
+          "att": "2",
+          "ac": "2+",
+          "e": "7",
+          "special": "Critical 1, Demo 0, L1, Pen 5+, Strafe",
+          "box": "upgrade",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 23,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/resistance-super-heavy-tank.webp"
+    },
+    {
+      "id": "thunderstorm-heavy-hovercraft",
+      "name": "Thunderstorm Heavy Hovercraft",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 190,
+      "pointsRaw": "190pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "10”",
+        "A": "4",
+        "DP": "12"
+      },
+      "special": "Command Centre, Large, Skimmer, Strike",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "diamond",
+            "n": 12
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Overcharged Plasma Cannon",
+          "arc": "F/S/R",
+          "ma": "5”",
+          "r": "18”",
+          "att": "1",
+          "ac": "2+",
+          "e": "8",
+          "special": "Demo 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Overcharged Plasma Cannon",
+          "arc": "F/S/R",
+          "ma": "5”",
+          "r": "18”",
+          "att": "1",
+          "ac": "2+",
+          "e": "8",
+          "special": "Demo 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Overcharged Plasma Cannon",
+          "arc": "F/S/R",
+          "ma": "5”",
+          "r": "18”",
+          "att": "1",
+          "ac": "2+",
+          "e": "8",
+          "special": "Demo 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Overcharged Plasma Cannon",
+          "arc": "F/S/R",
+          "ma": "5”",
+          "r": "18”",
+          "att": "1",
+          "ac": "2+",
+          "e": "8",
+          "special": "Demo 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 24,
+      "auxiliaryTransport": true,
+      "selectable": true,
+      "art": "assets/units/thunderstorm-heavy-hovercraft.webp"
+    },
+    {
+      "id": "109-splitting-drill",
+      "name": "109 Splitting Drill",
+      "category": "Vanguard",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 30,
+      "pointsRaw": "30pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "N/A",
+        "A": "7",
+        "DP": "5"
+      },
+      "special": "Subterranean Small",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "diamond",
+            "n": 6
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [],
+      "page": 25,
+      "auxiliaryTransport": true,
+      "selectable": true,
+      "art": "assets/units/109-splitting-drill.webp"
+    },
+    {
+      "id": "209-splitting-drill",
+      "name": "209 Splitting Drill",
+      "category": "Vanguard",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 65,
+      "pointsRaw": "65pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "N/A",
+        "A": "7",
+        "DP": "8"
+      },
+      "special": "Subterranean Medium",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "diamond",
+            "n": 18
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [],
+      "page": 26,
+      "auxiliaryTransport": true,
+      "selectable": true,
+      "art": "assets/units/209-splitting-drill.webp"
+    },
+    {
+      "id": "atvs",
+      "name": "ATVs",
+      "category": "Vanguard",
+      "squadMin": 2,
+      "squadMax": 4,
+      "points": null,
+      "pointsRaw": "25pts (Recon ATVs), 30pts (Attack ATVs)",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "9”",
+        "OF": "3",
+        "DF": "5+",
+        "B": "5+",
+        "DP": "3"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "Recon ATVs",
+          "points": 25
+        },
+        {
+          "name": "Attack ATVs",
+          "points": 30
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 2
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Disruptor Array",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "18”",
+          "att": "1",
+          "ac": "3+",
+          "e": "0",
+          "special": "Drive-by, Jammer",
+          "box": "variant",
+          "variants": [
+            "Recon ATV"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Grenade Launchers, Explosive",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "9/6”",
+          "att": "1",
+          "ac": "3+",
+          "e": "4",
+          "special": "Alt 1, Battery 1, Blast, Drive- by",
+          "box": "variant",
+          "variants": [
+            "Attack ATV"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Grenade Launchers, Incendiary",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "6”",
+          "att": "1",
+          "ac": "4+",
+          "e": "4",
+          "special": "Alt 1, Concussion, Demo 0, Drive-by, Incendiary 3",
+          "box": "variant",
+          "variants": [
+            "Attack ATV"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 27,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/atvs.webp"
+    },
+    {
+      "id": "freeriders",
+      "name": "Freeriders",
+      "category": "Vanguard",
+      "squadMin": 2,
+      "squadMax": 2,
+      "points": 40,
+      "pointsRaw": "40pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "12”",
+        "OF": "3",
+        "DF": "5+",
+        "B": "3+",
+        "DP": "3"
+      },
+      "special": "Bikes 0, Ev2, Infiltrate 3”, Scout, UC",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 2
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Machine Guns",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "3",
+          "ac": "3+",
+          "e": "S1",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Sticky Mines",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "2”",
+          "att": "3",
+          "ac": "3+",
+          "e": "5",
+          "special": "Drive-By, Strafe",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 28,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/freeriders.webp"
+    },
+    {
+      "id": "k9-pack",
+      "name": "K9 Pack",
+      "category": "Vanguard",
+      "squadMin": 1,
+      "squadMax": 3,
+      "points": 15,
+      "pointsRaw": "15pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "4”",
+        "OF": "0",
+        "DF": "6+",
+        "B": "3+",
+        "DP": "3"
+      },
+      "special": "Agile 1, Dogs, FS2, Living Weapons",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 1
+          },
+          {
+            "shape": "triangle",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Bites",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "CC",
+          "att": "3",
+          "ac": "2+",
+          "e": "S0",
+          "special": "Assault",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 29,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/k9-pack.webp"
+    },
+    {
+      "id": "resistance-columbus-battlewalker",
+      "name": "Resistance Columbus Battlewalker",
+      "category": "Vanguard",
+      "squadMin": 1,
+      "squadMax": 3,
+      "points": 75,
+      "pointsRaw": "75pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "4”",
+        "A": "5",
+        "DP": "3"
+      },
+      "special": "Infiltrate 18”",
+      "variants": [
+        {
+          "name": "Columbus A",
+          "points": 75
+        },
+        {
+          "name": "Columbus B",
+          "points": 75
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "MC-120 Punisher Cannons",
+          "arc": "F",
+          "ma": "3”",
+          "r": "∞/18”",
+          "att": "2",
+          "ac": "3+",
+          "e": "6",
+          "special": "Demo 0",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MM-111 Missile Pod",
+          "arc": "F",
+          "ma": "Full",
+          "r": "36/9”",
+          "att": "1",
+          "ac": "3+",
+          "e": "4",
+          "special": "Pen 6+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MC-17 Guns",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "36/18”",
+          "att": "2",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA",
+          "box": "variant",
+          "variants": [
+            "Columbus A"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MF-666 Flamethrower",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "6”",
+          "att": "6",
+          "ac": "3+",
+          "e": "S2",
+          "special": "Flame",
+          "box": "variant",
+          "variants": [
+            "Columbus B"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 30,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/resistance-columbus-battlewalker.webp"
+    },
+    {
+      "id": "sappers",
+      "name": "Sappers",
+      "category": "Vanguard",
+      "squadMin": 1,
+      "squadMax": 2,
+      "points": 35,
+      "pointsRaw": "35pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "2”",
+        "OF": "3",
+        "DF": "5+",
+        "B": "5+",
+        "DP": "3"
+      },
+      "special": "Breachers D3+3, Demo Charges 2+, Infiltrate 18”",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Trigger IED",
+          "arc": "F/S/R",
+          "ma": "0”",
+          "r": "∞”",
+          "att": "1",
+          "ac": "4+",
+          "e": "7",
+          "special": "Demo 3",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 31,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/sappers.webp"
+    },
+    {
+      "id": "tempest-interceptor",
+      "name": "Tempest Interceptor",
+      "category": "Vanguard",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 70,
+      "pointsRaw": "70pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "24-36”",
+        "A": "3",
+        "DP": "2"
+      },
+      "special": "Ev1, Fast Mover",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "FC-28 Hailstorm Cannons",
+          "arc": "F",
+          "ma": "Full",
+          "r": "∞/18”",
+          "att": "6",
+          "ac": "4+",
+          "e": "3",
+          "special": "AA, Strafe, T2",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 32,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/tempest-interceptor.webp"
+    },
+    {
+      "id": "theropod-walker",
+      "name": "Theropod Walker",
+      "category": "Vanguard",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": null,
+      "pointsRaw": "90pts (Pizzaro), 95pts (Cortez), Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "8”",
+        "A": "6",
+        "DP": "4"
+      },
+      "special": "Ev2, Infiltrate 12”, Scout",
+      "variants": [
+        {
+          "name": "Pizzaro",
+          "points": 90
+        },
+        {
+          "name": "Cortez",
+          "points": 95
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 6
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Industrial Cutting Claws",
+          "arc": "F",
+          "ma": "Full",
+          "r": "CC",
+          "att": "4",
+          "ac": "2+",
+          "e": "6",
+          "special": "Assault, Demo 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MC-25 Azrael Chainguns",
+          "arc": "F",
+          "ma": "Full",
+          "r": "48/18”",
+          "att": "4",
+          "ac": "3+",
+          "e": "5",
+          "special": "Focus 1, Strafe",
+          "box": "variant",
+          "variants": [
+            "Pizzaro"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MM-97 Deforestation Missiles",
+          "arc": "F",
+          "ma": "Full",
+          "r": "24/18”",
+          "att": "2",
+          "ac": "4+",
+          "e": "3",
+          "special": "Demo 3, Incendiary 2",
+          "box": "variant",
+          "variants": [
+            "Cortez"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 33,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/theropod-walker.webp"
+    },
+    {
+      "id": "battle-bus",
+      "name": "Battle Bus",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": null,
+      "pointsRaw": "15pts (Bus), 25pts (Rocket Bus), 35pts (Gun Bus)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "3",
+        "DP": "4"
+      },
+      "special": "Firing Ports, Flexible Capacity, UC",
+      "variants": [
+        {
+          "name": "Bus",
+          "points": 15
+        },
+        {
+          "name": "Rocket Bus",
+          "points": 25
+        },
+        {
+          "name": "Gun Bus",
+          "points": 35
+        }
+      ],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 4
+          }
+        ],
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 3
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Rocket launchers",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "18/6”",
+          "att": "3",
+          "ac": "2+",
+          "e": "3",
+          "special": "Focus 2, Pen 6+",
+          "box": "variant",
+          "variants": [
+            "Rocket Bus"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Heavy Machineguns",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "6",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA",
+          "box": "variant",
+          "variants": [
+            "Gun Bus"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Ram",
+          "arc": "F",
+          "ma": "Full",
+          "r": "CC",
+          "att": "1",
+          "ac": "2+",
+          "e": "4",
+          "special": "Demo 0, Ram",
+          "box": "upgrade",
+          "variants": [
+            "+5pts"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 34,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/battle-bus.webp"
+    },
+    {
+      "id": "jackson-halftrack",
+      "name": "Jackson Halftrack",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 20,
+      "pointsRaw": "20pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "4”",
+        "A": "6",
+        "DP": "1"
+      },
+      "special": "Surveyor",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 2
+          }
+        ],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 2
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "MD-1 Spider Drone Launcher",
+          "arc": "F",
+          "ma": "Full",
+          "r": "12/6”",
+          "att": "4",
+          "ac": "2+",
+          "e": "S1",
+          "special": "Seeker",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MM-15 Sidearm Missile",
+          "arc": "F",
+          "ma": "Full",
+          "r": "36/9”",
+          "att": "1",
+          "ac": "2+",
+          "e": "7",
+          "special": "Critical 1, Demo 0, L1, Pen 5+",
+          "box": "upgrade",
+          "variants": [
+            "+5pts"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 35,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/jackson-halftrack.webp"
+    },
+    {
+      "id": "k9-technical",
+      "name": "K9 Technical",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 0,
+      "pointsRaw": "0pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "9”",
+        "A": "2",
+        "DP": "1"
+      },
+      "special": "Ev1, UC",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "triangle",
+            "n": 1
+          }
+        ],
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Smoke Hand Grenade",
+          "arc": "F/S",
+          "ma": "3”",
+          "r": "3”",
+          "att": "1",
+          "ac": "3+",
+          "e": "0",
+          "special": "Smoke",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 36,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/k9-technical.webp"
+    },
+    {
+      "id": "kraken-hovercraft",
+      "name": "Kraken Hovercraft",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 35,
+      "pointsRaw": "35pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "10”",
+        "A": "5",
+        "DP": "4"
+      },
+      "special": "Ev1, Skimmer, Strike",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "diamond",
+            "n": 6
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "MC-90 Cannon",
+          "arc": "F",
+          "ma": "Full",
+          "r": "48/18”",
+          "att": "1",
+          "ac": "3+",
+          "e": "5",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 37,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/kraken-hovercraft.webp"
+    },
+    {
+      "id": "leviathan-heavy-hovercraft",
+      "name": "Leviathan Heavy Hovercraft",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": null,
+      "pointsRaw": "90pts (Rocket Leviathan), 120pts (Gun Leviathan)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "10”",
+        "A": "4",
+        "DP": "9"
+      },
+      "special": "Flexible Capacity, Large, Skimmer, Strike",
+      "variants": [
+        {
+          "name": "Rocket Leviathan",
+          "points": 90
+        },
+        {
+          "name": "Gun Leviathan",
+          "points": 120
+        }
+      ],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "diamond",
+            "n": 24
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Multiple Rocket Racks",
+          "arc": "F/S/R",
+          "ma": "5”",
+          "r": "∞/36”",
+          "att": "1",
+          "ac": "2+",
+          "e": "6",
+          "special": "Blast, Indirect, Pen 6+",
+          "box": "variant",
+          "variants": [
+            "Rocket Leviathan"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin Autocannons",
+          "arc": "F/S/R",
+          "ma": "5”",
+          "r": "36/18”",
+          "att": "2",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA",
+          "box": "variant",
+          "variants": [
+            "Gun Leviathan"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin Autocannons",
+          "arc": "F/S/R",
+          "ma": "5”",
+          "r": "36/18”",
+          "att": "2",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA",
+          "box": "variant",
+          "variants": [
+            "Gun Leviathan"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin Autocannons",
+          "arc": "F/S/R",
+          "ma": "5”",
+          "r": "36/18”",
+          "att": "2",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA",
+          "box": "variant",
+          "variants": [
+            "Gun Leviathan"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin Autocannons",
+          "arc": "F/S/R",
+          "ma": "5”",
+          "r": "36/18”",
+          "att": "2",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA",
+          "box": "variant",
+          "variants": [
+            "Gun Leviathan"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 38,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/leviathan-heavy-hovercraft.webp"
+    },
+    {
+      "id": "lifthawk-dropship",
+      "name": "Lifthawk Dropship",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 40,
+      "pointsRaw": "40pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "16”",
+        "A": "3",
+        "DP": "4"
+      },
+      "special": "",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "triangle",
+            "n": 6
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "MM-3 Missile Pod",
+          "arc": "F",
+          "ma": "8”",
+          "r": "36/6”",
+          "att": "1",
+          "ac": "3+",
+          "e": "5",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MG-6 Twin Heavy Machineguns",
+          "arc": "F",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin Autocannons",
+          "arc": "F/S/R",
+          "ma": "8”",
+          "r": "36/18”",
+          "att": "2",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA",
+          "box": "upgrade",
+          "variants": [
+            "+15pts"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 39,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/lifthawk-dropship.webp"
+    },
+    {
+      "id": "lifthawk-troopship",
+      "name": "Lifthawk Troopship",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 60,
+      "pointsRaw": "60pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "16”",
+        "A": "3",
+        "DP": "4"
+      },
+      "special": "",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 6
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "MM-3 Missile Pod",
+          "arc": "F",
+          "ma": "8”",
+          "r": "36/6”",
+          "att": "1",
+          "ac": "3+",
+          "e": "5",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MM-3 Missile Pod",
+          "arc": "F",
+          "ma": "8”",
+          "r": "36/6”",
+          "att": "1",
+          "ac": "3+",
+          "e": "5",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MG-6 Twin Heavy Machineguns",
+          "arc": "F",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MG-6 Twin Heavy Machineguns",
+          "arc": "F",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Flamethrower",
+          "arc": "F",
+          "ma": "8”",
+          "r": "6”",
+          "att": "4",
+          "ac": "3+",
+          "e": "S2",
+          "special": "Flame",
+          "box": "upgrade",
+          "variants": [
+            "+10pts"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MC-20 Chaingun Pair (+10pts*) also replace one MM-3 Missile",
+          "arc": "F/S Pod and one",
+          "ma": "8” MG-6",
+          "r": "36/18” Twin Heavy",
+          "att": "10",
+          "ac": "3+ Machineguns",
+          "e": "S5 with a",
+          "special": "Ignores Cover, Strafe MC-20 Chaingun Pair.",
+          "box": "upgrade",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 40,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/lifthawk-troopship.webp"
+    },
+    {
+      "id": "patton-ifv",
+      "name": "Patton IFV",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 25,
+      "pointsRaw": "25pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "5",
+        "DP": "2"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "Patton A",
+          "points": 25
+        },
+        {
+          "name": "Patton B",
+          "points": 25
+        }
+      ],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 2
+          }
+        ],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 3
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "MM-5 Grenade Salvo",
+          "arc": "F",
+          "ma": "Full",
+          "r": "18/6”",
+          "att": "4",
+          "ac": "3+",
+          "e": "2",
+          "special": "Concussion, L1, Pen 6+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MR-41 Liberator Railgun",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "∞/24”",
+          "att": "1",
+          "ac": "2+",
+          "e": "5",
+          "special": "Demo 0",
+          "box": "variant",
+          "variants": [
+            "Patton A"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MC-37 Autocannons",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "36/18”",
+          "att": "4",
+          "ac": "3+",
+          "e": "3",
+          "special": "Ignores Cover",
+          "box": "variant",
+          "variants": [
+            "Patton B"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 41,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/patton-ifv.webp"
+    },
+    {
+      "id": "swifthawk-tilt-jet-squall-helicopter",
+      "name": "Swifthawk Tilt-Jet/ Squall Helicopter",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 35,
+      "pointsRaw": "35pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "20”",
+        "A": "2",
+        "DP": "2"
+      },
+      "special": "",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 2
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "MM-3 Missile Pod",
+          "arc": "F",
+          "ma": "10”",
+          "r": "36/6”",
+          "att": "1",
+          "ac": "3+",
+          "e": "5",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MG-12 Gatling",
+          "arc": "F",
+          "ma": "10”",
+          "r": "36/12”",
+          "att": "10",
+          "ac": "3+",
+          "e": "S1",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 42,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/swifthawk-tilt-jet-squall-helicopter.webp"
+    }
+  ]
+}

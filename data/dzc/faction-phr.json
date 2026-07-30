@@ -1,0 +1,2745 @@
+{
+  "faction": "phr",
+  "name": "PHR",
+  "sourcePdf": "DZC_PHR_Stat_Cards_260730.pdf",
+  "version": "260730",
+  "units": [
+    {
+      "id": "angelos-jetskimmer",
+      "name": "Angelos Jetskimmer",
+      "category": "Standard",
+      "squadMin": 2,
+      "squadMax": 4,
+      "points": 30,
+      "pointsRaw": "30pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "5",
+        "DP": "2"
+      },
+      "special": "Ev1, Skimmer",
+      "variants": [
+        {
+          "name": "Angelos A1",
+          "points": 30
+        },
+        {
+          "name": "Angelos A2",
+          "points": 30
+        }
+      ],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 1
+          }
+        ],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "RXs-120 Smoothbore",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "∞/12”",
+          "att": "1",
+          "ac": "2+",
+          "e": "6",
+          "special": "Demo 2",
+          "box": "variant",
+          "variants": [
+            "Angelos A1"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RX-666 Flamethrower",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "8”",
+          "att": "8",
+          "ac": "3+",
+          "e": "S2",
+          "special": "Flame",
+          "box": "variant",
+          "variants": [
+            "Angelos A2"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 2,
+      "auxiliaryTransport": true,
+      "selectable": true,
+      "art": "assets/units/angelos-jetskimmer.webp"
+    },
+    {
+      "id": "immortals",
+      "name": "Immortals",
+      "category": "Standard",
+      "squadMin": 2,
+      "squadMax": 2,
+      "points": 35,
+      "pointsRaw": "35pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "2”",
+        "OF": "8",
+        "DF": "4+",
+        "B": "4+",
+        "DP": "5"
+      },
+      "special": "",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "RXp-57 Assault Rifles",
+          "arc": "F/S/R",
+          "ma": "1”",
+          "r": "36/9”",
+          "att": "8",
+          "ac": "3+",
+          "e": "S1",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RXp-14 Longreach Rifle",
+          "arc": "F/S/R",
+          "ma": "0”",
+          "r": "∞/24”",
+          "att": "1",
+          "ac": "2+",
+          "e": "2",
+          "special": "Ignores Cover, Ineffective: Zones, Pen 6+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 3,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/immortals.webp"
+    },
+    {
+      "id": "proteus-mobile-command-post",
+      "name": "Proteus Mobile Command Post",
+      "category": "Standard",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 75,
+      "pointsRaw": "75pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "16”",
+        "A": "4",
+        "DP": "3"
+      },
+      "special": "Command Centre, Obscurer 6”",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Disruption Pulse",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "∞",
+          "att": "1",
+          "ac": "5+",
+          "e": "0",
+          "special": "Jammer, Precision 3",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 4,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/proteus-mobile-command-post.webp"
+    },
+    {
+      "id": "type-1-battle-walker",
+      "name": "Type-1 Battle Walker",
+      "category": "Standard",
+      "squadMin": 1,
+      "squadMax": 6,
+      "points": null,
+      "pointsRaw": "35pts (Ares, Styx) 40pts (Menchit), 60pts (Phobos)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "3”",
+        "A": "6",
+        "DP": "2"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "Ares",
+          "points": 35
+        },
+        {
+          "name": "Styx",
+          "points": 35
+        },
+        {
+          "name": "Menchit",
+          "points": 40
+        },
+        {
+          "name": "Phobos",
+          "points": 60
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "RX-20 Minigun",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "4",
+          "ac": "3+",
+          "e": "S3",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RX-1 Railgun with Targeter",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞/24”",
+          "att": "1",
+          "ac": "2+",
+          "e": "7",
+          "special": "Precision 1, Demo 0",
+          "box": "variant",
+          "variants": [
+            "Ares"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RX-1R Rail Repeater",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞/24”",
+          "att": "3",
+          "ac": "2+",
+          "e": "3",
+          "special": "AA",
+          "box": "variant",
+          "variants": [
+            "Phobos"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RX-666 Flamethrower",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "8”",
+          "att": "8",
+          "ac": "3+",
+          "e": "S2",
+          "special": "Flame",
+          "box": "variant",
+          "variants": [
+            "Menchit"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RXs-70 Styx Autocannons",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "36/18”",
+          "att": "6",
+          "ac": "3+",
+          "e": "3",
+          "special": "Ignores Cover, Strafe",
+          "box": "variant",
+          "variants": [
+            "Styx"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin RX-20 Miniguns",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "8",
+          "ac": "3+",
+          "e": "S3",
+          "special": "",
+          "box": "variant",
+          "variants": [
+            "Menchit",
+            "Styx"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RM-4 Foeslayer Missiles (+5pts*) *Menchit and Styx may replace",
+          "arc": "F/S Twin RX-20",
+          "ma": "Full Miniguns",
+          "r": "48/12” with RM-4",
+          "att": "2 Foeslayer",
+          "ac": "2+ Missiles.",
+          "e": "5",
+          "special": "Demo 1, Devastator 1, L1",
+          "box": "upgrade",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 5,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/type-1-battle-walker.webp"
+    },
+    {
+      "id": "hecate-target-support-craft",
+      "name": "Hecate Target Support Craft",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 65,
+      "pointsRaw": "65pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "16”",
+        "A": "4",
+        "DP": "3"
+      },
+      "special": "Scanner, Surveyor, Scout",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "RXs-90 Huntsman Cluster",
+          "arc": "F",
+          "ma": "8”",
+          "r": "∞/18”",
+          "att": "4",
+          "ac": "2+",
+          "e": "4",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Multi-Spectra Package",
+          "arc": "F",
+          "ma": "Full",
+          "r": "∞",
+          "att": "1",
+          "ac": "2+",
+          "e": "0",
+          "special": "Jammer",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 6,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/hecate-target-support-craft.webp"
+    },
+    {
+      "id": "luna-gunship",
+      "name": "Luna Gunship",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 150,
+      "pointsRaw": "150pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "16”",
+        "A": "4",
+        "DP": "3"
+      },
+      "special": "",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "RXs-90 Huntsman Cluster",
+          "arc": "F",
+          "ma": "8”",
+          "r": "∞/18”",
+          "att": "4",
+          "ac": "2+",
+          "e": "4",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin RXE-1200 Starglaives",
+          "arc": "F",
+          "ma": "4”",
+          "r": "∞",
+          "att": "2",
+          "ac": "3+",
+          "e": "8",
+          "special": "Demo 1, Devastator 1, Overcharge 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 7,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/luna-gunship.webp"
+    },
+    {
+      "id": "medusa",
+      "name": "Medusa",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 100,
+      "pointsRaw": "100pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "9”",
+        "OF": "8",
+        "DF": "3+",
+        "B": "2+",
+        "DP": "10"
+      },
+      "special": "Ev4, Hardy 4+, Jump 9”, Lethal, Skimmer",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 2
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Nanomachine Surge",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "9”",
+          "att": "5",
+          "ac": "2+",
+          "e": "S8",
+          "special": "Alt 1, Nanomachines, Seeker",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "White Nanomachines",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "9”",
+          "att": "1",
+          "ac": "2+",
+          "e": "0",
+          "special": "Alt 1, Nanomachines, Repair 2: Vehicles",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 8,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/medusa.webp"
+    },
+    {
+      "id": "phr-advanced-jetskimmer",
+      "name": "PHR Advanced Jetskimmer",
+      "category": "Support",
+      "squadMin": 2,
+      "squadMax": 4,
+      "points": 35,
+      "pointsRaw": "35pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "8”",
+        "A": "5",
+        "DP": "1 Ev2,"
+      },
+      "special": "Skimmer (All), Shield friendly Vehicles 3” 5+ (Aurora)",
+      "variants": [
+        {
+          "name": "Diana",
+          "points": 35
+        },
+        {
+          "name": "Aurora",
+          "points": 35
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "RXE-33 Molecular Agitator",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "18”",
+          "att": "2",
+          "ac": "2+",
+          "e": "4",
+          "special": "Devastator 1, Focus 2",
+          "box": "variant",
+          "variants": [
+            "Diana"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Optical Disruption Beam",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "24”",
+          "att": "1",
+          "ac": "2+",
+          "e": "0",
+          "special": "Smoke",
+          "box": "variant",
+          "variants": [
+            "Aurora"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 9,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/phr-advanced-jetskimmer.webp"
+    },
+    {
+      "id": "phr-artillery-tank",
+      "name": "PHR Artillery Tank",
+      "category": "Support",
+      "squadMin": 2,
+      "squadMax": 4,
+      "points": 50,
+      "pointsRaw": "50pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "4",
+        "DP": "2"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "Thor",
+          "points": 50
+        },
+        {
+          "name": "Taranis",
+          "points": 50
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "RXs-60B Mjolnir Bombard",
+          "arc": "F/S/R",
+          "ma": "0”",
+          "r": "24”",
+          "att": "1",
+          "ac": "3+",
+          "e": "7",
+          "special": "Blast, Indirect",
+          "box": "variant",
+          "variants": [
+            "Thor"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RM-2 Constellation Missile, Penetrator",
+          "arc": "F/S",
+          "ma": "0”",
+          "r": "∞/18”",
+          "att": "1",
+          "ac": "2+",
+          "e": "8",
+          "special": "Alt 1, Demo 3, Destroyer 4+, Indirect",
+          "box": "variant",
+          "variants": [
+            "Taranis"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RM-2 Constellation Missile, Airburst",
+          "arc": "F/S",
+          "ma": "0”",
+          "r": "∞/18”",
+          "att": "1",
+          "ac": "2+",
+          "e": "2",
+          "special": "Alt 1, Blast, Indirect",
+          "box": "variant",
+          "variants": [
+            "Taranis"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 10,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/phr-artillery-tank.webp"
+    },
+    {
+      "id": "siren-corps",
+      "name": "Siren Corps",
+      "category": "Support",
+      "squadMin": 2,
+      "squadMax": 2,
+      "points": 50,
+      "pointsRaw": "50pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "3”",
+        "OF": "3",
+        "DF": "4+",
+        "B": "3+",
+        "DP": "3"
+      },
+      "special": "",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [],
+      "page": 11,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/siren-corps.webp"
+    },
+    {
+      "id": "support-jetskimmer",
+      "name": "Support Jetskimmer",
+      "category": "Support",
+      "squadMin": 2,
+      "squadMax": 2,
+      "points": null,
+      "pointsRaw": "45pts (Phaethon) 55pts (Helios)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "5",
+        "DP": "2"
+      },
+      "special": "Ev1, Skimmer",
+      "variants": [
+        {
+          "name": "Phaethon",
+          "points": 45
+        },
+        {
+          "name": "Helios",
+          "points": 55
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Aether Hive Nanomachines",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "18”",
+          "att": "5",
+          "ac": "2+",
+          "e": "S6",
+          "special": "Nanomachines",
+          "box": "variant",
+          "variants": [
+            "Phaethon"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RM-5 Galaxy Missile Launcher",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "1",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA, Indirect, Pen 5+, T4",
+          "box": "variant",
+          "variants": [
+            "Helios"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RM-5 Galaxy Missile Launcher",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "1",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA, Indirect, Pen 5+, T4",
+          "box": "variant",
+          "variants": [
+            "Helios"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 12,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/support-jetskimmer.webp"
+    },
+    {
+      "id": "triton-x-gunship",
+      "name": "Triton X Gunship",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 45,
+      "pointsRaw": "45pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "24”",
+        "A": "3",
+        "DP": "1"
+      },
+      "special": "Ev1",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 2
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "RM-7 Skyhammer Missiles",
+          "arc": "F/S/R",
+          "ma": "12”",
+          "r": "36/12”",
+          "att": "1",
+          "ac": "3+",
+          "e": "7",
+          "special": "Demo 0, Indirect, L2, Needs Spotter",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "X Hive Nanomachines",
+          "arc": "F/S/R",
+          "ma": "12”",
+          "r": "18”",
+          "att": "5",
+          "ac": "2+",
+          "e": "S6",
+          "special": "Alt 1, Nanomachines",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "X Hive White Nanomachines",
+          "arc": "F/S/R",
+          "ma": "12”",
+          "r": "18”",
+          "att": "1",
+          "ac": "2+",
+          "e": "0",
+          "special": "Alt 1, Nanomachines, Repair 1: Vehicles, Repair D6: Medusa, Seeker",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 13,
+      "auxiliaryTransport": true,
+      "selectable": true,
+      "art": "assets/units/triton-x-gunship.webp"
+    },
+    {
+      "id": "type-3-em-walker",
+      "name": "Type-3 EM Walker",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 6,
+      "points": 40,
+      "pointsRaw": "40pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "5",
+        "DP": "2"
+      },
+      "special": "Obscurer 3”",
+      "variants": [
+        {
+          "name": "Erebos A",
+          "points": 40
+        },
+        {
+          "name": "Erebos B",
+          "points": 40
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "RX-1L Short Railgun",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞/24”",
+          "att": "1",
+          "ac": "2+",
+          "e": "6",
+          "special": "Demo 0",
+          "box": "variant",
+          "variants": [
+            "Erebos A"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RX-13 Cannon, Slugs",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "2",
+          "ac": "2+",
+          "e": "4",
+          "special": "Alt-1",
+          "box": "variant",
+          "variants": [
+            "Erebos B"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RX-13 Cannon, Seeker Submunitions",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "4",
+          "ac": "2+",
+          "e": "S1",
+          "special": "Alt-1, Concussion, Seeker",
+          "box": "variant",
+          "variants": [
+            "Erebos B"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 14,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/type-3-em-walker.webp"
+    },
+    {
+      "id": "tiamat-ordnance-ship",
+      "name": "Tiamat Ordnance Ship",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 170,
+      "pointsRaw": "170pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "16”",
+        "A": "3",
+        "DP": "6"
+      },
+      "special": "",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "RX-11 Super Heavy Rail Cannon",
+          "arc": "F",
+          "ma": "4”",
+          "r": "∞/24”",
+          "att": "1",
+          "ac": "3+",
+          "e": "9",
+          "special": "Critical 1, Demo 1, Devastator 1, Precision 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RX-11 Super Heavy Rail Cannon",
+          "arc": "F",
+          "ma": "4”",
+          "r": "∞/24”",
+          "att": "1",
+          "ac": "3+",
+          "e": "9",
+          "special": "Critical 1, Demo 1, Devastator 1, Precision 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RM-1 Stealth Missile Battery",
+          "arc": "F",
+          "ma": "8”",
+          "r": "36/12”",
+          "att": "2",
+          "ac": "3+",
+          "e": "3",
+          "special": "Pen 6+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 15,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/tiamat-ordnance-ship.webp"
+    },
+    {
+      "id": "type-11-lokheira-quad-walker",
+      "name": "Type-11 Lokheira Quad Walker",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 125,
+      "pointsRaw": "125pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "4”",
+        "A": "6",
+        "DP": "4"
+      },
+      "special": "P5+",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 2
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Twin RX-1L Short Railguns",
+          "arc": "F",
+          "ma": "Full",
+          "r": "∞/24”",
+          "att": "2",
+          "ac": "2+",
+          "e": "6",
+          "special": "Demo 0",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin RX-1R Rail Repeaters",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞/24”",
+          "att": "6",
+          "ac": "2+",
+          "e": "3",
+          "special": "AA, Strafe",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RX-20 Minigun Pair",
+          "arc": "F",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "8",
+          "ac": "3+",
+          "e": "S3",
+          "special": "Strafe",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 16,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/type-11-lokheira-quad-walker.webp"
+    },
+    {
+      "id": "type-2-heavy-battle-walker",
+      "name": "Type-2 Heavy Battle Walker",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 6,
+      "points": null,
+      "pointsRaw": "55pts (Hyperion), 65pts (Odin), 70pts (Enyo, Zeus)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "2”",
+        "A": "7",
+        "DP": "2 P5+"
+      },
+      "special": "(All), P3+, Command Centre, AWACS 12” (Zeus)",
+      "variants": [
+        {
+          "name": "Hyperion",
+          "points": 55
+        },
+        {
+          "name": "Odin",
+          "points": 65
+        },
+        {
+          "name": "Enyo",
+          "points": 70
+        },
+        {
+          "name": "Zeus",
+          "points": 70
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "RX-20 Minigun",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "4",
+          "ac": "3+",
+          "e": "S3",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Dual RX-1 Railguns",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞/24”",
+          "att": "2",
+          "ac": "2+",
+          "e": "7",
+          "special": "Demo 0",
+          "box": "variant",
+          "variants": [
+            "Odin"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Dual RXs-120 Smoothbores",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞/12”",
+          "att": "2",
+          "ac": "2+",
+          "e": "6",
+          "special": "Demo 2",
+          "box": "variant",
+          "variants": [
+            "Enyo"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RX-1000 Sunspear Laser",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞",
+          "att": "1",
+          "ac": "2+",
+          "e": "7",
+          "special": "Destroyer 5+",
+          "box": "variant",
+          "variants": [
+            "Hyperion"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RX-1 Railgun",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞/24”",
+          "att": "1",
+          "ac": "2+",
+          "e": "7",
+          "special": "Demo 0",
+          "box": "variant",
+          "variants": [
+            "Zeus"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 17,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/type-2-heavy-battle-walker.webp"
+    },
+    {
+      "id": "type-4-battle-scorpion",
+      "name": "Type-4 Battle Scorpion",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": null,
+      "pointsRaw": "170pts (Persephone), 180pts (Hades)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "4”",
+        "A": "6",
+        "DP": "8"
+      },
+      "special": "Large, Resilient",
+      "variants": [
+        {
+          "name": "Persephone",
+          "points": 170
+        },
+        {
+          "name": "Hades",
+          "points": 180
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 6
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "RX-11R Super-Heavy Rail Repeater",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞/36”",
+          "att": "3",
+          "ac": "2+",
+          "e": "8",
+          "special": "Articulated, Demo 0, Strafe",
+          "box": "variant",
+          "variants": [
+            "Hades"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Nanomachine Swarm",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "24”",
+          "att": "15",
+          "ac": "2+",
+          "e": "S6",
+          "special": "Alt 2, Nanomachines, Strafe",
+          "box": "variant",
+          "variants": [
+            "Persephone"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "White Nanomachines",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "9”",
+          "att": "2",
+          "ac": "2+",
+          "e": "0",
+          "special": "Alt 2, Nanomachines, Repair 1: Vehicles",
+          "box": "variant",
+          "variants": [
+            "Persephone"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Nanomachine Swarm",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "24”",
+          "att": "15",
+          "ac": "2+",
+          "e": "S6",
+          "special": "Alt 1, Nanomachines, Strafe",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "White Nanomachines",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "9”",
+          "att": "2",
+          "ac": "2+",
+          "e": "0",
+          "special": "Alt 1, Nanomachines, Repair 1: Vehicles",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RX-30 Heavy Minigun",
+          "arc": "F/Sl",
+          "ma": "Full",
+          "r": "48/18”",
+          "att": "4",
+          "ac": "2+",
+          "e": "S4",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RX-30 Heavy Minigun",
+          "arc": "F/Sr",
+          "ma": "Full",
+          "r": "48/18”",
+          "att": "4",
+          "ac": "2+",
+          "e": "S4",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 18,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/type-4-battle-scorpion.webp"
+    },
+    {
+      "id": "type-4-command-scorpion",
+      "name": "Type-4 Command Scorpion",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": null,
+      "pointsRaw": "155pts (Bellona), 165pts (Nemesis), Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "4”",
+        "A": "6",
+        "DP": "8"
+      },
+      "special": "Command Centre, Large, Resilient",
+      "variants": [
+        {
+          "name": "Bellona",
+          "points": 155
+        },
+        {
+          "name": "Nemesis",
+          "points": 165
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 6
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "RX-2000 Nemesis Laser",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞",
+          "att": "1",
+          "ac": "2+",
+          "e": "8",
+          "special": "Articulated, Demo 1, Destroyer 5+, Devastator 2",
+          "box": "variant",
+          "variants": [
+            "Nemesis"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RXs-300 Vanquisher Cannon",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞/18”",
+          "att": "1",
+          "ac": "2+",
+          "e": "9",
+          "special": "Articulated, Demo D3+3, Devastator 2",
+          "box": "variant",
+          "variants": [
+            "Bellona"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RX1-L Short Railgun",
+          "arc": "F/Sl",
+          "ma": "Full",
+          "r": "∞/24”",
+          "att": "1",
+          "ac": "2+",
+          "e": "6",
+          "special": "Demo 0",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RX1-L Short Railgun",
+          "arc": "F/Sr",
+          "ma": "Full",
+          "r": "∞/24”",
+          "att": "1",
+          "ac": "2+",
+          "e": "6",
+          "special": "Demo 0",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 19,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/type-4-command-scorpion.webp"
+    },
+    {
+      "id": "type-9-frontier-walker",
+      "name": "Type-9 Frontier Walker",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 6,
+      "points": null,
+      "pointsRaw": "70pts (Rashnu, Agas, Dahaka), 95pts (Mithra), Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "5”",
+        "A": "5",
+        "DP": "3"
+      },
+      "special": "Rapid Insertion 6” (All), P3+ (Rashnu)",
+      "variants": [
+        {
+          "name": "Rashnu",
+          "points": 70
+        },
+        {
+          "name": "Agas",
+          "points": 70
+        },
+        {
+          "name": "Dahaka",
+          "points": 70
+        },
+        {
+          "name": "Mithra",
+          "points": 95
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "RX-20 Minigun Pair",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "8",
+          "ac": "3+",
+          "e": "S3",
+          "special": "Strafe",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Hyperkinetic Hammer",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "CC",
+          "att": "2",
+          "ac": "2+",
+          "e": "7",
+          "special": "Assault, Demo 1, Devastator 1",
+          "box": "variant",
+          "variants": [
+            "Rashnu"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RX-1 Railgun",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞/24”",
+          "att": "1",
+          "ac": "2+",
+          "e": "7",
+          "special": "Demo 0",
+          "box": "variant",
+          "variants": [
+            "Agas"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RX-666 Flamethrower",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "8”",
+          "att": "8",
+          "ac": "3+",
+          "e": "S2",
+          "special": "Flame",
+          "box": "variant",
+          "variants": [
+            "Agas"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Beastslayer Blade",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "2”",
+          "att": "4",
+          "ac": "2+",
+          "e": "5",
+          "special": "Assault, Ineffective: Zones, Strafe",
+          "box": "variant",
+          "variants": [
+            "Agas"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RXs-70 Styx Autocannons",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "36/18”",
+          "att": "6",
+          "ac": "3+",
+          "e": "3",
+          "special": "Ignores Cover, Strafe",
+          "box": "variant",
+          "variants": [
+            "Dahaka"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RM-4 Foeslayer Missiles",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "48/12”",
+          "att": "2",
+          "ac": "3+",
+          "e": "5",
+          "special": "Demo 1, Devastator 1, L1",
+          "box": "variant",
+          "variants": [
+            "Dahaka"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Electro Gladius",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "CC",
+          "att": "1",
+          "ac": "3+",
+          "e": "8",
+          "special": "Assault, Destroyer 5+",
+          "box": "variant",
+          "variants": [
+            "Dahaka"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin RXs-120 Smoothbores",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞/12”",
+          "att": "2",
+          "ac": "2+",
+          "e": "6",
+          "special": "Demo 2",
+          "box": "variant",
+          "variants": [
+            "Mithra"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin RX-1000 Sunspear Lasers",
+          "arc": "F/S",
+          "ma": "0”",
+          "r": "∞",
+          "att": "2",
+          "ac": "2+",
+          "e": "7",
+          "special": "Destroyer 5+",
+          "box": "variant",
+          "variants": [
+            "Mithra"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 20,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/type-9-frontier-walker.webp"
+    },
+    {
+      "id": "longreach-snipers",
+      "name": "Longreach Snipers",
+      "category": "Vanguard",
+      "squadMin": 2,
+      "squadMax": 2,
+      "points": 40,
+      "pointsRaw": "40pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "2”",
+        "OF": "5",
+        "DF": "4+",
+        "B": "4+",
+        "DP": "5"
+      },
+      "special": "Ev2, Infiltrate 12”, Scout",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "RXp-14 Longreach Rifles",
+          "arc": "F/S/R",
+          "ma": "0”",
+          "r": "∞/24”",
+          "att": "5",
+          "ac": "2+",
+          "e": "2",
+          "special": "Ignores Cover, Ineffective: Zones, Pen 6+, Strafe",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 21,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/longreach-snipers.webp"
+    },
+    {
+      "id": "mercury-scout-drone",
+      "name": "Mercury Scout Drone",
+      "category": "Vanguard",
+      "squadMin": 2,
+      "squadMax": 4,
+      "points": 20,
+      "pointsRaw": "20pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "6”",
+        "A": "1",
+        "DP": "1"
+      },
+      "special": "AWACS 9”, Scout, Surveyor",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [],
+      "page": 22,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/mercury-scout-drone.webp"
+    },
+    {
+      "id": "phr-air-superiority-fighter",
+      "name": "PHR Air Superiority fighter",
+      "category": "Vanguard",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 110,
+      "pointsRaw": "110pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "24-48”",
+        "A": "3",
+        "DP": "2"
+      },
+      "special": "Ev2, Fast Mover, Supercruise",
+      "variants": [
+        {
+          "name": "Athena",
+          "points": 110
+        },
+        {
+          "name": "Minerva",
+          "points": 110
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Twin RX-1R Rail Repeaters",
+          "arc": "F",
+          "ma": "Full",
+          "r": "∞/24”",
+          "att": "6",
+          "ac": "3+",
+          "e": "3",
+          "special": "AA, T1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RM-1 Stealth Missile Battery",
+          "arc": "F",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "2",
+          "ac": "3+",
+          "e": "3",
+          "special": "Pen 6+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RN-2 Cloudspear Cruise Missile",
+          "arc": "F",
+          "ma": "Full",
+          "r": "∞/12”",
+          "att": "1",
+          "ac": "2+",
+          "e": "8",
+          "special": "Demo 3, Devastator 1, L2",
+          "box": "variant",
+          "variants": [
+            "Athena"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RN-1 Shooting Star Missiles",
+          "arc": "F",
+          "ma": "Full",
+          "r": "24”/12”",
+          "att": "4",
+          "ac": "3+",
+          "e": "3",
+          "special": "Ignores Cover, Pen 6+",
+          "box": "variant",
+          "variants": [
+            "Minerva"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 23,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/phr-air-superiority-fighter.webp"
+    },
+    {
+      "id": "phr-columbus-battlewalker",
+      "name": "PHR Columbus Battlewalker",
+      "category": "Vanguard",
+      "squadMin": 1,
+      "squadMax": 3,
+      "points": 75,
+      "pointsRaw": "75pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "4”",
+        "A": "5",
+        "DP": "3"
+      },
+      "special": "Infiltrate 18”",
+      "variants": [
+        {
+          "name": "Columbus A",
+          "points": 75
+        },
+        {
+          "name": "Columbus B",
+          "points": 75
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "MC-120 Punisher Cannons",
+          "arc": "F",
+          "ma": "3”",
+          "r": "∞/18”",
+          "att": "2",
+          "ac": "3+",
+          "e": "6",
+          "special": "Demo 0",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MM-111 Missile Pod",
+          "arc": "F",
+          "ma": "Full",
+          "r": "36/9”",
+          "att": "1",
+          "ac": "3+",
+          "e": "4",
+          "special": "Pen 6+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MC-17 Guns",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "36/18”",
+          "att": "2",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA",
+          "box": "variant",
+          "variants": [
+            "Columbus A"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MF-666 Flamethrower",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "6”",
+          "att": "6",
+          "ac": "3+",
+          "e": "S2",
+          "special": "Flame",
+          "box": "variant",
+          "variants": [
+            "Columbus B"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 24,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/phr-columbus-battlewalker.webp"
+    },
+    {
+      "id": "type-3-strike-walker",
+      "name": "Type-3 Strike Walker",
+      "category": "Vanguard",
+      "squadMin": 1,
+      "squadMax": 6,
+      "points": null,
+      "pointsRaw": "35pts (Apollo A, Apollo B), 65pts (Hera)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "5",
+        "DP": "2"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "Apollo A",
+          "points": 35
+        },
+        {
+          "name": "Apollo B",
+          "points": 35
+        },
+        {
+          "name": "Hera",
+          "points": 65
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Twin RX-1L Short Railguns",
+          "arc": "F/S",
+          "ma": "9”",
+          "r": "∞/24”",
+          "att": "2",
+          "ac": "2+",
+          "e": "6",
+          "special": "Demo 0",
+          "box": "variant",
+          "variants": [
+            "Hera"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RX-1L Short Railgun",
+          "arc": "F/S",
+          "ma": "9”",
+          "r": "∞/24”",
+          "att": "1",
+          "ac": "2+",
+          "e": "6",
+          "special": "Demo 0",
+          "box": "variant",
+          "variants": [
+            "Apollo A"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RX-13 Cannon, Slugs",
+          "arc": "F/S",
+          "ma": "6”",
+          "r": "24/12”",
+          "att": "2",
+          "ac": "2+",
+          "e": "4",
+          "special": "Alt-1",
+          "box": "variant",
+          "variants": [
+            "Apollo B"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RX-13 Cannon, Seeker Submunitions",
+          "arc": "F/S",
+          "ma": "6”",
+          "r": "24/12”",
+          "att": "3",
+          "ac": "3+",
+          "e": "S1",
+          "special": "Alt-1, Concussion, Seeker",
+          "box": "variant",
+          "variants": [
+            "Apollo B"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 25,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/type-3-strike-walker.webp"
+    },
+    {
+      "id": "type-s-scout-walker",
+      "name": "Type-S Scout Walker",
+      "category": "Vanguard",
+      "squadMin": 2,
+      "squadMax": 6,
+      "points": null,
+      "pointsRaw": "15pts (Janus) 25pts (Hermes)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "5",
+        "DP": "1"
+      },
+      "special": "Scout",
+      "variants": [
+        {
+          "name": "Janus",
+          "points": 15
+        },
+        {
+          "name": "Hermes",
+          "points": 25
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "RX-20 Minigun",
+          "arc": "F",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "4",
+          "ac": "3+",
+          "e": "S3",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RM-1AA Stealth Missiles",
+          "arc": "F",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "1",
+          "ac": "3+",
+          "e": "3",
+          "special": "AA, Pen 6+",
+          "box": "variant",
+          "variants": [
+            "Janus"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Electromagnetic Disruptor",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "12”",
+          "att": "1",
+          "ac": "2+",
+          "e": "0",
+          "special": "Assault, Concussion, Ignores Cover, Jammer",
+          "box": "variant",
+          "variants": [
+            "Hermes"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 26,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/type-s-scout-walker.webp"
+    },
+    {
+      "id": "valkyrie-assault-troops",
+      "name": "Valkyrie Assault Troops",
+      "category": "Vanguard",
+      "squadMin": 2,
+      "squadMax": 2,
+      "points": 45,
+      "pointsRaw": "45pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "2”",
+        "OF": "5",
+        "DF": "5+",
+        "B": "4+",
+        "DP": "5"
+      },
+      "special": "Agile 1, Ev2, FS2, Jump 9”, Rapid Insertion 6”",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "RXp-9 SMGs",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "18/9”",
+          "att": "10",
+          "ac": "2+",
+          "e": "S1",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 27,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/valkyrie-assault-troops.webp"
+    },
+    {
+      "id": "juno-ifvs",
+      "name": "Juno IFVs",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": null,
+      "pointsRaw": "15pts (Juno A2), 20pts (Juno A1)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "5",
+        "DP": "2"
+      },
+      "special": "Surveyor",
+      "variants": [
+        {
+          "name": "Juno A2",
+          "points": 15
+        },
+        {
+          "name": "Juno A1",
+          "points": 20
+        }
+      ],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 2
+          }
+        ],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "RXs-90 Huntsman Cannon",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "∞/18”",
+          "att": "1",
+          "ac": "2+",
+          "e": "4",
+          "special": "",
+          "box": "variant",
+          "variants": [
+            "Juno A1"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin RX-20 Miniguns",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "8",
+          "ac": "3+",
+          "e": "S3",
+          "special": "",
+          "box": "variant",
+          "variants": [
+            "Juno A2"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 28,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/juno-ifvs.webp"
+    },
+    {
+      "id": "neptune-dropship",
+      "name": "Neptune Dropship",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 35,
+      "pointsRaw": "35pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "16”",
+        "A": "3",
+        "DP": "3"
+      },
+      "special": "",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "triangle",
+            "n": 2
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "RM-1 Stealth Missile Battery",
+          "arc": "F",
+          "ma": "8”",
+          "r": "36/12”",
+          "att": "2",
+          "ac": "3+",
+          "e": "3",
+          "special": "Pen 6+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 29,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/neptune-dropship.webp"
+    },
+    {
+      "id": "njord-assault-dropship",
+      "name": "Njord Assault Dropship",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 100,
+      "pointsRaw": "100pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "16”",
+        "A": "3",
+        "DP": "6"
+      },
+      "special": "Large",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "triangle",
+            "n": 4
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "RM-1H Heavy Stealth Missile Battery",
+          "arc": "F/Sl",
+          "ma": "8”",
+          "r": "36/12”",
+          "att": "2",
+          "ac": "3+",
+          "e": "6",
+          "special": "Demo 0",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RM-1H Heavy Stealth Missile Battery",
+          "arc": "F/Sr",
+          "ma": "8”",
+          "r": "36/12”",
+          "att": "2",
+          "ac": "3+",
+          "e": "6",
+          "special": "Demo 0",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RM-1 Stealth Missile Battery",
+          "arc": "F",
+          "ma": "8”",
+          "r": "36/12”",
+          "att": "2",
+          "ac": "3+",
+          "e": "3",
+          "special": "Pen 6+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 30,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/njord-assault-dropship.webp"
+    },
+    {
+      "id": "poseidon-heavy-dropship",
+      "name": "Poseidon Heavy Dropship",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 70,
+      "pointsRaw": "70pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "16”",
+        "A": "3",
+        "DP": "6"
+      },
+      "special": "Large",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "triangle",
+            "n": 6
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "RM-1 Stealth Missile Battery",
+          "arc": "F",
+          "ma": "8”",
+          "r": "36/12”",
+          "att": "2",
+          "ac": "3+",
+          "e": "3",
+          "special": "Pen 6+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 31,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/poseidon-heavy-dropship.webp"
+    },
+    {
+      "id": "triton-light-dropship",
+      "name": "Triton Light Dropship",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 15,
+      "pointsRaw": "15pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "24”",
+        "A": "3",
+        "DP": "1"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "+5pts*",
+          "points": 15
+        }
+      ],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "diamond",
+            "n": 2
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "RM-1 Stealth Missile Battery",
+          "arc": "F",
+          "ma": "12”",
+          "r": "36/12”",
+          "att": "2",
+          "ac": "3+",
+          "e": "3",
+          "special": "Pen 6+",
+          "box": "upgrade",
+          "variants": [
+            "+10pts"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin RX-20 Miniguns",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "36/18”",
+          "att": "8",
+          "ac": "3+",
+          "e": "S3",
+          "special": "",
+          "box": "upgrade",
+          "variants": [
+            "+5pts*"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RM-7 Skyhammer Missiles (+15pts*) *Only one of these upgrades may",
+          "arc": "F/S/R be taken.",
+          "ma": "12”",
+          "r": "36/12”",
+          "att": "1",
+          "ac": "3+",
+          "e": "7",
+          "special": "Demo 0, Indirect, L2, Needs Spotter",
+          "box": "upgrade",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 32,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/triton-light-dropship.webp"
+    },
+    {
+      "id": "triton-light-troopship",
+      "name": "Triton Light Troopship",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 30,
+      "pointsRaw": "30pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "24”",
+        "A": "3",
+        "DP": "1"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "+5pts*",
+          "points": 30
+        }
+      ],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 2
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "RM-1 Stealth Missile Battery",
+          "arc": "F",
+          "ma": "12”",
+          "r": "36/12”",
+          "att": "2",
+          "ac": "3+",
+          "e": "3",
+          "special": "Pen 6+",
+          "box": "upgrade",
+          "variants": [
+            "+10pts"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin RX-20 Miniguns",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "36/18”",
+          "att": "8",
+          "ac": "3+",
+          "e": "S3",
+          "special": "",
+          "box": "upgrade",
+          "variants": [
+            "+5pts*"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RM-7 Skyhammer Missiles (+15pts*) *Only one of these upgrades may",
+          "arc": "F/S/R be taken.",
+          "ma": "12”",
+          "r": "36/12”",
+          "att": "1",
+          "ac": "3+",
+          "e": "7",
+          "special": "Demo 0, Indirect, L2, Needs Spotter",
+          "box": "upgrade",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 33,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/triton-light-troopship.webp"
+    },
+    {
+      "id": "type-11-atlas-quad-walker",
+      "name": "Type-11 Atlas Quad Walker",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 70,
+      "pointsRaw": "70pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "4”",
+        "A": "6",
+        "DP": "4"
+      },
+      "special": "P5+, Surveyor",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 4
+          }
+        ],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 2
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Twin RX-1L Railguns",
+          "arc": "F",
+          "ma": "Full",
+          "r": "∞/24”",
+          "att": "2",
+          "ac": "2+",
+          "e": "6",
+          "special": "Demo 0",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "RX-20 Minigun Pair",
+          "arc": "F",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "8",
+          "ac": "3+",
+          "e": "S3",
+          "special": "Strafe",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 34,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/type-11-atlas-quad-walker.webp"
+    }
+  ]
+}

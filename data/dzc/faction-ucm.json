@@ -1,0 +1,3254 @@
+{
+  "faction": "ucm",
+  "name": "UCM",
+  "sourcePdf": "DZC_UCM_Stat_Cards_260730.pdf",
+  "version": "260730",
+  "units": [
+    {
+      "id": "legionnaire-weapon-team",
+      "name": "Legionnaire Weapon Team",
+      "category": "Standard",
+      "squadMin": 2,
+      "squadMax": 3,
+      "points": 25,
+      "pointsRaw": "25pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "2”",
+        "OF": "3",
+        "DF": "5+",
+        "B": "5+",
+        "DP": "6"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "Flak Team",
+          "points": 25
+        },
+        {
+          "name": "Mortar Team",
+          "points": 25
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "UM-13 Flak Cannons",
+          "arc": "F/S/R",
+          "ma": "0”",
+          "r": "36/18”",
+          "att": "3",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA",
+          "box": "variant",
+          "variants": [
+            "Flak Team"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-19 Mortars",
+          "arc": "F/S/R",
+          "ma": "0”",
+          "r": "24”",
+          "att": "1",
+          "ac": "4+",
+          "e": "2",
+          "special": "Battery 2, Blast, Concussion, Indirect, Pen 6+",
+          "box": "variant",
+          "variants": [
+            "Mortar Team"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 2,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/legionnaire-weapon-team.webp"
+    },
+    {
+      "id": "legionnaires",
+      "name": "Legionnaires",
+      "category": "Standard",
+      "squadMin": 2,
+      "squadMax": 3,
+      "points": 20,
+      "pointsRaw": "20pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "2”",
+        "OF": "5",
+        "DF": "5+",
+        "B": "5+",
+        "DP": "5"
+      },
+      "special": "",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "UM-3 Assault Rifles",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "36/9”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S1",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-105 Missile Launcher",
+          "arc": "F/S/R",
+          "ma": "0”",
+          "r": "36/9”",
+          "att": "1",
+          "ac": "3+",
+          "e": "5",
+          "special": "Demo 0",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 3,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/legionnaires.webp"
+    },
+    {
+      "id": "polecat-buggy",
+      "name": "Polecat Buggy",
+      "category": "Standard",
+      "squadMin": 2,
+      "squadMax": 4,
+      "points": 25,
+      "pointsRaw": "25pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "9”",
+        "A": "4",
+        "DP": "1"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "Polecat A",
+          "points": 25
+        },
+        {
+          "name": "Polecat B",
+          "points": 25
+        },
+        {
+          "name": "Polecat C",
+          "points": 25
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "UM-2 Aggressor Cannon",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "36/18”",
+          "att": "3",
+          "ac": "3+",
+          "e": "3",
+          "special": "Pen 6+",
+          "box": "variant",
+          "variants": [
+            "Polecat A"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-7 Nemesis Miniguns",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "16/8”",
+          "att": "6",
+          "ac": "3+",
+          "e": "S5",
+          "special": "Ignores Cover",
+          "box": "variant",
+          "variants": [
+            "Polecat B"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-703 Laser",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞",
+          "att": "1",
+          "ac": "3+",
+          "e": "2",
+          "special": "Assault, Focus 2, T2",
+          "box": "variant",
+          "variants": [
+            "Polecat C"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 4,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/polecat-buggy.webp"
+    },
+    {
+      "id": "ucm-heavy-buggy",
+      "name": "UCM Heavy Buggy",
+      "category": "Standard",
+      "squadMin": 1,
+      "squadMax": 4,
+      "points": null,
+      "pointsRaw": "50pts (Wolf), 45pts (Jackal, Dingo), 40pts (Fox)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "9”",
+        "A": "4",
+        "DP": "3"
+      },
+      "special": "AWACS 12”, Command Centre, Surveyor (Fox)",
+      "variants": [
+        {
+          "name": "Wolf",
+          "points": 50
+        },
+        {
+          "name": "Jackal",
+          "points": 45
+        },
+        {
+          "name": "Dingo",
+          "points": 45
+        },
+        {
+          "name": "Fox",
+          "points": 40
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 2
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Anti-Armour Missile",
+          "arc": "F",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "1",
+          "ac": "3+",
+          "e": "6",
+          "special": "Alt 1, Demo 0, Devastator 2",
+          "box": "variant",
+          "variants": [
+            "Wolf"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Airburst Missile",
+          "arc": "F",
+          "ma": "Full",
+          "r": "18”",
+          "att": "3",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA-S, Alt 1, Indirect",
+          "box": "variant",
+          "variants": [
+            "Wolf"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-55 Requiter Organ Gun",
+          "arc": "F",
+          "ma": "Full",
+          "r": "12”",
+          "att": "1",
+          "ac": "3+",
+          "e": "5",
+          "special": "Blast, Ignores Cover, T2",
+          "box": "variant",
+          "variants": [
+            "Jackal"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UC-19 Hose, reinforce",
+          "arc": "F",
+          "ma": "Full",
+          "r": "6”",
+          "att": "2",
+          "ac": "2+",
+          "e": "0",
+          "special": "Alt-1, Repair 2: Zones",
+          "box": "variant",
+          "variants": [
+            "Dingo"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UC-19 Hose, encapsulate",
+          "arc": "F",
+          "ma": "Full",
+          "r": "6”",
+          "att": "8",
+          "ac": "3+",
+          "e": "S6",
+          "special": "Alt-1, Ignores Cover",
+          "box": "variant",
+          "variants": [
+            "Dingo"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 5,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/ucm-heavy-buggy.webp"
+    },
+    {
+      "id": "ucm-light-battle-tank",
+      "name": "UCM Light Battle Tank",
+      "category": "Standard",
+      "squadMin": 2,
+      "squadMax": 9,
+      "points": 35,
+      "pointsRaw": "35pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "6",
+        "DP": "1"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "Katana",
+          "points": 35
+        },
+        {
+          "name": "Fireblade",
+          "points": 35
+        },
+        {
+          "name": "Wakizashi",
+          "points": 35
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 2
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "UM-88 Cannons",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "48/18”",
+          "att": "2",
+          "ac": "2+",
+          "e": "5",
+          "special": "Alt 1",
+          "box": "variant",
+          "variants": [
+            "Katana"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-666 Flamethrower",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "6”",
+          "att": "6",
+          "ac": "3+",
+          "e": "S3",
+          "special": "Alt 1, Flame",
+          "box": "variant",
+          "variants": [
+            "Fireblade"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-449 Tesla Coils, Strike",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "6”",
+          "att": "2",
+          "ac": "2+",
+          "e": "5",
+          "special": "Alt 1, Ineffective: Zones, Overcharge 2",
+          "box": "variant",
+          "variants": [
+            "Wakizashi"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-449 Tesla Coils, Storm",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "6”",
+          "att": "2",
+          "ac": "2+",
+          "e": "3",
+          "special": "AA, Alt 1, Ineffective: Zones, Vehicles",
+          "box": "variant",
+          "variants": [
+            "Wakizashi"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Smoke Launchers",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "6”",
+          "att": "1",
+          "ac": "A",
+          "e": "0",
+          "special": "Alt 1, Assault, Smoke",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 6,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/ucm-light-battle-tank.webp"
+    },
+    {
+      "id": "ucm-main-battle-tank",
+      "name": "UCM Main Battle Tank",
+      "category": "Standard",
+      "squadMin": 2,
+      "squadMax": 9,
+      "points": null,
+      "pointsRaw": "35pts (Sabre, Greave), 40pts (Tachi, Rapier)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "4”",
+        "A": "7",
+        "DP": "1"
+      },
+      "special": "Command Centre, Scanner (Greave)",
+      "variants": [
+        {
+          "name": "Sabre",
+          "points": 35
+        },
+        {
+          "name": "Greave",
+          "points": 35
+        },
+        {
+          "name": "Tachi",
+          "points": 40
+        },
+        {
+          "name": "Rapier",
+          "points": 40
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 2
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "UM-100 Avenger Railgun",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "∞/24”",
+          "att": "1",
+          "ac": "2+",
+          "e": "6",
+          "special": "Articulated, Demo 0, T1",
+          "box": "variant",
+          "variants": [
+            "Sabre"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-702 Laser",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "∞",
+          "att": "1",
+          "ac": "2+",
+          "e": "4",
+          "special": "Articulated, Assault, Overcharge 2, T2",
+          "box": "variant",
+          "variants": [
+            "Tachi"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-28 Gatling, focused",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "36/18”",
+          "att": "3",
+          "ac": "3+",
+          "e": "3",
+          "special": "AA, Alt 1, Articulated",
+          "box": "variant",
+          "variants": [
+            "Rapier"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-28 Gatling, spread",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "8",
+          "ac": "3+",
+          "e": "S1",
+          "special": "Alt 1, Articulated",
+          "box": "variant",
+          "variants": [
+            "Rapier"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-18 Machinegun",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "3",
+          "ac": "3+",
+          "e": "S3",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 7,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/ucm-main-battle-tank.webp"
+    },
+    {
+      "id": "falcon-gunship",
+      "name": "Falcon Gunship",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 4,
+      "points": 40,
+      "pointsRaw": "40pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "24”",
+        "A": "2",
+        "DP": "1"
+      },
+      "special": "Ev2",
+      "variants": [
+        {
+          "name": "Falcon-A",
+          "points": 40
+        },
+        {
+          "name": "Falcon-B",
+          "points": 40
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "UM-28 Gatlings, harmonised",
+          "arc": "F",
+          "ma": "12”",
+          "r": "36/18”",
+          "att": "1",
+          "ac": "3+",
+          "e": "7",
+          "special": "Alt 1, Demo 0, Precision 1",
+          "box": "variant",
+          "variants": [
+            "Falcon-A"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-28 Gatlings, spread",
+          "arc": "F",
+          "ma": "12”",
+          "r": "36/18”",
+          "att": "15",
+          "ac": "3+",
+          "e": "S3",
+          "special": "Alt 1, Strafe",
+          "box": "variant",
+          "variants": [
+            "Falcon-A"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-109 Airburst Missiles",
+          "arc": "F",
+          "ma": "12”",
+          "r": "36/12”",
+          "att": "2",
+          "ac": "3+",
+          "e": "3",
+          "special": "AA, Alt 1, Strafe",
+          "box": "variant",
+          "variants": [
+            "Falcon-B"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-109 Penetrator Missiles",
+          "arc": "F",
+          "ma": "12”",
+          "r": "36/12”",
+          "att": "2",
+          "ac": "3+",
+          "e": "5",
+          "special": "Alt 1, Pen 6+, Strafe",
+          "box": "variant",
+          "variants": [
+            "Falcon-B"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin UM-5 Gatling",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 8,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/falcon-gunship.webp"
+    },
+    {
+      "id": "ferrum-drone-base",
+      "name": "Ferrum Drone Base",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 155,
+      "pointsRaw": "155pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "3”",
+        "A": "5",
+        "DP": "7"
+      },
+      "special": "Command Centre, Drone Base 4: Starsprites",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 18
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "UM-903 Defence pods",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "36/9”",
+          "att": "2",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA, Pen 6+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin UM-5 Gatling",
+          "arc": "F/Sl",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin UM-5 Gatling",
+          "arc": "F/Sr",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 9,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/ferrum-drone-base.webp"
+    },
+    {
+      "id": "osprey-gunship",
+      "name": "Osprey Gunship",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 2,
+      "points": null,
+      "pointsRaw": "75pts (Osprey A), 85pts (Osprey B)",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "24”",
+        "A": "2",
+        "DP": "2"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "Osprey A",
+          "points": 75
+        },
+        {
+          "name": "Osprey B",
+          "points": 85
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "UM-101 Light Railguns",
+          "arc": "F",
+          "ma": "12”",
+          "r": "∞/18”",
+          "att": "2",
+          "ac": "2+",
+          "e": "5",
+          "special": "Demo 0",
+          "box": "variant",
+          "variants": [
+            "Osprey-A"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Spider Drone Launchers",
+          "arc": "F",
+          "ma": "12”",
+          "r": "12”",
+          "att": "10",
+          "ac": "3+",
+          "e": "S1",
+          "special": "Seeker",
+          "box": "variant",
+          "variants": [
+            "Osprey-B"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-109 Airburst Missile Bank",
+          "arc": "F",
+          "ma": "12”",
+          "r": "36/12”",
+          "att": "3",
+          "ac": "3+",
+          "e": "3",
+          "special": "AA, Alt 1, Strafe",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-109 Penetrator Missile Bank",
+          "arc": "F",
+          "ma": "12”",
+          "r": "36/12”",
+          "att": "3",
+          "ac": "3+",
+          "e": "5",
+          "special": "Alt 1, Pen 6+, Strafe",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 10,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/osprey-gunship.webp"
+    },
+    {
+      "id": "ucm-armoured-command-vehicle",
+      "name": "UCM Armoured Command Vehicle",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": null,
+      "pointsRaw": "120pts (Kodiak), 80pts (Panda), Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "4”",
+        "A": "6",
+        "DP": "4"
+      },
+      "special": "Command Centre (All), Obscurer 4” (Panda)",
+      "variants": [
+        {
+          "name": "Kodiak",
+          "points": 120
+        },
+        {
+          "name": "Panda",
+          "points": 80
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 6
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Orbital Strike",
+          "arc": "F/S/R",
+          "ma": "2”",
+          "r": "∞",
+          "att": "1",
+          "ac": "3+",
+          "e": "9",
+          "special": "Blast, Demo 2, Indirect",
+          "box": "variant",
+          "variants": [
+            "Kodiak"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UC-9 ECM Jammer",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "∞",
+          "att": "1",
+          "ac": "2+",
+          "e": "0",
+          "special": "Jammer",
+          "box": "variant",
+          "variants": [
+            "Panda"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 11,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/ucm-armoured-command-vehicle.webp"
+    },
+    {
+      "id": "ucm-artillery-vehicle",
+      "name": "UCM Artillery Vehicle",
+      "category": "Support",
+      "squadMin": 2,
+      "squadMax": 4,
+      "points": 40,
+      "pointsRaw": "40pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "5",
+        "DP": "2"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "Grizzly A",
+          "points": 40
+        },
+        {
+          "name": "Grizzly B",
+          "points": 40
+        },
+        {
+          "name": "Cuprum Drone Launcher",
+          "points": 40
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 3
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "UM-92 Heavy Mortar",
+          "arc": "F",
+          "ma": "3”",
+          "r": "24”",
+          "att": "1",
+          "ac": "3+",
+          "e": "4",
+          "special": "Blast, Demo 2, Indirect",
+          "box": "variant",
+          "variants": [
+            "Grizzly A"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UMX-9 Plasma Mortar",
+          "arc": "F",
+          "ma": "3”",
+          "r": "18”",
+          "att": "1",
+          "ac": "3+",
+          "e": "7",
+          "special": "Demo 1, Devastor 1, Indirect",
+          "box": "variant",
+          "variants": [
+            "Grizzly B"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Microsprite Drones",
+          "arc": "F/S/R",
+          "ma": "3”",
+          "r": "∞",
+          "att": "D3",
+          "ac": "2+",
+          "e": "4",
+          "special": "Ignores Cover, Indirect, Needs Spotter, T2",
+          "box": "variant",
+          "variants": [
+            "Cuprum Drone Launcher"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 12,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/ucm-artillery-vehicle.webp"
+    },
+    {
+      "id": "ucm-howitzer",
+      "name": "UCM Howitzer",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 4,
+      "points": 25,
+      "pointsRaw": "25pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "N/A",
+        "A": "4",
+        "DP": "1"
+      },
+      "special": "AWACS 6” (Scutum)",
+      "variants": [
+        {
+          "name": "Longbow",
+          "points": 25
+        },
+        {
+          "name": "Crossbow",
+          "points": 25
+        },
+        {
+          "name": "Pilum",
+          "points": 25
+        },
+        {
+          "name": "Scorpio",
+          "points": 25
+        },
+        {
+          "name": "Ballista",
+          "points": 25
+        },
+        {
+          "name": "Scutum",
+          "points": 25
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 2
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "UM-31 Anti-Armour Round",
+          "arc": "F",
+          "ma": "0”",
+          "r": "∞/24”",
+          "att": "1",
+          "ac": "3+",
+          "e": "6",
+          "special": "Alt 1, Demo 1, Indirect",
+          "box": "variant",
+          "variants": [
+            "Longbow"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-31 Smoke Round",
+          "arc": "F",
+          "ma": "0”",
+          "r": "24”",
+          "att": "1",
+          "ac": "A",
+          "e": "0",
+          "special": "Alt 1, Indirect, Smoke",
+          "box": "variant",
+          "variants": [
+            "Longbow"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-701B Marksman Laser",
+          "arc": "F",
+          "ma": "0”",
+          "r": "∞",
+          "att": "1",
+          "ac": "2+",
+          "e": "7",
+          "special": "Destroyer 6+, Precision 1",
+          "box": "variant",
+          "variants": [
+            "Crossbow"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UMR-6 Ballistic Missile",
+          "arc": "F",
+          "ma": "0”",
+          "r": "∞/36”",
+          "att": "1",
+          "ac": "2+",
+          "e": "8",
+          "special": "Blast, Demo 2, Devastator 2, Indirect, L1",
+          "box": "variant",
+          "variants": [
+            "Pilum"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-371 Organ Gun",
+          "arc": "F",
+          "ma": "0”",
+          "r": "24/12”",
+          "att": "12",
+          "ac": "4+",
+          "e": "2",
+          "special": "AA-R, L2",
+          "box": "variant",
+          "variants": [
+            "Scorpio"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-59 Organ-Gun",
+          "arc": "F",
+          "ma": "0”",
+          "r": "36/18”",
+          "att": "5",
+          "ac": "4+",
+          "e": "5",
+          "special": "L2, Strafe",
+          "box": "variant",
+          "variants": [
+            "Ballista"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-004 Jammer",
+          "arc": "F",
+          "ma": "0”",
+          "r": "∞",
+          "att": "1",
+          "ac": "2+",
+          "e": "0",
+          "special": "Jammer",
+          "box": "variant",
+          "variants": [
+            "Scutum"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 13,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/ucm-howitzer.webp"
+    },
+    {
+      "id": "dominion-heavy-bomber",
+      "name": "Dominion Heavy Bomber",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 200,
+      "pointsRaw": "200pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "9-24”",
+        "A": "3",
+        "DP": "5"
+      },
+      "special": "Fast Mover",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Quad Autocannons",
+          "arc": "F",
+          "ma": "Full",
+          "r": "36/18”",
+          "att": "8",
+          "ac": "3+",
+          "e": "5",
+          "special": "Strafe",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UF-80 Missiles",
+          "arc": "F",
+          "ma": "Full",
+          "r": "12”",
+          "att": "2",
+          "ac": "3+",
+          "e": "7",
+          "special": "Blast, Ignores Cover, Strafe",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin Tailgun",
+          "arc": "R",
+          "ma": "Full",
+          "r": "36/18”",
+          "att": "2",
+          "ac": "2+",
+          "e": "2",
+          "special": "AA",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Titanbane Bomb",
+          "arc": "F",
+          "ma": "Full",
+          "r": "GB",
+          "att": "1",
+          "ac": "2+",
+          "e": "10",
+          "special": "Demo 2, Devastator 3",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 14,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/dominion-heavy-bomber.webp"
+    },
+    {
+      "id": "eagle-heavy-gunship",
+      "name": "Eagle Heavy Gunship",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": null,
+      "pointsRaw": "90pts (Eagle A), 100pts (Eagle B, Eagle C)",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "18”",
+        "A": "2",
+        "DP": "3"
+      },
+      "special": "Scanner (Eagle C)",
+      "variants": [
+        {
+          "name": "Eagle A",
+          "points": 90
+        },
+        {
+          "name": "Eagle B",
+          "points": 100
+        },
+        {
+          "name": "Eagle C",
+          "points": 100
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "UM-200 Heavy Railguns",
+          "arc": "F",
+          "ma": "9”",
+          "r": "∞/24”",
+          "att": "2",
+          "ac": "3+",
+          "e": "8",
+          "special": "Critical 1, Demo 0, Precision 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin UM-5 Gatling",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-909 Missile Block",
+          "arc": "F/Sl",
+          "ma": "9”",
+          "r": "36/6”",
+          "att": "2",
+          "ac": "3+",
+          "e": "4",
+          "special": "Pen 6+",
+          "box": "variant",
+          "variants": [
+            "Eagle A"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-909 Missile Block",
+          "arc": "F/Sr",
+          "ma": "9”",
+          "r": "36/6”",
+          "att": "2",
+          "ac": "3+",
+          "e": "4",
+          "special": "Pen 6+",
+          "box": "variant",
+          "variants": [
+            "Eagle A"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-117 Cannons",
+          "arc": "F/S",
+          "ma": "9”",
+          "r": "48/18”",
+          "att": "2",
+          "ac": "2+",
+          "e": "5",
+          "special": "Demo 0",
+          "box": "variant",
+          "variants": [
+            "Eagle B"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 15,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/eagle-heavy-gunship.webp"
+    },
+    {
+      "id": "flail-heavy-tank",
+      "name": "Flail Heavy Tank",
+      "category": "Heavy",
+      "squadMin": 2,
+      "squadMax": 4,
+      "points": 35,
+      "pointsRaw": "35pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "3”",
+        "A": "7",
+        "DP": "2"
+      },
+      "special": "Wide 5”",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 3
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "UM-77 Tesla Array",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "4”",
+          "att": "1",
+          "ac": "2+",
+          "e": "8",
+          "special": "Field, Ineffective: Zones",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin UM-5 Gatling",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 16,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/flail-heavy-tank.webp"
+    },
+    {
+      "id": "hazard-suits",
+      "name": "Hazard Suits",
+      "category": "Heavy",
+      "squadMin": 2,
+      "squadMax": 3,
+      "points": 35,
+      "pointsRaw": "35pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "2”",
+        "OF": "3",
+        "DF": "3+",
+        "B": "4+",
+        "DP": "3"
+      },
+      "special": "Hardy 2+, Strong",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "UM-10 Compact Railguns",
+          "arc": "F/S/R",
+          "ma": "1”",
+          "r": "∞/24”",
+          "att": "1",
+          "ac": "2+",
+          "e": "6",
+          "special": "Precision 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 17,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/hazard-suits.webp"
+    },
+    {
+      "id": "seraphim-bomber",
+      "name": "Seraphim Bomber",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 80,
+      "pointsRaw": "80pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "18-28”",
+        "A": "4",
+        "DP": "2"
+      },
+      "special": "Ev2, Fast Mover",
+      "variants": [
+        {
+          "name": "Seraphim A",
+          "points": 80
+        },
+        {
+          "name": "Seraphim B",
+          "points": 80
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "UF-2 Heavenfire, focused",
+          "arc": "F",
+          "ma": "Full",
+          "r": "GB",
+          "att": "1",
+          "ac": "2+",
+          "e": "8",
+          "special": "Alt 1, Demo 0",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UF-2 Heavenfire, spread",
+          "arc": "F",
+          "ma": "Full",
+          "r": "GB",
+          "att": "6",
+          "ac": "2+",
+          "e": "S1",
+          "special": "Alt 1, Flame",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UF-85 Bunker Busters",
+          "arc": "F",
+          "ma": "Full",
+          "r": "GB",
+          "att": "2",
+          "ac": "5+",
+          "e": "6",
+          "special": "Demo 4, Devastator 2, L2",
+          "box": "variant",
+          "variants": [
+            "Seraphim A"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UF-80 Missiles",
+          "arc": "F",
+          "ma": "Full",
+          "r": "12”",
+          "att": "2",
+          "ac": "3+",
+          "e": "7",
+          "special": "Blast, Ignores Cover, Strafe",
+          "box": "variant",
+          "variants": [
+            "Seraphim B"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 18,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/seraphim-bomber.webp"
+    },
+    {
+      "id": "ucm-heavy-tank",
+      "name": "UCM Heavy Tank",
+      "category": "Heavy",
+      "squadMin": 2,
+      "squadMax": 6,
+      "points": null,
+      "pointsRaw": "55pts (Gladius, Scimitar), 60pts (Maul)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "3”",
+        "A": "7",
+        "DP": "2"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "Gladius",
+          "points": 55
+        },
+        {
+          "name": "Scimitar",
+          "points": 55
+        },
+        {
+          "name": "Maul",
+          "points": 60
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 3
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "UM-100L Long Avenger Railguns",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "∞/24”",
+          "att": "2",
+          "ac": "2+",
+          "e": "6",
+          "special": "Articulated, Demo 0, Devastator 1",
+          "box": "variant",
+          "variants": [
+            "Gladius"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-91 Accelerated Mortar",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "24”",
+          "att": "1",
+          "ac": "3+",
+          "e": "5",
+          "special": "Blast, Demo 2, Indirect",
+          "box": "variant",
+          "variants": [
+            "Maul"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-701 Marksman Laser",
+          "arc": "F",
+          "ma": "Full",
+          "r": "∞",
+          "att": "1",
+          "ac": "2+",
+          "e": "7",
+          "special": "Destroyer 6+, Precison 2",
+          "box": "variant",
+          "variants": [
+            "Scimitar"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin UM-5 Gatling",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 19,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/ucm-heavy-tank.webp"
+    },
+    {
+      "id": "ucm-super-gunship",
+      "name": "UCM Super Gunship",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": null,
+      "pointsRaw": "190pts (Phoenix), 200pts (Roc), Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "16”",
+        "A": "3",
+        "DP": "9 AWACS"
+      },
+      "special": "18” (All), Command Centre, Scanner (Phoenix)",
+      "variants": [
+        {
+          "name": "Phoenix",
+          "points": 190
+        },
+        {
+          "name": "Roc",
+          "points": 200
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Missile Bay",
+          "arc": "F",
+          "ma": "8”",
+          "r": "36”/9”",
+          "att": "1",
+          "ac": "3+",
+          "e": "6",
+          "special": "Blast",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-903 Defence pods",
+          "arc": "F/S/R",
+          "ma": "8”",
+          "r": "36”/9”",
+          "att": "2",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA, Pen 6+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-79 Tri-Minigun, Focused",
+          "arc": "F/Sl",
+          "ma": "8”",
+          "r": "24/18”",
+          "att": "1",
+          "ac": "3+",
+          "e": "8",
+          "special": "Alt 1, Precision 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-79 Tri-Minigun, Spread",
+          "arc": "F/Sr",
+          "ma": "8”",
+          "r": "24/18”",
+          "att": "12",
+          "ac": "3+",
+          "e": "S3",
+          "special": "Alt 1, Precision 1, Strafe",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-79 Tri-Minigun, Focused",
+          "arc": "F/Sl",
+          "ma": "8”",
+          "r": "24/18”",
+          "att": "1",
+          "ac": "3+",
+          "e": "8",
+          "special": "Alt 2, Precision 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-79 Tri-Minigun, Spread",
+          "arc": "F/Sr",
+          "ma": "8”",
+          "r": "24/18”",
+          "att": "12",
+          "ac": "3+",
+          "e": "S3",
+          "special": "Alt 2, Precision 1, Strafe",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-79 Tri-Minigun, Focused",
+          "arc": "F",
+          "ma": "8”",
+          "r": "24/18”",
+          "att": "1",
+          "ac": "3+",
+          "e": "8",
+          "special": "Alt 3, Precision 1",
+          "box": "variant",
+          "variants": [
+            "Roc"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-79 Tri-Minigun, Spread",
+          "arc": "F",
+          "ma": "8”",
+          "r": "24/18”",
+          "att": "12",
+          "ac": "3+",
+          "e": "S3",
+          "special": "Alt 3, Precision 1, Strafe",
+          "box": "variant",
+          "variants": [
+            "Roc"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-111 HV Missile Pods",
+          "arc": "F",
+          "ma": "8”",
+          "r": "36”/9”",
+          "att": "4",
+          "ac": "3+",
+          "e": "4",
+          "special": "Strafe, Pen 6+",
+          "box": "variant",
+          "variants": [
+            "Roc"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 20,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/ucm-super-gunship.webp"
+    },
+    {
+      "id": "ucm-super-heavy-tank",
+      "name": "UCM Super-Heavy Tank",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 3,
+      "points": null,
+      "pointsRaw": "85pts (Machete, Cutlass, Claymore), 90pts (Broadsword)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "4”",
+        "A": "7",
+        "DP": "4"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "Machete",
+          "points": 85
+        },
+        {
+          "name": "Cutlass",
+          "points": 85
+        },
+        {
+          "name": "Claymore",
+          "points": 85
+        },
+        {
+          "name": "Broadsword",
+          "points": 90
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 6
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "UM-300 Mythslayer Railgun",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "∞/36”",
+          "att": "1",
+          "ac": "3+",
+          "e": "9",
+          "special": "Critical 1, Demo 0, Devastator 3, Precision 2",
+          "box": "variant",
+          "variants": [
+            "Broadsword"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UMX-90 Therma-Lance",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "12”",
+          "att": "1",
+          "ac": "2+",
+          "e": "10",
+          "special": "Demo 0, Destroyer 4+, Devastator 4",
+          "box": "variant",
+          "variants": [
+            "Machete"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-207 Demolition Cannon",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "24/18”",
+          "att": "1",
+          "ac": "3+",
+          "e": "6",
+          "special": "Demo 6, Devastator 2",
+          "box": "variant",
+          "variants": [
+            "Cutlass"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-209 Long Cannon",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "36/24”",
+          "att": "2",
+          "ac": "2+",
+          "e": "6",
+          "special": "Concussion, Critical 2, Demo 2, Devastator 1",
+          "box": "variant",
+          "variants": [
+            "Claymore"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-79 Rotary Cannon",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "36/18”",
+          "att": "5",
+          "ac": "2+",
+          "e": "S4",
+          "special": "Assault",
+          "box": "variant",
+          "variants": [
+            "Cutlass",
+            "Claymore"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 21,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/ucm-super-heavy-tank.webp"
+    },
+    {
+      "id": "archangel",
+      "name": "Archangel",
+      "category": "Vanguard",
+      "squadMin": 1,
+      "squadMax": 2,
+      "points": null,
+      "pointsRaw": "40pts (Archangel Interceptor), 45pts (Archangel Fighter-Bomber), Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "18-36”",
+        "A": "2",
+        "DP": "1"
+      },
+      "special": "Ev3, Fast Mover",
+      "variants": [
+        {
+          "name": "Archangel Interceptor",
+          "points": 40
+        },
+        {
+          "name": "Archangel Fighter-Bomber",
+          "points": 45
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "UF-50 Cannons",
+          "arc": "F",
+          "ma": "Full",
+          "r": "∞/12”",
+          "att": "2",
+          "ac": "3+",
+          "e": "3",
+          "special": "AA, T2",
+          "box": "variant",
+          "variants": [
+            "Archangel Interceptor"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UF-81 Incendiaries",
+          "arc": "F",
+          "ma": "Full",
+          "r": "18/6”",
+          "att": "2",
+          "ac": "3+",
+          "e": "4",
+          "special": "Incendiary 3",
+          "box": "variant",
+          "variants": [
+            "Archangel Fighter- Bomber"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin UF-5 Gatling",
+          "arc": "F",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "AA",
+          "box": "variant",
+          "variants": [
+            "Archangel Fighter- Bomber"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-115 Missile Spread",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "1",
+          "ac": "2+",
+          "e": "6",
+          "special": "L1, Blast, Demo 1",
+          "box": "upgrade",
+          "variants": [
+            "+10pts"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 22,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/archangel.webp"
+    },
+    {
+      "id": "harrier-gunship",
+      "name": "Harrier Gunship",
+      "category": "Vanguard",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 80,
+      "pointsRaw": "80pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "18”",
+        "A": "2",
+        "DP": "2"
+      },
+      "special": "Ev1",
+      "variants": [
+        {
+          "name": "Harrier A",
+          "points": 80
+        },
+        {
+          "name": "Harrier B",
+          "points": 80
+        }
+      ],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 2
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Twin UM-5 Gatling",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-117 Cannons",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "48/18”",
+          "att": "2",
+          "ac": "2+",
+          "e": "5",
+          "special": "Demo 0",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-117 Cannons",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "48/18”",
+          "att": "2",
+          "ac": "2+",
+          "e": "5",
+          "special": "Demo 0",
+          "box": "variant",
+          "variants": [
+            "Harrier A"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-909 Missile Block",
+          "arc": "F/Sl",
+          "ma": "9”",
+          "r": "36/6”",
+          "att": "2",
+          "ac": "3+",
+          "e": "4",
+          "special": "Pen 6+",
+          "box": "variant",
+          "variants": [
+            "Harrier B"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-909 Missile Block",
+          "arc": "F/Sr",
+          "ma": "9”",
+          "r": "36/6”",
+          "att": "2",
+          "ac": "3+",
+          "e": "4",
+          "special": "Pen 6+",
+          "box": "variant",
+          "variants": [
+            "Harrier B"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-903 Defence pods (+5pts) remove one UM-117 Cannons",
+          "arc": "F/S/R and gain",
+          "ma": "9” Scanner",
+          "r": "36/9” and Scout.",
+          "att": "2",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA, Pen 6+",
+          "box": "upgrade",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 23,
+      "auxiliaryTransport": true,
+      "selectable": true,
+      "art": "assets/units/harrier-gunship.webp"
+    },
+    {
+      "id": "praetorian-snipers",
+      "name": "Praetorian Snipers",
+      "category": "Vanguard",
+      "squadMin": 2,
+      "squadMax": 3,
+      "points": 35,
+      "pointsRaw": "35pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "2”",
+        "OF": "4",
+        "DF": "4+",
+        "B": "3+",
+        "DP": "3"
+      },
+      "special": "Ev2, FS1, Infiltrate 18”, Scout",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "UM-3S Sniper Rifles",
+          "arc": "F/S/R",
+          "ma": "0”",
+          "r": "∞/24”",
+          "att": "6",
+          "ac": "2+",
+          "e": "S3",
+          "special": "Pen 6+, Precision 2",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 24,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/praetorian-snipers.webp"
+    },
+    {
+      "id": "praetorian-spec-ops",
+      "name": "Praetorian Spec-Ops",
+      "category": "Vanguard",
+      "squadMin": 2,
+      "squadMax": 3,
+      "points": 40,
+      "pointsRaw": "40pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "3”",
+        "OF": "5",
+        "DF": "4+",
+        "B": "3+",
+        "DP": "5"
+      },
+      "special": "Breachers D3, FS3, Rapid Insertion 4”",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "UM-3K Carbines",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "12/6”",
+          "att": "10",
+          "ac": "2+",
+          "e": "S1",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 25,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/praetorian-spec-ops.webp"
+    },
+    {
+      "id": "starsprite",
+      "name": "Starsprite",
+      "category": "Vanguard",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 0,
+      "pointsRaw": "0pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "30”",
+        "A": "1",
+        "DP": "1"
+      },
+      "special": "Remote Drone, Scout",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Golden Arrow Missile",
+          "arc": "F",
+          "ma": "15”",
+          "r": "24/6”",
+          "att": "1",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA-S, Focus 3",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 26,
+      "auxiliaryTransport": false,
+      "selectable": false,
+      "art": "assets/units/starsprite.webp"
+    },
+    {
+      "id": "ucm-columbus-battlewalker",
+      "name": "UCM Columbus Battlewalker",
+      "category": "Vanguard",
+      "squadMin": 1,
+      "squadMax": 3,
+      "points": 75,
+      "pointsRaw": "75pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "4”",
+        "A": "5",
+        "DP": "3"
+      },
+      "special": "Infiltrate 18”",
+      "variants": [
+        {
+          "name": "Columbus A",
+          "points": 75
+        },
+        {
+          "name": "Columbus B",
+          "points": 75
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "MC-120 Punisher Cannons",
+          "arc": "F",
+          "ma": "3”",
+          "r": "∞/18”",
+          "att": "2",
+          "ac": "3+",
+          "e": "6",
+          "special": "Demo 0",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MM-111 Missile Pod",
+          "arc": "F",
+          "ma": "Full",
+          "r": "36/9”",
+          "att": "1",
+          "ac": "3+",
+          "e": "4",
+          "special": "Pen 6+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MC-17 Guns",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "36/18”",
+          "att": "2",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA",
+          "box": "variant",
+          "variants": [
+            "Columbus A"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "MF-666 Flamethrower",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "6”",
+          "att": "6",
+          "ac": "3+",
+          "e": "S2",
+          "special": "Flame",
+          "box": "variant",
+          "variants": [
+            "Columbus B"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 27,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/ucm-columbus-battlewalker.webp"
+    },
+    {
+      "id": "ucm-troop-buggy",
+      "name": "UCM Troop Buggy",
+      "category": "Vanguard",
+      "squadMin": 2,
+      "squadMax": 4,
+      "points": null,
+      "pointsRaw": "10pts (Badger A, Badger B), 15pts (Ferret), Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "9”",
+        "A": "4",
+        "DP": "1"
+      },
+      "special": "Delayed, Infiltrate 10” (All), Scout (Ferret)",
+      "variants": [
+        {
+          "name": "Badger A",
+          "points": 10
+        },
+        {
+          "name": "Badger B",
+          "points": 10
+        },
+        {
+          "name": "Ferret",
+          "points": 15
+        }
+      ],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 1
+          }
+        ],
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Twin UM-5 Gatling",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
+          "box": "variant",
+          "variants": [
+            "Badger A"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-108 Missile",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "36/9”",
+          "att": "1",
+          "ac": "3+",
+          "e": "6",
+          "special": "L1, Demo 0",
+          "box": "variant",
+          "variants": [
+            "Badger B"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 28,
+      "auxiliaryTransport": true,
+      "selectable": true,
+      "art": "assets/units/ucm-troop-buggy.webp"
+    },
+    {
+      "id": "wolverine-buggy",
+      "name": "Wolverine Buggy",
+      "category": "Vanguard",
+      "squadMin": 4,
+      "squadMax": 8,
+      "points": 15,
+      "pointsRaw": "15pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "9”",
+        "A": "3",
+        "DP": "1"
+      },
+      "special": "Scout",
+      "variants": [
+        {
+          "name": "Wolverine A",
+          "points": 15
+        },
+        {
+          "name": "Wolverine B",
+          "points": 15
+        },
+        {
+          "name": "Wolverine C",
+          "points": 15
+        },
+        {
+          "name": "Wolverine D",
+          "points": 15
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "UM-303 Minigun",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "36/18”",
+          "att": "8",
+          "ac": "3+",
+          "e": "S2",
+          "special": "AA",
+          "box": "variant",
+          "variants": [
+            "Wolverine A"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-105B Missile Launcher",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "36/9”",
+          "att": "1",
+          "ac": "3+",
+          "e": "5",
+          "special": "Demo 0",
+          "box": "variant",
+          "variants": [
+            "Wolverine B"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-66 Flamethrower",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "3”",
+          "att": "3",
+          "ac": "3+",
+          "e": "S3",
+          "special": "Flame",
+          "box": "variant",
+          "variants": [
+            "Wolverine C"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-18 Mortar, Explosive",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "2",
+          "ac": "4+",
+          "e": "3",
+          "special": "Alt 1, Indirect, Pen 6+",
+          "box": "variant",
+          "variants": [
+            "Wolverine D"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-18 Mortar, Smoke",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "24”",
+          "att": "1",
+          "ac": "A",
+          "e": "0",
+          "special": "Alt 1, Indirect, Smoke",
+          "box": "variant",
+          "variants": [
+            "Wolverine D"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 29,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/wolverine-buggy.webp"
+    },
+    {
+      "id": "albatross-heavy-dropship",
+      "name": "Albatross Heavy Dropship",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 50,
+      "pointsRaw": "50pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "18”",
+        "A": "2",
+        "DP": "6"
+      },
+      "special": "",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "triangle",
+            "n": 18
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Twin UM-5 Gatling",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin UM-5 Gatling",
+          "arc": "F/Sl",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin UM-5 Gatling",
+          "arc": "F/Sr",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 30,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/albatross-heavy-dropship.webp"
+    },
+    {
+      "id": "bear-apc",
+      "name": "Bear APC",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 10,
+      "pointsRaw": "10pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "5",
+        "DP": "2"
+      },
+      "special": "Surveyor",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 3
+          }
+        ],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 3
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Twin UM-5 Gatling",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 31,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/bear-apc.webp"
+    },
+    {
+      "id": "condor-dropship",
+      "name": "Condor Dropship",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 20,
+      "pointsRaw": "20pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "18”",
+        "A": "2",
+        "DP": "3"
+      },
+      "special": "",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "triangle",
+            "n": 6
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Twin UM-5 Gatling",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-111 Missile Pod",
+          "arc": "F",
+          "ma": "9”",
+          "r": "36/6”",
+          "att": "1",
+          "ac": "3+",
+          "e": "4",
+          "special": "Pen 6+",
+          "box": "upgrade",
+          "variants": [
+            "+10pts"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 32,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/condor-dropship.webp"
+    },
+    {
+      "id": "crow-dropship",
+      "name": "Crow Dropship",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 25,
+      "pointsRaw": "25pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "24”",
+        "A": "2",
+        "DP": "1"
+      },
+      "special": "Strike",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "triangle",
+            "n": 2
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Twin UM-5 Gatling",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UMX-211 EM Missiles",
+          "arc": "F",
+          "ma": "12”",
+          "r": "36/9”",
+          "att": "2",
+          "ac": "3+",
+          "e": "4",
+          "special": "Ineffective: Zones, Jammer",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 33,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/crow-dropship.webp"
+    },
+    {
+      "id": "raven-light-dropship",
+      "name": "Raven Light Dropship",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 15,
+      "pointsRaw": "15pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "24”",
+        "A": "2",
+        "DP": "1"
+      },
+      "special": "",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "diamond",
+            "n": 2
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Twin UM-5 Gatling",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 34,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/raven-light-dropship.webp"
+    },
+    {
+      "id": "raven-light-troopship",
+      "name": "Raven Light Troopship",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 30,
+      "pointsRaw": "30pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "24”",
+        "A": "2",
+        "DP": "1"
+      },
+      "special": "",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 2
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Twin UM-5 Gatling",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 35,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/raven-light-troopship.webp"
+    },
+    {
+      "id": "vulture-dropship",
+      "name": "Vulture Dropship",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 30,
+      "pointsRaw": "30pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "18”",
+        "A": "2",
+        "DP": "2"
+      },
+      "special": "Flat Out 6”",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "diamond",
+            "n": 4
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Twin UM-5 Gatling",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-903 Defence pods",
+          "arc": "F/S/R",
+          "ma": "9”",
+          "r": "36/9”",
+          "att": "2",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA, Pen 6+",
+          "box": "upgrade",
+          "variants": [
+            "+5pts"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 36,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/vulture-dropship.webp"
+    },
+    {
+      "id": "vulture-troopship",
+      "name": "Vulture Troopship",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 40,
+      "pointsRaw": "40pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "18”",
+        "A": "2",
+        "DP": "2"
+      },
+      "special": "Flat Out 6”, Surveyor",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 4
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Twin UM-5 Gatling",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-903 Defence pods",
+          "arc": "F/S/R",
+          "ma": "9”",
+          "r": "36/9”",
+          "att": "2",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA, Pen 6+",
+          "box": "upgrade",
+          "variants": [
+            "+5pts"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 37,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/vulture-troopship.webp"
+    }
+  ]
+}

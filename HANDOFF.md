@@ -1,0 +1,287 @@
+# Dropzone Commander 3E Army Builder — Handoff
+
+Everything a fresh session needs to pick this up. Read this first.
+
+---
+
+## 1. What this is
+
+An army builder for **Dropzone Commander 3rd Edition**, built as a **fork of the
+Dropfleet Commander Fleet Builder** — not a rewrite. The Dropfleet app represents
+months of work (594 commits, ~200 functions, print/share/sync/offline/collection
+tracker/rules tooltips/art carousels). The job is to keep all of that and swap
+the *game* underneath it: different stats, units, rules, appearance.
+
+> The single most important thing to understand: **do not rebuild this app.**
+> An earlier attempt hand-built a lookalike from scratch and lost every feature.
+> Adapt the fork.
+
+### Where things live
+
+| | |
+|---|---|
+| **Working folder** | `D:\wargaming\Web Apps\Dropzone-3E-Army-Builder` |
+| **This repo** | `github.com/Type37/dropzone-3e-army-builder` |
+| **Upstream remote** | `upstream-dropfleet` → `github.com/Type37/dropfleet-builder` |
+| **Reference app (read-only)** | `D:\wargaming\Web Apps\Dropfleet-Builder` |
+| **Retired** | `D:\wargaming\Web Apps\Dropzone-Commander-Arsenal-3e` + its repo — superseded, see §7 |
+
+GitHub would not allow a true fork (one account cannot own both parent and
+fork), so this is a full clone with history preserved and Dropfleet kept as a
+remote. Future Dropfleet fixes can still be cherry-picked:
+
+```sh
+git fetch upstream-dropfleet
+git cherry-pick <sha>
+```
+
+---
+
+## 2. What the owner wants
+
+Stated requirements, in their words where it matters:
+
+1. **Fork, don't rebuild.** "What I want is the dropfleet builder app I spent
+   months making, but then we change the functionality, stats, appearance and
+   units and such."
+2. **One app, not two.** Dropfleet ships a desktop build *and* a separate
+   `mobile/` build; they drifted apart. Unify into a single responsive app.
+   Desktop keeps panes; mobile does not.
+3. **Fluent 2 design**, layered over the Dropfleet look. Reference:
+   <https://jetwong.neocities.org/fluent2-reference> — tokens, spacing, radius,
+   elevation, motion curves, z-index ladder, two-stroke focus ring.
+4. **Keep Dropfleet's colours and type.** Warm paper/ink palette, navy rail,
+   gold accents. **Tighter spacing** than Dropfleet.
+5. **Fonts:** Terminal Grotesque Open (wordmark), Jost (body *and* the condensed
+   label role), Roboto Slab (display), Libre Baskerville (lore).
+   **Barlow Condensed is out.**
+6. **Icons matter.** They like them. Game tokens can come from the rulebook;
+   otherwise Flowbite, Streamline, Simple Icons, SVG Spinners (via Iconify).
+   Inline them — never load from a CDN, it breaks offline.
+7. **Images for every unit.** Done — 178/178.
+8. **Mobile-friendly for real.** Tapping shows info; adding is deliberate.
+9. **Renaming:** Groups and generic Commanders yes. Armies no.
+10. **Print mode** matters, researched and DZC-specific (see §5).
+11. **Lore** later; art is the priority.
+12. **Task tracking:** Todoist project *Generators & Web Apps*, label
+    `#dropzone3`. Add tasks when given work; complete them when done.
+13. Working notes go in `NOTES.md` (gitignored), **not** into GitHub.
+
+---
+
+## 3. The data pipeline (done, and the part worth keeping)
+
+`tools/dzc/` converts TTCombat's published stat-card PDFs straight into JSON, so
+a new release is re-ingested rather than re-typed.
+
+```sh
+python -m pip install pymupdf pillow
+python tools/dzc/scan_statcards.py --pdf-dir rules --out data/dzc --art assets/units
+python tools/dzc/audit_data.py
+python tools/dzc/audit_transport.py
+python tools/dzc/audit_art.py
+```
+
+**Status: 178 units across all six factions, 0 pages skipped, all three audits
+clean.** Plus 178 transparent WebP unit photos (12.5 MB total).
+
+Source PDFs are in `rules/` — TTCombat publish them free and publicly at
+<https://ttcombat.com/pages/dropzone-commander-resources>.
+
+### Things the cards do that break naive parsers (all handled)
+
+| Card behaviour | Why it bites |
+|---|---|
+| `∞/24"` ranges | `pdftotext` silently drops the infinity glyph — hence PyMuPDF |
+| `(Surge 1, 2, and 3)` | prefix written once; means Surge 1, Surge 2, Surge 3 |
+| `(Jack­al)` split over a line | soft hyphen, not ASCII `-` |
+| `(Recon ATVs)` vs `(Recon ATV)` | banner and weapon bracket disagree on plurals |
+| Greave has no unique weapon | variants must come from points + weapons + specials |
+| Points and Squad Size share a `y` | banner columns must be read separately or they interleave |
+| Badge digit printed twice | a template glyph at ~19.9pt and the real value at ~14.2pt over it |
+| Faction logo watermark | drawn *larger* than the photo on 139/178 cards |
+
+Two hard-won rules encoded in the audits:
+
+- **Transport symbol shape** decides which transports may carry a unit, so a
+  misclassification silently permits illegal armies. Shape comes from the
+  **convex hull**, not the path-item count: a hollow badge is nested outlines,
+  so a hollow triangle has 6 line items and a bordered one 12, and 12 divides by
+  both 3 and 4. `audit_transport.py` pins the rulebook's Condor→Bear APC→Sabre
+  pairings as regression tests.
+- **A diamond is not a square.** Square fills are 23/24 Infantry, diamond fills
+  22/25 Vehicle, and four of six factions use both. Collapsing them would let
+  infantry ride in vehicle-only transports.
+
+One known source-data quirk (not a bug): the Bioficer **Surge Gunship**'s *Decon
+Pulse* prints an orange variant-restricted name box but names no variant,
+contradicting rulebook 3.2.2. Flagged as `boxUnresolved`, treated as
+all-variants.
+
+---
+
+## 4. DZC rules the builder must enforce
+
+Rulebook 3.01, chapter 3.
+
+| Game size | Points | Max Groups |
+|---|---|---|
+| Skirmish | 501–1000 | 9 |
+| Clash | 1001–2000 | 12 |
+| Battle | 2001–3000 | 16 |
+| Reconquest | 3001+ | 20, +4 per 1000 over 3000 |
+
+- Categories: **Standard / Vanguard / Heavy / Support / Transport** (+ *Generated*
+  for Bioficer Drones and Hulks, which cannot be selected).
+- Vanguard, Heavy and Support may **each** not exceed points spent on Standard.
+- No Group may cost more than **¼ of the agreed limit** (the number you agreed,
+  not the top of the band — so the limit must be an input).
+- **Rare**: 1 in Skirmish, 2 in Clash, 3 in Battle/Reconquest. **Unique**: 1.
+- **Transports** may only be taken alongside a Squad they can carry, and must be
+  taken **full**. They have no min/max squad size — a missing squad size is
+  normal for them.
+- **Auxiliary Transports** (hollow symbol, category *not* Transport) are taken as
+  normal Squads and need **not** be full.
+- At least one **Commander**: L4=50, L5=90 (any size), L6=150 (Clash+),
+  L7=230 (Battle+). Points count toward the total but are **ignored** for the
+  category ratios (3.2.5). One per Squad.
+- **Variants are per MODEL, not per squad** — a Squad may legally mix them
+  (3.2.2), so a squad's cost is the sum of its models.
+
+### The thing that makes DZC different
+
+**A Group is a nesting tree, not a list.** Condor → 2× Bear APC → 6× Legionnaires.
+Transports must be full, squads with transports **begin the game aboard them**,
+and activation alternates **one Group at a time** — so Group count *is* your
+activation count. No competing builder models this well; it's the differentiator.
+
+Famous Commanders are **not released yet**. Schema slot exists; ship generic only.
+Command Cards are **not published anywhere** — deferred.
+
+---
+
+## 5. Print mode
+
+The printed sheet is the deployment plan. Keep the **Group nesting tree**,
+indented, with capacity at each level. Drop chrome and art. Groups never split
+across a page; rules text never breaks mid-sentence.
+
+Carried from Dropfleet: per-unit thumbnails, ink-saver and density toggles,
+accurate page-break preview. Two-column print was tried and **removed** on
+mobile — don't reintroduce it.
+
+---
+
+## 6. Adaptation plan (the actual remaining work)
+
+The app only ever fetches three things, so **the adaptation is a data layer, not
+an edit of 26,000 lines**:
+
+```
+data/fleet-index.json    gameSystem.gameSizes / admiralLevels / objectives, factions
+data/faction-<id>.json   { id, name, shortName, admirals[],
+                           groups[{ id, name, category,
+                                    ship{ name, cost, stats{}, weapons[],
+                                          loads[], specialRules[] } }],
+                           launchAssets, spaceStations, deployableFeatures }
+data/pronunciations.json (optional)
+```
+
+**The rules are data.** Game sizes, group caps and admiral levels all live in
+`fleet-index.json`, so most of DZC force construction is a data file.
+
+### Domain mapping
+
+| Dropfleet | Dropzone |
+|---|---|
+| Fleet → Battlegroup → Ship | Army → **Group** → Unit/Squad |
+| Admiral (AP, abilities) | **Commander** (CP, Command Cards) |
+| tonnage light/medium/heavy/colossal | **category** Standard/Vanguard/Heavy/Support/Transport |
+| launch assets (`loads`) | **transport capacity** — *and nesting, which is new* |
+| thrust/scan/sig/hull/es/ks/bs | Mv/A/DP, or Mv/OF/DF/B/DP for Infantry |
+| arc/attack/lock/damage/type | arc/MA/R/Att/Ac/E |
+| Colossal group limits | ¼-per-Group limit, category ratios |
+
+**Reuse, don't invent:** Dropfleet's **Resistance modular ships** (Systems /
+Hardpoint pickers, loadout refits folded into fielded stats) are already the
+pattern DZC **variants** need.
+
+### Order of work
+
+1. Adapter: `tools/dzc/build_app_data.py` → emit `data/faction-*.json` in the
+   app's shape from `data/dzc/*.json`, plus a DZC `fleet-index.json`.
+2. Terminology sweep: Fleet→Army, Ship→Unit, Admiral→Commander, Battlegroup→Group.
+3. Stats/weapons columns → DZC columns; arcs are **90° wedges** (rulebook 6.1.2),
+   including the Side Left / Side Right split.
+4. Validation → DZC rules (§4). Add transport nesting + capacity.
+5. Unify desktop + mobile into one responsive app.
+6. Appearance: Fluent tokens, tighter spacing, faction accents.
+
+---
+
+## 7. What was salvaged from the abandoned "Arsenal" attempt
+
+Before the fork decision, a from-scratch app was built and discarded. What
+survived and is now in this repo:
+
+- `tools/dzc/` — the scanner and its three audits
+- `data/dzc/faction-*.json` — 178 scanned units
+- `assets/units/` — 178 transparent WebPs
+- `rules/` — the PDFs
+- `tools/dzc/layout-check.html` — see below
+- `NOTES.md` — working notes (gitignored)
+
+The Arsenal repo and folder can be deleted once you're happy this has everything.
+
+### Verification harness — please keep using this
+
+`tools/dzc/layout-check.html` loads the app in **real fixed-width iframes** and
+reports every element crossing the viewport edge at 320 / 375 / 414 / 768.
+
+```sh
+python -m http.server 8899
+# then http://localhost:8899/tools/dzc/layout-check.html?url=../../index.html
+```
+
+**Why it exists:** `resize_window` reports *"Viewport set to 375x812"* while
+leaving `window.innerWidth` at **867**. A responsive check run against it
+measures the wrong viewport. That is exactly how a horizontal-overflow bug
+shipped to a real phone. The harness asserts `instrumentOk` before trusting any
+measurement — **if the instrument disagrees with what you asked for, stop.**
+
+Related trap, from Dropfleet's own source comment: a floating action button
+**must** live at `<body>` level. `.screen` carries `will-change: transform`,
+which makes it a containing block for `position: fixed` and parks a nested FAB
+off-screen.
+
+---
+
+## 8. Deployment notes
+
+- GitHub Pages via `.github/workflows/deploy.yml`.
+- **Stage only the site.** The repo carries ~317 MB of rules and lore PDFs the
+  app never fetches; uploading them makes every deploy slow for nothing.
+- **Cache-bust `css`/`js` with the commit SHA.** Pages caches them ~10 minutes
+  with no fingerprint, so a deploy does not reach anyone holding the old copy —
+  a fix once appeared not to deploy at all for exactly this reason.
+- Fetch data JSON with `cache: 'no-cache'` so it revalidates; its filename must
+  stay stable for the monthly re-scan.
+
+### Wanted: monthly auto-update
+
+First Tuesday of the month, GitHub Actions should fetch
+<https://ttcombat.com/pages/dropzone-commander-resources>, hash-diff the stat
+card PDFs, re-run the scanner and **open a pull request** — never auto-merge, so
+a bad parse cannot silently corrupt live data. URLs follow
+`DZC_{Faction}_Stat_Cards_{YYMMDD}.pdf`.
+
+---
+
+## 9. Open questions
+
+- Repo slug is `dropzone-3e-army-builder`; title is "Dropzone Commander 3E Army
+  Builder". Rename if you'd prefer something else.
+- Which Dropfleet features carry over unchanged (Combat Calculator, Play Mode,
+  Collection tracker, Fleet Sync) and which need DZC rules first?
+- Space Stations / Secondary Objectives have no DZC equivalent — remove, or
+  repurpose for Zones and Scenarios?

@@ -1,0 +1,2250 @@
+{
+  "faction": "scourge",
+  "name": "Scourge",
+  "sourcePdf": "DZC_Scourge_Stat_Cards_260730.pdf",
+  "version": "260730",
+  "units": [
+    {
+      "id": "despot-command-walker",
+      "name": "Despot Command Walker",
+      "category": "Standard",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 55,
+      "pointsRaw": "55pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "6",
+        "DP": "3"
+      },
+      "special": "Command Centre, Resilient",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "circle",
+            "n": 4
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Plasma Hose",
+          "arc": "F",
+          "ma": "Full",
+          "r": "6”",
+          "att": "5",
+          "ac": "4+",
+          "e": "S5",
+          "special": "Ignores Cover",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Plasma Hose",
+          "arc": "F",
+          "ma": "Full",
+          "r": "6”",
+          "att": "5",
+          "ac": "4+",
+          "e": "S5",
+          "special": "Ignores Cover",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Razor Claws",
+          "arc": "-",
+          "ma": "Full",
+          "r": "CC",
+          "att": "2",
+          "ac": "2+",
+          "e": "6",
+          "special": "Assault, Demo 0",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Micro Subjugation Field",
+          "arc": "-",
+          "ma": "Full",
+          "r": "3”",
+          "att": "1",
+          "ac": "A",
+          "e": "0",
+          "special": "Field, Ineffective: Friendlies, Suppress",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 2,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/despot-command-walker.webp"
+    },
+    {
+      "id": "scourge-battle-beetle",
+      "name": "Scourge Battle Beetle",
+      "category": "Standard",
+      "squadMin": 3,
+      "squadMax": 6,
+      "points": 25,
+      "pointsRaw": "25pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "5",
+        "DP": "2"
+      },
+      "special": "Infliltrate 8”, Resilient",
+      "variants": [
+        {
+          "name": "Stalker",
+          "points": 25
+        },
+        {
+          "name": "Slasher",
+          "points": 25
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Electroweb Caster",
+          "arc": "F",
+          "ma": "Full",
+          "r": "9”",
+          "att": "1",
+          "ac": "2+",
+          "e": "8",
+          "special": "Ineffective: Zones",
+          "box": "variant",
+          "variants": [
+            "Stalker"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Electroclaws",
+          "arc": "-",
+          "ma": "Full",
+          "r": "CC",
+          "att": "2",
+          "ac": "3+",
+          "e": "5",
+          "special": "Assault, Ineffective: Zones, Suppress",
+          "box": "variant",
+          "variants": [
+            "Slasher"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Cutting Claws",
+          "arc": "-",
+          "ma": "Full",
+          "r": "CC",
+          "att": "1",
+          "ac": "2+",
+          "e": "6",
+          "special": "Assault, Demo 0",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 3,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/scourge-battle-beetle.webp"
+    },
+    {
+      "id": "scourge-battle-skimmer",
+      "name": "Scourge Battle Skimmer",
+      "category": "Standard",
+      "squadMin": 3,
+      "squadMax": 9,
+      "points": null,
+      "pointsRaw": "30pts (Killer, Bringer), 35pts (Hunter), 40pts (Reaper)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "9”",
+        "A": "5",
+        "DP": "1"
+      },
+      "special": "Ev2, Skimmer",
+      "variants": [
+        {
+          "name": "Killer",
+          "points": 30
+        },
+        {
+          "name": "Bringer",
+          "points": 30
+        },
+        {
+          "name": "Hunter",
+          "points": 35
+        },
+        {
+          "name": "Reaper",
+          "points": 40
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 2
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Plasma Cannon",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "12”",
+          "att": "1",
+          "ac": "2+",
+          "e": "7",
+          "special": "Demo 1",
+          "box": "variant",
+          "variants": [
+            "Hunter"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Plasma Cluster",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "4”",
+          "att": "3",
+          "ac": "2+",
+          "e": "5",
+          "special": "Dissipate 1, Strafe",
+          "box": "variant",
+          "variants": [
+            "Killer"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Arc Caster",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "9”",
+          "att": "2",
+          "ac": "6+",
+          "e": "4",
+          "special": "AA, Spark",
+          "box": "variant",
+          "variants": [
+            "Reaper"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Hatchling Hive",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "6”",
+          "att": "5",
+          "ac": "2+",
+          "e": "S2",
+          "special": "Seeker",
+          "box": "variant",
+          "variants": [
+            "Bringer"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 4,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/scourge-battle-skimmer.webp"
+    },
+    {
+      "id": "scourge-light-skimmer",
+      "name": "Scourge Light Skimmer",
+      "category": "Standard",
+      "squadMin": 4,
+      "squadMax": 8,
+      "points": 25,
+      "pointsRaw": "25pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "12”",
+        "A": "3",
+        "DP": "1"
+      },
+      "special": "Ev3, Scout, Skimmer",
+      "variants": [
+        {
+          "name": "Spectre",
+          "points": 25
+        },
+        {
+          "name": "Phantom",
+          "points": 25
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Plasma Stave",
+          "arc": "F",
+          "ma": "Full",
+          "r": "18”",
+          "att": "1",
+          "ac": "3+",
+          "e": "6",
+          "special": "",
+          "box": "variant",
+          "variants": [
+            "Spectre"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Photon Blaster",
+          "arc": "F",
+          "ma": "Full",
+          "r": "9”",
+          "att": "2",
+          "ac": "3+",
+          "e": "5",
+          "special": "Indirect, Pen 5+",
+          "box": "variant",
+          "variants": [
+            "Phantom"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 5,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/scourge-light-skimmer.webp"
+    },
+    {
+      "id": "warriors",
+      "name": "Warriors",
+      "category": "Standard",
+      "squadMin": 2,
+      "squadMax": 3,
+      "points": 25,
+      "pointsRaw": "25pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "2”",
+        "OF": "5",
+        "DF": "5+",
+        "B": "4+",
+        "DP": "5"
+      },
+      "special": "",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Plasma Rifles, fire at will",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S3",
+          "special": "Alt 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Plasma Rifles, volley",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "12”",
+          "att": "1",
+          "ac": "3+",
+          "e": "6",
+          "special": "Alt 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 6,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/warriors.webp"
+    },
+    {
+      "id": "oppressor-command-arthropod",
+      "name": "Oppressor Command Arthropod",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 150,
+      "pointsRaw": "150pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "8”",
+        "A": "5",
+        "DP": "9"
+      },
+      "special": "Command Centre, Large, Resilient",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 3
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Electroweb Caster",
+          "arc": "F",
+          "ma": "4”",
+          "r": "9”",
+          "att": "1",
+          "ac": "2+",
+          "e": "8",
+          "special": "Ineffective : Zones",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Plasma Carbines, focused",
+          "arc": "F/S",
+          "ma": "4”",
+          "r": "18”",
+          "att": "2",
+          "ac": "2+",
+          "e": "7",
+          "special": "Alt 1, Demo 1, Strafe",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Plasma Carbines, spread",
+          "arc": "F/S",
+          "ma": "4”",
+          "r": "9”",
+          "att": "6",
+          "ac": "3+",
+          "e": "6",
+          "special": "Alt 1, Strafe",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Razor Claws",
+          "arc": "-",
+          "ma": "Full",
+          "r": "CC",
+          "att": "2",
+          "ac": "2+",
+          "e": "6",
+          "special": "Assault, Demo 0",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 7,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/oppressor-command-arthropod.webp"
+    },
+    {
+      "id": "scourge-command-barge",
+      "name": "Scourge Command Barge",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": null,
+      "pointsRaw": "135pts (Overseer), 150pts (Desolator)",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "12”",
+        "A": "3",
+        "DP": "7 Command"
+      },
+      "special": "Centre (All), Plasma Generator 9” (Overseer)",
+      "variants": [
+        {
+          "name": "Overseer",
+          "points": 135
+        },
+        {
+          "name": "Desolator",
+          "points": 150
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Ion Cyclone",
+          "arc": "F/S/R",
+          "ma": "9”",
+          "r": "12”",
+          "att": "15",
+          "ac": "3+",
+          "e": "S7",
+          "special": "Alt 1, Flame, Ineffective: Zones, Strafe",
+          "box": "variant",
+          "variants": [
+            "Desolator"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Ion Storm",
+          "arc": "-",
+          "ma": "9”",
+          "r": "12”",
+          "att": "1",
+          "ac": "4+",
+          "e": "6",
+          "special": "Alt 1, Field, Ineffective: Zones",
+          "box": "variant",
+          "variants": [
+            "Desolator"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Ion Cradle",
+          "arc": "F/S/R",
+          "ma": "9”",
+          "r": "9”",
+          "att": "6",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA, Strafe",
+          "box": "variant",
+          "variants": [
+            "Overseer"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 8,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/scourge-command-barge.webp"
+    },
+    {
+      "id": "scourge-gunship",
+      "name": "Scourge Gunship",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 3,
+      "points": null,
+      "pointsRaw": "55pts (Reaver), 70pts (Corruptor)",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "24”",
+        "A": "2",
+        "DP": "2"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "Reaver",
+          "points": 55
+        },
+        {
+          "name": "Corruptor",
+          "points": 70
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Plasma Lance",
+          "arc": "F/Sl",
+          "ma": "12”",
+          "r": "18”",
+          "att": "1",
+          "ac": "3+",
+          "e": "6",
+          "special": "Demo 1",
+          "box": "variant",
+          "variants": [
+            "Reaver"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Plasma Lance",
+          "arc": "F/Sr",
+          "ma": "12”",
+          "r": "18”",
+          "att": "1",
+          "ac": "3+",
+          "e": "6",
+          "special": "Demo 1",
+          "box": "variant",
+          "variants": [
+            "Reaver"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Razorworm Pods",
+          "arc": "F",
+          "ma": "12”",
+          "r": "6”",
+          "att": "2",
+          "ac": "4+",
+          "e": "4",
+          "special": "Razorworm Pod",
+          "box": "variant",
+          "variants": [
+            "Corruptor"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Plasma Hose",
+          "arc": "F",
+          "ma": "12”",
+          "r": "6”",
+          "att": "5",
+          "ac": "4+",
+          "e": "S5",
+          "special": "Ignores Cover",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 9,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/scourge-gunship.webp"
+    },
+    {
+      "id": "scourge-support-beetle",
+      "name": "Scourge Support Beetle",
+      "category": "Support",
+      "squadMin": 3,
+      "squadMax": 6,
+      "points": null,
+      "pointsRaw": "35pts (Weaver), 40pts (Ravager)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "5",
+        "DP": "2"
+      },
+      "special": "Infliltrate 8”, Resilient (All), Obscurer 4” (Weaver)",
+      "variants": [
+        {
+          "name": "Weaver",
+          "points": 35
+        },
+        {
+          "name": "Ravager",
+          "points": 40
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Shard Flak Cannons",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "48/18”",
+          "att": "4",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA, Strafe",
+          "box": "variant",
+          "variants": [
+            "Ravager"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Filament Cloudweaver",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "6”",
+          "att": "1",
+          "ac": "2+",
+          "e": "0",
+          "special": "AA, Concussion",
+          "box": "variant",
+          "variants": [
+            "Weaver"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Cutting Claws",
+          "arc": "-",
+          "ma": "Full",
+          "r": "CC",
+          "att": "1",
+          "ac": "2+",
+          "e": "6",
+          "special": "Assault, Demo 0",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 10,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/scourge-support-beetle.webp"
+    },
+    {
+      "id": "scourge-support-crawler",
+      "name": "Scourge Support Crawler",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 3,
+      "points": 40,
+      "pointsRaw": "40pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "5",
+        "DP": "3"
+      },
+      "special": "Resilient",
+      "variants": [
+        {
+          "name": "Ravenor",
+          "points": 40
+        },
+        {
+          "name": "Afflictor",
+          "points": 40
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "circle",
+            "n": 4
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Ravenor Laser",
+          "arc": "F",
+          "ma": "Full",
+          "r": "∞",
+          "att": "2",
+          "ac": "2+",
+          "e": "3",
+          "special": "Destroyer 6+, Precision 1",
+          "box": "variant",
+          "variants": [
+            "Ravenor"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Razorbug Cloud",
+          "arc": "F",
+          "ma": "Full",
+          "r": "18”",
+          "att": "1",
+          "ac": "2+",
+          "e": "1",
+          "special": "Blast, Jammer, Pen 6+",
+          "box": "variant",
+          "variants": [
+            "Afflictor"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Razor Claws",
+          "arc": "-",
+          "ma": "Full",
+          "r": "CC",
+          "att": "2",
+          "ac": "2+",
+          "e": "6",
+          "special": "Assault, Demo 0",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 11,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/scourge-support-crawler.webp"
+    },
+    {
+      "id": "demolishers",
+      "name": "Demolishers",
+      "category": "Heavy",
+      "squadMin": 2,
+      "squadMax": 3,
+      "points": 50,
+      "pointsRaw": "50pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "2”",
+        "OF": "6",
+        "DF": "2+",
+        "B": "2+",
+        "DP": "3"
+      },
+      "special": "Breachers D3+1, Hardy 3+, Strong",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Plasma Chargers",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "6”",
+          "att": "3",
+          "ac": "3+",
+          "e": "6",
+          "special": "Alt 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Shard Cannons",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "10",
+          "ac": "3+",
+          "e": "S2",
+          "special": "Alt 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 12,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/demolishers.webp"
+    },
+    {
+      "id": "evicerators",
+      "name": "Evicerators",
+      "category": "Heavy",
+      "squadMin": 2,
+      "squadMax": 3,
+      "points": 55,
+      "pointsRaw": "55pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "2”",
+        "OF": "7",
+        "DF": "2+",
+        "B": "A",
+        "DP": "3"
+      },
+      "special": "",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Chitin Glaives",
+          "arc": "-",
+          "ma": "Full",
+          "r": "CC",
+          "att": "3",
+          "ac": "3+",
+          "e": "5",
+          "special": "Assault",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 13,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/evicerators.webp"
+    },
+    {
+      "id": "scourge-gun-skimmer",
+      "name": "Scourge Gun Skimmer",
+      "category": "Heavy",
+      "squadMin": 2,
+      "squadMax": 6,
+      "points": null,
+      "pointsRaw": "45pts (Decapitator), 55pts (Executioner)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "8”",
+        "A": "5",
+        "DP": "3"
+      },
+      "special": "Skimmer, Ev2 (All), Flat Out 8” (Decapitator)",
+      "variants": [
+        {
+          "name": "Decapitator",
+          "points": 45
+        },
+        {
+          "name": "Executioner",
+          "points": 55
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 3
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Thrust Cutter",
+          "arc": "F",
+          "ma": "4”",
+          "r": "4”",
+          "att": "1",
+          "ac": "2+",
+          "e": "10",
+          "special": "Critical D3, Demo 2",
+          "box": "variant",
+          "variants": [
+            "Decapitator"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Bio-Mortar, burster",
+          "arc": "F",
+          "ma": "4”",
+          "r": "24/12”",
+          "att": "1",
+          "ac": "3+",
+          "e": "3",
+          "special": "Alt 1, Indirect, Pen 5+, Suppress",
+          "box": "variant",
+          "variants": [
+            "Executioner"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Bio-Mortar, seep",
+          "arc": "F",
+          "ma": "4”",
+          "r": "24/12”",
+          "att": "1",
+          "ac": "3+",
+          "e": "5",
+          "special": "Alt 1, Demo 0, Incendiary D3+1, Indirect",
+          "box": "variant",
+          "variants": [
+            "Executioner"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 14,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/scourge-gun-skimmer.webp"
+    },
+    {
+      "id": "scourge-heavy-skimmer",
+      "name": "Scourge Heavy Skimmer",
+      "category": "Heavy",
+      "squadMin": 2,
+      "squadMax": 6,
+      "points": 50,
+      "pointsRaw": "50pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "5",
+        "DP": "3"
+      },
+      "special": "Ev1, Skimmer",
+      "variants": [
+        {
+          "name": "Slayer",
+          "points": 50
+        },
+        {
+          "name": "Tormentor",
+          "points": 50
+        }
+      ],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "pentagon",
+            "n": 1
+          }
+        ],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 3
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Plasma Cannons",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "12”",
+          "att": "2",
+          "ac": "2+",
+          "e": "7",
+          "special": "Demo 1",
+          "box": "variant",
+          "variants": [
+            "Slayer"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Acid Streamer",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "6”",
+          "att": "10",
+          "ac": "3+",
+          "e": "S1",
+          "special": "Flame",
+          "box": "variant",
+          "variants": [
+            "Tormentor"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 15,
+      "auxiliaryTransport": true,
+      "selectable": true,
+      "art": "assets/units/scourge-heavy-skimmer.webp"
+    },
+    {
+      "id": "scourge-mobile-ordnance",
+      "name": "Scourge Mobile Ordnance",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 120,
+      "pointsRaw": "120pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "2”",
+        "A": "4",
+        "DP": "7"
+      },
+      "special": "Jump 18”, Strike",
+      "variants": [
+        {
+          "name": "Obliterator",
+          "points": 120
+        },
+        {
+          "name": "Annihilator",
+          "points": 120
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Furnace Laser",
+          "arc": "F",
+          "ma": "0”",
+          "r": "∞",
+          "att": "1",
+          "ac": "2+",
+          "e": "9",
+          "special": "Critical D3, Demo 0, Devastator 3",
+          "box": "variant",
+          "variants": [
+            "Obliterator"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Plasma Bombard",
+          "arc": "F",
+          "ma": "0”",
+          "r": "24”",
+          "att": "1",
+          "ac": "2+",
+          "e": "8",
+          "special": "Blast, Devastator 1, Indirect",
+          "box": "variant",
+          "variants": [
+            "Annihilator"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 16,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/scourge-mobile-ordnance.webp"
+    },
+    {
+      "id": "scourge-ordnance-barge",
+      "name": "Scourge Ordnance Barge",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 120,
+      "pointsRaw": "120pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "12”",
+        "A": "3",
+        "DP": "7"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "Savager",
+          "points": 120
+        },
+        {
+          "name": "Slaughterer",
+          "points": 120
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Heavy Pulse Laser",
+          "arc": "F",
+          "ma": "9”",
+          "r": "∞",
+          "att": "3",
+          "ac": "3+",
+          "e": "3",
+          "special": "Demo 0, Destroyer 6+, Precision 2",
+          "box": "variant",
+          "variants": [
+            "Savager"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Super Plasma Lance",
+          "arc": "F",
+          "ma": "9”",
+          "r": "12”",
+          "att": "2",
+          "ac": "3+",
+          "e": "8",
+          "special": "Demo 2, Devastator 3, Precision 2, Strafe",
+          "box": "variant",
+          "variants": [
+            "Slaughterer"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 17,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/scourge-ordnance-barge.webp"
+    },
+    {
+      "id": "subjugator-arthropod",
+      "name": "Subjugator Arthropod",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 100,
+      "pointsRaw": "100pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "8”",
+        "A": "5",
+        "DP": "9"
+      },
+      "special": "Large, Resilient",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 3
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Electroweb Caster",
+          "arc": "F",
+          "ma": "4”",
+          "r": "9”",
+          "att": "1",
+          "ac": "2+",
+          "e": "8",
+          "special": "Ineffective: Zones",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Razor Claws",
+          "arc": "-",
+          "ma": "Full",
+          "r": "CC",
+          "att": "2",
+          "ac": "2+",
+          "e": "6",
+          "special": "Assault, Demo 0",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Subjugation Field",
+          "arc": "-",
+          "ma": "Full",
+          "r": "6”",
+          "att": "1",
+          "ac": "A",
+          "e": "0",
+          "special": "Field, Ineffective: Friendlies, Suppress",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 18,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/subjugator-arthropod.webp"
+    },
+    {
+      "id": "razorworms",
+      "name": "Razorworms",
+      "category": "Vanguard",
+      "squadMin": 2,
+      "squadMax": 3,
+      "points": 20,
+      "pointsRaw": "20pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "3”",
+        "OF": "6",
+        "DF": "4+",
+        "B": "A",
+        "DP": "3"
+      },
+      "special": "Agile 1, Infiltrate 18”, Lethal, Living Weapons",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "pentagon",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Teeth and Claws",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "CC",
+          "att": "2",
+          "ac": "4+",
+          "e": "3",
+          "special": "Assault",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 19,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/razorworms.webp"
+    },
+    {
+      "id": "scourge-chamelopod",
+      "name": "Scourge Chamelopod",
+      "category": "Vanguard",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": null,
+      "pointsRaw": "140pts (Eraser), 150pts (Eradicator), Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "8”",
+        "A": "5",
+        "DP": "9"
+      },
+      "special": "Large, Resilient, Stealth",
+      "variants": [
+        {
+          "name": "Eraser",
+          "points": 140
+        },
+        {
+          "name": "Eradicator",
+          "points": 150
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 3
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Electroweb Caster",
+          "arc": "F",
+          "ma": "4”",
+          "r": "9”",
+          "att": "1",
+          "ac": "2+",
+          "e": "8",
+          "special": "Ineffective: Zones",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Heavy Bio-Mortar, burster",
+          "arc": "F",
+          "ma": "0”",
+          "r": "24”",
+          "att": "1",
+          "ac": "3+",
+          "e": "4",
+          "special": "Alt 1, Blast, Indirect, Pen 5+, Suppress",
+          "box": "variant",
+          "variants": [
+            "Eradicator"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Heavy Bio-Mortar, seep",
+          "arc": "F",
+          "ma": "0”",
+          "r": "24”",
+          "att": "1",
+          "ac": "3+",
+          "e": "5",
+          "special": "Alt 1, Demo 1, Incendiary D3+3, Indirect",
+          "box": "variant",
+          "variants": [
+            "Eradicator"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Plasma Fusillades",
+          "arc": "F/S",
+          "ma": "4”",
+          "r": "18”",
+          "att": "6",
+          "ac": "3+",
+          "e": "3",
+          "special": "AA, Strafe",
+          "box": "variant",
+          "variants": [
+            "Eraser"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Razor Claws",
+          "arc": "-",
+          "ma": "Full",
+          "r": "CC",
+          "att": "2",
+          "ac": "2+",
+          "e": "6",
+          "special": "Assault, Demo 0",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 20,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/scourge-chamelopod.webp"
+    },
+    {
+      "id": "scourge-drone",
+      "name": "Scourge Drone",
+      "category": "Vanguard",
+      "squadMin": 4,
+      "squadMax": 8,
+      "points": 10,
+      "pointsRaw": "10pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "8”",
+        "A": "1",
+        "DP": "1"
+      },
+      "special": "Rapid Insertion 5”, Scout, Wide 6”",
+      "variants": [
+        {
+          "name": "Minder",
+          "points": 10
+        },
+        {
+          "name": "Monitor",
+          "points": 10
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "circle",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Micro Arc Caster",
+          "arc": "F/S/R",
+          "ma": "2”",
+          "r": "6”",
+          "att": "1",
+          "ac": "6+",
+          "e": "2",
+          "special": "AA, Spark",
+          "box": "variant",
+          "variants": [
+            "Minder"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Shard Cannons",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "10",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
+          "box": "variant",
+          "variants": [
+            "Monitor"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Self-Destruct",
+          "arc": "F",
+          "ma": "Full",
+          "r": "3”",
+          "att": "1",
+          "ac": "2+",
+          "e": "7",
+          "special": "Demo 0, Self-Destruct",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 21,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/scourge-drone.webp"
+    },
+    {
+      "id": "scourge-interceptor",
+      "name": "Scourge Interceptor",
+      "category": "Vanguard",
+      "squadMin": 1,
+      "squadMax": 2,
+      "points": null,
+      "pointsRaw": "40pts (Corsair), 50pts (Brigand), Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "24-36”",
+        "A": "2",
+        "DP": "1"
+      },
+      "special": "Ev 3, Fast Mover",
+      "variants": [
+        {
+          "name": "Corsair",
+          "points": 40
+        },
+        {
+          "name": "Brigand",
+          "points": 50
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "AA Plasma Cannon",
+          "arc": "F",
+          "ma": "Full",
+          "r": "12”",
+          "att": "1",
+          "ac": "3+",
+          "e": "7",
+          "special": "AA-S, Demo 1",
+          "box": "variant",
+          "variants": [
+            "Corsair"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Interceptor Arc Caster",
+          "arc": "F",
+          "ma": "Full",
+          "r": "9”",
+          "att": "2",
+          "ac": "6+",
+          "e": "4",
+          "special": "AA, Spark, T1",
+          "box": "variant",
+          "variants": [
+            "Brigand"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 22,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/scourge-interceptor.webp"
+    },
+    {
+      "id": "scourge-screamer",
+      "name": "Scourge Screamer",
+      "category": "Vanguard",
+      "squadMin": 1,
+      "squadMax": 2,
+      "points": 40,
+      "pointsRaw": "40pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "4",
+        "DP": "4"
+      },
+      "special": "Ev2, Infiltrate 12”, Regenerate 1, Stealth, UC",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 2
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Huge Claws",
+          "arc": "-",
+          "ma": "Full",
+          "r": "CC",
+          "att": "2",
+          "ac": "2+",
+          "e": "7",
+          "special": "Assault, Demo 0",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Hunting Scream",
+          "arc": "F",
+          "ma": "Full",
+          "r": "6”",
+          "att": "1",
+          "ac": "A",
+          "e": "0",
+          "special": "Concussion, Flame, Jammer",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 23,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/scourge-screamer.webp"
+    },
+    {
+      "id": "scourge-spider",
+      "name": "Scourge Spider",
+      "category": "Vanguard",
+      "squadMin": 4,
+      "squadMax": 8,
+      "points": 10,
+      "pointsRaw": "10pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "1",
+        "DP": "1"
+      },
+      "special": "Rapid Insertion 5”, Scout",
+      "variants": [
+        {
+          "name": "Prowler",
+          "points": 10
+        },
+        {
+          "name": "Raptor",
+          "points": 10
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "circle",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Plasma Proboscis",
+          "arc": "-",
+          "ma": "Full",
+          "r": "CC",
+          "att": "1",
+          "ac": "2+",
+          "e": "7",
+          "special": "Assault, Demo 0",
+          "box": "variant",
+          "variants": [
+            "Prowler"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Acid Proboscis",
+          "arc": "F",
+          "ma": "Full",
+          "r": "6”",
+          "att": "3",
+          "ac": "3+",
+          "e": "S1",
+          "special": "Flame",
+          "box": "variant",
+          "variants": [
+            "Raptor"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 24,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/scourge-spider.webp"
+    },
+    {
+      "id": "vampire",
+      "name": "Vampire",
+      "category": "Vanguard",
+      "squadMin": 2,
+      "squadMax": 4,
+      "points": 10,
+      "pointsRaw": "10pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "12”",
+        "A": "0",
+        "DP": "1"
+      },
+      "special": "Cling, Ev1, UC",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Cutting Beam",
+          "arc": "F",
+          "ma": "9”",
+          "r": "CC",
+          "att": "1",
+          "ac": "2+",
+          "e": "2",
+          "special": "AA-S, Focus 2, T2",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 25,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/vampire.webp"
+    },
+    {
+      "id": "despoiler-heavy-dropship",
+      "name": "Despoiler Heavy Dropship",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 60,
+      "pointsRaw": "60pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "18”",
+        "A": "2",
+        "DP": "7"
+      },
+      "special": "",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "triangle",
+            "n": 18
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Plasma Cannons",
+          "arc": "F/S",
+          "ma": "9”",
+          "r": "12”",
+          "att": "2",
+          "ac": "4+",
+          "e": "7",
+          "special": "Demo 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 26,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/despoiler-heavy-dropship.webp"
+    },
+    {
+      "id": "harbinger-dropship",
+      "name": "Harbinger Dropship",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 45,
+      "pointsRaw": "45pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "18”",
+        "A": "3",
+        "DP": "4"
+      },
+      "special": "",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "diamond",
+            "n": 3
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Plasma Bombs",
+          "arc": "F/S/R",
+          "ma": "9”",
+          "r": "GB",
+          "att": "1",
+          "ac": "4+",
+          "e": "7",
+          "special": "Demo 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Mini Arc Caster",
+          "arc": "F",
+          "ma": "9”",
+          "r": "6”",
+          "att": "1",
+          "ac": "6+",
+          "e": "3",
+          "special": "AA, Spark",
+          "box": "all",
+          "variants": [
+            "+5pts"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 27,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/harbinger-dropship.webp"
+    },
+    {
+      "id": "harbinger-troopship",
+      "name": "Harbinger Troopship",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 50,
+      "pointsRaw": "50pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "18”",
+        "A": "3",
+        "DP": "4"
+      },
+      "special": "",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 3
+          },
+          {
+            "shape": "triangle",
+            "n": 4
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Plasma Bombs",
+          "arc": "F/S/R",
+          "ma": "9”",
+          "r": "GB",
+          "att": "1",
+          "ac": "4+",
+          "e": "7",
+          "special": "Demo 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 28,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/harbinger-troopship.webp"
+    },
+    {
+      "id": "intruder-light-dropship",
+      "name": "Intruder Light Dropship",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 20,
+      "pointsRaw": "20pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "30”",
+        "A": "2",
+        "DP": "1"
+      },
+      "special": "",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "circle",
+            "n": 4
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Plasma Hose",
+          "arc": "F",
+          "ma": "12”",
+          "r": "6”",
+          "att": "5",
+          "ac": "4+",
+          "e": "S5",
+          "special": "Ignores Cover",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 29,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/intruder-light-dropship.webp"
+    },
+    {
+      "id": "intruder-light-troopship",
+      "name": "Intruder Light Troopship",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 35,
+      "pointsRaw": "35pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "30”",
+        "A": "2",
+        "DP": "1"
+      },
+      "special": "",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 2
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Plasma Hose",
+          "arc": "F",
+          "ma": "12”",
+          "r": "6”",
+          "att": "5",
+          "ac": "4+",
+          "e": "S5",
+          "special": "Ignores Cover",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 30,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/intruder-light-troopship.webp"
+    },
+    {
+      "id": "invader-apc",
+      "name": "Invader APC",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 10,
+      "pointsRaw": "10pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "5",
+        "DP": "2"
+      },
+      "special": "Skimmer, Ev1, Flat Out 3”, Surveyor",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 3
+          }
+        ],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 3
+          }
+        ]
+      },
+      "weapons": [],
+      "page": 31,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/invader-apc.webp"
+    },
+    {
+      "id": "marauder-dropship",
+      "name": "Marauder Dropship",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 35,
+      "pointsRaw": "35pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "24”",
+        "A": "2",
+        "DP": "3"
+      },
+      "special": "",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "triangle",
+            "n": 6
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Plasma Hose",
+          "arc": "F",
+          "ma": "12”",
+          "r": "6”",
+          "att": "5",
+          "ac": "4+",
+          "e": "S5",
+          "special": "Ignores Cover",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 32,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/marauder-dropship.webp"
+    }
+  ]
+}

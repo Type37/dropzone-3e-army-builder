@@ -1,0 +1,2024 @@
+{
+  "faction": "shaltari",
+  "name": "Shaltari",
+  "sourcePdf": "DZC_Shaltari_Stat_Cards_260730.pdf",
+  "version": "260730",
+  "units": [
+    {
+      "id": "brave-warsuits",
+      "name": "Brave Warsuits",
+      "category": "Standard",
+      "squadMin": 2,
+      "squadMax": 2,
+      "points": 35,
+      "pointsRaw": "35pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "3”",
+        "OF": "6",
+        "DF": "3+",
+        "B": "2+",
+        "DP": "3"
+      },
+      "special": "Hardy 3+, Warsuit",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 2
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Discus Launchers",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "18/6”",
+          "att": "6",
+          "ac": "2+",
+          "e": "S1",
+          "special": "Ignores Cover",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Gauss Rifle",
+          "arc": "F/S/R",
+          "ma": "0”",
+          "r": "∞/20”",
+          "att": "1",
+          "ac": "2+",
+          "e": "5",
+          "special": "Pen 6+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 3,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/brave-warsuits.webp"
+    },
+    {
+      "id": "pungari",
+      "name": "Pungari",
+      "category": "Standard",
+      "squadMin": 4,
+      "squadMax": 4,
+      "points": 15,
+      "pointsRaw": "15pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "2”",
+        "OF": "2",
+        "DF": "5+",
+        "B": "6+",
+        "DP": "5"
+      },
+      "special": "Subservient",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Shoulder Discus Launchers",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "18/6”",
+          "att": "5",
+          "ac": "4+",
+          "e": "S1",
+          "special": "Ignores Cover",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 4,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/pungari.webp"
+    },
+    {
+      "id": "shaltari-battlestrider",
+      "name": "Shaltari Battlestrider",
+      "category": "Standard",
+      "squadMin": 2,
+      "squadMax": 4,
+      "points": 50,
+      "pointsRaw": "50pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "5",
+        "DP": "2"
+      },
+      "special": "Climber, P5+",
+      "variants": [
+        {
+          "name": "Tarantula",
+          "points": 50
+        },
+        {
+          "name": "Birdeater",
+          "points": 50
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 3
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Gravity Cannon",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "18”",
+          "att": "1",
+          "ac": "2+",
+          "e": "2",
+          "special": "Grav",
+          "box": "variant",
+          "variants": [
+            "Tarantula"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin Ion Cannons",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "18”",
+          "att": "4",
+          "ac": "2+",
+          "e": "2",
+          "special": "AA",
+          "box": "variant",
+          "variants": [
+            "Birdeater"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Laser Pod",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞”",
+          "att": "1",
+          "ac": "3+",
+          "e": "3",
+          "special": "Destroyer 6+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 5,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/shaltari-battlestrider.webp"
+    },
+    {
+      "id": "shaltari-main-grav-tank",
+      "name": "Shaltari Main Grav-tank",
+      "category": "Standard",
+      "squadMin": 3,
+      "squadMax": 6,
+      "points": null,
+      "pointsRaw": "30pts (Tomahawk), 40pts (Kukri)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "9”",
+        "A": "4",
+        "DP": "1"
+      },
+      "special": "Ev2, Flat Out 5”, P5+, Skimmer",
+      "variants": [
+        {
+          "name": "Tomahawk",
+          "points": 30
+        },
+        {
+          "name": "Kukri",
+          "points": 40
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 2
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Gauss Cannon",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "∞/30”",
+          "att": "1",
+          "ac": "2+",
+          "e": "6",
+          "special": "Drive-by, Demo 0",
+          "box": "variant",
+          "variants": [
+            "Tomahawk"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin Ion Cannons",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "18”",
+          "att": "4",
+          "ac": "2+",
+          "e": "2",
+          "special": "AA",
+          "box": "variant",
+          "variants": [
+            "Kukri"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 6,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/shaltari-main-grav-tank.webp"
+    },
+    {
+      "id": "shaltari-warstrider",
+      "name": "Shaltari Warstrider",
+      "category": "Standard",
+      "squadMin": 1,
+      "squadMax": 3,
+      "points": null,
+      "pointsRaw": "95pts (Jaguar), 100pts (Oncilla), 110pts (Puma), 115pts (Lynx)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "3”",
+        "A": "6",
+        "DP": "4 P5+"
+      },
+      "special": "(All), P3+, Command Centre, AWACS 12” (Lynx)",
+      "variants": [
+        {
+          "name": "Jaguar",
+          "points": 95
+        },
+        {
+          "name": "Oncilla",
+          "points": 100
+        },
+        {
+          "name": "Puma",
+          "points": 110
+        },
+        {
+          "name": "Lynx",
+          "points": 115
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 6
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Dual Gauss Cannons",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞/30”",
+          "att": "2",
+          "ac": "2+",
+          "e": "6",
+          "special": "Demo 0, Strafe",
+          "box": "variant",
+          "variants": [
+            "Jaguar",
+            "Lynx",
+            "Puma"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin Ion Cannons",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "18”",
+          "att": "4",
+          "ac": "2+",
+          "e": "2",
+          "special": "AA",
+          "box": "variant",
+          "variants": [
+            "Jaguar",
+            "Oncilla"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Dual Heavy Bio-Atomisers, spread -",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "8”",
+          "att": "10",
+          "ac": "2+",
+          "e": "S1",
+          "special": "Alt-1, Flame, Ineffective:Zones",
+          "box": "variant",
+          "variants": [
+            "Oncilla"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Dual Heavy Bio-Atomisers, harmonised -",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "8”",
+          "att": "1",
+          "ac": "2+",
+          "e": "1",
+          "special": "Alt-1, Critical D3, Ineffective:Zones, Pen 2+",
+          "box": "variant",
+          "variants": [
+            "Oncilla"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Sonic Cannon",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "9”",
+          "att": "2",
+          "ac": "4+",
+          "e": "5",
+          "special": "Demo 3, Dissipate 1",
+          "box": "variant",
+          "variants": [
+            "Puma"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 7,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/shaltari-warstrider.webp"
+    },
+    {
+      "id": "firedrake",
+      "name": "Firedrake",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 120,
+      "pointsRaw": "120pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "20”",
+        "A": "2",
+        "DP": "6"
+      },
+      "special": "Aux Gate, Ev1, P5+",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "triangle",
+            "n": 6
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Disruption Cannon",
+          "arc": "F",
+          "ma": "10”",
+          "r": "12”",
+          "att": "1",
+          "ac": "3+",
+          "e": "8",
+          "special": "Blast, Dissipate 2",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Dragon Cannon",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "12”",
+          "att": "12",
+          "ac": "3+",
+          "e": "S2",
+          "special": "Alt-1, Ignores cover",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Concentrated Dragon Beam",
+          "arc": "F",
+          "ma": "Full",
+          "r": "12”",
+          "att": "3",
+          "ac": "3+",
+          "e": "2",
+          "special": "Alt-1, Focus 2, Ignores cover",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 8,
+      "auxiliaryTransport": true,
+      "selectable": true,
+      "art": "assets/units/firedrake.webp"
+    },
+    {
+      "id": "obelisk-ionspire",
+      "name": "Obelisk Ionspire",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 60,
+      "pointsRaw": "60pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "N/A",
+        "A": "5",
+        "DP": "4"
+      },
+      "special": "P5+",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 6
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Ion Storm",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "8”",
+          "att": "1",
+          "ac": "3+",
+          "e": "5",
+          "special": "AA-S, Alt 1, Field, Ineffective: Friendlies, Zones",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Ion Strike",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "8”",
+          "att": "1",
+          "ac": "2+",
+          "e": "10",
+          "special": "Alt 1, Critical 1, Overwatch",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 9,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/obelisk-ionspire.webp"
+    },
+    {
+      "id": "shaltari-gunship",
+      "name": "Shaltari Gunship",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 3,
+      "points": 30,
+      "pointsRaw": "30pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "20”",
+        "A": "2",
+        "DP": "1"
+      },
+      "special": "Ev2, P5+",
+      "variants": [
+        {
+          "name": "Firebird",
+          "points": 30
+        },
+        {
+          "name": "Thunderbird",
+          "points": 30
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Twin Disintegrators",
+          "arc": "F/S/R",
+          "ma": "16”",
+          "r": "12”",
+          "att": "4",
+          "ac": "3+",
+          "e": "3",
+          "special": "Devastator 1, Pen 6+",
+          "box": "variant",
+          "variants": [
+            "Firebird"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Short Gauss Cannon",
+          "arc": "F/S/R",
+          "ma": "16”",
+          "r": "∞/20”",
+          "att": "1",
+          "ac": "3+",
+          "e": "6",
+          "special": "Demo 0, Precision 2",
+          "box": "variant",
+          "variants": [
+            "Thunderbird"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 10,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/shaltari-gunship.webp"
+    },
+    {
+      "id": "shaltari-support-grav-tank",
+      "name": "Shaltari Support Grav-tank",
+      "category": "Support",
+      "squadMin": 3,
+      "squadMax": 6,
+      "points": 30,
+      "pointsRaw": "30pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "9”",
+        "A": "4",
+        "DP": "1"
+      },
+      "special": "Ev1, Flat Out 5”, P5+, Skimmer",
+      "variants": [
+        {
+          "name": "Arrowhead",
+          "points": 30
+        },
+        {
+          "name": "Atlatl",
+          "points": 30
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 2
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Energy Storm",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "12”",
+          "att": "2",
+          "ac": "2+",
+          "e": "3",
+          "special": "AA-R, Assault, T2",
+          "box": "variant",
+          "variants": [
+            "Arrowhead"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Atomic Teleporter, Cyclone",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "12”",
+          "att": "1",
+          "ac": "3+",
+          "e": "5",
+          "special": "Alt 1, Destroyer 6+, Overwatch",
+          "box": "variant",
+          "variants": [
+            "Atlatl"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Atomic Teleporter, Patch",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "12”",
+          "att": "2",
+          "ac": "3+",
+          "e": "0",
+          "special": "AA, Alt 1, Repair 1: Vehicles and Aircraft",
+          "box": "variant",
+          "variants": [
+            "Atlatl"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 11,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/shaltari-support-grav-tank.webp"
+    },
+    {
+      "id": "shaltari-support-warstrider",
+      "name": "Shaltari Support Warstrider",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 3,
+      "points": null,
+      "pointsRaw": "75pts (Leopard), 85pts (Dreamsnare)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "3”",
+        "A": "6",
+        "DP": "4 P5+ (All),"
+      },
+      "special": "Shield: Friendly Vehicles 6” 4+ (Dreamsnare)",
+      "variants": [
+        {
+          "name": "Leopard",
+          "points": 75
+        },
+        {
+          "name": "Dreamsnare",
+          "points": 85
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 6
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Dual Dragon Cannons",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "12”",
+          "att": "24",
+          "ac": "3+",
+          "e": "S2",
+          "special": "Alt-1, Ignores cover, Strafe",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Concentrated Dragon Beams",
+          "arc": "F",
+          "ma": "Full",
+          "r": "12”",
+          "att": "6",
+          "ac": "3+",
+          "e": "2",
+          "special": "Alt-1, Focus 2, Ignores cover",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Thermal Lance",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "9”",
+          "att": "2",
+          "ac": "2+",
+          "e": "8",
+          "special": "",
+          "box": "variant",
+          "variants": [
+            "Leopard"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 12,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/shaltari-support-warstrider.webp"
+    },
+    {
+      "id": "tegu-gatestrider",
+      "name": "Tegu Gatestrider",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 3,
+      "points": 85,
+      "pointsRaw": "85pts, Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "3”",
+        "A": "6",
+        "DP": "4"
+      },
+      "special": "Aux Gate, Delayed, P5+",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 4
+          },
+          {
+            "shape": "triangle",
+            "n": 6
+          }
+        ],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 6
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Sonic Cannon",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "9”",
+          "att": "2",
+          "ac": "4+",
+          "e": "5",
+          "special": "Demo 3, Dissipate 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 13,
+      "auxiliaryTransport": true,
+      "selectable": true,
+      "art": "assets/units/tegu-gatestrider.webp"
+    },
+    {
+      "id": "totem-shieldspire",
+      "name": "Totem Shieldspire",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 50,
+      "pointsRaw": "50pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "N/A",
+        "A": "5",
+        "DP": "4 Friendly"
+      },
+      "special": "Vehicles and Aircraft 6” 5+, P5+, Shield: Zones",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 6
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Purge Wave",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "8”",
+          "att": "D6+2",
+          "ac": "3+",
+          "e": "S1",
+          "special": "Seeker",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 14,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/totem-shieldspire.webp"
+    },
+    {
+      "id": "adamah-gungate",
+      "name": "Adamah Gungate",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 110,
+      "pointsRaw": "110pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "20”",
+        "A": "1",
+        "DP": "7"
+      },
+      "special": "Aux Gate, P5+",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "triangle",
+            "n": 9
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Gravity Cannon",
+          "arc": "F/S",
+          "ma": "10”",
+          "r": "18”",
+          "att": "1",
+          "ac": "2+",
+          "e": "2",
+          "special": "Grav",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Gravity Cannon",
+          "arc": "F/S",
+          "ma": "10”",
+          "r": "18”",
+          "att": "1",
+          "ac": "2+",
+          "e": "2",
+          "special": "Grav",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Charged Atmosphere",
+          "arc": "F/S/R",
+          "ma": "10”",
+          "r": "4”",
+          "att": "3",
+          "ac": "4+",
+          "e": "2",
+          "special": "Aircharge, Pen 5+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 15,
+      "auxiliaryTransport": true,
+      "selectable": true,
+      "art": "assets/units/adamah-gungate.webp"
+    },
+    {
+      "id": "assault-warsuits",
+      "name": "Assault Warsuits",
+      "category": "Heavy",
+      "squadMin": 2,
+      "squadMax": 2,
+      "points": null,
+      "pointsRaw": "45pts (Firstborns), 70pts (Daimyo)",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "3”",
+        "OF": "6",
+        "DF": "3+",
+        "B": "2+",
+        "DP": "3"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "Firstborns",
+          "points": 45
+        },
+        {
+          "name": "Daimyo",
+          "points": 70
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 2
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Energy Swords",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "CC",
+          "att": "3",
+          "ac": "2+",
+          "e": "2",
+          "special": "Assault, Pen 6+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 16,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/assault-warsuits.webp"
+    },
+    {
+      "id": "frostdrake",
+      "name": "Frostdrake",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 160,
+      "pointsRaw": "160pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "20”",
+        "A": "2",
+        "DP": "6"
+      },
+      "special": "Command Centre, Ev1, P5+",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Foe Crusher Cannon",
+          "arc": "F/S",
+          "ma": "10”",
+          "r": "18”",
+          "att": "1",
+          "ac": "2+",
+          "e": "5",
+          "special": "Grav",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Disruption Cannon",
+          "arc": "F",
+          "ma": "10”",
+          "r": "12”",
+          "att": "1",
+          "ac": "3+",
+          "e": "8",
+          "special": "Blast, Dissipate 2",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Dragon Cannon",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "12”",
+          "att": "12",
+          "ac": "3+",
+          "e": "S2",
+          "special": "Alt-1, Ignores cover",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Concentrated Dragon Beam",
+          "arc": "F",
+          "ma": "Full",
+          "r": "12”",
+          "att": "3",
+          "ac": "3+",
+          "e": "2",
+          "special": "Alt-1, Focus 2, Ignores cover",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 17,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/frostdrake.webp"
+    },
+    {
+      "id": "shaltari-gunstrider",
+      "name": "Shaltari Gunstrider",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 3,
+      "points": null,
+      "pointsRaw": "120pts (Bobcat, Panther, Ocelot), 110pts (Wildcat)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "3”",
+        "A": "6",
+        "DP": "4"
+      },
+      "special": "P5+",
+      "variants": [
+        {
+          "name": "Bobcat",
+          "points": 120
+        },
+        {
+          "name": "Panther",
+          "points": 120
+        },
+        {
+          "name": "Ocelot",
+          "points": 120
+        },
+        {
+          "name": "Wildcat",
+          "points": 110
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 6
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Ion Cannonade",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "18”",
+          "att": "12",
+          "ac": "2+",
+          "e": "2",
+          "special": "AA, T1",
+          "box": "variant",
+          "variants": [
+            "Bobcat"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin Super Gravity Cannon",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "24”",
+          "att": "2",
+          "ac": "2+",
+          "e": "3",
+          "special": "Devastator 1, Grav",
+          "box": "variant",
+          "variants": [
+            "Wildcat"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Particle Triad",
+          "arc": "F/S",
+          "ma": "2”",
+          "r": "∞”",
+          "att": "3",
+          "ac": "3+",
+          "e": "4",
+          "special": "AA-S, Devastator 1, Particle, T2",
+          "box": "variant",
+          "variants": [
+            "Panther"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Strider Particle Cannon",
+          "arc": "F/S",
+          "ma": "2”",
+          "r": "∞”",
+          "att": "1",
+          "ac": "2+",
+          "e": "10",
+          "special": "Critical 1, Demo 3, Devastator 1, Particle, T2",
+          "box": "variant",
+          "variants": [
+            "Ocelot"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 18,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/shaltari-gunstrider.webp"
+    },
+    {
+      "id": "shaltari-heavy-grav-tank",
+      "name": "Shaltari Heavy Grav-tank",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 3,
+      "points": null,
+      "pointsRaw": "85pts (Alligator), 110pts (Crocodile, Caiman), 115pts (Gharial)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "4",
+        "DP": "4"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "Alligator",
+          "points": 85
+        },
+        {
+          "name": "Crocodile",
+          "points": 110
+        },
+        {
+          "name": "Caiman",
+          "points": 110
+        },
+        {
+          "name": "Gharial",
+          "points": 115
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 6
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Skimmer Particle Cannon",
+          "arc": "F/S/R",
+          "ma": "3”",
+          "r": "∞”",
+          "att": "1",
+          "ac": "2+",
+          "e": "8",
+          "special": "Critical 1, Demo 2, Devastator 1, Particle, T2",
+          "box": "variant",
+          "variants": [
+            "Crocodile"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Microwave Cannon, Harmonised",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "12”",
+          "att": "D3",
+          "ac": "2+",
+          "e": "9",
+          "special": "Alt 1, Critical 1, Ignores Cover",
+          "box": "variant",
+          "variants": [
+            "Gharial"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Microwave Cannon, Spread",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "12”",
+          "att": "10",
+          "ac": "3+",
+          "e": "S2",
+          "special": "Alt 1, Concussion, Flame",
+          "box": "variant",
+          "variants": [
+            "Gharial"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Neutron Launchers",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "12”",
+          "att": "2",
+          "ac": "3+",
+          "e": "6",
+          "special": "Demo 3, Strafe, Suppress",
+          "box": "variant",
+          "variants": [
+            "Gharial"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Gauss Triad",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "∞/36”",
+          "att": "3",
+          "ac": "2+",
+          "e": "6",
+          "special": "Demo 0, Devastator 1",
+          "box": "variant",
+          "variants": [
+            "Caiman"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Laser Pods",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞”",
+          "att": "2",
+          "ac": "3+",
+          "e": "3",
+          "special": "Destroyer 6+, Strafe",
+          "box": "variant",
+          "variants": [
+            "Caiman"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Skimcharge Spine",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "6”",
+          "att": "1",
+          "ac": "A",
+          "e": "0",
+          "special": "Alt 1, Field, Skimcharger",
+          "box": "variant",
+          "variants": [
+            "Alligator"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Spine Discharge",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "12”",
+          "att": "6",
+          "ac": "4+",
+          "e": "2",
+          "special": "Alt 1, Destroyer 6+, Overwatch, Pen 4+",
+          "box": "variant",
+          "variants": [
+            "Alligator"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 19,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/shaltari-heavy-grav-tank.webp"
+    },
+    {
+      "id": "shaltari-heavy-warsuits",
+      "name": "Shaltari Heavy Warsuits",
+      "category": "Vanguard",
+      "squadMin": 2,
+      "squadMax": 6,
+      "points": 20,
+      "pointsRaw": "20pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "4”",
+        "A": "3",
+        "DP": "1"
+      },
+      "special": "Ev1, P5+, Rapid Insertion 5”",
+      "variants": [
+        {
+          "name": "Ronin",
+          "points": 20
+        },
+        {
+          "name": "Samurai",
+          "points": 20
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 2
+          },
+          {
+            "shape": "triangle",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Gauss Carbines",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "∞/20”",
+          "att": "2",
+          "ac": "3+",
+          "e": "5",
+          "special": "Assault",
+          "box": "variant",
+          "variants": [
+            "Ronin"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Energy Glave",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "CC",
+          "att": "1",
+          "ac": "2+",
+          "e": "6",
+          "special": "Alt-1, Assault, Destroyer 6+",
+          "box": "variant",
+          "variants": [
+            "Samurai"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Bio-Atomiser",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "6”",
+          "att": "3",
+          "ac": "3+",
+          "e": "S1",
+          "special": "Alt-1, Assault, Flame, Ineffective:Zones",
+          "box": "variant",
+          "variants": [
+            "Samurai"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 20,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/shaltari-heavy-warsuits.webp"
+    },
+    {
+      "id": "shaltari-interceptor",
+      "name": "Shaltari Interceptor",
+      "category": "Vanguard",
+      "squadMin": 1,
+      "squadMax": 2,
+      "points": null,
+      "pointsRaw": "65pts (Warspear), 70pts (Khopesh), Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "20”-48”",
+        "A": "2",
+        "DP": "1"
+      },
+      "special": "Ev3, Fast Mover, P5+",
+      "variants": [
+        {
+          "name": "Warspear",
+          "points": 65
+        },
+        {
+          "name": "Khopesh",
+          "points": 70
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Twin Heavy Ion Cannons",
+          "arc": "F",
+          "ma": "Full",
+          "r": "18”",
+          "att": "2",
+          "ac": "3+",
+          "e": "3",
+          "special": "AA, Alt-1, Critical 1, T3",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Gauss Cannon",
+          "arc": "F",
+          "ma": "Full",
+          "r": "∞/30”",
+          "att": "1",
+          "ac": "2+",
+          "e": "6",
+          "special": "Alt-1, Demo 0",
+          "box": "variant",
+          "variants": [
+            "Warspear"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Heavy Bio-Atomiser",
+          "arc": "F",
+          "ma": "Full",
+          "r": "8”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S1",
+          "special": "Alt-1, Flame, Ineffective:Zones",
+          "box": "variant",
+          "variants": [
+            "Khopesh"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 21,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/shaltari-interceptor.webp"
+    },
+    {
+      "id": "shaltari-light-grav-tank",
+      "name": "Shaltari Light Grav-tank",
+      "category": "Vanguard",
+      "squadMin": 3,
+      "squadMax": 6,
+      "points": null,
+      "pointsRaw": "15pts (Yari, Naginata), 20pts (Tate)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "12”",
+        "A": "2",
+        "DP": "1"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "Yari",
+          "points": 15
+        },
+        {
+          "name": "Naginata",
+          "points": 15
+        },
+        {
+          "name": "Tate",
+          "points": 20
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Microwave Gun",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "6”",
+          "att": "3",
+          "ac": "3+",
+          "e": "S1",
+          "special": "Flame",
+          "box": "variant",
+          "variants": [
+            "Naginata"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Light Ion Cannon",
+          "arc": "F/S/R",
+          "ma": "6”",
+          "r": "18”",
+          "att": "1",
+          "ac": "2+",
+          "e": "2",
+          "special": "AA, T1",
+          "box": "variant",
+          "variants": [
+            "Yari"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 22,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/shaltari-light-grav-tank.webp"
+    },
+    {
+      "id": "shaltari-scoutstrider",
+      "name": "Shaltari Scoutstrider",
+      "category": "Vanguard",
+      "squadMin": 2,
+      "squadMax": 4,
+      "points": null,
+      "pointsRaw": "45pts (Widow), 55pts (Recluse)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "6”",
+        "A": "4",
+        "DP": "2"
+      },
+      "special": "Climber, P5+, Scout (All), Ev1, Stealth (Recluse)",
+      "variants": [
+        {
+          "name": "Widow",
+          "points": 45
+        },
+        {
+          "name": "Recluse",
+          "points": 55
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 3
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Polymer Carbines",
+          "arc": "F",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "4",
+          "ac": "3+",
+          "e": "1",
+          "special": "Assault, Pen 6+, Suppress",
+          "box": "variant",
+          "variants": [
+            "Widow"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Spectra Projectors, Dazzle",
+          "arc": "F",
+          "ma": "Full",
+          "r": "36”",
+          "att": "1",
+          "ac": "4+",
+          "e": "N/A",
+          "special": "Alt 1, Concussion, Jammer, Precision 2",
+          "box": "variant",
+          "variants": [
+            "Recluse"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Spectra Projectors, Shroud",
+          "arc": "F",
+          "ma": "Full",
+          "r": "36”",
+          "att": "1",
+          "ac": "A",
+          "e": "N/A",
+          "special": "Alt 1, Precision 2, Smoke",
+          "box": "variant",
+          "variants": [
+            "Recluse"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 23,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/shaltari-scoutstrider.webp"
+    },
+    {
+      "id": "eden-medium-gate",
+      "name": "Eden Medium Gate",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 40,
+      "pointsRaw": "40pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "20”",
+        "A": "1",
+        "DP": "3"
+      },
+      "special": "Gate, P5+",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "triangle",
+            "n": 6
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Charged Atmosphere",
+          "arc": "F/S/R",
+          "ma": "10”",
+          "r": "4”",
+          "att": "3",
+          "ac": "4+",
+          "e": "2",
+          "special": "Aircharge, Pen 5+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 24,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/eden-medium-gate.webp"
+    },
+    {
+      "id": "gaia-heavy-gate",
+      "name": "Gaia Heavy Gate",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 70,
+      "pointsRaw": "70pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "20”",
+        "A": "1",
+        "DP": "7"
+      },
+      "special": "Gate, P5+",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "triangle",
+            "n": 18
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Charged Atmosphere",
+          "arc": "F/S/R",
+          "ma": "10”",
+          "r": "4”",
+          "att": "3",
+          "ac": "4+",
+          "e": "2",
+          "special": "Aircharge, Pen 5+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 25,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/gaia-heavy-gate.webp"
+    },
+    {
+      "id": "haven-terragate",
+      "name": "Haven Terragate",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 15,
+      "pointsRaw": "15pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "9”",
+        "A": "4",
+        "DP": "2"
+      },
+      "special": "Ev2, Gate, P5+, Skimmer, Surveyor",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 4
+          }
+        ],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 3
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Charged Earth",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "4”",
+          "att": "2",
+          "ac": "4+",
+          "e": "2",
+          "special": "Overwatch, Pen 5+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 26,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/haven-terragate.webp"
+    },
+    {
+      "id": "spirit-light-gate",
+      "name": "Spirit Light Gate",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 30,
+      "pointsRaw": "30pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "30”",
+        "A": "1",
+        "DP": "1"
+      },
+      "special": "Gate, P5+",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 4
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Charged Atmosphere",
+          "arc": "F/S/R",
+          "ma": "10”",
+          "r": "4”",
+          "att": "3",
+          "ac": "4+",
+          "e": "2",
+          "special": "Aircharge, Pen 5+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 27,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/spirit-light-gate.webp"
+    },
+    {
+      "id": "zion-gatespire",
+      "name": "Zion Gatespire",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 50,
+      "pointsRaw": "50pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "N/A",
+        "A": "5",
+        "DP": "4"
+      },
+      "special": "Delayed, Gate, Obscurer 4”, P5+, Strike",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "triangle",
+            "n": 18
+          }
+        ],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 6
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Charged Area",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "4”",
+          "att": "6",
+          "ac": "4+",
+          "e": "2",
+          "special": "Overwatch, Pen 5+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 28,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/zion-gatespire.webp"
+    }
+  ]
+}

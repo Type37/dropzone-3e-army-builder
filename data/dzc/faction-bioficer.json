@@ -1,0 +1,966 @@
+{
+  "faction": "bioficer",
+  "name": "Bioficer",
+  "sourcePdf": "DZC_Bioficer_Stat_Sheets_260730.pdf",
+  "version": "260730",
+  "units": [
+    {
+      "id": "grievance-genitor-ark",
+      "name": "Grievance Genitor Ark",
+      "category": "Standard",
+      "squadMin": 1,
+      "squadMax": 2,
+      "points": null,
+      "pointsRaw": "35pts (Grievance 1), 40pts (Grievance 2)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "5”",
+        "A": "5",
+        "DP": "4"
+      },
+      "special": "Puppeteer 6”, Skimmer, Surveyor",
+      "variants": [
+        {
+          "name": "Grievance 1",
+          "points": 35
+        },
+        {
+          "name": "Grievance 2",
+          "points": 40
+        }
+      ],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 12
+          }
+        ],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 4
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Decon Staff",
+          "arc": "F",
+          "ma": "Full",
+          "r": "18”",
+          "att": "1",
+          "ac": "3+",
+          "e": "5",
+          "special": "Decon",
+          "box": "variant",
+          "variants": [
+            "Grievance 1"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Electro-Bombard",
+          "arc": "F",
+          "ma": "Full",
+          "r": "12”",
+          "att": "1",
+          "ac": "4+",
+          "e": "3",
+          "special": "AA-S, Indirect, Ineffective- Zones, Suppress",
+          "box": "variant",
+          "variants": [
+            "Grievance 2"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 4,
+      "auxiliaryTransport": true,
+      "selectable": true,
+      "art": "assets/units/grievance-genitor-ark.webp"
+    },
+    {
+      "id": "thorn-light-skimmer",
+      "name": "Thorn Light Skimmer",
+      "category": "Standard",
+      "squadMin": 2,
+      "squadMax": 8,
+      "points": 25,
+      "pointsRaw": "25pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "10”",
+        "A": "4",
+        "DP": "1"
+      },
+      "special": "Ev2, Skimmer",
+      "variants": [
+        {
+          "name": "Thorn 1",
+          "points": 25
+        },
+        {
+          "name": "Thorn 2",
+          "points": 25
+        },
+        {
+          "name": "Thorn 3",
+          "points": 25
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Decon Stave",
+          "arc": "F/S",
+          "ma": "5”",
+          "r": "24”",
+          "att": "1",
+          "ac": "3+",
+          "e": "5",
+          "special": "Decon, Precision 2",
+          "box": "variant",
+          "variants": [
+            "Thorn 1"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Lightmaw",
+          "arc": "F/S",
+          "ma": "5”",
+          "r": "24”/6”",
+          "att": "1",
+          "ac": "4+",
+          "e": "7",
+          "special": "Demo 0, Precision 2",
+          "box": "variant",
+          "variants": [
+            "Thorn 2"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Ghost Circuit, wide",
+          "arc": "F/S",
+          "ma": "5”",
+          "r": "12”",
+          "att": "2",
+          "ac": "2+",
+          "e": "S1",
+          "special": "Alt 1, Decon, Flame",
+          "box": "variant",
+          "variants": [
+            "Thorn 3"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Ghost Circuit, narrow",
+          "arc": "F/S",
+          "ma": "5”",
+          "r": "12”",
+          "att": "1",
+          "ac": "2+",
+          "e": "5",
+          "special": "Alt 1, Decon, Pen 6+",
+          "box": "variant",
+          "variants": [
+            "Thorn 3"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 5,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/thorn-light-skimmer.webp"
+    },
+    {
+      "id": "tusk-main-battle-skimmer",
+      "name": "Tusk Main Battle Skimmer",
+      "category": "Standard",
+      "squadMin": 2,
+      "squadMax": 4,
+      "points": null,
+      "pointsRaw": "45pts (Tusk 1 and 2), 50pts (Tusk 3)",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "5”",
+        "A": "6",
+        "DP": "2"
+      },
+      "special": "Ev1, Skimmer",
+      "variants": [
+        {
+          "name": "Tusk 1",
+          "points": 45
+        },
+        {
+          "name": "Tusk 2",
+          "points": 45
+        },
+        {
+          "name": "Tusk 3",
+          "points": 50
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 2
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Twin Barb Destructor",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞/36”",
+          "att": "4",
+          "ac": "2+",
+          "e": "4",
+          "special": "Decon, Pen 6+",
+          "box": "variant",
+          "variants": [
+            "Tusk 1"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Bisection Organ",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "18”",
+          "att": "1",
+          "ac": "3+",
+          "e": "6",
+          "special": "Demo 1, Devastator D3+1, Precision 1",
+          "box": "variant",
+          "variants": [
+            "Tusk 2"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Scythe Battery",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞",
+          "att": "3",
+          "ac": "2+",
+          "e": "2",
+          "special": "Focus 2, Strafe, T1",
+          "box": "variant",
+          "variants": [
+            "Tusk 3"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 6,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/tusk-main-battle-skimmer.webp"
+    },
+    {
+      "id": "surge-gunship",
+      "name": "Surge Gunship",
+      "category": "Support",
+      "squadMin": 1,
+      "squadMax": 2,
+      "points": null,
+      "pointsRaw": "55pts (Surge 1, 2, and 3), 60pts (Surge 4)",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "15”",
+        "A": "3",
+        "DP": "2"
+      },
+      "special": "Ev1",
+      "variants": [
+        {
+          "name": "Surge 1",
+          "points": 55
+        },
+        {
+          "name": "Surge 2",
+          "points": 55
+        },
+        {
+          "name": "Surge 3",
+          "points": 55
+        },
+        {
+          "name": "Surge 4",
+          "points": 60
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Decon Pulse",
+          "arc": "F/S",
+          "ma": "5”",
+          "r": "5”",
+          "att": "1",
+          "ac": "5+",
+          "e": "6",
+          "special": "Decon, Precision 2",
+          "box": "variant",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": true
+        },
+        {
+          "name": "Decon Cannon Pair",
+          "arc": "F/S",
+          "ma": "5”",
+          "r": "24”",
+          "att": "2",
+          "ac": "3+",
+          "e": "7",
+          "special": "Decon, Precision 1, Strafe",
+          "box": "variant",
+          "variants": [
+            "Surge 1"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin Scythes Pair",
+          "arc": "F/S",
+          "ma": "5”",
+          "r": "∞",
+          "att": "4",
+          "ac": "2+",
+          "e": "2",
+          "special": "Focus 2, Strafe, T1",
+          "box": "variant",
+          "variants": [
+            "Surge 2"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Heavy Lightmaw Pair",
+          "arc": "F/S",
+          "ma": "5”",
+          "r": "24”/6”",
+          "att": "2",
+          "ac": "4+",
+          "e": "8",
+          "special": "Demo 0, Devastator 1, Precision 2, Strafe",
+          "box": "variant",
+          "variants": [
+            "Surge 3"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Ghost Orbit Pair, wide",
+          "arc": "F/S",
+          "ma": "5”",
+          "r": "12”",
+          "att": "6",
+          "ac": "2+",
+          "e": "S1",
+          "special": "Alt 1, Decon, Flame, Strafe",
+          "box": "variant",
+          "variants": [
+            "Surge 4"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Ghost Orbit Pair, narrow",
+          "arc": "F/S",
+          "ma": "5”",
+          "r": "12”",
+          "att": "2",
+          "ac": "2+",
+          "e": "5",
+          "special": "Alt 1, Decon, Pen 5+, Strafe",
+          "box": "variant",
+          "variants": [
+            "Surge 4"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 7,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/surge-gunship.webp"
+    },
+    {
+      "id": "tangent-support-skimmer",
+      "name": "Tangent Support Skimmer",
+      "category": "Support",
+      "squadMin": 2,
+      "squadMax": 4,
+      "points": 45,
+      "pointsRaw": "45pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "stats": {
+        "Mv": "5”",
+        "A": "6",
+        "DP": "2"
+      },
+      "special": "Skimmer, Ev1",
+      "variants": [
+        {
+          "name": "Tangent 1",
+          "points": 45
+        },
+        {
+          "name": "Tangent 2",
+          "points": 45
+        },
+        {
+          "name": "Tangent 3",
+          "points": 45
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 2
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Winnow Web",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "15”",
+          "att": "8",
+          "ac": "4+",
+          "e": "2",
+          "special": "AA, Decon, Strafe, T1",
+          "box": "variant",
+          "variants": [
+            "Tangent 1"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Barb Spitter",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞/36”",
+          "att": "2",
+          "ac": "3+",
+          "e": "4",
+          "special": "AA-S, Pen 6+",
+          "box": "variant",
+          "variants": [
+            "Tangent 2"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Quake Howitzer",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "18”/6”",
+          "att": "3",
+          "ac": "5+",
+          "e": "6",
+          "special": "Demo 1, Indirect, Suppress",
+          "box": "variant",
+          "variants": [
+            "Tangent 3"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 8,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/tangent-support-skimmer.webp"
+    },
+    {
+      "id": "silence-heavy-gunship",
+      "name": "Silence Heavy Gunship",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": null,
+      "pointsRaw": "85pts (Silence 1, 2, and 3), 90pts (Silence 4), Rare",
+      "rare": true,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "15”",
+        "A": "3",
+        "DP": "4"
+      },
+      "special": "Collector 6",
+      "variants": [
+        {
+          "name": "Silence 1",
+          "points": 85
+        },
+        {
+          "name": "Silence 2",
+          "points": 85
+        },
+        {
+          "name": "Silence 3",
+          "points": 85
+        },
+        {
+          "name": "Silence 4",
+          "points": 90
+        }
+      ],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "triangle",
+            "n": 4
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Decon Wave",
+          "arc": "F/S",
+          "ma": "5”",
+          "r": "5”",
+          "att": "2",
+          "ac": "5+",
+          "e": "6",
+          "special": "Decon, Precision 2",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Decon Cannon Pair",
+          "arc": "F/S",
+          "ma": "5”",
+          "r": "24”",
+          "att": "2",
+          "ac": "3+",
+          "e": "7",
+          "special": "Decon, Precision 1, Strafe",
+          "box": "variant",
+          "variants": [
+            "Silence 1"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin Scythes Pair",
+          "arc": "F/S",
+          "ma": "5”",
+          "r": "∞",
+          "att": "4",
+          "ac": "2+",
+          "e": "2",
+          "special": "Focus 2, Strafe, T1",
+          "box": "variant",
+          "variants": [
+            "Silence 2"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Heavy Lightmaw Pair",
+          "arc": "F/S",
+          "ma": "5”",
+          "r": "24”/6”",
+          "att": "2",
+          "ac": "4+",
+          "e": "8",
+          "special": "Demo 0, Devastator 1, Precision 2, Strafe",
+          "box": "variant",
+          "variants": [
+            "Silence 3"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Ghost Orbit Pair, wide",
+          "arc": "F/S",
+          "ma": "5”",
+          "r": "12”",
+          "att": "6",
+          "ac": "2+",
+          "e": "S1",
+          "special": "Alt 1, Decon, Flame, Strafe",
+          "box": "variant",
+          "variants": [
+            "Silence 4"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        },
+        {
+          "name": "Ghost Orbit Pair, narrow",
+          "arc": "F/S",
+          "ma": "5”",
+          "r": "12”",
+          "att": "2",
+          "ac": "2+",
+          "e": "5",
+          "special": "Alt 1, Decon, Pen 5+, Strafe",
+          "box": "variant",
+          "variants": [
+            "Silence 4"
+          ],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 9,
+      "auxiliaryTransport": true,
+      "selectable": true,
+      "art": "assets/units/silence-heavy-gunship.webp"
+    },
+    {
+      "id": "gyro-aero-genitor",
+      "name": "Gyro Aero-Genitor",
+      "category": "Vanguard",
+      "squadMin": 1,
+      "squadMax": 2,
+      "points": 30,
+      "pointsRaw": "30pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "20”",
+        "A": "3",
+        "DP": "1"
+      },
+      "special": "Puppeteer 4”",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 8
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Decon Zap",
+          "arc": "F/S",
+          "ma": "10”",
+          "r": "5”",
+          "att": "1",
+          "ac": "4+",
+          "e": "4",
+          "special": "Decon",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 10,
+      "auxiliaryTransport": true,
+      "selectable": true,
+      "art": "assets/units/gyro-aero-genitor.webp"
+    },
+    {
+      "id": "data-strike-dropship",
+      "name": "Data Strike Dropship",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 25,
+      "pointsRaw": "25pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "15”",
+        "A": "3",
+        "DP": "2"
+      },
+      "special": "Collector 6",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "triangle",
+            "n": 4
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Decon Pulse",
+          "arc": "F/S",
+          "ma": "5”",
+          "r": "5”",
+          "att": "1",
+          "ac": "5+",
+          "e": "6",
+          "special": "Decon, Precision 2",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 11,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/data-strike-dropship.webp"
+    },
+    {
+      "id": "device-dropship",
+      "name": "Device Dropship",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 45,
+      "pointsRaw": "45pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "15”",
+        "A": "3",
+        "DP": "4"
+      },
+      "special": "Collector 12",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "triangle",
+            "n": 8
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Decon Wave",
+          "arc": "F/S",
+          "ma": "5”",
+          "r": "5”",
+          "att": "2",
+          "ac": "5+",
+          "e": "6",
+          "special": "Decon, Precision 2",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 12,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/device-dropship.webp"
+    },
+    {
+      "id": "digit-light-dropship",
+      "name": "Digit Light Dropship",
+      "category": "Transport",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 15,
+      "pointsRaw": "15pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "stats": {
+        "Mv": "20”",
+        "A": "3",
+        "DP": "1"
+      },
+      "special": "",
+      "variants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "triangle",
+            "n": 2
+          }
+        ],
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Decon Zap",
+          "arc": "F/S",
+          "ma": "10”",
+          "r": "5”",
+          "att": "1",
+          "ac": "4+",
+          "e": "4",
+          "special": "Decon",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 13,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/digit-light-dropship.webp"
+    },
+    {
+      "id": "drones",
+      "name": "Drones",
+      "category": "Generated",
+      "squadMin": 2,
+      "squadMax": 3,
+      "points": 20,
+      "pointsRaw": "20pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "2”",
+        "OF": "4",
+        "DF": "4+",
+        "B": "A",
+        "DP": "5"
+      },
+      "special": "Puppet",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 4
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Decon Rifles Drones are standard Bioficer infantry, and pure muscle, bone, and sinew. They melon-sized chunks of flesh to lukewarm Their only other piece of equipment Drone is a rotting statue incapable",
+          "arc": "F/S/R that alone feel no pain, molecular smoke is their control of basic thought.",
+          "ma": "Full highlights no in headset,",
+          "r": "18” the threat. They are emotion, and are generated microseconds, but they through which an",
+          "att": "5 are",
+          "ac": "3+ humanoid, rangy, from raw quite capable Intelligence",
+          "e": "S1 skinless, atoms in of directs",
+          "special": "Decon seven feet tall barefoot, and moments. Their Decon Rifles turn tearing limbs off with their bare regimented squads to battle. Without",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 14,
+      "auxiliaryTransport": false,
+      "selectable": false,
+      "art": "assets/units/drones.webp"
+    },
+    {
+      "id": "hulks",
+      "name": "Hulks",
+      "category": "Generated",
+      "squadMin": 2,
+      "squadMax": 2,
+      "points": 30,
+      "pointsRaw": "30pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "stats": {
+        "Mv": "2”",
+        "OF": "2",
+        "DF": "3+",
+        "B": "A",
+        "DP": "3"
+      },
+      "special": "Hardy 4+, Puppet, Strong",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "fills": [
+          {
+            "shape": "square",
+            "n": 6
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Winnow Carbines are slightly taller, bulked-out variants in half. Their primary purpose uncontrolled decon energies, reducing inhuman speed and mechanical aircraft and infantry.",
+          "arc": "F/S/R of standard though is to lug a target to precision from the",
+          "ma": "Full Drones. heavy random moment",
+          "r": "9” Almost entirely weaponry. Their chunks of metal and they step out of a",
+          "att": "6 muscle, short-ranged gushing Genitor",
+          "ac": "4+ bone, and Winnow flesh. unit,",
+          "e": "2 sinew, a Carbines Contrary to making them",
+          "special": "AA, Assault, Decon Hulk can rip a fully armoured can unleash coruscating bursts their appearance, Hulks can move an instant threat to unfortunate",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "boxUnresolved": false
+        }
+      ],
+      "page": 15,
+      "auxiliaryTransport": false,
+      "selectable": false,
+      "art": "assets/units/hulks.webp"
+    }
+  ]
+}
