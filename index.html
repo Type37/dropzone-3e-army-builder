@@ -62,7 +62,9 @@
 <!-- ═══ Top Bar ═══ -->
 <header class="topbar" id="topbar">
   <a class="topbar-brand" href="#" onclick="App.navigate('landing'); return false;">
-    <img src="assets/logos/dfc_logo_text.webp" alt="Dropzone Commander" class="topbar-logo">
+    <span class="dzc-wordmark" aria-label="Dropzone Commander 3E">
+      <span class="dzc-wordmark-main">DROPZONE</span><span class="dzc-wordmark-sub">COMMANDER&nbsp;3E</span>
+    </span>
   </a>
   <div class="topbar-sep desktop-only"></div>
   <span class="topbar-context" id="topbar-context">Army Builder</span>
@@ -79,7 +81,9 @@
   <section class="landing" id="view-landing">
     <div class="landing-hero">
       <div class="landing-logo">
-        <img src="assets/logos/dfc_logo.webp" alt="Dropzone Commander" class="landing-logo-img">
+        <span class="dzc-wordmark dzc-wordmark--hero" aria-label="Dropzone Commander 3E">
+          <span class="dzc-wordmark-main">DROPZONE</span><span class="dzc-wordmark-sub">COMMANDER&nbsp;3E</span>
+        </span>
       </div>
       <div class="deco-divider"><div class="deco-diamond"></div></div>
     </div>
@@ -97,13 +101,6 @@
         </div>
         <h2 class="tool-card-title">Unit Reference</h2>
         <p class="tool-card-desc">All 178 Dropzone units — stats, weapons, variants, transport capacity and rules.</p>
-      </div>
-      <div class="tool-card tool-card--mission card-deco" onclick="window.open('https://jetwong.neocities.org/wargaming/dropfleet-commander/dropfleet-mission-maker','_blank')">
-        <div class="tool-card-icon">
-          <svg width="32" height="32" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m3.001 11.996 3 .004a1 1 0 0 1 .114 1.993L6 14 4 13.996v5.003L6 19a1 1 0 0 1 .993.883L7 20a1 1 0 0 1-.883.993L6 21H3a1 1 0 0 1-.993-.883L2 20v-7.004a1 1 0 0 1 .885-.994L3 11.996ZM21 17a1 1 0 0 1 .117 1.993L21 19H9a1 1 0 0 1-.117-1.993L9 17h12Zm0-3a1 1 0 0 1 .117 1.993L21 16H9a1 1 0 0 1-.117-1.993L9 14h12ZM6 2a1 1 0 0 1 .117 1.993L6 4H4v4.995h2a1 1 0 0 1 .993.883L7 9.995a1 1 0 0 1-.883.993L6 10.995H3a1 1 0 0 1-.993-.883L2 9.995V3a1 1 0 0 1 .883-.993L3 2h3Zm15 5a1 1 0 0 1 .117 1.993L21 9H9a1 1 0 0 1-.117-1.993L9 7h12Zm0-3a1 1 0 0 1 .117 1.993L21 6H9a1 1 0 0 1-.117-1.993L9 4h12Z" fill="currentColor"/></svg>
-        </div>
-        <h2 class="tool-card-title">Mission Maker</h2>
-        <p class="tool-card-desc">Randomized scenarios with deployment zones and objectives.</p>
       </div>
       <div class="tool-card tool-card--ref card-deco" onclick="window.open('ref/index.html','_blank')">
         <div class="tool-card-icon">

@@ -7,6 +7,28 @@
  *      position:absolute at body level, so nothing behind it reflows.
  */
 
+/* ── wordmark ──
+ * Set in type rather than shipped as art. There is no Dropzone logo asset in
+ * this repo, and lifting TTCombat's from a PDF is both a licensing question
+ * and a raster that will not scale. Swap for real art whenever it exists;
+ * nothing else depends on this. */
+.dzc-wordmark { display: inline-flex; flex-direction: column; line-height: 1; text-decoration: none; }
+.dzc-wordmark-main {
+  font: 800 19px/1 var(--font-display, 'Roboto Slab', Georgia, serif);
+  letter-spacing: .10em; color: #fff;
+}
+.dzc-wordmark-sub {
+  font: 600 8.5px/1 var(--font-ui, 'Jost', system-ui, sans-serif);
+  letter-spacing: .30em; color: var(--gold, #c9a92c); margin-top: 3px;
+}
+.dzc-wordmark--hero .dzc-wordmark-main { font-size: 46px; letter-spacing: .07em; color: var(--ink, #24201c); }
+.dzc-wordmark--hero .dzc-wordmark-sub { font-size: 14px; letter-spacing: .34em; margin-top: 7px; }
+[data-theme="dark"] .dzc-wordmark--hero .dzc-wordmark-main { color: #f2ece0; }
+@media (max-width: 640px) {
+  .dzc-wordmark--hero .dzc-wordmark-main { font-size: 30px; }
+  .dzc-wordmark--hero .dzc-wordmark-sub { font-size: 10px; }
+}
+
 .dzc-wrap { max-width: 1180px; margin: 0 auto; padding: 12px 16px 64px; }
 
 /* ── faction tabs ── */
