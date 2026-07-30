@@ -17,6 +17,7 @@ const CORE = [
   './css/app.css',
   './css/mobile-fixes.css',
   './css/dzc.css',
+  './css/dzc-print.css',
   './js/rank-insignia.js',
   './js/offline-sync.js',
   './js/dzc-data.js',

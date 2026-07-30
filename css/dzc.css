@@ -268,3 +268,4 @@
   opacity: 0; visibility: hidden; transition: opacity .16s, transform .16s, visibility .16s;
 }
 .dzc-toast.is-on { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+.dzc-b-right { display: flex; align-items: center; gap: 14px; }

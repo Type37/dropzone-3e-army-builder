@@ -132,8 +132,12 @@
             · Groups ${a.groups.length}/${maxG || '—'}
             · Max per Group ${cap}pts</p>
         </div>
-        <div class="dzc-b-pts ${cost > a.pointsLimit ? 'is-over' : ''}">
-          <b>${cost}</b><span>/ ${a.pointsLimit}pts</span>
+        <div class="dzc-b-right">
+          <div class="dzc-b-pts ${cost > a.pointsLimit ? 'is-over' : ''}">
+            <b>${cost}</b><span>/ ${a.pointsLimit}pts</span>
+          </div>
+          <button class="btn btn-ghost btn-sm" type="button" onclick="DZCBuilder.print()"
+                  title="Print the deployment sheet">${window.DZCIcon('print', { size: 15 })} Print</button>
         </div>
       </header>
 
@@ -299,6 +303,99 @@
     renderBuilder(current.id);
   }
 
+  // -------------------------------------------------------------- print sheet
+
+  /* The printed sheet is the deployment plan, so it keeps the nesting tree and
+   * states capacity at each level. Everything else -- chrome, art, colour --
+   * is dropped, because none of it helps at a table. */
+  function printSheet() {
+    const a = current;
+    if (!a) return;
+    const size = window.DZC.gameSizeFor(a.pointsLimit);
+    const v = window.DZCArmy.validate(a);
+    const used = new Map();          // rule name -> record, for the appendix
+
+    function collectRules(u) {
+      [u.special || ''].concat((u.weapons || []).map(w => w.special || '')).forEach(sp => {
+        window.DZC.splitSpecial(sp, a.faction).forEach(tok => {
+          const r = window.DZC.rule(tok, a.faction);
+          if (r && !used.has(r.id)) used.set(r.id, r);
+        });
+      });
+    }
+
+    function squad(g, s, depth) {
+      const u = window.DZCArmy.unitOf(a, s);
+      if (!u) return '';
+      collectRules(u);
+      const riders = g.squads.filter(x => x.carriedBy === s.id);
+      const cost = window.DZCArmy.squadCost(a, s);
+      const stats = Object.keys(u.stats || {})
+        .map(k => `${k} <b>${esc(u.stats[k])}</b>`).join(' · ');
+
+      // Variants are per model, so a mixed Squad is listed by its actual mix.
+      const mix = {};
+      s.models.forEach(m => { const k = m.variant || u.name; mix[k] = (mix[k] || 0) + 1; });
+      const mixStr = Object.keys(mix).length > 1 || (u.variants || []).length
+        ? Object.keys(mix).map(k => `${mix[k]}× ${esc(k)}`).join(', ') : '';
+
+      const cap = (u.transport && (u.transport.capacity || []).length)
+        ? `carries ${(u.transport.capacity).map(c => `${c.n} ${c.shape}`)
+            .join(u.transport.capacityMode === 'both' ? ' + ' : ' / ')}` : '';
+
+      const wpns = (u.weapons || []).length ? `<table class="pr-wpn">
+        <tr><th>Weapon</th><th>Arc</th><th>MA</th><th>R</th><th>Att</th><th>Ac</th><th>E</th><th>Special</th></tr>
+        ${u.weapons.map(w => `<tr><td>${esc(w.name)}${(w.variants || []).length ? ` <i>(${esc(w.variants.join(', '))})</i>` : ''}</td>
+          <td>${esc(w.arc || '')}</td><td>${esc(w.ma || '')}</td><td>${esc(w.r || '')}</td>
+          <td>${esc(w.att || '')}</td><td>${esc(w.ac || '')}</td><td>${esc(w.e || '')}</td>
+          <td>${esc(w.special || '')}</td></tr>`).join('')}</table>` : '';
+
+      return `<div class="pr-squad${depth ? ' pr-squad--nested' : ''}" style="--depth:${depth}">
+        <div class="pr-sq-line">
+          <span class="pr-sq-n">${s.models.length}×</span>
+          <span class="pr-sq-name">${esc(u.name)}</span>
+          <span class="pr-sq-cat">${esc(u.category)}</span>
+          ${s.commander ? `<span class="pr-cmdr">Commander L${s.commander.level}</span>` : ''}
+          <span class="pr-sq-cost">${cost}pts</span>
+        </div>
+        ${mixStr ? `<div class="pr-variants">${mixStr}</div>` : ''}
+        <div class="pr-stats">${stats}${u.special ? ` · ${esc(u.special)}` : ''}</div>
+        ${cap ? `<div class="pr-cap">${cap}</div>` : ''}
+        ${wpns}
+        ${riders.map(r => squad(g, r, depth + 1)).join('')}
+      </div>`;
+    }
+
+    const groups = a.groups.map(g => `<section class="pr-group">
+      <div class="pr-g-head">
+        <h2 class="pr-g-name">${esc(g.name)}</h2>
+        <span class="pr-g-cost">${window.DZCArmy.groupCost(a, g)}pts</span>
+      </div>
+      ${g.squads.filter(s => !s.carriedBy).map(s => squad(g, s, 0)).join('')}
+    </section>`).join('');
+
+    const rules = [...used.values()].sort((x, y) => x.name.localeCompare(y.name))
+      .map(r => `<div class="pr-rule"><h3>${esc(r.name)}${r.alias ? ` (${esc(r.alias)})` : ''}</h3>
+        <p>${esc(r.text)} <span class="pr-src">${esc(r.faction ? r.faction.toUpperCase() : r.section)}</span></p></div>`).join('');
+
+    let el = document.getElementById('dzc-print');
+    if (!el) { el = document.createElement('div'); el.id = 'dzc-print'; document.body.appendChild(el); }
+    el.innerHTML = `
+      <div class="pr-head">
+        <h1 class="pr-title">${esc(a.name)}</h1>
+        <p class="pr-sub">${esc((FACTIONS.find(f => f.id === a.faction) || {}).name || a.faction)}
+          · ${size ? esc(size.label) : ''} · ${a.groups.length} Group${a.groups.length === 1 ? '' : 's'}
+          · <b>${window.DZCArmy.armyCost(a)}</b> / ${a.pointsLimit}pts</p>
+      </div>
+      ${v.errors.length ? `<p class="pr-warn"><b>Not legal:</b> ${v.errors.map(e => esc(e.msg)).join(' ')}</p>` : ''}
+      ${v.warnings.map(w => `<p class="pr-warn">${esc(w.msg)}</p>`).join('')}
+      ${groups}
+      <p class="pr-foot">Indentation shows what is carried aboard what. Transports are taken full (3.2.4);
+        Squads not aboard an Aircraft begin Reserved (9.4).</p>
+      ${rules ? `<section class="pr-rules"><h2>Rules used</h2>${rules}</section>` : ''}`;
+    window.print();
+  }
+
   // ------------------------------------------------------------------ actions
 
   const refresh = () => renderBuilder(current.id);
@@ -356,7 +453,7 @@
       if (r && !r.ok) return say(r.reason);
       refresh();
     },
-    openPicker, pick,
+    openPicker, pick, print: printSheet,
     pickerSearch: v => { picker.search = v; renderPicker(); },
     pickerCat: c => { picker.category = c; renderPicker(); },
     closePicker: () => document.getElementById('dzc-picker').classList.remove('active'),

@@ -1,0 +1,78 @@
+/* DZC print sheet.
+ *
+ * The printed sheet IS the deployment plan, so the Group nesting tree is the
+ * point of it: a Condor carrying two Bear APCs carrying six Legionnaires tells
+ * you what arrives, aboard what, in one glance. A flat roster loses that.
+ *
+ * Rules that hold here:
+ *   - a Group never splits across a page
+ *   - rules text never breaks mid-sentence
+ *   - no chrome, no art, no colour that costs ink for nothing
+ *   - single column. Two-column print was tried and removed; do not bring back.
+ */
+
+#dzc-print { display: none; }
+
+@media print {
+  /* Hide the app entirely; the sheet is its own document. */
+  body > *:not(#dzc-print) { display: none !important; }
+
+  #dzc-print {
+    display: block;
+    font: 10pt/1.4 'Jost', system-ui, sans-serif;
+    color: #000;
+    background: #fff;
+  }
+
+  @page { margin: 12mm 10mm; }
+
+  .pr-head { border-bottom: 2px solid #000; padding-bottom: 5pt; margin-bottom: 9pt; }
+  .pr-title { font: 700 17pt/1.15 'Roboto Slab', Georgia, serif; margin: 0 0 2pt; }
+  .pr-sub { font-size: 9pt; margin: 0; }
+  .pr-sub b { font-size: 11pt; }
+
+  /* A Group is a unit of meaning; it must not be torn across a page. */
+  .pr-group {
+    break-inside: avoid; page-break-inside: avoid;
+    border: 1pt solid #000; border-radius: 2pt;
+    padding: 5pt 7pt; margin-bottom: 7pt;
+  }
+  .pr-g-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1pt solid #999; padding-bottom: 3pt; margin-bottom: 4pt;
+  }
+  .pr-g-name { font: 700 12pt/1.1 'Roboto Slab', Georgia, serif; margin: 0; }
+  .pr-g-cost { font-weight: 700; font-size: 10pt; }
+
+  /* Nesting, drawn. The rule that runs down the left of a carried Squad is
+     what makes "these arrive aboard that" readable without a caption. */
+  .pr-squad { margin-left: calc(var(--depth) * 12pt); padding: 2.5pt 0; }
+  .pr-squad--nested { border-left: 1pt solid #666; padding-left: 6pt; }
+  .pr-sq-line { display: flex; align-items: baseline; gap: 6pt; }
+  .pr-sq-n { font-weight: 700; }
+  .pr-sq-name { font-weight: 600; }
+  .pr-sq-cat { font-size: 7.5pt; text-transform: uppercase; letter-spacing: .05em; border: .5pt solid #666; padding: 0 3pt; border-radius: 2pt; }
+  .pr-sq-cost { margin-left: auto; font-weight: 700; white-space: nowrap; }
+  .pr-cap { font-size: 8pt; font-style: italic; color: #333; }
+  .pr-variants { font-size: 8.5pt; color: #222; }
+  .pr-cmdr { font-size: 8.5pt; font-weight: 700; }
+
+  .pr-stats { font-size: 8.5pt; }
+  .pr-stats b { font-weight: 700; }
+
+  .pr-wpn { width: 100%; border-collapse: collapse; font-size: 8pt; margin: 2pt 0 1pt; }
+  .pr-wpn th { text-align: left; font-size: 7pt; text-transform: uppercase; letter-spacing: .04em; border-bottom: .5pt solid #999; padding: 1pt 4pt 1pt 0; }
+  .pr-wpn td { padding: 1pt 4pt 1pt 0; vertical-align: top; border-bottom: .5pt solid #ddd; }
+
+  /* Rules appendix. A rule must not break mid-sentence, so each entry is kept
+     whole rather than allowed to flow. */
+  .pr-rules { break-before: page; page-break-before: always; }
+  .pr-rules h2 { font: 700 13pt/1.2 'Roboto Slab', Georgia, serif; border-bottom: 1.5pt solid #000; padding-bottom: 3pt; margin: 0 0 6pt; }
+  .pr-rule { break-inside: avoid; page-break-inside: avoid; margin-bottom: 5pt; }
+  .pr-rule h3 { font: 700 9.5pt/1.2 'Jost', sans-serif; margin: 0 0 1pt; }
+  .pr-rule p { margin: 0; font-size: 8.5pt; line-height: 1.4; }
+  .pr-rule .pr-src { font-size: 7.5pt; color: #555; }
+
+  .pr-foot { margin-top: 8pt; padding-top: 4pt; border-top: .5pt solid #999; font-size: 7.5pt; color: #444; }
+  .pr-warn { font-size: 8.5pt; margin: 0 0 6pt; padding: 3pt 5pt; border-left: 2pt solid #666; }
+}
