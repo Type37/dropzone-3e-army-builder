@@ -4,20 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="description" content="Dropzone Commander 3rd Edition by TTCombat. This is an army builder made by WarLore.">
-<script>
-  // Redirect phone-width viewports to the mobile app.
-  // Skip if: already on /mobile/, user has opted into desktop view, or tablet+.
-  (function () {
-    var onMobile = window.innerWidth < 640 || screen.width < 640;
-    var forcedDesktop = localStorage.getItem('dfc_force_desktop') === '1';
-    var alreadyMobile = location.pathname.indexOf('/mobile') !== -1;
-    if (onMobile && !forcedDesktop && !alreadyMobile) {
-      // Preserve the hash (e.g. shared fleet links) if present
-      var hash = location.hash || '';
-      location.replace(location.origin + location.pathname.replace(/\/?$/, '/') + 'mobile/' + hash);
-    }
-  })();
-</script>
+<!-- The phone redirect to /mobile/ is GONE.
+     Two builds drifted apart in the Dropfleet app, and here it was actively
+     wrong: /mobile/ is still the Dropfleet builder, so every phone opening this
+     site landed in the wrong game. One responsive app instead — HANDOFF §2. -->
 <script>
   // Apply the saved theme before first paint (no flash of light on dark-mode users).
   (function () {

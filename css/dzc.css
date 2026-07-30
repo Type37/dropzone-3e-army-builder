@@ -269,3 +269,21 @@
 }
 .dzc-toast.is-on { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
 .dzc-b-right { display: flex; align-items: center; gap: 14px; }
+
+/* A <select> sizes itself to its widest OPTION, so "Bear APC × 1 — cannot be
+   full (carries 4, needs 6)" made the row 440px wide and the page scrolled
+   sideways at 375. Constrain the control and let the row wrap instead; the
+   option text stays complete inside the open dropdown, so nothing is lost. */
+.dzc-sq-opts > * { min-width: 0; max-width: 100%; }
+.dzc-carry, .dzc-cmdr { flex: 1 1 190px; min-width: 0; }
+.dzc-carry select, .dzc-cmdr select { flex: 1 1 auto; width: 100%; min-width: 0; }
+.dzc-variant { flex: 0 1 auto; min-width: 0; max-width: 100%; }
+
+@media (max-width: 640px) {
+  .dzc-b-head { gap: 8px; }
+  .dzc-b-right { width: 100%; justify-content: space-between; }
+  .dzc-sq-main { gap: 6px; }
+  .dzc-sq-name { flex: 1 1 100%; order: -1; }
+  .dzc-ratios { gap: 6px; }
+  .dzc-ratio { flex: 1 1 calc(50% - 3px); }
+}
