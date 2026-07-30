@@ -1,0 +1,136 @@
+/* DZC unit reference.
+ *
+ * Two rules hold throughout, and they are not negotiable:
+ *   1. Gameplay text is NEVER clipped. No ellipsis, no nowrap on a name, a
+ *      rule or a stat. Containers grow in height instead.
+ *   2. Opening anything must not move the page. The rule popover is
+ *      position:absolute at body level, so nothing behind it reflows.
+ */
+
+.dzc-wrap { max-width: 1180px; margin: 0 auto; padding: 12px 16px 64px; }
+
+/* ── faction tabs ── */
+.dzc-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.dzc-tab {
+  font: 600 13px/1 var(--font-ui, 'Jost', system-ui, sans-serif);
+  letter-spacing: .02em; padding: 9px 14px; border-radius: 6px; cursor: pointer;
+  border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff);
+  color: var(--ink, #24201c); transition: background .12s, border-color .12s, color .12s;
+}
+.dzc-tab:hover { border-color: var(--acc); }
+.dzc-tab.is-active { background: var(--acc); border-color: var(--acc); color: #fff; }
+
+/* ── toolbar ── */
+.dzc-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 8px; }
+.dzc-search {
+  flex: 1 1 280px; min-width: 0; padding: 9px 12px; font-size: 14px;
+  border: 1px solid var(--line, #d8d0c0); border-radius: 6px;
+  background: var(--surface-2, #fff); color: var(--ink, #24201c);
+}
+.dzc-search:focus-visible { outline: 2px solid var(--acc); outline-offset: 1px; }
+.dzc-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.dzc-chip {
+  font: 500 12px/1 var(--font-ui, 'Jost', system-ui, sans-serif); padding: 7px 11px;
+  border-radius: 999px; cursor: pointer; border: 1px solid var(--line, #d8d0c0);
+  background: transparent; color: var(--ink-2, #5b544a);
+}
+.dzc-chip.is-active { background: var(--acc); border-color: var(--acc); color: #fff; }
+.dzc-count { font-size: 12px; color: var(--ink-2, #6b6459); margin: 6px 0 16px; }
+.dzc-empty { padding: 32px 0; text-align: center; color: var(--ink-2, #6b6459); }
+
+/* ── category groups ── */
+.dzc-group { margin-bottom: 30px; }
+.dzc-group-head {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px;
+  font: 700 15px/1.2 var(--font-ui, 'Jost', system-ui, sans-serif);
+  text-transform: uppercase; letter-spacing: .08em;
+  border-bottom: 2px solid var(--acc); padding-bottom: 6px; margin-bottom: 12px;
+}
+.dzc-group-count { font-weight: 500; font-size: 12px; letter-spacing: 0; text-transform: none; color: var(--ink-2, #6b6459); }
+.dzc-group-note { font-weight: 400; font-size: 12px; letter-spacing: 0; text-transform: none; font-style: italic; color: var(--ink-2, #6b6459); }
+
+/* ── unit cards ── */
+.dzc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 12px; }
+.dzc-card {
+  display: flex; gap: 12px; padding: 10px; cursor: pointer;
+  border: 1px solid var(--line, #d8d0c0); border-radius: 8px;
+  background: var(--surface-2, #fff); transition: border-color .12s, transform .12s;
+}
+.dzc-card:hover { border-color: var(--acc); transform: translateY(-1px); }
+.dzc-card:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+.dzc-card-art { flex: 0 0 84px; height: 84px; display: grid; place-items: center; }
+.dzc-card-art img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.dzc-card-body { flex: 1 1 auto; min-width: 0; }
+/* Names wrap. A unit name is gameplay text and is never cut off. */
+.dzc-card-name { font: 700 15px/1.25 var(--font-ui, 'Jost', system-ui, sans-serif); margin: 0 0 4px; overflow-wrap: anywhere; }
+.dzc-card-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12px; color: var(--ink-2, #6b6459); margin-bottom: 6px; }
+.dzc-points { font-weight: 700; color: var(--ink, #24201c); }
+.dzc-pts { font-weight: 500; font-size: 10px; margin-left: 1px; color: var(--ink-2, #6b6459); }
+.dzc-flag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; padding: 2px 6px; border-radius: 3px; background: var(--line, #e8e2d6); color: var(--ink-2, #5b544a); }
+.dzc-flag--rare { background: #c9a92c; color: #221c00; }
+.dzc-flag--unique { background: #9c1818; color: #fff; }
+
+/* ── stat pills ── */
+.dzc-card-stats { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 6px; }
+.dzc-stat { display: inline-flex; align-items: baseline; gap: 4px; padding: 2px 7px; border-radius: 4px; background: var(--surface-3, #f2ece0); }
+.dzc-stat-k { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-2, #6b6459); }
+.dzc-stat-v { font-size: 13px; font-weight: 600; }
+
+/* ── transport badges ── */
+.dzc-transport { display: inline-flex; align-items: center; gap: 3px; flex-wrap: wrap; }
+.dzc-badge { position: relative; display: inline-grid; place-items: center; width: 22px; height: 22px; }
+.dzc-badge svg { position: absolute; inset: 0; }
+.dzc-badge-n { position: relative; font: 700 10px/1 var(--font-ui, 'Jost', system-ui, sans-serif); }
+.dzc-sep { font-weight: 700; font-size: 13px; color: var(--ink-2, #6b6459); padding: 0 1px; }
+
+/* ── rule chips ── */
+.dzc-rule {
+  display: inline-block; margin: 2px 3px 2px 0; padding: 2px 7px; cursor: pointer;
+  font: 500 11px/1.35 var(--font-ui, 'Jost', system-ui, sans-serif);
+  border: 1px solid var(--acc); border-radius: 3px; background: transparent;
+  color: var(--ink, #24201c);
+  /* Rule names wrap rather than truncate — this is gameplay text. */
+  white-space: normal; text-align: left; overflow-wrap: anywhere;
+}
+.dzc-rule:hover { background: var(--acc); color: #fff; }
+.dzc-rule--unknown { border-style: dashed; opacity: .7; }
+
+/* ── rule popover: absolute at body level, so the page never shifts ── */
+.dzc-pop {
+  position: absolute; z-index: 9000; max-width: min(360px, calc(100vw - 24px));
+  padding: 12px 14px; border-radius: 8px;
+  background: var(--surface-2, #fff); border: 1px solid var(--line, #d8d0c0);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .18);
+}
+.dzc-pop h5 { margin: 0 0 6px; font: 700 13px/1.3 var(--font-ui, 'Jost', system-ui, sans-serif); }
+.dzc-pop-alias { font-weight: 500; color: var(--ink-2, #6b6459); }
+.dzc-pop p { margin: 0 0 8px; font-size: 13px; line-height: 1.5; }
+.dzc-pop-src { font-size: 11px; color: var(--ink-2, #6b6459); }
+
+/* ── detail sheet ── */
+.dzc-detail-head { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+.dzc-detail-art { flex: 0 0 160px; max-width: 160px; height: auto; object-fit: contain; }
+.dzc-detail-head h3 { margin: 0 0 4px; font: 800 20px/1.2 var(--font-ui, 'Jost', system-ui, sans-serif); overflow-wrap: anywhere; }
+.dzc-detail-meta { margin: 0 0 8px; font-size: 13px; color: var(--ink-2, #6b6459); }
+.dzc-detail-rules { margin-bottom: 14px; }
+.dzc-detail-rules h4, .dzc-variants h4 { margin: 0 0 6px; font: 700 12px/1 var(--font-ui, 'Jost', system-ui, sans-serif); text-transform: uppercase; letter-spacing: .07em; color: var(--ink-2, #6b6459); }
+.dzc-hint { font-weight: 400; text-transform: none; letter-spacing: 0; font-style: italic; }
+.dzc-variants ul { list-style: none; margin: 0 0 14px; padding: 0; }
+.dzc-variants li { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; border-bottom: 1px solid var(--line, #eee5d6); }
+
+/* Wide tables scroll inside their own container; the page never scrolls sideways. */
+.dzc-wpn { width: 100%; border-collapse: collapse; font-size: 12px; display: block; overflow-x: auto; }
+.dzc-wpn th { text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2, #6b6459); padding: 5px 8px 5px 0; border-bottom: 1px solid var(--line, #d8d0c0); }
+.dzc-wpn td { padding: 6px 8px 6px 0; border-bottom: 1px solid var(--line, #eee5d6); vertical-align: top; }
+.dzc-wpn-name { font-weight: 600; min-width: 180px; overflow-wrap: anywhere; }
+.dzc-wpn tr.is-upgrade .dzc-wpn-name { border-left: 3px solid #2e9e4f; padding-left: 6px; }
+.dzc-wpn tr.is-variant .dzc-wpn-name { border-left: 3px solid #e0761c; padding-left: 6px; }
+.dzc-wpn-only, .dzc-wpn-up { display: block; font-weight: 500; font-size: 11px; color: var(--ink-2, #6b6459); }
+.dzc-none, .dzc-source { font-size: 12px; color: var(--ink-2, #6b6459); }
+.dzc-source { margin-top: 14px; }
+
+@media (max-width: 640px) {
+  .dzc-wrap { padding: 10px 12px 56px; }
+  .dzc-grid { grid-template-columns: 1fr; }
+  .dzc-detail-art { flex-basis: 110px; max-width: 110px; }
+}

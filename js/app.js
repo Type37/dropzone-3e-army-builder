@@ -891,6 +891,13 @@ let activeGroupId = null;
         topContext.textContent = 'Your Fleets';
         renderFleetList();
         break;
+      // Dropzone unit reference. Rendered from data/dzc/ by js/dzc-units.js,
+      // entirely outside the Dropfleet model below.
+      case 'units':
+        show('view-units');
+        topContext.innerHTML = `<a href="#landing" class="topbar-back" onclick="App.navigate('landing'); return false;"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2L4 8l6 6"/></svg></a> Unit Reference`;
+        if (window.DZCUnits) DZCUnits.open();
+        break;
       case 'builder':
         if (param) {
           currentFleet = fleets.find(f => f.id === param);
