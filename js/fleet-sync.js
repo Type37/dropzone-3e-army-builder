@@ -36,7 +36,12 @@
   const BASE = 'https://firestore.googleapis.com/v1/projects/' + PROJECT +
                '/databases/(default)/documents/sync/';
 
-  const FLEETS_KEY  = 'dfc_fleets';        // shared with both apps
+  // Which localStorage list this syncs. Settable because the Dropzone app
+  // syncs `dzc_armies` while the retiring Dropfleet views still hold
+  // `dfc_fleets`; the merge itself is game-agnostic (it moves an opaque list of
+  // {id, updatedAt} records) so only the key has to change. Default is left as
+  // the Dropfleet key so existing behaviour and its tests are untouched.
+  let FLEETS_KEY = 'dfc_fleets';
   const TOKEN_KEY   = 'dfc_sync_token';
   const DELETED_KEY = 'dfc_sync_deleted';  // { fleetId: deletedAt }
   const LASTSYNC_KEY = 'dfc_sync_last';
@@ -430,8 +435,17 @@
     }
   } catch (e) { /* non-browser host (the test sandbox); nothing to attach to */ }
 
+  /* Point sync at a different list. Re-seeds the change baseline, or the next
+   * save would see every record as "changed" and let this device win every
+   * future conflict regardless of who actually edited last. */
+  function setStorageKey(key) {
+    if (!key || key === FLEETS_KEY) return;
+    FLEETS_KEY = key;
+    sigs = null;
+  }
+
   const api = {
-    supported, enabled, token, lastSync,
+    supported, enabled, token, lastSync, setStorageKey,
     randomToken, normaliseToken, looksLikeToken,
     preview, join, start, sync, notifyChanged, maybeAutoSync, stop, deleteRemote, recordDeleted,
     stampChanged,

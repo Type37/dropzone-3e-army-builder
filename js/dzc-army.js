@@ -26,6 +26,7 @@
   // ------------------------------------------------------------- persistence
 
   function load() {
+    bindSync();
     try {
       armies = JSON.parse(localStorage.getItem(STORE) || '[]');
       if (!Array.isArray(armies)) armies = [];
@@ -33,10 +34,19 @@
     return armies;
   }
 
+  /* Point Fleet Sync at the ARMY list. Its merge is game-agnostic -- it moves an
+   * opaque list of {id, updatedAt} records and never looks inside them -- but
+   * the storage key was hardcoded to the Dropfleet list, so without this every
+   * army save stamped and synced the wrong thing entirely. */
+  function bindSync() {
+    if (window.FleetSync && window.FleetSync.setStorageKey) {
+      try { window.FleetSync.setStorageKey(STORE); } catch (e) { /* optional */ }
+    }
+  }
+
   function save() {
     try { localStorage.setItem(STORE, JSON.stringify(armies)); } catch (e) { /* quota */ }
-    // Fleet Sync stamps and syncs whatever list it is given; it does not know
-    // or care what a unit is, so it works unchanged for armies.
+    bindSync();
     if (window.FleetSync && window.FleetSync.stampChanged) {
       try { window.FleetSync.stampChanged(); } catch (e) { /* sync optional */ }
     }
