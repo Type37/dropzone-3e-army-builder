@@ -683,8 +683,24 @@ def parse_stat_table(page, lines):
 
     headers = STAT_HEADERS_INFANTRY if infantry else STAT_HEADERS_VEHICLE
     cols = columns_from_header(hdr, headers)
-    top = min(w[1] for w in hdr)
-    rules = sorted(set(vertical_rules(page, top, top + 40)) | set(doc_rules(page.parent)))
+    # Column boundaries come from THIS table's own drawn dividers, taken from
+    # the header row's tight y-band.
+    #
+    # The band used to be `top` to `top + 40`, which reaches past the header
+    # into the weapon table below, and was then unioned with document-wide
+    # rules. Both pull in dividers belonging to the OTHER table, whose columns
+    # sit at different x. On the Totem Shieldspire that left six candidate
+    # boundaries between DP and Special; split_row takes the middle one, which
+    # landed at x=241.7 while the real divider is at x=206.4 -- so "Friendly"
+    # (centred at 231.2) was filed under DP and the rule read
+    # "Vehicles and Aircraft 6" 5+" instead of "Friendly Vehicles and ...".
+    #
+    # The tight band yields exactly one divider per column edge. Document-wide
+    # rules stay only as a fallback for a card whose dividers are not drawn.
+    top, bottom = min(w[1] for w in hdr), max(w[3] for w in hdr)
+    rules = sorted(vertical_rules(page, top, bottom))
+    if len(rules) < len(cols) - 1:
+        rules = sorted(set(rules) | set(doc_rules(page.parent)))
     for ln in lines[i + 1:i + 4]:
         row = split_row(ln, cols, rules)
         if row.get("Type") in ("Vehicle", "Aircraft", "Infantry"):

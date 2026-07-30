@@ -300,9 +300,9 @@
       "stats": {
         "Mv": "3”",
         "A": "6",
-        "DP": "4 P5+"
+        "DP": "4"
       },
-      "special": "(All), P3+, Command Centre, AWACS 12” (Lynx)",
+      "special": "P5+ (All), P3+, Command Centre, AWACS 12” (Lynx)",
       "variants": [
         {
           "name": "Jaguar",
@@ -737,9 +737,9 @@
       "stats": {
         "Mv": "3”",
         "A": "6",
-        "DP": "4 P5+ (All),"
+        "DP": "4"
       },
-      "special": "Shield: Friendly Vehicles 6” 4+ (Dreamsnare)",
+      "special": "P5+ (All), Shield: Friendly Vehicles 6” 4+ (Dreamsnare)",
       "variants": [
         {
           "name": "Leopard",
@@ -883,9 +883,9 @@
       "stats": {
         "Mv": "N/A",
         "A": "5",
-        "DP": "4 Friendly"
+        "DP": "4"
       },
-      "special": "Vehicles and Aircraft 6” 5+, P5+, Shield: Zones",
+      "special": "Friendly Vehicles and Aircraft 6” 5+, P5+, Shield: Zones",
       "variants": [],
       "transport": {
         "capacity": [],

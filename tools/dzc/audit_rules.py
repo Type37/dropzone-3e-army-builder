@@ -109,12 +109,23 @@ def tokenise(special, rules, faction=None):
     n = len(pieces)
     out, i = [], 0
     while i < n:
-        # A piece that stands on its own is always its own rule. Merging past
-        # one would swallow it: "Ineffective: X" ends in an open wildcard and
-        # will happily absorb the Dogs, Lethal and Stealth that follow it.
         if resolve(pieces[i], rules, faction):
-            out.append(pieces[i])
-            i += 1
+            # The head resolves, but a trailing wildcard may still own what
+            # follows: "Ineffective: Friendlies, Zones" is ONE rule with a
+            # comma-separated target list, and stopping at the head strands
+            # "Zones" as a keyword that matches nothing.
+            #
+            # Extend only over pieces that cannot stand alone. "Zones" and
+            # "Vehicles" are not rules by themselves so they are absorbed;
+            # Dogs, Lethal and Stealth are, so they are never swallowed.
+            end = i + 1
+            for j in range(i + 2, n + 1):
+                if resolve(pieces[j - 1], rules, faction):
+                    break
+                if resolve(", ".join(pieces[i:j]), rules, faction):
+                    end = j
+            out.append(", ".join(pieces[i:end]))
+            i = end
             continue
         merged = None
         for j in range(i + 2, n + 1):

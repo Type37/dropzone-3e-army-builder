@@ -547,9 +547,9 @@
       "stats": {
         "Mv": "8”",
         "A": "5",
-        "DP": "1 Ev2,"
+        "DP": "1"
       },
-      "special": "Skimmer (All), Shield friendly Vehicles 3” 5+ (Aurora)",
+      "special": "Ev2, Skimmer (All), Shield friendly Vehicles 3” 5+ (Aurora)",
       "variants": [
         {
           "name": "Diana",
@@ -1160,9 +1160,9 @@
       "stats": {
         "Mv": "2”",
         "A": "7",
-        "DP": "2 P5+"
+        "DP": "2"
       },
-      "special": "(All), P3+, Command Centre, AWACS 12” (Zeus)",
+      "special": "P5+ (All), P3+, Command Centre, AWACS 12” (Zeus)",
       "variants": [
         {
           "name": "Hyperion",

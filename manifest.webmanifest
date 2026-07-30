@@ -1,7 +1,7 @@
 {
-  "name": "Dropfleet Commander Fleet Builder",
-  "short_name": "Dropfleet",
-  "description": "Build fleet rosters for Dropfleet Commander — all six factions, full ship stats, weapons, systems and rules.",
+  "name": "Dropzone Commander 3E Army Builder",
+  "short_name": "Dropzone 3E",
+  "description": "Build armies for Dropzone Commander 3rd Edition — all six factions, full unit stats, weapons, transports and rules.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

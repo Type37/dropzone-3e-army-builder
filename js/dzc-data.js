@@ -142,7 +142,21 @@
     const out = [];
     let i = 0;
     while (i < pieces.length) {
-      if (rule(pieces[i], faction)) { out.push(pieces[i]); i++; continue; }
+      if (rule(pieces[i], faction)) {
+        // The head resolves, but a trailing wildcard may still own what
+        // follows: "Ineffective: Friendlies, Zones" is ONE rule with a
+        // comma-separated target list. Extend only over pieces that cannot
+        // stand alone, so Zones and Vehicles are absorbed while Dogs, Lethal
+        // and Stealth -- which are rules in their own right -- never are.
+        let end = i + 1;
+        for (let j = i + 2; j <= pieces.length; j++) {
+          if (rule(pieces[j - 1], faction)) break;
+          if (rule(pieces.slice(i, j).join(', '), faction)) end = j;
+        }
+        out.push(pieces.slice(i, end).join(', '));
+        i = end;
+        continue;
+      }
       let merged = null;
       for (let j = i + 2; j <= pieces.length; j++) {
         if (pieces.slice(i + 1, j).some(p => rule(p, faction))) break;

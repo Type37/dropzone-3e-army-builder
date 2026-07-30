@@ -1280,7 +1280,19 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Guard\\s*$",
-   "text": "This Squad gains +2DF in CQBs. In addition, per Squad with two or more Guard Units in a CQB, one friendly Squad of your choosing gains +2DF for that CQB, assigned at the start of step 1 of that CQB. Remote Drone This Squad may not be taken in your Army. During its activation, you may destroy this Squad instead of attacking with it.",
+   "text": "This Squad gains +2DF in CQBs. In addition, per Squad with two or more Guard Units in a CQB, one friendly Squad of your choosing gains +2DF for that CQB, assigned at the start of step 1 of that CQB.",
+   "page": 1
+  },
+  {
+   "id": "ucm-remote-drone",
+   "faction": "ucm",
+   "section": "UCM Unit Special Rules",
+   "chapter": "UCM Unit Special Rules",
+   "name": "Remote Drone",
+   "alias": null,
+   "parameterised": false,
+   "match": "^\\s*Remote\\s*Drone\\s*$",
+   "text": "This Squad may not be taken in your Army. During its activation, you may destroy this Squad instead of attacking with it.",
    "page": 1
   }
  ]

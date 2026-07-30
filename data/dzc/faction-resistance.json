@@ -72,9 +72,9 @@
       "stats": {
         "Mv": "10”",
         "A": "5",
-        "DP": "3 AWACS"
+        "DP": "3"
       },
-      "special": "6”, Command Centre, Ev1, Skimmer, Strike",
+      "special": "AWACS 6”, Command Centre, Ev1, Skimmer, Strike",
       "variants": [
         {
           "name": "Hydra",

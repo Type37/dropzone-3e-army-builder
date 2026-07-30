@@ -1,7 +1,7 @@
 {
-  "name": "Dropfleet Builder · Mobile",
-  "short_name": "DFC Mobile",
-  "description": "Build Dropfleet Commander fleets on your phone — all six factions, full stats, rules and validation. Works offline at the table.",
+  "name": "Dropzone 3E Army Builder · Mobile",
+  "short_name": "DZC Mobile",
+  "description": "Build Dropzone Commander armies on your phone — all six factions, full stats, rules and validation. Works offline at the table.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

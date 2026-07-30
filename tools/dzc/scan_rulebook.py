@@ -23,6 +23,7 @@ Usage:
 """
 
 import argparse
+import collections
 import json
 import os
 import re
@@ -32,21 +33,59 @@ import fitz
 
 # Typography of a rule entry.
 #
+# A PDF carries no structure -- no "this is a heading" tag -- so type is the
+# only thing separating a rule name from its prose. What matters is the
+# CONTRAST between faces, never which typeface TTCombat happened to license,
+# so the faces are measured from each document rather than named here. A
+# re-export in a different family then costs nothing.
+#
+# Within a chapter that contrast is size: the body face is whatever sets the
+# most text, and the heading face is whatever the chapter title uses.
+#
 # Headings are not one size. A top-level rule is 12pt ("Aegis X"), a
-# sub-section is 10pt ("Flying High", "AA-R") and at least one is 11pt
-# ("UC (Un-countered)"), so the heading test is a RANGE, not an equality --
-# pinning it to 12 dropped every sub-section silently.
+# sub-section 10pt ("Flying High", "AA-R"), and at least one 11pt
+# ("UC (Un-countered)") -- so the heading test is a RANGE. Pinning it to a
+# single size dropped every sub-section in silence.
 #
-# The bracketed alias is its own span at 9pt in the HEADING face, exactly the
-# size of body text. Font, not size, is what separates them: MorrisSans 9pt is
-# "(Anti-Aircraft-Reactive)", RobotoSlab 9pt is the rule's prose.
+# The bracketed alias is its own span at body SIZE but in the heading FACE:
+# "(Anti-Aircraft-Reactive)" against the rule's prose. Only the face separates
+# them, which is why body is matched on face and not on size alone.
 #
-# Page numbers are also MorrisSans 10pt, which collides with sub-headings, so a
-# span that is nothing but digits is never a name.
-NUM_FONT, NUM_SIZE = "MorrisSans", 8.0
-NAME_FONT, NAME_MIN, NAME_MAX = "MorrisSans", 8.5, 12.5
-BODY_FONT, BODY_SIZE = "RobotoSlab", 9.0
+# Page numbers share a size with sub-headings, so a span of nothing but digits
+# is never a name.
 SIZE_TOL = 0.35
+
+
+def measure_faces(doc, pages):
+    """
+    Work out which face is body and which is heading, by usage.
+
+    Body is whatever sets the most characters. The heading face is whatever the
+    chapter title (the largest span) uses. Both are read from the document, so
+    nothing here depends on a font being called MorrisSans or RobotoSlab.
+    """
+    weight = collections.Counter()
+    biggest = (0, None)
+    for pno in range(pages[0], pages[1] + 1):
+        for sp in spans_in_order(doc[pno]):
+            t = sp["text"].strip()
+            if not t:
+                continue
+            weight[sp["font"]] += len(t)
+            if sp["size"] > biggest[0]:
+                biggest = (sp["size"], sp["font"])
+    body_font = weight.most_common(1)[0][0]
+    head_font = biggest[1] or body_font
+
+    sizes = collections.Counter()
+    for pno in range(pages[0], pages[1] + 1):
+        for sp in spans_in_order(doc[pno]):
+            if sp["text"].strip() and sp["font"] == head_font:
+                sizes[round(sp["size"], 1)] += 1
+    # The section number is the smallest thing set in the heading face.
+    num_size = min(sizes) if sizes else 8.0
+    return {"body": body_font, "head": head_font, "num_size": num_size,
+            "title_size": biggest[0]}
 
 # Chapters worth reading, by their >=19pt title. Anything outside these page
 # ranges is prose, scenarios or the token legend.
@@ -62,17 +101,29 @@ SECTION_RE = re.compile(r"^\d+(?:\.\d+)+$")
 # "Decon", Resistance "Bikes X". None of those appear in chapters 10 or 11, so
 # reading the rulebook alone left 57 keywords with no text.
 #
-# These pages carry no section numbers, so the parse is purely typographic:
+# These pages carry no section numbers, so the parse is again typographic --
+# and again by contrast, not by typeface name:
 #
-#   MorrisSansW01-Medium  13pt   section title  "Shaltari Unit Special Rules"
-#   FuturaPT-Bold         11-14  rule name      "Gate"
-#   FuturaPT-Medium       12pt   body
+#   a rule NAME is set BOLD                    "Gate"
+#   the section TITLE is not bold, in a
+#     different face from the body             "Shaltari Unit Special Rules"
+#   everything else in the body face is body
 #
-# Front matter runs until the first page of actual cards, which is recognised
-# by having no Futura at all.
-CARD_TITLE_FONT = "MorrisSans"
-CARD_NAME_FONT = "FuturaPT-Bold"
-CARD_BODY_FONT = "FuturaPT-Medium"
+# The bold FLAG is what identifies a heading, so a re-export in another family
+# still parses. Front matter runs until the first page of actual cards, which
+# is recognised by having none of the body face on it.
+BOLD_FLAG = 1 << 4
+
+# Headings TTCombat forgot to bold. "Remote Drone" on the UCM sheet is set in
+# the body face, so it reads as a paragraph of the rule above it and its own
+# text is lost -- leaving the Starsprite's printed keyword resolving to
+# nothing.
+#
+# Listed explicitly rather than guessed at from line length or punctuation: a
+# heuristic loose enough to catch this would also promote ordinary sentences,
+# and a NEW unbolded heading should fail the coverage audit loudly rather than
+# be silently absorbed.
+FORCE_HEADING = {"Remote Drone"}
 
 
 def slug(s):
@@ -132,14 +183,19 @@ def spans_in_order(page):
     return out
 
 
-def kind(sp):
-    """Classify a span as 'num', 'name', 'body' or None by font and size."""
+def kind(sp, faces):
+    """Classify a span as 'num', 'name', 'body' or None, relative to the faces."""
     font, size, txt = sp["font"], sp["size"], sp["text"].strip()
-    if NUM_FONT in font and abs(size - NUM_SIZE) < SIZE_TOL and SECTION_RE.match(txt):
-        return "num"
-    if NAME_FONT in font and NAME_MIN <= size <= NAME_MAX and not txt.isdigit():
-        return "name"
-    if BODY_FONT in font and abs(size - BODY_SIZE) < SIZE_TOL:
+    if font == faces["head"]:
+        if abs(size - faces["num_size"]) < SIZE_TOL and SECTION_RE.match(txt):
+            return "num"
+        # Anything in the heading face between the section number and the
+        # chapter title is a rule name -- except a bare page number.
+        if (faces["num_size"] + SIZE_TOL <= size < faces["title_size"] - SIZE_TOL
+                and not txt.isdigit()):
+            return "name"
+        return None
+    if font == faces["body"]:
         return "body"
     return None
 
@@ -228,12 +284,13 @@ def _literal(part):
 
 def parse(doc, pages):
     """Walk a chapter's spans, emitting one record per numbered rule."""
+    faces = measure_faces(doc, pages)
     rules = []
     cur = None
     mode = None
     for pno in range(pages[0], pages[1] + 1):
         for sp in spans_in_order(doc[pno]):
-            k = kind(sp)
+            k = kind(sp, faces)
             txt = sp["text"]
             if k == "num":
                 if cur:
@@ -264,22 +321,30 @@ def parse_front_matter(doc):
     the next. Stops at the first page with no Futura on it -- that is the first
     card, and everything after is unit data.
     """
+    # The body face of the front matter: whatever sets the most text on page 1.
+    weight = collections.Counter()
+    for sp in spans_in_order(doc[0]):
+        if sp["text"].strip():
+            weight[sp["font"]] += len(sp["text"].strip())
+    if not weight:
+        return []
+    body_font = weight.most_common(1)[0][0]
+
     out = []
     section = None
     cur = None
     for pno in range(doc.page_count):
         spans = spans_in_order(doc[pno])
-        if not any(CARD_BODY_FONT in s["font"] or CARD_NAME_FONT in s["font"]
-                   for s in spans):
+        if not any(s["font"] == body_font or (s["flags"] & BOLD_FLAG) for s in spans):
             break
         for sp in spans:
-            font, txt = sp["font"], sp["text"]
-            if CARD_TITLE_FONT in font and sp["size"] >= 12.5:
+            font, txt, bold = sp["font"], sp["text"], bool(sp["flags"] & BOLD_FLAG)
+            if not bold and font != body_font and sp["size"] >= 12.5:
                 if cur:
                     out.append((section, cur[0], cur[1]))
                     cur = None
                 section = tidy(txt)
-            elif CARD_NAME_FONT in font:
+            elif bold or tidy(txt) in FORCE_HEADING:
                 # Headings wrap here too, but a wrapped heading continues the
                 # CURRENT rule rather than starting a new one -- only a heading
                 # that follows body text is a new rule.
@@ -289,7 +354,7 @@ def parse_front_matter(doc):
                     if cur:
                         out.append((section, cur[0], cur[1]))
                     cur = (tidy(txt), "")
-            elif CARD_BODY_FONT in font and cur:
+            elif font == body_font and cur:
                 cur = (cur[0], (cur[1] + " " + txt) if cur[1] else txt)
     if cur:
         out.append((section, cur[0], cur[1]))

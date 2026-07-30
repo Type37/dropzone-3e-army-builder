@@ -9573,8 +9573,6 @@ let activeGroupId = null;
   // ── Public API ──
   return {
     navigate, ensureFactionLoaded,
-    // Data hooks for the Combat Calculator (Calc, js/calc-ui.js).
-    getCalcData: () => ({ shipDB, factionData, FACTION_LABELS, CATEGORY_ORDER, CATEGORY_LABELS, currentFaction: currentFleet ? currentFleet.faction : null }),
     openNewFleetModal, createFleet, generateRandomFleet, deleteFleet, duplicateFleet, startFactionFleet, editFleetName, sortFleetList,
     loadDemoFleets, showFleetTab, collectionFaction: selectCollectionFaction, collectionAdjust, loadFastplayFaction, selectFaction, selectGameSize, addGroup, selectGroup, selectFlagship, removeGroup, copyGroup, editGroupName, toggleFleetCardMenu,
     onGripPointerDown,
