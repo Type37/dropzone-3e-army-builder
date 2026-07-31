@@ -97,118 +97,6 @@
     <div class="landing-objectives" id="landing-objectives"></div>
   </section>
 
-  <!-- ── Fleet List ── -->
-  <section class="fleet-list hidden" id="view-fleets">
-    <div class="fleet-list-header">
-      <div class="fleet-tabs">
-        <button class="fleet-tab active" id="tab-my-fleets" onclick="App.showFleetTab('my')">Your Fleets</button>
-        <button class="fleet-tab" id="tab-fastplay" onclick="App.showFleetTab('fastplay')">Fast Play Sheets</button>
-        <button class="fleet-tab" id="tab-collection" onclick="App.showFleetTab('collection')">Collection</button>
-      </div>
-      <div class="flex gap-sm" id="fleet-actions">
-        <button class="btn btn-outline btn-sm" onclick="App.importFleetFromClipboard()" data-tooltip="Import fleet from clipboard"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 8v6H2V2h6"/><path d="M10 2h4v4"/><path d="M14 2L7 9"/></svg> Import</button>
-        <button class="btn btn-primary" onclick="App.openNewFleetModal()"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg> New Fleet</button>
-      </div>
-    </div>
-    <div class="fleet-sort-bar" id="fleet-sort-bar">
-      <span class="fleet-sort-label">Sort by</span>
-      <button class="fleet-sort-btn active" data-sort="updated" onclick="App.sortFleetList('updated')">Recent</button>
-      <button class="fleet-sort-btn" data-sort="name" onclick="App.sortFleetList('name')">Name</button>
-      <button class="fleet-sort-btn" data-sort="faction" onclick="App.sortFleetList('faction')">Faction</button>
-      <button class="fleet-sort-btn" data-sort="points" onclick="App.sortFleetList('points')">Points</button>
-    </div>
-    <div class="fleet-grid" id="fleet-grid">
-      <!-- Populated by JS -->
-    </div>
-    <div class="fastplay-container hidden" id="fastplay-container">
-      <!-- Populated by JS -->
-    </div>
-    <div class="collection-container hidden" id="collection-container">
-      <!-- Populated by JS -->
-    </div>
-  </section>
-
-  <!-- ── Fleet Builder ── -->
-  <section class="hidden" id="view-builder">
-    <div class="builder-layout" id="builder-layout">
-      <!-- Sidebar -->
-      <aside class="builder-sidebar" id="builder-sidebar">
-        <div class="sidebar-handle mobile-only" onclick="App.toggleSidebar()">
-          <div class="sidebar-handle-bar"></div>
-          <div class="sidebar-handle-summary">
-            <span id="sidebar-peek-points"></span>
-            <span id="sidebar-peek-groups"></span>
-          </div>
-        </div>
-
-        <!-- Fleet Info -->
-        <div class="fleet-info-panel" id="fleet-info-panel">
-          <div class="fleet-info-name" id="builder-fleet-name">Fleet Name</div>
-          <div class="fleet-info-faction" id="builder-fleet-faction">Faction</div>
-          <div class="flex gap-xs" style="margin-top:var(--sp-sm)">
-            <span class="badge badge-neutral" id="builder-fleet-size">Clash</span>
-          </div>
-          <div class="game-size-detail" id="game-size-detail"></div>
-        </div>
-
-        <!-- Points + groups tracker (card 2) -->
-        <div class="points-bar" id="points-bar">
-          <div class="points-bar-header">
-            <span class="points-current" id="points-current">0</span>
-            <span class="points-limit">/ <span id="points-limit">2000</span> pts</span>
-            <span class="points-remaining" id="points-remaining"></span>
-          </div>
-          <div class="points-track">
-            <div class="points-fill" id="points-fill" style="width:0%"></div>
-          </div>
-          <div class="groups-line">
-            <span class="text-overline" id="groups-count">0 / 20 groups</span>
-          </div>
-          <!-- Groups composition bar (colour-coded, hover for the breakdown) -->
-          <div id="fleet-composition"></div>
-          <div class="ap-line text-overline" id="fleet-ap-per-turn"></div>
-        </div>
-
-        <!-- Fleet legality alerts (issues to fix / notes). Lives on the rail so
-             it's always visible without scrolling the middle panel. -->
-        <div id="sidebar-alerts"></div>
-
-        <!-- Admiral lives on the left rail (highest-ranked first). The flagship is
-             a ship on the table and shows as a clickable card in the middle. -->
-        <div class="sidebar-admiral">
-          <div class="sidebar-section-label">Admiral</div>
-          <div id="admiral-slot"></div>
-        </div>
-
-        <!-- Battle Groups, Station and Secondary Objectives live in the overview
-             (middle) panel. -->
-      </aside>
-
-      <!-- Overview Panel (always visible) -->
-      <div class="builder-overview" id="builder-overview">
-        <!-- Fleet overview rendered here by JS -->
-      </div>
-
-      <!-- Detail Panel (shows when group selected) -->
-      <div class="builder-detail hidden" id="builder-detail">
-        <!-- Group detail rendered here by JS -->
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ── Play Mode ── -->
-  <section class="hidden play-view" id="view-play">
-    <!-- Rendered by App.renderPlayMode() -->
-  </section>
-
-  <!-- Shared Fleet View (read-only) -->
-  <section class="hidden" id="view-shared">
-    <div class="shared-fleet-container" id="shared-fleet-content">
-      <!-- Populated by JS -->
-    </div>
-  </section>
-
   <!-- ── DZC Unit Reference ── the first screen rendered from data/dzc/.
        Populated by js/dzc-units.js; nothing here comes from the Dropfleet model. -->
   <section class="hidden" id="view-units"></section>
@@ -259,221 +147,14 @@
 <!-- ═══ Modals ═══ -->
 
 <!-- Share Fleet Modal -->
-<div class="modal-overlay" id="modal-share">
-  <div class="modal-panel" style="max-width:500px">
-    <div class="modal-header">
-      <h2 class="modal-title">Share Fleet</h2>
-      <button class="modal-close" aria-label="Close" onclick="App.closeModal('modal-share')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
-    </div>
-    <div class="modal-body" id="share-body">
-      <!-- Populated by JS -->
-    </div>
-  </div>
-</div>
 
 <!-- Import Fleet Modal -->
-<div class="modal-overlay" id="modal-import">
-  <div class="modal-panel" style="max-width:520px">
-    <div class="modal-header">
-      <h2 class="modal-title">Import Fleet</h2>
-      <button class="modal-close" aria-label="Close" onclick="App.closeModal('modal-import')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
-    </div>
-    <div class="modal-body">
-      <p class="text-caption" style="margin-bottom:var(--sp-md)">Paste a share link, fleet code, or a <strong>New Recruit</strong> army list (copy the list text from New Recruit and paste it here).</p>
-      <textarea class="form-textarea" id="import-text" rows="5" placeholder="Paste a share link, fleet code, or New Recruit army list here…" style="width:100%;font-family:var(--font-condensed);font-size:var(--text-sm)"></textarea>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="App.closeModal('modal-import')">Cancel</button>
-      <button class="btn btn-primary" onclick="App.doImportFromText()">Import</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="modal-import-report">
-  <div class="modal-panel" style="max-width:520px">
-    <div class="modal-header">
-      <h2 class="modal-title">List imported</h2>
-      <button class="modal-close" aria-label="Close" onclick="App.closeModal('modal-import-report')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
-    </div>
-    <div class="modal-body" id="import-report-body"></div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="App.closeModal('modal-import-report')">Close</button>
-      <button class="btn btn-primary" onclick="App.openLastImported()">Open fleet</button>
-    </div>
-  </div>
-</div>
-
-<!-- New Fleet Modal -->
-<div class="modal-overlay" id="modal-new-fleet">
-  <div class="modal-panel">
-    <div class="modal-header">
-      <h2 class="modal-title">New Fleet</h2>
-      <button class="modal-close" aria-label="Close" onclick="App.closeModal('modal-new-fleet')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
-    </div>
-    <div class="modal-body new-fleet-body">
-      <div class="flex flex-col gap-md">
-        <div class="new-fleet-row">
-          <div class="form-group float-field" style="flex:1">
-            <input class="form-input" id="new-fleet-name" type="text" placeholder=" ">
-            <label class="float-label" for="new-fleet-name">Fleet Name</label>
-          </div>
-          <div class="form-group float-field" style="flex:1">
-            <input class="form-input" id="new-fleet-desc" type="text" placeholder=" ">
-            <label class="float-label" for="new-fleet-desc">Description (optional)</label>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Faction</label>
-          <div class="gap-sm" id="faction-picker" style="display:grid;grid-template-columns:repeat(3,1fr)">
-            <!-- Populated by JS -->
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Game Size</label>
-          <div class="size-grid" id="size-picker">
-            <!-- Populated by JS -->
-          </div>
-          <div class="new-fleet-points-row float-field">
-            <input class="form-input" id="new-fleet-points" type="number" min="0" step="50" placeholder=" ">
-            <label class="float-label" for="new-fleet-points">Points limit</label>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="App.closeModal('modal-new-fleet')">Cancel</button>
-      <button class="btn btn-outline" id="btn-random-fleet" onclick="App.generateRandomFleet()" title="Build a random fleet (uses the selected faction, or picks one)">🎲 Surprise me</button>
-      <button class="btn btn-primary" id="btn-create-fleet" onclick="App.createFleet()">Create Fleet</button>
-    </div>
-  </div>
-</div>
-
-<!-- Ship Selection Modal -->
-<div class="modal-overlay" id="modal-ship-select">
-  <div class="modal-panel modal-panel--xl">
-    <div class="modal-header">
-      <h2 class="modal-title" id="ship-select-title">Add Unit</h2>
-      <button class="modal-close" aria-label="Close" onclick="App.closeModal('modal-ship-select')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
-    </div>
-    <div class="modal-body">
-      <div class="ship-search-bar">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg>
-        <input type="text" id="ship-search-input" class="ship-search-input" placeholder="Search ships..." oninput="App.searchShips(this.value)">
-        <button class="ship-search-clear hidden" id="ship-search-clear" onclick="App.clearShipSearch()" title="Clear search"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
-      </div>
-      <div class="ship-category-tabs" id="ship-category-tabs">
-        <!-- Populated by JS -->
-      </div>
-      <div class="ship-list-toolbar">
-        <div class="sort-controls">
-          <span class="sort-label">Sort</span>
-          <button class="sort-btn active" onclick="App.sortShips('points')" data-sort="points">Points</button>
-          <button class="sort-btn" onclick="App.sortShips('name')" data-sort="name">Name</button>
-          <button class="sort-btn" onclick="App.sortShips('tonnage')" data-sort="tonnage">Tonnage</button>
-        </div>
-        <div class="ship-results-bar" id="ship-results-bar"><!-- Populated by JS --></div>
-      </div>
-      <div class="ship-select-filters" id="ship-select-filters">
-        <!-- Populated by JS -->
-      </div>
-      <div class="ship-grid" id="ship-select-grid">
-        <!-- Populated by JS -->
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- Space Station Selection Modal -->
-<div class="modal-overlay" id="modal-station">
-  <div class="modal-panel modal-panel--lg">
-    <div class="modal-header">
-      <h2 class="modal-title">Choose Space Station</h2>
-      <button class="modal-close" aria-label="Close" onclick="App.closeModal('modal-station')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
-    </div>
-    <div class="modal-body">
-      <p class="text-caption" style="margin-bottom:var(--sp-lg)">Pick a station for your fleet, its cost counts toward your total.</p>
-      <div id="station-options" class="flex flex-col gap-sm">
-        <!-- Populated by JS -->
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- Station Modules (armaments) Modal -->
-<div class="modal-overlay" id="modal-station-armaments">
-  <div class="modal-panel modal-panel--lg">
-    <div class="modal-header">
-      <h2 class="modal-title" id="station-armaments-title">Station Modules</h2>
-      <button class="modal-close" aria-label="Close" onclick="App.closeModal('modal-station-armaments')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
-    </div>
-    <div class="modal-body">
-      <div id="station-armaments-body"><!-- Populated by JS --></div>
-    </div>
-  </div>
-</div>
-
-<!-- Admiral Selection Modal -->
-<div class="modal-overlay" id="modal-admiral">
-  <div class="modal-panel modal-panel--lg">
-    <div class="modal-header">
-      <h2 class="modal-title">Choose Admiral</h2>
-      <button class="modal-close" aria-label="Close" onclick="App.closeModal('modal-admiral')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
-    </div>
-    <div class="modal-body">
-      <p class="text-caption" style="margin-bottom:var(--sp-lg)">Place a generic admiral on any Capital ship, or pick a famous one who brings their own ship.</p>
-      <div id="admiral-options" class="flex flex-col gap-md">
-        <!-- Populated by JS -->
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Admiral Abilities picker Modal -->
-<div class="modal-overlay" id="modal-admiral-abilities">
-  <div class="modal-panel modal-panel--lg">
-    <div class="modal-header">
-      <h2 class="modal-title" id="admiral-abilities-modal-title">Choose Abilities</h2>
-      <button class="modal-close" aria-label="Close" onclick="App.closeModal('modal-admiral-abilities')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
-    </div>
-    <div class="modal-body">
-      <p class="text-caption" id="admiral-abilities-modal-sub" style="margin-bottom:var(--sp-lg)"></p>
-      <div id="admiral-abilities-modal-body"><!-- Populated by JS --></div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-primary btn-block" onclick="App.closeModal('modal-admiral-abilities')">OK</button>
-    </div>
-  </div>
-</div>
 
 <!-- Secondary Objectives picker Modal -->
-<div class="modal-overlay" id="modal-secondary">
-  <div class="modal-panel modal-panel--lg">
-    <div class="modal-header">
-      <h2 class="modal-title">Secondary Objectives</h2>
-      <button class="modal-close" aria-label="Close" onclick="App.closeModal('modal-secondary')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
-    </div>
-    <div class="modal-body">
-      <p class="text-caption" id="secondary-modal-sub" style="margin-bottom:var(--sp-lg)"></p>
-      <div id="secondary-modal-body"><!-- Populated by JS --></div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-primary" id="secondary-done-btn" onclick="App.closeModal('modal-secondary')">Done</button>
-    </div>
-  </div>
-</div>
-
-<!-- Ship Detail Modal -->
-<div class="modal-overlay" id="modal-ship-detail">
-  <div class="modal-panel modal-panel--lg">
-    <div class="modal-header">
-      <h2 class="modal-title" id="detail-ship-name">Ship Name</h2>
-      <button class="modal-close" aria-label="Close" onclick="App.closeModal('modal-ship-detail')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
-    </div>
-    <div class="modal-body" id="detail-ship-body">
-      <!-- Populated by JS -->
-    </div>
-  </div>
-</div>
 
 <!-- Confirm Delete Modal -->
 <div class="modal-overlay" id="modal-confirm">
@@ -495,7 +176,7 @@
 <div class="modal-overlay" id="modal-settings">
   <div class="modal-panel" style="max-width:440px">
     <div class="modal-header">
-      <h2 class="modal-title">Fleet Settings</h2>
+      <h2 class="modal-title">Settings</h2>
       <button class="modal-close" aria-label="Close" onclick="App.closeModal('modal-settings')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
     </div>
     <div class="modal-body" id="settings-body">
@@ -507,7 +188,7 @@
 <div class="modal-overlay" id="modal-sync">
   <div class="modal-panel" style="max-width:520px">
     <div class="modal-header">
-      <h2 class="modal-title">Sync Your Fleets Online</h2>
+      <h2 class="modal-title">Sync Armies Online</h2>
       <button class="modal-close" aria-label="Close" onclick="App.closeModal('modal-sync')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
     </div>
     <div class="modal-body" id="sync-body">
@@ -554,7 +235,7 @@
 <script src="js/dzc-units.js"></script>
 <script src="js/dzc-share.js"></script>
 <script src="js/dzc-builder.js"></script>
-<script src="js/app.js"></script>
+<script src="js/dzc-shell.js"></script>
 <script>
   // Service worker is PRODUCTION-ONLY. On localhost we skip registration AND
   // actively unregister any existing SW + purge its caches: a dev service worker
