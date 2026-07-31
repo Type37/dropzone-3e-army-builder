@@ -85,7 +85,14 @@ self.addEventListener('fetch', (e) => {
       // replayed for <img> requests (Accept: image/avif,image/webp,…). If the
       // host ever sends "Vary: Accept", strict matching would miss every
       // thumbnail the user deliberately downloaded.
-      .catch(() => caches.match(req, { ignoreVary: true })
+      //
+      // ignoreSearch: the deploy stamps css/js with ?v=<sha> to defeat the
+      // Pages cache, but CORE below precaches the bare paths. Without this a
+      // cold offline start would miss every stylesheet and script it had
+      // deliberately downloaded. Nothing in this app carries meaning in a
+      // query string — share links travel in the hash — so dropping it when
+      // falling back to cache is safe.
+      .catch(() => caches.match(req, { ignoreVary: true, ignoreSearch: true })
         .then(hit => hit || caches.match(offlineShell, { ignoreVary: true })))
   );
 });

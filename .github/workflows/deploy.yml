@@ -41,6 +41,23 @@ jobs:
           echo "--- staged: $(du -sh _site | cut -f1) ---"
           du -sh _site/* | sort -h
 
+      # Pages serves css/ and js/ with a ~10 minute cache and no fingerprint,
+      # so a deploy does not reach anyone still holding the old copy. A fix has
+      # already appeared not to deploy at all for exactly this reason
+      # (HANDOFF section 8). Stamp every local css/js reference with the commit
+      # SHA so a new build is a new URL.
+      #
+      # Data JSON is deliberately NOT stamped: its filenames have to stay
+      # stable for the monthly re-scan, and it is fetched with
+      # cache: 'no-cache' so it revalidates on its own.
+      - name: Cache-bust css and js with the commit SHA
+        run: |
+          SHA="${GITHUB_SHA::8}"
+          find _site -name '*.html' -print0 | xargs -0 sed -i -E \
+            's#(href="|src=")((css|js)/[^"?]+\.(css|js))"#\1\2?v='"$SHA"'"#g'
+          echo "--- stamped with $SHA ---"
+          grep -ohE '(href|src)="(css|js)/[^"]+"' _site/index.html | head -20
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload site artifact
