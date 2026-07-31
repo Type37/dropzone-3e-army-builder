@@ -136,6 +136,8 @@
           <div class="dzc-b-pts ${cost > a.pointsLimit ? 'is-over' : ''}">
             <b>${cost}</b><span>/ ${a.pointsLimit}pts</span>
           </div>
+          <button class="btn btn-ghost btn-sm" type="button" onclick="DZCBuilder.share()"
+                  title="Copy a link to this army">${window.DZCIcon('share', { size: 15 })} Share</button>
           <button class="btn btn-ghost btn-sm" type="button" onclick="DZCBuilder.print()"
                   title="Print the deployment sheet">${window.DZCIcon('print', { size: 15 })} Print</button>
         </div>
@@ -482,6 +484,22 @@
       refresh();
     },
     openPicker, pick, print: printSheet,
+    /* The link carries the whole army, so it works with no server and cannot
+     * rot. Copied straight to the clipboard; if that is blocked the link is
+     * shown so it can still be copied by hand. */
+    share: async () => {
+      try {
+        const url = await window.DZCShare.link(current);
+        try {
+          await navigator.clipboard.writeText(url);
+          say('Link copied — it carries the whole army, no account needed.');
+        } catch (e) {
+          window.prompt('Copy this link:', url);
+        }
+      } catch (e) {
+        say('Could not build a share link: ' + e.message);
+      }
+    },
     pickerSearch: v => { picker.search = v; renderPicker(); },
     pickerCat: c => { picker.category = c; renderPicker(); },
     closePicker: () => document.getElementById('dzc-picker').classList.remove('active'),

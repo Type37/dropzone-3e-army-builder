@@ -21,6 +21,7 @@ const CORE = [
   './js/rank-insignia.js',
   './js/offline-sync.js',
   './js/dzc-data.js',
+  './js/dzc-share.js',
   './js/dzc-builder.js',
   './js/dzc-army.js',
   './js/dzc-icons.js',

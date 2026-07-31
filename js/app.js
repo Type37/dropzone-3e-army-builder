@@ -898,6 +898,19 @@ let activeGroupId = null;
         topContext.innerHTML = `<a href="#landing" class="topbar-back" onclick="App.navigate('landing'); return false;"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2L4 8l6 6"/></svg></a> Unit Reference`;
         if (window.DZCUnits) DZCUnits.open();
         break;
+      // A shared army arrives whole in the URL: import it, then land on it.
+      case 'share':
+        show('view-armies');
+        topContext.textContent = 'Shared Army';
+        if (window.DZCShare && param) {
+          DZCShare.importFrom(param)
+            .then(a => { location.hash = '#army/' + a.id; })
+            .catch(e => {
+              document.getElementById('view-armies').innerHTML =
+                `<div class="dzc-wrap"><p class="dzc-empty">That share link could not be read.<br>${esc(e.message)}</p></div>`;
+            });
+        }
+        break;
       case 'armies':
         show('view-armies');
         topContext.innerHTML = `<a href="#landing" class="topbar-back" onclick="App.navigate('landing'); return false;"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2L4 8l6 6"/></svg></a> Your Armies`;
