@@ -86,6 +86,13 @@
         <h2 class="tool-card-title">Army Builder</h2>
         <p class="tool-card-desc">Build and manage army rosters for all six factions.</p>
       </div>
+      <div class="tool-card tool-card--ref card-deco" onclick="App.navigate('collection')">
+        <div class="tool-card-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg>
+        </div>
+        <h2 class="tool-card-title">Collection</h2>
+        <p class="tool-card-desc">Record what you own, and see what a list would still need.</p>
+      </div>
       <div class="tool-card tool-card--ref card-deco" onclick="App.navigate('units')">
         <div class="tool-card-icon">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="8" height="7" rx="1"/><rect x="13" y="4" width="8" height="7" rx="1"/><rect x="3" y="13" width="8" height="7" rx="1"/><rect x="13" y="13" width="8" height="7" rx="1"/></svg>
@@ -105,6 +112,7 @@
   <section class="hidden" id="view-armies"></section>
   <section class="hidden" id="view-army"></section>
   <section class="hidden" id="view-play"></section>
+  <section class="hidden" id="view-collection"></section>
 </div>
 
 <!-- New army -->
@@ -237,6 +245,7 @@
 <script src="js/dzc-share.js"></script>
 <script src="js/dzc-builder.js"></script>
 <script src="js/dzc-play.js"></script>
+<script src="js/dzc-collection.js"></script>
 <script src="js/dzc-shell.js"></script>
 <script>
   // Service worker is PRODUCTION-ONLY. On localhost we skip registration AND

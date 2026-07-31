@@ -154,11 +154,24 @@
       ${v.warnings.length ? `<ul class="dzc-issues dzc-issues--warn">${v.warnings.map(e =>
         `<li><span class="dzc-rulenum">${esc(e.rule)}</span>${esc(e.msg)}</li>`).join('')}</ul>` : ''}
       ${!v.errors.length && a.groups.length ? '<p class="dzc-legal">This army is legal.</p>' : ''}
+      ${shortfallHtml(a)}
 
       ${a.groups.map(g => groupHtml(a, g)).join('')}
 
       <button class="btn btn-outline dzc-add-group" type="button" onclick="DZCBuilder.addGroup()">+ Add Group</button>
     </div>`;
+  }
+
+  /* What this list needs beyond what you own. Advisory only, and separate from
+   * the rules issues above: owning too few models is not illegal, it is a
+   * shopping list. */
+  function shortfallHtml(a) {
+    if (!window.DZCCollection) return '';
+    window.DZCCollection.load();
+    const short = window.DZCCollection.shortfall(a);
+    if (!short.length) return '';
+    return `<p class="dzc-short"><b>Not in your collection</b>${
+      short.map(s => `${esc(s.name)} — using ${s.need}, own ${s.have}`).join('; ')}</p>`;
   }
 
   function groupHtml(a, g) {
