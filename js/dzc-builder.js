@@ -332,25 +332,30 @@
     const squads = g.squads.length;
     const U = window.DZCUnits;
 
+    /* Capacity is the loudest thing here. It is what decides whether the next
+     * thing you pick can even join this Group (3.2.4.2), so the shape is drawn
+     * at a size you read across the room and the count is set in the numeral
+     * face -- not folded into the row of small facts beside it. */
     const space = window.DZCArmy.groupSpace(a, g).map(sp => {
       const free = sp.total - sp.used;
       const name = U.shapeName(sp.shape);
-      return `<span class="dzc-meter${sp.used > sp.total ? ' is-over' : free === 0 ? ' is-full' : ''}"
-        title="${esc(`${sp.used} of ${sp.total} ${name} capacity used${
-          free > 0 ? `, room for ${free} more` : sp.used > sp.total ? ' — overloaded' : ' — full'}`)}">
-        ${U.shape(sp.shape, 13, true)}<b>${sp.used}</b><i>of ${sp.total} ${esc(name)}</i></span>`;
+      return `<span class="dzc-space${sp.used > sp.total ? ' is-over' : free === 0 ? ' is-full' : ''}"
+        style="--sh:${U.shapeInk(sp.shape)}">
+        ${U.shape(sp.shape, 30, true)}
+        <span class="dzc-space-n"><b>${sp.used}</b><s>/</s><em>${sp.total}</em></span>
+        <span class="dzc-space-lab">${esc(name)}<i>${
+          free > 0 ? `room for ${free}` : sp.used > sp.total ? 'overloaded' : 'full'}</i></span></span>`;
     }).join('');
 
     return `<div class="dzc-g-meters">
-      <span class="dzc-meter${cost > cap ? ' is-over' : ''}"
-            title="${esc(`${cost} of the ${cap}pt ceiling one Group may spend (3.2)`)}">
-        ${window.DZCIcon('calculate', { size: 13 })}<b>${cost}</b><i>of ${cap}pts</i></span>
-      <span class="dzc-meter" title="${esc(`${squads} Squad${squads === 1 ? '' : 's'} in this Group`)}">
-        ${window.DZCIcon('groups', { size: 13 })}<b>${squads}</b><i>Squad${squads === 1 ? '' : 's'}</i></span>
-      <span class="dzc-meter" title="${esc(`${models} model${models === 1 ? '' : 's'} in this Group`)}">
-        ${window.DZCIcon('deployed_code', { size: 13 })}<b>${models}</b><i>model${models === 1 ? '' : 's'}</i></span>
-      ${space}
-    </div>`;
+      <span class="dzc-meter${cost > cap ? ' is-over' : ''}">
+        ${window.DZCIcon('calculate', { size: 14 })}<b>${cost}</b><i>of ${cap}pts</i></span>
+      <span class="dzc-meter">
+        ${window.DZCIcon('groups', { size: 14 })}<b>${squads}</b><i>Squad${squads === 1 ? '' : 's'}</i></span>
+      <span class="dzc-meter">
+        ${window.DZCIcon('deployed_code', { size: 14 })}<b>${models}</b><i>model${models === 1 ? '' : 's'}</i></span>
+    </div>
+    ${space ? `<div class="dzc-g-space">${space}</div>` : ''}`;
   }
 
   function groupHtml(a, g) {
@@ -369,7 +374,9 @@
       </header>
       ${groupMeters(a, g)}
       ${rows || '<p class="dzc-g-empty">No Squads yet.</p>'}
-      <button class="btn btn-ghost btn-sm" type="button" onclick="DZCBuilder.openPicker('${g.id}')">+ Add Squad</button>
+      <button class="dzc-add-squad" type="button" onclick="DZCBuilder.openPicker('${g.id}')">
+        <span class="dzc-add-squad-i">${window.DZCIcon('add', { size: 20 })}</span>
+        <span class="dzc-add-squad-t">Add Squad</span></button>
     </section>`;
   }
 
@@ -812,6 +819,11 @@
           <span class="dzc-pick-cost">${price}<small>pts</small></span>
         </div>
         <span class="dzc-pick-meta">${meta}</span>
+        <!-- The symbols, on the card you choose from. Which shape a unit fills
+             and which it offers is what decides whether two things can share a
+             Group at all (3.2.4.2), so needing to open the unit to find out
+             made the one deciding fact the one hidden fact. -->
+        ${U.transportHtml(u)}
         ${unitFacts(u, a.faction, { compact: true })}
         <!-- The variant IS the choice: a different gun, sometimes a different
              role. Burying it in a per-model select inside the Squad you already
@@ -827,10 +839,10 @@
     </div>`;
   }
 
-  /* Adding does NOT close the picker. You are usually building a Group out of
-   * several Squads, and bouncing back to the list after each one made that a
-   * chore. The picker re-renders so Rare/Unique limits and squad-size blocks
-   * update against what you just took. */
+  /* Adding closes the picker and puts you back on the army. Keeping it open to
+   * "pick another" is what the Dropfleet builder does, but there a Group is a
+   * shopping list; here a Group is a Transport and its cargo, and every add
+   * changes what the next legal one is. You want to see what you just made. */
   async function pick(unitId) {
     const g = (current.groups || []).find(x => x.id === picker.groupId);
     const u = window.DZC.unit(current.faction, unitId);
@@ -852,8 +864,8 @@
       if (target) {
         const r = window.DZCArmy.assignTransport(current, target.id, unitId);
         if (!r.ok) return say(r.reason);
+        closePicker();
         await renderBuilder(current.id);
-        renderPickList();
         return say(r.warn || `${u.name} added, carrying ${
           window.DZCArmy.unitOf(current, target).name}.`, 'local_shipping');
       }
@@ -878,9 +890,14 @@
     });
     if (carrier) s.carriedBy = carrier.id;
 
+    closePicker();
     await renderBuilder(current.id);
-    renderPickList();
-    say(`Added ${u.name}. Pick another, or close when done.`, 'add');
+    say(`Added ${u.name}.`, 'add');
+  }
+
+  function closePicker() {
+    const m = document.getElementById('dzc-picker');
+    if (m) m.classList.remove('active');
   }
 
   // -------------------------------------------------------------- print sheet
@@ -1149,7 +1166,7 @@
       if (box) box.value = '';
       renderPickList();
     },
-    closePicker: () => document.getElementById('dzc-picker').classList.remove('active'),
+    closePicker,
     closeNew: () => document.getElementById('dzc-new').classList.remove('active')
   };
 })();

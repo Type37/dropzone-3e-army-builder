@@ -56,11 +56,18 @@ const DZC_STEPS = [
   ['09-picker-search', `DZCBuilder.pickerSearch('a')`],
   // .dzc-pick-add only — '.dzc-pick, .dzc-pick-add' matches the card first in
   // document order, which opens the unit info instead of adding.
-  ['10-squad-added', `DZCBuilder.pickerSearch('');
+  // Adding now CLOSES the picker, so each add is followed by reopening it.
+  ['10-squad-added', `const gid = () => document.querySelector('[onclick*="openPicker"]')
+       .getAttribute('onclick').match(/openPicker\\('([^']+)'/)[1];
+     DZCBuilder.pickerSearch('');
      await new Promise(r => setTimeout(r, 500));
      document.querySelectorAll('.dzc-pick-add')[0].click();
-     await new Promise(r => setTimeout(r, 500));
-     document.querySelectorAll('.dzc-pick-add')[3].click()`],
+     await new Promise(r => setTimeout(r, 600));
+     DZCBuilder.openPicker(gid());
+     await new Promise(r => setTimeout(r, 700));
+     document.querySelectorAll('.dzc-pick-add')[3].click();
+     await new Promise(r => setTimeout(r, 600));
+     DZCBuilder.openPicker(gid())`],
   // A second Squad in the same Group is now refused unless a Transport there
   // has room, so shoot the picker in that state to see what greys out.
   ['10b-picker-second-squad', `await new Promise(r => setTimeout(r, 300))`],
@@ -74,12 +81,17 @@ const DZC_STEPS = [
      document.querySelector('[data-cat="All"]').click();
      document.querySelector('[data-shape="square"]').click()`],
   ['10f-picker-cleared', `document.querySelector('.dzc-pick-results button').click()`],
+  // 1:1 on a single card, because "are the capacity numbers readable" is a
+  // question about pixels that a 1400px-wide shot cannot answer.
+  ['10f2-card-1to1', `document.querySelector('[data-cat="Transport"]').click();
+     await new Promise(r => setTimeout(r, 300))`, '.dzc-pick'],
   // A Transport in the Group, so the header meters have capacity to report.
+  // This one lands on the builder by itself: adding closes the picker now.
   ['10g-transport-added', `document.querySelector('[data-cat="Transport"]').click();
      await new Promise(r => setTimeout(r, 300));
      const add = [...document.querySelectorAll('.dzc-pick-add')].find(b => !b.disabled);
      add && add.click()`],
-  ['11-builder-with-squad', `document.getElementById('dzc-picker').classList.remove('active')`],
+  ['11-builder-with-squad', `DZCBuilder.closePicker()`],
   ['12-commander-modal', `DZCBuilder.openCommander()`],
   ['13-commander-added', `const b = [...document.querySelectorAll('#dzc-cmdr-body button')]
      .find(x => x.textContent.trim() === 'Add'); b && b.click()`],
@@ -237,12 +249,28 @@ await s.send('Page.navigate', { url: BASE });
 await sleep(2500);
 
 const done = [];
-for (const [name, expr] of STEPS) {
+for (const [name, expr, clipSel] of STEPS) {
   const r = await s.send('Runtime.evaluate', { expression: `(async()=>{ ${expr} })()`, awaitPromise: true })
     .catch(e => ({ error: e.message }));
   if (r?.error) { console.log(`  ! ${name}: ${r.error}`); }
   await sleep(900);
-  const shot = await s.send('Page.captureScreenshot', { format: 'png' });
+  /* A third element clips the shot to one element at 1:1. Legibility is a
+   * question about actual pixels, and a full-page shot answers it badly: at
+   * 1400px wide a 20px badge is a smudge whether or not it is readable on a
+   * real screen. Scale stays 1 deliberately — capturing at 2x re-rasterises
+   * the text crisper than the user will ever see it. */
+  let clip = null;
+  if (clipSel) {
+    const box = await s.send('Runtime.evaluate', {
+      expression: `(() => { const e = document.querySelector('${clipSel}'); if (!e) return null;
+        const r = e.getBoundingClientRect();
+        return JSON.stringify({ x: r.x - 8, y: r.y - 8, width: r.width + 16, height: r.height + 16, scale: 1 }); })()`,
+      returnByValue: true
+    });
+    if (box?.result?.value) clip = JSON.parse(box.result.value);
+    else console.log(`  ! ${name}: no element matched ${clipSel}`);
+  }
+  const shot = await s.send('Page.captureScreenshot', clip ? { format: 'png', clip } : { format: 'png' });
   const file = join(OUT, `${name}.png`);
   writeFileSync(file, Buffer.from(shot.data, 'base64'));
   done.push(name);

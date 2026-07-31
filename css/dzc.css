@@ -403,22 +403,45 @@
 /* What the Group costs, how big it is, and what its Transports still have room
  * for. Icon, number, then the unit spelled out -- "3" beside a shape is not an
  * answer to anything on its own. Wraps rather than clipping. */
+/* Three small facts, as plain text. Boxing each one turned the top of every
+   Group into a row of grey pills competing with the Squads beneath it. */
 .dzc-g-meters {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px;
-  margin: 0 0 8px; padding-bottom: 8px; border-bottom: 1px solid var(--line, #eee5d6);
+  display: flex; flex-wrap: wrap; align-items: center; gap: 2px 16px; margin: 0 0 8px;
 }
 .dzc-meter {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 3px 7px; background: var(--surface-3, #f2ece0);
-  font-size: 11px; color: var(--ink-2, #5b544a);
+  display: inline-flex; align-items: baseline; gap: 5px;
+  font-size: 11.5px; color: var(--ink-2, #5b544a);
 }
-.dzc-meter svg { flex: 0 0 auto; }
-.dzc-meter b { font: 700 13px/1 var(--font-numeric, 'Outfit', sans-serif); color: var(--ink, #2c2a26); }
+.dzc-meter svg { flex: 0 0 auto; align-self: center; opacity: .6; }
+.dzc-meter b { font: 700 15px/1 var(--font-numeric, 'Outfit', sans-serif); color: var(--ink, #2c2a26); }
 .dzc-meter i { font-style: normal; }
-.dzc-meter.is-full { background: #e4f2e9; color: #14532d; }
-.dzc-meter.is-full b { color: #14532d; }
-.dzc-meter.is-over { background: #fbe6e6; color: var(--danger, #b3261e); }
-.dzc-meter.is-over b { color: var(--danger, #b3261e); }
+.dzc-meter.is-over, .dzc-meter.is-over b { color: var(--danger, #b3261e); }
+
+/* Capacity, at size and out of a box. This is the fact that decides whether
+   the next thing you pick can join the Group at all (3.2.4.2) -- it is not one
+   more small grey pill in a row of small grey pills. */
+.dzc-g-space {
+  display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: center;
+  margin: 0 0 10px; padding: 9px 0;
+  border-top: 1px solid var(--line, #eee5d6); border-bottom: 1px solid var(--line, #eee5d6);
+}
+.dzc-space { display: inline-flex; align-items: center; gap: 9px; }
+.dzc-space svg { flex: 0 0 auto; }
+.dzc-space-n { display: inline-flex; align-items: baseline; font-family: var(--font-numeric, 'Outfit', sans-serif); }
+.dzc-space-n b { font-size: 26px; font-weight: 700; line-height: 1; color: var(--ink, #2c2a26); }
+.dzc-space-n s { text-decoration: none; font-size: 18px; color: #b3aa9a; padding: 0 2px; }
+.dzc-space-n em { font-style: normal; font-size: 18px; font-weight: 600; color: var(--ink-2, #6b6459); }
+.dzc-space-lab {
+  display: flex; flex-direction: column; gap: 1px;
+  font: 600 11px/1.2 var(--font-ui, 'Jost', sans-serif);
+  text-transform: uppercase; letter-spacing: .05em; color: var(--ink-2, #5b544a);
+}
+.dzc-space-lab i {
+  font: 500 10.5px/1.2 var(--font-ui, 'Jost', sans-serif);
+  text-transform: none; letter-spacing: 0; color: #9a9184;
+}
+.dzc-space.is-full .dzc-space-n b, .dzc-space.is-full .dzc-space-lab i { color: #14532d; }
+.dzc-space.is-over .dzc-space-n b, .dzc-space.is-over .dzc-space-lab i { color: var(--danger, #b3261e); }
 
 /* Nesting is drawn: a carried Squad is indented under its carrier. */
 .dzc-squad { margin-left: calc(var(--depth) * 22px); padding: 6px 0; border-top: 1px solid var(--line, #eee5d6); }
@@ -449,6 +472,79 @@
 /* Sticky, so it stays reachable down a long army instead of living at the
    bottom of the list. Smaller than it was, because it no longer has to shout
    from off-screen. */
+/* ── Add Squad ──
+   The main action in the builder, and it was a ghost button in the smallest
+   size the app has. Now it is the widest solid thing in the Group card, in the
+   faction accent, chamfered like the Create button so the two read as the same
+   family of "this makes something".
+
+   The hover is a real move, not a tint: the chevron slides out of its box and
+   the label slides over to meet it, a gold band sweeps the face behind the
+   text, and the whole thing lifts. Every step is transform or opacity, so it
+   composites on the GPU and does not reflow anything around it. */
+.dzc-add-squad {
+  position: relative; overflow: hidden; isolation: isolate;
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  margin-top: 10px; padding: 12px 16px; cursor: pointer;
+  border: 0; border-radius: 0;
+  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+  background: var(--acc, #1b3a5c); color: #fff;
+  font: 700 15px/1 var(--font-ui, 'Jost', sans-serif);
+  letter-spacing: .06em; text-transform: uppercase;
+  transition: transform 180ms cubic-bezier(.33,0,.67,1), box-shadow 180ms cubic-bezier(.33,0,.67,1);
+}
+/* The chevron sits in its own tile, which brightens and pushes forward. */
+.dzc-add-squad-i {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; flex: 0 0 auto;
+  background: rgba(255,255,255,.14);
+  transition: transform 260ms cubic-bezier(.34,1.4,.64,1), background 200ms ease;
+}
+.dzc-add-squad-t { transition: transform 260ms cubic-bezier(.34,1.4,.64,1); }
+/* The sweep, behind the label. Same gold band as the Create button. */
+.dzc-add-squad::before {
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(105deg, transparent 30%, var(--gold, #c9a92c) 50%, transparent 70%);
+  opacity: .55; transform: translateX(-130%);
+  transition: transform 560ms cubic-bezier(.33,0,.67,1);
+}
+/* A hairline that draws itself along the bottom edge. */
+.dzc-add-squad::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px;
+  background: var(--gold, #c9a92c); transform: scaleX(0); transform-origin: left;
+  transition: transform 320ms cubic-bezier(.33,0,.67,1);
+}
+.dzc-add-squad:hover, .dzc-add-squad:focus-visible {
+  transform: translateY(-2px); box-shadow: 0 6px 18px rgba(27,26,23,.26);
+}
+.dzc-add-squad:hover::before, .dzc-add-squad:focus-visible::before { transform: translateX(130%); }
+.dzc-add-squad:hover::after, .dzc-add-squad:focus-visible::after { transform: scaleX(1); }
+.dzc-add-squad:hover .dzc-add-squad-i,
+.dzc-add-squad:focus-visible .dzc-add-squad-i {
+  transform: translateX(4px) rotate(90deg); background: rgba(255,255,255,.26);
+}
+.dzc-add-squad:hover .dzc-add-squad-t,
+.dzc-add-squad:focus-visible .dzc-add-squad-t { transform: translateX(8px); }
+.dzc-add-squad:active { transform: translateY(1px) scale(.99); box-shadow: none; }
+@media (prefers-reduced-motion: reduce) {
+  .dzc-add-squad, .dzc-add-squad::before, .dzc-add-squad::after,
+  .dzc-add-squad-i, .dzc-add-squad-t { transition: none; }
+  .dzc-add-squad:hover, .dzc-add-squad:active { transform: none; }
+  .dzc-add-squad:hover .dzc-add-squad-i { transform: rotate(90deg); }
+  .dzc-add-squad:hover .dzc-add-squad-t { transform: none; }
+}
+
+/* Symbols on the picker card, at the size they deserve. Which shape a unit
+   fills and which it offers is what decides whether two things can share a
+   Group at all, so it is the single most consequential fact on the card — it
+   does not go in a little chip beside the others. A triangle also only has
+   room for a digit near its base, so shrinking these hid the count, and the
+   count is half the symbol. */
+.dzc-pick .dzc-transport { margin: 5px 0 1px; gap: 4px; }
+.dzc-pick .dzc-badge { width: 38px; height: 38px; }
+.dzc-pick .dzc-badge-n { font-size: 15px; }
+.dzc-pick .dzc-sep { font-size: 17px; }
+
 .dzc-add-group {
   position: sticky; bottom: 12px; z-index: 3;
   margin-top: 8px; width: 100%;
