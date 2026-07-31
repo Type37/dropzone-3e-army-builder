@@ -172,7 +172,7 @@
   font-family: var(--font-numeric, 'Outfit', sans-serif);
   font-variant-numeric: tabular-nums;
 }
-.dzc-ratio i { font-style: normal; color: var(--ink-2, #6b6459); }
+.dzc-ratio i { font-style: normal; color: var(--ink-2, #6b6459); margin-left: 4px; }
 .dzc-ratio.is-std { background: var(--acc); color: #fff; }
 .dzc-ratio.is-std span, .dzc-ratio.is-std i { color: rgba(255,255,255,.85); }
 .dzc-ratio.is-over { background: #fde8e6; color: #7a1c15; }
@@ -538,6 +538,11 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 }
 .dzc-faction-btn:hover { border-color: var(--acc); }
 .dzc-faction-btn.selected { border-color: var(--acc); box-shadow: inset 3px 0 0 var(--acc); }
+/* The real faction art where it exists. Bioficer has no icon on disk yet, so
+   that button keeps the accent square — onerror removes a broken image rather
+   than inventing brand art to fill the gap. */
+.dzc-faction-icon { width: 20px; height: 20px; object-fit: contain; flex: 0 0 auto; }
+.dzc-faction-icon + .dzc-faction-dot { display: none; }
 .dzc-faction-dot { width: 11px; height: 11px; border-radius: 2px; background: var(--acc); flex: 0 0 auto; }
 .dzc-points-row { margin-top: 8px; }
 

@@ -117,6 +117,8 @@
             ${FACTIONS.map(f => `<button type="button" class="dzc-faction-btn${f.id === picked.faction ? ' selected' : ''}"
               style="--acc:${f.accent}" role="radio" aria-checked="${f.id === picked.faction}"
               onclick="DZCBuilder.pickFaction('${f.id}')">
+              <img class="dzc-faction-icon" src="assets/factions/${esc(f.id)}.webp" alt=""
+                   loading="lazy" onerror="this.remove()">
               <span class="dzc-faction-dot"></span>${esc(f.name)}</button>`).join('')}
           </div>
         </div>
@@ -138,9 +140,10 @@
     document.getElementById('dzc-new').classList.add('active');
   }
 
-  /* Says what the number you typed actually buys, and names the size it lands
-   * in — so a limit that disagrees with the card you clicked is visible rather
-   * than silently overriding it. */
+  /* The size cards already state the Group count and the per-Group cap, so
+   * this says nothing when the typed number agrees with the card that is
+   * selected. It speaks only when the number is unusable, or when it has moved
+   * you to a different size than the one you clicked. */
   function updatePointsNote() {
     const el = document.getElementById('dzc-points-note');
     if (!el) return;
@@ -150,11 +153,9 @@
       el.innerHTML = `<b>${n}pts is below the 501pt minimum</b> for a game (3.1).`;
       return;
     }
-    if (size.id !== picked.size) picked.size = size.id;
-    const cap = window.DZC.maxGroupCost(n);
-    const maxG = window.DZC.maxGroups(size, n);
-    el.textContent = `${n}pts is a ${size.label}: up to ${maxG} Groups, `
-      + `and no one Group may cost more than ${cap}pts — a quarter of the agreed limit (3.2).`;
+    const moved = size.id !== picked.size;
+    if (moved) picked.size = size.id;
+    el.textContent = moved ? `${n}pts makes this a ${size.label}.` : '';
     document.querySelectorAll('.game-size-option').forEach(o => {
       const on = o.dataset.size === size.id;
       o.classList.toggle('selected', on);
@@ -196,13 +197,14 @@
     const v = window.DZCArmy.validate(a);
     const spend = window.DZCArmy.categorySpend(a);
     const std = spend.standard || 0;
+    const playable = a.groups.some(g => g.squads.some(s => s.commander));
 
     const ratio = ['vanguard', 'heavy', 'support'].map(c => {
       const val = spend[c] || 0;
       const over = val > std;
       return `<div class="dzc-ratio${over ? ' is-over' : ''}">
         <span>${c[0].toUpperCase() + c.slice(1)}</span>
-        <b>${val}</b><i>/ ${std}</i></div>`;
+        <b>${val}</b><i>of ${std}</i></div>`;
     }).join('');
 
     root.innerHTML = `<div class="dzc-wrap dzc-builder" style="--acc:${accentOf(a.faction)}">
@@ -220,8 +222,16 @@
           <div class="dzc-b-pts ${cost > a.pointsLimit ? 'is-over' : ''}">
             <b>${cost}</b><span>/ ${a.pointsLimit}pts</span>
           </div>
+          <!-- Play needs a Commander: CP per Round, hand size and the Initiative
+               modifier all come from Commander Level (4.1). Offering it on an
+               army that has none would open a mode that cannot run. Share and
+               Print stay live, because a half-built list is worth sending
+               someone or taking to a table. -->
           <button class="btn btn-ghost btn-sm" type="button" onclick="DZCBuilder.play()"
-                  title="Run a game with this army">${window.DZCIcon('layers', { size: 15 })} Play</button>
+                  ${playable ? '' : 'disabled'}
+                  title="${playable ? 'Run a game with this army'
+                    : 'Add a Commander first — CP, hand size and Initiative all come from Commander Level (4.1)'}"
+                  >${window.DZCIcon('layers', { size: 15 })} Play</button>
           <button class="btn btn-ghost btn-sm" type="button" onclick="DZCBuilder.share()"
                   title="Copy a link to this army">${window.DZCIcon('share', { size: 15 })} Share</button>
           <button class="btn btn-ghost btn-sm" type="button" onclick="DZCBuilder.print()"
