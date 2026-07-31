@@ -58,6 +58,10 @@ const DZC_STEPS = [
      await new Promise(r => setTimeout(r, 500));
      document.querySelectorAll('.dzc-pick-add')[3].click()`],
   ['11-builder-with-squad', `document.getElementById('dzc-picker').classList.remove('active')`],
+  ['12-settings', `App.openSettings()`],
+  ['13-unit-detail', `App.closeModal('modal-settings');
+     const btn = document.querySelector('.dzc-sq-name');
+     btn && btn.click()`],
 ];
 
 const DFC_STEPS = [

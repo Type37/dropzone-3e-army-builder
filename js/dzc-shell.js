@@ -167,27 +167,70 @@ const App = (() => {
 
   // --------------------------------------------------------------- settings
 
+  /* A setting is a name and a switch. The explanation lives in the tooltip,
+   * not in a sentence under the control — same as the Dropfleet builder, where
+   * no toggle carries a caption. */
+  function tog(key, name, desc) {
+    return `<label class="dzc-set-toggle" title="${esc(desc)}">
+      <span>${esc(name)}</span>
+      <input type="checkbox" ${settings[key] ? 'checked' : ''}
+             onchange="App.toggleSetting('${key}', this.checked)">
+    </label>`;
+  }
+
+  function toggleSetting(key, on) {
+    settings[key] = !!on;
+    try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch (e) { /* quota */ }
+    applyCollectionSetting();
+    // Collection changes what the builder shows, so redraw it if it is open.
+    if (window.DZCBuilder && DZCBuilder.refresh) DZCBuilder.refresh();
+  }
+
+  /* Collection is off until asked for, so its landing card stays hidden and
+   * the builder does not report a shortfall against a collection you never
+   * said you had. */
+  function collectionOn() { return !!settings.showCollection; }
+
+  function applyCollectionSetting() {
+    const card = $('landing-collection');
+    if (card) card.classList.toggle('hidden', !collectionOn());
+  }
+
   function openSettings() {
     const dark = settings.theme === 'dark';
     $('settings-body').innerHTML = `
-      <div class="dzc-set-row">
-        <div><b>Theme</b><p>Dark mode is easier at a dim table.</p></div>
-        <div class="dzc-seg">
-          <button type="button" class="${dark ? '' : 'is-on'}" onclick="App.setTheme('light')">Light</button>
-          <button type="button" class="${dark ? 'is-on' : ''}" onclick="App.setTheme('dark')">Dark</button>
+      <div class="dzc-set-group">
+        <div class="dzc-set-title">Appearance</div>
+        <div class="dzc-set-row">
+          <span>Theme</span>
+          <div class="dzc-seg">
+            <button type="button" class="${dark ? '' : 'is-on'}" onclick="App.setTheme('light')">Light</button>
+            <button type="button" class="${dark ? 'is-on' : ''}" onclick="App.setTheme('dark')">Dark</button>
+          </div>
         </div>
       </div>
-      <div class="dzc-set-row"><div><b>Offline use</b>
-        <p>Download the whole app so it works with no signal.</p></div></div>
-      <div id="offline-panel"></div>
-      <div class="dzc-set-row">
-        <div><b>Sync armies online</b>
-          <p>Opt in to keep two devices in step. No account, no password.</p></div>
-        <button class="btn btn-outline btn-sm" type="button" onclick="App.openSyncModal()">Sync…</button>
+      <div class="dzc-set-group">
+        <div class="dzc-set-title">Builder</div>
+        ${tog('showCollection', 'Collection',
+          'Track what you own, and show what a list still needs. Counts come from the Collection page.')}
       </div>
-      <div class="dzc-set-row">
-        <div><b>About</b><p>A WarLore project. Game data and art belong to TTCombat.</p></div>
-        <button class="btn btn-ghost btn-sm" type="button" onclick="App.openChangelog()">What's New</button>
+      <div class="dzc-set-group">
+        <div class="dzc-set-title">Offline use</div>
+        <div id="offline-panel"></div>
+      </div>
+      <div class="dzc-set-group">
+        <div class="dzc-set-title">Sync</div>
+        <p class="dzc-set-note">${window.FleetSync && FleetSync.enabled()
+          ? 'Syncing is on for this device.'
+          : 'Keep the same armies on your phone and your computer.'}</p>
+        <button class="btn btn-outline btn-sm" type="button" onclick="App.openSyncModal()">Sync armies online</button>
+      </div>
+      <div class="dzc-set-group">
+        <div class="dzc-set-actions">
+          <button class="btn btn-ghost btn-sm" type="button" onclick="App.openChangelog()">What's New</button>
+          <a class="btn btn-ghost btn-sm" href="mailto:warlore1@outlook.com?subject=Dropzone%20builder%20feedback">Send feedback</a>
+        </div>
+        <p class="dzc-set-note">A WarLore project. Game data and art belong to TTCombat.</p>
       </div>`;
     openModal('modal-settings');
     renderOfflinePanel();
@@ -290,6 +333,7 @@ const App = (() => {
   function init() {
     loadSettings();
     applyTheme(settings.theme);
+    applyCollectionSetting();
     if (window.OfflineSync) OfflineSync.init(() => renderOfflinePanel());
     if (window.FleetSync) {
       FleetSync.onChange = () => {
@@ -311,7 +355,7 @@ const App = (() => {
 
   return {
     navigate, showView, openModal, closeModal,
-    openSettings, setTheme,
+    openSettings, setTheme, toggleSetting, collectionOn, applyCollectionSetting,
     renderOfflinePanel, runOfflineSync, deleteOfflineData,
     openSyncModal, syncStart, syncStop, syncNow, syncJoin,
     openChangelog

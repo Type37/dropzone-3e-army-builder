@@ -82,7 +82,9 @@
         <h2 class="tool-card-title">Army Builder</h2>
         <p class="tool-card-desc">Build and manage army rosters for all six factions.</p>
       </div>
-      <div class="tool-card tool-card--ref card-deco" onclick="App.navigate('collection')">
+      <!-- Collection is opt-in and off by default, as in the Dropfleet builder.
+           App.applyCollectionSetting() reveals this card when it is switched on. -->
+      <div class="tool-card tool-card--ref card-deco hidden" id="landing-collection" onclick="App.navigate('collection')">
         <div class="tool-card-icon">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg>
         </div>

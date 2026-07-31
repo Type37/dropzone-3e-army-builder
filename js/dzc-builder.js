@@ -233,11 +233,9 @@
         <div class="dzc-ratio is-std"><span>Standard</span><b>${std}</b></div>${ratio}
       </div>
 
-      ${v.errors.length ? `<ul class="dzc-issues dzc-issues--err">${v.errors.map(e =>
-        `<li><span class="dzc-rulenum">${esc(e.rule)}</span>${esc(e.msg)}</li>`).join('')}</ul>` : ''}
-      ${v.warnings.length ? `<ul class="dzc-issues dzc-issues--warn">${v.warnings.map(e =>
-        `<li><span class="dzc-rulenum">${esc(e.rule)}</span>${esc(e.msg)}</li>`).join('')}</ul>` : ''}
-      ${!v.errors.length && a.groups.length ? '<p class="dzc-legal">This army is legal.</p>' : ''}
+      ${alertList(v.errors, 'err', 'issue to fix', 'issues to fix')}
+      ${alertList(v.warnings, 'warn', 'note', 'notes')}
+      ${!v.errors.length && a.groups.length ? `<p class="dzc-legal">${window.DZCIcon('check_circle', { size: 15 })}This army is legal.</p>` : ''}
       ${shortfallHtml(a)}
 
       ${a.groups.map(g => groupHtml(a, g)).join('')}
@@ -250,6 +248,9 @@
    * the rules issues above: owning too few models is not illegal, it is a
    * shopping list. */
   function shortfallHtml(a) {
+    // Off until you opt in: reporting what you are short of only makes sense
+    // once you have told the app what you own.
+    if (!window.App || !App.collectionOn || !App.collectionOn()) return '';
     if (!window.DZCCollection) return '';
     window.DZCCollection.load();
     const short = window.DZCCollection.shortfall(a);
@@ -383,6 +384,20 @@
       const on = w.variants || [];
       return names.every(n => on.indexOf(n) !== -1);
     });
+  }
+
+  /* Two severities, and they are not the same thing: an "issue to fix" means
+   * the list is illegal, a "note" means there is something worth knowing about
+   * a list that is otherwise fine. Each is headed with its own count so you can
+   * see at a glance how much is left, and each cites its rule at the END of the
+   * sentence rather than wearing a rule number as a badge on the front. */
+  function alertList(items, kind, one, many) {
+    if (!items.length) return '';
+    return `<div class="dzc-issues dzc-issues--${kind}">
+      <p class="dzc-issues-head">${items.length} ${items.length === 1 ? one : many}</p>
+      <ul>${items.map(e =>
+        `<li>${esc(e.msg)} <span class="dzc-rulecite">(rule ${esc(e.rule)})</span></li>`).join('')}</ul>
+    </div>`;
   }
 
   /* Stats, shared guns and rules for a unit. Shared by the picker card and the
@@ -609,6 +624,9 @@
 
   window.DZCBuilder = {
     renderList, renderBuilder, openNew, createArmy, del, open,
+    /* Redraw whatever is on screen. Settings changes call this because a
+     * toggle can change what the builder is allowed to show. */
+    refresh: () => { if (current) renderBuilder(current.id); },
     pickFaction: id => { picked.faction = id; openNew(); },
     /* Clicking a size sets the limit to the TOP of that band, which is what
      * people mean by "a Clash game". Typing an exact number then wins, because
