@@ -40,7 +40,12 @@
   transition: background .12s, color .12s, border-color .12s;
 }
 .dzc-chip:hover { border-color: var(--acc); color: var(--ink, #24201c); }
-.dzc-chip.is-active { background: var(--acc); border-color: var(--acc); color: #fff; }
+/* The fallback matters: --acc is declared inline on .dzc-wrap, and the picker
+   modal lives outside it, so without one the active chip painted white on
+   nothing and the filters looked broken. */
+.dzc-chip.is-active {
+  background: var(--acc, #1b3a5c); border-color: var(--acc, #1b3a5c); color: #fff;
+}
 .dzc-count { font-size: 12px; color: var(--ink-2, #6b6459); margin: 6px 0 16px; }
 .dzc-empty { padding: 32px 0; text-align: center; color: var(--ink-2, #6b6459); }
 
@@ -423,11 +428,62 @@
 .dzc-carry, .dzc-cmdr { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-2, #6b6459); display: inline-flex; align-items: center; gap: 4px; }
 .dzc-capacity { margin: 4px 0 0; font-size: 11px; font-style: italic; color: var(--ink-2, #6b6459); }
 /* Adding a Group is the main move in this screen, so it is sized like one. */
+/* Sticky, so it stays reachable down a long army instead of living at the
+   bottom of the list. Smaller than it was, because it no longer has to shout
+   from off-screen. */
 .dzc-add-group {
+  position: sticky; bottom: 12px; z-index: 3;
   margin-top: 8px; width: 100%;
-  padding: 34px 24px;
-  font-size: 22px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  padding: 13px 20px;
+  font-size: 15px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  background: var(--surface-2, #fff);
+  box-shadow: 0 3px 14px rgba(27,26,23,.16);
 }
+
+/* ── picker toolbar ── */
+.dzc-pick-bar {
+  position: sticky; top: 0; z-index: 2;
+  padding-bottom: 6px; margin-bottom: 2px;
+  background: var(--surface, #faf7f0);
+}
+.dzc-pick-sorts { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 5px; }
+.dzc-pick-sortlab {
+  font: 700 10px/1 var(--font-condensed, 'Jost', sans-serif);
+  text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2, #6b6459);
+  margin-right: 2px;
+}
+.dzc-chip--sm { padding: 4px 8px; font-size: 11px; }
+.dzc-pick-results {
+  display: flex; align-items: center; gap: 8px; margin-top: 5px;
+  font-size: 11.5px; color: var(--ink-2, #6b6459);
+}
+.dzc-pick-results:empty { display: none; }
+.dzc-pick-results button {
+  padding: 2px 8px; cursor: pointer; font-size: 11px;
+  border: 1px solid var(--line, #d8d0c0); background: transparent; color: inherit;
+}
+.dzc-view-toggle {
+  flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; cursor: pointer;
+  border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff);
+  color: var(--ink-2, #5b544a);
+}
+.dzc-view-toggle:hover { border-color: var(--acc); color: var(--ink, #24201c); }
+
+/* List view: one row per unit, for scanning names and prices rather than
+   comparing cards. */
+.dzc-pick-list.is-list { grid-template-columns: 1fr; gap: 3px; }
+.dzc-pick-list.is-list .dzc-pick { flex-direction: row; align-items: center; gap: 10px; padding: 6px 8px; }
+.dzc-pick-list.is-list .dzc-pick-open { display: flex; align-items: center; gap: 10px; flex: 1 1 auto; }
+.dzc-pick-list.is-list .dzc-pick-art,
+.dzc-pick-list.is-list .dzc-pick-noart { width: 46px; height: 34px; margin: 0; flex: 0 0 auto; }
+.dzc-pick-list.is-list .dzc-pick-head { flex: 1 1 auto; min-width: 0; }
+.dzc-pick-list.is-list .dzc-stats,
+.dzc-pick-list.is-list .dzc-pick-wpns,
+.dzc-pick-list.is-list .dzc-pick-rules,
+.dzc-pick-list.is-list .dzc-pick-variants { display: none; }
+.dzc-pick-list.is-list .dzc-pick-add { width: auto; margin: 0; padding: 7px 14px; flex: 0 0 auto; }
+.dzc-pick-list.is-list .dzc-pick-blocked { margin: 0; flex: 0 0 auto; max-width: 46%; }
 
 .dzc-icon-btn { flex: 0 0 auto; width: 24px; height: 24px; border: 0; border-radius: 4px; cursor: pointer; background: transparent; color: var(--ink-2, #6b6459); font-size: 18px; line-height: 1; }
 .dzc-icon-btn:hover { background: #fde8e6; color: #b3261e; }

@@ -136,13 +136,14 @@ console.log('\ngroup cost cap (3.2)');
 }
 
 /* From here the assertions are about ENFORCEMENT: the illegal state cannot be
- * reached at all, rather than being reached and then reported. */
+ * reached at all, rather than being reached and then reported.
+ *
+ * The line between the two is whether adding something else could put it
+ * right. Taking a second Rare Squad never can, so it is refused. A Group that
+ * does not yet make sense — a lone Transport, two Squads with nothing carrying
+ * them — is only wrong once you stop building, so validate() reports it. */
 console.log('\nRare and Unique are refused, not reported (3.2.1)');
 {
-  // Each Squad gets its own Group: a Group is one Squad and its Transports
-  // (3.2.4), so a second copy of a Rare Squad has to start a new one. Asking
-  // in the SAME Group would be refused for that reason and never reach the
-  // Rare check.
   const a = army(1000);                       // Skirmish: 1 Rare
   const g = A.addGroup(a);
   ok(A.canAddUnit(a, g.id, 'archangel').ok, 'the first Rare Squad is allowed');
@@ -161,15 +162,20 @@ console.log('\nRare and Unique are refused, not reported (3.2.1)');
   A.remove(a.id); A.remove(b.id);
 }
 
-console.log('\ntransports are assigned, never picked (3.2.4)');
+console.log('\ntransports and their cargo form one Group (3.2.4)');
 {
   const a = army();
   const g = A.addGroup(a);
-  // "Units with the category Transport may only be chosen along with a Squad
-  // they may transport" -- so they are not choosable on their own at all.
-  const direct = A.canAddUnit(a, g.id, 'condor-dropship');
-  ok(!direct.ok, 'a Transport cannot be picked on its own');
-  eq(A.addSquad(a, g.id, 'condor-dropship', 1), null, 'and addSquad refuses it');
+  // Either order works: buy the Transport first and fill it after, or pick the
+  // Squad and then choose what carries it. What is refused is a Transport
+  // joining a Group where nothing needs it and nothing has room for it.
+  ok(A.canAddUnit(a, g.id, 'condor-dropship').ok, 'a Transport may start a Group');
+  const solo = A.addSquad(a, g.id, 'condor-dropship', 1);
+  ok(solo !== null, 'and it is added, to be filled afterwards');
+  // A lone Transport is UNFINISHED, not illegal — you may be about to fill it —
+  // so it is reported when the list is done rather than blocked as you build.
+  ok(hasErr(A.validate(a), 'carries nothing'), 'a Transport carrying nothing is reported');
+  A.removeSquad(a, solo.id);
 
   // 6 Legionnaires fill 6 squares. A Bear APC carries 3, so 2 are needed and
   // both are full. The count is DERIVED -- "as many as needed" (3.2.4).

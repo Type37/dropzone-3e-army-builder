@@ -22,7 +22,7 @@
   const accentOf = f => (FACTIONS.find(x => x.id === f) || {}).accent || '#1b3a5c';
 
   let current = null;                 // the army being edited
-  let picker = { groupId: null, category: 'All', search: '' };
+  let picker = { groupId: null, category: 'All', search: '', sort: 'points', dir: 1, view: 'grid', filters: [] };
 
   // ------------------------------------------------------------- army list
 
@@ -588,21 +588,112 @@
      * is explicit that choosing a Transport alongside a Squad is how a Group
      * forms. canAddUnit refuses the ones that make no sense here, and says
      * which rule refuses them. */
+    const cats = ['All', 'Standard', 'Vanguard', 'Heavy', 'Support', 'Transport'];
+    /* --acc is declared inline on .dzc-wrap, and this modal lives outside it,
+     * so the active chip was painting white text on an undefined background —
+     * the filters worked, you just could not see which one was on. */
+    document.getElementById('dzc-picker-body').innerHTML = `
+      <div class="dzc-pick-bar" style="--acc:${accentOf(a.faction)}">
+        <div class="dzc-search-row">${window.DZCIcon('search')}
+          <input class="dzc-search" id="dzc-pick-search" type="search"
+                 placeholder="Search units, variants, weapons or rules"
+                 value="${esc(picker.search)}"
+                 oninput="DZCBuilder.pickerSearch(this.value)" aria-label="Search units">
+          <button type="button" class="dzc-view-toggle" onclick="DZCBuilder.pickerView()"
+                  title="${picker.view === 'grid' ? 'Show as a list' : 'Show as cards'}"
+                  >${window.DZCIcon(picker.view === 'grid' ? 'list_alt' : 'grid_view', { size: 16 })}</button>
+        </div>
+        <div class="dzc-chips">${cats.map(c =>
+          `<button type="button" class="dzc-chip${c === picker.category ? ' is-active' : ''}"
+            onclick="DZCBuilder.pickerCat('${c}')">${esc(c)}</button>`).join('')}</div>
+        <div class="dzc-pick-sorts">
+          <span class="dzc-pick-sortlab">Sort</span>
+          ${SORTS.map(s => `<button type="button" class="dzc-chip dzc-chip--sm${
+            s.key === picker.sort ? ' is-active' : ''}" onclick="DZCBuilder.pickerSort('${s.key}')"
+            >${esc(s.label)}${s.key === picker.sort ? (picker.dir < 0 ? ' ↓' : ' ↑') : ''}</button>`).join('')}
+          ${FILTERS.map(fl => `<button type="button" class="dzc-chip dzc-chip--sm${
+            picker.filters.indexOf(fl.key) !== -1 ? ' is-active' : ''}"
+            onclick="DZCBuilder.pickerFilter('${fl.key}')">${esc(fl.label)}</button>`).join('')}
+        </div>
+        <div class="dzc-pick-results" id="dzc-pick-results"></div>
+      </div>
+      <div class="dzc-pick-list${picker.view === 'list' ? ' is-list' : ''}" id="dzc-pick-list"></div>`;
+    renderPickList();
+  }
+
+  /* Sorting and filtering the adder. Dropfleet has Points / Name / Tonnage
+   * plus seven filters and a results bar (renderShipSelectGrid, app.js:4409);
+   * these are the DZC equivalents. Capacity is ours — it decides what a Group
+   * can be built around, which Dropfleet has no analogue for. */
+  const SORTS = [
+    { key: 'points',   label: 'Price',    get: u => unitLowPoints(u) },
+    { key: 'name',     label: 'Name',     get: u => u.name.toLowerCase() },
+    { key: 'category', label: 'Category', get: u => CATEGORY_ORDER.indexOf(u.category) },
+    { key: 'squad',    label: 'Squad',    get: u => (u.squadMax != null ? u.squadMax : -1) },
+    { key: 'capacity', label: 'Capacity', get: u => totalCapacity(u) }
+  ];
+  const FILTERS = [
+    { key: 'rare',     label: 'Rare',     test: u => !!u.rare },
+    { key: 'unique',   label: 'Unique',   test: u => !!u.unique },
+    { key: 'variants', label: 'Variants', test: u => (u.variants || []).length > 0 },
+    { key: 'carries',  label: 'Carries',  test: u => totalCapacity(u) > 0 },
+    { key: 'aux',      label: 'Auxiliary', test: u => !!u.auxiliaryTransport }
+  ];
+  const CATEGORY_ORDER = ['Standard', 'Vanguard', 'Heavy', 'Support', 'Transport', 'Generated'];
+
+  function unitLowPoints(u) {
+    if (u.points != null) return u.points;
+    const ps = (u.variants || []).map(v => v.points).filter(p => p != null);
+    return ps.length ? Math.min.apply(null, ps) : 0;
+  }
+  function totalCapacity(u) {
+    return (((u.transport || {}).capacity) || []).reduce((t, c) => t + (c.n || 0), 0);
+  }
+
+  /* Only the list is redrawn on a keystroke. Re-rendering the whole body
+   * replaced the <input>, which threw away focus and the caret — you got one
+   * character and then nothing. */
+  function renderPickList() {
+    const a = current;
+    const f = window.DZC.faction(a.faction);
+    if (!f) return;
+    const q = picker.search.trim().toLowerCase();
+
     let units = f.units.filter(u => u.selectable !== false);
     if (picker.category !== 'All') units = units.filter(u => u.category === picker.category);
+    picker.filters.forEach(k => {
+      const fl = FILTERS.find(x => x.key === k);
+      if (fl) units = units.filter(fl.test);
+    });
     if (q) units = units.filter(u => u.name.toLowerCase().includes(q)
-      || (u.variants || []).some(v => v.name.toLowerCase().includes(q)));
+      || (u.variants || []).some(v => v.name.toLowerCase().includes(q))
+      || (u.weapons || []).some(w => (w.name || '').toLowerCase().includes(q))
+      || (u.special || '').toLowerCase().includes(q));
 
-    const cats = ['All', 'Standard', 'Vanguard', 'Heavy', 'Support', 'Transport'];
-    document.getElementById('dzc-picker-body').innerHTML = `
-      <div class="dzc-search-row">${window.DZCIcon('search')}
-        <input class="dzc-search" type="search" placeholder="Search units" value="${esc(picker.search)}"
-               oninput="DZCBuilder.pickerSearch(this.value)" aria-label="Search units"></div>
-      <div class="dzc-chips">${cats.map(c =>
-        `<button type="button" class="dzc-chip${c === picker.category ? ' is-active' : ''}"
-          onclick="DZCBuilder.pickerCat('${c}')">${esc(c)}</button>`).join('')}</div>
-      <div class="dzc-pick-list">${units.map(u => pickCard(u, a)).join('')
-        || '<p class="dzc-empty">Nothing matches.</p>'}</div>`;
+    const s = SORTS.find(x => x.key === picker.sort) || SORTS[0];
+    units = units.slice().sort((x, y) => {
+      const ax = s.get(x), ay = s.get(y);
+      return (ax < ay ? -1 : ax > ay ? 1 : x.name.localeCompare(y.name)) * picker.dir;
+    });
+
+    const list = document.getElementById('dzc-pick-list');
+    if (list) {
+      list.className = 'dzc-pick-list' + (picker.view === 'list' ? ' is-list' : '');
+      list.innerHTML = units.map(u => pickCard(u, a)).join('')
+        || `<p class="dzc-empty">${q ? `Nothing matches “${esc(picker.search)}”.`
+            : picker.filters.length ? 'Nothing matches those filters.'
+            : 'Nothing in this category.'}</p>`;
+    }
+    const bar = document.getElementById('dzc-pick-results');
+    if (bar) {
+      const filtered = q || picker.filters.length || picker.category !== 'All';
+      const blocked = units.filter(u => !window.DZCArmy.canAddUnit(a, picker.groupId, u.id).ok).length;
+      bar.innerHTML = filtered || blocked
+        ? `<span>${units.length} unit${units.length === 1 ? '' : 's'}${
+            blocked ? `, ${blocked} unavailable here` : ''}</span>${
+            filtered ? '<button type="button" onclick="DZCBuilder.pickerClear()">Clear</button>' : ''}`
+        : '';
+    }
   }
 
   /* A picker card carries what you need to decide without opening anything:
@@ -661,29 +752,40 @@
      * carries something already here. assignTransport builds the Transport
      * Squad, links it and derives how many are needed to take it full, which
      * is the whole of 3.2.4 in one call. */
+    /* Transport-first is a real way to build: buy the Albatross, then fill it.
+     * So a Transport only routes through assignTransport when there is already
+     * something here waiting for a ride; otherwise it is simply added, and
+     * whatever comes next will go aboard it. */
     if (u.category === 'Transport') {
       const target = g.squads.find(s => {
         const su = window.DZCArmy.unitOf(current, s);
         return su && su.category !== 'Transport' && !s.carriedBy && window.DZC.canCarry(u, su);
       });
-      if (!target) return say(`Nothing in this Group needs ${u.name}.`);
-      const r = window.DZCArmy.assignTransport(current, target.id, unitId);
-      if (!r.ok) return say(r.reason);
-      await renderBuilder(current.id);
-      await renderPicker();
-      return say(`${u.name} added, carrying ${window.DZCArmy.unitOf(current, target).name}.`, 'local_shipping');
+      if (target) {
+        const r = window.DZCArmy.assignTransport(current, target.id, unitId);
+        if (!r.ok) return say(r.reason);
+        await renderBuilder(current.id);
+        await renderPicker();
+        return say(`${u.name} added, carrying ${window.DZCArmy.unitOf(current, target).name}.`, 'local_shipping');
+      }
     }
 
     const s = window.DZCArmy.addSquad(current, picker.groupId, unitId);
     if (!s) return;                       // refused; the picker already said why
 
-    /* A second fighting Squad is only here because a Transport already in the
-     * Group has room for it (3.2.4.1), so put it aboard rather than leaving it
+    /* Anything joining a Group that already has a Transport with room is here
+     * BECAUSE of that room (3.2.4.1), so put it aboard rather than leaving it
      * standing next to the thing it is supposed to be riding in. */
     const carrier = g.squads.find(x => {
       const xu = window.DZCArmy.unitOf(current, x);
-      return x.id !== s.id && xu && (xu.category === 'Transport' || xu.auxiliaryTransport)
-        && window.DZC.canCarry(xu, u);
+      if (x.id === s.id || x.carriedBy || !xu) return false;
+      if (!(xu.category === 'Transport' || xu.auxiliaryTransport)) return false;
+      if (!window.DZC.canCarry(xu, u)) return false;
+      const aboard = g.squads.filter(y => y.carriedBy === x.id && y.id !== s.id)
+        .map(y => ({ unit: window.DZCArmy.unitOf(current, y), count: y.models.length }))
+        .filter(y => y.unit);
+      aboard.push({ unit: u, count: s.models.length });
+      return window.DZC.loadCheck(xu, aboard).ok;
     });
     if (carrier) s.carriedBy = carrier.id;
 
@@ -930,8 +1032,23 @@
         say('Could not build a share link: ' + e.message);
       }
     },
-    pickerSearch: v => { picker.search = v; renderPicker(); },
+    // Only the list is redrawn: re-rendering the body would replace the
+    // <input> under the caret and swallow every character after the first.
+    pickerSearch: v => { picker.search = v; renderPickList(); },
     pickerCat: c => { picker.category = c; renderPicker(); },
+    pickerSort: k => {
+      if (picker.sort === k) picker.dir = -picker.dir; else { picker.sort = k; picker.dir = 1; }
+      renderPicker();
+    },
+    pickerFilter: k => {
+      const i = picker.filters.indexOf(k);
+      if (i === -1) picker.filters.push(k); else picker.filters.splice(i, 1);
+      renderPicker();
+    },
+    pickerView: () => { picker.view = picker.view === 'grid' ? 'list' : 'grid'; renderPicker(); },
+    pickerClear: () => {
+      picker.search = ''; picker.filters = []; picker.category = 'All'; renderPicker();
+    },
     closePicker: () => document.getElementById('dzc-picker').classList.remove('active'),
     closeNew: () => document.getElementById('dzc-new').classList.remove('active')
   };

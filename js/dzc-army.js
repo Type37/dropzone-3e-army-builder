@@ -290,6 +290,28 @@
   }
 
   /* May this unit be added to this Group right now? */
+  /* Does any Transport in this Group have space left for one more of `unit`?
+   *
+   * Shape alone is not enough — a Bear APC carries 3 squares, and once three
+   * Legionnaires are aboard a fourth still "matches" but does not fit. So the
+   * real load is rebuilt with the candidate added and checked. A Transport
+   * that is itself being carried is skipped: its cargo is ignored, because it
+   * is already aboard something else (3.2.4.2). */
+  function roomSomewhere(army, group, unit) {
+    if (!group) return false;
+    return group.squads.some(t => {
+      const tu = unitOf(army, t);
+      if (!tu || t.carriedBy) return false;
+      if (!(tu.category === 'Transport' || tu.auxiliaryTransport)) return false;
+      if (!window.DZC.canCarry(tu, unit)) return false;
+      const aboard = group.squads.filter(x => x.carriedBy === t.id)
+        .map(x => ({ unit: unitOf(army, x), count: x.models.length }))
+        .filter(x => x.unit);
+      aboard.push({ unit: unit, count: 1 });
+      return window.DZC.loadCheck(tu, aboard).ok;
+    });
+  }
+
   function canAddUnit(army, groupId, unitId) {
     const u = window.DZC.unit(army.faction, unitId);
     if (!u) return { ok: false, reason: 'Unknown unit.' };
@@ -314,32 +336,13 @@
     const squads = (group && group.squads) || [];
     const occupied = squads.length > 0;
 
-    if (u.category === 'Transport') {
-      if (!occupied) {
-        return { ok: false, reason: `${u.name} is a Transport — choose the Squad it carries first (3.2.4).` };
-      }
-      const carriable = squads.some(s => {
-        const su = unitOf(army, s);
-        return su && su.category !== 'Transport' && !s.carriedBy && window.DZC.canCarry(u, su);
-      });
-      if (!carriable) {
-        return { ok: false, reason: `Nothing in this Group needs ${u.name} — its symbol does not match anything here (3.2.4.2).` };
-      }
-    } else if (occupied) {
-      // A second fighting Squad only belongs here if a Transport already in the
-      // Group has room for it — that is what makes them one Group (3.2.4.1).
-      const riders = squads.filter(s => s.carriedBy).length;
-      const roomy = squads.some(s => {
-        const su = unitOf(army, s);
-        if (!su || !(su.category === 'Transport' || su.auxiliaryTransport)) return false;
-        return window.DZC.canCarry(su, u);
-      });
-      if (!roomy) {
-        return { ok: false, reason: 'A Group is one Squad and its Transports — add a Transport here first, or start a new Group (3.2.4).' };
-      }
-      if (riders >= 4) {
-        return { ok: false, reason: 'At most 4 Squads may share one Transport (3.2.4.1).' };
-      }
+    // The 4-Squad ceiling is the one composition rule that can never come good
+    // by adding something else, so it is the only one blocked here. Everything
+    // else about a Group is a question of what it looks like when you have
+    // FINISHED — a lone Transport is unfinished, not illegal, and you may well
+    // be about to put something in it. Those are reported by validate().
+    if (occupied && u.category !== 'Transport' && squads.filter(s => s.carriedBy).length >= 4) {
+      return { ok: false, reason: 'At most 4 Squads may share one Transport (3.2.4.1).' };
     }
 
     const taken = squadsNamed(army, u.name);
@@ -728,6 +731,23 @@
           if (!chk.ok) errors.push({ rule: '3.2.4.3', msg: chk.reason });
         }
       });
+
+      /* A Group is one Squad and its Transports, or up to 4 Squads sharing one
+       * larger Transport (3.2.4 / 3.2.4.1). Two Squads standing side by side
+       * with nothing carrying either of them is not a Group — but it is a
+       * perfectly ordinary state to pass through while building, so it is
+       * reported when you are done rather than blocked as you go. */
+      const loose = g.squads.filter(s => {
+        const u = unitOf(army, s);
+        return u && u.category !== 'Transport' && !s.carriedBy;
+      });
+      if (loose.length > 1) {
+        errors.push({
+          rule: '3.2.4',
+          msg: `“${g.name}” has ${loose.length} Squads with nothing carrying them — a Group is one Squad and its Transports, `
+            + 'or up to 4 Squads sharing one larger Transport.'
+        });
+      }
 
       // Up to 4 Squads may share ONE Transport (3.2.4.1).
       g.squads.forEach(s => {
