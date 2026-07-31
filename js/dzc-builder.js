@@ -273,6 +273,7 @@
             </div>
           </div>
 
+          ${commanderRail(a)}
           ${alertList(v.errors, 'err', 'issue to fix', 'issues to fix')}
           ${alertList(v.warnings, 'warn', 'note', 'notes')}
           ${v.ok && a.groups.length ? `<p class="dzc-legal">${window.DZCIcon('check_circle', { size: 15 })}This army is legal.</p>` : ''}
@@ -382,9 +383,6 @@
         ${opts.map(o => `<option value="${esc(o.unit.id)}"${o.unit.id === carrierUnitId ? ' selected' : ''}${o.exact ? '' : ' disabled'}>${esc(o.unit.name)} × ${o.need}${o.exact ? '' : ` — cannot be full (carries ${o.per}, needs ${o.fill})`}</option>`).join('')}
       </select></label>` : '';
 
-    const cmdLevels = window.DZC.commanderLevels(
-      (window.DZC.gameSizeFor(a.pointsLimit) || {}).id || 'skirmish');
-
     return `<div class="dzc-squad${isTransport ? ' is-transport' : ''}" style="--depth:${depth}">
       <div class="dzc-sq-main">
         <span class="dzc-sq-cat" data-cat="${esc(u.category)}">${isTransport ? window.DZCIcon('local_shipping', { size: 12 }) : ''}${esc(u.category)}</span>
@@ -400,12 +398,6 @@
       <div class="dzc-sq-opts">
         ${variantPicker}
         ${transportPicker}
-        ${isTransport ? '' : `<label class="dzc-cmdr">${window.DZCIcon('military_tech', { size: 13 })} Commander
-          <select onchange="DZCBuilder.setCommander('${s.id}',this.value)">
-            <option value="">— none —</option>
-            ${cmdLevels.map(l =>
-              `<option value="${l.level}"${s.commander && s.commander.level === l.level ? ' selected' : ''}>L${l.level} — ${l.points}pts</option>`).join('')}
-          </select></label>`}
       </div>
       ${riders.map(r => squadHtml(a, g, r, depth + 1)).join('')}
     </div>`;
@@ -429,6 +421,71 @@
     });
   }
 
+  /* Commanders live in the rail, as a card each with a button under them —
+   * not as a "— none —" select stapled to the bottom of every Squad, where
+   * five Squads meant five empty slots for a thing you take one of.
+   *
+   * DZC ranks run 4-7; the insignia helper draws 1-5 pips, so the level is
+   * offset rather than clamped, which would have drawn L6 and L7 the same. */
+  function commanderRail(a) {
+    const list = window.DZCArmy.commanders(a);
+    const cards = list.map(c => {
+      const targets = window.DZCArmy.commanderTargets(a, c.id);
+      const insignia = window.RankInsignia
+        ? window.RankInsignia(a.faction, Math.max(1, c.level - 3), 26) : '';
+      const assign = targets.length
+        ? `<label class="dzc-cmdr-assign">Aboard
+             <select onchange="DZCBuilder.assignCommander('${c.id}', this.value)">
+               <option value="">Choose a Squad</option>
+               ${targets.map(t => `<option value="${t.squad.id}"${t.squad.id === c.squadId ? ' selected' : ''}
+                 >${esc(t.unit.name)}${t.group.name ? ' — ' + esc(t.group.name) : ''}</option>`).join('')}
+             </select></label>`
+        : '<p class="dzc-cmdr-hint">Add a squad that this Commander can join.</p>';
+      return `<div class="dzc-rail-card dzc-cmdr-card${c.squadId ? '' : ' is-loose'}">
+        <div class="dzc-cmdr-head">
+          ${insignia}
+          <div>
+            <b>Level ${c.level} Commander</b>
+            <span class="dzc-cmdr-pts">${window.DZCArmy.levelCost(c.level)}pts</span>
+          </div>
+        </div>
+        ${assign}
+        <button type="button" class="dzc-cmdr-remove" onclick="DZCBuilder.removeCommander('${c.id}')"
+                >${window.DZCIcon('delete', { size: 13 })}Remove</button>
+      </div>`;
+    }).join('');
+    return cards + `<button type="button" class="dzc-cmdr-add" onclick="DZCBuilder.openCommander()"
+      >${window.DZCIcon('military_tech', { size: 15 })}${list.length ? 'Add another Commander' : 'Add Commander'}</button>`;
+  }
+
+  /* Every level the agreed game size allows, with what it costs and what it
+   * brings to the table. Famous Commanders are not released, so this is the
+   * generic ladder only — the schema slot is there for when they are. */
+  function openCommander() {
+    const a = current;
+    if (!a) return;
+    const size = window.DZC.gameSizeFor(a.pointsLimit);
+    const levels = window.DZC.commanderLevels((size || {}).id || 'skirmish');
+    const rows = levels.map(l => {
+      const insignia = window.RankInsignia
+        ? window.RankInsignia(a.faction, Math.max(1, l.level - 3), 30) : '';
+      return `<div class="dzc-cmdr-opt">
+        ${insignia}
+        <!-- No CP or hand-size line: index.json carries level and points only,
+             and those numbers are not going to be invented. -->
+        <div class="dzc-cmdr-opt-body"><b>Level ${l.level}</b></div>
+        <span class="dzc-cmdr-opt-pts">${l.points}pts</span>
+        <button type="button" class="btn btn-primary btn-sm"
+                onclick="DZCBuilder.addCommander(${l.level})">Add</button>
+      </div>`;
+    }).join('');
+    document.getElementById('dzc-cmdr-body').innerHTML = rows
+      || '<p class="dzc-empty">No Commander levels are available at this size.</p>';
+    document.getElementById('dzc-cmdr').classList.add('active');
+  }
+
+  function closeCommander() { document.getElementById('dzc-cmdr').classList.remove('active'); }
+
   /* An army you are halfway through building is not a broken army.
    *
    * Some rules are about what you HAVE built — a Group over the quarter cap, a
@@ -438,22 +495,20 @@
    * Others are about what the finished list must CONTAIN. "You haven't added a
    * Commander" fired on your first Squad, before you had any chance to satisfy
    * it and with nothing actually wrong. Those say nothing at all until half
-   * the points are spent, then sit in the notes, and only become issues once
-   * the points are gone and fixing means taking something out.
+   * the points are spent — and then they are an ISSUE, not a note, because an
+   * army without a Commander is illegal. Notes are for things that are true
+   * but not wrong: Squads beginning Reserved, a Group of only Transports.
    *
-   * validate() keeps reporting everything; this only decides where it goes. */
+   * validate() keeps reporting everything; this only decides when it shows. */
   const COMPLETENESS = /^3\.2\.5$/;
 
   function triage(v, army) {
     const cost = window.DZCArmy.armyCost(army);
     const limit = army.pointsLimit || 0;
-    if (limit && cost >= limit) return { errors: v.errors, warnings: v.warnings, ok: !v.errors.length };
-    const halfway = limit ? cost >= limit / 2 : false;
-    const errors = [], deferred = [];
-    v.errors.forEach(e => (COMPLETENESS.test(e.rule) ? deferred : errors).push(e));
+    const halfway = limit ? cost >= limit / 2 : true;
     return {
-      errors,
-      warnings: (halfway ? deferred : []).concat(v.warnings),
+      errors: halfway ? v.errors : v.errors.filter(e => !COMPLETENESS.test(e.rule)),
+      warnings: v.warnings,
       // Legality is unchanged — a held requirement is still unmet, so the army
       // is not announced as legal just because the message is not shown yet.
       ok: !v.errors.length
@@ -757,6 +812,20 @@
       refresh();
     },
     openPicker, pick, print: printSheet,
+    openCommander, closeCommander,
+    addCommander: level => {
+      const r = window.DZCArmy.addCommander(current, level);
+      if (!r.ok) return say(r.reason);
+      closeCommander();
+      refresh();
+      say(`Level ${level} Commander added. Choose the Squad it rides with.`, 'military_tech');
+    },
+    removeCommander: id => { window.DZCArmy.removeCommander(current, id); refresh(); },
+    assignCommander: (id, squadId) => {
+      const r = window.DZCArmy.assignCommander(current, id, squadId);
+      if (!r.ok) return say(r.reason);
+      refresh();
+    },
     /* Copying a list to try a variant is the commonest thing you do to one, so
      * it gets a button rather than a share-then-reimport round trip. */
     duplicate: async id => {

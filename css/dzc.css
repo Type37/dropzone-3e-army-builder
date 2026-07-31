@@ -229,6 +229,51 @@
   .dzc-create:hover, .dzc-create:active { transform: none; }
 }
 
+/* ── Commanders in the rail ──
+   One card per Commander with a button beneath, instead of a "— none —" select
+   on the bottom of every Squad. You take one or two of these; five Squads
+   should not mean five empty slots. */
+.dzc-cmdr-card { border-left: 3px solid var(--gold, #c9a92c); }
+.dzc-cmdr-card.is-loose { border-left-color: var(--warn-ink, #6b4e00); }
+.dzc-cmdr-head { display: flex; align-items: center; gap: 8px; }
+.dzc-cmdr-head b { display: block; font-size: 13px; }
+.dzc-cmdr-pts {
+  font-family: var(--font-numeric, 'Outfit', sans-serif);
+  font-size: 12px; font-weight: 600; color: var(--ink-2, #6b6459);
+}
+.dzc-cmdr-assign { display: block; margin-top: 7px; font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-2, #6b6459); }
+.dzc-cmdr-assign select { width: 100%; margin-top: 3px; padding: 5px 7px; font-size: 12.5px; border-radius: 4px; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); color: var(--ink, #24201c); }
+.dzc-cmdr-hint { margin: 7px 0 0; font-size: 12px; color: var(--warn-ink, #6b4e00); }
+.dzc-cmdr-remove {
+  display: inline-flex; align-items: center; gap: 4px; margin-top: 8px;
+  padding: 3px 8px; border-radius: 4px; cursor: pointer;
+  border: 1px solid var(--line, #d8d0c0); background: transparent;
+  font-size: 11.5px; color: var(--ink-2, #6b6459);
+}
+.dzc-cmdr-remove:hover { border-color: #a3231a; color: #a3231a; }
+.dzc-cmdr-add {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; padding: 9px 12px; cursor: pointer;
+  border: 1px dashed var(--line, #d8d0c0); border-radius: 8px;
+  background: transparent; color: var(--ink-2, #5b544a);
+  font: 600 13px/1 var(--font-ui, 'Jost', sans-serif);
+  transition: border-color 150ms cubic-bezier(.33,0,.67,1), color 150ms;
+}
+.dzc-cmdr-add:hover { border-color: var(--gold, #c9a92c); border-style: solid; color: var(--ink, #24201c); }
+
+/* Choose a Commander */
+.dzc-cmdr-opt {
+  display: flex; align-items: center; gap: 10px; padding: 9px 10px; margin-bottom: 6px;
+  border: 1px solid var(--line, #d8d0c0); border-radius: 8px; background: var(--surface-2, #fff);
+}
+.dzc-cmdr-opt-body { flex: 1 1 auto; min-width: 0; }
+.dzc-cmdr-opt-body b { display: block; font-size: 14px; }
+.dzc-cmdr-opt-body p { margin: 1px 0 0; font-size: 12px; color: var(--ink-2, #6b6459); }
+.dzc-cmdr-opt-pts {
+  font-family: var(--font-numeric, 'Outfit', sans-serif);
+  font-size: 16px; font-weight: 600; color: var(--acc-ink, #1b3a5c);
+}
+
 /* ── builder: rail + column ──
    Desktop keeps panes, mobile does not (HANDOFF §2.2). The rail holds what you
    need while working — points left and what is outstanding — so it stays put

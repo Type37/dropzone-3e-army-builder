@@ -28,6 +28,10 @@
       f: army.faction,
       n: army.name,
       p: army.pointsLimit,
+      // Assigned Commanders still travel as `k` on their Squad, so a link made
+      // today still opens in a build from before they moved to the army. `u`
+      // carries the ones not yet with a Squad, which had nowhere to live.
+      u: ((army.commanders || []).filter(c => !c.squadId).map(c => c.level)),
       g: army.groups.map(gr => ({
         n: gr.name,
         s: gr.squads.map(sq => {
@@ -85,6 +89,13 @@
       });
       army.groups.push(group);
     });
+    // Rebuild the army-level store from what the Squads carry, plus any
+    // Commander that had not been given a Squad when the link was made.
+    army.commanders = [];
+    army.groups.forEach(g => g.squads.forEach(s => {
+      if (s.commander) army.commanders.push({ id: uid(), level: s.commander.level, squadId: s.id });
+    }));
+    (data.u || []).forEach(lv => army.commanders.push({ id: uid(), level: lv, squadId: null }));
     return army;
   }
 

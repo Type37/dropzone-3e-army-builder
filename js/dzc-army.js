@@ -31,6 +31,18 @@
       armies = JSON.parse(localStorage.getItem(STORE) || '[]');
       if (!Array.isArray(armies)) armies = [];
     } catch (e) { armies = []; }
+    // Armies saved before Commanders moved to the army carry them on their
+    // Squads. Lift those into the store, then mirror the store back down, so
+    // an old save and a new one look the same to everything downstream.
+    armies.forEach(a => {
+      if (!Array.isArray(a.commanders)) {
+        a.commanders = [];
+        (a.groups || []).forEach(g => (g.squads || []).forEach(s => {
+          if (s.commander) a.commanders.push({ id: uid(), level: s.commander.level, squadId: s.id });
+        }));
+      }
+      syncCommanders(a);
+    });
     return armies;
   }
 
@@ -162,20 +174,99 @@
 
   /* 3.2.5: a Squad may contain only one Commander, and the level must be one
    * the game size allows. Both are enforced here as well as in the UI. */
-  function setCommander(army, squadId, level) {
-    const s = findSquad(army, squadId);
-    if (!s) return { ok: false, reason: 'Unknown Squad.' };
-    if (!level) { s.commander = null; touch(army); return { ok: true, reason: null }; }
+  /* Commanders belong to the ARMY, not to a Squad.
+   *
+   * You buy one and then decide who it rides with, which is the order people
+   * actually work in — and it is the only way an unassigned Commander can
+   * exist long enough to say "add a Squad this Commander can join". Squads
+   * still carry a `commander` object so everything that renders a Squad keeps
+   * working; `commanders` is the store and assignment keeps the two in step. */
+  function commanders(army) { return (army.commanders = army.commanders || []); }
+
+  function commanderFor(army, squadId) {
+    return commanders(army).find(c => c.squadId === squadId) || null;
+  }
+
+  /* Which Squads this Commander may join: a fighting Unit, one Commander each
+   * (3.2.5), and never a Transport Squad. */
+  function commanderTargets(army, cmdrId) {
+    const out = [];
+    army.groups.forEach(g => g.squads.forEach(s => {
+      const u = unitOf(army, s);
+      if (!u || u.category === 'Transport') return;
+      const held = commanderFor(army, s.id);
+      if (held && held.id !== cmdrId) return;
+      out.push({ squad: s, unit: u, group: g });
+    }));
+    return out;
+  }
+
+  function addCommander(army, level) {
     const size = window.DZC.gameSizeFor(army.pointsLimit);
     const allowed = size ? window.DZC.commanderLevels(size.id).map(l => l.level) : [];
     if (allowed.indexOf(level) === -1) {
       return { ok: false, reason: `A Level ${level} Commander is not allowed in ${size ? size.label : 'this game size'} (3.2.5).` };
     }
+    const c = { id: uid(), level: level, squadId: null };
+    commanders(army).push(c);
+    syncCommanders(army);
+    touch(army);
+    return { ok: true, commander: c, reason: null };
+  }
+
+  function removeCommander(army, cmdrId) {
+    army.commanders = commanders(army).filter(c => c.id !== cmdrId);
+    syncCommanders(army);
+    touch(army);
+    return { ok: true, reason: null };
+  }
+
+  function assignCommander(army, cmdrId, squadId) {
+    const c = commanders(army).find(x => x.id === cmdrId);
+    if (!c) return { ok: false, reason: 'Unknown Commander.' };
+    if (!squadId) { c.squadId = null; syncCommanders(army); touch(army); return { ok: true, reason: null }; }
+    const s = findSquad(army, squadId);
+    if (!s) return { ok: false, reason: 'Unknown Squad.' };
     const u = unitOf(army, s);
     if (u && u.category === 'Transport') {
       return { ok: false, reason: 'A Commander is assigned to a fighting Unit, not to a Transport Squad.' };
     }
-    s.commander = { level: level };
+    const held = commanderFor(army, squadId);
+    if (held && held.id !== cmdrId) {
+      return { ok: false, reason: 'That Squad already has a Commander — one per Squad (3.2.5).' };
+    }
+    c.squadId = squadId;
+    syncCommanders(army);
+    touch(army);
+    return { ok: true, reason: null };
+  }
+
+  /* Mirror the store onto the Squads, and drop assignments whose Squad has
+   * been removed, so a deleted Squad cannot strand a Commander. */
+  function syncCommanders(army) {
+    army.groups.forEach(g => g.squads.forEach(s => { s.commander = null; }));
+    commanders(army).forEach(c => {
+      if (!c.squadId) return;
+      const s = findSquad(army, c.squadId);
+      if (!s) { c.squadId = null; return; }
+      s.commander = { level: c.level };
+    });
+  }
+
+  /* Kept for the older call path: pick a level for this Squad, or clear it. */
+  function setCommander(army, squadId, level) {
+    const s = findSquad(army, squadId);
+    if (!s) return { ok: false, reason: 'Unknown Squad.' };
+    const held = commanderFor(army, squadId);
+    if (!level) {
+      if (held) removeCommander(army, held.id);
+      return { ok: true, reason: null };
+    }
+    if (held) removeCommander(army, held.id);
+    const r = addCommander(army, level);
+    if (!r.ok) return r;
+    const a = assignCommander(army, r.commander.id, squadId);
+    if (!a.ok) { removeCommander(army, r.commander.id); return a; }
     touch(army);
     return { ok: true, reason: null };
   }
@@ -445,17 +536,28 @@
     return ps.length ? Math.min.apply(null, ps) : 0;
   }
 
-  function commanderCost(squad) {
-    if (!squad.commander) return 0;
-    const lv = (window.DZC.commanderLevels('reconquest') || [])
-      .find(l => l.level === squad.commander.level);
+  function levelCost(level) {
+    const lv = (window.DZC.commanderLevels('reconquest') || []).find(l => l.level === level);
     return lv ? lv.points : 0;
+  }
+
+  /* A Commander is stored on the army now, but it still costs the Squad it
+   * rides with. Charging it to the army instead would quietly change how the
+   * quarter-of-the-limit Group cap (3.2) behaves, and that is a rules call,
+   * not a refactor. Only the storage moved.
+   *
+   * A Commander with no Squad yet has no Group to charge, so it is added to
+   * the army total directly — its points are spent either way. */
+  function commandersCost(army) {
+    return ((army && army.commanders) || [])
+      .filter(c => !c.squadId).reduce((t, c) => t + levelCost(c.level), 0);
   }
 
   function squadCost(army, squad) {
     const u = unitOf(army, squad);
+    const c = commanderFor(army, squad.id);
     return squad.models.reduce((t, m) => t + modelCost(u, m), 0)
-      + upgradeCost(army, squad) + commanderCost(squad);
+      + upgradeCost(army, squad) + (c ? levelCost(c.level) : 0);
   }
 
   function groupCost(army, group) {
@@ -463,7 +565,7 @@
   }
 
   function armyCost(army) {
-    return army.groups.reduce((t, g) => t + groupCost(army, g), 0);
+    return army.groups.reduce((t, g) => t + groupCost(army, g), 0) + commandersCost(army);
   }
 
   /* Category spend, for the ratio checks. Commander points are counted toward
@@ -601,8 +703,7 @@
     });
 
     // Commanders.
-    const cmdrs = [];
-    army.groups.forEach(g => g.squads.forEach(s => { if (s.commander) cmdrs.push(s.commander); }));
+    const cmdrs = (army.commanders || []).slice();
     if (!cmdrs.length) {
       errors.push({ rule: '3.2.5', msg: 'You haven\'t added a Commander. Your army must contain at least one.' });
     }
@@ -614,6 +715,13 @@
         }
       });
     }
+    // Bought but riding with nobody. A Commander is assigned to a Unit
+    // (3.2.5), so one sitting on the shelf is as illegal as not having one —
+    // and the builder holds both back until the list is half spent rather
+    // than nagging about them from the first Squad.
+    cmdrs.filter(c => !c.squadId).forEach(c => {
+      errors.push({ rule: '3.2.5', msg: `Your Level ${c.level} Commander is not with a Squad yet.` });
+    });
 
     // Not illegal, but worth saying: anything not aboard an Aircraft starts
     // Reserved, off the table until Round 2 (9.4).
@@ -646,6 +754,8 @@
     load, save, all, get, create, remove, touch,
     addGroup, removeGroup, addSquad, removeSquad, setModelCount, setModelVariant,
     setCarrier, setCommander, findSquad, groupOf, unitOf,
+    commanders, commanderFor, commanderTargets,
+    addCommander, removeCommander, assignCommander, syncCommanders, levelCost,
     modelCost, squadCost, groupCost, armyCost, categorySpend, validate,
     // enforcement
     canAddUnit, canSetCount, squadsNamed, squadFill,

@@ -58,6 +58,9 @@ const DZC_STEPS = [
      await new Promise(r => setTimeout(r, 500));
      document.querySelectorAll('.dzc-pick-add')[3].click()`],
   ['11-builder-with-squad', `document.getElementById('dzc-picker').classList.remove('active')`],
+  ['12-commander-modal', `DZCBuilder.openCommander()`],
+  ['13-commander-added', `const b = [...document.querySelectorAll('#dzc-cmdr-body button')]
+     .find(x => x.textContent.trim() === 'Add'); b && b.click()`],
   ['12-settings', `App.openSettings()`],
   ['13-unit-detail', `App.closeModal('modal-settings');
      const btn = document.querySelector('.dzc-sq-name');
