@@ -23,7 +23,7 @@ const sandbox = {
     setItem: (k, v) => store.set(k, String(v)),
     removeItem: k => store.delete(k)
   },
-  location: { origin: 'https://example.test', pathname: '/dzc/' },
+  location: { origin: 'https://example.test', pathname: '/dzc/', href: 'https://example.test/dzc/?x=1#armies' },
   fetch: async p => {
     try {
       return { ok: true, status: 200, json: async () => JSON.parse(readFileSync(path.join(ROOT, p), 'utf8')) };
@@ -65,7 +65,10 @@ const back = S.unpack(JSON.parse(await S.inflate(payload)));
 A.all().unshift(back);          // so costing can resolve it
 
 console.log('\nround trip');
-ok(url.startsWith('https://example.test/dzc/#share/'), 'the link is a plain URL with the army in the hash');
+ok(url.startsWith('https://example.test/dzc/#share/'),
+   'the link is a plain URL with the army in the hash', url.slice(0, 60));
+ok(url.indexOf('?') === -1, 'any existing query string is dropped');
+ok(url.split('#').length === 2, 'and there is exactly one hash');
 ok(url.length < 2000, `and it fits in a URL (${url.length} chars)`);
 eq(A.armyCost(back), before, 'the imported army costs exactly the same');
 eq(back.faction, army.faction, 'faction survives');

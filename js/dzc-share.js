@@ -126,7 +126,11 @@
 
   async function link(army) {
     const payload = await deflate(JSON.stringify(pack(army)));
-    return location.origin + location.pathname.replace(/\/?$/, '/') + '#share/' + payload;
+    // Take the current URL minus its hash and query, rather than appending a
+    // slash to the path: that produced "index.html/#share/..." whenever the
+    // page was opened by filename instead of as a directory.
+    const base = (location.href || '').split('#')[0].split('?')[0];
+    return base + '#share/' + payload;
   }
 
   async function importFrom(payload) {
