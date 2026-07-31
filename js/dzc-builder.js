@@ -460,12 +460,12 @@
    * squad row so a unit reads identically whether you are choosing it or
    * looking at what you already took. Built on the reference renderers rather
    * than a second copy of them. */
-  function unitFacts(u, faction) {
+  function unitFacts(u, faction, opts) {
     const U = window.DZCUnits;
     const weapons = sharedWeapons(u).map(w =>
       `<span class="dzc-pick-wpn">${window.DZCIcon.arc(w.arc, { size: 12 })}${esc(w.name)}</span>`).join('');
     return `<div class="dzc-facts">
-      <div class="dzc-pick-stats">${U.statsHtml(u)}</div>
+      <div class="dzc-pick-stats">${U.statsHtml(u, opts)}</div>
       ${weapons ? `<div class="dzc-pick-wpns">${weapons}</div>` : ''}
       ${u.special ? `<div class="dzc-pick-rules">${U.rulesHtml(u.special, faction)}</div>` : ''}
     </div>`;
@@ -537,7 +537,7 @@
           <span class="dzc-pick-cost">${price}<small>pts</small></span>
         </div>
         <span class="dzc-pick-meta">${meta}</span>
-        ${unitFacts(u, a.faction)}
+        ${unitFacts(u, a.faction, { compact: true })}
       </div>
       ${chk.ok
         ? `<button type="button" class="dzc-pick-add" onclick="DZCBuilder.pick('${esc(u.id)}')">

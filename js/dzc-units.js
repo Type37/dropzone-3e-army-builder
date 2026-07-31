@@ -88,7 +88,17 @@
    * icon + value + label cells. */
   const STAT_ORDER = ['Mv', 'A', 'OF', 'DF', 'B', 'DP'];
 
-  function statsHtml(u) {
+  /* Two views of the same block.
+   *
+   *   compact  — the "Add a Squad" picker. Icon plus the short code the stat
+   *              card itself prints. Four cards across cannot carry six
+   *              spelled-out words.
+   *   detailed — the default once a unit is on your list, and whenever you tap
+   *              one to see everything. Icon plus the word.
+   *
+   * The codes are the game's own (Mv, A, DP, OF, DF, B) rather than one letter
+   * each, because Defence and Damage Points would both be "D". */
+  function statsHtml(u, opts) {
     // Vehicles/Aircraft print Mv/A/DP; Infantry print Mv/OF/DF/B/DP. Render
     // whatever the card actually had rather than assuming a shape.
     //
@@ -102,16 +112,18 @@
     // not print shows a dash rather than vanishing and shifting the columns.
     const stats = u.stats || {};
     if (!Object.keys(stats).length) return '';
+    const compact = !!(opts && opts.compact);
     const cells = STAT_ORDER.map(k => {
       const label = window.DZC.statLabel(k);
       const has = stats[k] != null;
-      return `<div class="dzc-stat${has ? '' : ' is-na'}"${has ? '' : ' title="Not printed on this unit\'s stat card"'}>
+      const tip = has ? label : label + ' — not printed on this unit\'s stat card';
+      return `<div class="dzc-stat${has ? '' : ' is-na'}" title="${esc(tip)}">
         <span class="dzc-stat-i">${window.DZCIcon.stat(k, { size: 14 })}</span>
         <span class="dzc-stat-v">${has ? esc(stats[k]) : '–'}</span>
-        <span class="dzc-stat-k">${esc(label)}</span>
+        <span class="dzc-stat-k">${esc(compact ? k : label)}</span>
       </div>`;
     }).join('');
-    return `<div class="dzc-stats">${cells}</div>`;
+    return `<div class="dzc-stats${compact ? ' is-compact' : ''}">${cells}</div>`;
   }
 
   /* Rule keywords, each resolved to its glossary text and tappable. */
