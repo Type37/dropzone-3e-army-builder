@@ -230,12 +230,14 @@
 
   /* `faction` is optional: the reference browses one at a time, but the army
    * builder opens a unit from whatever faction that army is. */
-  function openDetail(unitId, faction) {
-    if (faction) state.faction = faction;
-    const f = window.DZC.faction(state.faction);
-    const u = f && f.byId[unitId];
-    if (!u) return;
-    const weapons = (u.weapons || []).length ? `
+  /* The weapon table, whole. Shared with the builder so a Unit sitting in your
+   * army reads exactly as it does when you open it -- there is no version of
+   * this that is "enough for the roster", because the numbers you argue over
+   * at the table are the ones in this table. */
+  function weaponsHtml(u, faction) {
+    const fac = faction || state.faction;
+    if (!(u.weapons || []).length) return '<p class="dzc-none">No weapons.</p>';
+    return `
       <table class="dzc-wpn">
         <thead><tr><th>Weapon</th><th>Arc</th>
           <th class="dzc-wpn-ma">${window.DZCIcon.moveAttack({ size: 15 })}Move &amp; Attack</th>
@@ -247,28 +249,39 @@
           <td class="dzc-arc-cell">${window.DZCIcon.arc(w.arc)}<span>${esc(w.arc || '')}</span></td>
           <td>${esc(w.ma || '')}</td><td>${esc(w.r || '')}</td>
           <td>${esc(w.att || '')}</td><td>${esc(w.ac || '')}</td><td>${esc(w.e || '')}</td>
-          <td>${rulesHtml(w.special, state.faction)}</td></tr>`).join('')}</tbody>
-      </table>` : '<p class="dzc-none">No weapons.</p>';
+          <td>${rulesHtml(w.special, fac)}</td></tr>`).join('')}</tbody>
+      </table>`;
+  }
 
-    /* A variant is a different model, so it gets its own block rather than a
-     * line in a price list: what it is called, the gun that makes it that
-     * variant, what it costs, and the stats it fights with. A weapon marked
-     * "all" is on every variant, so only the variant-restricted ones name it. */
-    const variants = (u.variants || []).length ? `
-      <div class="dzc-variants">
-        ${u.variants.map(v => {
-          const own = (u.weapons || []).filter(w =>
-            w.box === 'variant' && (w.variants || []).indexOf(v.name) !== -1);
-          const head = [esc(v.name)]
-            .concat(own.length ? [own.map(w => esc(w.name)).join(', ')] : [])
-            .concat([v.points != null ? v.points + 'pts' : '—'])
-            .join(' — ');
-          return `<div class="dzc-variant">
-            <div class="dzc-variant-head">${head}</div>
-            ${statsHtml(u)}
-          </div>`;
-        }).join('')}
-      </div>` : '';
+  /* A variant is a different model, so it gets its own block rather than a
+   * line in a price list: what it is called, the gun that makes it that
+   * variant, what it costs, and the stats it fights with. A weapon marked
+   * "all" is on every variant, so only the variant-restricted ones name it. */
+  function variantsHtml(u) {
+    if (!(u.variants || []).length) return '';
+    return `<div class="dzc-variants">
+      ${u.variants.map(v => {
+        const own = (u.weapons || []).filter(w =>
+          w.box === 'variant' && (w.variants || []).indexOf(v.name) !== -1);
+        const head = [esc(v.name)]
+          .concat(own.length ? [own.map(w => esc(w.name)).join(', ')] : [])
+          .concat([v.points != null ? v.points + 'pts' : '—'])
+          .join(' — ');
+        return `<div class="dzc-variant">
+          <div class="dzc-variant-head">${head}</div>
+          ${statsHtml(u)}
+        </div>`;
+      }).join('')}
+    </div>`;
+  }
+
+  function openDetail(unitId, faction) {
+    if (faction) state.faction = faction;
+    const f = window.DZC.faction(state.faction);
+    const u = f && f.byId[unitId];
+    if (!u) return;
+    const weapons = weaponsHtml(u, state.faction);
+    const variants = variantsHtml(u);
 
     document.getElementById('dzc-detail-body').innerHTML = `
       <div class="dzc-detail-head">
@@ -329,7 +342,8 @@
     setSearch: v => { state.search = v; render(); },
     openDetail, closeDetail, showRule, hideRule,
     // Shared with the builder's picker so a unit reads the same in both places.
-    statsHtml, rulesHtml, squadHtml, transportHtml, shape: shapeSvg,
+    statsHtml, rulesHtml, squadHtml, transportHtml, weaponsHtml, variantsHtml,
+    pointsHtml, shape: shapeSvg,
     SHAPES: Object.keys(SYMBOL),
     shapeInk: s => (SYMBOL[s] || {}).ink || 'currentColor',
     shapeName: s => String(s).replace('-', ' ')

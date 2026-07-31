@@ -22,7 +22,13 @@ const BASE = process.argv[2] || 'http://127.0.0.1:8901/index.html';
 const OUT = process.argv[3] || 'docs/screens/dropfleet';
 const PROFILE = join(process.env.TEMP || '/tmp', 'dzc-shots-profile');
 const PORT = 9333;
-const VIEW = { width: 1400, height: 1000 };
+/* SHOT_W/SHOT_H drive CCP's own device-metrics override, which is what the
+ * page actually lays out against — unlike resize_window, which reports a
+ * viewport the page never sees. Set them to shoot the phone cases. */
+const VIEW = {
+  width: Number(process.env.SHOT_W) || 1400,
+  height: Number(process.env.SHOT_H) || 1000
+};
 
 const CHROME = [
   'C:/Program Files/Google/Chrome/Application/chrome.exe',
@@ -92,7 +98,15 @@ const DZC_STEPS = [
      const add = [...document.querySelectorAll('.dzc-pick-add')].find(b => !b.disabled);
      add && add.click()`],
   ['11-builder-with-squad', `DZCBuilder.closePicker()`],
-  ['12-commander-modal', `DZCBuilder.openCommander()`],
+  ['11b-squad-head-1to1', `void 0`, '.dzc-sq-main'],
+  // The Group itself, clipped. At 1400 it is most of the screen; at 375 this
+  // is the shot that shows whether anything is spilling sideways.
+  ['11c-group-card', `document.querySelector('.dzc-group-card').scrollIntoView();
+     document.querySelectorAll('.toast, .dzc-toast').forEach(t => t.remove())`, '.dzc-group-card'],
+  // The Transport chooser: the + beside a Squad, not a select.
+  ['11d-carry-chooser', `const b = document.querySelector('.dzc-carry-add');
+     b && b.click()`],
+  ['12-commander-modal', `DZCBuilder.closeCarry(); DZCBuilder.openCommander()`],
   ['13-commander-added', `const b = [...document.querySelectorAll('#dzc-cmdr-body button')]
      .find(x => x.textContent.trim() === 'Add'); b && b.click()`],
   ['12-settings', `App.openSettings()`],

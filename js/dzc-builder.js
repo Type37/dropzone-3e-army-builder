@@ -428,29 +428,62 @@
         ${u.variants.map(vr => `<option value="${esc(vr.name)}"${vr.name === m.variant ? ' selected' : ''}>${esc(vr.name)} — ${vr.points}pts</option>`).join('')}
       </select>`).join('') : '';
 
-    // Transport assignment. Only options that would be legal are offered, and
-    // one that cannot be taken FULL is offered disabled with the arithmetic,
-    // because "5 Legionnaires cannot fill two Bear APCs" is not obvious.
+    /* Transport assignment. A select could show a name and a number and
+     * nothing else -- not the shapes, not whether the fit is exact, not what
+     * it costs -- so it is a + that opens the same kind of visual chooser
+     * everything else here uses. What is already chosen is shown, not folded
+     * back into a collapsed control you have to open to read. */
     const carrier = s.carriedBy ? window.DZCArmy.findSquad(a, s.carriedBy) : null;
-    const carrierUnitId = carrier ? carrier.unitId : '';
+    const carrierUnit = carrier ? window.DZCArmy.unitOf(a, carrier) : null;
     const opts = isTransport ? [] : window.DZCArmy.transportOptions(a, s.id);
-    const transportPicker = opts.length ? `<label class="dzc-carry">${window.DZCIcon('local_shipping', { size: 13 })} Transport
-      <select onchange="DZCBuilder.assignTransport('${s.id}',this.value)">
-        <option value="">— none, walks on —</option>
-        ${opts.map(o => `<option value="${esc(o.unit.id)}"${o.unit.id === carrierUnitId ? ' selected' : ''}${o.exact ? '' : ' disabled'}>${esc(o.unit.name)} × ${o.need}${o.exact ? '' : ` — cannot be full (carries ${o.per}, needs ${o.fill})`}</option>`).join('')}
-      </select></label>` : '';
+    const transportPicker = opts.length ? `<div class="dzc-carry">
+      <span class="dzc-carry-lab">${window.DZCIcon('local_shipping', { size: 14 })}Transport</span>
+      ${carrierUnit
+        ? `<span class="dzc-carry-now">${U.transportHtml(carrierUnit)}
+             <b>${esc(carrierUnit.name)}</b><i>× ${carrier.models.length}</i>
+             <button type="button" class="dzc-icon-btn" title="Walks on instead"
+                     onclick="DZCBuilder.assignTransport('${s.id}','')"
+                     aria-label="Remove the Transport">${window.DZCIcon('close', { size: 14 })}</button></span>`
+        : '<span class="dzc-carry-none">Walks on</span>'}
+      <button type="button" class="dzc-carry-add" onclick="DZCBuilder.openCarry('${s.id}')"
+              aria-label="Choose a Transport for ${esc(u.name)}"
+              title="Choose a Transport">${window.DZCIcon('add', { size: 18 })}</button>
+    </div>` : '';
+
+    /* A Squad in your army reads exactly as the unit does when you open it:
+     * art, the capacity symbol at size beside the name, the meta line, every
+     * stat, the rules, a block per variant and the whole weapon table. There
+     * is no "enough for a roster" version of a Unit -- the numbers you argue
+     * over across a table are the ones in that weapon table, and having to
+     * open a modal mid-game to see them is the app failing at its job. */
+    const U = window.DZCUnits;
+    const meta = [esc(u.category), esc(u.type || ''),
+      u.squadMin != null ? `Squad ${U.squadHtml(u)}` : '']
+      .filter(Boolean).map(t => `<span>${t}</span>`).join('');
 
     return `<div class="dzc-squad${isTransport ? ' is-transport' : ''}" style="--depth:${depth}">
       <div class="dzc-sq-main">
-        <span class="dzc-sq-cat" data-cat="${esc(u.category)}">${isTransport ? window.DZCIcon('local_shipping', { size: 12 }) : ''}${esc(u.category)}</span>
-        <button type="button" class="dzc-sq-name" title="Stats, weapons and rules"
-                onclick="DZCUnits.openDetail('${esc(u.id)}','${esc(a.faction)}')">${esc(u.name)}${s.commander ? `<span class="dzc-cmdr-tag">${window.DZCIcon('military_tech', { size: 12 })}L${s.commander.level}</span>` : ''}</button>
-        ${stepper}
-        <span class="dzc-sq-cost">${cost}pts</span>
-        <button class="dzc-icon-btn" type="button" title="Remove Squad"
-                onclick="DZCBuilder.removeSquad('${s.id}')" aria-label="Remove ${esc(u.name)}">${window.DZCIcon('close', { size: 16 })}</button>
+        ${u.art ? `<img class="dzc-sq-art" src="${esc(u.art)}" alt="" loading="lazy">` : ''}
+        <div class="dzc-sq-id">
+          <h3 class="dzc-sq-title">
+            <button type="button" class="dzc-sq-name" title="Stats, weapons and rules"
+                    onclick="DZCUnits.openDetail('${esc(u.id)}','${esc(a.faction)}')">${esc(u.name)}</button>
+            ${s.commander ? `<span class="dzc-cmdr-tag">${window.DZCIcon('military_tech', { size: 13 })}Level ${s.commander.level}</span>` : ''}
+            <span class="dzc-sq-cap">${U.transportHtml(u)}</span>
+          </h3>
+          <p class="dzc-sq-meta">${meta}</p>
+        </div>
+        <div class="dzc-sq-ctl">
+          ${stepper}
+          <span class="dzc-sq-cost">${cost}pts</span>
+          <button class="dzc-icon-btn" type="button" title="Remove Squad"
+                  onclick="DZCBuilder.removeSquad('${s.id}')" aria-label="Remove ${esc(u.name)}">${window.DZCIcon('close', { size: 16 })}</button>
+        </div>
       </div>
-      ${unitFacts(u, a.faction)}
+      <div class="dzc-sq-stats">${U.statsHtml(u)}</div>
+      ${u.special ? `<div class="dzc-sq-rules">${U.rulesHtml(u.special, a.faction)}</div>` : ''}
+      ${U.variantsHtml(u)}
+      <div class="dzc-sq-wpn">${U.weaponsHtml(u, a.faction)}</div>
       ${upgradesHtml(a, s, u)}
       <div class="dzc-sq-opts">
         ${variantPicker}
@@ -900,6 +933,57 @@
     if (m) m.classList.remove('active');
   }
 
+  /* Choosing a Transport, visually. Every option shows the shapes it offers,
+   * how many of it the cargo needs, what that costs and whether it comes out
+   * exactly full -- 3.2.4 wants Transports taken full, and "5 Legionnaires
+   * cannot fill two Bear APCs" is arithmetic you should not have to do. A
+   * part-empty fit is offered anyway, marked, because buying one more model
+   * fixes it and refusing the choice made that unreachable. */
+  function openCarry(squadId) {
+    const s = window.DZCArmy.findSquad(current, squadId);
+    const u = s && window.DZCArmy.unitOf(current, s);
+    if (!u) return;
+    const U = window.DZCUnits;
+    const opts = window.DZCArmy.transportOptions(current, squadId);
+    const nowId = s.carriedBy
+      ? (window.DZCArmy.findSquad(current, s.carriedBy) || {}).unitId : '';
+
+    const card = o => {
+      const total = (o.unit.points != null ? o.unit.points : 0) * o.need;
+      return `<button type="button" class="dzc-carry-card${o.unit.id === nowId ? ' is-on' : ''}${
+        o.exact ? '' : ' is-partial'}" onclick="DZCBuilder.assignTransport('${s.id}','${esc(o.unit.id)}')">
+        ${o.unit.art ? `<img src="${esc(o.unit.art)}" alt="" loading="lazy">`
+                     : '<span class="dzc-carry-noart"></span>'}
+        <span class="dzc-carry-name">${esc(o.unit.name)}</span>
+        <span class="dzc-carry-caps">${U.transportHtml(o.unit)}</span>
+        <span class="dzc-carry-sum"><b>× ${o.need}</b>${
+          total ? `<i>${total}pts</i>` : ''}</span>
+        <span class="dzc-carry-fit">${o.exact
+          ? `${window.DZCIcon('check_circle', { size: 14 })}Exactly full`
+          : `${window.DZCIcon('warning', { size: 14 })}Carries ${o.per}, this Squad fills ${o.fill}`}</span>
+      </button>`;
+    };
+
+    document.getElementById('dzc-carry-body').innerHTML = `
+      <p class="dzc-carry-for">${esc(u.name)} <span>fills</span> ${U.transportHtml(u)}</p>
+      <div class="dzc-carry-grid">
+        <button type="button" class="dzc-carry-card dzc-carry-walk${nowId ? '' : ' is-on'}"
+                onclick="DZCBuilder.assignTransport('${s.id}','')">
+          <span class="dzc-carry-noart">${window.DZCIcon('stat_mv_infantry', { size: 34 })}</span>
+          <span class="dzc-carry-name">Walks on</span>
+          <span class="dzc-carry-fit">No Transport</span>
+        </button>
+        ${opts.map(card).join('')}
+      </div>`;
+    document.querySelector('#dzc-carry .modal-title').textContent = `Transport for ${u.name}`;
+    document.getElementById('dzc-carry').classList.add('active');
+  }
+
+  function closeCarry() {
+    const m = document.getElementById('dzc-carry');
+    if (m) m.classList.remove('active');
+  }
+
   // -------------------------------------------------------------- print sheet
 
   /* The printed sheet is the deployment plan, so it keeps the nesting tree and
@@ -1072,9 +1156,12 @@
       refresh();
     },
     setCarrier: (id, c) => { window.DZCArmy.setCarrier(current, id, c); refresh(); },
+    openCarry, closeCarry,
     assignTransport: (id, unitId) => {
       const r = window.DZCArmy.assignTransport(current, id, unitId || null);
-      if (!r.ok) { say(r.reason); }
+      closeCarry();
+      if (!r.ok) return say(r.reason);
+      if (r.warn) say(r.warn, 'warning');
       refresh();
     },
     setCommander: (id, lv) => {

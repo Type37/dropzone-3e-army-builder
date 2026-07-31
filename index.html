@@ -150,6 +150,18 @@
   </div>
 </div>
 
+<!-- Choose a Transport. A select could not show the shapes, the count it
+     derives or whether the fit is exact, and those are the whole decision. -->
+<div class="modal-overlay" id="dzc-carry" onclick="if(event.target===this)DZCBuilder.closeCarry()">
+  <div class="modal-panel modal-panel--lg">
+    <div class="modal-header">
+      <h2 class="modal-title">Choose a Transport</h2>
+      <button class="modal-close" type="button" onclick="DZCBuilder.closeCarry()" aria-label="Close"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+    </div>
+    <div class="modal-body" id="dzc-carry-body"></div>
+  </div>
+</div>
+
 <!-- DZC unit detail. Its own overlay rather than #modal-ship-detail, which is
      wired to the Dropfleet ship model. -->
 <div class="modal-overlay" id="dzc-detail" onclick="if(event.target===this)DZCUnits.closeDetail()">
