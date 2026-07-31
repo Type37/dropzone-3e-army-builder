@@ -270,7 +270,18 @@
 }
 .dzc-pick-cost small { font-size: 10px; font-weight: 600; margin-left: 1px; }
 .dzc-pick-meta { display: block; margin-top: 1px; font-size: 11px; color: var(--ink-2, #6b6459); }
-.dzc-pick-meta span + span::before { content: '  '; white-space: pre; }
+
+/* Facts in a row are separated by space, not by punctuation. The interpunct
+   budget is two in the whole app, and a meta line spent four of them on its
+   own. Spacing does the same job and reads quieter. */
+.dzc-pick-meta span + span::before,
+.dzc-army-meta span + span::before,
+.dzc-b-sub span + span::before,
+.dzc-detail-meta span + span::before,
+.dzc-coll-meta span + span::before,
+.pr-sub span + span::before { content: '   '; white-space: pre; }
+.dzc-detail-meta .dzc-flag + .dzc-flag::before,
+.dzc-detail-meta span + .dzc-flag::before { content: ' '; white-space: pre; }
 .dzc-pick-stats { margin-top: 4px; }
 
 /* Two columns, three rows. Every cell carries its icon AND its word AND its

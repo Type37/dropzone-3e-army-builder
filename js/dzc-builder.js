@@ -50,9 +50,9 @@
                     aria-label="Delete ${esc(a.name)}">${window.DZCIcon('delete', { size: 15 })}</button>
           </span>
         </div>
-        <p class="dzc-army-meta">${esc((FACTIONS.find(f => f.id === a.faction) || {}).name || a.faction)}
-          · ${size ? esc(size.label) : 'Below minimum'}
-          · ${a.groups.length} Group${a.groups.length === 1 ? '' : 's'}</p>
+        <p class="dzc-army-meta"><span>${esc((FACTIONS.find(f => f.id === a.faction) || {}).name || a.faction)}</span>
+          <span>${size ? esc(size.label) : 'Below minimum'}</span>
+          <span>${a.groups.length} Group${a.groups.length === 1 ? '' : 's'}</span></p>
         <p class="dzc-army-pts"><b>${cost}</b> / ${a.pointsLimit}pts</p>
       </article>`;
     }).join('');
@@ -94,7 +94,7 @@
       <div class="game-size-info">
         <div class="game-size-name">${esc(g.label)}</div>
         <div class="game-size-details">${band}</div>
-        <div class="game-size-details game-size-sub">${groups} · max ${cap}pts per Group</div>
+        <div class="game-size-details game-size-sub">${groups}, max ${cap}pts per Group</div>
       </div>
     </div>`;
   }
@@ -210,10 +210,11 @@
         <div>
           <h1 contenteditable="true" spellcheck="false" class="dzc-b-name"
               onblur="DZCBuilder.rename(this.textContent)">${esc(a.name)}</h1>
-          <p class="dzc-b-sub">${esc((FACTIONS.find(f => f.id === a.faction) || {}).name)}
-            · ${size ? esc(size.label) : 'Below the 501pt minimum'}
-            · Groups ${a.groups.length}/${maxG || '—'}
-            · Max per Group ${cap}pts</p>
+          <!-- No "Max per Group" here: every Group card already prints its own
+               cost against that cap, so repeating it is noise. -->
+          <p class="dzc-b-sub"><span>${esc((FACTIONS.find(f => f.id === a.faction) || {}).name)}</span>
+            <span>${size ? esc(size.label) : 'Below the 501pt minimum'}</span>
+            <span>${a.groups.length}/${maxG || '—'} Groups</span></p>
         </div>
         <div class="dzc-b-right">
           <div class="dzc-b-pts ${cost > a.pointsLimit ? 'is-over' : ''}">
@@ -543,7 +544,7 @@
           <span class="pr-sq-cost">${cost}pts</span>
         </div>
         ${mixStr ? `<div class="pr-variants">${mixStr}</div>` : ''}
-        <div class="pr-stats">${stats}${u.special ? ` · ${esc(u.special)}` : ''}</div>
+        <div class="pr-stats">${stats}${u.special ? ` — ${esc(u.special)}` : ''}</div>
         ${cap ? `<div class="pr-cap">${cap}</div>` : ''}
         ${wpns}
         ${riders.map(r => squad(g, r, depth + 1)).join('')}
@@ -567,9 +568,10 @@
     el.innerHTML = `
       <div class="pr-head">
         <h1 class="pr-title">${esc(a.name)}</h1>
-        <p class="pr-sub">${esc((FACTIONS.find(f => f.id === a.faction) || {}).name || a.faction)}
-          · ${size ? esc(size.label) : ''} · ${a.groups.length} Group${a.groups.length === 1 ? '' : 's'}
-          · <b>${window.DZCArmy.armyCost(a)}</b> / ${a.pointsLimit}pts</p>
+        <p class="pr-sub"><span>${esc((FACTIONS.find(f => f.id === a.faction) || {}).name || a.faction)}</span>
+          <span>${size ? esc(size.label) : ''}</span>
+          <span>${a.groups.length} Group${a.groups.length === 1 ? '' : 's'}</span>
+          <span><b>${window.DZCArmy.armyCost(a)}</b> / ${a.pointsLimit}pts</span></p>
       </div>
       ${v.errors.length ? `<p class="pr-warn"><b>Not legal:</b> ${v.errors.map(e => esc(e.msg)).join(' ')}</p>` : ''}
       ${v.warnings.map(w => `<p class="pr-warn">${esc(w.msg)}</p>`).join('')}

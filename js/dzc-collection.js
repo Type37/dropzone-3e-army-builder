@@ -113,8 +113,8 @@
           ${u.art ? `<img src="${esc(u.art)}" alt="" loading="lazy">` : '<span class="dzc-pick-noart"></span>'}
           <span class="dzc-coll-body">
             <span class="dzc-coll-name">${esc(u.name)}</span>
-            <span class="dzc-coll-meta">${esc(u.category)} · ${esc(u.type || '')}${
-              u.squadMin != null ? ` · Squad ${u.squadMin}${u.squadMax !== u.squadMin ? '–' + u.squadMax : ''}` : ''}</span>
+            <span class="dzc-coll-meta"><span>${esc(u.category)}</span> <span>${esc(u.type || '')}</span>${
+              u.squadMin != null ? ` <span>Squad ${u.squadMin}${u.squadMax !== u.squadMin ? '–' + u.squadMax : ''}</span>` : ''}</span>
           </span>
           <span class="dzc-stepper">
             <button type="button" onclick="DZCCollection.adjust('${esc(u.id)}',-1)" aria-label="One fewer">${window.DZCIcon('remove', { size: 14 })}</button>

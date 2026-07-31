@@ -236,8 +236,9 @@
         ${u.art ? `<img class="dzc-detail-art" src="${esc(u.art)}" alt="">` : ''}
         <div>
           <h3>${esc(u.name)}</h3>
-          <p class="dzc-detail-meta">${esc(u.category)} · ${esc(u.type || '')} · ${pointsHtml(u)} · Squad ${squadHtml(u)}
-            ${u.rare ? ' · Rare' : ''}${u.unique ? ' · Unique' : ''}</p>
+          <p class="dzc-detail-meta"><span>${esc(u.category)}</span> <span>${esc(u.type || '')}</span>
+            <span>${pointsHtml(u)}</span> <span>Squad ${squadHtml(u)}</span>
+            ${u.rare ? '<span class="dzc-flag dzc-flag--rare">Rare</span>' : ''}${u.unique ? '<span class="dzc-flag dzc-flag--unique">Unique</span>' : ''}</p>
           <div class="dzc-card-stats">${statsHtml(u)}</div>
           ${transportHtml(u)}
         </div>
