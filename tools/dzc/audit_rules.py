@@ -46,6 +46,27 @@ def fix_typos(s):
     return TYPO_RE.sub(lambda m: KNOWN_TYPOS[m.group(1).lower()], s)
 
 
+# Keywords that cannot resolve because the CARD is wrong, not the parser.
+#
+# Reported as warnings so the pipeline stays green, but never silently: each
+# entry says what the card prints and what it should have printed, so a future
+# release that fixes it shows up as an entry here that no longer fires.
+#
+# Anything NOT listed here still fails the build. The distinction is the point:
+# a known source defect is a decision, an unknown one is a bug.
+KNOWN_CARD_QUIRKS = {
+    # The Shaltari Support Warstrider prints "Shield: Friendly Vehicles 6" 4+"
+    # with its prefix. The Totem Shieldspire prints the same kind of rule as
+    # "Friendly Vehicles and Aircraft 6" 5+" -- no "Shield:" at all -- and then
+    # a second "Shield: Zones" with no radius or save. Both halves are
+    # incomplete as printed.
+    "Friendly Vehicles and Aircraft 6” 5+":
+        "Totem Shieldspire: a Shield rule printed without its 'Shield:' prefix",
+    "Shield: Zones":
+        "Totem Shieldspire: a Shield rule printed without its radius and save",
+}
+
+
 def load_rules():
     with open(RULES, encoding="utf-8") as fh:
         doc = json.load(fh)
@@ -184,12 +205,29 @@ def main():
         print(f"\n  {len(unused)} glossary rules are never referenced by a card:")
         print("   ", ", ".join(sorted(unused)))
 
-    if unresolved:
-        print(f"\n=== {len(unresolved)} UNRESOLVED KEYWORDS ===")
-        for t, n in sorted(unresolved.items(), key=lambda kv: -kv[1]):
+    known = {t: n for t, n in unresolved.items() if t in KNOWN_CARD_QUIRKS}
+    real = {t: n for t, n in unresolved.items() if t not in KNOWN_CARD_QUIRKS}
+
+    if known:
+        print(f"\n=== {len(known)} known card defects (warnings) ===")
+        for t in sorted(known):
+            print(f"  {t!r}")
+            print(f"      {KNOWN_CARD_QUIRKS[t]}")
+
+    # A listed quirk that no longer fires means the card was fixed. Say so, or
+    # the list rots into a set of exceptions nobody can justify.
+    stale = [t for t in KNOWN_CARD_QUIRKS if t not in unresolved]
+    if stale:
+        print(f"\n  {len(stale)} known-defect entries no longer fire and can be removed:")
+        for t in stale:
+            print(f"    {t!r}")
+
+    if real:
+        print(f"\n=== {len(real)} UNRESOLVED KEYWORDS ===")
+        for t, n in sorted(real.items(), key=lambda kv: -kv[1]):
             eg = sorted(seen_where[t])[:2]
             print(f"  {t!r:<34} x{n:<4} e.g. {', '.join(eg)}")
-        print(f"\n=== {len(unresolved)} problems ===")
+        print(f"\n=== {len(real)} problems ===")
         sys.exit(1)
 
     print("\n=== 0 problems ===")
