@@ -69,6 +69,11 @@ const DZC_STEPS = [
   // shot too: changing it under them is exactly how a view breaks unnoticed.
   ['14-unit-reference', `DZCUnits.closeDetail(); location.hash = '#units'`],
   ['15-unit-reference-detail', `const c = document.querySelector('.dzc-card'); c && c.click()`],
+  // A Transport, to see the capacity shapes beside the name at size.
+  ['15b-transport-detail', `DZCUnits.closeDetail();
+     DZCUnits.setCategory('Transport');
+     await new Promise(r => setTimeout(r, 400));
+     const c = document.querySelector('.dzc-card'); c && c.click()`],
   ['16-collection', `DZCUnits.closeDetail();
      App.toggleSetting('showCollection', true);
      location.hash = '#collection'`],

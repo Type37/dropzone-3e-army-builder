@@ -117,7 +117,7 @@
     const cells = keys.map(k => {
       const label = window.DZC.statLabel(k);
       return `<div class="dzc-stat" title="${esc(label)}">
-        <span class="dzc-stat-i">${window.DZCIcon.stat(k, { size: 14 })}</span>
+        <span class="dzc-stat-i">${window.DZCIcon.stat(k, { size: 14, type: u.type })}</span>
         <span class="dzc-stat-v">${esc(stats[k])}</span>
         <span class="dzc-stat-k">${esc(compact ? k : label)}</span>
       </div>`;
@@ -225,7 +225,9 @@
     if (!u) return;
     const weapons = (u.weapons || []).length ? `
       <table class="dzc-wpn">
-        <thead><tr><th>Weapon</th><th>Arc</th><th>Move &amp; Attack</th><th>Range</th><th>Attacks</th><th>Accuracy</th><th>Energy</th><th>Special</th></tr></thead>
+        <thead><tr><th>Weapon</th><th>Arc</th>
+          <th class="dzc-wpn-ma">${window.DZCIcon.moveAttack({ size: 15 })}Move &amp; Attack</th>
+          <th>Range</th><th>Attacks</th><th>Accuracy</th><th>Energy</th><th>Special</th></tr></thead>
         <tbody>${u.weapons.map(w => `<tr${w.box === 'upgrade' ? ' class="is-upgrade"' : w.box === 'variant' ? ' class="is-variant"' : ''}>
           <td class="dzc-wpn-name">${esc(w.name)}
             ${(w.variants || []).length ? `<span class="dzc-wpn-only">${esc(w.variants.join(', '))} only</span>` : ''}
@@ -236,22 +238,40 @@
           <td>${rulesHtml(w.special, state.faction)}</td></tr>`).join('')}</tbody>
       </table>` : '<p class="dzc-none">No weapons.</p>';
 
+    /* A variant is a different model, so it gets its own block rather than a
+     * line in a price list: what it is called, the gun that makes it that
+     * variant, what it costs, and the stats it fights with. A weapon marked
+     * "all" is on every variant, so only the variant-restricted ones name it. */
     const variants = (u.variants || []).length ? `
       <div class="dzc-variants">
         <h4>Variants <span class="dzc-hint">chosen per model — a Squad may mix them (3.2.2)</span></h4>
-        <ul>${u.variants.map(v => `<li><span>${esc(v.name)}</span><b>${v.points != null ? v.points + 'pts' : '—'}</b></li>`).join('')}</ul>
+        ${u.variants.map(v => {
+          const own = (u.weapons || []).filter(w =>
+            w.box === 'variant' && (w.variants || []).indexOf(v.name) !== -1);
+          const head = [esc(v.name)]
+            .concat(own.length ? [own.map(w => esc(w.name)).join(', ')] : [])
+            .concat([v.points != null ? v.points + 'pts' : '—'])
+            .join(' — ');
+          return `<div class="dzc-variant">
+            <div class="dzc-variant-head">${head}</div>
+            ${statsHtml(u)}
+          </div>`;
+        }).join('')}
       </div>` : '';
 
     document.getElementById('dzc-detail-body').innerHTML = `
       <div class="dzc-detail-head">
         ${u.art ? `<img class="dzc-detail-art" src="${esc(u.art)}" alt="">` : ''}
         <div>
-          <h3>${esc(u.name)}</h3>
+          <!-- Capacity sits beside the name at size, not buried under the meta
+               line: what a Transport can carry is the first thing you look for
+               on one, and the shapes are the whole grammar (3.2.4.2). -->
+          <h3 class="dzc-detail-name">${esc(u.name)}
+            <span class="dzc-detail-cap">${transportHtml(u)}</span></h3>
           <p class="dzc-detail-meta"><span>${esc(u.category)}</span> <span>${esc(u.type || '')}</span>
             <span>${pointsHtml(u)}</span> <span>Squad ${squadHtml(u)}</span>
             ${u.rare ? '<span class="dzc-flag dzc-flag--rare">Rare</span>' : ''}${u.unique ? '<span class="dzc-flag dzc-flag--unique">Unique</span>' : ''}</p>
           <div class="dzc-card-stats">${statsHtml(u)}</div>
-          ${transportHtml(u)}
         </div>
       </div>
       ${u.special ? `<div class="dzc-detail-rules"><h4>Special</h4>${rulesHtml(u.special, state.faction)}</div>` : ''}

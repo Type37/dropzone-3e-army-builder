@@ -78,7 +78,9 @@
    * number decides the per-Group ceiling, because that is a quarter of the
    * AGREED limit and not a quarter of the top of the band (3.2) — so a
    * 1,200pt Clash and a 2,000pt Clash have very different Group caps. */
-  let picked = { faction: 'ucm', size: 'clash', points: null };
+  // `name` stays null until the user types, so the suggested name follows the
+  // faction they pick rather than sticking at whatever it opened with.
+  let picked = { faction: 'ucm', size: 'clash', points: null, name: null };
 
   function sizeCardHtml(g) {
     const cap = Math.floor((g.max || g.min) * 0.25);
@@ -107,7 +109,9 @@
     document.getElementById('dzc-new-body').innerHTML = `
       <div class="flex flex-col gap-md">
         <div class="form-group float-field">
-          <input class="form-input" id="dzc-new-name" type="text" placeholder=" " value="New Army" maxlength="60">
+          <input class="form-input" id="dzc-new-name" type="text" placeholder=" " maxlength="60"
+                 value="${esc(picked.name != null ? picked.name : defaultArmyName(picked.faction))}"
+                 oninput="DZCBuilder.nameTyped(this.value)">
           <label class="float-label" for="dzc-new-name">Army name</label>
         </div>
 
@@ -172,9 +176,22 @@
    *
    * Now the faction is fetched while the button is still showing its press,
    * so by the time the modal goes the builder is already there. */
+  /* "UCM Army 3" — the faction, then how many of that faction you have. Counts
+   * the highest number already used rather than the list length, so deleting
+   * the second of three does not hand the next one a name you already have. */
+  function defaultArmyName(factionId) {
+    const f = FACTIONS.find(x => x.id === factionId);
+    const label = (f && (f.shortName || f.name)) || factionId;
+    const re = new RegExp('^' + label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ' Army (\\d+)$', 'i');
+    const used = (window.DZCArmy.all() || [])
+      .map(a => (a.name || '').match(re)).filter(Boolean).map(m => parseInt(m[1], 10));
+    return `${label} Army ${used.length ? Math.max.apply(null, used) + 1 : 1}`;
+  }
+
   async function createArmy() {
     const btn = document.getElementById('dzc-create-btn');
-    const name = (document.getElementById('dzc-new-name').value || 'New Army').trim();
+    const typed = (document.getElementById('dzc-new-name').value || '').trim();
+    const name = typed || defaultArmyName(picked.faction);
     if (btn) { btn.classList.add('is-going'); btn.disabled = true; }
     try {
       await window.DZC.loadFaction(picked.faction);
@@ -184,6 +201,7 @@
     await renderBuilder(a.id);
     document.getElementById('dzc-new').classList.remove('active');
     if (btn) { btn.classList.remove('is-going'); btn.disabled = false; }
+    picked.name = null;   // next dialog suggests afresh
   }
 
   function del(id) {
@@ -756,6 +774,9 @@
     /* Redraw whatever is on screen. Settings changes call this because a
      * toggle can change what the builder is allowed to show. */
     refresh: () => { if (current) renderBuilder(current.id); },
+    // Only remember a name the user actually typed, so switching faction
+    // re-suggests "Scourge Army 1" instead of leaving "UCM Army 1" behind.
+    nameTyped: v => { picked.name = v; },
     pickFaction: id => { picked.faction = id; openNew(); },
     /* Clicking a size sets the limit to the TOP of that band, which is what
      * people mean by "a Clash game". Typing an exact number then wins, because

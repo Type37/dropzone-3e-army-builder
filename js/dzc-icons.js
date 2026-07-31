@@ -46,7 +46,17 @@
     // language: an arrow for movement, a hexagon for the damage track. Armour
     // and Defence are a solid vs an outline shield so the pair reads as one
     // idea with two weights.
-    stat_mv: 'M4 11h11.17l-3.58-3.59L13 6l6 6-6 6-1.41-1.41L15.17 13H4z',
+    // Move — a route between two nodes. Supplied by Jet.
+    stat_mv: {
+      box: '0 0 512 512',
+      d: 'M426.667 96c0 5.891-4.777 10.667-10.667 10.667S405.333 101.891 405.333 96S410.11 85.333 416 85.333S426.667 90.11 426.667 96m42.666 0c0 29.455-23.878 53.333-53.333 53.333S362.667 125.455 362.667 96S386.545 42.667 416 42.667S469.333 66.545 469.333 96M106.667 416c0 5.89-4.776 10.667-10.667 10.667c-5.89 0-10.667-4.777-10.667-10.667S90.11 405.333 96 405.333s10.667 4.777 10.667 10.667m42.666 0c0 29.455-23.878 53.333-53.333 53.333S42.667 445.455 42.667 416S66.545 362.667 96 362.667s53.333 23.878 53.333 53.333M320 222.17L164.418 377.751l-30.17-30.169L289.83 192h-55.163v-42.667h128v128H320z'
+    },
+    // Infantry move on foot, so they get a shoe rather than a route.
+    // Phosphor sneaker-move-fill, MIT, inlined at author time.
+    stat_mv_infantry: {
+      box: '0 0 256 256',
+      d: 'M70.8 184H32a8 8 0 0 1 0-16h38.8a8 8 0 1 1 0 16m32 16H48a8 8 0 0 0 0 16h54.8a8 8 0 1 0 0-16m128.36-33.37l-28.63-14.31A47.74 47.74 0 0 1 176 109.39V80a8 8 0 0 0-7.93-8A48.05 48.05 0 0 1 120 24.07a8 8 0 0 0-12.83-6.44L45.11 64.68a4 4 0 0 0-.41 6l51.44 51.44a8.19 8.19 0 0 1 .6 11.09a8 8 0 0 1-11.71.43l-53-53a4 4 0 0 0-6.44 1.09a16 16 0 0 0 3.12 18.22L142.4 213.66a8 8 0 0 0 5.66 2.34H224a16 16 0 0 0 16-16v-19.06a15.92 15.92 0 0 0-8.84-14.31'
+    },
     stat_a: 'M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z',
     stat_dp: 'M12 2 21 7v10l-9 5-9-5V7l9-5z',
     // Offence — a soldier firing. Supplied by Jet; carries its own 640 box.
@@ -141,8 +151,28 @@
       + `</svg></span>`;
   }
 
-  /* A stat's icon, by the key the stat cards print (Mv, A, DP, OF, DF, B). */
-  icon.stat = (key, opts) => icon('stat_' + String(key || '').toLowerCase(), opts);
+  /* A stat's icon, by the key the stat cards print (Mv, A, DP, OF, DF, B).
+   * Pass the unit type so Infantry get the shoe rather than the route. */
+  icon.stat = (key, opts) => {
+    const k = String(key || '').toLowerCase();
+    const type = String((opts && opts.type) || '');
+    const name = (k === 'mv' && /infantry/i.test(type)) ? 'stat_mv_infantry' : 'stat_' + k;
+    return icon(name, opts);
+  };
+
+  /* Move & Attack: the lance over the route, turned a quarter so the two do
+   * not read as the same mark twice. Two source drawings on different grids,
+   * so the route is scaled and rotated into the lance's 24-unit box. */
+  const MA_ROUTE = P.stat_mv.d;
+  const MA_LANCE = 'M22.732.012h-5.174l-.366.366L5.195 12.374L4.14 11.318l-1.768 1.768l1.97 1.97l-3.81 3.812l-.367.366v4.596H4.76l.366-.366l3.812-3.812l1.97 1.97l1.768-1.767l-1.056-1.056L23.616 6.802l.366-.366V.012zM9.852 17.03l-2.889-2.889l11.63-11.63h2.89V5.4z';
+  icon.moveAttack = (opts) => {
+    const s = (opts && opts.size) || 20;
+    return `<svg class="dzc-i" width="${s}" height="${s}" viewBox="0 0 24 24"`
+      + ` fill="currentColor" aria-hidden="true" focusable="false">`
+      + `<g transform="translate(12 12) rotate(90) scale(0.046875) translate(-256 -256)" opacity=".45">`
+      + `<path d="${MA_ROUTE}"/></g>`
+      + `<path d="${MA_LANCE}"/></svg>`;
+  };
 
   icon.has = n => Object.prototype.hasOwnProperty.call(P, n);
   icon.names = () => Object.keys(P);

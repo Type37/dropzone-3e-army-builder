@@ -100,7 +100,12 @@
   /* Rule names wrap rather than truncate — this is gameplay text. */
   white-space: normal; text-align: left; overflow-wrap: anywhere;
 }
-.dzc-rule:hover { background: var(--acc); color: #fff; }
+/* Underline on hover, not a fill. White on the faction accent was unreadable
+   at 11px against half the palette — Shaltari orange and PHR gold especially. */
+.dzc-rule:hover, .dzc-rule:focus-visible {
+  background: transparent; color: var(--ink, #24201c);
+  text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1.5px;
+}
 .dzc-rule--unknown { border-style: dashed; opacity: .7; }
 
 /* ── rule popover: absolute at body level, so the page never shifts ── */
@@ -228,6 +233,24 @@
   .dzc-create.is-going { animation: none; }
   .dzc-create:hover, .dzc-create:active { transform: none; }
 }
+
+/* Capacity beside the name, at a size you can actually read the shapes at. */
+.dzc-detail-name { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+/* The badge is a fixed 22px box with the svg absolutely filling it and the
+   number on top, so all three have to grow together — sizing the svg alone
+   did nothing. */
+.dzc-detail-cap .dzc-transport { gap: 6px; }
+.dzc-detail-cap .dzc-badge { width: 66px; height: 66px; }
+.dzc-detail-cap .dzc-badge svg { width: 100%; height: 100%; }
+.dzc-detail-cap .dzc-badge-n { font-size: 26px; }
+.dzc-detail-cap .dzc-sep { font-size: 30px; font-weight: 700; }
+
+/* One block per variant: what it is, the gun that makes it that, the price,
+   and the stats it fights with. */
+.dzc-variant { padding: 8px 10px; margin-bottom: 6px; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); }
+.dzc-variant-head { margin-bottom: 6px; font-weight: 600; font-size: 13.5px; }
+.dzc-wpn-ma { white-space: nowrap; }
+.dzc-wpn-ma .dzc-i { vertical-align: -3px; margin-right: 3px; }
 
 /* ── Sharp cards ──
    Every card surface is square. Buttons, chips and inputs keep their radius —
@@ -399,7 +422,12 @@
 .dzc-variant, .dzc-carry select, .dzc-cmdr select { font-size: 11.5px; padding: 3px 6px; border-radius: 4px; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); color: var(--ink, #24201c); max-width: 100%; }
 .dzc-carry, .dzc-cmdr { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-2, #6b6459); display: inline-flex; align-items: center; gap: 4px; }
 .dzc-capacity { margin: 4px 0 0; font-size: 11px; font-style: italic; color: var(--ink-2, #6b6459); }
-.dzc-add-group { margin-top: 4px; }
+/* Adding a Group is the main move in this screen, so it is sized like one. */
+.dzc-add-group {
+  margin-top: 6px; width: 100%;
+  padding: 20px 24px;
+  font-size: 17px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+}
 
 .dzc-icon-btn { flex: 0 0 auto; width: 24px; height: 24px; border: 0; border-radius: 4px; cursor: pointer; background: transparent; color: var(--ink-2, #6b6459); font-size: 18px; line-height: 1; }
 .dzc-icon-btn:hover { background: #fde8e6; color: #b3261e; }
