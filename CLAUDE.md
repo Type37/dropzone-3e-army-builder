@@ -77,7 +77,11 @@ Reference for voice and wording, not just tokens:
   `.deco-diamond`.
 - Fonts: Terminal Grotesque Open (wordmark), Jost (body and condensed),
   Roboto Slab (display), Libre Baskerville (lore). Barlow Condensed is out.
+- **Mobile first.** Every layout decision starts at phone width and grows up.
+  The phone is the case that has to work — it is the one used at a table.
 - **Desktop keeps panes. Mobile does not.** One responsive app, not two builds.
+  On mobile a Group is a screen you drill into, not a pane beside a list —
+  which is how the Dropfleet mobile build does it (`renderGroupDetail`).
 - Icons: rulebook tokens where they exist, otherwise Flowbite / Streamline /
   Simple Icons / SVG Spinners via Iconify. **Always inlined, never a CDN** —
   a CDN icon breaks offline.
