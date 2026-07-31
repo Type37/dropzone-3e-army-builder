@@ -629,6 +629,12 @@
         </div>
         <span class="dzc-pick-meta">${meta}</span>
         ${unitFacts(u, a.faction, { compact: true })}
+        <!-- The variant IS the choice: a different gun, sometimes a different
+             role. Burying it in a per-model select inside the Squad you already
+             committed to means you pick blind. -->
+        ${(u.variants || []).length ? `<div class="dzc-pick-variants">${u.variants.map(v =>
+          `<span class="dzc-pick-vchip">${esc(v.name)}${v.points != null ? ` ${v.points}pts` : ''}</span>`
+        ).join('')}</div>` : ''}
       </div>
       ${chk.ok
         ? `<button type="button" class="dzc-pick-add" onclick="DZCBuilder.pick('${esc(u.id)}')">

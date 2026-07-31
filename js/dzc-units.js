@@ -244,7 +244,6 @@
      * "all" is on every variant, so only the variant-restricted ones name it. */
     const variants = (u.variants || []).length ? `
       <div class="dzc-variants">
-        <h4>Variants <span class="dzc-hint">chosen per model — a Squad may mix them (3.2.2)</span></h4>
         ${u.variants.map(v => {
           const own = (u.weapons || []).filter(w =>
             w.box === 'variant' && (w.variants || []).indexOf(v.name) !== -1);
@@ -274,7 +273,7 @@
           <div class="dzc-card-stats">${statsHtml(u)}</div>
         </div>
       </div>
-      ${u.special ? `<div class="dzc-detail-rules"><h4>Special</h4>${rulesHtml(u.special, state.faction)}</div>` : ''}
+      ${u.special ? `<div class="dzc-detail-rules">${rulesHtml(u.special, state.faction)}</div>` : ''}
       ${variants}
       ${weapons}`;
     document.querySelector('#dzc-detail .modal-title').textContent = u.name;
