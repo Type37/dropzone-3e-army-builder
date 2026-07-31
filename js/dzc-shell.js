@@ -89,7 +89,7 @@ const App = (() => {
 
   // ---------------------------------------------------------------- routing
 
-  const VIEWS = ['view-landing', 'view-armies', 'view-army', 'view-units'];
+  const VIEWS = ['view-landing', 'view-armies', 'view-army', 'view-units', 'view-play'];
 
   function show(id) {
     VIEWS.forEach(v => { const el = $(v); if (el) el.classList.add('hidden'); });
@@ -123,6 +123,12 @@ const App = (() => {
         show('view-army');
         ctx.innerHTML = back('armies', 'Army Builder');
         if (window.DZCBuilder) DZCBuilder.renderBuilder(param);
+        break;
+      case 'play':
+        show('view-play');
+        ctx.innerHTML = back('army/' + param, 'Play Mode')
+          + ` <button class="btn btn-ghost btn-sm" type="button" onclick="DZCPlay.reset()">Reset game</button>`;
+        if (window.DZCPlay) DZCPlay.open(param);
         break;
       case 'units':
         show('view-units');

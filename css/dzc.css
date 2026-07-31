@@ -322,3 +322,51 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 .dzc-seg button.is-on { background: var(--navy, #1b3a5c); color: #fff; }
 /* The token is the whole credential, so it is set to be read aloud accurately. */
 .dzc-token { font: 600 15px/1.5 var(--font-ui, 'Jost', sans-serif); letter-spacing: .02em; padding: 10px 12px; border-radius: 6px; background: var(--surface-3, #f2ece0); overflow-wrap: anywhere; }
+
+/* ═══ Play Mode ═══
+   Sized for a phone on a table: big tap targets, no hover-only affordances. */
+.dzc-play-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.dzc-round { display: flex; align-items: center; gap: 10px; }
+.dzc-round button { width: 36px; height: 36px; border-radius: 8px; cursor: pointer; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); display: grid; place-items: center; }
+.dzc-round span { text-align: center; }
+.dzc-round b { display: block; font: 800 20px/1 var(--font-display, 'Roboto Slab', serif); }
+.dzc-round i { font-style: normal; font-size: 11px; color: var(--ink-2, #6b6459); }
+.dzc-play-vp { display: flex; gap: 10px; flex-wrap: wrap; }
+.dzc-vp { display: flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 8px; background: var(--surface-3, #f2ece0); }
+.dzc-vp span { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2, #6b6459); }
+.dzc-vp button { width: 28px; height: 28px; border-radius: 6px; cursor: pointer; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); font-size: 16px; line-height: 1; }
+.dzc-vp b { min-width: 22px; text-align: center; font-size: 17px; }
+
+.dzc-play-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; margin-bottom: 16px; }
+.dzc-pcard { padding: 12px; border-radius: 8px; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); }
+.dzc-pcard-k { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-2, #6b6459); }
+.dzc-pcard-v { display: block; font: 800 26px/1.1 var(--font-display, 'Roboto Slab', serif); margin: 2px 0 6px; }
+.dzc-pcard-v i { font-style: normal; font-size: 13px; font-weight: 500; color: var(--ink-2, #6b6459); }
+.dzc-pcard-act { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.dzc-pcard-act button { padding: 5px 12px; border-radius: 6px; cursor: pointer; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); font-size: 13px; }
+.dzc-pcard-act label { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-2, #6b6459); display: inline-flex; align-items: center; gap: 5px; }
+.dzc-pcard-act input { width: 56px; padding: 4px 6px; border-radius: 5px; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); color: var(--ink, #24201c); }
+/* Rule text stays visible; it is the reason the number is what it is. */
+.dzc-pcard-note { margin: 7px 0 0; font-size: 11px; line-height: 1.4; color: var(--ink-2, #6b6459); }
+.dzc-roll { font-weight: 700; font-size: 14px; }
+
+.dzc-play-group { border: 1px solid var(--line, #d8d0c0); border-radius: 8px; padding: 10px; margin-bottom: 10px; background: var(--surface-2, #fff); }
+.dzc-play-group.is-done { opacity: .58; }
+.dzc-play-group.is-dead { opacity: .4; }
+.dzc-play-group > header { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 6px; }
+.dzc-act { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+.dzc-act b { font: 700 14px/1.2 var(--font-ui, 'Jost', sans-serif); }
+.dzc-play-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; text-transform: uppercase; letter-spacing: .05em; padding: 2px 7px; border-radius: 3px; background: #dbe9f5; color: #16466e; }
+.dzc-play-squad { padding: 6px 0; border-top: 1px solid var(--line, #eee5d6); }
+.dzc-play-sq-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.dzc-play-name { font-weight: 600; font-size: 13.5px; overflow-wrap: anywhere; }
+.dzc-play-alive { margin-left: auto; font-size: 12px; font-weight: 700; }
+.dzc-play-models { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
+.dzc-model { display: flex; align-items: center; gap: 4px; padding: 4px 7px; border-radius: 6px; background: var(--surface-3, #f2ece0); }
+.dzc-model.is-dead { opacity: .45; text-decoration: line-through; }
+.dzc-model button { width: 26px; height: 26px; border-radius: 5px; cursor: pointer; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); font-size: 15px; line-height: 1; }
+.dzc-model b { min-width: 16px; text-align: center; font-size: 14px; }
+.dzc-model i { font-style: normal; font-size: 10px; color: var(--ink-2, #6b6459); }
+.dzc-statuses { display: inline-flex; gap: 2px; margin-left: 3px; }
+.dzc-st { width: 22px !important; height: 22px !important; font-size: 10px !important; font-weight: 700; opacity: .4; }
+.dzc-st.is-on { opacity: 1; background: var(--acc, #1b3a5c) !important; color: #fff; border-color: var(--acc, #1b3a5c) !important; }

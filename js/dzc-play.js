@@ -1,0 +1,276 @@
+/* Play Mode — run a game from a built army.
+ *
+ * Tracks the things a Round actually needs and that are easy to get wrong at a
+ * table, all of which come out of rulebook chapter 4:
+ *
+ *   4.1.1  CP is replenished UP TO your highest Commander Level on the table,
+ *          and you LOSE CP if you hold more than that. Commanders count as
+ *          Level 0 throughout Round 1, so Round 1 gives you nothing.
+ *   4.1.2  Pass tokens come from having FEWER Groups than your opponent — two
+ *          fewer earns one, and each further Group earns another. Groups of
+ *          only non-auxiliary Transports do not count toward either side.
+ *   4.1.4  Command Card hand size is also the highest Commander Level.
+ *   4.1.5  Initiative is D6 + highest Commander Level.
+ *
+ * Damage is tracked per MODEL rather than per Squad, because DP is a per-model
+ * stat and a Squad shrinks as models die.
+ *
+ * State lives under the army id, so closing the tab mid-game loses nothing.
+ */
+(function () {
+  'use strict';
+
+  const KEY = 'dzc_play';
+  const STATUSES = ['Concussed', 'Suppressed', 'Jammed', 'Obscured'];
+
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g,
+    c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  let armyId = null;
+  let state = null;
+
+  function blank(army) {
+    const models = {};
+    army.groups.forEach(g => g.squads.forEach(s => {
+      const u = window.DZCArmy.unitOf(army, s);
+      const dp = u ? parseInt(u.stats && u.stats.DP, 10) || 1 : 1;
+      models[s.id] = s.models.map(() => ({ dp: dp, max: dp, st: [] }));
+    }));
+    return { round: 1, cp: 0, myVP: 0, oppVP: 0, oppGroups: 0, activated: {}, models: models };
+  }
+
+  function load(army) {
+    armyId = army.id;
+    let all = {};
+    try { all = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { all = {}; }
+    state = all[armyId] || blank(army);
+    // A Squad added or resized since the last session needs its models seeding.
+    const fresh = blank(army);
+    Object.keys(fresh.models).forEach(id => {
+      if (!state.models[id]) state.models[id] = fresh.models[id];
+      else if (state.models[id].length !== fresh.models[id].length) {
+        const old = state.models[id];
+        state.models[id] = fresh.models[id].map((m, i) => old[i] || m);
+      }
+    });
+    return state;
+  }
+
+  function save() {
+    let all = {};
+    try { all = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { all = {}; }
+    all[armyId] = state;
+    try { localStorage.setItem(KEY, JSON.stringify(all)); } catch (e) { /* quota */ }
+  }
+
+  // ------------------------------------------------------------ round maths
+
+  /* Highest Commander Level on the table. Round 1 is deliberately 0: "Commanders
+   * count as Level 0 throughout Round 1" (4.1.1), which means no CP, no cards
+   * and no Initiative bonus in the first Round. */
+  function commanderLevel(army) {
+    if (state.round <= 1) return 0;
+    let best = 0;
+    army.groups.forEach(g => g.squads.forEach(s => {
+      if (s.commander && aliveIn(s) > 0) best = Math.max(best, s.commander.level);
+    }));
+    return best;
+  }
+
+  function aliveIn(squad) {
+    const m = state.models[squad.id] || [];
+    return m.filter(x => x.dp > 0).length;
+  }
+
+  /* Groups that can be activated normally. A Group of only non-auxiliary
+   * Transports cannot be picked (4.2.1) and is ignored for Pass tokens
+   * (4.1.2), so Group count is NOT activation count. */
+  function activeGroups(army) {
+    return army.groups.filter(g => {
+      const live = g.squads.filter(s => aliveIn(s) > 0);
+      if (!live.length) return false;
+      return !live.every(s => {
+        const u = window.DZCArmy.unitOf(army, s);
+        return u && u.category === 'Transport' && !u.auxiliaryTransport;
+      });
+    });
+  }
+
+  function passTokens(army) {
+    const mine = activeGroups(army).length;
+    const theirs = state.oppGroups || 0;
+    return theirs - mine >= 2 ? theirs - mine - 1 : 0;
+  }
+
+  // --------------------------------------------------------------- rendering
+
+  async function open(id) {
+    const root = document.getElementById('view-play');
+    if (!root) return;
+    await window.DZC.loadIndex();
+    window.DZCArmy.load();
+    const army = window.DZCArmy.get(id);
+    if (!army) { location.hash = '#armies'; return; }
+    await window.DZC.loadFaction(army.faction);
+    load(army);
+    render(army);
+  }
+
+  function render(army) {
+    const root = document.getElementById('view-play');
+    const lvl = commanderLevel(army);
+    const groups = activeGroups(army);
+    const pass = passTokens(army);
+
+    root.innerHTML = `<div class="dzc-wrap dzc-play">
+      <header class="dzc-play-head">
+        <div class="dzc-round">
+          <button type="button" onclick="DZCPlay.round(-1)" aria-label="Previous round">${window.DZCIcon('remove', { size: 16 })}</button>
+          <span><b>Round ${state.round}</b><i>of 6</i></span>
+          <button type="button" onclick="DZCPlay.round(1)" aria-label="Next round">${window.DZCIcon('add', { size: 16 })}</button>
+        </div>
+        <div class="dzc-play-vp">
+          ${counter('My VP', state.myVP, 'myVP')}
+          ${counter('Opp VP', state.oppVP, 'oppVP')}
+        </div>
+      </header>
+
+      <div class="dzc-play-cards">
+        <div class="dzc-pcard">
+          <span class="dzc-pcard-k">Command Points</span>
+          <span class="dzc-pcard-v">${state.cp}<i>/ ${lvl}</i></span>
+          <div class="dzc-pcard-act">
+            <button type="button" onclick="DZCPlay.cp(-1)">−</button>
+            <button type="button" onclick="DZCPlay.cp(1)">+</button>
+            <button type="button" onclick="DZCPlay.replenish()" title="Replenish up to your highest Commander Level (4.1.1)">Refill</button>
+          </div>
+          <p class="dzc-pcard-note">${state.round <= 1
+            ? 'Commanders count as Level 0 throughout Round 1 (4.1.1).'
+            : `Hand size is also ${lvl} card${lvl === 1 ? '' : 's'} (4.1.4).`}</p>
+        </div>
+
+        <div class="dzc-pcard">
+          <span class="dzc-pcard-k">Pass Tokens</span>
+          <span class="dzc-pcard-v">${pass}</span>
+          <div class="dzc-pcard-act">
+            <label>Opp Groups
+              <input type="number" min="0" max="40" value="${state.oppGroups}"
+                     oninput="DZCPlay.oppGroups(this.value)"></label>
+          </div>
+          <p class="dzc-pcard-note">You have ${groups.length} activatable Group${groups.length === 1 ? '' : 's'}.
+            Groups of only non-auxiliary Transports are ignored (4.1.2).</p>
+        </div>
+
+        <div class="dzc-pcard">
+          <span class="dzc-pcard-k">Initiative</span>
+          <span class="dzc-pcard-v">D6 +${lvl}</span>
+          <div class="dzc-pcard-act">
+            <button type="button" onclick="DZCPlay.roll()">Roll</button>
+            <span id="dzc-roll" class="dzc-roll"></span>
+          </div>
+          <p class="dzc-pcard-note">A natural 6 wins outright; re-roll ties after adding Level (4.1.5).</p>
+        </div>
+      </div>
+
+      ${army.groups.map(g => groupHtml(army, g)).join('')}
+    </div>`;
+  }
+
+  function counter(label, val, key) {
+    return `<div class="dzc-vp">
+      <span>${esc(label)}</span>
+      <button type="button" onclick="DZCPlay.vp('${key}',-1)" aria-label="Less">−</button>
+      <b>${val}</b>
+      <button type="button" onclick="DZCPlay.vp('${key}',1)" aria-label="More">+</button>
+    </div>`;
+  }
+
+  function groupHtml(army, g) {
+    const done = !!state.activated[g.id];
+    const live = g.squads.filter(s => aliveIn(s) > 0);
+    const canAct = activeGroups(army).some(x => x.id === g.id);
+    return `<section class="dzc-play-group${done ? ' is-done' : ''}${live.length ? '' : ' is-dead'}">
+      <header>
+        <label class="dzc-act">
+          <input type="checkbox" ${done ? 'checked' : ''} ${canAct ? '' : 'disabled'}
+                 onchange="DZCPlay.activate('${g.id}')">
+          <b>${esc(g.name)}</b>
+        </label>
+        ${canAct ? '' : `<span class="dzc-play-tag" title="Cannot be picked for a normal activation (4.2.1); activates in the Orphaned Transport step (4.2.2)">${window.DZCIcon('local_shipping', { size: 12 })} orphaned transports</span>`}
+      </header>
+      ${g.squads.map(s => squadHtml(army, s)).join('')}
+    </section>`;
+  }
+
+  function squadHtml(army, s) {
+    const u = window.DZCArmy.unitOf(army, s);
+    if (!u) return '';
+    const models = state.models[s.id] || [];
+    return `<div class="dzc-play-squad">
+      <div class="dzc-play-sq-head">
+        <span class="dzc-play-name">${esc(u.name)}</span>
+        ${s.commander ? `<span class="dzc-cmdr-tag">${window.DZCIcon('military_tech', { size: 11 })}L${s.commander.level}</span>` : ''}
+        <span class="dzc-play-alive">${aliveIn(s)}/${models.length}</span>
+      </div>
+      <div class="dzc-play-models">
+        ${models.map((m, i) => `<div class="dzc-model${m.dp > 0 ? '' : ' is-dead'}">
+          <button type="button" onclick="DZCPlay.dp('${s.id}',${i},-1)" aria-label="Damage">−</button>
+          <b>${m.dp}</b><i>/${m.max}</i>
+          <button type="button" onclick="DZCPlay.dp('${s.id}',${i},1)" aria-label="Repair">+</button>
+          <span class="dzc-statuses">${STATUSES.map(st => `<button type="button"
+            class="dzc-st${m.st.indexOf(st) !== -1 ? ' is-on' : ''}"
+            title="${st}" onclick="DZCPlay.status('${s.id}',${i},'${st}')">${st[0]}</button>`).join('')}</span>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  // ------------------------------------------------------------------ actions
+
+  const army = () => window.DZCArmy.get(armyId);
+  const redraw = () => { save(); render(army()); };
+
+  window.DZCPlay = {
+    open,
+    round: d => {
+      state.round = Math.max(1, state.round + d);
+      // A new Round replenishes CP and clears who has activated (4.1, 4.2).
+      state.activated = {};
+      state.cp = Math.min(state.cp, commanderLevel(army()));
+      redraw();
+    },
+    replenish: () => { state.cp = commanderLevel(army()); redraw(); },
+    cp: d => { state.cp = Math.max(0, Math.min(commanderLevel(army()), state.cp + d)); redraw(); },
+    vp: (k, d) => { state[k] = Math.max(0, (state[k] || 0) + d); redraw(); },
+    oppGroups: v => { state.oppGroups = Math.max(0, parseInt(v, 10) || 0); redraw(); },
+    activate: id => { state.activated[id] = !state.activated[id]; redraw(); },
+    dp: (sid, i, d) => {
+      const m = (state.models[sid] || [])[i];
+      if (!m) return;
+      m.dp = Math.max(0, Math.min(m.max, m.dp + d));
+      redraw();
+    },
+    status: (sid, i, st) => {
+      const m = (state.models[sid] || [])[i];
+      if (!m) return;
+      const at = m.st.indexOf(st);
+      if (at === -1) m.st.push(st); else m.st.splice(at, 1);
+      redraw();
+    },
+    roll: () => {
+      const d6 = 1 + Math.floor(Math.random() * 6);
+      const lvl = commanderLevel(army());
+      const el = document.getElementById('dzc-roll');
+      if (el) {
+        el.textContent = d6 === 6
+          ? `${d6} — wins outright`
+          : `${d6} + ${lvl} = ${d6 + lvl}`;
+      }
+    },
+    reset: () => {
+      if (!confirm('Reset this game? Damage, VP and Round all go back to the start.')) return;
+      state = blank(army());
+      redraw();
+    }
+  };
+})();

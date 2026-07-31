@@ -136,6 +136,8 @@
           <div class="dzc-b-pts ${cost > a.pointsLimit ? 'is-over' : ''}">
             <b>${cost}</b><span>/ ${a.pointsLimit}pts</span>
           </div>
+          <button class="btn btn-ghost btn-sm" type="button" onclick="DZCBuilder.play()"
+                  title="Run a game with this army">${window.DZCIcon('layers', { size: 15 })} Play</button>
           <button class="btn btn-ghost btn-sm" type="button" onclick="DZCBuilder.share()"
                   title="Copy a link to this army">${window.DZCIcon('share', { size: 15 })} Share</button>
           <button class="btn btn-ghost btn-sm" type="button" onclick="DZCBuilder.print()"
@@ -484,6 +486,7 @@
       refresh();
     },
     openPicker, pick, print: printSheet,
+    play: () => { location.hash = '#play/' + current.id; },
     /* The link carries the whole army, so it works with no server and cannot
      * rot. Copied straight to the clipboard; if that is blocked the link is
      * shown so it can still be copied by hand. */
