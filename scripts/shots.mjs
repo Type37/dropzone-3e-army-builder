@@ -44,7 +44,11 @@ const DZC_STEPS = [
   ['04-faction-picked', `const b = document.querySelector('#dzc-new-body [onclick*="pickFaction"]');
      b && b.click()`],
   ['05-builder-empty', `DZCBuilder.createArmy()`],
-  ['06-picker', `await DZCBuilder.addGroup()`],
+  // Add Group now leaves an empty Group rather than opening the picker, so
+  // the blank state is its own shot and the picker is opened deliberately.
+  ['05b-blank-group', `await DZCBuilder.addGroup()`],
+  ['06-picker', `DZCBuilder.openPicker(document.querySelector('[onclick*="openPicker"]')
+     .getAttribute('onclick').match(/openPicker\\('([^']+)'/)[1])`],
   ['07-picker-scrolled', `document.querySelector('#dzc-picker .modal-body').scrollTop = 600`],
   ['08-picker-category', `document.querySelector('#dzc-picker .modal-body').scrollTop = 0;
      const c = [...document.querySelectorAll('.dzc-chip')].find(x => /Standard/.test(x.textContent));
@@ -61,8 +65,20 @@ const DZC_STEPS = [
   // has room, so shoot the picker in that state to see what greys out.
   ['10b-picker-second-squad', `await new Promise(r => setTimeout(r, 300))`],
   // The other half: a Transport that can carry what is here must be offered.
-  ['10c-picker-transports', `const c = [...document.querySelectorAll('.dzc-chip')]
-     .find(x => x.textContent.trim() === 'Transport'); c && c.click()`],
+  ['10c-picker-transports', `const c = [...document.querySelectorAll('[data-cat]')]
+     .find(x => x.dataset.cat === 'Transport'); c && c.click()`],
+  // Clicking a sort must move nothing but the cards. Shot immediately after so
+  // any reflow of the bar above shows up against 10c.
+  ['10d-picker-sorted', `document.querySelector('[data-sort="name"]').click()`],
+  ['10e-picker-shape', `document.querySelector('[data-sort="points"]').click();
+     document.querySelector('[data-cat="All"]').click();
+     document.querySelector('[data-shape="square"]').click()`],
+  ['10f-picker-cleared', `document.querySelector('.dzc-pick-results button').click()`],
+  // A Transport in the Group, so the header meters have capacity to report.
+  ['10g-transport-added', `document.querySelector('[data-cat="Transport"]').click();
+     await new Promise(r => setTimeout(r, 300));
+     const add = [...document.querySelectorAll('.dzc-pick-add')].find(b => !b.disabled);
+     add && add.click()`],
   ['11-builder-with-squad', `document.getElementById('dzc-picker').classList.remove('active')`],
   ['12-commander-modal', `DZCBuilder.openCommander()`],
   ['13-commander-added', `const b = [...document.querySelectorAll('#dzc-cmdr-body button')]

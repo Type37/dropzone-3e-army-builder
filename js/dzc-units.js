@@ -39,6 +39,18 @@
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g,
     c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
+  /* The bare glyph, no count. The Group header and the picker's shape chips
+   * both draw the symbols on their own, and both must use the same path and
+   * the same ink as the badges -- the shape IS the vocabulary (3.2.4.2), so a
+   * second set drawn slightly differently would read as a different symbol. */
+  function shapeSvg(shape, size, hollow) {
+    const s = SYMBOL[shape];
+    if (!s) return '';
+    const px = size || 14;
+    return `<svg viewBox="0 0 24 24" width="${px}" height="${px}" aria-hidden="true"><path d="${s.path}"
+      fill="${hollow ? 'none' : s.ink}" stroke="${s.ink}" stroke-width="3" stroke-linejoin="round"/></svg>`;
+  }
+
   /* A transport badge. Hollow = capacity this unit OFFERS, solid = space it
    * FILLS aboard something else. A unit can print both. */
   function badge(shape, n, hollow) {
@@ -317,6 +329,9 @@
     setSearch: v => { state.search = v; render(); },
     openDetail, closeDetail, showRule, hideRule,
     // Shared with the builder's picker so a unit reads the same in both places.
-    statsHtml, rulesHtml, squadHtml
+    statsHtml, rulesHtml, squadHtml, transportHtml, shape: shapeSvg,
+    SHAPES: Object.keys(SYMBOL),
+    shapeInk: s => (SYMBOL[s] || {}).ink || 'currentColor',
+    shapeName: s => String(s).replace('-', ' ')
   };
 })();

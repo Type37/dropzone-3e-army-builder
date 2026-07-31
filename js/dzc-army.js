@@ -312,6 +312,32 @@
     });
   }
 
+  /* What every Transport in a Group offers, and what is already aboard, per
+   * shape. The Group header draws it, so "is there room, and for what shape"
+   * is answered by looking instead of by trying and being refused.
+   *
+   * A Transport that is itself being carried is skipped: its capacity is
+   * unreachable while it is inside something else (3.2.4.2). Capacity is
+   * multiplied by the number of models, because three Bear APCs offer three
+   * times what one does. */
+  function groupSpace(army, group) {
+    const by = {};
+    const slot = sh => (by[sh] = by[sh] || { shape: sh, total: 0, used: 0 });
+    (group.squads || []).forEach(t => {
+      const tu = unitOf(army, t);
+      if (!tu || t.carriedBy) return;
+      const cap = ((tu.transport || {}).capacity) || [];
+      if (!cap.length) return;
+      cap.forEach(c => { slot(c.shape).total += (c.n || 0) * t.models.length; });
+      const aboard = group.squads.filter(x => x.carriedBy === t.id)
+        .map(x => ({ unit: unitOf(army, x), count: x.models.length }))
+        .filter(x => x.unit);
+      const chk = window.DZC.loadCheck(tu, aboard);
+      Object.keys(chk.byShape).forEach(sh => { slot(sh).used += chk.byShape[sh]; });
+    });
+    return Object.keys(by).map(k => by[k]);
+  }
+
   function canAddUnit(army, groupId, unitId) {
     const u = window.DZC.unit(army.faction, unitId);
     if (!u) return { ok: false, reason: 'Unknown unit.' };
@@ -436,13 +462,15 @@
 
     const opt = transportOptions(army, squadId).find(o => o.unit.id === transportUnitId);
     if (!opt) return { ok: false, reason: 'That Transport cannot carry this Squad (3.2.4.2).' };
-    if (!opt.exact) {
-      return {
-        ok: false,
-        reason: `${opt.need} × ${opt.unit.name} would not all be full — ${opt.unit.name} carries `
-          + `${opt.per} and this Squad fills ${opt.fill}. Transports must be taken full (3.2.4).`
-      };
-    }
+    /* A part-empty Transport is UNFINISHED, not illegal: two Legionnaires in a
+     * Bear APC becomes legal the moment you buy a third, and refusing the
+     * assignment means you can never get there. It is made, and validate()
+     * reports "not full" until the Squad grows into it. Only a Transport that
+     * cannot carry this Squad at all is refused, because nothing you add later
+     * changes a shape mismatch. */
+    const warn = opt.exact ? null
+      : `${opt.need} × ${opt.unit.name} is not full — it carries ${opt.per} and this Squad `
+        + `fills ${opt.fill}. Transports must be taken full (3.2.4).`;
     const t = {
       id: uid(), unitId: opt.unit.id,
       models: Array.from({ length: opt.need }, () => ({ variant: defaultVariant(opt.unit) })),
@@ -451,7 +479,7 @@
     g.squads.push(t);
     s.carriedBy = t.id;
     touch(army);
-    return { ok: true, reason: null };
+    return { ok: true, reason: null, warn: warn };
   }
 
   /* Keep a Transport Squad's count in step after its cargo changes. Called on
@@ -817,7 +845,7 @@
     // enforcement
     canAddUnit, canSetCount, squadsNamed, squadFill,
     upgradesFor, hasUpgrade, toggleUpgrade, upgradeCost,
-    transportOptions, assignTransport, refitTransports
+    transportOptions, assignTransport, refitTransports, groupSpace
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = window.DZCArmy;
 })();

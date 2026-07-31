@@ -22,7 +22,8 @@
   const accentOf = f => (FACTIONS.find(x => x.id === f) || {}).accent || '#1b3a5c';
 
   let current = null;                 // the army being edited
-  let picker = { groupId: null, category: 'All', search: '', sort: 'points', dir: 1, view: 'grid', filters: [] };
+  let picker = { groupId: null, category: 'All', search: '', sort: 'points', dir: 1,
+                 view: 'grid', filters: [], shapes: [] };
 
   // ------------------------------------------------------------- army list
 
@@ -321,6 +322,37 @@
       short.map(s => `${esc(s.name)} — using ${s.need}, own ${s.have}`).join('; ')}</p>`;
   }
 
+  /* What a Group has spent, how big it is, and what its Transports have room
+   * for. Every number is paired with its icon and spelled out, because "3/6"
+   * on its own does not say 3 of what. */
+  function groupMeters(a, g) {
+    const cost = window.DZCArmy.groupCost(a, g);
+    const cap = window.DZC.maxGroupCost(a.pointsLimit);
+    const models = g.squads.reduce((t, s) => t + s.models.length, 0);
+    const squads = g.squads.length;
+    const U = window.DZCUnits;
+
+    const space = window.DZCArmy.groupSpace(a, g).map(sp => {
+      const free = sp.total - sp.used;
+      const name = U.shapeName(sp.shape);
+      return `<span class="dzc-meter${sp.used > sp.total ? ' is-over' : free === 0 ? ' is-full' : ''}"
+        title="${esc(`${sp.used} of ${sp.total} ${name} capacity used${
+          free > 0 ? `, room for ${free} more` : sp.used > sp.total ? ' — overloaded' : ' — full'}`)}">
+        ${U.shape(sp.shape, 13, true)}<b>${sp.used}</b><i>of ${sp.total} ${esc(name)}</i></span>`;
+    }).join('');
+
+    return `<div class="dzc-g-meters">
+      <span class="dzc-meter${cost > cap ? ' is-over' : ''}"
+            title="${esc(`${cost} of the ${cap}pt ceiling one Group may spend (3.2)`)}">
+        ${window.DZCIcon('calculate', { size: 13 })}<b>${cost}</b><i>of ${cap}pts</i></span>
+      <span class="dzc-meter" title="${esc(`${squads} Squad${squads === 1 ? '' : 's'} in this Group`)}">
+        ${window.DZCIcon('groups', { size: 13 })}<b>${squads}</b><i>Squad${squads === 1 ? '' : 's'}</i></span>
+      <span class="dzc-meter" title="${esc(`${models} model${models === 1 ? '' : 's'} in this Group`)}">
+        ${window.DZCIcon('deployed_code', { size: 13 })}<b>${models}</b><i>model${models === 1 ? '' : 's'}</i></span>
+      ${space}
+    </div>`;
+  }
+
   function groupHtml(a, g) {
     const cost = window.DZCArmy.groupCost(a, g);
     const cap = window.DZC.maxGroupCost(a.pointsLimit);
@@ -332,10 +364,10 @@
       <header class="dzc-g-head">
         <h2 contenteditable="true" spellcheck="false"
             onblur="DZCBuilder.renameGroup('${g.id}', this.textContent)">${esc(g.name)}</h2>
-        <span class="dzc-g-cost">${cost}<i>/${cap}pts</i></span>
         <button class="dzc-icon-btn" type="button" title="Remove Group"
                 onclick="DZCBuilder.removeGroup('${g.id}')" aria-label="Remove ${esc(g.name)}">&times;</button>
       </header>
+      ${groupMeters(a, g)}
       ${rows || '<p class="dzc-g-empty">No Squads yet.</p>'}
       <button class="btn btn-ghost btn-sm" type="button" onclick="DZCBuilder.openPicker('${g.id}')">+ Add Squad</button>
     </section>`;
@@ -592,33 +624,72 @@
     /* --acc is declared inline on .dzc-wrap, and this modal lives outside it,
      * so the active chip was painting white text on an undefined background —
      * the filters worked, you just could not see which one was on. */
+    const U = window.DZCUnits;
+    /* The bar is built ONCE and never rebuilt. Every control below only ever
+     * redraws the list and re-flags the chips in place, because rewriting this
+     * markup moved the caret, reset the scroll and made the whole modal jump
+     * under your finger every time you touched a sort. */
     document.getElementById('dzc-picker-body').innerHTML = `
-      <div class="dzc-pick-bar" style="--acc:${accentOf(a.faction)}">
+      <div class="dzc-pick-bar" id="dzc-pick-bar" style="--acc:${accentOf(a.faction)}">
         <div class="dzc-search-row">${window.DZCIcon('search')}
           <input class="dzc-search" id="dzc-pick-search" type="search"
                  placeholder="Search units, variants, weapons or rules"
                  value="${esc(picker.search)}"
                  oninput="DZCBuilder.pickerSearch(this.value)" aria-label="Search units">
-          <button type="button" class="dzc-view-toggle" onclick="DZCBuilder.pickerView()"
-                  title="${picker.view === 'grid' ? 'Show as a list' : 'Show as cards'}"
-                  >${window.DZCIcon(picker.view === 'grid' ? 'list_alt' : 'grid_view', { size: 16 })}</button>
+          <button type="button" class="dzc-view-toggle" id="dzc-pick-view"
+                  onclick="DZCBuilder.pickerView()"></button>
         </div>
         <div class="dzc-chips">${cats.map(c =>
-          `<button type="button" class="dzc-chip${c === picker.category ? ' is-active' : ''}"
+          `<button type="button" class="dzc-chip" data-cat="${esc(c)}"
             onclick="DZCBuilder.pickerCat('${c}')">${esc(c)}</button>`).join('')}</div>
         <div class="dzc-pick-sorts">
           <span class="dzc-pick-sortlab">Sort</span>
-          ${SORTS.map(s => `<button type="button" class="dzc-chip dzc-chip--sm${
-            s.key === picker.sort ? ' is-active' : ''}" onclick="DZCBuilder.pickerSort('${s.key}')"
-            >${esc(s.label)}${s.key === picker.sort ? (picker.dir < 0 ? ' ↓' : ' ↑') : ''}</button>`).join('')}
-          ${FILTERS.map(fl => `<button type="button" class="dzc-chip dzc-chip--sm${
-            picker.filters.indexOf(fl.key) !== -1 ? ' is-active' : ''}"
+          ${SORTS.map(s => `<button type="button" class="dzc-chip dzc-chip--sm" data-sort="${s.key}"
+            onclick="DZCBuilder.pickerSort('${s.key}')"
+            >${esc(s.label)}<i class="dzc-dir"></i></button>`).join('')}
+          ${FILTERS.map(fl => `<button type="button" class="dzc-chip dzc-chip--sm" data-filter="${fl.key}"
             onclick="DZCBuilder.pickerFilter('${fl.key}')">${esc(fl.label)}</button>`).join('')}
+        </div>
+        <!-- The six transport symbols are the grammar of what fits with what
+             (3.2.4.2), so they filter by the glyph itself rather than by a word
+             for the glyph -- the chip is the thing printed on the card. -->
+        <div class="dzc-pick-shapes">
+          <span class="dzc-pick-sortlab">Fits</span>
+          ${U.SHAPES.map(sh => `<button type="button" class="dzc-shape-chip" data-shape="${sh}"
+            style="--sh:${U.shapeInk(sh)}" onclick="DZCBuilder.pickerShape('${sh}')"
+            title="${esc('Only units that carry or fill a ' + U.shapeName(sh))}"
+            aria-label="${esc('Filter to ' + U.shapeName(sh))}">${U.shape(sh, 15, true)}</button>`).join('')}
         </div>
         <div class="dzc-pick-results" id="dzc-pick-results"></div>
       </div>
-      <div class="dzc-pick-list${picker.view === 'list' ? ' is-list' : ''}" id="dzc-pick-list"></div>`;
+      <div class="dzc-pick-list" id="dzc-pick-list"></div>`;
     renderPickList();
+  }
+
+  /* Re-flag the chips without rewriting them. The direction arrow lives in a
+   * fixed-width slot that is always present, so a chip is exactly as wide
+   * sorted as unsorted and nothing after it reflows. */
+  function syncChips() {
+    const bar = document.getElementById('dzc-pick-bar');
+    if (!bar) return;
+    bar.querySelectorAll('[data-cat]').forEach(b =>
+      b.classList.toggle('is-active', b.dataset.cat === picker.category));
+    bar.querySelectorAll('[data-sort]').forEach(b => {
+      const on = b.dataset.sort === picker.sort;
+      b.classList.toggle('is-active', on);
+      const d = b.querySelector('.dzc-dir');
+      if (d) d.textContent = on ? (picker.dir < 0 ? '↓' : '↑') : '';
+    });
+    bar.querySelectorAll('[data-filter]').forEach(b =>
+      b.classList.toggle('is-active', picker.filters.indexOf(b.dataset.filter) !== -1));
+    bar.querySelectorAll('[data-shape]').forEach(b =>
+      b.classList.toggle('is-active', picker.shapes.indexOf(b.dataset.shape) !== -1));
+    const v = document.getElementById('dzc-pick-view');
+    if (v) {
+      const grid = picker.view === 'grid';
+      v.title = grid ? 'Show as a list' : 'Show as cards';
+      v.innerHTML = window.DZCIcon(grid ? 'list_alt' : 'grid_view', { size: 16 });
+    }
   }
 
   /* Sorting and filtering the adder. Dropfleet has Points / Name / Tonnage
@@ -665,6 +736,16 @@
       const fl = FILTERS.find(x => x.key === k);
       if (fl) units = units.filter(fl.test);
     });
+    // A shape matches whether the unit OFFERS it or FILLS it: picking "square"
+    // asks "what has anything to do with squares", which is the question you
+    // have when you are pairing cargo to a Transport. Several shapes are OR.
+    if (picker.shapes.length) {
+      units = units.filter(u => {
+        const t = u.transport || {};
+        return picker.shapes.some(sh =>
+          (t.capacity || []).some(c => c.shape === sh) || (t.fills || []).some(c => c.shape === sh));
+      });
+    }
     if (q) units = units.filter(u => u.name.toLowerCase().includes(q)
       || (u.variants || []).some(v => v.name.toLowerCase().includes(q))
       || (u.weapons || []).some(w => (w.name || '').toLowerCase().includes(q))
@@ -678,22 +759,29 @@
 
     const list = document.getElementById('dzc-pick-list');
     if (list) {
+      // Hold the scroll. Changing a sort should re-order what you are looking
+      // at, not throw you back to the top of it.
+      const scroller = list.parentElement;
+      const y = scroller ? scroller.scrollTop : 0;
       list.className = 'dzc-pick-list' + (picker.view === 'list' ? ' is-list' : '');
       list.innerHTML = units.map(u => pickCard(u, a)).join('')
         || `<p class="dzc-empty">${q ? `Nothing matches “${esc(picker.search)}”.`
+            : picker.shapes.length ? 'No unit carries or fills that shape.'
             : picker.filters.length ? 'Nothing matches those filters.'
             : 'Nothing in this category.'}</p>`;
+      if (scroller) scroller.scrollTop = y;
     }
+    // Always rendered, never empty: a line that appears and disappears takes
+    // the whole grid with it every time you touch a filter.
     const bar = document.getElementById('dzc-pick-results');
     if (bar) {
-      const filtered = q || picker.filters.length || picker.category !== 'All';
+      const filtered = q || picker.filters.length || picker.shapes.length || picker.category !== 'All';
       const blocked = units.filter(u => !window.DZCArmy.canAddUnit(a, picker.groupId, u.id).ok).length;
-      bar.innerHTML = filtered || blocked
-        ? `<span>${units.length} unit${units.length === 1 ? '' : 's'}${
-            blocked ? `, ${blocked} unavailable here` : ''}</span>${
-            filtered ? '<button type="button" onclick="DZCBuilder.pickerClear()">Clear</button>' : ''}`
-        : '';
+      bar.innerHTML = `<span>${units.length} unit${units.length === 1 ? '' : 's'}${
+        blocked ? `, ${blocked} unavailable here` : ''}</span>${
+        filtered ? '<button type="button" onclick="DZCBuilder.pickerClear()">Clear</button>' : ''}`;
     }
+    syncChips();
   }
 
   /* A picker card carries what you need to decide without opening anything:
@@ -765,8 +853,9 @@
         const r = window.DZCArmy.assignTransport(current, target.id, unitId);
         if (!r.ok) return say(r.reason);
         await renderBuilder(current.id);
-        await renderPicker();
-        return say(`${u.name} added, carrying ${window.DZCArmy.unitOf(current, target).name}.`, 'local_shipping');
+        renderPickList();
+        return say(r.warn || `${u.name} added, carrying ${
+          window.DZCArmy.unitOf(current, target).name}.`, 'local_shipping');
       }
     }
 
@@ -790,7 +879,7 @@
     if (carrier) s.carriedBy = carrier.id;
 
     await renderBuilder(current.id);
-    await renderPicker();
+    renderPickList();
     say(`Added ${u.name}. Pick another, or close when done.`, 'add');
   }
 
@@ -943,12 +1032,12 @@
       const g = current.groups.find(x => x.id === id);
       if (g) { g.name = (t || '').trim() || 'Group'; window.DZCArmy.touch(current); }
     },
-    // A Group exists to hold Squads, so making one goes straight to choosing
-    // the first — "new Group, then pick" rather than leaving an empty shell.
+    // Just the empty Group. It used to open the picker straight away, which
+    // took the decision "which Group am I filling" away from you and made
+    // adding two Groups back to back a fight with a modal.
     addGroup: async () => {
-      const g = window.DZCArmy.addGroup(current);
+      window.DZCArmy.addGroup(current);
       await renderBuilder(current.id);
-      openPicker(g.id);
     },
     removeGroup: id => { window.DZCArmy.removeGroup(current, id); refresh(); },
     removeSquad: id => { window.DZCArmy.removeSquad(current, id); refresh(); },
@@ -1034,20 +1123,31 @@
     },
     // Only the list is redrawn: re-rendering the body would replace the
     // <input> under the caret and swallow every character after the first.
+    // None of these rebuild the bar. renderPickList redraws the list and
+    // re-flags the chips where they stand, so the controls you are aiming at
+    // never move out from under you.
     pickerSearch: v => { picker.search = v; renderPickList(); },
-    pickerCat: c => { picker.category = c; renderPicker(); },
+    pickerCat: c => { picker.category = c; renderPickList(); },
     pickerSort: k => {
       if (picker.sort === k) picker.dir = -picker.dir; else { picker.sort = k; picker.dir = 1; }
-      renderPicker();
+      renderPickList();
     },
     pickerFilter: k => {
       const i = picker.filters.indexOf(k);
       if (i === -1) picker.filters.push(k); else picker.filters.splice(i, 1);
-      renderPicker();
+      renderPickList();
     },
-    pickerView: () => { picker.view = picker.view === 'grid' ? 'list' : 'grid'; renderPicker(); },
+    pickerShape: sh => {
+      const i = picker.shapes.indexOf(sh);
+      if (i === -1) picker.shapes.push(sh); else picker.shapes.splice(i, 1);
+      renderPickList();
+    },
+    pickerView: () => { picker.view = picker.view === 'grid' ? 'list' : 'grid'; renderPickList(); },
     pickerClear: () => {
-      picker.search = ''; picker.filters = []; picker.category = 'All'; renderPicker();
+      picker.search = ''; picker.filters = []; picker.shapes = []; picker.category = 'All';
+      const box = document.getElementById('dzc-pick-search');
+      if (box) box.value = '';
+      renderPickList();
     },
     closePicker: () => document.getElementById('dzc-picker').classList.remove('active'),
     closeNew: () => document.getElementById('dzc-new').classList.remove('active')

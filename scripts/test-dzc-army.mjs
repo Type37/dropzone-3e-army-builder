@@ -204,6 +204,37 @@ console.log('\ntransports and their cargo form one Group (3.2.4)');
   A.setModelCount(a, legion.id, 2);
   eq(g.squads.find(s => (A.unitOf(a, s) || {}).category === 'Transport').models.length, 1,
      '2 Legionnaires still need 1 Bear APC');
+
+  // The Group header's meters: a Bear APC offers 3 squares and 2 Legionnaires
+  // are aboard, so there is room for one more and the header must say so.
+  const space = A.groupSpace(a, g);
+  const sq = space.find(x => x.shape === 'square');
+  ok(sq, 'the Group reports square capacity', JSON.stringify(space));
+  eq(sq.total, 3, 'one Bear APC offers 3 squares');
+  eq(sq.used, 2, 'and 2 Legionnaires are aboard');
+  A.remove(a.id);
+}
+
+/* A part-empty Transport is unfinished, not illegal -- 2 Legionnaires in a
+ * 3-square Bear APC becomes legal the moment a third is bought, so refusing
+ * the assignment would make that state unreachable. Assigned, then reported. */
+{
+  const a = A.create('ucm', 'Part-full', 1500);
+  const g = A.addGroup(a);
+  const legion = A.addSquad(a, g.id, 'legionnaires', 2);
+  const r = A.assignTransport(a, legion.id, 'bear-apc');
+  ok(r.ok, 'a Transport that would not be full is still assigned', r.reason);
+  ok(/not full/.test(r.warn || ''), 'and it says why it is not finished', r.warn);
+  ok(hasErr(A.validate(a), 'not full'), 'validate reports the part-empty Transport');
+
+  // Growing into it clears the report with no further action.
+  A.setModelCount(a, legion.id, 3);
+  ok(!hasErr(A.validate(a), 'not full'), 'buying the third Legionnaire fills it');
+
+  // A shape mismatch is still refused: nothing you add later fixes it.
+  const l2 = A.addSquad(a, A.addGroup(a).id, 'legionnaires', 3);
+  eq(A.assignTransport(a, l2.id, 'condor-dropship').ok, false,
+     'but a Transport of the wrong shape is still refused');
   A.remove(a.id);
 }
 
