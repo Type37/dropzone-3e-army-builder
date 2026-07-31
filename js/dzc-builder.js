@@ -194,7 +194,7 @@
     const size = window.DZC.gameSizeFor(a.pointsLimit);
     const maxG = size ? window.DZC.maxGroups(size, a.pointsLimit) : 0;
     const cap = window.DZC.maxGroupCost(a.pointsLimit);
-    const v = window.DZCArmy.validate(a);
+    const v = triage(window.DZCArmy.validate(a), a);
     const spend = window.DZCArmy.categorySpend(a);
     const std = spend.standard || 0;
     const playable = a.groups.some(g => g.squads.some(s => s.commander));
@@ -207,21 +207,19 @@
         <b>${val}</b><i>of ${std}</i></div>`;
     }).join('');
 
+    const left = Math.max(0, a.pointsLimit - cost);
+    const pct = a.pointsLimit ? Math.min(100, Math.round((cost / a.pointsLimit) * 100)) : 0;
+
+    /* Desktop gets a rail and a column; the rail carries everything you need
+     * while working — what you have left to spend, and what is outstanding —
+     * so it stays put instead of shoving the Groups down the page every time
+     * an alert appears or clears. Below 900px it stacks above the list.
+     * HANDOFF §2.2: desktop keeps panes, mobile does not. */
     root.innerHTML = `<div class="dzc-wrap dzc-builder" style="--acc:${accentOf(a.faction)}">
       <header class="dzc-b-head">
-        <div>
-          <h1 contenteditable="true" spellcheck="false" class="dzc-b-name"
-              onblur="DZCBuilder.rename(this.textContent)">${esc(a.name)}</h1>
-          <!-- No "Max per Group" here: every Group card already prints its own
-               cost against that cap, so repeating it is noise. -->
-          <p class="dzc-b-sub"><span>${esc((FACTIONS.find(f => f.id === a.faction) || {}).name)}</span>
-            <span>${size ? esc(size.label) : 'Below the 501pt minimum'}</span>
-            <span>${a.groups.length}/${maxG || '—'} Groups</span></p>
-        </div>
+        <h1 contenteditable="true" spellcheck="false" class="dzc-b-name"
+            onblur="DZCBuilder.rename(this.textContent)">${esc(a.name)}</h1>
         <div class="dzc-b-right">
-          <div class="dzc-b-pts ${cost > a.pointsLimit ? 'is-over' : ''}">
-            <b>${cost}</b><span>/ ${a.pointsLimit}pts</span>
-          </div>
           <!-- Play needs a Commander: CP per Round, hand size and the Initiative
                modifier all come from Commander Level (4.1). Offering it on an
                army that has none would open a mode that cannot run. Share and
@@ -239,18 +237,37 @@
         </div>
       </header>
 
-      <div class="dzc-ratios" title="Vanguard, Heavy and Support may each not exceed Standard spend (3.2)">
-        <div class="dzc-ratio is-std"><span>Standard</span><b>${std}</b></div>${ratio}
+      <div class="dzc-b-body">
+        <aside class="dzc-rail">
+          <div class="dzc-rail-card">
+            <p class="dzc-b-sub"><span>${esc((FACTIONS.find(f => f.id === a.faction) || {}).name)}</span>
+              <span>${size ? esc(size.label) : 'Below the 501pt minimum'}</span></p>
+            <div class="dzc-rail-pts ${cost > a.pointsLimit ? 'is-over' : ''}">
+              <b>${left}</b><span>pts left</span>
+            </div>
+            <div class="dzc-rail-track"><i style="width:${pct}%"></i></div>
+            <p class="dzc-rail-line">${cost} of ${a.pointsLimit}pts spent</p>
+            <p class="dzc-rail-line">${a.groups.length} of ${maxG || '—'} Groups</p>
+          </div>
+
+          <div class="dzc-rail-card">
+            <div class="dzc-rail-title">Category spend</div>
+            <div class="dzc-ratios" title="Vanguard, Heavy and Support may each not exceed Standard spend (3.2)">
+              <div class="dzc-ratio is-std"><span>Standard</span><b>${std}</b></div>${ratio}
+            </div>
+          </div>
+
+          ${alertList(v.errors, 'err', 'issue to fix', 'issues to fix')}
+          ${alertList(v.warnings, 'warn', 'note', 'notes')}
+          ${v.ok && a.groups.length ? `<p class="dzc-legal">${window.DZCIcon('check_circle', { size: 15 })}This army is legal.</p>` : ''}
+          ${shortfallHtml(a)}
+        </aside>
+
+        <div class="dzc-b-main">
+          ${a.groups.map(g => groupHtml(a, g)).join('')}
+          <button class="btn btn-outline dzc-add-group" type="button" onclick="DZCBuilder.addGroup()">+ Add Group</button>
+        </div>
       </div>
-
-      ${alertList(v.errors, 'err', 'issue to fix', 'issues to fix')}
-      ${alertList(v.warnings, 'warn', 'note', 'notes')}
-      ${!v.errors.length && a.groups.length ? `<p class="dzc-legal">${window.DZCIcon('check_circle', { size: 15 })}This army is legal.</p>` : ''}
-      ${shortfallHtml(a)}
-
-      ${a.groups.map(g => groupHtml(a, g)).join('')}
-
-      <button class="btn btn-outline dzc-add-group" type="button" onclick="DZCBuilder.addGroup()">+ Add Group</button>
     </div>`;
   }
 
@@ -394,6 +411,35 @@
       const on = w.variants || [];
       return names.every(n => on.indexOf(n) !== -1);
     });
+  }
+
+  /* An army you are halfway through building is not a broken army.
+   *
+   * Some rules are about what you HAVE built — a Group over the quarter cap, a
+   * Rare taken three times, a Transport that is not full. Those are wrong the
+   * moment they happen and say so.
+   *
+   * Others are about what the finished list must CONTAIN. "No Commander" is
+   * the one that bit: it fires on your first Squad, when you have not had a
+   * chance to satisfy it and nothing is actually wrong. Those stay in the
+   * notes while you can still fix them by adding something, and only become
+   * issues once the points are gone and fixing means taking something out.
+   *
+   * validate() keeps reporting everything; this only decides where it goes. */
+  const COMPLETENESS = /^3\.2\.5$/;
+
+  function triage(v, army) {
+    const full = window.DZCArmy.armyCost(army) >= army.pointsLimit;
+    if (full) return { errors: v.errors, warnings: v.warnings, ok: !v.errors.length };
+    const errors = [], deferred = [];
+    v.errors.forEach(e => (COMPLETENESS.test(e.rule) ? deferred : errors).push(e));
+    return {
+      errors,
+      warnings: deferred.concat(v.warnings),
+      // Legality is unchanged — a deferred requirement is still unmet, so the
+      // army is not announced as legal just because we moved the message.
+      ok: !v.errors.length
+    };
   }
 
   /* Two severities, and they are not the same thing: an "issue to fix" means

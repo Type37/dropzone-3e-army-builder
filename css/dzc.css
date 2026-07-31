@@ -163,7 +163,7 @@
 .dzc-army-bad { margin: 0; font-size: 12px; font-weight: 600; color: #b3261e; }
 
 /* ═══ Builder ═══ */
-.dzc-b-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
+.dzc-b-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 10px; }
 .dzc-b-name { font: 800 24px/1.2 var(--font-display, 'Roboto Slab', serif); margin: 0 0 4px; overflow-wrap: anywhere; }
 .dzc-b-name:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; }
 .dzc-b-sub { margin: 0; font-size: 12.5px; color: var(--ink-2, #6b6459); }
@@ -184,6 +184,51 @@
 .dzc-ratio.is-std { background: var(--acc); color: #fff; }
 .dzc-ratio.is-std span, .dzc-ratio.is-std i { color: rgba(255,255,255,.85); }
 .dzc-ratio.is-over { background: #fde8e6; color: #7a1c15; }
+
+/* ── builder: rail + column ──
+   Desktop keeps panes, mobile does not (HANDOFF §2.2). The rail holds what you
+   need while working — points left and what is outstanding — so it stays put
+   rather than shoving the Groups down the page each time an alert appears. */
+.dzc-b-body { display: grid; grid-template-columns: 264px minmax(0, 1fr); gap: 14px; align-items: start; }
+.dzc-rail { position: sticky; top: 12px; display: flex; flex-direction: column; gap: 8px; }
+.dzc-b-main { min-width: 0; }
+.dzc-rail-card {
+  padding: 10px 12px; border-radius: 8px;
+  border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff);
+}
+.dzc-rail-title {
+  margin-bottom: 6px;
+  font: 700 10.5px/1.4 var(--font-condensed, 'Jost', sans-serif);
+  text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2, #6b6459);
+}
+.dzc-rail-pts { display: flex; align-items: baseline; gap: 5px; margin-top: 6px; }
+.dzc-rail-pts b {
+  font-family: var(--font-numeric, 'Outfit', sans-serif);
+  font-size: 30px; font-weight: 600; line-height: 1;
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--acc-ink, #1b3a5c);
+}
+.dzc-rail-pts span { font-size: 12px; color: var(--ink-2, #6b6459); }
+.dzc-rail-pts.is-over b { color: #a3231a; }
+.dzc-rail-track {
+  height: 4px; margin: 7px 0 6px; border-radius: 2px;
+  background: var(--surface-3, #f2ece0); overflow: hidden;
+}
+.dzc-rail-track i { display: block; height: 100%; background: var(--acc); }
+.dzc-rail-pts.is-over ~ .dzc-rail-track i { background: #a3231a; }
+.dzc-rail-line {
+  margin: 1px 0; font-size: 11.5px; color: var(--ink-2, #6b6459);
+  font-variant-numeric: tabular-nums;
+}
+.dzc-rail .dzc-ratios { flex-direction: column; gap: 4px; margin: 0; }
+.dzc-rail .dzc-ratio { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 4px 8px; }
+.dzc-rail .dzc-ratio span { display: inline; font-size: 10.5px; }
+
+@media (max-width: 900px) {
+  .dzc-b-body { grid-template-columns: 1fr; }
+  .dzc-rail { position: static; }
+  .dzc-rail .dzc-ratios { flex-direction: row; flex-wrap: wrap; }
+}
 
 .dzc-issues { margin: 0 0 8px; padding: 8px 10px; border-radius: 6px; font-size: 13px; }
 .dzc-issues-head {
@@ -425,7 +470,9 @@
 
 /* The builder column is capped so a squad row never has to stretch across a
    full-width desktop viewport. */
-.dzc-builder { max-width: 640px; }
+/* 640px was right when the builder was one column. With a rail beside it the
+   Groups need their own width, or a Squad row is squeezed into 340px. */
+.dzc-builder { max-width: 1120px; }
 
 @media (max-width: 640px) {
   .dzc-b-head { gap: 8px; }
