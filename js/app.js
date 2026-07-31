@@ -260,28 +260,17 @@ let activeGroupId = null;
   }
 
   async function init() {
-    try {
-      const res = await fetch('data/fleet-index.json');
-      rawFleetData = await res.json();
-      transformIndex(rawFleetData);
-      populateLanding(rawFleetData);
-    } catch (e) {
-      console.error('Failed to load fleet index:', e);
-    }
-
-    try {
-      const pr = await fetch('data/pronunciations.json');
-      const raw = await pr.json();
-      PRON = {};
-      Object.keys(raw).forEach(k => { if (!k.startsWith('_')) PRON[k] = raw[k]; });
-      // Longest keys first so multi-word names ("Baba Yaga") win over any short one.
-      PRON_KEYS = Object.keys(PRON).sort((a, b) => b.length - a.length);
-    } catch (e) {
-      console.error('Failed to load pronunciations:', e);
-    }
-
-    fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
-      .then(r => r.json()).then(d => { _worldTopo = d; }).catch(() => {});
+    // The Dropfleet data files are no longer fetched, and no longer deployed.
+    // Nothing in the Dropzone app reads them: the landing's faction showcase
+    // targets #landing-factions, which is not in the page any more, and the
+    // pronunciation guide is for Dropfleet ship namesakes.
+    //
+    // The Dropfleet views below still exist but are unreachable and now have no
+    // data behind them. They should be deleted outright; leaving the code in
+    // place for now is the low-risk order of operations, not an intention.
+    // See HANDOFF §6.
+    PRON = {};
+    PRON_KEYS = [];
 
     bumpVisitCount();
     loadSettings();

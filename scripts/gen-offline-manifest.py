@@ -35,18 +35,15 @@ CORE_FILES = [
     'js/offline-sync.js',
     'js/fleet-sync.js',
     'manifest.webmanifest',
-    'mobile/index.html',
-    'mobile/css/mobile.css',
-    'mobile/js/mobile.js',
-    'mobile/manifest.webmanifest',
 ]
 
 # Directories swept wholesale, with the group they belong to.
 DIR_GROUPS = [
-    ('core', 'data', ('.json',)),
+    ('core', 'data/dzc', ('.json',)),
     ('core', 'assets/logos', ('.png', '.webp', '.svg', '.ico')),
-    ('art', 'assets/art/thumb', ('.webp',)),
-    ('art', 'assets/art/stations', ('.webp',)),
+    # Dropzone UNIT photos. assets/art/* is Dropfleet SHIP art -- 58 MB for a
+    # different game -- and is neither deployed nor downloadable any more.
+    ('art', 'assets/units', ('.webp',)),
 ]
 
 
