@@ -322,7 +322,7 @@
     const variantPicker = (u.variants || []).length ? s.models.map((m, i) =>
       `<select class="dzc-variant" onchange="DZCBuilder.setVariant('${s.id}',${i},this.value)"
                aria-label="Model ${i + 1} variant">
-        ${u.variants.map(vr => `<option value="${esc(vr.name)}"${vr.name === m.variant ? ' selected' : ''}>${esc(vr.name)} · ${vr.points}pts</option>`).join('')}
+        ${u.variants.map(vr => `<option value="${esc(vr.name)}"${vr.name === m.variant ? ' selected' : ''}>${esc(vr.name)} — ${vr.points}pts</option>`).join('')}
       </select>`).join('') : '';
 
     // Transport assignment. Only options that would be legal are offered, and
@@ -350,6 +350,7 @@
         <button class="dzc-icon-btn" type="button" title="Remove Squad"
                 onclick="DZCBuilder.removeSquad('${s.id}')" aria-label="Remove ${esc(u.name)}">${window.DZCIcon('close', { size: 16 })}</button>
       </div>
+      ${unitFacts(u, a.faction)}
       ${upgradesHtml(a, s, u)}
       <div class="dzc-sq-opts">
         ${variantPicker}
@@ -358,10 +359,43 @@
           <select onchange="DZCBuilder.setCommander('${s.id}',this.value)">
             <option value="">— none —</option>
             ${cmdLevels.map(l =>
-              `<option value="${l.level}"${s.commander && s.commander.level === l.level ? ' selected' : ''}>L${l.level} · ${l.points}pts</option>`).join('')}
+              `<option value="${l.level}"${s.commander && s.commander.level === l.level ? ' selected' : ''}>L${l.level} — ${l.points}pts</option>`).join('')}
           </select></label>`}
       </div>
       ${riders.map(r => squadHtml(a, g, r, depth + 1)).join('')}
+    </div>`;
+  }
+
+  /* Only the guns every variant carries. Listing all of them was misleading:
+   * a variant-restricted weapon is not something the Squad necessarily has,
+   * and an upgrade is something you have not bought. So:
+   *   - no box        -> base weapon, every variant has it
+   *   - box 'variant' -> only if its variant list covers ALL of them
+   *   - box 'upgrade' -> never shared, it is a purchase
+   * A unit with no variants has no restrictions to satisfy. */
+  function sharedWeapons(u) {
+    const names = (u.variants || []).map(v => v.name);
+    return (u.weapons || []).filter(w => {
+      if (w.box === 'upgrade') return false;
+      if (w.box !== 'variant') return true;
+      if (!names.length) return true;
+      const on = w.variants || [];
+      return names.every(n => on.indexOf(n) !== -1);
+    });
+  }
+
+  /* Stats, shared guns and rules for a unit. Shared by the picker card and the
+   * squad row so a unit reads identically whether you are choosing it or
+   * looking at what you already took. Built on the reference renderers rather
+   * than a second copy of them. */
+  function unitFacts(u, faction) {
+    const U = window.DZCUnits;
+    const weapons = sharedWeapons(u).map(w =>
+      `<span class="dzc-pick-wpn">${window.DZCIcon.arc(w.arc, { size: 12 })}${esc(w.name)}</span>`).join('');
+    return `<div class="dzc-facts">
+      <div class="dzc-pick-stats">${U.statsHtml(u, { compact: true })}</div>
+      ${weapons ? `<div class="dzc-pick-wpns">${weapons}</div>` : ''}
+      ${u.special ? `<div class="dzc-pick-rules">${U.rulesHtml(u.special, faction)}</div>` : ''}
     </div>`;
   }
 
@@ -399,30 +433,58 @@
       <div class="dzc-chips">${cats.map(c =>
         `<button type="button" class="dzc-chip${c === picker.category ? ' is-active' : ''}"
           onclick="DZCBuilder.pickerCat('${c}')">${esc(c)}</button>`).join('')}</div>
-      <p class="dzc-pick-note">${window.DZCIcon('info', { size: 14 })} Transports are not listed here — add the Squad first, then choose what carries it (3.2.4).</p>
-      <div class="dzc-pick-list">${units.map(u => {
-        const ps = (u.variants || []).map(v => v.points).filter(p => p != null);
-        const price = u.points != null ? `${u.points}pts`
-          : ps.length ? `${Math.min.apply(null, ps)}–${Math.max.apply(null, ps)}pts` : '—';
-        const chk = window.DZCArmy.canAddUnit(a, picker.groupId, u.id);
-        return `<button type="button" class="dzc-pick${chk.ok ? '' : ' is-blocked'}"
-            ${chk.ok ? `onclick="DZCBuilder.pick('${esc(u.id)}')"` : 'disabled'}>
-          ${u.art ? `<img src="${esc(u.art)}" alt="" loading="lazy">` : '<span class="dzc-pick-noart"></span>'}
-          <span class="dzc-pick-body">
-            <span class="dzc-pick-name">${esc(u.name)}</span>
-            <span class="dzc-pick-meta">${esc(u.category)} · ${esc(u.type || '')} · ${price}
-              ${u.squadMin != null ? ` · Squad ${u.squadMin}${u.squadMax !== u.squadMin ? '–' + u.squadMax : ''}` : ''}
-              ${u.rare ? ' · Rare' : ''}${u.unique ? ' · Unique' : ''}</span>
-            ${chk.ok ? '' : `<span class="dzc-pick-blocked">${window.DZCIcon('lock', { size: 13 })}${esc(chk.reason)}</span>`}
-          </span></button>`;
-      }).join('') || '<p class="dzc-empty">Nothing matches.</p>'}</div>`;
+      <div class="dzc-pick-list">${units.map(u => pickCard(u, a)).join('')
+        || '<p class="dzc-empty">Nothing matches.</p>'}</div>`;
   }
 
-  function pick(unitId) {
+  /* A picker card carries what you need to decide without opening anything:
+   * art, cost, every stat, the guns every variant shares, and the rules. The
+   * card body opens the unit's stats, weapons and rules in full; adding is its
+   * own button. */
+  function pickCard(u, a) {
+    const ps = (u.variants || []).map(v => v.points).filter(p => p != null);
+    const price = u.points != null ? `${u.points}` : ps.length
+      ? `${Math.min.apply(null, ps)}–${Math.max.apply(null, ps)}` : '—';
+    const chk = window.DZCArmy.canAddUnit(a, picker.groupId, u.id);
+    const U = window.DZCUnits;
+    const meta = [esc(u.category), esc(u.type || ''),
+      u.squadMin != null ? `Squad ${U.squadHtml(u)}` : '']
+      .filter(Boolean).map(t => `<span>${t}</span>`).join('');
+    return `<div class="dzc-pick${chk.ok ? '' : ' is-blocked'}">
+      ${u.rare || u.unique ? `<span class="dzc-pick-flags">${u.rare
+        ? '<span class="dzc-flag dzc-flag--rare">Rare</span>' : ''}${u.unique
+        ? '<span class="dzc-flag dzc-flag--unique">Unique</span>' : ''}</span>` : ''}
+      <div class="dzc-pick-open" role="button" tabindex="0"
+           title="Stats, weapons and rules"
+           onclick="DZCUnits.openDetail('${esc(u.id)}','${esc(a.faction)}')"
+           onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();DZCUnits.openDetail('${esc(u.id)}','${esc(a.faction)}')}">
+        ${u.art ? `<img class="dzc-pick-art" src="${esc(u.art)}" alt="" loading="lazy">`
+                : '<span class="dzc-pick-noart"></span>'}
+        <div class="dzc-pick-head">
+          <span class="dzc-pick-name">${esc(u.name)}</span>
+          <span class="dzc-pick-cost">${price}<small>pts</small></span>
+        </div>
+        <span class="dzc-pick-meta">${meta}</span>
+        ${unitFacts(u, a.faction)}
+      </div>
+      ${chk.ok
+        ? `<button type="button" class="dzc-pick-add" onclick="DZCBuilder.pick('${esc(u.id)}')">
+             ${window.DZCIcon('add', { size: 18 })}Add</button>`
+        : `<span class="dzc-pick-blocked">${window.DZCIcon('lock', { size: 14 })}${esc(chk.reason)}</span>`}
+    </div>`;
+  }
+
+  /* Adding does NOT close the picker. You are usually building a Group out of
+   * several Squads, and bouncing back to the list after each one made that a
+   * chore. The picker re-renders so Rare/Unique limits and squad-size blocks
+   * update against what you just took. */
+  async function pick(unitId) {
     const s = window.DZCArmy.addSquad(current, picker.groupId, unitId);
     if (!s) return;                       // refused; the picker already said why
-    document.getElementById('dzc-picker').classList.remove('active');
-    renderBuilder(current.id);
+    const u = window.DZCArmy.unitOf(current, s);
+    await renderBuilder(current.id);
+    await renderPicker();
+    say(`Added ${u ? u.name : 'Squad'}. Pick another, or close when done.`, 'add');
   }
 
   // -------------------------------------------------------------- print sheet
@@ -525,7 +587,10 @@
   /* Why an action was refused. Shown as a transient bar rather than an alert,
    * because a rule explanation should not be a thing you have to dismiss. */
   let sayTimer = null;
-  function say(msg) {
+  /* The toast started life as a refusal, hence the padlock. It now also
+   * confirms an add, so the icon is a parameter — a lock on "you can't" and
+   * nothing else. */
+  function say(msg, iconName) {
     if (!msg) return;
     let el = document.getElementById('dzc-toast');
     if (!el) {
@@ -534,7 +599,7 @@
       el.className = 'dzc-toast';
       document.body.appendChild(el);
     }
-    el.innerHTML = `${window.DZCIcon('lock', { size: 15 })}<span>${esc(msg)}</span>`;
+    el.innerHTML = `${window.DZCIcon(iconName || 'lock', { size: 15 })}<span>${esc(msg)}</span>`;
     el.classList.add('is-on');
     clearTimeout(sayTimer);
     sayTimer = setTimeout(() => el.classList.remove('is-on'), 5200);

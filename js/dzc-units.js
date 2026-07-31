@@ -81,23 +81,55 @@
     return `${u.squadMin}–${u.squadMax}`;
   }
 
-  function statsHtml(u) {
+  /* Movement, then the offensive stat, then the two defensive ones (Defence is
+   * Infantry, Armour is everything else), then Bravery, then the damage track
+   * last. */
+  const STAT_ORDER = ['Mv', 'OF', 'DF', 'A', 'B', 'DP'];
+
+  /* `compact` drops the header words and keeps the icon, because six spelled-out
+   * labels in a 228px card break as "OFFENC/E" and "DAMAG/E POINTS". The full
+   * name stays on hover, and the unit's own view prints the words in full. No
+   * abbreviations anywhere. */
+  function statsHtml(u, opts) {
     // Vehicles/Aircraft print Mv/A/DP; Infantry print Mv/OF/DF/B/DP. Render
-    // whatever the card actually had rather than assuming a shape. Labels are
-    // spelled out (2.5-2.7) rather than left as bare letters.
-    return Object.keys(u.stats || {}).map(k =>
-      `<span class="dzc-stat"><span class="dzc-stat-k">${esc(window.DZC.statLabel(k))}</span><span class="dzc-stat-v">${esc(u.stats[k])}</span></span>`
-    ).join('');
+    // whatever the card actually had rather than assuming a shape.
+    //
+    // A table, not a wrap of chips: values sit under their heading in fixed
+    // columns, so two units can be read against each other. Labels are spelled
+    // out (2.5-2.7) rather than left as bare letters, and each carries its
+    // icon.
+    // Every column, every time, in one order — 152 units print Mv/A/DP and 26
+    // print Mv/OF/DF/B/DP, and a table is only worth having if a Vehicle and a
+    // squad of Infantry line up under the same headings. A stat the card does
+    // not print shows a dash rather than vanishing and shifting the columns.
+    const stats = u.stats || {};
+    if (!Object.keys(stats).length) return '';
+    const compact = !!(opts && opts.compact);
+    const head = STAT_ORDER.map(k => {
+      const label = window.DZC.statLabel(k);
+      return `<th scope="col" title="${esc(label)}">${window.DZCIcon.stat(k, { size: compact ? 14 : 13 })}`
+        + (compact ? `<span class="dzc-sr">${esc(label)}</span>` : `<span>${esc(label)}</span>`)
+        + '</th>';
+    }).join('');
+    const row = STAT_ORDER.map(k => stats[k] != null
+      ? `<td>${esc(stats[k])}</td>`
+      : '<td class="is-na" title="Not printed on this unit\'s stat card">–</td>').join('');
+    return `<table class="dzc-stats"><thead><tr>${head}</tr></thead>`
+      + `<tbody><tr>${row}</tr></tbody></table>`;
   }
 
   /* Rule keywords, each resolved to its glossary text and tappable. */
+  /* Every rule carries its text on hover, so you can read it without
+   * committing to a click. Clicking still opens the fuller popup with the
+   * rule's name and where it comes from. */
   function rulesHtml(special, faction) {
     if (!special) return '';
     return window.DZC.splitSpecial(special, faction).map(tok => {
       const r = window.DZC.rule(tok, faction);
+      const tip = r ? r.text : 'No glossary entry — read it from the stat card.';
       return `<button type="button" class="dzc-rule${r ? '' : ' dzc-rule--unknown'}"
         onclick="DZCUnits.showRule(this,'${esc(tok).replace(/'/g, '&#39;')}')"
-        ${r ? '' : 'title="No glossary entry — see the card"'}>${esc(tok)}</button>`;
+        title="${esc(tip)}">${esc(tok)}</button>`;
     }).join('');
   }
 
@@ -256,6 +288,8 @@
     setFaction: id => { state.faction = id; state.search = ''; render(); },
     setCategory: c => { state.category = c; render(); },
     setSearch: v => { state.search = v; render(); },
-    openDetail, closeDetail, showRule, hideRule
+    openDetail, closeDetail, showRule, hideRule,
+    // Shared with the builder's picker so a unit reads the same in both places.
+    statsHtml, rulesHtml, squadHtml
   };
 })();

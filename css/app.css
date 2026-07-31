@@ -27,6 +27,10 @@
   --font-condensed: "Jost", system-ui, sans-serif;
   --font-lore: "Libre Baskerville", "Georgia", serif;
   --font-mono: Consolas, "Courier New", monospace;
+  /* Numbers the player reads as a value — stat cells, points, counts. Outfit
+     is Jet's call for the numeric role: even widths and open counters, so a
+     14px stat stays legible on a phone at a table. */
+  --font-numeric: "Outfit", "Jost", system-ui, sans-serif;
 
   /* Font Sizes */
   --text-xs: 13px;

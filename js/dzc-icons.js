@@ -35,6 +35,18 @@
     info: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z',
     lock: 'M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z',
 
+    // — stats —
+    // Geometric, not pictorial, and deliberately echoing the Dropfleet stat
+    // language: an arrow for movement, a hexagon for the damage track. Armour
+    // and Defence are a solid vs an outline shield so the pair reads as one
+    // idea with two weights.
+    stat_mv: 'M4 11h11.17l-3.58-3.59L13 6l6 6-6 6-1.41-1.41L15.17 13H4z',
+    stat_a: 'M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z',
+    stat_dp: 'M12 2 21 7v10l-9 5-9-5V7l9-5z',
+    stat_of: 'M12 3 22 20H2z',
+    stat_df: 'M12 2 4 5.5v5.9c0 4.9 3.4 9.5 8 10.6 4.6-1.1 8-5.7 8-10.6V5.5L12 2zm0 2.2 6 2.6v4.6c0 3.8-2.5 7.4-6 8.5-3.5-1.1-6-4.7-6-8.5V6.8l6-2.6z',
+    stat_b: 'M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z',
+
     // — domain —
     // Group / activation unit. "layers" reads as a stack of things acting together.
     layers: 'M11.99 18.54 4.62 12.81 3 14.07l9 7 9-7-1.63-1.27-7.38 5.74zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16z',
@@ -105,6 +117,9 @@
       + wedges
       + `</svg></span>`;
   }
+
+  /* A stat's icon, by the key the stat cards print (Mv, A, DP, OF, DF, B). */
+  icon.stat = (key, opts) => icon('stat_' + String(key || '').toLowerCase(), opts);
 
   icon.has = n => Object.prototype.hasOwnProperty.call(P, n);
   icon.names = () => Object.keys(P);
