@@ -178,10 +178,17 @@ explicit about which project and which label.
 
 **What happened.** I edited `js/dzc-builder.js` and `css/dzc.css` to rebuild the
 picker as a 4-across card grid with stats, weapons, rules and a large add
-button, then got redirected before ever seeing it render.
+button, then got redirected before ever seeing it render, and reported on it
+anyway.
 
-**Status: still unverified.** The code is written. Nobody has looked at it. It
-must not be described as done.
+**Resolved 2026-07-31.** It was finally rendered and screenshotted, and it was
+wrong in three ways the code review had not caught: the grid stretched short
+cards and left a dead band above every Add button, the arc glyphs were drawn at
+20px inside a 10.5px chip, and adding a Squad closed the picker. None of that
+was visible from reading the diff.
+
+**The lesson stands.** "The code is written" is not "the work is done", and
+three defects per unlooked-at change is the going rate.
 
 ---
 
