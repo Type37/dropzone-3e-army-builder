@@ -139,19 +139,25 @@ console.log('\ngroup cost cap (3.2)');
  * reached at all, rather than being reached and then reported. */
 console.log('\nRare and Unique are refused, not reported (3.2.1)');
 {
+  // Each Squad gets its own Group: a Group is one Squad and its Transports
+  // (3.2.4), so a second copy of a Rare Squad has to start a new one. Asking
+  // in the SAME Group would be refused for that reason and never reach the
+  // Rare check.
   const a = army(1000);                       // Skirmish: 1 Rare
   const g = A.addGroup(a);
   ok(A.canAddUnit(a, g.id, 'archangel').ok, 'the first Rare Squad is allowed');
   A.addSquad(a, g.id, 'archangel', 1);
-  const second = A.canAddUnit(a, g.id, 'archangel');
+  const gB = A.addGroup(a);
+  const second = A.canAddUnit(a, gB.id, 'archangel');
   ok(!second.ok, 'a second Rare Squad is refused at Skirmish');
   ok(/Rare/.test(second.reason) && /1/.test(second.reason), 'and the refusal quotes the limit', second.reason);
-  eq(A.addSquad(a, g.id, 'archangel', 1), null, 'addSquad refuses it too, not just the UI');
+  eq(A.addSquad(a, gB.id, 'archangel', 1), null, 'addSquad refuses it too, not just the UI');
 
   const b = army(2500);                       // Battle: 3 Rare
   const g2 = A.addGroup(b);
   A.addSquad(b, g2.id, 'archangel', 1);
-  ok(A.canAddUnit(b, g2.id, 'archangel').ok, 'a second is allowed at Battle');
+  const g2b = A.addGroup(b);
+  ok(A.canAddUnit(b, g2b.id, 'archangel').ok, 'a second is allowed at Battle');
   A.remove(a.id); A.remove(b.id);
 }
 

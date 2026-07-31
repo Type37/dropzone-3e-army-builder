@@ -583,12 +583,17 @@
     if (!a) return;
     const f = await window.DZC.loadFaction(a.faction);
     const q = picker.search.trim().toLowerCase();
-    let units = f.units.filter(u => u.selectable !== false && u.category !== 'Transport');
+    /* Transports are IN the picker now. Hiding them and assigning them through
+     * a dropdown made the one thing that grows a Group invisible — and 3.2.4
+     * is explicit that choosing a Transport alongside a Squad is how a Group
+     * forms. canAddUnit refuses the ones that make no sense here, and says
+     * which rule refuses them. */
+    let units = f.units.filter(u => u.selectable !== false);
     if (picker.category !== 'All') units = units.filter(u => u.category === picker.category);
     if (q) units = units.filter(u => u.name.toLowerCase().includes(q)
       || (u.variants || []).some(v => v.name.toLowerCase().includes(q)));
 
-    const cats = ['All', 'Standard', 'Vanguard', 'Heavy', 'Support'];
+    const cats = ['All', 'Standard', 'Vanguard', 'Heavy', 'Support', 'Transport'];
     document.getElementById('dzc-picker-body').innerHTML = `
       <div class="dzc-search-row">${window.DZCIcon('search')}
         <input class="dzc-search" type="search" placeholder="Search units" value="${esc(picker.search)}"
@@ -648,12 +653,43 @@
    * chore. The picker re-renders so Rare/Unique limits and squad-size blocks
    * update against what you just took. */
   async function pick(unitId) {
+    const g = (current.groups || []).find(x => x.id === picker.groupId);
+    const u = window.DZC.unit(current.faction, unitId);
+    if (!g || !u) return;
+
+    /* Picking a Transport does not make a loose Squad of Transports — it
+     * carries something already here. assignTransport builds the Transport
+     * Squad, links it and derives how many are needed to take it full, which
+     * is the whole of 3.2.4 in one call. */
+    if (u.category === 'Transport') {
+      const target = g.squads.find(s => {
+        const su = window.DZCArmy.unitOf(current, s);
+        return su && su.category !== 'Transport' && !s.carriedBy && window.DZC.canCarry(u, su);
+      });
+      if (!target) return say(`Nothing in this Group needs ${u.name}.`);
+      const r = window.DZCArmy.assignTransport(current, target.id, unitId);
+      if (!r.ok) return say(r.reason);
+      await renderBuilder(current.id);
+      await renderPicker();
+      return say(`${u.name} added, carrying ${window.DZCArmy.unitOf(current, target).name}.`, 'local_shipping');
+    }
+
     const s = window.DZCArmy.addSquad(current, picker.groupId, unitId);
     if (!s) return;                       // refused; the picker already said why
-    const u = window.DZCArmy.unitOf(current, s);
+
+    /* A second fighting Squad is only here because a Transport already in the
+     * Group has room for it (3.2.4.1), so put it aboard rather than leaving it
+     * standing next to the thing it is supposed to be riding in. */
+    const carrier = g.squads.find(x => {
+      const xu = window.DZCArmy.unitOf(current, x);
+      return x.id !== s.id && xu && (xu.category === 'Transport' || xu.auxiliaryTransport)
+        && window.DZC.canCarry(xu, u);
+    });
+    if (carrier) s.carriedBy = carrier.id;
+
     await renderBuilder(current.id);
     await renderPicker();
-    say(`Added ${u ? u.name : 'Squad'}. Pick another, or close when done.`, 'add');
+    say(`Added ${u.name}. Pick another, or close when done.`, 'add');
   }
 
   // -------------------------------------------------------------- print sheet

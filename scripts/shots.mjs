@@ -57,6 +57,12 @@ const DZC_STEPS = [
      document.querySelectorAll('.dzc-pick-add')[0].click();
      await new Promise(r => setTimeout(r, 500));
      document.querySelectorAll('.dzc-pick-add')[3].click()`],
+  // A second Squad in the same Group is now refused unless a Transport there
+  // has room, so shoot the picker in that state to see what greys out.
+  ['10b-picker-second-squad', `await new Promise(r => setTimeout(r, 300))`],
+  // The other half: a Transport that can carry what is here must be offered.
+  ['10c-picker-transports', `const c = [...document.querySelectorAll('.dzc-chip')]
+     .find(x => x.textContent.trim() === 'Transport'); c && c.click()`],
   ['11-builder-with-squad', `document.getElementById('dzc-picker').classList.remove('active')`],
   ['12-commander-modal', `DZCBuilder.openCommander()`],
   ['13-commander-added', `const b = [...document.querySelectorAll('#dzc-cmdr-body button')]

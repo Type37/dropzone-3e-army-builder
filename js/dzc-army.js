@@ -298,11 +298,48 @@
       return { ok: false, reason: `${u.name} is Generated in play and can never be chosen.` };
     }
 
-    // "Units with the category Transport may only be chosen ALONG WITH a Squad
-    // they may transport" (3.2.4). So a Transport is never picked on its own --
-    // it is assigned to a Squad, which also fixes how many you get.
+    /* What may join a Group is decided by transport and nothing else.
+     *
+     * 3.2.4  — a Transport may only be chosen alongside a Squad it can carry.
+     *          Those Transports form a Squad; those two Squads form one Group.
+     * 3.2.4.1 — up to 4 Squads, plus their own Transport Squads, may share ONE
+     *          larger Transport, and those all form one Group.
+     *
+     * There is no other way for a second Squad to enter a Group, and no
+     * restriction by category or unit type anywhere in 3.2. So an empty Group
+     * takes any fighting Unit; after that the only legal additions are a
+     * Transport for something already here, or a Squad that fits inside a
+     * Transport already here. */
+    const group = groupId ? (army.groups || []).find(g => g.id === groupId) : null;
+    const squads = (group && group.squads) || [];
+    const occupied = squads.length > 0;
+
     if (u.category === 'Transport') {
-      return { ok: false, reason: `${u.name} is a Transport — add the Squad it carries first, then assign it.` };
+      if (!occupied) {
+        return { ok: false, reason: `${u.name} is a Transport — choose the Squad it carries first (3.2.4).` };
+      }
+      const carriable = squads.some(s => {
+        const su = unitOf(army, s);
+        return su && su.category !== 'Transport' && !s.carriedBy && window.DZC.canCarry(u, su);
+      });
+      if (!carriable) {
+        return { ok: false, reason: `Nothing in this Group needs ${u.name} — its symbol does not match anything here (3.2.4.2).` };
+      }
+    } else if (occupied) {
+      // A second fighting Squad only belongs here if a Transport already in the
+      // Group has room for it — that is what makes them one Group (3.2.4.1).
+      const riders = squads.filter(s => s.carriedBy).length;
+      const roomy = squads.some(s => {
+        const su = unitOf(army, s);
+        if (!su || !(su.category === 'Transport' || su.auxiliaryTransport)) return false;
+        return window.DZC.canCarry(su, u);
+      });
+      if (!roomy) {
+        return { ok: false, reason: 'A Group is one Squad and its Transports — add a Transport here first, or start a new Group (3.2.4).' };
+      }
+      if (riders >= 4) {
+        return { ok: false, reason: 'At most 4 Squads may share one Transport (3.2.4.1).' };
+      }
     }
 
     const taken = squadsNamed(army, u.name);

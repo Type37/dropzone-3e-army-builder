@@ -52,7 +52,10 @@ const g = A.addGroup(army, 'Spearhead');
 const legion = A.addSquad(army, g.id, 'legionnaires', 3);
 A.assignTransport(army, legion.id, 'bear-apc');
 A.setCommander(army, legion.id, 5);
-const tank = A.addSquad(army, g.id, 'ucm-main-battle-tank', 2);
+// Its own Group: a Group is one Squad and its Transports (3.2.4), so the tank
+// cannot ride along beside the Legionnaires and their Bear APC.
+const gTank = A.addGroup(army, 'Armour');
+const tank = A.addSquad(army, gTank.id, 'ucm-main-battle-tank', 2);
 A.setModelVariant(army, tank.id, 1, 'Tachi');
 const g2 = A.addGroup(army, 'Air');
 const arch = A.addSquad(army, g2.id, 'archangel', 1);
@@ -82,12 +85,14 @@ const carried = bg.squads.filter(s => s.carriedBy);
 eq(carried.length, 1, 'exactly one Squad is carried');
 ok(bg.squads.some(s => s.id === carried[0].carriedBy),
    'and carriedBy points at a real Squad — the index was rebuilt into a new id');
-const backTank = bg.squads.find(s => s.unitId === 'ucm-main-battle-tank');
+// The tank has its own Group now, so look for it rather than assuming it
+// rides along in the first one.
+const backTank = back.groups.flatMap(g => g.squads).find(s => s.unitId === 'ucm-main-battle-tank');
 eq(JSON.stringify(backTank.models.map(m => m.variant)), '["Sabre","Tachi"]',
    'a legally MIXED Squad keeps its per-model variants');
 eq(bg.squads.filter(s => s.commander).length, 1, 'the Commander survives');
 eq(bg.squads.find(s => s.commander).commander.level, 5, 'at the right level');
-const backArch = back.groups[1].squads[0];
+const backArch = back.groups.flatMap(g => g.squads).find(s => s.unitId === 'archangel');
 ok(A.hasUpgrade(backArch, '*', 'UM-115 Missile Spread'), 'the weapon upgrade survives');
 
 console.log('\nids are not shipped');
