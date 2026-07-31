@@ -80,6 +80,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 2,
       "auxiliaryTransport": true,
       "selectable": true,
@@ -145,6 +146,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 3,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -188,6 +190,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 4,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -335,20 +338,21 @@
           "boxUnresolved": false
         },
         {
-          "name": "RM-4 Foeslayer Missiles (+5pts*) *Menchit and Styx may replace",
-          "arc": "F/S Twin RX-20",
-          "ma": "Full Miniguns",
-          "r": "48/12” with RM-4",
-          "att": "2 Foeslayer",
-          "ac": "2+ Missiles.",
+          "name": "RM-4 Foeslayer Missiles",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "48/12”",
+          "att": "2",
+          "ac": "2+",
           "e": "5",
           "special": "Demo 1, Devastator 1, L1",
           "box": "upgrade",
           "variants": [],
-          "upgradePoints": null,
+          "upgradePoints": 5,
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": "Menchit and Styx may replace Twin RX-20 Miniguns with RM-4 Foeslayer Missiles.",
       "page": 5,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -406,6 +410,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 6,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -463,6 +468,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 7,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -528,6 +534,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 8,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -604,6 +611,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 9,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -696,6 +704,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 10,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -732,6 +741,7 @@
         ]
       },
       "weapons": [],
+      "upgradeNote": null,
       "page": 11,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -824,6 +834,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 12,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -901,6 +912,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 13,
       "auxiliaryTransport": true,
       "selectable": true,
@@ -993,6 +1005,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 14,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1064,6 +1077,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 15,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1141,6 +1155,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 16,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1271,6 +1286,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 17,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1419,6 +1435,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 18,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1523,6 +1540,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 19,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1733,6 +1751,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 20,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1784,6 +1803,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 21,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1818,6 +1838,7 @@
         ]
       },
       "weapons": [],
+      "upgradeNote": null,
       "page": 22,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1916,6 +1937,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 23,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2014,6 +2036,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 24,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2126,6 +2149,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 25,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2216,6 +2240,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 26,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2267,6 +2292,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 27,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2348,6 +2374,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 28,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2397,6 +2424,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 29,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2474,6 +2502,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 30,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2523,6 +2552,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 31,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2545,12 +2575,7 @@
         "DP": "1"
       },
       "special": "",
-      "variants": [
-        {
-          "name": "+5pts*",
-          "points": 15
-        }
-      ],
+      "variants": [],
       "transport": {
         "capacity": [
           {
@@ -2572,10 +2597,8 @@
           "e": "3",
           "special": "Pen 6+",
           "box": "upgrade",
-          "variants": [
-            "+10pts"
-          ],
-          "upgradePoints": null,
+          "variants": [],
+          "upgradePoints": 10,
           "boxUnresolved": false
         },
         {
@@ -2588,15 +2611,13 @@
           "e": "S3",
           "special": "",
           "box": "upgrade",
-          "variants": [
-            "+5pts*"
-          ],
-          "upgradePoints": null,
+          "variants": [],
+          "upgradePoints": 5,
           "boxUnresolved": false
         },
         {
-          "name": "RM-7 Skyhammer Missiles (+15pts*) *Only one of these upgrades may",
-          "arc": "F/S/R be taken.",
+          "name": "RM-7 Skyhammer Missiles",
+          "arc": "F/S/R",
           "ma": "12”",
           "r": "36/12”",
           "att": "1",
@@ -2605,10 +2626,11 @@
           "special": "Demo 0, Indirect, L2, Needs Spotter",
           "box": "upgrade",
           "variants": [],
-          "upgradePoints": null,
+          "upgradePoints": 15,
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": "Only one of these upgrades may be taken.",
       "page": 32,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2631,12 +2653,7 @@
         "DP": "1"
       },
       "special": "",
-      "variants": [
-        {
-          "name": "+5pts*",
-          "points": 30
-        }
-      ],
+      "variants": [],
       "transport": {
         "capacity": [
           {
@@ -2658,10 +2675,8 @@
           "e": "3",
           "special": "Pen 6+",
           "box": "upgrade",
-          "variants": [
-            "+10pts"
-          ],
-          "upgradePoints": null,
+          "variants": [],
+          "upgradePoints": 10,
           "boxUnresolved": false
         },
         {
@@ -2674,15 +2689,13 @@
           "e": "S3",
           "special": "",
           "box": "upgrade",
-          "variants": [
-            "+5pts*"
-          ],
-          "upgradePoints": null,
+          "variants": [],
+          "upgradePoints": 5,
           "boxUnresolved": false
         },
         {
-          "name": "RM-7 Skyhammer Missiles (+15pts*) *Only one of these upgrades may",
-          "arc": "F/S/R be taken.",
+          "name": "RM-7 Skyhammer Missiles",
+          "arc": "F/S/R",
           "ma": "12”",
           "r": "36/12”",
           "att": "1",
@@ -2691,10 +2704,11 @@
           "special": "Demo 0, Indirect, L2, Needs Spotter",
           "box": "upgrade",
           "variants": [],
-          "upgradePoints": null,
+          "upgradePoints": 15,
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": "Only one of these upgrades may be taken.",
       "page": 33,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2763,6 +2777,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 34,
       "auxiliaryTransport": false,
       "selectable": true,

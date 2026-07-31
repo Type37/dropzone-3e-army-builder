@@ -53,6 +53,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 3,
       "auxiliaryTransport": true,
       "selectable": true,
@@ -139,6 +140,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 4,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -204,6 +206,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 5,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -352,6 +355,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 6,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -428,6 +432,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 7,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -518,6 +523,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 8,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -608,6 +614,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 9,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -728,6 +735,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 10,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -779,6 +787,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 11,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -900,13 +909,12 @@
           "e": "2",
           "special": "AA",
           "box": "upgrade",
-          "variants": [
-            "+10pts"
-          ],
-          "upgradePoints": null,
+          "variants": [],
+          "upgradePoints": 10,
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 12,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -974,6 +982,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 13,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1023,6 +1032,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 14,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1072,6 +1082,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 15,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1148,6 +1159,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 16,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1170,12 +1182,7 @@
         "DP": "5"
       },
       "special": "",
-      "variants": [
-        {
-          "name": "+25pts*",
-          "points": 55
-        }
-      ],
+      "variants": [],
       "transport": {
         "capacity": [
           {
@@ -1201,10 +1208,8 @@
           "e": "3",
           "special": "AA-S, Pen 6+, T1",
           "box": "upgrade",
-          "variants": [
-            "+10pts"
-          ],
-          "upgradePoints": null,
+          "variants": [],
+          "upgradePoints": 10,
           "boxUnresolved": false
         },
         {
@@ -1217,27 +1222,26 @@
           "e": "5",
           "special": "Pen 6+, Strafe",
           "box": "upgrade",
-          "variants": [
-            "+25pts*"
-          ],
-          "upgradePoints": null,
+          "variants": [],
+          "upgradePoints": 25,
           "boxUnresolved": false
         },
         {
-          "name": "MC-30 Heavy Gatlings (+35pts*) replace transport capacity of",
-          "arc": "F 2 with",
-          "ma": "5” MM-3",
-          "r": "36/18” Missile Boxes or",
-          "att": "20 MC-30",
-          "ac": "3+ Heavy",
-          "e": "S6 Gatlings.",
+          "name": "MC-30 Heavy Gatlings",
+          "arc": "F",
+          "ma": "5”",
+          "r": "36/18”",
+          "att": "20",
+          "ac": "3+",
+          "e": "S6",
           "special": "Ignores Cover, Strafe",
           "box": "upgrade",
           "variants": [],
-          "upgradePoints": null,
+          "upgradePoints": 35,
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": "May replace transport capacity of",
       "page": 17,
       "auxiliaryTransport": true,
       "selectable": true,
@@ -1332,6 +1336,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 18,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1354,12 +1359,7 @@
         "DP": "5"
       },
       "special": "",
-      "variants": [
-        {
-          "name": "+25pts*",
-          "points": 45
-        }
-      ],
+      "variants": [],
       "transport": {
         "capacity": [
           {
@@ -1385,10 +1385,8 @@
           "e": "3",
           "special": "AA-S, Pen 6+, T1",
           "box": "upgrade",
-          "variants": [
-            "+10pts"
-          ],
-          "upgradePoints": null,
+          "variants": [],
+          "upgradePoints": 10,
           "boxUnresolved": false
         },
         {
@@ -1401,27 +1399,26 @@
           "e": "5",
           "special": "Pen 6+, Strafe",
           "box": "upgrade",
-          "variants": [
-            "+25pts*"
-          ],
-          "upgradePoints": null,
+          "variants": [],
+          "upgradePoints": 25,
           "boxUnresolved": false
         },
         {
-          "name": "MC-30 Heavy Gatlings (+35pts*) replace transport capacity of",
-          "arc": "F 2 with",
-          "ma": "5” MM-3",
-          "r": "36/18” Missile Boxes or",
-          "att": "20 MC-30",
-          "ac": "3+ Heavy",
-          "e": "S6 Gatlings.",
+          "name": "MC-30 Heavy Gatlings",
+          "arc": "F",
+          "ma": "5”",
+          "r": "36/18”",
+          "att": "20",
+          "ac": "3+",
+          "e": "S6",
           "special": "Ignores Cover, Strafe",
           "box": "upgrade",
           "variants": [],
-          "upgradePoints": null,
+          "upgradePoints": 35,
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": "May replace transport capacity of",
       "page": 19,
       "auxiliaryTransport": true,
       "selectable": true,
@@ -1502,13 +1499,12 @@
           "e": "4",
           "special": "Blast, Pen 6+",
           "box": "upgrade",
-          "variants": [
-            "+20pts"
-          ],
-          "upgradePoints": null,
+          "variants": [],
+          "upgradePoints": 20,
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 20,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1574,6 +1570,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 21,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1691,13 +1688,12 @@
           "e": "4",
           "special": "Demo 0, Ram",
           "box": "upgrade",
-          "variants": [
-            "+5pts"
-          ],
-          "upgradePoints": null,
+          "variants": [],
+          "upgradePoints": 5,
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 22,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1860,20 +1856,21 @@
           "boxUnresolved": false
         },
         {
-          "name": "MM-15 Sidearm Missiles (+0pts*) replace both its MC-20",
-          "arc": "F/S Chainguns with",
-          "ma": "Full MM-15",
-          "r": "36/9” Sidearm Missiles.",
+          "name": "MM-15 Sidearm Missiles",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "36/9”",
           "att": "2",
           "ac": "2+",
           "e": "7",
           "special": "Critical 1, Demo 0, L1, Pen 5+, Strafe",
           "box": "upgrade",
           "variants": [],
-          "upgradePoints": null,
+          "upgradePoints": 0,
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": "May replace both its MC-20 Chainguns with MM-15 Sidearm Missiles.",
       "page": 23,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1965,6 +1962,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 24,
       "auxiliaryTransport": true,
       "selectable": true,
@@ -1999,6 +1997,7 @@
         "fills": []
       },
       "weapons": [],
+      "upgradeNote": null,
       "page": 25,
       "auxiliaryTransport": true,
       "selectable": true,
@@ -2033,6 +2032,7 @@
         "fills": []
       },
       "weapons": [],
+      "upgradeNote": null,
       "page": 26,
       "auxiliaryTransport": true,
       "selectable": true,
@@ -2127,6 +2127,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 27,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2192,6 +2193,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 28,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2247,6 +2249,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 29,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2345,6 +2348,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 30,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2396,6 +2400,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 31,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2439,6 +2444,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 32,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2529,6 +2535,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 33,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2623,13 +2630,12 @@
           "e": "4",
           "special": "Demo 0, Ram",
           "box": "upgrade",
-          "variants": [
-            "+5pts"
-          ],
-          "upgradePoints": null,
+          "variants": [],
+          "upgradePoints": 5,
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 34,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2693,13 +2699,12 @@
           "e": "7",
           "special": "Critical 1, Demo 0, L1, Pen 5+",
           "box": "upgrade",
-          "variants": [
-            "+5pts"
-          ],
-          "upgradePoints": null,
+          "variants": [],
+          "upgradePoints": 5,
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 35,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2754,6 +2759,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 36,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2803,6 +2809,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 37,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2927,6 +2934,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 38,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2999,13 +3007,12 @@
           "e": "2",
           "special": "AA",
           "box": "upgrade",
-          "variants": [
-            "+15pts"
-          ],
-          "upgradePoints": null,
+          "variants": [],
+          "upgradePoints": 15,
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 39,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -3106,27 +3113,26 @@
           "e": "S2",
           "special": "Flame",
           "box": "upgrade",
-          "variants": [
-            "+10pts"
-          ],
-          "upgradePoints": null,
+          "variants": [],
+          "upgradePoints": 10,
           "boxUnresolved": false
         },
         {
-          "name": "MC-20 Chaingun Pair (+10pts*) also replace one MM-3 Missile",
-          "arc": "F/S Pod and one",
-          "ma": "8” MG-6",
-          "r": "36/18” Twin Heavy",
+          "name": "MC-20 Chaingun Pair",
+          "arc": "F/S",
+          "ma": "8”",
+          "r": "36/18”",
           "att": "10",
-          "ac": "3+ Machineguns",
-          "e": "S5 with a",
-          "special": "Ignores Cover, Strafe MC-20 Chaingun Pair.",
+          "ac": "3+",
+          "e": "S5",
+          "special": "Ignores Cover, Strafe",
           "box": "upgrade",
           "variants": [],
-          "upgradePoints": null,
+          "upgradePoints": 10,
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": "May also replace one MM-3 Missile Pod and one MG-6 Twin Heavy Machineguns with a MC-20 Chaingun Pair.",
       "page": 40,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -3222,6 +3228,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 41,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -3285,6 +3292,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 42,
       "auxiliaryTransport": false,
       "selectable": true,

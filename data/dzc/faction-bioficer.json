@@ -80,6 +80,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 4,
       "auxiliaryTransport": true,
       "selectable": true,
@@ -192,6 +193,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 5,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -288,6 +290,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 6,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -428,6 +431,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 7,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -524,6 +528,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 8,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -670,6 +675,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 9,
       "auxiliaryTransport": true,
       "selectable": true,
@@ -719,6 +725,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 10,
       "auxiliaryTransport": true,
       "selectable": true,
@@ -768,6 +775,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 11,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -817,6 +825,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 12,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -866,6 +875,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 13,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -917,6 +927,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": "Drones are standard Bioficer infantry, and that alone highlights the threat. They are humanoid, rangy, skinless, seven feet tall barefoot, and almost pure muscle, bone, and sinew. They feel no pain, no emotion, and are generated from raw atoms in moments. Their Decon Rifles turn melon-sized chunks of flesh to lukewarm molecular smoke in microseconds, but they are quite capable of tearing limbs off with their bare hands. Their only other piece of equipment is their control headset, through which an Intelligence directs regimented squads to battle. Without this, a Drone is a rotting statue incapable of basic thought.",
       "page": 14,
       "auxiliaryTransport": false,
       "selectable": false,
@@ -968,6 +979,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": "Hulks are slightly taller, bulked-out variants of standard Drones. Almost entirely muscle, bone, and sinew, a Hulk can rip a fully armoured human in half. Their primary purpose though is to lug heavy weaponry. Their short-ranged Winnow Carbines can unleash coruscating bursts of uncontrolled decon energies, reducing a target to random chunks of metal and gushing flesh. Contrary to their appearance, Hulks can move with inhuman speed and mechanical precision from the moment they step out of a Genitor unit, making them an instant threat to unfortunate aircraft and infantry.",
       "page": 15,
       "auxiliaryTransport": false,
       "selectable": false,

@@ -763,23 +763,59 @@ def join_broken_hyphen(s):
     return re.sub(r"(\w)-\s+(\w)", r"\1-\2", s)
 
 
-def lore_top(page, below_y):
+def lore_top(page, below_y, left_edge=None):
     """
-    Y of the first flavour-text line under the tables, or None.
+    Y where the tables stop and everything else begins, or None.
 
-    The last weapon's band runs to the bottom-most word on the page, so without
-    this the lore paragraph is swallowed into that weapon's cells -- the
-    Bioficer Drones ended up with a weapon named "Decon Rifles Drones are
-    standard Bioficer infantry, and pure muscle, bone, and sinew...".
+    Two things sit below a card's tables and must not be read as table data:
+
+      - flavour text, set in an OBLIQUE face (nothing else on a card is italic)
+      - an upgrade FOOTNOTE tied to a "(+15pts*)" marker, e.g.
+        "*Only one of these upgrades may be taken."
+
+    The last weapon's band otherwise runs to the bottom-most word on the page
+    and swallows both. That gave the Bioficer Drones a weapon named "Decon
+    Rifles Drones are standard Bioficer infantry...", and put "be taken." in
+    the Arc column of eight upgrade weapons.
+
+    A footnote is recognised by POSITION -- it begins at the card's left
+    margin, outside the table's leftmost column. An asterisk is the usual
+    marker but not a reliable one: the Harrier Gunship's reads "May remove one
+    UM-117 Cannons and gain Scanner and Scout" with no asterisk at all. Its
+    first word falls outside the table rect and is dropped, while "and gain"
+    lands squarely in the Arc column -- which is exactly how a footnote ends up
+    looking like a firing arc.
     """
     ys = []
     for blk in page.get_text("dict")["blocks"]:
         for ln in blk.get("lines", []):
             for sp in ln["spans"]:
-                if (sp["text"].strip() and (sp["flags"] & ITALIC_FLAG)
-                        and sp["bbox"][1] > below_y):
+                t = sp["text"].strip()
+                if not t or sp["bbox"][1] <= below_y:
+                    continue
+                if ((sp["flags"] & ITALIC_FLAG) or t.startswith("*")
+                        or (left_edge is not None and sp["bbox"][0] < left_edge)):
                     ys.append(sp["bbox"][1])
     return min(ys) if ys else None
+
+
+def upgrade_note(page, below_y, left_edge=None):
+    """
+    The "*..." footnote printed under the tables, kept because it IS a rule.
+
+    "Only one of these upgrades may be taken" constrains army construction, so
+    dropping it along with the table boundary would lose real information.
+    """
+    out = []
+    for blk in page.get_text("dict")["blocks"]:
+        for ln in blk.get("lines", []):
+            for sp in ln["spans"]:
+                t = sp["text"].strip()
+                if sp["bbox"][1] <= below_y:
+                    continue
+                if t.startswith("*") or (left_edge is not None and sp["bbox"][0] < left_edge):
+                    out.append(t.lstrip("*").strip())
+    return " ".join(out).strip() or None
 
 
 def parse_weapons(page, lines):
@@ -799,7 +835,7 @@ def parse_weapons(page, lines):
     xs = [c[1] for c in cols]
     tbl = fitz.Rect(min(xs) - 40, hdr_bottom, max(xs) + 60, page.rect.height)
     # Stop at the flavour text. Everything below it is prose, not table data.
-    lore_y = lore_top(page, hdr_bottom)
+    lore_y = lore_top(page, hdr_bottom, tbl.x0)
     if lore_y is not None:
         tbl.y1 = min(tbl.y1, lore_y)
     below = [w for w in words_in(page, tbl) if w[1] > hdr_bottom
@@ -834,16 +870,38 @@ def parse_weapons(page, lines):
             "box": kind,
         })
 
-    # Pull the "(Sabre)" restriction out of the name now that wraps are joined.
+    # Pull the trailing brackets out of the name now that wraps are joined.
+    #
+    # A weapon can carry MORE THAN ONE, on separate lines of the Name cell, and
+    # they do not mean the same thing:
+    #
+    #     UM-117 Cannons (Harrier B)      a VARIANT restriction (3.2.2)
+    #     RM-7 Skyhammer Missiles (+15pts*)   the UPGRADE's cost (3.2.3)
+    #
+    # Taking only the last bracket and calling it a variant produced weapons
+    # restricted to a variant named "+15pts*", and left upgradePoints null on
+    # every upgrade in the game -- so a paid upgrade cost nothing. The audit
+    # caught it as "variant '+5pts*' has no points".
+    COST_RE = re.compile(r"^\+?(\d+)\s*pts?\*?$", re.I)
     for w in weapons:
-        m = re.search(r"\(([^)]+)\)\s*$", w["name"])
-        if m:
-            w["variants"] = [v.strip() for v in re.split(r"[,/]", m.group(1)) if v.strip()]
+        w["variants"] = []
+        w["upgradePoints"] = None
+        while True:
+            m = re.search(r"\(([^)]*)\)\s*$", w["name"])
+            if not m:
+                break
+            inner = m.group(1).strip()
             w["name"] = w["name"][: m.start()].strip()
-        else:
-            w["variants"] = []
-        cost = re.search(r"\+?(\d+)\s*pts?", w["special"], re.I)
-        w["upgradePoints"] = int(cost.group(1)) if (cost and w["box"] == "upgrade") else None
+            cost = COST_RE.match(inner)
+            if cost:
+                w["upgradePoints"] = int(cost.group(1))
+            elif inner:
+                w["variants"] = [v.strip() for v in re.split(r"[,/]", inner) if v.strip()] \
+                    + w["variants"]
+        if w["upgradePoints"] is None:
+            cost = re.search(r"\+?(\d+)\s*pts?", w["special"], re.I)
+            if cost and w["box"] == "upgrade":
+                w["upgradePoints"] = int(cost.group(1))
         # An orange box means "restricted to the Variant named in brackets"
         # (rulebook 3.2.2). A few cards print orange with NO bracket -- the
         # Bioficer Surge Gunship's Decon Pulse. That is a source-data quirk,
@@ -1007,6 +1065,9 @@ def parse_page(page, doc, art_dir):
         "variants": collect_variants(header, weapons, special),
         "transport": parse_transport(page),
         "weapons": weapons,
+        # "*Only one of these upgrades may be taken." -- a real construction
+        # constraint, so it is kept rather than discarded with the footnote.
+        "upgradeNote": upgrade_note(page, 200, 20),
         "page": page.number + 1,
     }
     unit["auxiliaryTransport"] = bool(

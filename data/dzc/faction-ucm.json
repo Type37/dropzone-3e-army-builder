@@ -77,6 +77,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 2,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -142,6 +143,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 3,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -238,6 +240,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 4,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -370,6 +373,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 5,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -496,6 +500,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 6,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -626,6 +631,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 7,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -742,6 +748,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 8,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -819,6 +826,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 9,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -917,6 +925,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 10,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -993,6 +1002,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 11,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1089,6 +1099,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 12,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1261,6 +1272,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 13,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1346,6 +1358,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 14,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1464,6 +1477,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 15,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1527,6 +1541,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 16,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1578,6 +1593,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 17,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1676,6 +1692,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 18,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1786,6 +1803,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 19,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1956,6 +1974,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 20,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2089,6 +2108,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 21,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2184,13 +2204,12 @@
           "e": "6",
           "special": "L1, Blast, Demo 1",
           "box": "upgrade",
-          "variants": [
-            "+10pts"
-          ],
-          "upgradePoints": null,
+          "variants": [],
+          "upgradePoints": 10,
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 22,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2311,20 +2330,21 @@
           "boxUnresolved": false
         },
         {
-          "name": "UM-903 Defence pods (+5pts) remove one UM-117 Cannons",
-          "arc": "F/S/R and gain",
-          "ma": "9” Scanner",
-          "r": "36/9” and Scout.",
+          "name": "UM-903 Defence pods",
+          "arc": "F/S/R",
+          "ma": "9”",
+          "r": "36/9”",
           "att": "2",
           "ac": "3+",
           "e": "2",
           "special": "AA, Pen 6+",
           "box": "upgrade",
           "variants": [],
-          "upgradePoints": null,
+          "upgradePoints": 5,
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": "May remove one UM-117 Cannons and gain Scanner and Scout.",
       "page": 23,
       "auxiliaryTransport": true,
       "selectable": true,
@@ -2376,6 +2396,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 24,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2427,6 +2448,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 25,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2470,6 +2492,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 26,
       "auxiliaryTransport": false,
       "selectable": false,
@@ -2568,6 +2591,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 27,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2653,6 +2677,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 28,
       "auxiliaryTransport": true,
       "selectable": true,
@@ -2785,6 +2810,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 29,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2862,6 +2888,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 30,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2916,6 +2943,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 31,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2974,13 +3002,12 @@
           "e": "4",
           "special": "Pen 6+",
           "box": "upgrade",
-          "variants": [
-            "+10pts"
-          ],
-          "upgradePoints": null,
+          "variants": [],
+          "upgradePoints": 10,
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 32,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -3044,6 +3071,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 33,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -3093,6 +3121,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 34,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -3142,6 +3171,7 @@
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 35,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -3200,13 +3230,12 @@
           "e": "2",
           "special": "AA, Pen 6+",
           "box": "upgrade",
-          "variants": [
-            "+5pts"
-          ],
-          "upgradePoints": null,
+          "variants": [],
+          "upgradePoints": 5,
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 36,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -3265,13 +3294,12 @@
           "e": "2",
           "special": "AA, Pen 6+",
           "box": "upgrade",
-          "variants": [
-            "+5pts"
-          ],
-          "upgradePoints": null,
+          "variants": [],
+          "upgradePoints": 5,
           "boxUnresolved": false
         }
       ],
+      "upgradeNote": null,
       "page": 37,
       "auxiliaryTransport": false,
       "selectable": true,
