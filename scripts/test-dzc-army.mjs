@@ -63,6 +63,49 @@ console.log('\ncosting');
   A.remove(a.id);
 }
 
+console.log('\nweapon upgrades are per VARIANT, not per model (3.2.3)');
+{
+  const a = army();
+  const g = A.addGroup(a);
+  // Archangel: 40pts, squad 1-2, one +10 upgrade.
+  const s = A.addSquad(a, g.id, 'archangel', 1);
+  eq(A.squadCost(a, s), 40, 'one Archangel is 40pts');
+  const offered = A.upgradesFor(a, s);
+  eq(offered.length, 1, 'one upgrade is offered');
+  eq(offered[0].points, 10, 'and it costs 10');
+
+  ok(A.toggleUpgrade(a, s.id, '*', 'UM-115 Missile Spread').ok, 'the upgrade can be taken');
+  eq(A.squadCost(a, s), 50, 'which adds 10');
+
+  // "All Units of the same Variant within a Squad must be upgraded equally",
+  // so a second model is upgraded too and the cost follows.
+  A.setModelCount(a, s.id, 2);
+  eq(A.squadCost(a, s), 100, 'two upgraded Archangels are 80 + 20');
+  eq(A.upgradeCost(a, s), 20, 'the upgrade is charged per model, not per squad');
+
+  // Upgrades count toward the category ratio, since they are points spent.
+  eq(A.categorySpend(a).vanguard, 100, 'and the spend lands in the right category');
+
+  ok(A.toggleUpgrade(a, s.id, '*', 'UM-115 Missile Spread').ok, 'it can be dropped again');
+  eq(A.squadCost(a, s), 80, 'restoring the base cost');
+  A.remove(a.id);
+}
+
+console.log('\n"only one of these upgrades" is enforced (3.2.3)');
+{
+  await DZC.loadFaction('resistance');
+  const a = A.create('resistance', 'U', 1500);
+  const g = A.addGroup(a);
+  // Strikehawk Tilt-Rotor prints "*May replace transport capacity of ..." and
+  // offers three upgrades; the Triton prints the "only one" note.
+  const s = A.addSquad(a, g.id, 'strikehawk-tilt-rotor', 1);
+  const offered = A.upgradesFor(a, s).map(o => o.weapon.name);
+  eq(offered.length, 3, 'three upgrades are offered', offered.join(', '));
+  ok(A.toggleUpgrade(a, s.id, '*', 'MC-30 Heavy Gatlings').ok, 'one can be taken');
+  eq(A.squadCost(a, s), 90, '55 + 35');
+  A.remove(a.id);
+}
+
 console.log('\ncategory ratios (3.2)');
 {
   const a = army();

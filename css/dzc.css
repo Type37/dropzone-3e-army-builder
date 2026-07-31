@@ -297,3 +297,15 @@ button.dzc-sq-name {
 }
 button.dzc-sq-name:hover { color: var(--acc); border-bottom-color: var(--acc); }
 button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+
+/* ── weapon upgrades (3.2.3) ── */
+.dzc-upgrades { margin: 5px 0 2px; padding: 5px 8px; border-radius: 5px; background: var(--surface-3, #f2ece0); }
+.dzc-upg-head { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2, #6b6459); margin-bottom: 3px; }
+.dzc-upg-head i { text-transform: none; letter-spacing: 0; }
+.dzc-upg { display: flex; align-items: baseline; gap: 7px; padding: 2px 0; font-size: 12.5px; cursor: pointer; }
+.dzc-upg input { flex: 0 0 auto; margin: 0; }
+.dzc-upg-name { flex: 1 1 auto; overflow-wrap: anywhere; }
+.dzc-upg-name i { color: var(--ink-2, #6b6459); font-size: 11px; }
+.dzc-upg-cost { flex: 0 0 auto; font-weight: 700; white-space: nowrap; }
+.dzc-upg-cost i { font-style: normal; font-weight: 500; font-size: 10px; color: var(--ink-2, #6b6459); }
+.dzc-upg.is-on { color: var(--acc); }

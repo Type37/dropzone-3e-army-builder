@@ -177,6 +177,27 @@
     </section>`;
   }
 
+  /* Weapon upgrades (3.2.3). Chosen per VARIANT, because "All Units of the
+   * same Variant within a Squad must be upgraded equally" -- so the price shown
+   * is for every model of that variant, not for one. */
+  function upgradesHtml(a, s, u) {
+    const opts = window.DZCArmy.upgradesFor(a, s);
+    if (!opts.length) return '';
+    const rows = opts.map(o => {
+      const on = window.DZCArmy.hasUpgrade(s, o.scope, o.weapon.name);
+      const total = o.points * o.count;
+      return `<label class="dzc-upg${on ? ' is-on' : ''}">
+        <input type="checkbox" ${on ? 'checked' : ''}
+               onchange="DZCBuilder.toggleUpgrade('${s.id}','${esc(o.scope)}','${esc(o.weapon.name)}')">
+        <span class="dzc-upg-name">${esc(o.weapon.name)}${o.scope !== '*' ? ` <i>(${esc(o.scope)})</i>` : ''}</span>
+        <span class="dzc-upg-cost">+${total}pts${o.count > 1 ? ` <i>${o.points}×${o.count}</i>` : ''}</span>
+      </label>`;
+    }).join('');
+    return `<div class="dzc-upgrades">
+      <span class="dzc-upg-head">Upgrades${u.upgradeNote ? ` — <i>${esc(u.upgradeNote)}</i>` : ''}</span>
+      ${rows}</div>`;
+  }
+
   function squadHtml(a, g, s, depth) {
     const u = window.DZCArmy.unitOf(a, s);
     if (!u) return '';
@@ -229,6 +250,7 @@
         <button class="dzc-icon-btn" type="button" title="Remove Squad"
                 onclick="DZCBuilder.removeSquad('${s.id}')" aria-label="Remove ${esc(u.name)}">${window.DZCIcon('close', { size: 16 })}</button>
       </div>
+      ${upgradesHtml(a, s, u)}
       <div class="dzc-sq-opts">
         ${variantPicker}
         ${transportPicker}
@@ -443,6 +465,11 @@
       refresh();
     },
     setVariant: (id, i, v) => { window.DZCArmy.setModelVariant(current, id, i, v); refresh(); },
+    toggleUpgrade: (id, scope, name) => {
+      const r = window.DZCArmy.toggleUpgrade(current, id, scope, name);
+      if (!r.ok) say(r.reason);
+      refresh();
+    },
     setCarrier: (id, c) => { window.DZCArmy.setCarrier(current, id, c); refresh(); },
     assignTransport: (id, unitId) => {
       const r = window.DZCArmy.assignTransport(current, id, unitId || null);

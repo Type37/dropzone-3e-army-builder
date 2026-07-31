@@ -357,6 +357,78 @@
 
   function unitOf(army, squad) { return window.DZC.unit(army.faction, squad.unitId); }
 
+  // ------------------------------------------------------------- upgrades
+  //
+  // 3.2.3: a green name box is a paid Weapon upgrade, and "All Units of the
+  // same Variant within a Squad must be upgraded equally". So an upgrade is
+  // chosen PER VARIANT, not per model -- a different granularity from the
+  // variants themselves, which are per model. Stored as
+  //   squad.upgrades = { <variant or '*'>: { <weapon name>: true } }
+
+  const ALL_VARIANTS = '*';
+
+  /* Which upgrades this Squad may take, grouped by the variant they apply to.
+   * A weapon with no variant bracket applies to every model in the Squad. */
+  function upgradesFor(army, squad) {
+    const u = unitOf(army, squad);
+    if (!u) return [];
+    const out = [];
+    (u.weapons || []).forEach(w => {
+      if (w.box !== 'upgrade' || w.upgradePoints == null) return;
+      const scopes = (w.variants || []).length ? w.variants : [ALL_VARIANTS];
+      scopes.forEach(scope => {
+        // Only offer an upgrade for a variant this Squad actually fields.
+        const n = scope === ALL_VARIANTS
+          ? squad.models.length
+          : squad.models.filter(m => m.variant === scope).length;
+        if (n > 0) out.push({ weapon: w, scope: scope, count: n, points: w.upgradePoints });
+      });
+    });
+    return out;
+  }
+
+  function hasUpgrade(squad, scope, name) {
+    return !!(squad.upgrades && squad.upgrades[scope] && squad.upgrades[scope][name]);
+  }
+
+  /* Take or drop an upgrade. Where the card prints "Only one of these upgrades
+   * may be taken", that is enforced rather than noted. */
+  function toggleUpgrade(army, squadId, scope, name) {
+    const s = findSquad(army, squadId);
+    if (!s) return { ok: false, reason: 'Unknown Squad.' };
+    const u = unitOf(army, s);
+    s.upgrades = s.upgrades || {};
+    s.upgrades[scope] = s.upgrades[scope] || {};
+
+    if (s.upgrades[scope][name]) {
+      delete s.upgrades[scope][name];
+      touch(army);
+      return { ok: true, reason: null };
+    }
+    const onlyOne = /only one of these upgrades/i.test(u && u.upgradeNote || '');
+    if (onlyOne) {
+      const already = Object.keys(s.upgrades).some(k =>
+        Object.keys(s.upgrades[k]).some(n => n !== name));
+      if (already) {
+        return { ok: false, reason: `${u.name}: only one of these upgrades may be taken (3.2.3).` };
+      }
+    }
+    s.upgrades[scope][name] = true;
+    touch(army);
+    return { ok: true, reason: null };
+  }
+
+  /* Points added by upgrades. Cost is per upgraded MODEL, and every model of
+   * that variant is upgraded, because they must be upgraded equally. */
+  function upgradeCost(army, squad) {
+    if (!squad.upgrades) return 0;
+    let total = 0;
+    upgradesFor(army, squad).forEach(o => {
+      if (hasUpgrade(squad, o.scope, o.weapon.name)) total += o.points * o.count;
+    });
+    return total;
+  }
+
   // ------------------------------------------------------------------ costing
 
   /* A model costs what its VARIANT costs. 49 of 178 units have no unit-level
@@ -382,7 +454,8 @@
 
   function squadCost(army, squad) {
     const u = unitOf(army, squad);
-    return squad.models.reduce((t, m) => t + modelCost(u, m), 0) + commanderCost(squad);
+    return squad.models.reduce((t, m) => t + modelCost(u, m), 0)
+      + upgradeCost(army, squad) + commanderCost(squad);
   }
 
   function groupCost(army, group) {
@@ -402,7 +475,8 @@
       const u = unitOf(army, s);
       if (!u) return;
       const c = (u.category || '').toLowerCase();
-      out[c] = (out[c] || 0) + s.models.reduce((t, m) => t + modelCost(u, m), 0);
+      out[c] = (out[c] || 0) + s.models.reduce((t, m) => t + modelCost(u, m), 0)
+        + upgradeCost(army, s);
     }));
     return out;
   }
@@ -575,6 +649,7 @@
     modelCost, squadCost, groupCost, armyCost, categorySpend, validate,
     // enforcement
     canAddUnit, canSetCount, squadsNamed, squadFill,
+    upgradesFor, hasUpgrade, toggleUpgrade, upgradeCost,
     transportOptions, assignTransport, refitTransports
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = window.DZCArmy;
