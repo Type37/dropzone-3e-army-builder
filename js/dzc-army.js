@@ -604,7 +604,7 @@
     const cmdrs = [];
     army.groups.forEach(g => g.squads.forEach(s => { if (s.commander) cmdrs.push(s.commander); }));
     if (!cmdrs.length) {
-      errors.push({ rule: '3.2.5', msg: 'No Commander — an Army must contain at least one.' });
+      errors.push({ rule: '3.2.5', msg: 'You haven\'t added a Commander. Your army must contain at least one.' });
     }
     if (size) {
       const allowed = window.DZC.commanderLevels(size.id).map(l => l.level);

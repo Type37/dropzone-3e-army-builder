@@ -163,11 +163,27 @@
     });
   }
 
-  function createArmy() {
+  /* Straight into the new army, with nothing in between.
+   *
+   * This used to close the modal and THEN set the hash, so you watched the
+   * armies list while renderBuilder waited on the faction JSON — a network
+   * fetch the first time you use a faction. The list flashed up, then the
+   * builder replaced it.
+   *
+   * Now the faction is fetched while the button is still showing its press,
+   * so by the time the modal goes the builder is already there. */
+  async function createArmy() {
+    const btn = document.getElementById('dzc-create-btn');
     const name = (document.getElementById('dzc-new-name').value || 'New Army').trim();
+    if (btn) { btn.classList.add('is-going'); btn.disabled = true; }
+    try {
+      await window.DZC.loadFaction(picked.faction);
+    } catch (e) { /* offline or a bad fetch: fall through and let the view report it */ }
     const a = window.DZCArmy.create(picked.faction, name, picked.points);
-    document.getElementById('dzc-new').classList.remove('active');
     location.hash = '#army/' + a.id;
+    await renderBuilder(a.id);
+    document.getElementById('dzc-new').classList.remove('active');
+    if (btn) { btn.classList.remove('is-going'); btn.disabled = false; }
   }
 
   function del(id) {
@@ -419,25 +435,27 @@
    * Rare taken three times, a Transport that is not full. Those are wrong the
    * moment they happen and say so.
    *
-   * Others are about what the finished list must CONTAIN. "No Commander" is
-   * the one that bit: it fires on your first Squad, when you have not had a
-   * chance to satisfy it and nothing is actually wrong. Those stay in the
-   * notes while you can still fix them by adding something, and only become
-   * issues once the points are gone and fixing means taking something out.
+   * Others are about what the finished list must CONTAIN. "You haven't added a
+   * Commander" fired on your first Squad, before you had any chance to satisfy
+   * it and with nothing actually wrong. Those say nothing at all until half
+   * the points are spent, then sit in the notes, and only become issues once
+   * the points are gone and fixing means taking something out.
    *
    * validate() keeps reporting everything; this only decides where it goes. */
   const COMPLETENESS = /^3\.2\.5$/;
 
   function triage(v, army) {
-    const full = window.DZCArmy.armyCost(army) >= army.pointsLimit;
-    if (full) return { errors: v.errors, warnings: v.warnings, ok: !v.errors.length };
+    const cost = window.DZCArmy.armyCost(army);
+    const limit = army.pointsLimit || 0;
+    if (limit && cost >= limit) return { errors: v.errors, warnings: v.warnings, ok: !v.errors.length };
+    const halfway = limit ? cost >= limit / 2 : false;
     const errors = [], deferred = [];
     v.errors.forEach(e => (COMPLETENESS.test(e.rule) ? deferred : errors).push(e));
     return {
       errors,
-      warnings: deferred.concat(v.warnings),
-      // Legality is unchanged — a deferred requirement is still unmet, so the
-      // army is not announced as legal just because we moved the message.
+      warnings: (halfway ? deferred : []).concat(v.warnings),
+      // Legality is unchanged — a held requirement is still unmet, so the army
+      // is not announced as legal just because the message is not shown yet.
       ok: !v.errors.length
     };
   }

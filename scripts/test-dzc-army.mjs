@@ -254,7 +254,7 @@ console.log('\nwhat can only be checked when the list is finished (3.2.5)');
   const a = army(1000);
   const g = A.addGroup(a);
   const s = A.addSquad(a, g.id, 'ucm-main-battle-tank', 2);
-  ok(hasErr(A.validate(a), 'No Commander'), 'an Army with no Commander is reported, not blocked');
+  ok(hasErr(A.validate(a), "haven't added a Commander"), 'an Army with no Commander is reported, not blocked');
   A.setCommander(a, s.id, 5);
   ok(!hasErr(A.validate(a), 'Commander'), 'and the error clears once one is assigned');
   A.remove(a.id);

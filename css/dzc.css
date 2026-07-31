@@ -185,6 +185,50 @@
 .dzc-ratio.is-std span, .dzc-ratio.is-std i { color: rgba(255,255,255,.85); }
 .dzc-ratio.is-over { background: #fde8e6; color: #7a1c15; }
 
+/* ── Create: the one button that should feel like something ──
+   Deco corners, a gold sweep that crosses on hover, and brackets that close
+   in on the corners. On press it dips and the gold floods, and while the
+   faction loads it pulses so the wait reads as work rather than a hang.
+   Fluent durations and curves; nothing moves for prefers-reduced-motion. */
+.dzc-create {
+  position: relative; overflow: hidden; isolation: isolate;
+  border-radius: 0;
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  letter-spacing: .06em; text-transform: uppercase;
+  transition: transform 150ms cubic-bezier(.33,0,.67,1), box-shadow 150ms cubic-bezier(.33,0,.67,1);
+}
+/* The sweep. A gold band that crosses the face, behind the label. */
+.dzc-create::before {
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(105deg, transparent 30%, var(--gold, #c9a92c) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 420ms cubic-bezier(.33,0,.67,1);
+}
+.dzc-create:hover::before, .dzc-create:focus-visible::before { transform: translateX(120%); }
+/* Corner brackets that tighten in on hover. */
+.dzc-create::after {
+  content: ''; position: absolute; inset: 5px; pointer-events: none;
+  border: 1px solid var(--gold, #c9a92c); opacity: 0;
+  clip-path: polygon(0 0, 34% 0, 34% 1.5px, 1.5px 1.5px, 1.5px 34%, 0 34%,
+                     100% 100%, 66% 100%, 66% calc(100% - 1.5px),
+                     calc(100% - 1.5px) calc(100% - 1.5px), calc(100% - 1.5px) 66%, 100% 66%);
+  transition: opacity 200ms cubic-bezier(.33,0,.67,1), inset 200ms cubic-bezier(.33,0,.67,1);
+}
+.dzc-create:hover::after, .dzc-create:focus-visible::after { opacity: .9; inset: 3px; }
+.dzc-create:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(27,58,92,.28); }
+.dzc-create:active { transform: translateY(1px) scale(.985); box-shadow: none; }
+/* Held while the faction loads, so the pause reads as work. */
+.dzc-create.is-going { animation: dzc-create-go 900ms cubic-bezier(.33,0,.67,1) infinite; }
+@keyframes dzc-create-go {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201,169,44,.55); }
+  50%      { box-shadow: 0 0 0 7px rgba(201,169,44,0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dzc-create, .dzc-create::before, .dzc-create::after { transition: none; }
+  .dzc-create.is-going { animation: none; }
+  .dzc-create:hover, .dzc-create:active { transform: none; }
+}
+
 /* ── builder: rail + column ──
    Desktop keeps panes, mobile does not (HANDOFF §2.2). The rail holds what you
    need while working — points left and what is outstanding — so it stays put
