@@ -340,11 +340,28 @@ finished list is reported:
 | `js/dzc-units.js` | unit reference (all 178) |
 | `js/dzc-icons.js` | inlined Material Symbols — see `ICONS.md` |
 | `css/dzc.css`, `css/dzc-print.css` | |
-| `scripts/test-dzc-data.mjs` | 48 assertions |
-| `scripts/test-dzc-army.mjs` | 38 assertions |
+| `js/dzc-share.js` | share links — the whole army travels in the URL |
+| `scripts/test-all.mjs` | **158 assertions** across four suites |
 
-Routes: `#armies`, `#army/<id>`, `#units`. The Dropfleet routes (`#fleets`,
-`#builder/<id>`) still work but are no longer linked from anywhere.
+Routes: `#armies`, `#army/<id>`, `#units`, `#share/<payload>`.
+
+### The Dropfleet side is now dead weight — delete it
+
+`data/faction-*.json`, `fleet-index.json`, `fleet-data.json`, `ship-lore.json`,
+`pronunciations.json`, `assets/art/` (58 MB of **ship** art), `assets/factions/`
+and `mobile/` are **no longer deployed** and no longer fetched. The deploy went
+from 86 MB to 27 MB.
+
+What remains is the code: the Dropfleet views in `index.html`
+(`#view-fleets`, `#view-builder`, `#view-play`, `#view-shared` and their
+modals) and the ~9,000 lines behind them in `app.js`. They are unreachable and
+have no data, so they are harmless but pointless. Deleting them is the next
+tidy-up; it was kept as a separate change so a large deletion could not be
+confused with a behavioural one.
+
+`app.js` still owns the shell — routing, settings, theme, offline, sync wiring,
+the modal system — so it cannot simply be removed. That shell wants extracting
+before the Dropfleet domain around it is cut.
 
 ### How big step 2 really is
 

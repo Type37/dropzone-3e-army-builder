@@ -57,10 +57,10 @@ Plain HTML, CSS and JavaScript. No framework, no build step. Open `index.html`, 
 npx serve .
 ```
 
-Tests run on the real data, not fixtures:
+Tests run against the real scanned units, not fixtures — a fixture would happily keep passing after the scanner changed shape:
 
 ```sh
-node scripts/test-dzc-data.mjs
+node scripts/test-all.mjs
 ```
 
 Fonts: [Jost](https://fonts.google.com/specimen/Jost), [Libre Baskerville](https://fonts.google.com/specimen/Libre+Baskerville), [Roboto Slab](https://fonts.google.com/specimen/Roboto+Slab).
