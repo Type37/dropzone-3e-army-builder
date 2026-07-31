@@ -56,7 +56,9 @@
 .dzc-group-note { font-weight: 400; font-size: 12px; letter-spacing: 0; text-transform: none; font-style: italic; color: var(--ink-2, #6b6459); }
 
 /* ── unit cards ── */
-.dzc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(268px, 1fr)); gap: 8px; }
+/* 300px, not 268: the stat grid inside each card needs two columns wide enough
+   for "DAMAGE POINTS" without the label wrapping to shreds. */
+.dzc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 8px; }
 .dzc-card {
   display: flex; gap: 8px; padding: 7px; cursor: pointer;
   border: 1px solid var(--line, #d8d0c0); border-radius: 8px;
@@ -323,10 +325,14 @@
   color: var(--ink, #24201c);
 }
 .dzc-stat-k {
-  min-width: 0; overflow-wrap: anywhere;
+  min-width: 0;
+  /* Wrap between words, never inside one. "DAMAGE POINTS" over two lines is
+     fine; "ARMOU / R" is not, and that is what anywhere-breaking produced in
+     the narrower reference cards. */
+  overflow-wrap: normal; word-break: keep-all; hyphens: none;
   font-family: var(--font-condensed, 'Jost', sans-serif);
   font-size: 9.5px; font-weight: 700; line-height: 1.15;
-  text-transform: uppercase; letter-spacing: .03em;
+  text-transform: uppercase; letter-spacing: .02em;
   color: var(--ink-2, #6b6459);
 }
 .dzc-stat.is-na { opacity: .4; }

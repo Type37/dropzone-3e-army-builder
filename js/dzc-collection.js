@@ -104,8 +104,7 @@
         <button type="button" class="dzc-chip${state.ownedOnly ? ' is-active' : ''}"
                 onclick="DZCCollection.toggleOwned()">Owned only</button>
       </div>
-      <p class="dzc-count">${totals} model${totals === 1 ? '' : 's'} across ${kinds} unit type${kinds === 1 ? '' : 's'}.
-        Counting models, not Squads — that is what decides whether a Squad is buildable.</p>
+      <p class="dzc-count">${totals} model${totals === 1 ? '' : 's'} across ${kinds} unit type${kinds === 1 ? '' : 's'}.</p>
 
       <div class="dzc-coll-list">${units.map(u => {
         const n = count(state.faction, u.id);

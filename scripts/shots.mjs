@@ -62,6 +62,14 @@ const DZC_STEPS = [
   ['13-unit-detail', `App.closeModal('modal-settings');
      const btn = document.querySelector('.dzc-sq-name');
      btn && btn.click()`],
+  // statsHtml is shared with the reference and the collection, so both get
+  // shot too: changing it under them is exactly how a view breaks unnoticed.
+  ['14-unit-reference', `DZCUnits.closeDetail(); location.hash = '#units'`],
+  ['15-unit-reference-detail', `const c = document.querySelector('.dzc-card'); c && c.click()`],
+  ['16-collection', `DZCUnits.closeDetail();
+     App.toggleSetting('showCollection', true);
+     location.hash = '#collection'`],
+  ['17-print-sheet', `location.hash = '#armies'`],
 ];
 
 const DFC_STEPS = [
