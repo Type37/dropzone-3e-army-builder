@@ -41,8 +41,14 @@
                 onkeydown="if(event.key==='Enter')DZCBuilder.open('${a.id}')">
         <div class="dzc-army-top">
           <h3>${esc(a.name)}</h3>
-          <button class="dzc-icon-btn" type="button" title="Delete army"
-                  onclick="event.stopPropagation();DZCBuilder.del('${a.id}')" aria-label="Delete ${esc(a.name)}">&times;</button>
+          <span class="dzc-army-btns">
+            <button class="dzc-icon-btn" type="button" title="Duplicate army"
+                    onclick="event.stopPropagation();DZCBuilder.duplicate('${a.id}')"
+                    aria-label="Duplicate ${esc(a.name)}">${window.DZCIcon('content_copy', { size: 15 })}</button>
+            <button class="dzc-icon-btn" type="button" title="Delete army"
+                    onclick="event.stopPropagation();DZCBuilder.del('${a.id}')"
+                    aria-label="Delete ${esc(a.name)}">${window.DZCIcon('delete', { size: 15 })}</button>
+          </span>
         </div>
         <p class="dzc-army-meta">${esc((FACTIONS.find(f => f.id === a.faction) || {}).name || a.faction)}
           · ${size ? esc(size.label) : 'Below minimum'}
@@ -56,7 +62,10 @@
     root.innerHTML = `<div class="dzc-wrap">
       <div class="dzc-list-head">
         <h1>Your Armies</h1>
-        <button class="btn btn-primary" type="button" onclick="DZCBuilder.openNew()">New Army</button>
+        <span class="dzc-list-btns">
+          <button class="btn btn-ghost" type="button" onclick="DZCBuilder.importLink()">Import a link</button>
+          <button class="btn btn-primary" type="button" onclick="DZCBuilder.openNew()">New Army</button>
+        </span>
       </div>
       ${list.length ? `<div class="dzc-army-grid">${cards}</div>`
         : `<p class="dzc-empty">No armies yet. Start one and it saves in this browser.</p>`}
@@ -499,6 +508,30 @@
       refresh();
     },
     openPicker, pick, print: printSheet,
+    /* Copying a list to try a variant is the commonest thing you do to one, so
+     * it gets a button rather than a share-then-reimport round trip. */
+    duplicate: async id => {
+      const src = window.DZCArmy.get(id);
+      if (!src) return;
+      const url = await window.DZCShare.link(src);
+      const copy = await window.DZCShare.importFrom(url.split('#share/')[1]);
+      copy.name = src.name + ' (copy)';
+      window.DZCArmy.touch(copy);
+      renderList();
+    },
+    /* Paste a link someone sent you. The hash route handles a link you OPEN;
+     * this is for one that arrives as text in a message. */
+    importLink: async () => {
+      const v = window.prompt('Paste a share link or its payload:');
+      if (!v) return;
+      const payload = v.includes('#share/') ? v.split('#share/')[1] : v.trim();
+      try {
+        const a = await window.DZCShare.importFrom(payload);
+        location.hash = '#army/' + a.id;
+      } catch (e) {
+        say('That link could not be read: ' + e.message);
+      }
+    },
     play: () => { location.hash = '#play/' + current.id; },
     /* The link carries the whole army, so it works with no server and cannot
      * rot. Copied straight to the clipboard; if that is blocked the link is
