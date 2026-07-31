@@ -229,6 +229,23 @@
   .dzc-create:hover, .dzc-create:active { transform: none; }
 }
 
+/* ── Sharp cards ──
+   Every card surface is square. Buttons, chips and inputs keep their radius —
+   a control can be soft, a panel should not be. One rule in one place so the
+   next card someone adds does not have to remember. */
+.dzc-pick,
+.dzc-card,
+.dzc-army-card,
+.dzc-rail-card,
+.dzc-group-card,
+.dzc-issues,
+.dzc-cmdr-opt,
+.dzc-cmdr-add,
+.dzc-pcard,
+.dzc-play-group,
+.dzc-stats .dzc-stat,
+.modal-panel { border-radius: 0; }
+
 /* ── Commanders in the rail ──
    One card per Commander with a button beneath, instead of a "— none —" select
    on the bottom of every Squad. You take one or two of these; five Squads
@@ -251,15 +268,25 @@
   font-size: 11.5px; color: var(--ink-2, #6b6459);
 }
 .dzc-cmdr-remove:hover { border-color: #a3231a; color: #a3231a; }
+/* The empty slot, sized like the Dropfleet Add Admiral panel Jet showed:
+   a real dashed panel you can hit, not a thin strip. */
 .dzc-cmdr-add {
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-  width: 100%; padding: 9px 12px; cursor: pointer;
-  border: 1px dashed var(--line, #d8d0c0); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 18px 12px; cursor: pointer;
+  border: 1px dashed var(--line, #cdc4b2);
   background: transparent; color: var(--ink-2, #5b544a);
-  font: 600 13px/1 var(--font-ui, 'Jost', sans-serif);
-  transition: border-color 150ms cubic-bezier(.33,0,.67,1), color 150ms;
+  font: 600 14px/1 var(--font-ui, 'Jost', sans-serif);
+  letter-spacing: .02em;
+  transition: border-color 150ms cubic-bezier(.33,0,.67,1),
+              color 150ms cubic-bezier(.33,0,.67,1),
+              background 150ms cubic-bezier(.33,0,.67,1);
 }
-.dzc-cmdr-add:hover { border-color: var(--gold, #c9a92c); border-style: solid; color: var(--ink, #24201c); }
+.dzc-cmdr-add .dzc-i { opacity: .8; }
+.dzc-cmdr-add:hover {
+  border-color: var(--gold, #c9a92c); color: var(--ink, #24201c);
+  background: rgba(201,169,44,.07);
+}
+.dzc-cmdr-add:hover .dzc-i { opacity: 1; }
 
 /* Choose a Commander */
 .dzc-cmdr-opt {

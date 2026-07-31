@@ -81,6 +81,10 @@ Reference for voice and wording, not just tokens:
 - Icons: rulebook tokens where they exist, otherwise Flowbite / Streamline /
   Simple Icons / SVG Spinners via Iconify. **Always inlined, never a CDN** —
   a CDN icon breaks offline.
+- **Sharp cards.** Every card surface is square — `border-radius: 0`. Picker
+  cards, unit cards, army cards, rail cards, Group cards, alert panels, modal
+  panels. Buttons, chips and inputs may keep a radius; a control can be soft,
+  a panel may not.
 - Never truncate or clip content. Never shift layout when a menu opens.
 
 ## 5. Verify in the real app

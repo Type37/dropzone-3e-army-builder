@@ -455,7 +455,7 @@
       </div>`;
     }).join('');
     return cards + `<button type="button" class="dzc-cmdr-add" onclick="DZCBuilder.openCommander()"
-      >${window.DZCIcon('military_tech', { size: 15 })}${list.length ? 'Add another Commander' : 'Add Commander'}</button>`;
+      >${window.DZCIcon('military_tech', { size: 18 })}${list.length ? 'Add another Commander' : 'Add Commander'}</button>`;
   }
 
   /* Every level the agreed game size allows, with what it costs and what it
