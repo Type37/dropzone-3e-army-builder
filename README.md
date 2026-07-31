@@ -8,13 +8,16 @@ An army builder for [Dropzone Commander](https://www.ttcombat.com/games/dropzone
 
 </div>
 
-> **Under construction**, but usable. A fork of the [Dropfleet Commander Fleet Builder](https://github.com/Type37/dropfleet-builder), converted from the space game to the ground game. The data pipeline, the unit reference, the army builder and the print sheet all run on Dropzone data. Play Mode, sharing and the collection tracker are still the Dropfleet versions and are not linked yet.
+> A fork of the [Dropfleet Commander Fleet Builder](https://github.com/Type37/dropfleet-builder), converted from the space game to the ground game. The Dropfleet app has now been removed entirely — everything below runs on Dropzone data.
 
-## What works
+## What it does
 
-- **Army builder** — Groups, Squads, per-model variants, transport nesting, live points and category ratios.
+- **Army builder** — Groups, Squads, per-model variants, weapon upgrades, transport nesting, live points and category ratios.
 - **Unit reference** — all 178 units with stats, weapons, variants, transport symbols and rules text one tap away.
 - **Print sheet** — the deployment plan, with the nesting tree and a verbatim rules appendix.
+- **Play Mode** — Rounds, Command Points, Pass tokens, Initiative and per-model damage, each card citing the rule behind its number.
+- **Collection** — record what you own and see what a list would still need.
+- **Share links** that carry the whole army, **cross-device sync**, and an **offline download** for use at a table with no signal.
 
 ### It enforces the rules rather than grading you afterwards
 
@@ -67,13 +70,19 @@ Fonts: [Jost](https://fonts.google.com/specimen/Jost), [Libre Baskerville](https
 
 ## Changelog
 
+### 2026-07-31 — Play Mode, Collection, and the Dropfleet app is gone
+- **Play Mode** tracks a Round the way chapter 4 defines it: CP replenishing up to your highest Commander Level (and Commanders counting as Level 0 in Round 1), Pass tokens from having fewer Groups than your opponent, Initiative as D6 + Level, and damage per model. Every card states the rule that produced its number.
+- **Collection** counts models, not Squads, and stays advisory — owning too few models is a shopping list, not a rules violation, so it never blocks a legal choice.
+- **Share links** carry the whole army in the URL. No server, so a shared list cannot rot.
+- **`app.js` is deleted.** 9,605 lines replaced by a 309-line shell; the whole Dropzone app is now 2,525 lines across nine files. The Dropfleet views, its 58 MB of ship art, its data and its 56 one-off scripts went with it. The deploy dropped from 86 MB to 26 MB.
+- **Two data bugs found by chasing an odd firing-arc value.** Every paid weapon upgrade was costing nothing, because `(+15pts*)` after a weapon name was being read as a variant restriction. And upgrade footnotes below the tables were being read as stats — eight weapons had arcs like `F/S/R be taken.`
+
 ### 2026-07-30 — The army builder
 - **Builds Dropzone armies.** Groups, Squads and per-model variants, with transport nesting drawn as a tree — a Bear APC with its Legionnaires indented beneath it, because that is the deployment plan.
 - **The rules are enforced, not validated.** Illegal choices are unreachable rather than flagged after the fact; see above.
 - **Print sheet** keeps the nesting tree and appends the verbatim text of every rule the list actually uses. Groups never split across a page and no rule breaks mid-sentence.
 - **Unit reference** for all 178 units.
 - **One responsive app.** The phone redirect to `/mobile/` is gone — it still served the *Dropfleet* builder, so every phone was landing in the wrong game. Verified at 320/375/414 with no horizontal overflow.
-- 86 tests across the data layer and army construction, run against the real scanned units rather than fixtures.
 
 ### 2026-07-30 — The data pipeline
 - **178 units ingested from the stat-card PDFs**, with transparent art for every one, plus a **106-rule glossary** drawn from the rulebook and the faction front matter. Four audits, one of which proves every rule keyword a card prints resolves to real text.

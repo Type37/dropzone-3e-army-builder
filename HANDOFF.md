@@ -341,27 +341,33 @@ finished list is reported:
 | `js/dzc-icons.js` | inlined Material Symbols — see `ICONS.md` |
 | `css/dzc.css`, `css/dzc-print.css` | |
 | `js/dzc-share.js` | share links — the whole army travels in the URL |
+| `js/dzc-play.js` | Play Mode — Rounds, CP, Pass tokens, Initiative, damage |
+| `js/dzc-collection.js` | what you own; advisory, never blocking |
+| `js/dzc-shell.js` | routing, modals, settings, theme, offline, sync |
 | `scripts/test-all.mjs` | **158 assertions** across four suites |
 
-Routes: `#armies`, `#army/<id>`, `#units`, `#share/<payload>`.
+Routes: `#armies`, `#army/<id>`, `#units`, `#collection`, `#play/<id>`,
+`#share/<payload>`.
 
-### The Dropfleet side is now dead weight — delete it
+### The Dropfleet app is gone
 
-`data/faction-*.json`, `fleet-index.json`, `fleet-data.json`, `ship-lore.json`,
-`pronunciations.json`, `assets/art/` (58 MB of **ship** art), `assets/factions/`
-and `mobile/` are **no longer deployed** and no longer fetched. The deploy went
-from 86 MB to 27 MB.
+`app.js` (9,605 lines) is deleted. It owned two unrelated things — the
+Dropfleet domain and the shell every view needs — which is why it could not
+simply be removed; the shell was rewritten as `js/dzc-shell.js` (309 lines)
+first. The Dropfleet views and eleven of its modals went with it, along with
+`mobile/`, `ref/`, `assets/art/`, `assets/factions/`, the Dropfleet data files
+and 56 one-off scripts.
 
-What remains is the code: the Dropfleet views in `index.html`
-(`#view-fleets`, `#view-builder`, `#view-play`, `#view-shared` and their
-modals) and the ~9,000 lines behind them in `app.js`. They are unreachable and
-have no data, so they are harmless but pointless. Deleting them is the next
-tidy-up; it was kept as a separate change so a large deletion could not be
-confused with a behavioural one.
+The whole Dropzone app is **2,525 lines across nine files**. The deploy went
+from **86 MB to 26 MB**.
 
-`app.js` still owns the shell — routing, settings, theme, offline, sync wiring,
-the modal system — so it cannot simply be removed. That shell wants extracting
-before the Dropfleet domain around it is cut.
+`css/app.css` **stays**. It is Dropfleet-era but the Dropzone views build on
+its tokens and its button, modal, topbar and card classes. Unpicking it is a
+styling job, not a deletion, and it is the natural first step of the Fluent
+pass (§6 item 7).
+
+Nothing is lost: it is all in this repo's history and in the `upstream-dropfleet`
+remote, which is the reason the fork kept it.
 
 ### How big step 2 really is
 
