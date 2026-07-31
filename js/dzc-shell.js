@@ -230,7 +230,9 @@ const App = (() => {
           <button class="btn btn-ghost btn-sm" type="button" onclick="App.openChangelog()">What's New</button>
           <a class="btn btn-ghost btn-sm" href="mailto:warlore1@outlook.com?subject=Dropzone%20builder%20feedback">Send feedback</a>
         </div>
-        <p class="dzc-set-note">A WarLore project. Game data and art belong to TTCombat.</p>
+        <p class="dzc-set-note">A WarLore project. Game data and art belong to TTCombat.
+          Interface icons from <a href="https://fonts.google.com/icons" target="_blank" rel="noopener">Material Symbols</a>,
+          used under the Apache License 2.0.</p>
       </div>`;
     openModal('modal-settings');
     renderOfflinePanel();

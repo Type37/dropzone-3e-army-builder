@@ -9,8 +9,10 @@ follows the pattern already used by `mobile/js/mobile.js` (`ICON_PATHS`), and
 HANDOFF §2.6 ("Inline them — never load from a CDN, it breaks offline").
 
 **Source:** Material Symbols / Material Icons, 24×24 viewBox, Apache 2.0.
-That licence needs an attribution line somewhere before release — currently
-there isn't one. Flagging rather than guessing where you'd want it.
+Attribution is in the Settings dialog, under About, and in `js/dzc-icons.js`.
+
+**Except the six stat icons**, which are drawn for this app and owe nobody
+anything — see the stats table below.
 
 ---
 
@@ -39,6 +41,25 @@ there isn't one. Flagging rather than guessing where you'd want it.
 | `military_tech` | **Commander** | a medal reads as rank |
 | `list_alt` | army roster | — |
 | `calculate` | points | — |
+
+## Stat icons — drawn here, not Material
+
+Geometric rather than pictorial, following the language already set in the
+Dropfleet builder (arrow for movement, hexagon for the damage track). Reached
+via `DZCIcon.stat('Mv')`.
+
+| Stat | Shape | Why |
+|---|---|---|
+| Move | arrow | same idea as Dropfleet's Thrust |
+| Armour | solid shield | |
+| Damage Points | hexagon | the Hull analogue, and Hull is a hexagon there |
+| Offence | solid triangle | a blade, pointing out |
+| Defence | outline shield | pairs with Armour at a lighter weight, so the two read as one idea |
+| Bravery | star | |
+
+Worth a second opinion: **Offence and Bravery are the weak picks.** A triangle
+is generic, and a star is a rating idiom more than a nerve one. If chapter 12's
+token legend has anything better, lift it.
 
 ## Decisions I made, worth a second opinion
 

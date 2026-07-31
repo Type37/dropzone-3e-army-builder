@@ -1,5 +1,11 @@
 /* Material Symbols, inlined.
  *
+ * Copyright Google LLC. Used under the Apache License, Version 2.0:
+ * https://www.apache.org/licenses/LICENSE-2.0
+ * Attribution also appears in the app, under Settings -> About.
+ *
+ * The six stat_* paths are NOT Material — they are drawn for this app.
+ *
  * INLINED ON PURPOSE. Loading an icon font or SVG sprite from a CDN would
  * break the app at a table with no signal, which is the one place it has to
  * work. Same reasoning as the mobile app's existing ICON_PATHS map.
