@@ -72,25 +72,101 @@
     </div>`;
   }
 
+  /* New Army, built the way the Dropfleet New Fleet dialog was: pick a game
+   * SIZE from cards that state what each one means, then adjust the exact
+   * limit if you agreed something else.
+   *
+   * Both halves are needed. The size decides the Group cap (3.1). The exact
+   * number decides the per-Group ceiling, because that is a quarter of the
+   * AGREED limit and not a quarter of the top of the band (3.2) — so a
+   * 1,200pt Clash and a 2,000pt Clash have very different Group caps. */
+  let picked = { faction: 'ucm', size: 'clash', points: null };
+
+  function sizeCardHtml(g) {
+    const cap = Math.floor((g.max || g.min) * 0.25);
+    const groups = g.groupsPerExtra
+      ? `${g.maxGroups} Groups, +${g.groupsPerExtra.add} per ${g.groupsPerExtra.per} over ${g.groupsPerExtra.above}`
+      : `${g.maxGroups} Groups max`;
+    const band = g.max == null ? `${g.min}pts and up` : `${g.min}–${g.max}pts`;
+    return `<div class="game-size-option${g.id === picked.size ? ' selected' : ''}"
+                 data-size="${g.id}" role="radio" tabindex="0"
+                 aria-checked="${g.id === picked.size}"
+                 onclick="DZCBuilder.pickSize('${g.id}')"
+                 onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();DZCBuilder.pickSize('${g.id}')}">
+      <div class="game-size-info">
+        <div class="game-size-name">${esc(g.label)}</div>
+        <div class="game-size-details">${band}</div>
+        <div class="game-size-details game-size-sub">${groups} · max ${cap}pts per Group</div>
+      </div>
+    </div>`;
+  }
+
   function openNew() {
-    const body = document.getElementById('dzc-new-body');
-    body.innerHTML = `
-      <label class="dzc-field"><span>Army name</span>
-        <input id="dzc-new-name" type="text" value="New Army" maxlength="60"></label>
-      <label class="dzc-field"><span>Faction</span>
-        <select id="dzc-new-faction">${FACTIONS.map(f => `<option value="${f.id}">${esc(f.name)}</option>`).join('')}</select></label>
-      <label class="dzc-field"><span>Points limit</span>
-        <input id="dzc-new-points" type="number" min="501" step="50" value="1500"></label>
-      <p class="dzc-field-note">The limit is the number you agreed with your opponent. It sets the game
-        size, the Group cap, and the quarter-of-the-limit ceiling on any one Group (3.1, 3.2).</p>`;
+    const sizes = window.DZC.index.gameSizes;
+    const def = sizes.find(s => s.id === picked.size) || sizes[1];
+    picked.points = picked.points || def.max || def.min;
+
+    document.getElementById('dzc-new-body').innerHTML = `
+      <div class="flex flex-col gap-md">
+        <div class="form-group float-field">
+          <input class="form-input" id="dzc-new-name" type="text" placeholder=" " value="New Army" maxlength="60">
+          <label class="float-label" for="dzc-new-name">Army name</label>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Faction</label>
+          <div class="dzc-faction-grid" id="dzc-faction-picker" role="radiogroup" aria-label="Faction">
+            ${FACTIONS.map(f => `<button type="button" class="dzc-faction-btn${f.id === picked.faction ? ' selected' : ''}"
+              style="--acc:${f.accent}" role="radio" aria-checked="${f.id === picked.faction}"
+              onclick="DZCBuilder.pickFaction('${f.id}')">
+              <span class="dzc-faction-dot"></span>${esc(f.name)}</button>`).join('')}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Game size</label>
+          <div class="size-grid" id="dzc-size-picker" role="radiogroup" aria-label="Game size">
+            ${sizes.map(sizeCardHtml).join('')}
+          </div>
+          <div class="dzc-points-row float-field">
+            <input class="form-input" id="dzc-new-points" type="number" min="501" step="50"
+                   placeholder=" " value="${picked.points}" oninput="DZCBuilder.pointsChanged(this.value)">
+            <label class="float-label" for="dzc-new-points">Points limit</label>
+          </div>
+          <p class="dzc-field-note" id="dzc-points-note"></p>
+        </div>
+      </div>`;
+    updatePointsNote();
     document.getElementById('dzc-new').classList.add('active');
+  }
+
+  /* Says what the number you typed actually buys, and names the size it lands
+   * in — so a limit that disagrees with the card you clicked is visible rather
+   * than silently overriding it. */
+  function updatePointsNote() {
+    const el = document.getElementById('dzc-points-note');
+    if (!el) return;
+    const n = picked.points;
+    const size = window.DZC.gameSizeFor(n);
+    if (!size) {
+      el.innerHTML = `<b>${n}pts is below the 501pt minimum</b> for a game (3.1).`;
+      return;
+    }
+    if (size.id !== picked.size) picked.size = size.id;
+    const cap = window.DZC.maxGroupCost(n);
+    const maxG = window.DZC.maxGroups(size, n);
+    el.textContent = `${n}pts is a ${size.label}: up to ${maxG} Groups, `
+      + `and no one Group may cost more than ${cap}pts — a quarter of the agreed limit (3.2).`;
+    document.querySelectorAll('.game-size-option').forEach(o => {
+      const on = o.dataset.size === size.id;
+      o.classList.toggle('selected', on);
+      o.setAttribute('aria-checked', on);
+    });
   }
 
   function createArmy() {
     const name = (document.getElementById('dzc-new-name').value || 'New Army').trim();
-    const faction = document.getElementById('dzc-new-faction').value;
-    const pts = parseInt(document.getElementById('dzc-new-points').value, 10) || 1500;
-    const a = window.DZCArmy.create(faction, name, pts);
+    const a = window.DZCArmy.create(picked.faction, name, picked.points);
     document.getElementById('dzc-new').classList.remove('active');
     location.hash = '#army/' + a.id;
   }
@@ -469,6 +545,23 @@
 
   window.DZCBuilder = {
     renderList, renderBuilder, openNew, createArmy, del, open,
+    pickFaction: id => { picked.faction = id; openNew(); },
+    /* Clicking a size sets the limit to the TOP of that band, which is what
+     * people mean by "a Clash game". Typing an exact number then wins, because
+     * the agreed limit is what the rules actually key off — the per-Group cap
+     * is a quarter of IT, not a quarter of the band (3.2). */
+    pickSize: id => {
+      const g = window.DZC.index.gameSizes.find(s => s.id === id);
+      if (!g) return;
+      picked.size = id;
+      picked.points = g.max || g.min;
+      openNew();
+    },
+    pointsChanged: v => {
+      const n = parseInt(v, 10);
+      picked.points = isNaN(n) ? 0 : n;
+      updatePointsNote();
+    },
     rename: t => { current.name = (t || '').trim() || 'Army'; window.DZCArmy.touch(current); },
     renameGroup: (id, t) => {
       const g = current.groups.find(x => x.id === id);

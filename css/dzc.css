@@ -7,28 +7,6 @@
  *      position:absolute at body level, so nothing behind it reflows.
  */
 
-/* ── wordmark ──
- * Set in type rather than shipped as art. There is no Dropzone logo asset in
- * this repo, and lifting TTCombat's from a PDF is both a licensing question
- * and a raster that will not scale. Swap for real art whenever it exists;
- * nothing else depends on this. */
-.dzc-wordmark { display: inline-flex; flex-direction: column; line-height: 1; text-decoration: none; }
-.dzc-wordmark-main {
-  font: 800 19px/1 var(--font-display, 'Roboto Slab', Georgia, serif);
-  letter-spacing: .10em; color: #fff;
-}
-.dzc-wordmark-sub {
-  font: 600 8.5px/1 var(--font-ui, 'Jost', system-ui, sans-serif);
-  letter-spacing: .30em; color: var(--gold, #c9a92c); margin-top: 3px;
-}
-.dzc-wordmark--hero .dzc-wordmark-main { font-size: 46px; letter-spacing: .07em; color: var(--ink, #24201c); }
-.dzc-wordmark--hero .dzc-wordmark-sub { font-size: 14px; letter-spacing: .34em; margin-top: 7px; }
-[data-theme="dark"] .dzc-wordmark--hero .dzc-wordmark-main { color: #f2ece0; }
-@media (max-width: 640px) {
-  .dzc-wordmark--hero .dzc-wordmark-main { font-size: 30px; }
-  .dzc-wordmark--hero .dzc-wordmark-sub { font-size: 10px; }
-}
-
 .dzc-wrap { max-width: 1180px; margin: 0 auto; padding: 12px 16px 64px; }
 
 /* ── faction tabs ── */
@@ -390,3 +368,27 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 .dzc-arc-cell span { margin-left: 4px; vertical-align: middle; }
 .dzc-army-btns { display: inline-flex; gap: 2px; flex: 0 0 auto; }
 .dzc-list-btns { display: inline-flex; gap: 8px; flex-wrap: wrap; }
+
+/* ── New Army dialog ──
+   Faction as a grid of accented buttons; game size as cards that state what
+   each one buys, because "Clash" alone does not tell you the Group cap. */
+.dzc-faction-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.dzc-faction-btn {
+  display: flex; align-items: center; gap: 7px; padding: 9px 10px; cursor: pointer;
+  border: 1px solid var(--line, #d8d0c0); border-radius: 6px; background: var(--surface-2, #fff);
+  font: 600 12.5px/1 var(--font-ui, 'Jost', sans-serif); color: var(--ink, #24201c);
+  transition: border-color .15s cubic-bezier(.33,0,.67,1), background .15s cubic-bezier(.33,0,.67,1);
+}
+.dzc-faction-btn:hover { border-color: var(--acc); }
+.dzc-faction-btn.selected { border-color: var(--acc); box-shadow: inset 3px 0 0 var(--acc); }
+.dzc-faction-dot { width: 11px; height: 11px; border-radius: 2px; background: var(--acc); flex: 0 0 auto; }
+.dzc-points-row { margin-top: 8px; }
+
+/* ── Dropzone wordmark ──
+   TTCombat's own DZC logo, two cuts: all-white for the navy topbar, and the
+   black/green cut for the light landing page. Dark mode swaps the landing one
+   to white, because the black cut disappears against a dark background. */
+.topbar-logo { height: 26px; width: auto; display: block; }
+.landing-logo-img { max-width: min(440px, 78vw); width: 100%; height: auto; display: block; margin: 0 auto; }
+[data-theme="dark"] #landing-logo { content: url("../assets/logos/dzc_logo_white.webp"); }
+@media (max-width: 640px) { .topbar-logo { height: 20px; } }
