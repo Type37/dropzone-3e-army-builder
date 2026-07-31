@@ -253,9 +253,15 @@
    sideways at 375. Constrain the control and let the row wrap instead; the
    option text stays complete inside the open dropdown, so nothing is lost. */
 .dzc-sq-opts > * { min-width: 0; max-width: 100%; }
-.dzc-carry, .dzc-cmdr { flex: 1 1 190px; min-width: 0; }
-.dzc-carry select, .dzc-cmdr select { flex: 1 1 auto; width: 100%; min-width: 0; }
-.dzc-variant { flex: 0 1 auto; min-width: 0; max-width: 100%; }
+/* Transport and Commander each get their own line rather than crowding into
+   one wide bar with the variant selects. */
+.dzc-carry, .dzc-cmdr { flex: 1 1 100%; min-width: 0; }
+.dzc-carry select, .dzc-cmdr select { flex: 1 1 auto; width: 100%; min-width: 0; max-width: 320px; }
+.dzc-variant { flex: 0 1 200px; min-width: 0; max-width: 100%; }
+
+/* The builder column is capped so a squad row never has to stretch across a
+   full-width desktop viewport. */
+.dzc-builder { max-width: 640px; }
 
 @media (max-width: 640px) {
   .dzc-b-head { gap: 8px; }

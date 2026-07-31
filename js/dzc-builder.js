@@ -54,8 +54,6 @@
           · ${size ? esc(size.label) : 'Below minimum'}
           · ${a.groups.length} Group${a.groups.length === 1 ? '' : 's'}</p>
         <p class="dzc-army-pts"><b>${cost}</b> / ${a.pointsLimit}pts</p>
-        ${v.errors.length ? `<p class="dzc-army-bad">${v.errors.length} problem${v.errors.length === 1 ? '' : 's'}</p>`
-          : a.groups.length ? '<p class="dzc-army-ok">Legal</p>' : '<p class="dzc-army-meta">Empty</p>'}
       </article>`;
     }).join('');
 
@@ -363,7 +361,6 @@
               `<option value="${l.level}"${s.commander && s.commander.level === l.level ? ' selected' : ''}>L${l.level} · ${l.points}pts</option>`).join('')}
           </select></label>`}
       </div>
-      ${isTransport ? `<p class="dzc-capacity">${window.DZCIcon('info', { size: 12 })} Count follows its cargo — Transports must be taken full (3.2.4)</p>` : ''}
       ${riders.map(r => squadHtml(a, g, r, depth + 1)).join('')}
     </div>`;
   }
@@ -456,7 +453,7 @@
       const riders = g.squads.filter(x => x.carriedBy === s.id);
       const cost = window.DZCArmy.squadCost(a, s);
       const stats = Object.keys(u.stats || {})
-        .map(k => `${k} <b>${esc(u.stats[k])}</b>`).join(' · ');
+        .map(k => `${esc(window.DZC.statLabel(k))} <b>${esc(u.stats[k])}</b>`).join('  ');
 
       // Variants are per model, so a mixed Squad is listed by its actual mix.
       const mix = {};
@@ -469,7 +466,7 @@
             .join(u.transport.capacityMode === 'both' ? ' + ' : ' / ')}` : '';
 
       const wpns = (u.weapons || []).length ? `<table class="pr-wpn">
-        <tr><th>Weapon</th><th>Arc</th><th>MA</th><th>R</th><th>Att</th><th>Ac</th><th>E</th><th>Special</th></tr>
+        <tr><th>Weapon</th><th>Arc</th><th>Move &amp; Attack</th><th>Range</th><th>Attacks</th><th>Accuracy</th><th>Energy</th><th>Special</th></tr>
         ${u.weapons.map(w => `<tr><td>${esc(w.name)}${(w.variants || []).length ? ` <i>(${esc(w.variants.join(', '))})</i>` : ''}</td>
           <td>${esc(w.arc || '')}</td><td>${esc(w.ma || '')}</td><td>${esc(w.r || '')}</td>
           <td>${esc(w.att || '')}</td><td>${esc(w.ac || '')}</td><td>${esc(w.e || '')}</td>

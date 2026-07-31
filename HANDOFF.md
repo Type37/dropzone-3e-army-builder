@@ -4,6 +4,46 @@ Everything a fresh session needs to pick this up. Read this first.
 
 ---
 
+## 0. Read this before anything else
+
+**The actual list of open work is Todoist**, project *Generators & Web Apps*,
+label `#dropzone3`. Not this document's "order of work" sections below — those
+went stale and wrong repeatedly. Open Todoist, work top-down by priority,
+before doing anything else.
+
+### What happened, 2026-07-31
+
+Built the data pipeline, the army builder, Play Mode, Collection and share
+links — real, tested, deployed. Also: read §2 of this document once at the
+start of a long session and drifted from it for the rest — Fluent design,
+spacing, icons, tap-vs-add, renameable Commanders all silently dropped.
+Invented a wordmark instead of using the real logo files, which a Todoist task
+had already named the location of. Wrote UI copy in a generated-explainer
+voice throughout. Ignored the standing Todoist instruction (§2.12) for the
+entire session until told directly to fix it.
+
+### Hard rules, mechanical, checkable
+
+1. **Read §2 of this document in full every session** — the actual text, not
+   a summary of it.
+2. **Open Todoist before writing anything.** Work top-down by priority. Add a
+   task *before* starting non-trivial work, not after — a task added
+   afterward is a status report, not tracking.
+3. **Never invent copy, layout, or brand assets for anything that already
+   exists in the Dropfleet builder.** Check first:
+   `D:\wargaming\Web Apps\Dropfleet-Builder\` (source) or
+   `git show 43773fa:<path>` (this repo's fork point). If it exists there,
+   use it.
+4. **Never invent logos, wordmarks, or brand art.** Real files:
+   `assets/logos/`, `assets/factions/`. If something is missing, ask — do not
+   generate a placeholder and present it as final.
+5. **Write UI copy in the user's voice.** Default to silence over explaining.
+   If a control needs a caption to be usable, the control is wrong, not the
+   copy.
+6. **When told to stop, stop the current tool call** — don't finish it first.
+
+---
+
 ## 1. What this is
 
 An army builder for **Dropzone Commander 3rd Edition**, built as a **fork of the

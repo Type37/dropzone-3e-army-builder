@@ -76,19 +76,17 @@
   }
 
   function squadHtml(u) {
-    if (u.squadMin == null && u.squadMax == null) {
-      // Transports have no squad size: you take as many as the squad needs.
-      return u.category === 'Transport' ? 'as needed' : '—';
-    }
+    if (u.squadMin == null && u.squadMax == null) return '—';
     if (u.squadMin === u.squadMax) return String(u.squadMin);
     return `${u.squadMin}–${u.squadMax}`;
   }
 
   function statsHtml(u) {
     // Vehicles/Aircraft print Mv/A/DP; Infantry print Mv/OF/DF/B/DP. Render
-    // whatever the card actually had rather than assuming a shape.
+    // whatever the card actually had rather than assuming a shape. Labels are
+    // spelled out (2.5-2.7) rather than left as bare letters.
     return Object.keys(u.stats || {}).map(k =>
-      `<span class="dzc-stat"><span class="dzc-stat-k">${esc(k)}</span><span class="dzc-stat-v">${esc(u.stats[k])}</span></span>`
+      `<span class="dzc-stat"><span class="dzc-stat-k">${esc(window.DZC.statLabel(k))}</span><span class="dzc-stat-v">${esc(u.stats[k])}</span></span>`
     ).join('');
   }
 
@@ -188,7 +186,7 @@
     if (!u) return;
     const weapons = (u.weapons || []).length ? `
       <table class="dzc-wpn">
-        <thead><tr><th>Weapon</th><th>Arc</th><th>MA</th><th>R</th><th>Att</th><th>Ac</th><th>E</th><th>Special</th></tr></thead>
+        <thead><tr><th>Weapon</th><th>Arc</th><th>Move &amp; Attack</th><th>Range</th><th>Attacks</th><th>Accuracy</th><th>Energy</th><th>Special</th></tr></thead>
         <tbody>${u.weapons.map(w => `<tr${w.box === 'upgrade' ? ' class="is-upgrade"' : w.box === 'variant' ? ' class="is-variant"' : ''}>
           <td class="dzc-wpn-name">${esc(w.name)}
             ${(w.variants || []).length ? `<span class="dzc-wpn-only">${esc(w.variants.join(', '))} only</span>` : ''}
@@ -218,8 +216,7 @@
       </div>
       ${u.special ? `<div class="dzc-detail-rules"><h4>Special</h4>${rulesHtml(u.special, state.faction)}</div>` : ''}
       ${variants}
-      <h4>Weapons</h4>${weapons}
-      <p class="dzc-source">Stat card page ${u.page}</p>`;
+      ${weapons}`;
     document.querySelector('#dzc-detail .modal-title').textContent = u.name;
     document.getElementById('dzc-detail').classList.add('active');
   }

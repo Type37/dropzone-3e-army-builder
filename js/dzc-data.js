@@ -273,8 +273,22 @@
     return ((c && c.levels) || []).filter(l => l.allowedIn.indexOf(gameSizeId) !== -1);
   }
 
+  // Stat and weapon column abbreviations, spelled out. Rulebook 2.5-2.7 names
+  // each one; a bare "A" or "DP" means nothing without having read the book.
+  const STAT_LABELS = {
+    Mv: 'Move', A: 'Armour', DP: 'Damage Points',
+    OF: 'Offence', DF: 'Defence', B: 'Bravery'
+  };
+  const WEAPON_LABELS = {
+    Name: 'Weapon', Arc: 'Arc', MA: 'Move & Attack', R: 'Range',
+    Att: 'Attacks', Ac: 'Accuracy', E: 'Energy', Special: 'Special'
+  };
+  const statLabel = k => STAT_LABELS[k] || k;
+  const weaponColLabel = k => WEAPON_LABELS[k] || k;
+
   const api = {
     loadIndex, loadFaction,
+    statLabel, weaponColLabel,
     get index() { return state.index; },
     get rules() { return state.rules; },
     faction: id => state.factions[id],
