@@ -38,13 +38,6 @@ jobs:
           cp -r index.html favicon.ico manifest.webmanifest sw.js \
                 css js data assets \
                 _site/
-          # Drop what only the retired Dropfleet views used. Nothing in the
-          # Dropzone app reads any of it, and assets/art alone is 58 MB of
-          # SPACESHIP art for a game about ground forces.
-          rm -rf _site/assets/art _site/assets/factions
-          rm -f  _site/data/faction-*.json _site/data/fleet-index.json \
-                 _site/data/fleet-data.json _site/data/ship-lore.json \
-                 _site/data/pronunciations.json
           echo "--- staged: $(du -sh _site | cut -f1) ---"
           du -sh _site/* | sort -h
 
