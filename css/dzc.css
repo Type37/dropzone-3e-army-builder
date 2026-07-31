@@ -380,11 +380,12 @@
   text-transform: uppercase; letter-spacing: .02em;
   color: var(--ink-2, #6b6459);
 }
-.dzc-stat.is-na { opacity: .4; }
-
-/* Compact: the picker. Six short codes fit three across, so the block is
-   shorter and a card shows more of what actually distinguishes it. */
-.dzc-stats.is-compact { grid-template-columns: repeat(3, 1fr); gap: 2px; }
+/* A unit shows only the stats its card prints, so the grid fits the count:
+   three across for a Vehicle or Aircraft (Mv A DP), and Infantry's five run
+   three then two. */
+.dzc-stats.n-3 { grid-template-columns: repeat(3, 1fr); }
+.dzc-stats.n-5 { grid-template-columns: repeat(3, 1fr); }
+.dzc-stats.is-compact { gap: 2px; }
 .dzc-stats.is-compact .dzc-stat { padding: 2px 4px; gap: 3px; justify-content: center; }
 .dzc-stats.is-compact .dzc-stat-k { font-size: 9px; letter-spacing: .04em; }
 .dzc-pick-wpns { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }

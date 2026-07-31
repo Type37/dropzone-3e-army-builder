@@ -106,24 +106,23 @@
     // columns, so two units can be read against each other. Labels are spelled
     // out (2.5-2.7) rather than left as bare letters, and each carries its
     // icon.
-    // Every column, every time, in one order — 152 units print Mv/A/DP and 26
-    // print Mv/OF/DF/B/DP, and a table is only worth having if a Vehicle and a
-    // squad of Infantry line up under the same headings. A stat the card does
-    // not print shows a dash rather than vanishing and shifting the columns.
+    // Only what the unit's card actually prints. Vehicles and Aircraft have
+    // Mv/A/DP; Infantry have Mv/OF/DF/B/DP. Armour is meaningless on Infantry
+    // and Bravery on a tank, so an empty cell for it is noise — showing three
+    // greyed dashes made every Vehicle look half broken.
     const stats = u.stats || {};
-    if (!Object.keys(stats).length) return '';
+    const keys = STAT_ORDER.filter(k => stats[k] != null);
+    if (!keys.length) return '';
     const compact = !!(opts && opts.compact);
-    const cells = STAT_ORDER.map(k => {
+    const cells = keys.map(k => {
       const label = window.DZC.statLabel(k);
-      const has = stats[k] != null;
-      const tip = has ? label : label + ' — not printed on this unit\'s stat card';
-      return `<div class="dzc-stat${has ? '' : ' is-na'}" title="${esc(tip)}">
+      return `<div class="dzc-stat" title="${esc(label)}">
         <span class="dzc-stat-i">${window.DZCIcon.stat(k, { size: 14 })}</span>
-        <span class="dzc-stat-v">${has ? esc(stats[k]) : '–'}</span>
+        <span class="dzc-stat-v">${esc(stats[k])}</span>
         <span class="dzc-stat-k">${esc(compact ? k : label)}</span>
       </div>`;
     }).join('');
-    return `<div class="dzc-stats${compact ? ' is-compact' : ''}">${cells}</div>`;
+    return `<div class="dzc-stats${compact ? ' is-compact' : ''} n-${keys.length}">${cells}</div>`;
   }
 
   /* Rule keywords, each resolved to its glossary text and tappable. */

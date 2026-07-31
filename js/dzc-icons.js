@@ -49,9 +49,19 @@
     stat_mv: 'M4 11h11.17l-3.58-3.59L13 6l6 6-6 6-1.41-1.41L15.17 13H4z',
     stat_a: 'M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z',
     stat_dp: 'M12 2 21 7v10l-9 5-9-5V7l9-5z',
-    stat_of: 'M12 3 22 20H2z',
+    // Offence — a soldier firing. Supplied by Jet; carries its own 640 box.
+    stat_of: {
+      box: '0 0 640 640',
+      d: 'M480 64h-32c-8.8 0-16 7.2-16 16s7.2 16 16 16v100.3c-9.6 5.5-16 15.9-16 27.7v32c-17.7 0-32 14.3-32 32v144c0 17.7 14.3 32 32 32h16v96c0 8.8 7.2 16 16 16h59.5c10.4 0 18-9.8 15.5-19.9L516 464h44c8.8 0 16-7.2 16-16v-16c0-8.8-7.2-16-16-16h-48v-26.7l53.1-17.7c6.5-2.2 10.9-8.3 10.9-15.2v-84.5c0-8.8-7.2-16-16-16h-16c-8.8 0-16 7.2-16 16v56l-16 5.3V223.9c0-11.8-6.4-22.2-16-27.7V80c0-8.8-7.2-16-16-16M288 272c-106 0-192 86-192 192v48c0 17.7 14.3 32 32 32s32-14.3 32-32v-48c0-32.5 12.1-62.1 32-84.7V576h160V282.9c-20-7.1-41.6-10.9-64-10.9m56-120c0-39.8-32.2-72-72-72s-72 32.2-72 72s32.2 72 72 72s72-32.2 72-72'
+    },
     stat_df: 'M12 2 4 5.5v5.9c0 4.9 3.4 9.5 8 10.6 4.6-1.1 8-5.7 8-10.6V5.5L12 2zm0 2.2 6 2.6v4.6c0 3.8-2.5 7.4-6 8.5-3.5-1.1-6-4.7-6-8.5V6.8l6-2.6z',
-    stat_b: 'M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z',
+    // Bravery — a banner. Phosphor flag-banner-fold-fill, MIT, inlined from
+    // the Iconify API at author time. Never fetched at runtime: a CDN icon is
+    // a blank square at a table with no signal.
+    stat_b: {
+      box: '0 0 256 256',
+      d: 'm131.79 69.65l-43.63 96a4 4 0 0 1-3.64 2.35H28.23a8.2 8.2 0 0 1-6.58-3.13a8 8 0 0 1 .43-10.25L57.19 116L22.08 77.38a8 8 0 0 1-.43-10.26A8.22 8.22 0 0 1 28.23 64h99.92a4 4 0 0 1 3.64 5.65m105.77-27.41a8.3 8.3 0 0 0-5.79-2.24H168a8 8 0 0 0-7.28 4.69l-42.57 93.65a4 4 0 0 0 3.64 5.66h57.79l-34.86 76.69a8 8 0 1 0 14.56 6.62l80-176a8 8 0 0 0-1.72-9.07'
+    },
 
     // — domain —
     // Group / activation unit. "layers" reads as a stack of things acting together.
@@ -66,13 +76,20 @@
     calculate: 'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 7h4v2H7V7zm10 10h-4v-2h4v2zm0-4h-4v-2h4v2zm-6 4H7v-2h4v2zm0-4H7v-2h4v2z'
   };
 
+  /* Most paths are Material on a 24x24 grid. A few come from elsewhere and
+   * carry their own box, so an entry may be either a path string or
+   * { d, box }. */
+  const BOX = '0 0 24 24';
+
   function icon(name, opts) {
     const o = opts || {};
-    const d = P[name];
-    if (!d) return '';
+    const e = P[name];
+    if (!e) return '';
+    const d = typeof e === 'string' ? e : e.d;
+    const box = typeof e === 'string' ? BOX : (e.box || BOX);
     const s = o.size || 20;
     return `<svg class="dzc-i${o.className ? ' ' + o.className : ''}" width="${s}" height="${s}"`
-      + ` viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="${d}"/></svg>`;
+      + ` viewBox="${box}" fill="currentColor" aria-hidden="true" focusable="false"><path d="${d}"/></svg>`;
   }
 
   /* Firing arcs, drawn rather than spelled out.
