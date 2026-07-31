@@ -273,36 +273,34 @@
 .dzc-pick-meta span + span::before { content: '  '; white-space: pre; }
 .dzc-pick-stats { margin-top: 4px; }
 
-/* Stat table. Fixed layout so the columns are even and the values line up
-   under their headings. */
-.dzc-stats { width: 100%; border-collapse: collapse; table-layout: fixed; }
-.dzc-stats th {
-  padding: 1px 2px 0; text-align: center; font: 600 8.5px/1.3 var(--font-ui, 'Jost', sans-serif);
-  text-transform: uppercase; letter-spacing: .03em; color: var(--ink-2, #6b6459);
-}
-.dzc-stats th span { display: block; overflow-wrap: anywhere; }
-/* Visible to a screen reader, not to the eye — the icon carries it on a card
-   and the full word is on the title. */
-.dzc-sr {
-  position: absolute; width: 1px; height: 1px; margin: -1px;
-  padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
-}
-.dzc-stats th svg { display: block; margin: 0 auto 1px; opacity: .75; }
-/* Outfit for the values. Dropfleet uses its display serif here, but Jet's call
-   for the numeric role is Outfit — even widths and open counters read better
-   at 15px than a slab serif does. */
-.dzc-stats td {
-  padding: 1px 2px 2px; text-align: center;
-  font-family: var(--font-numeric, 'Outfit', sans-serif);
-  font-size: 15px; font-weight: 600; line-height: 1.15;
-  font-variant-numeric: tabular-nums;
-  color: var(--ink, #24201c);
+/* Two columns, three rows. Every cell carries its icon AND its word AND its
+   value — an icon alone does not tell you what a number means. Same shape as
+   the Dropfleet builder's .stat-grid. */
+.dzc-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+.dzc-stat {
+  display: flex; align-items: baseline; gap: 4px; min-width: 0;
+  padding: 3px 5px; border-radius: 4px;
   background: var(--surface-3, #f2ece0);
-  border-top: 1px solid var(--line, #e3dcce);
+  border: 1px solid var(--line, #e3dcce);
 }
-.dzc-stats td.is-na { color: var(--ink-2, #6b6459); opacity: .35; font-weight: 400; }
-.dzc-stats tbody tr td:first-child { border-bottom-left-radius: 4px; }
-.dzc-stats tbody tr td:last-child { border-bottom-right-radius: 4px; }
+.dzc-stat-i { flex: 0 0 auto; align-self: center; display: inline-flex; opacity: .8; }
+.dzc-stat-v {
+  flex: 0 0 auto;
+  font-family: var(--font-numeric, 'Outfit', sans-serif);
+  /* 600, not 700: heavier closes the counters on 3 / 5 / 8 at this size. The
+     Dropfleet stat cell carries the same note. */
+  font-size: 14px; font-weight: 600; line-height: 1;
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--ink, #24201c);
+}
+.dzc-stat-k {
+  min-width: 0; overflow-wrap: anywhere;
+  font-family: var(--font-condensed, 'Jost', sans-serif);
+  font-size: 9.5px; font-weight: 700; line-height: 1.15;
+  text-transform: uppercase; letter-spacing: .03em;
+  color: var(--ink-2, #6b6459);
+}
+.dzc-stat.is-na { opacity: .4; }
 .dzc-pick-wpns { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
 .dzc-pick-wpn {
   display: inline-flex; align-items: center; gap: 3px; padding: 1px 5px;

@@ -81,16 +81,14 @@
     return `${u.squadMin}–${u.squadMax}`;
   }
 
-  /* Movement, then the offensive stat, then the two defensive ones (Defence is
-   * Infantry, Armour is everything else), then Bravery, then the damage track
-   * last. */
-  const STAT_ORDER = ['Mv', 'OF', 'DF', 'A', 'B', 'DP'];
+  /* Two columns, three rows. Each row pairs stats that mean something
+   * together: how it moves and what stops shots, then the fight, then nerve
+   * and how much it takes to kill. Copied from the Dropfleet builder's
+   * renderStatGrid (app.js:3472), which is a 2-column grid of
+   * icon + value + label cells. */
+  const STAT_ORDER = ['Mv', 'A', 'OF', 'DF', 'B', 'DP'];
 
-  /* `compact` drops the header words and keeps the icon, because six spelled-out
-   * labels in a 228px card break as "OFFENC/E" and "DAMAG/E POINTS". The full
-   * name stays on hover, and the unit's own view prints the words in full. No
-   * abbreviations anywhere. */
-  function statsHtml(u, opts) {
+  function statsHtml(u) {
     // Vehicles/Aircraft print Mv/A/DP; Infantry print Mv/OF/DF/B/DP. Render
     // whatever the card actually had rather than assuming a shape.
     //
@@ -104,18 +102,16 @@
     // not print shows a dash rather than vanishing and shifting the columns.
     const stats = u.stats || {};
     if (!Object.keys(stats).length) return '';
-    const compact = !!(opts && opts.compact);
-    const head = STAT_ORDER.map(k => {
+    const cells = STAT_ORDER.map(k => {
       const label = window.DZC.statLabel(k);
-      return `<th scope="col" title="${esc(label)}">${window.DZCIcon.stat(k, { size: compact ? 14 : 13 })}`
-        + (compact ? `<span class="dzc-sr">${esc(label)}</span>` : `<span>${esc(label)}</span>`)
-        + '</th>';
+      const has = stats[k] != null;
+      return `<div class="dzc-stat${has ? '' : ' is-na'}"${has ? '' : ' title="Not printed on this unit\'s stat card"'}>
+        <span class="dzc-stat-i">${window.DZCIcon.stat(k, { size: 14 })}</span>
+        <span class="dzc-stat-v">${has ? esc(stats[k]) : '–'}</span>
+        <span class="dzc-stat-k">${esc(label)}</span>
+      </div>`;
     }).join('');
-    const row = STAT_ORDER.map(k => stats[k] != null
-      ? `<td>${esc(stats[k])}</td>`
-      : '<td class="is-na" title="Not printed on this unit\'s stat card">–</td>').join('');
-    return `<table class="dzc-stats"><thead><tr>${head}</tr></thead>`
-      + `<tbody><tr>${row}</tr></tbody></table>`;
+    return `<div class="dzc-stats">${cells}</div>`;
   }
 
   /* Rule keywords, each resolved to its glossary text and tappable. */

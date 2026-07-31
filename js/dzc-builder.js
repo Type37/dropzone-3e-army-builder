@@ -393,7 +393,7 @@
     const weapons = sharedWeapons(u).map(w =>
       `<span class="dzc-pick-wpn">${window.DZCIcon.arc(w.arc, { size: 12 })}${esc(w.name)}</span>`).join('');
     return `<div class="dzc-facts">
-      <div class="dzc-pick-stats">${U.statsHtml(u, { compact: true })}</div>
+      <div class="dzc-pick-stats">${U.statsHtml(u)}</div>
       ${weapons ? `<div class="dzc-pick-wpns">${weapons}</div>` : ''}
       ${u.special ? `<div class="dzc-pick-rules">${U.rulesHtml(u.special, faction)}</div>` : ''}
     </div>`;
