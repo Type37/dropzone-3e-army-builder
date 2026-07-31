@@ -382,3 +382,9 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 /* Advisory, never blocking — owning too few models is not against the rules. */
 .dzc-short { margin: 0 0 12px; padding: 9px 12px; border-radius: 6px; font-size: 12.5px; background: var(--surface-3, #f2ece0); }
 .dzc-short b { display: block; margin-bottom: 3px; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2, #6b6459); }
+
+/* Firing arcs are drawn as 90° wedges (6.1.2). The letters stay beside the
+   picture: the icon is faster to read, the text is what the card says. */
+.dzc-arc { display: inline-block; vertical-align: middle; line-height: 0; }
+.dzc-arc-cell { white-space: nowrap; }
+.dzc-arc-cell span { margin-left: 4px; vertical-align: middle; }

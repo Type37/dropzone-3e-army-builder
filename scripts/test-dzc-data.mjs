@@ -32,7 +32,8 @@ const sandbox = {
 sandbox.globalThis = sandbox;
 vm.createContext(sandbox);
 vm.runInContext(SRC, sandbox);
-const DZC = win.DZC;
+vm.runInContext(readFileSync(path.join(ROOT, 'js', 'dzc-icons.js'), 'utf8'), sandbox);
+const DZC = win.DZC, Icon = win.DZCIcon;
 
 let pass = 0, fail = 0;
 function ok(cond, label, extra) {
@@ -132,6 +133,31 @@ const strikehawk = resistance.byId['strikehawk-tilt-rotor'];
 eq(strikehawk.transport.capacityMode, 'both', 'Strikehawk carries both at once');
 const tegu = shaltari.byId['tegu-gatestrider'];
 eq(tegu.transport.capacityMode, 'either', 'Tegu is either/or');
+
+// ------------------------------------------------------------------ arc icons
+console.log('\nfiring arcs are 90-degree wedges (6.1.2)');
+{
+  const wedges = a => (Icon.arc(a).match(/fill="currentColor"/g) || []).length;
+  eq(wedges('F'), 1, 'F fills one wedge');
+  eq(wedges('F/S'), 3, 'F/S fills front and both sides');
+  eq(wedges('F/S/R'), 4, 'F/S/R fills all four');
+  eq(wedges('F/Sl'), 2, 'F/Sl fills two');
+  eq(wedges('R'), 1, 'R fills one');
+  eq(Icon.arc('-'), '', 'a dash draws nothing');
+  // The Side Left / Side Right split is the reason these are drawn at all:
+  // "F/Sl" and "F/Sr" read identically as text and differently as pictures.
+  ok(Icon.arc('F/Sl') !== Icon.arc('F/Sr'), 'F/Sl and F/Sr are different pictures');
+  eq(Icon.arcLabel('F/Sr'), 'Front, Side Right', 'and the label names the arcs');
+
+  // Every arc value that appears on a real card must render.
+  const seen = new Set();
+  for (const fid of ['ucm', 'phr', 'scourge', 'shaltari', 'resistance', 'bioficer']) {
+    const f = await DZC.loadFaction(fid);
+    f.units.forEach(u => (u.weapons || []).forEach(w => { if (w.arc) seen.add(w.arc.trim()); }));
+  }
+  const undrawn = [...seen].filter(a => a !== '-' && !Icon.arc(a));
+  eq(undrawn.length, 0, 'every arc printed on a card has an icon', undrawn.join(', '));
+}
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

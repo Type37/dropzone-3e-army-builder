@@ -193,7 +193,8 @@
           <td class="dzc-wpn-name">${esc(w.name)}
             ${(w.variants || []).length ? `<span class="dzc-wpn-only">${esc(w.variants.join(', '))} only</span>` : ''}
             ${w.upgradePoints != null ? `<span class="dzc-wpn-up">+${w.upgradePoints}pts</span>` : ''}</td>
-          <td>${esc(w.arc || '')}</td><td>${esc(w.ma || '')}</td><td>${esc(w.r || '')}</td>
+          <td class="dzc-arc-cell">${window.DZCIcon.arc(w.arc)}<span>${esc(w.arc || '')}</span></td>
+          <td>${esc(w.ma || '')}</td><td>${esc(w.r || '')}</td>
           <td>${esc(w.att || '')}</td><td>${esc(w.ac || '')}</td><td>${esc(w.e || '')}</td>
           <td>${rulesHtml(w.special, state.faction)}</td></tr>`).join('')}</tbody>
       </table>` : '<p class="dzc-none">No weapons.</p>';

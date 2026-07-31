@@ -57,7 +57,59 @@
       + ` viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="${d}"/></svg>`;
   }
 
+  /* Firing arcs, drawn rather than spelled out.
+   *
+   * Dropzone arcs are 90-degree WEDGES (6.1.2) and split the sides into Left
+   * and Right, so Dropfleet's arc icons carry over neither in shape nor in
+   * vocabulary. Four quadrants of a circle, front at the top, with the covered
+   * ones filled — "F/Sl" is instantly a different picture from "F/Sr", which
+   * is the whole reason to draw it.
+   *
+   * The wedge endpoints are the circle's diagonals: cos/sin of 45 degrees on
+   * r=10 is 7.07, hence 12±7.07.
+   */
+  const WEDGE = {
+    F: 'M12 12 L4.93 4.93 A10 10 0 0 1 19.07 4.93 Z',
+    Sr: 'M12 12 L19.07 4.93 A10 10 0 0 1 19.07 19.07 Z',
+    R: 'M12 12 L19.07 19.07 A10 10 0 0 1 4.93 19.07 Z',
+    Sl: 'M12 12 L4.93 19.07 A10 10 0 0 1 4.93 4.93 Z'
+  };
+
+  const ARC_PARTS = {
+    'F': ['F'],
+    'F/S': ['F', 'Sl', 'Sr'],
+    'F/S/R': ['F', 'Sl', 'Sr', 'R'],
+    'F/Sl': ['F', 'Sl'],
+    'F/Sr': ['F', 'Sr'],
+    'F/R': ['F', 'R'],
+    'S': ['Sl', 'Sr'],
+    'R': ['R']
+  };
+
+  const ARC_LABEL = {
+    F: 'Front', Sl: 'Side Left', Sr: 'Side Right', R: 'Rear'
+  };
+
+  function arc(spec, opts) {
+    const key = String(spec || '').trim();
+    const parts = ARC_PARTS[key];
+    if (!parts) return '';
+    const s = (opts && opts.size) || 20;
+    const title = parts.map(p => ARC_LABEL[p]).join(', ');
+    const wedges = Object.keys(WEDGE).map(k =>
+      `<path d="${WEDGE[k]}" fill="${parts.indexOf(k) !== -1 ? 'currentColor' : 'none'}"` +
+      ` opacity="${parts.indexOf(k) !== -1 ? '1' : '.18'}"/>`).join('');
+    return `<span class="dzc-arc" title="${title}" aria-label="Arc: ${title}">`
+      + `<svg width="${s}" height="${s}" viewBox="0 0 24 24" aria-hidden="true">`
+      + `<circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1" opacity=".35"/>`
+      + wedges
+      + `</svg></span>`;
+  }
+
   icon.has = n => Object.prototype.hasOwnProperty.call(P, n);
   icon.names = () => Object.keys(P);
+  icon.arc = arc;
+  icon.arcLabel = spec => (ARC_PARTS[String(spec || '').trim()] || [])
+    .map(p => ARC_LABEL[p]).join(', ');
   window.DZCIcon = icon;
 })();
