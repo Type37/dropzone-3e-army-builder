@@ -27,6 +27,9 @@
       v: VERSION,
       f: army.faction,
       n: army.name,
+      // Only when there is one. An empty key in every link is bytes in a URL
+      // that already has a practical length limit.
+      d: army.description || undefined,
       p: army.pointsLimit,
       // Assigned Commanders still travel as `k` on their Squad, so a link made
       // today still opens in a build from before they moved to the army. `u`
@@ -64,7 +67,7 @@
     if (!data || data.v !== VERSION) throw new Error('Unrecognised share link version.');
     const uid = () => 'a' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
     const army = {
-      id: uid(), name: data.n || 'Shared Army', faction: data.f,
+      id: uid(), name: data.n || 'Shared Army', description: data.d || '', faction: data.f,
       pointsLimit: data.p || 1500, groups: [],
       created: Date.now(), updatedAt: Date.now()
     };
@@ -178,6 +181,7 @@
     const cost = A.armyCost(army);
     const out = [
       `# ${army.name} [${army.pointsLimit}pts]`,
+      army.description ? `# ${army.description}` : '',
       `# ${army.faction.toUpperCase()}, ${size ? size.label : 'below the minimum'}`
         + `, ${cost} of ${army.pointsLimit}pts, ${army.groups.length} Group`
         + `${army.groups.length === 1 ? '' : 's'}`,

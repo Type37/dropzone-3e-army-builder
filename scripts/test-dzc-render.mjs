@@ -347,7 +347,7 @@ console.log('\nevery screen renders');
 
   // Everything a Squad can be at once: carried, commanded, and a legally mixed
   // Squad of two Variants (3.2.2). The Transport is the case that threw.
-  const a = A.create('ucm', 'Driven probe', 1500);
+  const a = A.create('ucm', 'Driven probe', 1500, 'For the club night');
   const g = A.addGroup(a);
   const legion = A.addSquad(a, g.id, 'legionnaires', 3);
   A.assignTransport(a, legion.id, 'bear-apc');
@@ -379,6 +379,8 @@ console.log('\nevery screen renders');
   ok(/Bear APC/.test(builder), 'the assigned Transport is on the page');
   ok(/Tachi/.test(second), 'and the second Variant of a mixed Squad, once its Group is open');
   ok(/Level 5/.test(builder), 'and the Commander');
+  ok(/For the club night/.test(builder) && /For the club night/.test(list),
+     'and what the army is for, on both screens');
 
   for (const [name, html] of [['army list', list], ['builder', builder], ['second Group', second]]) {
     const words = html.replace(/<[^>]*>/g, ' ');

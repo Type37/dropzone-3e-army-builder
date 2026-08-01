@@ -83,6 +83,7 @@
           </span>
         </div>
         <h3 class="dzc-army-name">${esc(a.name)}</h3>
+        ${a.description ? `<p class="dzc-army-desc">${esc(a.description)}</p>` : ''}
         <p class="dzc-army-pts"><b>${cost}</b><i>/ ${a.pointsLimit} pts</i>
           <span>${size ? esc(size.label) : 'Below minimum'}, ${a.groups.length} group${
             a.groups.length === 1 ? '' : 's'}${models ? `, ${models} model${models === 1 ? '' : 's'}` : ''}</span></p>
@@ -127,7 +128,7 @@
    * 1,200pt Clash and a 2,000pt Clash have very different Group caps. */
   // `name` stays null until the user types, so the suggested name follows the
   // faction they pick rather than sticking at whatever it opened with.
-  let picked = { faction: 'ucm', size: 'clash', points: null, name: null };
+  let picked = { faction: 'ucm', size: 'clash', points: null, name: null, description: '' };
 
   function sizeCardHtml(g) {
     const cap = Math.floor((g.max || g.min) * 0.25);
@@ -160,6 +161,16 @@
                  value="${esc(picked.name != null ? picked.name : defaultArmyName(picked.faction))}"
                  oninput="DZCBuilder.nameTyped(this.value)">
           <label class="float-label" for="dzc-new-name">Army name</label>
+        </div>
+
+        <!-- Dropfleet's New Fleet dialog has name AND description, in that
+             order (new-fleet-desc, app.js:1456). Optional, and it shows
+             nothing anywhere when it is empty. -->
+        <div class="form-group float-field">
+          <input class="form-input" id="dzc-new-desc" type="text" placeholder=" " maxlength="120"
+                 value="${esc(picked.description || '')}"
+                 oninput="DZCBuilder.descTyped(this.value)">
+          <label class="float-label" for="dzc-new-desc">What it is for</label>
         </div>
 
         <div class="form-group">
@@ -243,12 +254,13 @@
     try {
       await window.DZC.loadFaction(picked.faction);
     } catch (e) { /* offline or a bad fetch: fall through and let the view report it */ }
-    const a = window.DZCArmy.create(picked.faction, name, picked.points);
+    const a = window.DZCArmy.create(picked.faction, name, picked.points, picked.description);
     location.hash = '#army/' + a.id;
     await renderBuilder(a.id);
     document.getElementById('dzc-new').classList.remove('active');
     if (btn) { btn.classList.remove('is-going'); btn.disabled = false; }
     picked.name = null;   // next dialog suggests afresh
+    picked.description = '';
   }
 
   /* Create, but filled. Same faction, size and limit already chosen in the
@@ -365,6 +377,14 @@
           <button class="btn btn-ghost btn-sm" type="button" onclick="DZCBuilder.print()"
                   title="Print the deployment sheet">${window.DZCIcon('print', { size: 15 })} Print</button>
         </div>
+        <!-- Free text about the list, editable where it is read, on its own row
+             under the name. Empty until you write something: an empty box with
+             "notes" over it on every army is the caption-under-a-control
+             pattern, and this one says nothing until it has something to say. -->
+        <p class="dzc-b-desc" contenteditable="true" spellcheck="true"
+           role="textbox" aria-label="What this army is for"
+           data-empty="What is this army for?"
+           onblur="DZCBuilder.setDescription(this.textContent)">${esc(a.description || '')}</p>
       </header>
 
       <div class="dzc-b-body${drilled && sel ? ' is-drilled' : ''}">
@@ -1969,6 +1989,14 @@
       refresh();
     },
     setCarrier: (id, c) => { window.DZCArmy.setCarrier(current, id, c); refresh(); },
+    descTyped: v => { picked.description = v; },
+    setDescription: t => {
+      const was = current.description || '';
+      const now = window.DZCArmy.setDescription(current, t);
+      // Only redraw when it actually changed: a blur that changed nothing
+      // should not rebuild the screen under the cursor.
+      if (now !== was) refresh();
+    },
     renameCommander: (id, t) => { window.DZCArmy.renameCommander(current, id, t); refresh(); },
     selectGroup: id => { selectedGroup = id; drilled = true; refresh(); },
     backToGroups: () => { drilled = false; refresh(); },

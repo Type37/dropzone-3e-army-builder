@@ -724,5 +724,19 @@ console.log('\nSurprise me');
   eq(A.generate('nosuchfaction', 2000).ok, false, 'and so does a faction that does not exist');
 }
 
+console.log('\nwhat an army is for');
+{
+  const a = A.create('ucm', 'Described', 1500, '  Club night, no Rare  ');
+  eq(a.description, 'Club night, no Rare', 'the New Army dialog\'s text arrives trimmed');
+  eq(A.create('ucm', 'Plain', 1500).description, '', 'and an army without one has an empty string, not undefined');
+  A.setDescription(a, 'x'.repeat(600));
+  eq(a.description.length, 500, 'it is capped, because it travels in a share link');
+  // A backup written before descriptions existed has no key at all.
+  const back = A.importArmies(JSON.stringify({ faction: 'ucm', name: 'Old', pointsLimit: 1500, groups: [] }));
+  ok(back.ok, 'an army from before the field imports');
+  eq(A.get(back.added[0].id).description, '', 'with an empty description rather than undefined');
+  A.remove(a.id);
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

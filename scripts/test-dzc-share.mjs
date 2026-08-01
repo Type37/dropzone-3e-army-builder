@@ -114,6 +114,19 @@ ok(threw && /version/i.test(threw.message), 'an unknown payload version is rejec
  * is the same file the backup writes, so a shared army arrives the way a
  * restored one does.
  */
+console.log('\nwhat the army is for');
+{
+  A.setDescription(army, '  Tournament list, beats PHR walkers  ');
+  eq(army.description, 'Tournament list, beats PHR walkers',
+     'a description is stored as typed, trimmed at the ends');
+  const there = S.unpack(S.pack(army));
+  eq(there.description, army.description, 'and survives the share round trip');
+  ok(S.text(army).includes(army.description), 'and is on the plain-text sheet');
+  A.setDescription(army, '');
+  ok(S.pack(army).d === undefined, 'an empty one is not shipped in the link at all');
+  A.setDescription(army, 'Tournament list, beats PHR walkers');
+}
+
 console.log('\nplain text');
 {
   const txt = S.text(army);

@@ -74,10 +74,16 @@
   function all() { return armies; }
   function get(id) { return armies.find(a => a.id === id) || null; }
 
-  function create(faction, name, pointsLimit) {
+  function create(faction, name, pointsLimit, description) {
     const a = {
       id: uid(),
       name: name || 'New Army',
+      /* What this list is FOR, in your words. Dropfleet has had it since the
+       * beginning (new-fleet-desc, app.js:1456) and it earns its place once
+       * you have five armies with names like "UCM Army 3": the tournament it
+       * was built for, the opponent it is meant to beat, why the Sabres are
+       * there. Empty by default and it shows nothing when empty. */
+      description: typeof description === 'string' ? description.trim() : '',
       faction: faction,
       // The agreed limit is an INPUT, not the top of the band: the per-Group
       // cap is a quarter of the number the players agreed (3.2).
@@ -119,6 +125,7 @@
     const army = {
       id: uid(),
       name: typeof raw.name === 'string' && raw.name.trim() ? raw.name.trim() : 'Imported Army',
+      description: typeof raw.description === 'string' ? raw.description.trim() : '',
       faction: raw.faction,
       pointsLimit: Number(raw.pointsLimit) > 0 ? Math.round(Number(raw.pointsLimit)) : 1500,
       groups: [],
@@ -619,6 +626,15 @@
   /* Typing the auto name back in, or clearing the field, hands the Group
    * to the numbering again rather than freezing today's number as a custom
    * name that stops tracking. */
+  /* Free text, so it is stored as typed apart from the ends -- a description
+   * that silently rewrote what you wrote would be worse than not having one.
+   * Capped, because it travels in a share link. */
+  function setDescription(army, text) {
+    army.description = String(text == null ? '' : text).trim().slice(0, 500);
+    touch(army);
+    return army.description;
+  }
+
   function renameGroup(army, groupId, text) {
     const g = army.groups.find(x => x.id === groupId);
     if (!g) return;
@@ -1499,7 +1515,7 @@
   const cap1 = s => s.charAt(0).toUpperCase() + s.slice(1);
 
   window.DZCArmy = {
-    load, save, all, get, create, remove, touch, setPointsLimit,
+    load, save, all, get, create, remove, touch, setPointsLimit, setDescription,
     importArmies, importList, parseList, generate,
     addGroup, removeGroup, duplicateGroup, groupName, renameGroup,
     commanderName, renameCommander, addSquad, removeSquad, setModelCount, setModelVariant,
