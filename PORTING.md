@@ -13,8 +13,8 @@ were cut on purpose. There is no subsystem in a broken middle state.
 
 **What is left is not porting. It is features.** Twenty-five discrete things
 Dropfleet does that this app does not, and they are absent because nobody built
-them, not because a port stalled. Twenty-four already have a Todoist task.
-**One does not**, and it is the worst of them:
+them, not because a port stalled. Twenty-four already had a Todoist task; the
+twenty-fifth had none, and it was the worst of them:
 
 > **You cannot change an army's points limit after you create it.** Dropfleet
 > has `openGameSizeChanger` / `applyGameSize` / `setCustomMax`. Here
@@ -22,6 +22,10 @@ them, not because a port stalled. Twenty-four already have a Todoist task.
 > instead of 2000 on the day and there is no way to say so — and because the
 > per-Group cost cap is a quarter of the *agreed* limit (3.2), every Group in
 > the list silently changes legality with it.
+
+**Built 2026-08-01.** `setPointsLimit` in `js/dzc-army.js`, and the size in the
+builder rail is now the control that opens the changer — a band per row, then
+the exact number, in Dropfleet's shape.
 
 ---
 

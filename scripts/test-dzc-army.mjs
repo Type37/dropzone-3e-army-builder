@@ -549,5 +549,22 @@ console.log('\nduplicating a Group (gap 124)');
   A.remove(a.id);
 }
 
+{
+  // The agreed limit is an input for the whole life of the army, not just at
+  // creation: the per-Group ceiling is a quarter of it (3.2) and the Group cap
+  // and Rare allowance move with the band (3.1, 3.2.1).
+  const a = army(2000);
+  eq(DZC.maxGroupCost(a.pointsLimit), 500, 'a 2000pt army caps a Group at 500');
+  eq(A.setPointsLimit(a, 1500), 1500, 'the limit can be re-agreed after creation');
+  eq(DZC.maxGroupCost(a.pointsLimit), 375, 'and the per-Group ceiling follows it');
+  eq(DZC.gameSizeFor(a.pointsLimit).id, 'clash', '1500 is still a Clash');
+  eq(A.setPointsLimit(a, 3000), 3000, 'moving up a band is the same one number');
+  eq(DZC.gameSizeFor(a.pointsLimit).id, 'battle', '3000 is a Battle');
+  eq(DZC.maxGroups(DZC.gameSizeFor(a.pointsLimit), 3000), 16, 'so the Group cap moves too');
+  eq(A.setPointsLimit(a, 0), 3000, 'zero is not a limit anyone agreed — ignored');
+  eq(A.setPointsLimit(a, 'nonsense'), 3000, 'nor is a value that is not a number');
+  A.remove(a.id);
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

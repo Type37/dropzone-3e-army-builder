@@ -101,6 +101,23 @@
 
   function touch(a) { a.updatedAt = Date.now(); save(); }
 
+  /* The agreed limit is not settled at creation, and the app behaved as though
+   * it were: create() wrote pointsLimit once and nothing ever wrote it again.
+   *
+   * It moves more than the total. The per-Group ceiling is a quarter of the
+   * AGREED number (3.2), the Group cap comes off the size band (3.1) and the
+   * Rare allowance moves with the band too (3.2.1) — so agreeing 1500 on the
+   * day instead of the 2000 you built at changes what is legal, and there was
+   * no way to tell the app. Anything the change makes illegal is reported by
+   * validate(), not refused here; the number is the players' to agree. */
+  function setPointsLimit(army, pts) {
+    const n = Math.round(Number(pts) || 0);
+    if (n <= 0 || n === army.pointsLimit) return army.pointsLimit;
+    army.pointsLimit = n;
+    touch(army);
+    return n;
+  }
+
   // ------------------------------------------------------------------ edits
 
   /* A Group's name is its POSITION unless you have actually given it one.
@@ -1029,7 +1046,7 @@
   const cap1 = s => s.charAt(0).toUpperCase() + s.slice(1);
 
   window.DZCArmy = {
-    load, save, all, get, create, remove, touch,
+    load, save, all, get, create, remove, touch, setPointsLimit,
     addGroup, removeGroup, duplicateGroup, groupName, renameGroup,
     commanderName, renameCommander, addSquad, removeSquad, setModelCount, setModelVariant,
     setCarrier, setCommander, findSquad, groupOf, unitOf,

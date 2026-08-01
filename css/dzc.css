@@ -247,6 +247,16 @@
 .dzc-b-name { font: 800 24px/1.2 var(--font-display, 'Roboto Slab', serif); margin: 0 0 4px; overflow-wrap: anywhere; }
 .dzc-b-name:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; }
 .dzc-b-sub { margin: 0; font-size: 12.5px; color: var(--ink-2, #6b6459); }
+/* The size reads as part of the line it sits in until you go near it — it is
+   a fact first and a control second, and dressing it as a button would make
+   the faction beside it look broken for not being one. */
+.dzc-b-size {
+  font: inherit; color: inherit; background: none; border: 0; padding: 0;
+  border-bottom: 1px dotted currentColor; cursor: pointer;
+}
+.dzc-b-size:hover { color: var(--ink, #241f1a); }
+/* A popover is a panel, and panels are square (CLAUDE.md §4). */
+.game-size-popover { border-radius: 0; }
 
 .dzc-ratios { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
 .dzc-ratio { padding: 6px 12px; border-radius: 6px; background: var(--surface-3, #f2ece0); font-size: 12px; }
@@ -939,6 +949,7 @@
    own. Spacing does the same job and reads quieter. */
 .dzc-pick-meta span + span::before,
 .dzc-b-sub span + span::before,
+.dzc-b-sub span + button::before,
 .dzc-detail-meta span + span::before,
 .dzc-coll-meta span + span::before,
 .pr-sub span + span::before { content: '   '; white-space: pre; }

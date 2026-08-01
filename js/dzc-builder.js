@@ -314,8 +314,14 @@
       <div class="dzc-b-body${drilled && sel ? ' is-drilled' : ''}">
         <aside class="dzc-rail">
           <div class="dzc-rail-card">
+            <!-- The size is the control that changes the agreed limit. It is
+                 the only place the band is named, so it is where you would go
+                 looking, and Dropfleet hangs the same popover off the same
+                 badge (openGameSizeChanger, app.js:1369). -->
             <p class="dzc-b-sub"><span>${esc((FACTIONS.find(f => f.id === a.faction) || {}).name)}</span>
-              <span>${size ? esc(size.label) : 'Below the 501pt minimum'}</span></p>
+              <button type="button" class="dzc-b-size" title="Change the agreed points limit"
+                      onclick="DZCBuilder.sizeChanger(event)"
+                >${size ? esc(size.label) : 'Below the 501pt minimum'}</button></p>
             <div class="dzc-rail-pts ${cost > a.pointsLimit ? 'is-over' : ''}">
               <b>${left}</b><span>pts left</span>
             </div>
@@ -360,6 +366,79 @@
         </div>
       </div>
     </div>`;
+  }
+
+  /* Changing the agreed limit after the fact.
+   *
+   * It lives at <body> level and is position:fixed for the same reason the FAB
+   * does: .screen carries will-change:transform, so a popover nested inside it
+   * is positioned against the screen and not the viewport. Fixed-and-detached
+   * also means opening it moves nothing on the page (CLAUDE.md §4).
+   *
+   * Shape taken from Dropfleet rather than invented — a row per band, then a
+   * number for the exact figure, because the band is the shorthand and the
+   * number is what the rules key off. */
+  function closeSizePop() {
+    const el = document.getElementById('dzc-size-pop');
+    if (el) el.remove();
+    document.removeEventListener('click', outsideSizePop, true);
+    document.removeEventListener('keydown', escSizePop, true);
+  }
+  function outsideSizePop(e) {
+    const el = document.getElementById('dzc-size-pop');
+    if (el && !el.contains(e.target)) closeSizePop();
+  }
+  function escSizePop(e) { if (e.key === 'Escape') closeSizePop(); }
+
+  function sizeChanger(ev) {
+    ev.stopPropagation();
+    if (document.getElementById('dzc-size-pop')) { closeSizePop(); return; }
+    const a = current;
+    if (!a) return;
+    const cur = window.DZC.gameSizeFor(a.pointsLimit);
+    const pop = document.createElement('div');
+    pop.id = 'dzc-size-pop';
+    pop.className = 'game-size-popover';
+    pop.innerHTML = window.DZC.index.gameSizes.map(g => {
+      const band = g.max == null ? `${g.min}pts and up` : `${g.min}–${g.max}pts`;
+      return `<button type="button" class="game-size-popover-item${
+        cur && cur.id === g.id ? ' active' : ''}" onclick="DZCBuilder.applySize('${g.id}')">
+        <span><span class="game-size-popover-name">${esc(g.label)}</span>
+          <span class="game-size-popover-desc">${band}</span></span></button>`;
+    }).join('') + `
+      <div class="game-size-custom">
+        <label class="game-size-custom-label" for="dzc-size-pts">Points limit</label>
+        <div class="game-size-custom-row">
+          <input id="dzc-size-pts" class="game-size-custom-input" type="number"
+                 min="501" step="50" inputmode="numeric" value="${a.pointsLimit}"
+                 onclick="event.stopPropagation()"
+                 onchange="DZCBuilder.setLimit(this.value)">
+          <span class="game-size-custom-unit">pts</span>
+        </div>
+      </div>`;
+    const badge = ev.currentTarget.getBoundingClientRect();
+    pop.style.position = 'fixed';
+    pop.style.top = (badge.bottom + 4) + 'px';
+    pop.style.left = badge.left + 'px';
+    document.body.appendChild(pop);
+    // The click that opened this is still travelling; listen from the next tick
+    // or it closes itself immediately.
+    setTimeout(() => {
+      document.addEventListener('click', outsideSizePop, true);
+      document.addEventListener('keydown', escSizePop, true);
+    }, 0);
+  }
+
+  /* The band sets the limit to the top of it, the number sets it exactly —
+   * the same two-halves split the New Army dialog already uses. */
+  function applyLimit(pts) {
+    const a = current;
+    if (!a) return;
+    const n = window.DZCArmy.setPointsLimit(a, pts);
+    closeSizePop();
+    renderBuilder(a.id);
+    const size = window.DZC.gameSizeFor(n);
+    say(`${n}pts — ${size ? size.label : 'below the 501pt minimum'}`);
   }
 
   /* The overview entry: enough to choose between Groups, and nothing you have
@@ -1389,6 +1468,12 @@
       picked.points = isNaN(n) ? 0 : n;
       updatePointsNote();
     },
+    sizeChanger,
+    applySize: id => {
+      const g = window.DZC.index.gameSizes.find(s => s.id === id);
+      if (g) applyLimit(g.max || g.min);
+    },
+    setLimit: v => applyLimit(parseInt(v, 10)),
     /* Enter commits, Escape abandons — the two keys everyone already tries. A
      * contenteditable does neither on its own: Enter inserts a newline into
      * your army name, and Escape does nothing, so the only way out was to
