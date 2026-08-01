@@ -37,8 +37,13 @@ The Dropfleet Commander Fleet Builder is the source for copy, layout, defaults
 and brand assets. Check it **before** building any equivalent:
 
 - `D:\wargaming\Web Apps\Dropfleet-Builder\` — the live source
-- `git show 43773fa:<path>` — this repo's fork point
+- `git show 43773fa:<path>` — this repo's fork point, the whole app byte for
+  byte. **In a cloud session run `git fetch --unshallow` first**, or `43773fa`
+  is not a commit this clone has heard of and every instruction below has
+  nowhere to look.
 - Live: type37.github.io/dropfleet-builder
+- `DROPFLEET-REFERENCE.md` — what it renders, screen by screen, already written
+  down. `PORTING.md` — everything it can do, and whether we have it.
 
 If it exists there, use it. This has been the root cause of repeated rework:
 the New Army dialog, the Settings copy, Collection defaults and the wordmark
