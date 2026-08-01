@@ -218,6 +218,10 @@ const App = (() => {
    * said you had. */
   function collectionOn() { return !!settings.showCollection; }
 
+  // Off unless asked for, like every other builder setting: the default is the
+  // whole Unit, and this is the way out of it for someone scanning a long list.
+  function compactView() { return !!settings.compactView; }
+
   function applyCollectionSetting() {
     const card = $('landing-collection');
     if (card) card.classList.toggle('hidden', !collectionOn());
@@ -240,6 +244,14 @@ const App = (() => {
         <div class="dzc-set-title">Builder</div>
         ${tog('showCollection', 'Collection',
           'Show what a list still needs, using counts from the Collection page')}
+        <!-- Dropfleet's compactView, with the noun that has no DZC analogue
+             dropped: "Hide weapon tables and launch assets in the fleet
+             builder for a denser overview" (app.js:8043). It is what makes
+             showing the whole Unit by default safe -- a Squad in the builder
+             reads as its stat card, which is right when you are deciding and
+             long when you are scanning ten of them. -->
+        ${tog('compactView', 'Compact view',
+          'Hide weapon tables in the builder for a denser overview')}
       </div>
       <div class="dzc-set-group">
         <div class="dzc-set-title">Offline use</div>
@@ -622,7 +634,7 @@ const App = (() => {
 
   return {
     navigate, showView, openModal, closeModal,
-    openSettings, setTheme, toggleSetting, collectionOn, applyCollectionSetting,
+    openSettings, setTheme, toggleSetting, collectionOn, compactView, applyCollectionSetting,
     renderOfflinePanel, runOfflineSync, deleteOfflineData,
     openSyncModal, syncStart, syncStop, syncNow, syncJoin,
     openChangelog, openImport, importFile, runImport,

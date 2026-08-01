@@ -1025,7 +1025,16 @@
      * stat, the rules, a block per variant and the whole weapon table. There
      * is no "enough for a roster" version of a Unit -- the numbers you argue
      * over across a table are the ones in that weapon table, and having to
-     * open a modal mid-game to see them is the app failing at its job. */
+     * open a modal mid-game to see them is the app failing at its job.
+     *
+     * Compact view is the way out of that when you are scanning rather than
+     * deciding, and it is what makes showing everything by default safe --
+     * Dropfleet's own comment on the same toggle says as much. It takes away
+     * the weapon table and the stat grid repeated under every variant, which
+     * is the bulk. It takes away no CONTROL: every stepper, every upgrade and
+     * the Transport chooser are all still there, because a denser overview
+     * that also refuses you a purchase is a different feature. */
+    const compact = !!(window.App && App.compactView && App.compactView());
     const meta = [esc(u.category), esc(u.type || ''),
       u.squadMin != null ? `Squad ${U.squadHtml(u)}` : '']
       .filter(Boolean).map(t => `<span>${t}</span>`).join('');
@@ -1052,8 +1061,8 @@
       </div>
       <div class="dzc-sq-stats">${U.statsHtml(u)}</div>
       ${u.special ? `<div class="dzc-sq-rules">${U.rulesHtml(u.special, a.faction)}</div>` : ''}
-      ${U.variantsHtml(u, (v, i) => variantStepper(a, s, u, i))}
-      <div class="dzc-sq-wpn">${U.weaponsHtml(u, a.faction)}</div>
+      ${U.variantsHtml(u, (v, i) => variantStepper(a, s, u, i), { stats: !compact })}
+      ${compact ? '' : `<div class="dzc-sq-wpn">${U.weaponsHtml(u, a.faction)}</div>`}
       ${upgradesHtml(a, s, u)}
       <div class="dzc-sq-opts">
         ${transportPicker}

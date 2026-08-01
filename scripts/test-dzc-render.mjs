@@ -405,6 +405,28 @@ console.log('\nevery screen renders');
   ok(/For the club night/.test(builder) && /For the club night/.test(list),
      'and what the army is for, on both screens');
 
+  /* Gap 107: compact view. A Squad reads as its whole stat card by default,
+   * which is right when you are deciding and long when you are scanning ten of
+   * them — Dropfleet's own comment on this toggle says it is what makes
+   * showing everything by default safe. What it must NOT do is take away a
+   * control: a denser overview that also refuses you a purchase is a different
+   * feature, so the steppers, the upgrades and the Transport chooser are
+   * asserted still present. */
+  ok(/dzc-sq-wpn/.test(builder), 'a Squad carries its weapon table by default');
+  // Both, because the builder reads this shim two ways: `window.App` in the
+  // picker's filter list and a bare `App` in shortfallHtml. A browser makes
+  // those the same object; a vm sandbox does not.
+  sandbox.App = win.App = { compactView: () => true };
+  await B.renderBuilder(a.id);
+  const dense = els['view-army'].innerHTML;
+  delete sandbox.App; delete win.App;
+  ok(!/dzc-sq-wpn/.test(dense), 'compact view drops it');
+  ok(dense.length < builder.length, 'and the screen gets shorter',
+     `${builder.length} to ${dense.length} chars`);
+  ok(/dzc-stepper/.test(dense) && /dzc-carry-add/.test(dense),
+     'and it takes away no control');
+  await B.renderBuilder(a.id);
+
   /* Gap 53: Play, Share and Print belong to the whole army, so they live in
    * the topbar and not in a row above the Group list. Play is the one that
    * has state -- it cannot run without a Commander. */

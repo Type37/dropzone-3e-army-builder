@@ -301,8 +301,15 @@
   /* `control` lets the builder hang a count on each block without this file
    * learning anything about armies. The reference view passes nothing and the
    * blocks stay what they are: a description. In a Squad they become the
-   * control itself, which is how the per-model dropdowns went away. */
-  function variantsHtml(u, control) {
+   * control itself, which is how the per-model dropdowns went away.
+   *
+   * `opts.stats: false` drops the stat grid under each block. DZC variants
+   * differ by gun and price and never by stats, so a Squad of five variants
+   * repeated one identical grid five times — which is worth it when you are
+   * comparing two Units and is pure bulk when you are scanning ten. Compact
+   * view is what asks for it. */
+  function variantsHtml(u, control, opts) {
+    const withStats = !opts || opts.stats !== false;
     if (!(u.variants || []).length) return '';
     return `<div class="dzc-variants">
       ${u.variants.map((v, i) => {
@@ -314,7 +321,7 @@
           .join(' — ');
         return `<div class="dzc-variant">
           <div class="dzc-variant-head"><span>${head}</span>${control ? control(v, i) : ''}</div>
-          ${statsHtml(u)}
+          ${withStats ? statsHtml(u) : ''}
         </div>`;
       }).join('')}
     </div>`;
