@@ -25,7 +25,20 @@
   'use strict';
 
   const KEY = 'dzc_play';
-  const STATUSES = ['Concussed', 'Suppressed', 'Jammed', 'Obscured'];
+  /* Status Tokens are placed on a SQUAD, and the rulebook says so three times:
+   *
+   *   11.1.7  Concussion — "place a Concussed Status Token on its Squad.
+   *           Concussed Squads suffer -2Ac."
+   *   11.1.22 Jammer     — "place a Jammed Status Token on its Squad."
+   *   11.1.34 Suppress   — "place a Suppressed Status Token on its Squad.
+   *           Suppressed Squads may only move 0” if any Unit within it attacks."
+   *
+   * Obscured is not one of them and does not move. 10.1.21 Obscurer X” — "All
+   * friendly Vehicle and Infantry UNITS within X” of this Unit are Obscured to
+   * enemies" — so it is a state a model is in because of where it is standing,
+   * and two models of one Squad can genuinely differ. */
+  const SQUAD_STATUSES = ['Concussed', 'Suppressed', 'Jammed'];
+  const MODEL_STATUSES = ['Obscured'];
 
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g,
     c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -34,13 +47,15 @@
   let state = null;
 
   function blank(army) {
-    const models = {};
+    const models = {}, squads = {};
     army.groups.forEach(g => g.squads.forEach(s => {
       const u = window.DZCArmy.unitOf(army, s);
       const dp = u ? parseInt(u.stats && u.stats.DP, 10) || 1 : 1;
       models[s.id] = s.models.map(() => ({ dp: dp, max: dp, st: [] }));
+      squads[s.id] = { st: [] };
     }));
-    return { round: 1, cp: 0, myVP: 0, oppVP: 0, oppGroups: 0, activated: {}, models: models };
+    return { round: 1, cp: 0, myVP: 0, oppVP: 0, oppGroups: 0, activated: {},
+      models: models, squads: squads };
   }
 
   function load(army) {
@@ -56,6 +71,21 @@
         const old = state.models[id];
         state.models[id] = fresh.models[id].map((m, i) => old[i] || m);
       }
+    });
+    /* A game saved before the Squad statuses moved carries all four on each
+     * model. Hoist the three that belong to the Squad rather than dropping
+     * them: a token placed on ANY model was a token on that Squad, which is
+     * what the rules meant by it in the first place. */
+    state.squads = state.squads || {};
+    Object.keys(fresh.squads).forEach(id => {
+      if (!state.squads[id]) state.squads[id] = { st: [] };
+      (state.models[id] || []).forEach(m => {
+        m.st = (m.st || []).filter(st => {
+          if (MODEL_STATUSES.indexOf(st) !== -1) return true;
+          if (state.squads[id].st.indexOf(st) === -1) state.squads[id].st.push(st);
+          return false;
+        });
+      });
     });
     return state;
   }
@@ -242,6 +272,10 @@
       <div class="dzc-play-sq-head">
         <span class="dzc-play-name">${esc(u.name)}</span>
         ${s.commander ? `<span class="dzc-cmdr-tag">${window.DZCIcon('military_tech', { size: 11 })}L${s.commander.level}</span>` : ''}
+        <span class="dzc-statuses">${SQUAD_STATUSES.map(st => `<button type="button"
+          class="dzc-st${((state.squads[s.id] || {}).st || []).indexOf(st) !== -1 ? ' is-on' : ''}"
+          title="${st}" aria-label="${st}"
+          onclick="DZCPlay.squadStatus('${s.id}','${st}')">${st[0]}</button>`).join('')}</span>
         <span class="dzc-play-alive">${aliveIn(s)}/${models.length}</span>
       </div>
       <div class="dzc-play-models">
@@ -249,9 +283,10 @@
           <button type="button" onclick="DZCPlay.dp('${s.id}',${i},-1)" aria-label="Damage">−</button>
           <b>${m.dp}</b><i>/${m.max}</i>
           <button type="button" onclick="DZCPlay.dp('${s.id}',${i},1)" aria-label="Repair">+</button>
-          <span class="dzc-statuses">${STATUSES.map(st => `<button type="button"
-            class="dzc-st${m.st.indexOf(st) !== -1 ? ' is-on' : ''}"
-            title="${st}" onclick="DZCPlay.status('${s.id}',${i},'${st}')">${st[0]}</button>`).join('')}</span>
+          <span class="dzc-statuses">${MODEL_STATUSES.map(st => `<button type="button"
+            class="dzc-st${(m.st || []).indexOf(st) !== -1 ? ' is-on' : ''}"
+            title="${st}" aria-label="${st}"
+            onclick="DZCPlay.status('${s.id}',${i},'${st}')">${st[0]}</button>`).join('')}</span>
         </div>`).join('')}
       </div>
     </div>`;
@@ -285,8 +320,16 @@
     status: (sid, i, st) => {
       const m = (state.models[sid] || [])[i];
       if (!m) return;
+      m.st = m.st || [];
       const at = m.st.indexOf(st);
       if (at === -1) m.st.push(st); else m.st.splice(at, 1);
+      redraw();
+    },
+    squadStatus: (sid, st) => {
+      const q = (state.squads = state.squads || {})[sid] || (state.squads[sid] = { st: [] });
+      q.st = q.st || [];
+      const at = q.st.indexOf(st);
+      if (at === -1) q.st.push(st); else q.st.splice(at, 1);
       redraw();
     },
     roll: () => {

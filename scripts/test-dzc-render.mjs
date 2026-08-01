@@ -826,6 +826,24 @@ console.log('\nevery screen renders');
     await P.open(ma.id);
     const tags = (els['view-play'].innerHTML.match(/orphaned transports/g) || []).length;
     eq(String(tags), '1', 'and only the transport Group is called an orphaned transport');
+    /* Where a Status Token goes, which is a rule and not a layout choice:
+     *
+     *   11.1.7  "place a Concussed Status Token on its Squad"
+     *   11.1.22 "place a Jammed Status Token on its Squad"
+     *   11.1.34 "place a Suppressed Status Token on its Squad"
+     *
+     * and against those, 10.1.21 Obscurer X”: "All friendly Vehicle and
+     * Infantry UNITS within X” of this Unit are Obscured" — where you are
+     * standing, not a token on the Squad, so that one stays per model.
+     *
+     * Four squads (3 + 2 + 3 Legionnaires/tanks, plus the Condor) and nine
+     * models between them. All four statuses were on every model, so this used
+     * to be 36 and 36. */
+    const play = els['view-play'].innerHTML;
+    eq(String((play.match(/DZCPlay\.squadStatus\(/g) || []).length), '12',
+       'three Status Tokens per Squad, not per model (11.1.7, 11.1.22, 11.1.34)');
+    eq(String((play.match(/DZCPlay\.status\(/g) || []).length), '9',
+       'and Obscured stays on the model, because it is where it is standing (10.1.21)');
     A.remove(ma.id);
   }
 
