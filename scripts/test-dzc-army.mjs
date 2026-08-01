@@ -684,5 +684,45 @@ console.log('\nimporting a pasted list');
      'and something that is not a list is refused rather than half-imported');
 }
 
+console.log('\nSurprise me');
+{
+  /* The generator has to produce a LEGAL army, which makes it the only test in
+   * here that argues with every rule at once rather than one at a time. It is
+   * what found the multi-Transport capacity bug: a hand-written fixture uses
+   * one carrier, because that is what a person reaches for.
+   *
+   * Deterministic rand, so a failure is reproducible rather than "it went
+   * wrong once last Tuesday". */
+  let seed = 1234567;
+  const rand = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
+  const made = [];
+  let illegal = 0, thin = 0;
+  for (const fac of ['ucm', 'phr', 'scourge', 'shaltari', 'resistance', 'bioficer']) {
+    await DZC.loadFaction(fac);
+    for (const limit of [1000, 1500, 2000, 3000]) {
+      for (let i = 0; i < 3; i++) {
+        const r = A.generate(fac, limit, rand);
+        if (!r.ok) { illegal++; continue; }
+        made.push(r.army);
+        const v = A.validate(r.army);
+        if (v.errors.length) {
+          illegal++;
+          if (illegal < 3) console.error(`        ${fac} ${limit}: ${v.errors[0].msg}`);
+        }
+        // A generator that returns three Squads and calls it an army is not
+        // doing the job the feature exists for.
+        if (A.armyCost(r.army) < limit * 0.4) thin++;
+      }
+    }
+  }
+  eq(made.length, 72, 'seventy-two armies were generated');
+  eq(illegal, 0, 'and every one of them is legal');
+  eq(thin, 0, 'and none of them stopped under 40% of the budget');
+  made.forEach(x => A.remove(x.id));
+
+  eq(A.generate('ucm', 100).ok, false, 'a limit below the 501pt minimum builds nothing');
+  eq(A.generate('nosuchfaction', 2000).ok, false, 'and so does a faction that does not exist');
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

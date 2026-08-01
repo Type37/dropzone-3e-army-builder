@@ -341,6 +341,163 @@
     return { ok: true, army: army, matched: matched, unmatched: unmatched };
   }
 
+  /* An army out of nothing, filled to the budget and legal when it stops.
+   *
+   * Not a gimmick. Three real jobs: it is the fastest way to see what a
+   * faction can do at a points level you have never played, it is what makes
+   * the app worth opening before you own anything, and — this is the reason it
+   * is worth the code — it is an exhaustive exercise of the enforcement layer.
+   * A generator that has to produce a legal army finds the rules that cannot
+   * be satisfied, which is not something a hand-built fixture will ever do.
+   *
+   * The order it builds in is the order the rules bind:
+   *
+   *   1. A Commander, because an army without one is illegal (3.2.5), and
+   *      their points come off the budget before anything is spent.
+   *   2. Standard first, because Vanguard, Heavy and Support may EACH not
+   *      exceed Standard (3.2) — spend on those before there is any Standard
+   *      to pay for it and every later choice is fighting the ratio.
+   *   3. A Transport only when the fit is EXACT, because a Transport must be
+   *      taken full (3.2.4) and an inexact one is an error nothing later fixes.
+   *
+   * rand is injectable so a test can be deterministic; it defaults to
+   * Math.random. */
+  function generate(factionId, pointsLimit, rand) {
+    const rnd = rand || Math.random;
+    const f = window.DZC.faction(factionId);
+    const size = window.DZC.gameSizeFor(pointsLimit);
+    if (!f || !size) return { ok: false, reason: 'That faction or points limit is not one this app can build for.' };
+
+    const a = create(factionId, 'Surprise me', pointsLimit);
+    const maxG = window.DZC.maxGroups(size, pointsLimit);
+    const cap = window.DZC.maxGroupCost(pointsLimit);
+    const pick = list => list[Math.floor(rnd() * list.length)];
+
+    // The best Commander the size allows that does not eat a quarter of the
+    // list. A Level 7 in a 1000pt game is legal and is not an army.
+    const levels = window.DZC.commanderLevels(size.id)
+      .filter(l => levelCost(l.level) <= pointsLimit * 0.25);
+    const lv = levels.length ? levels[levels.length - 1].level
+      : window.DZC.commanderLevels(size.id)[0].level;
+    addCommander(a, lv);
+
+    const buildable = (f.units || []).filter(u =>
+      u.selectable !== false && u.category !== 'Transport');
+    const byCat = c => buildable.filter(u => u.category === c);
+
+    /* Attempts, not Groups. A rejected Group -- over budget, over the ceiling,
+     * over Standard -- used to cost one of the twelve, so a list could stop at
+     * four Groups and half the budget having simply been unlucky. Four tries
+     * per slot is enough to fill a list and still terminate. */
+    for (let n = 0; n < maxG * 4 && a.groups.length < maxG; n++) {
+      const spend = categorySpend(a);
+      const std = spend.standard || 0;
+      /* Standard until there is something for the rest to be measured
+       * against, then whichever of the three has the most room left. Picking
+       * at random here produces a list that is all Heavy and illegal. */
+      const others = ['vanguard', 'heavy', 'support']
+        .map(c => ({ c: c, room: std - (spend[c] || 0) }))
+        .filter(x => x.room > 0)
+        .sort((x, y) => y.room - x.room);
+      const cat = (!std || !others.length || rnd() < 0.45)
+        ? 'Standard' : others[0].c[0].toUpperCase() + others[0].c.slice(1);
+      const pool = byCat(cat).length ? byCat(cat) : byCat('Standard');
+      if (!pool.length) break;
+
+      const g = addGroup(a);
+      const u = pick(pool);
+      if (!canAddUnit(a, g.id, u.id).ok) { removeGroup(a, g.id); continue; }
+      const s = addSquad(a, g.id, u.id, u.squadMin || 1);
+      if (!s) { removeGroup(a, g.id); continue; }
+
+      // A Transport, but only where it comes out exact and the Group can still
+      // afford it. Roughly half the time, so a generated list is not uniformly
+      // mounted or uniformly on foot.
+      if (rnd() < 0.5) {
+        const opt = transportOptions(a, s.id)
+          .filter(o => o.exact && o.need > 0)
+          // A Transport is a Unit, so Rare and Unique bite on it too (3.2.1) --
+          // and taking the same Rare dropship for three different Squads is
+          // exactly what an unguarded generator does.
+          .filter(o => canAddUnit(a, g.id, o.unit.id).ok)
+          .find(o => groupCost(a, g) + (o.unit.points || 0) * o.need <= cap
+            && armyCost(a) + (o.unit.points || 0) * o.need <= pointsLimit);
+        if (opt) assignTransport(a, s.id, opt.unit.id);
+      }
+
+      /* Over the budget, over the Group ceiling, or over Standard, so this
+       * Group never happened.
+       *
+       * All three are checked AFTER the fact because none of them can be
+       * predicted from the card: a Squad's price is the sum of its models and
+       * its Transports, and the ratio moves with what the Transport cost —
+       * which is why picking the category with the most room was not enough on
+       * its own, and produced a breach in one generated list out of six. */
+      const now = categorySpend(a);
+      const overRatio = ['vanguard', 'heavy', 'support']
+        .some(c => (now[c] || 0) > (now.standard || 0));
+      if (armyCost(a) > pointsLimit || groupCost(a, g) > cap || overRatio) {
+        removeGroup(a, g.id);
+      }
+    }
+
+    /* The Commander rides with someone, and this happens BEFORE the Squads
+     * grow, not after. A Commander's points land on the Group they join, so
+     * assigning one last pushed that Group over the quarter-of-the-army
+     * ceiling (3.2) after every check had already passed -- nine Main Battle
+     * Tanks at 315 plus a Level 6 at 150 is 465 against a cap of 375. One
+     * sitting on the shelf is as illegal as not having one (3.2.5). */
+    const cmdr = commanders(a)[0];
+    const targets = commanderTargets(a, cmdr.id);
+    // Prefer a Group that can absorb the Commander's points without breaching
+    // the ceiling; join one anyway rather than leave them on the shelf, which
+    // is the worse of the two errors.
+    const room = targets.filter(t => groupCost(a, t.group) + levelCost(cmdr.level) <= cap);
+    const host = (room.length ? room : targets)[0] ? pick(room.length ? room : targets) : null;
+    if (host) assignCommander(a, cmdr.id, host.squad.id);
+
+    /* Groups run out before points do — twelve Squads at their minimum size is
+     * half a Clash. So the rest of the budget goes into the Squads that are
+     * already there, one model at a time.
+     *
+     * Only Squads that nothing is riding in and that are carrying nobody: a
+     * Transport must be taken FULL (3.2.4), so growing a Squad that is aboard
+     * one breaks the Group, and the fix would be buying another Transport,
+     * which is a different decision. */
+    const growable = () => {
+      const out = [];
+      a.groups.forEach(g => g.squads.forEach(s => {
+        const u = unitOf(a, s);
+        if (!u || u.category === 'Transport' || s.carriedBy) return;
+        if (g.squads.some(x => x.carriedBy === s.id)) return;
+        if (!canSetCount(a, s.id, s.models.length + 1).ok) return;
+        out.push({ g: g, s: s, u: u });
+      }));
+      return out;
+    };
+    for (let guard = 0; guard < 400; guard++) {
+      const list = growable();
+      if (!list.length) break;
+      const t = pick(list);
+      const before = JSON.stringify(t.s.models);
+      t.s.models.push({ variant: defaultVariant(t.u) });
+      const now = categorySpend(a);
+      const bad = armyCost(a) > pointsLimit || groupCost(a, t.g) > cap
+        || ['vanguard', 'heavy', 'support'].some(c => (now[c] || 0) > (now.standard || 0));
+      if (bad) {
+        t.s.models = JSON.parse(before);
+        // That one will not grow again either, and there is no cheaper move
+        // left once every candidate has been tried, so stop when the whole
+        // list is refusing rather than spinning to the guard.
+        if (list.length === 1) break;
+      }
+    }
+
+    a.name = `${(f.name || factionId)} ${size.label}`;
+    touch(a);
+    return { ok: true, army: a, reason: null };
+  }
+
   function remove(id) {
     armies = armies.filter(a => a.id !== id);
     if (window.FleetSync && window.FleetSync.recordDeleted) {
@@ -1343,7 +1500,7 @@
 
   window.DZCArmy = {
     load, save, all, get, create, remove, touch, setPointsLimit,
-    importArmies, importList, parseList,
+    importArmies, importList, parseList, generate,
     addGroup, removeGroup, duplicateGroup, groupName, renameGroup,
     commanderName, renameCommander, addSquad, removeSquad, setModelCount, setModelVariant,
     canSetVariantCount, setVariantCount,

@@ -123,6 +123,9 @@
     <div class="modal-body" id="dzc-new-body"></div>
     <div class="modal-footer">
       <button class="btn btn-ghost" type="button" onclick="DZCBuilder.closeNew()">Cancel</button>
+      <!-- Same faction, size and limit you have already chosen — it fills the
+           list instead of leaving it empty. -->
+      <button class="btn btn-outline" type="button" onclick="DZCBuilder.surpriseMe()">Surprise me</button>
       <button class="btn btn-primary dzc-create" id="dzc-create-btn" type="button" onclick="DZCBuilder.createArmy()">Create</button>
     </div>
   </div>

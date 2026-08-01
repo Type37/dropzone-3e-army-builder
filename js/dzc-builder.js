@@ -228,6 +228,25 @@
     picked.name = null;   // next dialog suggests afresh
   }
 
+  /* Create, but filled. Same faction, size and limit already chosen in the
+   * dialog, so it is the same act with the blank part done for you — which is
+   * why it lives beside Create rather than on the list, where it would have to
+   * ask those three questions again. */
+  async function surpriseMe() {
+    const btn = document.getElementById('dzc-create-btn');
+    if (btn) { btn.classList.add('is-going'); btn.disabled = true; }
+    try { await window.DZC.loadFaction(picked.faction); } catch (e) { /* the view will report it */ }
+    const r = window.DZCArmy.generate(picked.faction, picked.points);
+    if (btn) { btn.classList.remove('is-going'); btn.disabled = false; }
+    if (!r.ok) { say(r.reason); return; }
+    const typed = (document.getElementById('dzc-new-name').value || '').trim();
+    if (typed) { r.army.name = typed; window.DZCArmy.touch(r.army); }
+    location.hash = '#army/' + r.army.id;
+    await renderBuilder(r.army.id);
+    document.getElementById('dzc-new').classList.remove('active');
+    picked.name = null;
+  }
+
   function del(id) {
     if (!confirm('Delete this army? This cannot be undone.')) return;
     window.DZCArmy.remove(id);
@@ -1751,7 +1770,7 @@
   }
 
   window.DZCBuilder = {
-    renderList, renderBuilder, openNew, createArmy, del, open,
+    renderList, renderBuilder, openNew, createArmy, surpriseMe, del, open,
     // The app's toast. Exported because the shell has things worth saying too
     // (a backup written, a sync finished) and a second toast implementation
     // would be a second thing to keep in step.
