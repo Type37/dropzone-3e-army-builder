@@ -196,7 +196,8 @@
 
     const tabs = FACTIONS.map(x =>
       `<button type="button" class="dzc-tab${x.id === state.faction ? ' is-active' : ''}"
-        style="--acc:${x.accent}" onclick="DZCUnits.setFaction('${x.id}')">${esc(x.name)}</button>`).join('');
+        style="--acc:${x.accent}" onclick="DZCUnits.setFaction('${x.id}')" title="${esc(x.full)}"
+        >${esc(x.name)}</button>`).join('');
 
     const cats = ['All'].concat(CATEGORIES).map(c =>
       `<button type="button" class="dzc-chip${c === state.category ? ' is-active' : ''}"

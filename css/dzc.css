@@ -69,7 +69,7 @@
   border: 1px solid var(--line, #d8d0c0); border-radius: 8px;
   background: var(--surface-2, #fff); transition: border-color .12s, transform .12s;
 }
-.dzc-card:hover { border-color: var(--acc); transform: translateY(-1px); }
+.dzc-card:hover { border-color: var(--acc); box-shadow: inset 0 0 0 1px var(--acc); }
 .dzc-card:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
 .dzc-card-art { flex: 0 0 72px; height: 72px; display: grid; place-items: center; }
 .dzc-card-art img { max-width: 100%; max-height: 100%; object-fit: contain; }
@@ -205,7 +205,7 @@
   border-radius: 0;
   clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
   letter-spacing: .06em; text-transform: uppercase;
-  transition: transform 150ms cubic-bezier(.33,0,.67,1), box-shadow 150ms cubic-bezier(.33,0,.67,1);
+  transition: box-shadow 150ms cubic-bezier(.33,0,.67,1);
 }
 /* The sweep. A gold band that crosses the face, behind the label. */
 .dzc-create::before {
@@ -225,8 +225,8 @@
   transition: opacity 200ms cubic-bezier(.33,0,.67,1), inset 200ms cubic-bezier(.33,0,.67,1);
 }
 .dzc-create:hover::after, .dzc-create:focus-visible::after { opacity: .9; inset: 3px; }
-.dzc-create:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(27,58,92,.28); }
-.dzc-create:active { transform: translateY(1px) scale(.985); box-shadow: none; }
+.dzc-create:hover { box-shadow: 0 0 0 2px var(--gold, #c9a92c); }
+.dzc-create:active { filter: brightness(.92); box-shadow: none; }
 /* Held while the faction loads, so the pause reads as work. */
 .dzc-create.is-going { animation: dzc-create-go 900ms cubic-bezier(.33,0,.67,1) infinite; }
 @keyframes dzc-create-go {
@@ -236,7 +236,6 @@
 @media (prefers-reduced-motion: reduce) {
   .dzc-create, .dzc-create::before, .dzc-create::after { transition: none; }
   .dzc-create.is-going { animation: none; }
-  .dzc-create:hover, .dzc-create:active { transform: none; }
 }
 
 /* Capacity beside the name, at a size you can actually read the shapes at. */
@@ -528,7 +527,7 @@
   background: var(--acc, #1b3a5c); color: #fff;
   transition: transform 160ms cubic-bezier(.34,1.4,.64,1), box-shadow 160ms ease;
 }
-.dzc-carry-add:hover { transform: scale(1.1) rotate(90deg); box-shadow: 0 3px 10px rgba(27,26,23,.28); }
+.dzc-carry-add:hover { transform: rotate(90deg); box-shadow: inset 0 0 0 2px var(--gold, #c9a92c); }
 .dzc-carry-add:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
 
 /* The chooser. Every option says what it offers, how many the cargo needs,
@@ -555,7 +554,7 @@
   background: var(--surface-2, #fff); color: inherit;
   transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
 }
-.dzc-carry-card:hover { border-color: var(--acc); transform: translateY(-2px); box-shadow: 0 5px 16px rgba(27,26,23,.16); }
+.dzc-carry-card:hover { border-color: var(--acc); box-shadow: inset 0 0 0 1px var(--acc); }
 .dzc-carry-card:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
 .dzc-carry-card.is-on { border-color: var(--acc); box-shadow: inset 0 0 0 2px var(--acc); }
 .dzc-carry-card img, .dzc-carry-noart {
@@ -603,7 +602,7 @@
   background: var(--acc, #1b3a5c); color: #fff;
   font: 700 15px/1 var(--font-ui, 'Jost', sans-serif);
   letter-spacing: .06em; text-transform: uppercase;
-  transition: transform 180ms cubic-bezier(.33,0,.67,1), box-shadow 180ms cubic-bezier(.33,0,.67,1);
+  transition: box-shadow 180ms cubic-bezier(.33,0,.67,1);
 }
 /* The chevron sits in its own tile, which brightens and pushes forward. */
 .dzc-add-squad-i {
@@ -612,7 +611,6 @@
   background: rgba(255,255,255,.14);
   transition: transform 260ms cubic-bezier(.34,1.4,.64,1), background 200ms ease;
 }
-.dzc-add-squad-t { transition: transform 260ms cubic-bezier(.34,1.4,.64,1); }
 /* The sweep, behind the label. Same gold band as the Create button. */
 .dzc-add-squad::before {
   content: ''; position: absolute; inset: 0; z-index: -1;
@@ -627,23 +625,19 @@
   transition: transform 320ms cubic-bezier(.33,0,.67,1);
 }
 .dzc-add-squad:hover, .dzc-add-squad:focus-visible {
-  transform: translateY(-2px); box-shadow: 0 6px 18px rgba(27,26,23,.26);
+  box-shadow: inset 0 0 0 2px var(--gold, #c9a92c);
 }
 .dzc-add-squad:hover::before, .dzc-add-squad:focus-visible::before { transform: translateX(130%); }
 .dzc-add-squad:hover::after, .dzc-add-squad:focus-visible::after { transform: scaleX(1); }
 .dzc-add-squad:hover .dzc-add-squad-i,
 .dzc-add-squad:focus-visible .dzc-add-squad-i {
-  transform: translateX(4px) rotate(90deg); background: rgba(255,255,255,.26);
+  transform: rotate(90deg); background: rgba(255,255,255,.26);
 }
-.dzc-add-squad:hover .dzc-add-squad-t,
-.dzc-add-squad:focus-visible .dzc-add-squad-t { transform: translateX(8px); }
-.dzc-add-squad:active { transform: translateY(1px) scale(.99); box-shadow: none; }
+.dzc-add-squad:active { filter: brightness(.92); box-shadow: none; }
 @media (prefers-reduced-motion: reduce) {
   .dzc-add-squad, .dzc-add-squad::before, .dzc-add-squad::after,
   .dzc-add-squad-i, .dzc-add-squad-t { transition: none; }
-  .dzc-add-squad:hover, .dzc-add-squad:active { transform: none; }
   .dzc-add-squad:hover .dzc-add-squad-i { transform: rotate(90deg); }
-  .dzc-add-squad:hover .dzc-add-squad-t { transform: none; }
 }
 
 /* Symbols on the picker card, at the size they deserve. Which shape a unit
