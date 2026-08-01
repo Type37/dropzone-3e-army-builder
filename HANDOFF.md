@@ -205,7 +205,8 @@ not happened.** What exists was guessed. It needs a real spec from Jet.
 | `js/dzc-collection.js` | what you own; advisory, never blocking |
 | `js/dzc-shell.js` | routing, modals, settings, theme, offline, sync |
 | `css/dzc.css`, `css/dzc-print.css` | |
-| `scripts/test-all.mjs` | 381 assertions across six suites |
+| `scripts/test-all.mjs` | 483 assertions across six suites |
+| `assets/ref/` | the printable quick references — see §11 for why they are not at `/ref/` |
 
 Routes: `#armies`, `#army/<id>`, `#units`, `#collection`, `#play/<id>`,
 `#share/<payload>`.
@@ -285,12 +286,20 @@ working is in [PORTING.md](PORTING.md): every Dropfleet capability, sorted into
 ported / cut / not applicable / missing. The short list below is the headline;
 that file is the twenty-five.
 
-- **Faction References tool** — Dropfleet has `ref/`; DZC has nothing.
-- **New Recruit import/export** — Dropfleet has it; DZC does not.
-- **Print extras** — preview with page-break markers, ink-saver, density,
-  thumbnails, weapon tables, Commander block.
-- **Monthly auto-update workflow** — §7.
+- **Monthly auto-update workflow** — §7. Needs a workflow file, which an
+  unattended run's token cannot write.
+- **Fast Play sheets, seeded example armies, tabs on the army list** — all
+  three need starter lists nobody has published. Building them means inventing
+  content, so they are not built.
 - **Lore panels** — 6 PDFs in `Lore/`; art was the priority.
+- **Art carousel, namesake lore, pronunciation, store links** — all four need
+  data the scanner does not produce.
+
+Built since this list was written, and no longer missing: the Faction
+References tool (`assets/ref/`), New Recruit import, the print preview with
+ink-saver, density, thumbnails, weapon tables and a Commander block, the
+changeable points limit, the random generator, Group duplication, the JSON
+backup and its import, and share as link / text / JSON.
 
 Repo slug is `dropzone-3e-army-builder`, title "Dropzone Commander 3E Army
 Builder". Rename if you'd prefer something else.
@@ -348,7 +357,75 @@ top-down by priority there, not from this section.
 
 ---
 
-## 11. Cloud run — 2026-08-01, no browser
+## 11. Cloud run — 2026-08-01, the later one, no browser
+
+Thirteen commits, none of them looked at. The load-bearing points:
+
+**The builder was throwing on any Squad with a Transport.** `squadHtml` called
+`U.transportHtml` two hundred lines above the `const U` that declares it — a
+temporal dead zone, so a thrown `ReferenceError` inside `renderBuilder`, so
+nothing reached the pane at all. Live since 67c4336 the previous day, through
+400-odd passing assertions, because **nothing had ever driven `renderBuilder`**.
+The suite tested the renderers a Unit goes through and never the screen that
+assembles them.
+
+**So every screen is driven now** (`scripts/test-dzc-render.mjs` §7): the army
+list, the builder, the picker, the Transport chooser, the Commander chooser,
+Share, the print preview, the unit reference, Collection and Play — each
+asserted to not throw, to draw something, and to print no placeholder. Then the
+builder and picker again, once per faction, over a generated army. A stub
+document is not a browser and the file says so; "it renders at all" is still an
+assertion nothing was making.
+
+**A footgun that will bite the next test.** `DZCArmy.load()` re-parses
+localStorage, and `renderBuilder` calls it every render — so an object handed
+back by `create()` or `addSquad()` is stale as soon as a screen has drawn. **Ids
+survive that; references do not.** Not a bug in the app (every handler goes
+through `current`, refreshed each render), but it cost an hour.
+
+**Two house rules were being broken silently, and both now have checks.**
+
+- **Sharp cards.** The rule went into `css/dzc.css` halfway up the file, above
+  the declarations that round `.dzc-pick`, `.dzc-rail-card` and
+  `.dzc-cmdr-opt`. Same specificity, later rule wins — so the picker cards and
+  the whole rail had been rounded since the rule was made. The block is now
+  **last in the file and has to stay there**, and the test reads the cascade in
+  load order and fails if the last word on any listed surface is not zero.
+- **No word more than twice on a screen.** The landing screen said "Army
+  Builder" three times. The check splits `index.html` into the screens it
+  declares and fails on any word or two-word pair said three times. **Static
+  markup only** — the JS-built views are not covered.
+
+**Two more checks worth knowing about.** Every top-level path the site fetches
+must be on the deploy workflow's `cp` line — that is how `ref/` would have
+404'd. And `assets/ref/` is pinned to `js/dzc-units.js` and `js/dzc-builder.js`
+for the six transport symbols and the six faction accents.
+
+**`assets/ref/` is in the wrong place on purpose.** The printable quick
+references belong at `/ref/`, where Dropfleet keeps its own. They are under
+`assets/` because the deploy workflow stages a named list and **a cloud run's
+token cannot edit a workflow file** — git push, the contents API and the
+git-data API all refuse. There is a Todoist task with the one-line diff. Both
+files say the same at the top.
+
+**What shipped besides.** A printable quick reference per faction, generated
+from `data/dzc` rather than typed (one page, `?faction=<id>`), linked from the
+landing page and the footer. Share as three targets — link, plain text, JSON —
+where the text keeps the Group nesting indented AND parses back through
+`DZCArmy.parseList`. An army description, set at creation and editable in the
+builder, travelling in the link, the JSON and the text. The four feedback
+questions, taken verbatim from Dropfleet. An "Owned" filter in the picker,
+gated on the Collection setting. Play/Share/Print moved into the topbar, where
+the label hides below 768px.
+
+**Not done, and why.** Fast Play sheets, seeded example armies and the army-list
+tabs all need content nobody has: they would mean inventing starter lists.
+The monthly stat-card workflow needs a workflow file, which this run cannot
+write.
+
+---
+
+## 12. Cloud run — 2026-08-01, the earlier one, no browser
 
 Thirteen commits from an unattended run with no Chrome and no access to the
 Dropfleet working folder, so **everything below is tested and none of it has
