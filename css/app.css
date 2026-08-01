@@ -7152,7 +7152,10 @@ body[data-view="builder"] .game-info-footer {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--sp-sm);
+  /* Wider between columns than between rows: the wordmark and Send Feedback
+     sit side by side with no separator glyph between them, so the space is
+     what has to do that work. */
+  gap: var(--sp-sm) var(--sp-md);
   max-width: 1200px;
   margin: 0 auto;
 }
