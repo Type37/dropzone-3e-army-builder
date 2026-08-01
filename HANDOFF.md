@@ -282,9 +282,13 @@ URLs follow `DZC_{Faction}_Stat_Cards_{YYMMDD}.pdf`.
 
 ## 9. What is not built
 
-The port is done. These are gaps, and the design/UX/copy work in Todoist is
-the bulk of what remains.
+The port is done — checked against the fork point rather than assumed, and the
+working is in [PORTING.md](PORTING.md): every Dropfleet capability, sorted into
+ported / cut / not applicable / missing. The short list below is the headline;
+that file is the twenty-five.
 
+- **The points limit cannot be changed after an army is created** — the one
+  gap that was on no list at all until that audit.
 - **Faction References tool** — Dropfleet has `ref/`; DZC has nothing.
 - **New Recruit import/export** — Dropfleet has it; DZC does not.
 - **Print extras** — preview with page-break markers, ink-saver, density,
