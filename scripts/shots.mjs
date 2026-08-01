@@ -111,6 +111,12 @@ const DZC_STEPS = [
      add && add.click()`],
   ['11-builder-with-squad', `DZCBuilder.closePicker()`],
   ['11b-squad-head-1to1', `void 0`, '.dzc-sq-main'],
+  // A SECOND Group, and the list on its own. Every shot before this one had
+  // exactly one Group in the middle pane, so nothing that only goes wrong with
+  // two of them could ever be seen -- which is how every card's drag grip came
+  // to be drawn on top of the first card's points and nobody noticed.
+  ['11b2-two-groups', `await DZCBuilder.addGroup(); DZCBuilder.closePicker()`],
+  ['11b3-group-list-1to1', `void 0`, '.dzc-b-list'],
   // The Group itself, clipped. At 1400 it is most of the screen; at 375 this
   // is the shot that shows whether anything is spilling sideways.
   ['11c-group-card', `document.querySelector('.dzc-group-card').scrollIntoView();

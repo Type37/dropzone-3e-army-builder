@@ -512,7 +512,12 @@
 .dzc-bb.is-on { border-left-color: var(--acc); background: var(--surface-3, #f2ece0); }
 .dzc-bb.is-over { border-color: var(--danger, #b3261e); }
 .dzc-bb:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
-.dzc-bb-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+/* The grip is absolutely positioned in this card's top-right corner, and this
+   is the row that runs under it — so the row gives up that much of its width
+   rather than letting the dots sit on top of the cost. They did: every Group
+   read "100/50" with the last digit under the grip, on every card in the list,
+   and a Group at its ceiling is exactly the number you are checking. */
+.dzc-bb-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding-right: 24px; }
 .dzc-bb-head b { font: 700 13.5px/1.2 var(--font-ui, 'Jost', sans-serif); overflow-wrap: anywhere; }
 .dzc-bb-head i {
   font-style: normal; white-space: nowrap;
