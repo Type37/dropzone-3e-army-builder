@@ -15,6 +15,23 @@ const App = (() => {
   const SETTINGS_KEY = 'dfc_settings';   // kept: renaming it would lose themes
   let settings = { theme: 'light' };
 
+  /* Feedback goes to the maker's inbox through the reader's own mail app. The
+   * body is prefilled with the four questions, because a bare mailto returns
+   * "looks cool" and a guided one returns something you can act on.
+   *
+   * The questions are Dropfleet's, word for word (FEEDBACK_HREF, git show
+   * 43773fa:js/app.js:16) with the game swapped -- this is exactly the copy
+   * CLAUDE.md §2 says not to rewrite. */
+  const FEEDBACK_HREF = 'mailto:warlore1@outlook.com?subject='
+    + encodeURIComponent('Dropzone Builder feedback') + '&body='
+    + encodeURIComponent(
+      'Thanks for helping improve the Dropzone Commander 3E Army Builder.\n\n'
+      + '1. What were you trying to do, and could you finish it?\n\n'
+      + '2. Did anything look wrong (a points cost, a stat, a rule)?\n\n'
+      + '3. What would make you use it for your next game?\n\n'
+      + '4. How long have you played DZC?\n'
+    );
+
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g,
     c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -232,7 +249,7 @@ const App = (() => {
           <button class="btn btn-ghost btn-sm" type="button" onclick="App.openImport()"
                   title="Read a backup, an army or a share link back in">Import</button>
           <button class="btn btn-ghost btn-sm" type="button" onclick="App.openChangelog()">What's New</button>
-          <a class="btn btn-ghost btn-sm" href="mailto:warlore1@outlook.com?subject=Dropzone%20builder%20feedback">Send feedback</a>
+          <a class="btn btn-ghost btn-sm" href="${FEEDBACK_HREF}">Send feedback</a>
         </div>
         <p class="dzc-set-note">A WarLore project. Game data and art belong to TTCombat.
           Interface icons from <a href="https://fonts.google.com/icons" target="_blank" rel="noopener">Material Symbols</a>,
@@ -567,6 +584,11 @@ const App = (() => {
       ['visibilitychange', 'focus', 'online'].forEach(ev =>
         window.addEventListener(ev, () => FleetSync.maybeAutoSync()));
     }
+    // The footer ships a plain mailto so the link works before any script
+    // runs; this upgrades it to the guided one. Same move as Dropfleet's
+    // app.js:298, and for the same reason.
+    const fb = $('footer-feedback');
+    if (fb) fb.href = FEEDBACK_HREF;
     window.addEventListener('hashchange', route);
     route();
   }
