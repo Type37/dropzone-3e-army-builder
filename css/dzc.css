@@ -460,6 +460,18 @@
   font-family: var(--font-numeric, 'Outfit', sans-serif);
   font-size: 16px; font-weight: 600; color: var(--acc-ink, #1b3a5c);
 }
+/* What the Level buys, in the same value-over-word shape the stat grid uses,
+   so three numbers read as one block rather than three loose chips. */
+.dzc-cmdr-buys { display: flex; gap: 12px; }
+.dzc-cmdr-buys span { display: flex; flex-direction: column; align-items: center; line-height: 1.1; }
+.dzc-cmdr-buys b {
+  font-family: var(--font-numeric, 'Outfit', sans-serif);
+  font-size: 14px; font-weight: 600; color: var(--ink, #24201c);
+}
+.dzc-cmdr-buys i {
+  font-style: normal; font-size: 9.5px; text-transform: uppercase;
+  letter-spacing: .05em; color: var(--ink-2, #6b6459);
+}
 
 /* ── builder: rail + column ──
    Desktop keeps panes, mobile does not (HANDOFF §2.2). The rail holds what you
@@ -1200,6 +1212,13 @@
   .dzc-chips::-webkit-scrollbar, .dzc-pick-sorts::-webkit-scrollbar,
   .dzc-pick-shapes::-webkit-scrollbar { height: 3px; }
   .dzc-chip, .dzc-shape-chip { flex: 0 0 auto; }
+  /* The three numbers a Level buys take their own row rather than squeezing
+     the Level name to nothing — insignia, Level, price and Add first, then
+     what you get for it underneath. */
+  .dzc-cmdr-opt { flex-wrap: wrap; }
+  .dzc-cmdr-opt-pts { order: 1; margin-left: auto; }
+  .dzc-cmdr-opt .btn { order: 2; }
+  .dzc-cmdr-buys { order: 3; flex: 1 1 100%; }
 }
 
 @media (max-width: 420px) {

@@ -459,6 +459,19 @@ console.log('\nevery screen renders');
   await drive('Collection', () => win.DZCCollection.open());
   await drive('Play mode', () => win.DZCPlay.open(a.id));
 
+  /* What a Level buys is chapter 4 arithmetic, not a points table: CP up to
+   * your highest Level (4.1.1), a hand of that many cards (4.1.4), D6 plus it
+   * for Initiative (4.1.5). Play Mode has run on those three numbers since it
+   * was written; the chooser left them out, so the ladder was four prices with
+   * nothing to weigh them against. Level 4 is legal at every game size, so it
+   * is always on the chooser and always safe to assert. */
+  {
+    const html = els['dzc-cmdr-body'].innerHTML;
+    ok(/<b>4<\/b><i>CP<\/i>/.test(html), 'the Commander chooser prices Level 4 at 4 CP');
+    ok(/<b>4<\/b><i>cards<\/i>/.test(html), 'and a hand of 4 cards');
+    ok(/<b>\+4<\/b><i>Initiative<\/i>/.test(html), 'and +4 Initiative');
+  }
+
   for (const [name, html, min] of [
     ['the picker', els['dzc-picker-body'].innerHTML, 2000],
     ['the Transport chooser', els['dzc-carry-body'].innerHTML, 500],

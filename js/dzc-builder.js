@@ -1121,6 +1121,21 @@
       >${window.DZCIcon('military_tech', { size: 18 })}${list.length ? 'Add another Commander' : 'Add Commander'}</button>`;
   }
 
+  /* What a Level buys, in the three numbers chapter 4 derives from it: CP
+   * replenishes up to your highest Level (4.1.1), hand size IS that Level
+   * (4.1.4), and Initiative is D6 plus it (4.1.5). Play Mode has run on that
+   * arithmetic since it was built.
+   *
+   * It used to say here that those numbers would not be invented, because
+   * index.json carries level and points only. That was the wrong file to look
+   * in — they are rulebook chapter 4, not a points table, and leaving them out
+   * meant the ladder read as four prices with nothing to weigh them against. */
+  function levelBuys(level) {
+    return [{ n: level, k: 'CP' },
+      { n: level, k: level === 1 ? 'card' : 'cards' },
+      { n: '+' + level, k: 'Initiative' }];
+  }
+
   /* Every level the agreed game size allows, with what it costs and what it
    * brings to the table. Famous Commanders are not released, so this is the
    * generic ladder only — the schema slot is there for when they are. */
@@ -1134,9 +1149,11 @@
         ? window.RankInsignia(a.faction, Math.max(1, l.level - 3), 30) : '';
       return `<div class="dzc-cmdr-opt">
         ${insignia}
-        <!-- No CP or hand-size line: index.json carries level and points only,
-             and those numbers are not going to be invented. -->
         <div class="dzc-cmdr-opt-body"><b>Level ${l.level}</b></div>
+        <div class="dzc-cmdr-buys"
+             title="Round 1 counts every Commander as Level 0 (4.1.1)">${
+          levelBuys(l.level).map(b =>
+            `<span><b>${b.n}</b><i>${b.k}</i></span>`).join('')}</div>
         <span class="dzc-cmdr-opt-pts">${l.points}pts</span>
         <button type="button" class="btn btn-primary btn-sm"
                 onclick="DZCBuilder.addCommander(${l.level})">Add</button>
