@@ -1415,6 +1415,7 @@
           <td>${esc(w.special || '')}</td></tr>`).join('')}</table>` : '';
 
       return `<div class="pr-squad${depth ? ' pr-squad--nested' : ''}" style="--depth:${depth}">
+        ${printOpts.art && u.art ? `<img class="pr-art" src="${esc(u.art)}" alt="">` : ''}
         <div class="pr-sq-line">
           <span class="pr-sq-n">${s.models.length}×</span>
           <span class="pr-sq-name">${esc(u.name)}</span>
@@ -1478,6 +1479,27 @@
    * paper. The spacers are preview-only; printing renders the sheet clean. */
   const PP = { onKey: null, onPop: null, ro: null, armed: false };
 
+  /* What the sheet is printed like, kept between prints.
+   *
+   * They live in the preview and not in Settings, because they are decisions
+   * about THIS printout — which is Dropfleet's own reasoning, written at
+   * app.js:8029 — and a print option in Settings is a setting you have to go
+   * somewhere else to change and then come back to see.
+   *
+   * Art is off by default and always has been. It is the first thing a printer
+   * makes a mess of, the sheet is a deployment plan rather than a display
+   * piece, and it is the single biggest thing between a two-page list and a
+   * four-page one. Off by default, available when you want it. */
+  const PRINT_KEY = 'dzc_print';
+  let printOpts = { compact: false, ink: false, art: false };
+  try { Object.assign(printOpts, JSON.parse(localStorage.getItem(PRINT_KEY) || '{}')); }
+  catch (e) { /* nothing saved, or a browser refusing storage */ }
+
+  function printClass() {
+    return (printOpts.compact ? ' is-compact' : '') + (printOpts.ink ? ' is-ink' : '')
+      + (printOpts.art ? ' is-art' : '');
+  }
+
   function closePreview(fromBack) {
     const ov = document.getElementById('dzc-pp');
     if (ov) ov.remove();
@@ -1503,11 +1525,14 @@
         <span class="pp-title">Print preview</span>
         <span class="pp-count" id="dzc-pp-count"></span>
         <span class="pp-spacer"></span>
+        ${[['compact', 'Compact'], ['ink', 'Ink-saver'], ['art', 'Art']].map(([k, label]) =>
+          `<label class="pp-opt"><input type="checkbox" ${printOpts[k] ? 'checked' : ''}
+             onchange="DZCBuilder.printOpt('${k}', this.checked)">${label}</label>`).join('')}
         <button class="btn btn-ghost btn-sm" type="button" onclick="DZCBuilder.closePreview()">Close</button>
         <button class="btn btn-primary btn-sm" type="button" onclick="DZCBuilder.printNow()">Print</button>
       </div>
       <div class="pp-scroll" id="dzc-pp-scroll">
-        <div class="pp-paper" id="dzc-pp-paper">${sheetHtml()}</div>
+        <div class="pp-paper${printClass()}" id="dzc-pp-paper">${sheetHtml()}</div>
       </div>`;
     document.body.appendChild(ov);
 
@@ -1617,8 +1642,26 @@
   function printNow() {
     let el = document.getElementById('dzc-print');
     if (!el) { el = document.createElement('div'); el.id = 'dzc-print'; document.body.appendChild(el); }
+    el.className = printClass().trim();
     el.innerHTML = sheetHtml();
     window.print();
+  }
+
+  /* Toggling redraws the sheet and measures again, because every one of these
+   * changes how much paper it is — which is the number the preview exists to
+   * tell you. */
+  function printOpt(key, on) {
+    printOpts[key] = !!on;
+    try { localStorage.setItem(PRINT_KEY, JSON.stringify(printOpts)); } catch (e) { /* quota */ }
+    const paper = document.getElementById('dzc-pp-paper');
+    if (!paper) return;
+    paper.className = 'pp-paper' + printClass();
+    paper.innerHTML = sheetHtml();
+    paper.querySelectorAll('img').forEach(img => {
+      img.addEventListener('load', paginate);
+      img.addEventListener('error', paginate);
+    });
+    paginate();
   }
 
   function printSheet() {
@@ -1783,7 +1826,7 @@
       if (r && !r.ok) return say(r.reason);
       refresh();
     },
-    openPicker, pick, print: printSheet, closePreview, printNow,
+    openPicker, pick, print: printSheet, closePreview, printNow, printOpt,
     openCommander, closeCommander,
     addCommander: level => {
       const r = window.DZCArmy.addCommander(current, level);

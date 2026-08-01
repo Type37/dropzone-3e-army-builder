@@ -85,6 +85,47 @@
 :is(#dzc-print, .pp-paper) .pr-foot { margin-top: 8pt; padding-top: 4pt; border-top: .5pt solid #999; font-size: 7.5pt; color: #444; }
 :is(#dzc-print, .pp-paper) .pr-warn { font-size: 8.5pt; margin: 0 0 6pt; padding: 3pt 5pt; border-left: 2pt solid #666; }
 
+/* -------------------------------------------------------- how it is printed
+ *
+ * Three decisions about this printout, made in the preview where you can see
+ * what each costs you in pages.
+ */
+
+/* Compact. Everything shrinks together — the sheet is already sized in points
+   so one step down the type scale takes the spacing with it. */
+:is(#dzc-print, .pp-paper).is-compact { font-size: 8.5pt; line-height: 1.3; }
+:is(#dzc-print, .pp-paper).is-compact .pr-group { padding: 3pt 5pt; margin-bottom: 4pt; }
+:is(#dzc-print, .pp-paper).is-compact .pr-title { font-size: 14pt; }
+:is(#dzc-print, .pp-paper).is-compact .pr-g-name { font-size: 10.5pt; }
+:is(#dzc-print, .pp-paper).is-compact .pr-squad { padding: 1pt 0; }
+:is(#dzc-print, .pp-paper).is-compact .pr-wpn { font-size: 7pt; }
+:is(#dzc-print, .pp-paper).is-compact .pr-rule p { font-size: 7.5pt; line-height: 1.3; }
+
+/* Ink-saver. The rules stay — the nesting rule down the left of a carried
+   Squad is what makes the tree readable, and losing it would cost the sheet
+   its whole point — but they go hairline and every grey goes black, because
+   grey text is the thing a cheap printer renders worst and it is not saving
+   ink to print it twice. */
+:is(#dzc-print, .pp-paper).is-ink .pr-group { border-width: .25pt; }
+:is(#dzc-print, .pp-paper).is-ink .pr-head { border-bottom-width: .5pt; }
+:is(#dzc-print, .pp-paper).is-ink .pr-g-head { border-bottom-color: #000; border-bottom-width: .25pt; }
+:is(#dzc-print, .pp-paper).is-ink .pr-squad--nested { border-left-width: .25pt; border-left-color: #000; }
+:is(#dzc-print, .pp-paper).is-ink .pr-wpn th { border-bottom-width: .25pt; border-bottom-color: #000; }
+:is(#dzc-print, .pp-paper).is-ink .pr-wpn td { border-bottom: 0; }
+:is(#dzc-print, .pp-paper).is-ink .pr-sq-cat { border-width: .25pt; border-color: #000; }
+:is(#dzc-print, .pp-paper).is-ink :is(.pr-cap, .pr-variants, .pr-foot, .pr-rule .pr-src) { color: #000; }
+:is(#dzc-print, .pp-paper).is-ink .pr-art { display: none; }
+
+/* Art. Off unless asked for: it is what a printer makes the worst mess of, the
+   sheet is a deployment plan rather than a display piece, and it is the single
+   biggest thing between a two-page list and a four-page one. Floated so a
+   Squad's text still fills the line beside it. */
+:is(#dzc-print, .pp-paper) .pr-art {
+  float: right; width: 22mm; height: auto; margin: 0 0 2pt 4pt;
+}
+:is(#dzc-print, .pp-paper).is-compact .pr-art { width: 16mm; }
+:is(#dzc-print, .pp-paper) .pr-squad::after { content: ''; display: block; clear: both; }
+
 /* ------------------------------------------------------------- the preview
  *
  * A sheet of A4 at its real size, with the page boundaries drawn on it. mm and
@@ -104,6 +145,11 @@
 .pp-title { font-family: 'Roboto Slab', Georgia, serif; font-weight: 700; font-size: 15px; }
 .pp-count { font-family: 'Outfit', system-ui, sans-serif; font-size: 13px; color: var(--ink-2, #6b6459); }
 .pp-spacer { margin-left: auto; }
+.pp-opt {
+  display: inline-flex; align-items: center; gap: 4px; cursor: pointer;
+  font-size: 12.5px; white-space: nowrap;
+}
+.pp-opt input { margin: 0; }
 .pp-scroll { flex: 1; overflow: auto; padding: 16px 8px 40px; display: flex; justify-content: center; }
 
 /* The paper. Padding matches @page's 12mm/10mm margins so a line that fits
