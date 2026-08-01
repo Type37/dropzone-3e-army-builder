@@ -301,6 +301,43 @@
     </div>`;
   }
 
+  /* Every rule this Unit uses, in full, under the weapon table.
+   *
+   * A chip with a tooltip is fine when you already know the rule and want
+   * reminding. It is not fine when you are deciding: you cannot compare two
+   * Units by hovering eleven chips in turn, and on a phone there is no hover
+   * at all, so the tooltip does not exist. The source comment on Dropfleet's
+   * equivalent says it outright — "always visible, this is build-critical
+   * info, not flavour" (app.js:4129).
+   *
+   * Keyed by the PRINTED keyword rather than the rule id, the same way the
+   * printed sheet keys it: Aegis 3" and Aegis 6" are one entry and two
+   * different sentences once the value is folded in, and this Unit's is the
+   * one that matters. Weapon rules are in, because a rule on the gun is a rule
+   * you are choosing (gap 44). */
+  function unitRulesHtml(u, faction) {
+    const fac = faction || state.faction;
+    const used = new Map();
+    [u.special || ''].concat((u.weapons || []).map(w => w.special || '')).forEach(sp => {
+      window.DZC.splitSpecial(sp, fac).forEach(tok => {
+        if (used.has(tok)) return;
+        const r = window.DZC.rule(tok, fac);
+        if (r) used.set(tok, r);
+      });
+    });
+    if (!used.size) return '';
+    const rows = [...used.keys()].sort((a, b) => a.localeCompare(b)).map(tok => {
+      const r = used.get(tok);
+      return `<div class="dzc-ruledef">
+        <h5>${esc(tok)}${r.alias && r.alias.toLowerCase() !== tok.toLowerCase()
+          ? ` <i>(${esc(r.alias)})</i>` : ''}</h5>
+        <p>${window.DZC.linkKeywords(window.DZC.ruleText(tok, fac), fac, r.name)}</p>
+        <span class="dzc-ruledef-src">${esc(ruleSource(r))}</span>
+      </div>`;
+    }).join('');
+    return `<div class="dzc-ruledefs">${rows}</div>`;
+  }
+
   function openDetail(unitId, faction) {
     if (faction) state.faction = faction;
     const f = window.DZC.faction(state.faction);
@@ -326,7 +363,8 @@
       </div>
       ${u.special ? `<div class="dzc-detail-rules">${rulesHtml(u.special, state.faction)}</div>` : ''}
       ${variants}
-      ${weapons}`;
+      ${weapons}
+      ${unitRulesHtml(u, state.faction)}`;
     document.querySelector('#dzc-detail .modal-title').textContent = u.name;
     document.getElementById('dzc-detail').classList.add('active');
   }
@@ -377,7 +415,7 @@
     openDetail, closeDetail, showRule, hideRule,
     // Shared with the builder's picker so a unit reads the same in both places.
     statsHtml, rulesHtml, squadHtml, transportHtml, weaponsHtml, variantsHtml,
-    wpnHead, wpnCells,
+    unitRulesHtml, wpnHead, wpnCells,
     pointsHtml, shape: shapeSvg,
     SHAPES: Object.keys(SYMBOL),
     shapeInk: s => (SYMBOL[s] || {}).ink || 'currentColor',

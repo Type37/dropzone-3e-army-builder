@@ -151,6 +151,25 @@
   text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1.5px;
 }
 .dzc-rule--unknown { border-style: dashed; opacity: .7; }
+
+/* Every rule the Unit uses, in full, under its weapon table. A chip with a
+   tooltip is fine for reminding; it is no good for deciding, and on a phone
+   there is no hover at all. Sharp, because a panel is square. */
+.dzc-ruledefs {
+  margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line, #d8d0c0);
+  display: grid; gap: 8px;
+}
+@media (min-width: 720px) { .dzc-ruledefs { grid-template-columns: 1fr 1fr; } }
+.dzc-ruledef {
+  padding: 7px 9px; border: 1px solid var(--line, #d8d0c0);
+  background: var(--surface-2, #fff);
+}
+.dzc-ruledef h5 {
+  margin: 0 0 2px; font: 600 12.5px/1.2 var(--font-ui, 'Jost', system-ui, sans-serif);
+}
+.dzc-ruledef h5 i { font-style: normal; font-weight: 400; color: var(--ink-2, #6b6459); }
+.dzc-ruledef p { margin: 0; font-size: 12px; line-height: 1.45; }
+.dzc-ruledef-src { display: block; margin-top: 3px; font-size: 10.5px; color: var(--ink-2, #6b6459); }
 /* A rule named inside a sentence is not a chip. A chip mid-prose breaks the
    line it is in and reads as a label rather than as part of what you are
    reading, so it keeps the sentence's own type and takes a dotted underline —

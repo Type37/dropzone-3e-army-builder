@@ -183,5 +183,48 @@ const unstyled = [...emitted].filter(c => !css.includes('.' + c));
 eq(unstyled.length, 0, 'every dzc- class the JS emits appears in the CSS');
 if (unstyled.length) console.error('        ' + unstyled.join('\n        '));
 
+/* ── 5. The unit renderers, run against every real Unit ───────────────
+ *
+ * js/dzc-units.js draws the same strings for the reference view, the picker
+ * card and the Squad row, so a bug in one of them is a bug in all three. It
+ * touches `document` only inside the handlers, so it loads against a stub and
+ * the pure renderers can be called for real.
+ */
+console.log('\nthe unit renderers survive all 178 units');
+{
+  const stub = () => ({ style: {}, classList: { add() {}, remove() {} } });
+  sandbox.document = {
+    getElementById: () => null, querySelector: () => null,
+    createElement: stub, addEventListener() {}, removeEventListener() {}
+  };
+  sandbox.setTimeout = setTimeout;
+  vm.runInContext(readFileSync(path.join(ROOT, 'js', 'dzc-icons.js'), 'utf8'), sandbox);
+  vm.runInContext(readFileSync(path.join(ROOT, 'js', 'dzc-units.js'), 'utf8'), sandbox);
+  const U = win.DZCUnits;
+
+  let drawn = 0, placeholders = [], ruleBlocks = 0;
+  for (const fid of ['ucm', 'phr', 'scourge', 'shaltari', 'resistance', 'bioficer']) {
+    const f = await DZC.loadFaction(fid);
+    for (const u of f.units) {
+      const html = U.statsHtml(u) + U.weaponsHtml(u, fid) + U.variantsHtml(u)
+        + U.transportHtml(u) + U.rulesHtml(u.special, fid) + U.unitRulesHtml(u, fid);
+      drawn++;
+      if (/\b(null|undefined|NaN)\b/.test(html)) placeholders.push(`${fid}/${u.id}`);
+      if (U.unitRulesHtml(u, fid)) ruleBlocks++;
+    }
+  }
+  ok(drawn > 170, 'every unit in the game was rendered', `${drawn}`);
+  eq(placeholders.length, 0, 'and not one of them printed null, undefined or NaN',
+     placeholders.slice(0, 5).join(', '));
+  ok(ruleBlocks > 100, 'most units carry a rules block, so the check is meaningful', `${ruleBlocks}`);
+
+  // Gap 44/65: the rule text is on the page, not only behind a hover -- there
+  // is no hover on a phone, so a tooltip-only rule does not exist there.
+  const legion = DZC.faction('ucm').byId.legionnaires;
+  const block = U.unitRulesHtml(legion, 'ucm');
+  ok(block.length > 200, 'Legionnaires print their rules in full', `${block.length} chars`);
+  ok(!/title="/.test(block), 'and not as a tooltip');
+}
+
 console.log(`\n${pass} passed, ${fail} failed\n`);
 process.exit(fail ? 1 : 0);
