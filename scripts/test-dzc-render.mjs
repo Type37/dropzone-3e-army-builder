@@ -534,6 +534,67 @@ console.log('\nevery screen renders');
   ok(!/\b(null|undefined|NaN)\b/.test(after), 'and the screen is still clean afterwards',
      (after.match(/.{0,40}\b(null|undefined|NaN)\b.{0,40}/) || [])[0]);
 
+  /* Play mode and the Collection have handlers too, and the same nobody had
+   * ever called them. Play is the one that matters most at a table: it is
+   * driven entirely by controls, and a Round counter that throws mid-game is
+   * the worst possible time to find out. */
+  const played = [];
+  const tap = async (label, fn) => {
+    try { await fn(); } catch (e) {
+      played.push(`${label}: ${e.message} (${((e.stack || '').split('\n')[1] || '').trim()})`);
+    }
+  };
+  {
+    /* A fresh army rather than the one above: that one has just had a Squad
+     * and a Group removed by the control sweep, so what is left in it is a
+     * function of the order those presses happened in. Play mode needs a
+     * Commander aboard a Squad or it will not open at all. */
+    const pa = A.create('ucm', 'Play probe', 1500);
+    const pgroup = A.addGroup(pa);
+    const psquad = A.addSquad(pa, pgroup.id, 'legionnaires', 3);
+    A.addCommander(pa, 5);
+    const plive = A.get(pa.id);
+    A.assignCommander(plive, A.commanders(plive)[0].id, psquad.id);
+    await win.DZCPlay.open(pa.id);
+    const P = win.DZCPlay;
+    const pg = A.get(pa.id).groups[0];
+    const psid = pg.squads[0].id;
+    await tap('round up', () => P.round(1));
+    await tap('round down', () => P.round(-1));
+    await tap('replenish', () => P.replenish());
+    await tap('cp up', () => P.cp(1));
+    await tap('cp down', () => P.cp(-1));
+    await tap('my VP', () => P.vp('myVP', 1));
+    await tap('their VP', () => P.vp('oppVP', 1));
+    await tap('their Groups', () => P.oppGroups('4'));
+    await tap('activate', () => P.activate(pg.id));
+    await tap('activate again', () => P.activate(pg.id));
+    await tap('damage', () => P.dp(psid, 0, -1));
+    await tap('repair', () => P.dp(psid, 0, 1));
+    await tap('status on', () => P.status(psid, 0, 'Reserved'));
+    await tap('status off', () => P.status(psid, 0, 'Reserved'));
+    await tap('initiative roll', () => P.roll());
+
+    const C = win.DZCCollection;
+    await tap('collection open', () => C.open());
+    await tap('collection faction', () => C.setFaction('phr'));
+    await tap('collection search', () => C.setSearch('nept'));
+    await tap('collection search clear', () => C.setSearch(''));
+    await tap('collection owned only', () => C.toggleOwned());
+    await tap('collection adjust', () => C.adjust('neptune-dropship', 1));
+    await tap('collection adjust back', () => C.adjust('neptune-dropship', -1));
+    await tap('collection owned off', () => C.toggleOwned());
+    await tap('collection back to ucm', () => C.setFaction('ucm'));
+    A.remove(pa.id);
+  }
+  eq(played.length, 0, 'no control in Play mode or the Collection throws');
+  if (played.length) console.error('        ' + played.join('\n        '));
+  for (const [name, id] of [['Play mode', 'view-play'], ['the Collection', 'view-collection']]) {
+    const html = els[id].innerHTML.replace(/<[^>]*>/g, ' ');
+    ok(!/\b(null|undefined|NaN)\b/.test(html), `${name} is still clean afterwards`,
+       (html.match(/.{0,40}\b(null|undefined|NaN)\b.{0,40}/) || [])[0]);
+  }
+
   A.remove(a.id);
 
   /* And once per faction, over an army the generator built.
