@@ -357,11 +357,37 @@ top-down by priority there, not from this section.
 
 ---
 
-## 11a. Cloud run — 2026-08-01, the third one, no browser
+## 11a. Cloud run — 2026-08-01, the third one
 
-Nineteen commits, none of them looked at. This run read the RULEBOOK rather
-than the backlog's own descriptions, and that is where most of what follows
-came from. If you only read one thing here, read the first two.
+**THERE IS A BROWSER IN A CLOUD RUN. Do not believe otherwise again.**
+
+Chromium is at `/opt/pw-browsers/chromium`. Two previous runs, and the brief
+for this one, all state flatly that there is no Chrome in a cloud session and
+that nothing can be looked at. That is failing pattern #2 almost word for word,
+and it cost two whole sessions of unverified work.
+
+`scripts/shots.mjs` works here now. Two one-line faults were stopping it: it
+searched four Windows paths only (it checks `CHROME_BIN` and six Linux paths
+now, `/opt/pw-browsers` first), and it launched without `--no-sandbox`, which a
+container running as root needs — Chrome exits before opening the debugging
+port, and the script reported "Chrome never exposed a page target", which reads
+exactly like the browser being absent.
+
+```sh
+python3 -m http.server 8901 &
+SHOT_W=1500 SHOT_H=1100 node scripts/shots.mjs http://127.0.0.1:8901/index.html docs/screens/dropzone/<date> dzc
+```
+
+Thirty-two shots are in `docs/screens/dropzone/2026-08-01-cloud/`. Take them
+BEFORE claiming anything visual, and note that 1400px is the three-pane
+breakpoint — shoot at 1500 or the rail renders as an overlay and every judgment
+about it is wrong.
+
+Twenty-nine commits. Everything below the browser was shipped before the
+screenshots existed; the last two commits are the first thing looking at them
+found. This run read the RULEBOOK rather than the backlog's own descriptions,
+and that is where most of what follows came from. If you only read one more
+thing here, read the next two.
 
 **A Group the rulebook itself draws was reported as walking on.** 9.4 says
 Vehicles and Infantry begin Reserved unless they start "aboard an Aircraft, **or
@@ -428,7 +454,24 @@ builder refuses it anyway; the comment now says that is a decision, not
 enforcement. And the scanner still truncates the Strikehawk and Carryhawk
 footnotes — the render side is guarded, the data is not fixed.
 
-The suite went 499 → 569. Every new assertion in this run was checked to FAIL
+**Also shipped, and the reason to read the tests before adding to them.** The
+router was the one thing nothing drove, and a route naming a view id
+index.html does not declare shows a blank page and throws nothing — checked
+statically now, both directions. Two scripts the page loads were in no offline
+precache. The print preview and the printer kept two separate lists of which
+blocks must not be cut, with nothing holding them together. The Collection's
+arithmetic and Play Mode's numbers had never been asserted at all, only their
+controls. Stat and weapon-column hovers carry the rulebook's own one-line
+definitions instead of repeating the label printed under them.
+
+**Still blocked, and only by one thing.** Moving `assets/ref/` to `/ref/` needs
+one word on the deploy workflow's `cp` line, and a cloud run's token is refused:
+`refusing to allow an OAuth App to create or update workflow .github/workflows/
+deploy.yml without workflow scope`. The whole move was built and tested green,
+then reset rather than pushed half — without the workflow line, `/ref/` 404s.
+The nine steps are written out on that Todoist task.
+
+The suite went 499 → 594. Every new assertion in this run was checked to FAIL
 against the code before it, which is worth keeping up: an assertion that passes
 either way is decoration.
 
