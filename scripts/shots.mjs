@@ -170,7 +170,21 @@ const DZC_STEPS = [
      await new Promise(r => setTimeout(r, 700));
      await DZCBuilder.print();
      await new Promise(r => setTimeout(r, 700))`],
-  ['18-armies', `DZCBuilder.closePreview(); location.hash = '#armies'`],
+  /* Share and Play, which had never been shot at all. Both are driven by the
+     render suite, so they are known not to throw — and "it does not throw" is
+     the whole of what was ever known about how they look. Play needs a
+     Commander actually ON a Squad before it will open (4.1), so the Commander
+     added earlier is assigned first. */
+  ['17b-share', `DZCBuilder.closePreview(); await DZCBuilder.share()`],
+  ['17c-play', `App.closeModal('modal-share');
+     const sel = document.querySelector('.dzc-cmdr-assign select');
+     if (sel && sel.options.length > 1) {
+       sel.value = sel.options[1].value;
+       sel.dispatchEvent(new Event('change'));
+     }
+     await new Promise(r => setTimeout(r, 500));
+     DZCBuilder.play()`],
+  ['18-armies', `location.hash = '#armies'`],
 ];
 
 const DFC_STEPS = [

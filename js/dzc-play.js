@@ -209,6 +209,14 @@
     const done = !!state.activated[g.id];
     const live = g.squads.filter(s => aliveIn(s) > 0);
     const canAct = activeGroups(army).some(x => x.id === g.id);
+    /* Three different things stop a Group activating, and only one of them is
+     * 4.2.2. A Group with nothing in it yet, and a Group whose every model is
+     * dead, were both being tagged "orphaned transports" and told a rule about
+     * transports they do not contain. Say which one it actually is. */
+    const orphaned = !canAct && live.length > 0;
+    const why = orphaned
+      ? 'Cannot be picked for a normal activation (4.2.1); activates in the Orphaned Transport step (4.2.2)'
+      : g.squads.length ? 'Nothing left in this Group' : 'No Squads in this Group';
     return `<section class="dzc-play-group${done ? ' is-done' : ''}${live.length ? '' : ' is-dead'}">
       <header>
         <label class="dzc-act">
@@ -216,11 +224,11 @@
                has to carry its own reason: the tag is a separate hover target
                and you are pointing at the box that will not tick. -->
           <input type="checkbox" ${done ? 'checked' : ''} ${canAct ? '' : 'disabled'}
-                 ${canAct ? '' : 'title="Cannot be picked for a normal activation (4.2.1); activates in the Orphaned Transport step (4.2.2)"'}
+                 ${canAct ? '' : `title="${why}"`}
                  onchange="DZCPlay.activate('${g.id}')">
           <b>${esc(window.DZCArmy.groupName(army, g))}</b>
         </label>
-        ${canAct ? '' : `<span class="dzc-play-tag" title="Cannot be picked for a normal activation (4.2.1); activates in the Orphaned Transport step (4.2.2)">${window.DZCIcon('local_shipping', { size: 12 })} orphaned transports</span>`}
+        ${orphaned ? `<span class="dzc-play-tag" title="${why}">${window.DZCIcon('local_shipping', { size: 12 })} orphaned transports</span>` : ''}
       </header>
       ${g.squads.map(s => squadHtml(army, s)).join('')}
     </section>`;

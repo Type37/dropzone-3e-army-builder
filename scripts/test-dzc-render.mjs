@@ -818,6 +818,14 @@ console.log('\nevery screen renders');
     await P.open(ma.id);
     P.oppGroups('7');
     eq(passes(), '3', 'a Group of only Transports is ignored on your own side of it');
+    /* And it says so, while a Group that is merely EMPTY does not. Three
+     * different things stop a Group activating and the tag was drawn for all
+     * three, so an empty Group was told a rule about transports it does not
+     * contain. Counted, because the Condor Group above must still carry it. */
+    A.addGroup(A.get(ma.id));
+    await P.open(ma.id);
+    const tags = (els['view-play'].innerHTML.match(/orphaned transports/g) || []).length;
+    eq(String(tags), '1', 'and only the transport Group is called an orphaned transport');
     A.remove(ma.id);
   }
 
