@@ -645,5 +645,44 @@ console.log('\nimporting a backup');
   shaped.added.forEach(x => A.remove(x.id));
 }
 
+console.log('\nimporting a pasted list');
+{
+  // New Recruit's conventions, read out of Dropfleet's parser rather than
+  // guessed at: "N x Name [Npts]", "##" headers, bullets, a headline total.
+  const text = [
+    '## Test Force [500pts]',
+    '',
+    '## Standard [180pts]',
+    '• 3 x Legionnaires [45pts]',
+    '2 x UCM Main Battle Tank [70pts]: Tachi',
+    '',
+    '## Nonsense [10pts]',
+    '1 x Not A Real Unit [10pts]'
+  ].join('\n');
+  const r = A.importList(text);
+  eq(r.ok, true, 'a pasted list imports');
+  eq(r.army.faction, 'ucm', 'the faction is voted from the unit names, not the header');
+  eq(r.matched.length, 2, 'both real units resolved');
+  eq(r.unmatched.length, 1, 'and the line that resolved to nothing is REPORTED, not dropped');
+  eq(r.army.name, 'Test Force', 'the title loses its points tag');
+  eq(r.army.groups.length, 2, 'each Squad lands in a Group of its own');
+  const tank = r.army.groups.map(g => g.squads[0]).find(s => s.unitId === 'ucm-main-battle-tank');
+  eq(tank.models.length, 2, 'the count comes off the "2 x"');
+  eq(tank.models[0].variant, 'Tachi', 'and a named loadout picks the variant');
+  A.remove(r.army.id);
+}
+
+{
+  // A list shared collapsed onto one line, which New Recruit does.
+  const one = '## Flat [90pts], 3 x Legionnaires [45pts], 2 x Polecat Buggy [40pts]';
+  const r = A.importList(one);
+  eq(r.ok, true, 'a comma-collapsed list still reads');
+  eq(r.matched.length, 2, 'both entries came back out of the one line');
+  A.remove(r.army.id);
+
+  eq(A.importList('just some prose with no points in it').ok, false,
+     'and something that is not a list is refused rather than half-imported');
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

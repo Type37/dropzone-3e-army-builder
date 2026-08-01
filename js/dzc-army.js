@@ -198,6 +198,149 @@
     return { ok: added.length > 0, added: added, skipped: skipped };
   }
 
+  /* A pasted army list, rather than a file this app wrote.
+   *
+   * The conventions are New Recruit's and they are not DZC-specific — "3 x
+   * Legionnaires [45pts]", "##" section headers, bullets, a "[2000pts]" title,
+   * and lists that arrive collapsed onto one line with commas where the
+   * newlines were. All of that is read out of Dropfleet's own parser
+   * (parseArmyListText / nrNormalize, git show 43773fa:js/app.js:6887) rather
+   * than guessed at.
+   *
+   * What is NOT recovered is the Group nesting, and that is a real limit, not
+   * an oversight. A Group here is a Transport and what it carries (3.2.4), and
+   * a flat list does not say what rode in what. Every Squad therefore lands in
+   * a Group of its own, and validate() will say so. Getting further needs a
+   * real New Recruit DZC export to read, which nobody has pasted yet.
+   *
+   * Nothing is silently dropped: a line that resolves to no Unit comes back in
+   * the report, because the one thing worse than a partial import is a partial
+   * import that looked complete. */
+  const LIST_SECTION = /^#{0,2}\s*(Standard|Vanguard|Heavy|Support|Transport|Commander|Configuration|Reference)s?\b/i;
+  const LIST_ENTRY = /^(?:[•\-*]\s*)?(?:(\d+)\s*[x×]\s*)?(.+?)\s*\[\s*(\d+)\s*pts?\s*\]\s*(?::\s*(.*))?$/i;
+
+  /* New Recruit shares a list collapsed onto one line often enough that
+   * Dropfleet grew this; the same normalisation puts the breaks back. A no-op
+   * on a normal multi-line paste. */
+  function listNormalize(text) {
+    if (text.split(/\n/).length > 6) return text;
+    return text
+      .replace(/\s*[•]\s*(\d+\s*[x×])/g, '\n• $1')
+      .replace(/,\s*(?=(?:\d+\s*[x×]\s*)?[A-Z][A-Za-z0-9'’.\- ]+?\s*\[\s*\d+\s*pts)/g, '\n');
+  }
+
+  /* Tolerant of plural, case and the variant standing in for its Unit: a list
+   * may well name the Sabre rather than the UCM Main Battle Tank it is. */
+  function findByName(factionId, name) {
+    const f = window.DZC.faction(factionId);
+    if (!f) return null;
+    const lc = String(name || '').trim().toLowerCase().replace(/\s+/g, ' ');
+    if (!lc) return null;
+    const pick = list => list.find(Boolean) || null;
+    const units = (f.units || []).filter(u => u.selectable !== false);
+    const exact = units.find(u => {
+      const n = (u.name || '').toLowerCase();
+      return n === lc || n === lc + 's' || lc === n + 's';
+    });
+    if (exact) return { unit: exact, variant: null };
+    for (const u of units) {
+      const v = (u.variants || []).find(x => (x.name || '').toLowerCase() === lc);
+      if (v) return { unit: u, variant: v.name };
+    }
+    const fuzzy = pick(units.filter(u => {
+      const n = (u.name || '').toLowerCase();
+      return n.length > 3 && (n.indexOf(lc) === 0 || lc.indexOf(n) === 0);
+    }));
+    return fuzzy ? { unit: fuzzy, variant: null } : null;
+  }
+
+  function parseList(text) {
+    const lines = listNormalize(String(text || '')).split(/\r?\n/);
+    const entries = [];
+    lines.forEach(raw => {
+      const line = raw.trim();
+      // A "#" line is a heading, always — the title, a section, a Configuration
+      // block. Dropfleet treats it the same way, and without it "## Test Force
+      // [500pts]" reads as a Unit called Test Force that resolved to nothing.
+      if (!line || /^[#+]/.test(line) || LIST_SECTION.test(line)) return;
+      const m = line.match(LIST_ENTRY);
+      if (!m) return;
+      entries.push({
+        line: line,
+        count: m[1] ? parseInt(m[1], 10) : 1,
+        name: m[2].replace(/^#+\s*/, '').trim(),
+        points: parseInt(m[3], 10),
+        loadouts: (m[4] || '').split(',').map(s => s.trim()).filter(Boolean)
+      });
+    });
+    return entries;
+  }
+
+  const FACTION_IDS = ['ucm', 'phr', 'scourge', 'shaltari', 'resistance', 'bioficer'];
+
+  /* Which faction's roster the names actually belong to. A header can say one
+   * thing over a list of another faction's units; the units cannot lie. Only
+   * factions already fetched can vote, so the caller loads them first. */
+  function voteFaction(entries) {
+    let best = null, bestN = 0;
+    FACTION_IDS.forEach(key => {
+      if (!window.DZC.faction(key)) return;
+      const n = entries.filter(e => findByName(key, e.name)).length;
+      if (n > bestN) { bestN = n; best = key; }
+    });
+    return best;
+  }
+
+  function importList(text) {
+    const entries = parseList(text);
+    if (!entries.length) {
+      return { ok: false, reason: 'That does not read as an army list.', matched: [], unmatched: [] };
+    }
+    const faction = voteFaction(entries);
+    if (!faction) {
+      return { ok: false, reason: 'No unit in that list belongs to a faction this app knows.', matched: [], unmatched: [] };
+    }
+    const total = entries.reduce((n, e) => n + (e.points || 0), 0);
+    const title = String(text || '').split(/\r?\n/).map(s => s.trim()).find(Boolean) || '';
+    // The first [Npts] in the file is the list's own headline. Taking whichever
+    // of it and the sum is larger keeps an over-budget import from arriving at
+    // a limit it already breaks, without inventing a number of our own.
+    const headline = parseInt((String(text).match(/\[\s*(\d+)\s*pts?\s*\]/i) || [])[1], 10) || 0;
+    const army = {
+      id: uid(),
+      name: title.replace(/\[\s*\d+\s*pts?\s*\][\s\S]*$/i, '').replace(/^#+\s*/, '')
+        .replace(/\+\+/g, '').replace(/[\s\-–]+$/, '').trim() || 'Imported list',
+      faction: faction,
+      pointsLimit: Math.max(headline, total) || 1500,
+      groups: [], commanders: [], created: Date.now(), updatedAt: Date.now()
+    };
+    const matched = [], unmatched = [];
+    entries.forEach(e => {
+      const hit = findByName(faction, e.name);
+      if (!hit) { unmatched.push(e.line); return; }
+      const u = hit.unit;
+      // A named variant wins; otherwise a loadout name may identify one.
+      const named = hit.variant
+        || (u.variants || []).map(v => v.name).find(v =>
+          e.loadouts.some(l => l.toLowerCase() === v.toLowerCase()))
+        || defaultVariant(u);
+      const g = { id: uid(), name: null, squads: [] };
+      g.squads.push({
+        id: uid(), unitId: u.id,
+        models: Array.from({ length: Math.max(1, e.count) }, () => ({ variant: named })),
+        carriedBy: null, commander: null
+      });
+      army.groups.push(g);
+      matched.push({ name: u.name, count: e.count });
+    });
+    if (!matched.length) {
+      return { ok: false, reason: 'Nothing in that list matched a Unit.', matched: [], unmatched: unmatched };
+    }
+    armies.unshift(army);
+    save();
+    return { ok: true, army: army, matched: matched, unmatched: unmatched };
+  }
+
   function remove(id) {
     armies = armies.filter(a => a.id !== id);
     if (window.FleetSync && window.FleetSync.recordDeleted) {
@@ -1196,7 +1339,8 @@
   const cap1 = s => s.charAt(0).toUpperCase() + s.slice(1);
 
   window.DZCArmy = {
-    load, save, all, get, create, remove, touch, setPointsLimit, importArmies,
+    load, save, all, get, create, remove, touch, setPointsLimit,
+    importArmies, importList, parseList,
     addGroup, removeGroup, duplicateGroup, groupName, renameGroup,
     commanderName, renameCommander, addSquad, removeSquad, setModelCount, setModelVariant,
     canSetVariantCount, setVariantCount,

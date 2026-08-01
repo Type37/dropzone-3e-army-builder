@@ -285,7 +285,7 @@ const App = (() => {
       <div class="form-group float-field">
         <textarea class="form-input dzc-import-text" id="dzc-import-text" rows="6"
                   placeholder=" " spellcheck="false"></textarea>
-        <label class="float-label" for="dzc-import-text">Backup, army or share link</label>
+        <label class="float-label" for="dzc-import-text">Backup, army, share link or a pasted list</label>
       </div>
       <div class="dzc-set-actions">
         <label class="btn btn-outline btn-sm">Choose a file
@@ -344,6 +344,25 @@ const App = (() => {
       .map(a => a && a.faction).filter(f => typeof f === 'string'))];
     for (const f of facs) {
       try { await window.DZC.loadFaction(f); } catch (e) { /* offline: the check is skipped, not the import */ }
+    }
+
+    // Not JSON at all: a pasted army list. Every faction has to be on hand
+    // first, because which one the list belongs to is decided by which roster
+    // its unit names are in — a header can say one thing over another
+    // faction's units.
+    if (parsed == null) {
+      for (const f of ['ucm', 'phr', 'scourge', 'shaltari', 'resistance', 'bioficer']) {
+        try { await window.DZC.loadFaction(f); } catch (e) { /* what loaded still votes */ }
+      }
+      const l = window.DZCArmy.importList(text);
+      if (!l.ok) { report(`<p class="dzc-set-note">${esc(l.reason)}</p>`); return; }
+      report(`<p class="dzc-set-note"><b>${esc(l.army.name)}</b> — ${l.matched.length}
+          Squad${l.matched.length === 1 ? '' : 's'}, each in a Group of its own.
+          A list does not say what rode in what, so the nesting is yours to rebuild (3.2.4).</p>
+        ${l.unmatched.length ? `<ul class="dzc-import-list">${
+          l.unmatched.map(u => `<li>Not matched: ${esc(u)}</li>`).join('')}</ul>` : ''}`);
+      if (window.DZCBuilder) DZCBuilder.renderList();
+      return;
     }
 
     const r = window.DZCArmy.importArmies(text);
