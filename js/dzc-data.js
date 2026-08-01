@@ -108,7 +108,7 @@
    * faction rule must beat a core one of the same name. Exact names beat
    * wildcard templates, or the open-ended "Ev X" would swallow anything
    * starting "Ev". */
-  function rule(keyword, faction) {
+  function resolve(keyword, faction) {
     if (!state.rules || !keyword) return null;
     const t = fixTypos(String(keyword).trim());
     if (!t) return null;
@@ -119,15 +119,52 @@
       if (!c) continue;
       for (const pool of pools) {
         for (const r of pool) {
-          if (c.toLowerCase() === r.name.toLowerCase()) return r;
-          if (r.alias && c.toLowerCase() === r.alias.toLowerCase()) return r;
+          if (c.toLowerCase() === r.name.toLowerCase()) return { rule: r, cand: c };
+          if (r.alias && c.toLowerCase() === r.alias.toLowerCase()) return { rule: r, cand: c };
         }
       }
       for (const pool of pools) {
-        for (const r of pool) if (r.re.test(c)) return r;
+        for (const r of pool) if (r.re.test(c)) return { rule: r, cand: c };
       }
     }
     return null;
+  }
+
+  function rule(keyword, faction) {
+    const hit = resolve(keyword, faction);
+    return hit ? hit.rule : null;
+  }
+
+  /* The glossary text with the printed value folded in.
+   *
+   * A card prints "Aegis 3"" and the entry reads "Friendly Units within X" of
+   * this Unit lose UC." Handing X straight back asks the player to redo the
+   * substitution the card already did for them, which is exactly the sentence
+   * they came to the tooltip to avoid working out.
+   *
+   * Every parameterised rule's match expression captures its value, so capture
+   * 1 fills X, 2 fills Y and 3 fills Z -- the order every parameterised NAME in
+   * the glossary is written in ("Repair X/Y", "Drone Base X: Y",
+   * "Shield: X Y" Z+"). One pass, so a value that itself contains a bare Y is
+   * never re-substituted.
+   *
+   * Word suffixes work the same as numeric ones: "Ineffective: Zones" reads
+   * "...things of the type Zones", not "...of the type X". */
+  function ruleText(keyword, faction) {
+    const hit = resolve(keyword, faction);
+    if (!hit) return null;
+    const r = hit.rule;
+    if (!r.parameterised) return r.text;
+    // A trailing bracket names the VARIANTS the rule applies to, never part of
+    // the value -- "AWACS 12” (Lynx)" is 12 inches, not 12” (Lynx). Lookup can
+    // ignore that because the regex matches either way; substitution cannot.
+    const bare = hit.cand.replace(VARIANT_TAIL, '');
+    const m = r.re.exec(bare) || r.re.exec(hit.cand);
+    if (!m) return r.text;
+    return r.text.replace(/\b([XYZ])\b/g, (whole, ph) => {
+      const v = m['XYZ'.indexOf(ph) + 1];
+      return v == null ? whole : String(v).trim();
+    });
   }
 
   /* Split a card's Special line into keywords.
@@ -293,7 +330,7 @@
     get rules() { return state.rules; },
     faction: id => state.factions[id],
     unit: (fid, uid) => (state.factions[fid] || { byId: {} }).byId[uid],
-    rule, splitSpecial,
+    rule, ruleText, splitSpecial,
     capacityFor, fillsOf, canCarry, loadCheck, isFull,
     gameSizeFor, maxGroups, maxGroupCost, rareLimit, commanderLevels,
     _state: state, _compileRules: compileRules

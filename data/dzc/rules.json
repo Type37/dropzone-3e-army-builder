@@ -19,7 +19,7 @@
    "name": "Aegis X”",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Aegis\\s*(.+?)[”″\\\"]?\\s*$",
+   "match": "^\\s*Aegis[\\s:/\\-]*([^\\s]+?)[”″\\\"]?\\s*$",
    "text": "Friendly Units within X” of this Unit lose UC.",
    "page": 44
   },
@@ -31,7 +31,7 @@
    "name": "Agile X",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Agile\\s*(.+?)\\s*$",
+   "match": "^\\s*Agile[\\s:/\\-]*(.+?)\\s*$",
    "text": "During CQBs, this Unit automatically passes X DF rolls—each Unit in the Squad contributes X. It cannot automatically pass First Strike hits but gains +1DF against them. Agile Units gain +1DF against Collateral Damage hits.",
    "page": 44
   },
@@ -43,7 +43,7 @@
    "name": "AWACS X”",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*AWACS\\s*(.+?)[”″\\\"]?\\s*$",
+   "match": "^\\s*AWACS[\\s:/\\-]*([^\\s]+?)[”″\\\"]?\\s*$",
    "text": "Enemy Aircraft within X” of this Unit may be attacked with a +1Ac bonus.",
    "page": 44
   },
@@ -67,7 +67,7 @@
    "name": "Breachers X",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Breachers\\s*(.+?)\\s*$",
+   "match": "^\\s*Breachers[\\s:/\\-]*(.+?)\\s*$",
    "text": "Breachers may enter a Building from any point on it—they do not require an Entrance. Breachers ignore Sited enemies and the Automated Sentries and Seal Effect Features when entering Zones. When a Squad with Breachers enters a Building, select one random enemy Occupying Squad. Each Breaching Unit inflicts X Small Arms hits on that Squad.",
    "page": 44
   },
@@ -91,7 +91,7 @@
    "name": "Command Centre",
    "alias": null,
    "parameterised": false,
-   "match": "^\\s*Command\\s*Centre\\s*$",
+   "match": "^\\s*Command[\\s:/\\-]*Centre\\s*$",
    "text": "If this Unit contains a Commander, double the Radius of Command Cards measured from this Unit.",
    "page": 44
   },
@@ -115,7 +115,7 @@
    "name": "Demo Charges X+",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Demo\\s*Charges\\s*(.+?)\\+\\s*$",
+   "match": "^\\s*Demo[\\s:/\\-]*Charges[\\s:/\\-]*([^\\s]+?)\\+\\s*$",
    "text": "If this Infantry Unit begins its activation inside a Zone, you may place a Demo Charge Token on that Zone. If enemy Occupiers are present, its Squad must pass a Bravery Test first. If you have no Occupiers in a Zone containing your Demo Charge Tokens, you may remove them all at the end of any friendly activation—each inflicts 2DP on that Zone on an X+. This suffers -1 if one enemy Occupying Squad is present, or -2 if more than one is present.",
    "page": 44
   },
@@ -139,7 +139,7 @@
    "name": "Ev X",
    "alias": "Evasion",
    "parameterised": true,
-   "match": "^\\s*Ev\\s*(.+?)\\s*$",
+   "match": "^\\s*Ev[\\s:/\\-]*(.+?)\\s*$",
    "text": "Weapons attacking targets with Ev suffer -X Ac. Ev is ignored when targeting friendly Units.",
    "page": 44
   },
@@ -151,7 +151,7 @@
    "name": "Fast Mover",
    "alias": null,
    "parameterised": false,
-   "match": "^\\s*Fast\\s*Mover\\s*$",
+   "match": "^\\s*Fast[\\s:/\\-]*Mover\\s*$",
    "text": "Fast Movers are Aircraft with two Mv stats—a minimum and maximum. They must move at least their minimum Mv each activation, in a straight line, and before attacking. They may move less than their minimum Mv when entering the Table. They may pivot up to 45 degrees at the beginning of their move and again at its end. Units within a Fast Mover Squad must end their move parallel to each other, facing the same way. Fast Movers can always move off the Table. If any Unit in the Squad moves off, the Squad leaves the Table. They then return to Ready. Fast Movers ALWAYS begin the game Reserved. Fast Movers are ignored for determining Victory Points but do concede Kill Points. Commanders may not be assigned to Fast Movers.",
    "page": 44
   },
@@ -163,7 +163,7 @@
    "name": "Flying High",
    "alias": null,
    "parameterised": false,
-   "match": "^\\s*Flying\\s*High\\s*$",
+   "match": "^\\s*Flying[\\s:/\\-]*High\\s*$",
    "text": "A Fast Mover Squad can elect to fly high at the end of its move, before pivoting– indicate this with a token. High-fliers can pivot up to 180 degrees. High-fliers can only target and be targeted by other Fast Movers flying high. Nothing blocks Line of Sight to high-fliers. A high-flier can end its move in illegitimate places, including over Zones— remove it from its flight stand/substitute if for a token if it can’t stand up. The Squad remains flying high until it leaves the Table or elects to return to normal height. It may do this at the end of its move, before pivoting.",
    "page": 45
   },
@@ -175,7 +175,7 @@
    "name": "Flat Out X”",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Flat\\s*Out\\s*(.+?)[”″\\\"]?\\s*$",
+   "match": "^\\s*Flat[\\s:/\\-]*Out[\\s:/\\-]*([^\\s]+?)[”″\\\"]?\\s*$",
    "text": "If this Unit does not Embark, Disembark, or attack in an activation, it gains +X” Mv.",
    "page": 45
   },
@@ -187,7 +187,7 @@
    "name": "FS X",
    "alias": "First Strike",
    "parameterised": true,
-   "match": "^\\s*FS\\s*(.+?)\\s*$",
+   "match": "^\\s*FS[\\s:/\\-]*(.+?)\\s*$",
    "text": "At the start of a CQB, each non-Sited Unit with First Strike inflicts X Small Arms hits on the enemy Squads, distributed freely. If both players have First Strike Units involved, the player without the Initiative distributes their hits first. DF saves are then attempted simultaneously.",
    "page": 45
   },
@@ -199,7 +199,7 @@
    "name": "Hardy X",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Hardy\\s*(.+?)\\s*$",
+   "match": "^\\s*Hardy[\\s:/\\-]*(.+?)\\s*$",
    "text": "Instead of using its DF, even if it would not normally be able to, this Infantry Unit may use a save of X+ against hits from Weapons, Collateral Damage, and Command Cards. Hits from anything above E2 ignore this rule.",
    "page": 45
   },
@@ -211,7 +211,7 @@
    "name": "Infiltrate X”",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Infiltrate\\s*(.+?)[”″\\\"]?\\s*$",
+   "match": "^\\s*Infiltrate[\\s:/\\-]*([^\\s]+?)[”″\\\"]?\\s*$",
    "text": "This Unit may always Deploy up to X” from their Territory. Infiltrating Infantry may Deploy as Occupiers in a Zone, but that Zone must be wholly within X” of their Territory. Transports of Squads with Infiltrate that choose to Infiltrate must begin Ready— they are allowed to start empty. Otherwise, Units cannot Infiltrate if part of a Group containing Units without Infiltrate. A Transport with Infiltrate confers Infiltrate to all Units aboard.",
    "page": 45
   },
@@ -223,7 +223,7 @@
    "name": "Jump X”",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Jump\\s*(.+?)[”″\\\"]?\\s*$",
+   "match": "^\\s*Jump[\\s:/\\-]*([^\\s]+?)[”″\\\"]?\\s*$",
    "text": "If it does not Embark or Disembark from a Unit that activation, this Unit may Jump when it starts moving—during its move, but not at its end, it is an Aircraft with an X” Mv. If Embarking/Disembarking from a Zone, this Mv is not halved. If an AA Weapon Reaction Attacks it, this Unit suffers -3A for that attack. Line of Sight is measured to a point 2” above the Jumper. Jump Infantry are still damaged as Infantry.",
    "page": 45
   },
@@ -259,7 +259,7 @@
    "name": "Living Weapons",
    "alias": null,
    "parameterised": false,
-   "match": "^\\s*Living\\s*Weapons\\s*$",
+   "match": "^\\s*Living[\\s:/\\-]*Weapons\\s*$",
    "text": "Commanders cannot be assigned to Living Weapons. They may begin the game aboard a Transport but may not Embark into one. They may enter Zones. Living Weapons cannot Search for or carry Objects. They cannot exit Zones with enemy Occupiers. A player with only Living Weapon Occupiers can only Contest that Zone. Living Weapons with the same name Occupying the same Zone automatically form one Squad/ join an existing Squad of Living Weapons with the same name at the start of the Initiation Phase—their player may choose which Squad they join. This can take the Squad above its maximum Squad size.",
    "page": 46
   },
@@ -271,7 +271,7 @@
    "name": "Obscurer X”",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Obscurer\\s*(.+?)[”″\\\"]?\\s*$",
+   "match": "^\\s*Obscurer[\\s:/\\-]*([^\\s]+?)[”″\\\"]?\\s*$",
    "text": "All friendly Vehicle and Infantry Units within X” of this Unit are Obscured to enemies.",
    "page": 46
   },
@@ -283,7 +283,7 @@
    "name": "PX+",
    "alias": "Passive Countermeasures",
    "parameterised": true,
-   "match": "^\\s*P(.+?)\\+\\s*$",
+   "match": "^\\s*P([^\\s]+?)\\+\\s*$",
    "text": "This Unit may attempt to block any damage it would receive by rolling 1 D6 for each point of damage—each result of at least X blocks the damage. Against damage from E9 sources, after modifiers are applied, Passive Countermeasures suffer a -1 modifier. E10 sources, after modifiers are applied, ignore Passive Countermeasures. Once all modifiers are applied, Passive Countermeasures can never exceed 3+. Occupiers inside Zones with Passive Countermeasures gain those Passive Countermeasures against damage dealt directly by Weapons.",
    "page": 46
   },
@@ -295,7 +295,7 @@
    "name": "Regenerate X",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Regenerate\\s*(.+?)\\s*$",
+   "match": "^\\s*Regenerate[\\s:/\\-]*(.+?)\\s*$",
    "text": "This Unit recovers X lost DP in the Cleanup step of the End Phase.",
    "page": 46
   },
@@ -343,7 +343,7 @@
    "name": "Shield: X Y” Z+",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Shield[:/\\-\\s]*\\s*(.+?)\\s*(.+?)[”″\\\"]?\\s*(.+?)\\+\\s*$",
+   "match": "^\\s*Shield[:/\\-\\s]+[\\s:/\\-]*(.+?)[\\s:/\\-]*([^\\s]+?)[”″\\\"]?[\\s:/\\-]*([^\\s]+?)\\+\\s*$",
    "text": "All Units/Zones as defined by X within Y” of this Unit gain Z+ Passive Countermeasures.",
    "page": 46
   },
@@ -367,7 +367,7 @@
    "name": "Rapid Insertion X”",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Rapid\\s*Insertion\\s*(.+?)[”″\\\"]?\\s*$",
+   "match": "^\\s*Rapid[\\s:/\\-]*Insertion[\\s:/\\-]*([^\\s]+?)[”″\\\"]?\\s*$",
    "text": "An Aircraft transporting Rapid Insertion Units which have not Embarked this Round may move up to an additional X” after all other modifiers are applied before these Units Disembark. The Aircraft cannot move further than its unmodified Mv using this rule. Units with Rapid Insertion may Disembark when their Transport is within 3” of an enemy Vehicle.",
    "page": 46
   },
@@ -451,7 +451,7 @@
    "name": "Wide X”",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Wide\\s*(.+?)[”″\\\"]?\\s*$",
+   "match": "^\\s*Wide[\\s:/\\-]*([^\\s]+?)[”″\\\"]?\\s*$",
    "text": "Units in this Squad must maintain a coherency of X” rather than the usual 3”.",
    "page": 47
   },
@@ -475,7 +475,7 @@
    "name": "Critical X",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Critical\\s*(.+?)\\s*$",
+   "match": "^\\s*Critical[\\s:/\\-]*(.+?)\\s*$",
    "text": "This Weapon inflicts X additional DP for each Critical it inflicts against Units.",
    "page": 48
   },
@@ -487,7 +487,7 @@
    "name": "Demo X",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Demo\\s*(.+?)\\s*$",
+   "match": "^\\s*Demo[\\s:/\\-]*(.+?)\\s*$",
    "text": "This Weapon can inflict Critical damage against Zones. It also inflicts X additional DP for each success when rolling to inflict damage against Zones.",
    "page": 48
   },
@@ -499,7 +499,7 @@
    "name": "Destroyer X+",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Destroyer\\s*(.+?)\\+\\s*$",
+   "match": "^\\s*Destroyer[\\s:/\\-]*([^\\s]+?)\\+\\s*$",
    "text": "If this Weapon hits by rolling equal to or higher than X, it will automatically cause a Critical instead of rolling to damage. This counts as a successful roll to damage. This Weapon’s Ac cannot be modified below X.",
    "page": 48
   },
@@ -523,7 +523,7 @@
    "name": "AA-R",
    "alias": "Anti-Aircraft-Reactive",
    "parameterised": false,
-   "match": "^\\s*AA[:/\\-\\s]*R\\s*$",
+   "match": "^\\s*AA[:/\\-\\s]+R\\s*$",
    "text": "This AA Weapon may only Reaction Attack but suffers no penalty for doing so.",
    "page": 48
   },
@@ -535,7 +535,7 @@
    "name": "AA-S",
    "alias": "Anti-Aircraft-Slow",
    "parameterised": false,
-   "match": "^\\s*AA[:/\\-\\s]*S\\s*$",
+   "match": "^\\s*AA[:/\\-\\s]+S\\s*$",
    "text": "This AA Weapon may not Reaction Attack.",
    "page": 48
   },
@@ -547,7 +547,7 @@
    "name": "ALT X",
    "alias": "Alternate",
    "parameterised": true,
-   "match": "^\\s*ALT\\s*(.+?)\\s*$",
+   "match": "^\\s*ALT[\\s:/\\-]*(.+?)\\s*$",
    "text": "Units may only attack with one Weapon with the same ALT number (X) each Round.",
    "page": 48
   },
@@ -583,7 +583,7 @@
    "name": "Battery X",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Battery\\s*(.+?)\\s*$",
+   "match": "^\\s*Battery[\\s:/\\-]*(.+?)\\s*$",
    "text": "This Weapon gains X E for each other instance of this Weapon in coherency. Only one Battery Weapon with the same name may attack per Squad per Round. If one attacks, each other instance of that Weapon in coherency counts as having attacked.",
    "page": 48
   },
@@ -607,7 +607,7 @@
    "name": "Devastator X",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Devastator\\s*(.+?)\\s*$",
+   "match": "^\\s*Devastator[\\s:/\\-]*(.+?)\\s*$",
    "text": "This Weapon inflicts X additional DP for each success when rolling to inflict damage against Units.",
    "page": 49
   },
@@ -619,7 +619,7 @@
    "name": "Dissipate -X",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Dissipate\\s*[:/\\-\\s]*(.+?)\\s*$",
+   "match": "^\\s*Dissipate[\\s:/\\-]*[:/\\-\\s]+(.+?)\\s*$",
    "text": "This Weapon may suffer -X E to double its R value/s. It may do this twice to quadruple its R.",
    "page": 49
   },
@@ -631,7 +631,7 @@
    "name": "Drive-by",
    "alias": null,
    "parameterised": false,
-   "match": "^\\s*Drive[:/\\-\\s]*by\\s*$",
+   "match": "^\\s*Drive[:/\\-\\s]+by\\s*$",
    "text": "This Weapon may measure range and Line of Sight from any point its Unit moved through that activation if it moved in a single straight line. It may pivot before moving.",
    "page": 49
   },
@@ -667,7 +667,7 @@
    "name": "Focus X",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Focus\\s*(.+?)\\s*$",
+   "match": "^\\s*Focus[\\s:/\\-]*(.+?)\\s*$",
    "text": "You may discard any number of successful hits from one or more instances of this Weapon to add X E to another remaining hit. For example, two identical E2 Cannons with Focus 1 and 4 attacks each score a total of 6 hits. Their player chooses to discard 4 of these hits to add 2 Energy to each of the remaining hits, resulting in two E4 hits.",
    "page": 49
   },
@@ -691,7 +691,7 @@
    "name": "Ignores Cover",
    "alias": null,
    "parameterised": false,
-   "match": "^\\s*Ignores\\s*Cover\\s*$",
+   "match": "^\\s*Ignores[\\s:/\\-]*Cover\\s*$",
    "text": "This Weapon ignores the Ac penalty for Obscured targets. Sited Infantry may not use their DF value to block hits from this Weapon.",
    "page": 49
   },
@@ -703,7 +703,7 @@
    "name": "Incendiary X",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Incendiary\\s*(.+?)\\s*$",
+   "match": "^\\s*Incendiary[\\s:/\\-]*(.+?)\\s*$",
    "text": "Each hit from this Weapon that inflicts 1 or more damage against a Building inflicts X additional Collateral Damage hits. Each hit that inflicts 1 or more damage against an Area inflicts 2x X additional Collateral Damage hits",
    "page": 49
   },
@@ -727,7 +727,7 @@
    "name": "Ineffective: X",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Ineffective[:/\\-\\s]*\\s*(.+?)\\s*$",
+   "match": "^\\s*Ineffective[:/\\-\\s]+[\\s:/\\-]*(.+?)\\s*$",
    "text": "This Weapon cannot damage or affect things of the type X.",
    "page": 50
   },
@@ -763,7 +763,7 @@
    "name": "Needs Spotter",
    "alias": null,
    "parameterised": false,
-   "match": "^\\s*Needs\\s*Spotter\\s*$",
+   "match": "^\\s*Needs[\\s:/\\-]*Spotter\\s*$",
    "text": "This Weapon’s target must be in Clear or Obscured Line of Sight of a friendly Unit with Scout, or it suffers -2Ac.",
    "page": 50
   },
@@ -775,7 +775,7 @@
    "name": "Overcharge X",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Overcharge\\s*(.+?)\\s*$",
+   "match": "^\\s*Overcharge[\\s:/\\-]*(.+?)\\s*$",
    "text": "If its Unit moves 0” (before or after attacking), this Weapon gains +X E that activation.",
    "page": 50
   },
@@ -799,7 +799,7 @@
    "name": "Pen X+",
    "alias": "Penetrative",
    "parameterised": true,
-   "match": "^\\s*Pen\\s*(.+?)\\+\\s*$",
+   "match": "^\\s*Pen[\\s:/\\-]*([^\\s]+?)\\+\\s*$",
    "text": "When rolling to inflict damage against Units, this Weapon may always succeed on a roll of X+ regardless of E or A values. This cannot be modified. This can alter the roll required for a Critical—Pen 4+ would inflict a Critical on a 6+.",
    "page": 50
   },
@@ -811,7 +811,7 @@
    "name": "Precision X",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Precision\\s*(.+?)\\s*$",
+   "match": "^\\s*Precision[\\s:/\\-]*(.+?)\\s*$",
    "text": "If its Unit moves 0” (before or after attacking), this Weapon gains +X Ac that activation and if it has Destroyer, it also gains +X Destroyer.",
    "page": 50
   },
@@ -823,7 +823,7 @@
    "name": "Repair X/Y",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Repair\\s*(.+?)[:/\\-\\s]*(.+?)\\s*$",
+   "match": "^\\s*Repair[\\s:/\\-]*(.+?)[:/\\-\\s]+(.+?)\\s*$",
    "text": "This Weapon may only target Y, and Y may be a friendly Unit. For each hit by this Weapon, the target regains X lost DP.",
    "page": 50
   },
@@ -847,7 +847,7 @@
    "name": "Self-Destruct",
    "alias": null,
    "parameterised": false,
-   "match": "^\\s*Self[:/\\-\\s]*Destruct\\s*$",
+   "match": "^\\s*Self[:/\\-\\s]+Destruct\\s*$",
    "text": "This uses the same rules as a Field Weapon, except that the attacking Unit is destroyed, and Units within its Squad can be damaged by it. If a Unit with a Self-Destruct Weapon is destroyed while not Embarked, roll a D6. On a 4+, the Unit must immediately attack with the Weapon before being removed, even if it could not normally attack.",
    "page": 50
   },
@@ -907,7 +907,7 @@
    "name": "Collector X",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Collector\\s*(.+?)\\s*$",
+   "match": "^\\s*Collector[\\s:/\\-]*(.+?)\\s*$",
    "text": "This Unit may hold up to X RM Tokens (see other Bioficer special rules).",
    "page": 1
   },
@@ -919,7 +919,7 @@
    "name": "Genitor X",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Genitor\\s*(.+?)\\s*$",
+   "match": "^\\s*Genitor[\\s:/\\-]*(.+?)\\s*$",
    "text": "Bioficer Units with a hollow green square Transport Symbol (e.g. ) are Genitor Units. Genitor Units may begin the game with up to X Raw Materials (RM) tokens aboard them, and they may begin empty—X is shown within their Transport Symbol. When building your Army, RM tokens cost 5pts each and are assigned to those Genitor Units. Their points contribute to their Group’s total cost but do not contribute towards any category. In game, RM tokens are worth 0pts, so they do not contribute to KPs etc. Genitor Units may never have more than X RM tokens aboard—any above X are discarded. Genitor Units may not spend more than X RM tokens per activation (see Generated). RM Tokens may be passed between Genitor and Collector Units within 5” of each other during either Unit’s activation. Genitor Units cannot pass RM Tokens to Collectors. When Genitor Units could normally Disembark a Squad, they may Spawn a Squad of Generated Units. This new Squad must be within its Squad size limits. It Disembarks in the usual way and joins the Genitor Unit’s Group. Genitor Units may Spawn multiple Squads per Round. A Genitor Unit inside a Zone may Spawn Squads at the beginning of its activation. A Genitor Unit may not Spawn a Squad in the same Round as Embarking any Units.",
    "page": 1
   },
@@ -931,7 +931,7 @@
    "name": "Generated X",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Generated\\s*(.+?)\\s*$",
+   "match": "^\\s*Generated[\\s:/\\-]*(.+?)\\s*$",
    "text": "Units of the category Generated are Generated Units. These have a solid green square Transport Symbol with thier RM cost X shown within it (e.g. ). These cannot be taken when building your Army. Generated Units may be Spawned by Genitor Units during the game. A Generated Unit costs X RM tokens to Spawn—remove those from the Genitor Unit as they Disembark. This is done by Unit—two Genitors with 3RM tokens each could not Spawn a Unit which costs 6RM.",
    "page": 1
   },
@@ -943,7 +943,7 @@
    "name": "Advanced Genitor/ Generated",
    "alias": null,
    "parameterised": false,
-   "match": "^\\s*Advanced\\s*Genitor[:/\\-\\s]*\\s*Generated\\s*$",
+   "match": "^\\s*Advanced[\\s:/\\-]*Genitor[:/\\-\\s]+[\\s:/\\-]*Generated\\s*$",
    "text": "Generated Units with a gold border on their Transport Symbol (e.g. ) may only be Spawned by a Genitor Unit with a gold number in its Transport Symbol. Advanced Genitors may Spawn non-advanced Generated Units. Advanced Generated Units may Embark into any Genitor as normal.",
    "page": 1
   },
@@ -979,7 +979,7 @@
    "name": "Puppeteer X”",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Puppeteer\\s*(.+?)[”″\\\"]?\\s*$",
+   "match": "^\\s*Puppeteer[\\s:/\\-]*([^\\s]+?)[”″\\\"]?\\s*$",
    "text": "This Unit controls friendly Puppet Units within X” of it, including Occupiers, and Occupiers in the same Zone. Any non-Infantry Unit containing a Bioficer Commander gains Puppeteer 9”.",
    "page": 1
   },
@@ -1027,7 +1027,7 @@
    "name": "Bikes X",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Bikes\\s*(.+?)\\s*$",
+   "match": "^\\s*Bikes[\\s:/\\-]*(.+?)\\s*$",
    "text": "When outside a Zone, this Infantry Unit is treated as a Vehicle with an A value of X, although Blast Weapons still inflict D6 hits against them. In addition, Bikes have Resilient. Small Arms Weapons always treat units with Bikes as Infantry, meaning they cannot combine attacks and inflict 1 DP per hit. Bikes units outside Zones may always roll their DF against Small Arms hits, even if not Obscured. They may still enter Zones. Bikes lose any Ev and Weapons while Occupying.",
    "page": 1
   },
@@ -1039,7 +1039,7 @@
    "name": "Firing Ports",
    "alias": null,
    "parameterised": false,
-   "match": "^\\s*Firing\\s*Ports\\s*$",
+   "match": "^\\s*Firing[\\s:/\\-]*Ports\\s*$",
    "text": "If an Infantry Unit will not Embark/Disembark from this Transport in its activation, this Transport gains that Infantry Unit’s Weapons that activation, except those with a R of CC. Those Weapons’ MA become Full and they lose Assault. This is cumulative with multiple Infantry Units. Those Weapons suffer -1Ac if this Transport Disembarks or moves over 0” that activation.",
    "page": 1
   },
@@ -1051,7 +1051,7 @@
    "name": "Flexible Capacity",
    "alias": null,
    "parameterised": false,
-   "match": "^\\s*Flexible\\s*Capacity\\s*$",
+   "match": "^\\s*Flexible[\\s:/\\-]*Capacity\\s*$",
    "text": "This Transport may be taken if at least half full.",
    "page": 1
   },
@@ -1087,7 +1087,7 @@
    "name": "Subterranean Small",
    "alias": null,
    "parameterised": false,
-   "match": "^\\s*Subterranean\\s*Small\\s*$",
+   "match": "^\\s*Subterranean[\\s:/\\-]*Small\\s*$",
    "text": "Only Vehicles with an initial DP of 1, and Infantry, can Embark or Disembark into or from this Unit.",
    "page": 1
   },
@@ -1099,7 +1099,7 @@
    "name": "Subterranean Medium",
    "alias": null,
    "parameterised": false,
-   "match": "^\\s*Subterranean\\s*Medium\\s*$",
+   "match": "^\\s*Subterranean[\\s:/\\-]*Medium\\s*$",
    "text": "Only Vehicles with an initial DP of 1-2, and Infantry, can Embark or Disembark into or from this Unit.",
    "page": 1
   },
@@ -1123,7 +1123,7 @@
    "name": "Plasma Generator X”",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Plasma\\s*Generator\\s*(.+?)[”″\\\"]?\\s*$",
+   "match": "^\\s*Plasma[\\s:/\\-]*Generator[\\s:/\\-]*([^\\s]+?)[”″\\\"]?\\s*$",
    "text": "Friendly Weapons with ‘plasma’ in their name gain +1E if they attack while within X” of this Unit. This is not cumulative with other Plasma Generators. Weapons on Fast Movers are not affected.",
    "page": 1
   },
@@ -1135,7 +1135,7 @@
    "name": "Razorworm Pod",
    "alias": null,
    "parameterised": false,
-   "match": "^\\s*Razorworm\\s*Pod\\s*$",
+   "match": "^\\s*Razorworm[\\s:/\\-]*Pod\\s*$",
    "text": "This Weapon may only target Zones. For each DP it inflicts, place 1 Unit of Razorworms in that Zone. All Razorworms placed in a Zone by Razorworm Pods form one Squad at the end of their Group’s attacks, within that Group. These Razorworms count as having Embarked into that Zone and may do nothing further that Round except fight in a CQB.",
    "page": 1
   },
@@ -1171,7 +1171,7 @@
    "name": "Aux Gate",
    "alias": null,
    "parameterised": false,
-   "match": "^\\s*Aux\\s*Gate\\s*$",
+   "match": "^\\s*Aux[\\s:/\\-]*Gate\\s*$",
    "text": "These are always Auxiliary Transports. They use the same rules as Gates except they are taken as non-Gate Squads and must be activated normally—they cannot be activated together with another non-Gate Group. Other Squads can still Embark/Disembark from them outside of that Aux Gate’s activation. Aux Gates cannot attack in the same round as Embarking/Disembarking. Command Cards which target Gates cannot target these.",
    "page": 1
   },
@@ -1267,7 +1267,7 @@
    "name": "Drone Base X: Y",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Drone\\s*Base\\s*(.+?)[:/\\-\\s]*\\s*(.+?)\\s*$",
+   "match": "^\\s*Drone[\\s:/\\-]*Base[\\s:/\\-]*(.+?)[:/\\-\\s]+[\\s:/\\-]*(.+?)\\s*$",
    "text": "During this Unit’s activation, it may launch one Squad of X Units of Y. Follow the usual Disembarking rules, treating this Unit as their Transport. Each launched Squad joins this Unit’s Group. This Unit may not launch if 2 Y Squads are already in its Group. If this Unit is destroyed, all Y Squads in its Group are destroyed.",
    "page": 1
   },
@@ -1291,7 +1291,7 @@
    "name": "Remote Drone",
    "alias": null,
    "parameterised": false,
-   "match": "^\\s*Remote\\s*Drone\\s*$",
+   "match": "^\\s*Remote[\\s:/\\-]*Drone\\s*$",
    "text": "This Squad may not be taken in your Army. During its activation, you may destroy this Squad instead of attacking with it.",
    "page": 1
   }

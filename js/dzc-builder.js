@@ -994,13 +994,18 @@
     if (!a) return;
     const size = window.DZC.gameSizeFor(a.pointsLimit);
     const v = window.DZCArmy.validate(a);
-    const used = new Map();          // rule name -> record, for the appendix
+    // Keyed by the PRINTED keyword, not the rule id: Aegis 3" and Aegis 6" are
+    // one glossary entry but two different sentences once the value is folded
+    // in, and the sheet has to carry the one the model actually has.
+    const used = new Map();          // printed keyword -> { token, rule, text }
 
     function collectRules(u) {
       [u.special || ''].concat((u.weapons || []).map(w => w.special || '')).forEach(sp => {
         window.DZC.splitSpecial(sp, a.faction).forEach(tok => {
           const r = window.DZC.rule(tok, a.faction);
-          if (r && !used.has(r.id)) used.set(r.id, r);
+          if (r && !used.has(tok)) {
+            used.set(tok, { token: tok, rule: r, text: window.DZC.ruleText(tok, a.faction) });
+          }
         });
       });
     }
@@ -1055,9 +1060,9 @@
       ${g.squads.filter(s => !s.carriedBy).map(s => squad(g, s, 0)).join('')}
     </section>`).join('');
 
-    const rules = [...used.values()].sort((x, y) => x.name.localeCompare(y.name))
-      .map(r => `<div class="pr-rule"><h3>${esc(r.name)}${r.alias ? ` (${esc(r.alias)})` : ''}</h3>
-        <p>${esc(r.text)} <span class="pr-src">${esc(r.faction ? r.faction.toUpperCase() : r.section)}</span></p></div>`).join('');
+    const rules = [...used.values()].sort((x, y) => x.token.localeCompare(y.token))
+      .map(e => `<div class="pr-rule"><h3>${esc(e.token)}${e.rule.alias ? ` (${esc(e.rule.alias)})` : ''}</h3>
+        <p>${esc(e.text)} <span class="pr-src">${esc(e.rule.faction ? e.rule.faction.toUpperCase() : e.rule.section)}</span></p></div>`).join('');
 
     let el = document.getElementById('dzc-print');
     if (!el) { el = document.createElement('div'); el.id = 'dzc-print'; document.body.appendChild(el); }

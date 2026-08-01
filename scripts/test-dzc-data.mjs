@@ -85,6 +85,76 @@ ok(DZC.rule('Gate', 'shaltari'), 'faction rule resolves for its own faction');
 eq(DZC.rule('Nanomachines', 'phr').faction, 'phr', 'faction rule is attributed to its faction');
 ok(!DZC.rule('DefinitelyNotARule', 'ucm'), 'an unknown keyword resolves to nothing');
 
+// The value the card printed has to reach the sentence the player reads --
+// "within 6” of this Unit", never "within X” of this Unit".
+console.log('\nruleText');
+eq(DZC.ruleText('Surveyor', 'ucm'), DZC.rule('Surveyor', 'ucm').text,
+   'a plain rule is its glossary text unchanged');
+ok(/within 6” of this Unit/.test(DZC.ruleText('Aegis 6”', 'ucm')),
+   'Aegis 6” substitutes the inches', DZC.ruleText('Aegis 6”', 'ucm'));
+ok(/suffer -1 Ac/.test(DZC.ruleText('Ev1', 'bioficer')),
+   'Ev1 substitutes with the space closed up', DZC.ruleText('Ev1', 'bioficer'));
+ok(/only attack 1 times/.test(DZC.ruleText('L1', 'phr')),
+   'a placeholder attached to the name still substitutes', DZC.ruleText('L1', 'phr'));
+ok(/within 12” of this Unit/.test(DZC.ruleText('AWACS 12” (Lynx)', 'ucm')),
+   'the variant bracket is stripped before the value is read',
+   DZC.ruleText('AWACS 12” (Lynx)', 'ucm'));
+// A word suffix substitutes exactly as a number does.
+ok(/of the type Zones/.test(DZC.ruleText('Ineffective: Zones', 'ucm')),
+   'a word suffix substitutes too', DZC.ruleText('Ineffective: Zones', 'ucm'));
+// Two placeholders, filled from their own capture groups and not from each
+// other -- Repair 1: Vehicles prints X=1 and Y=Vehicles.
+const repair = DZC.ruleText('Repair 1: Vehicles', 'ucm');
+ok(/only target Vehicles/.test(repair) && /regains 1 lost DP/.test(repair),
+   'two placeholders fill from their own captures', repair);
+eq(DZC.ruleText('DefinitelyNotARule', 'ucm'), null, 'an unknown keyword has no text');
+
+// Cards write a hyphen where the rulebook heads a space. Reading it as part of
+// the value gave "inflicts -1 additional DP" for a rule that adds one.
+ok(/inflicts 1 additional DP/.test(DZC.ruleText('Critical-1', 'shaltari')),
+   'a hyphen separator is not a minus sign', DZC.ruleText('Critical-1', 'shaltari'));
+eq(DZC.ruleText('Alt-1', 'ucm'), DZC.ruleText('Alt 1', 'ucm'),
+   'Alt-1 and Alt 1 are the same rule with the same value');
+// The wildcard used to stop one character in because the separator after it
+// was allowed to match nothing.
+const repairD6 = DZC.ruleText('Repair D6: Medusa', 'scourge');
+ok(/only target Medusa/.test(repairD6) && /regains D6 lost DP/.test(repairD6),
+   'a die expression is not split across both captures', repairD6);
+// Three values, and the first of them is two words.
+const shield = DZC.ruleText('Shield: Friendly Vehicles 6” 4+', 'shaltari');
+ok(/as defined by Friendly Vehicles within 6” of this Unit gain 4\+/.test(shield),
+   'Shield keeps its three values apart', shield);
+// "Pen 6+" resolved to PX+ -- P, then "en 6" as the value -- and showed
+// Passive Countermeasures on every weapon that had Penetrator.
+eq(DZC.rule('Pen 6+', 'ucm').id, 'pen-x', 'Pen 6+ is Penetrator, not PX+');
+eq(DZC.rule('P5+', 'shaltari').id, 'px', 'P5+ is still PX+');
+
+// Sweep every keyword the six factions actually print. A placeholder surviving
+// into a tooltip is the bug this is here to catch, and it is only visible
+// against the real cards.
+{
+  const factions = [ucm, scourge, shaltari, resistance,
+                    await DZC.loadFaction('phr'), await DZC.loadFaction('bioficer')];
+  let checked = 0;
+  const leaked = [];
+  for (const f of factions) {
+    for (const u of f.units || []) {
+      const lines = [u.special || ''].concat((u.weapons || []).map(w => w.special || ''));
+      for (const line of lines) {
+        for (const tok of DZC.splitSpecial(line, f.id)) {
+          const text = DZC.ruleText(tok, f.id);
+          if (text == null) continue;
+          checked++;
+          if (/\b[XYZ]\b/.test(text)) leaked.push(`${f.id}/${u.id}: ${tok}`);
+        }
+      }
+    }
+  }
+  ok(checked > 500, 'the sweep saw the whole printed glossary', `checked ${checked}`);
+  eq(leaked.length, 0, 'no printed keyword leaves a placeholder in its text');
+  if (leaked.length) console.error('        ' + leaked.slice(0, 8).join('\n        '));
+}
+
 console.log('\nsplitSpecial');
 const sp = DZC.splitSpecial('Battery 2, Blast, Concussion, Indirect, Pen 6+', 'ucm');
 eq(sp.length, 5, 'a plain comma list splits into five keywords');

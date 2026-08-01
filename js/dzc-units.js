@@ -145,7 +145,7 @@
     if (!special) return '';
     return window.DZC.splitSpecial(special, faction).map(tok => {
       const r = window.DZC.rule(tok, faction);
-      const tip = r ? r.text : 'No glossary entry — read it from the stat card.';
+      const tip = window.DZC.ruleText(tok, faction) || 'No glossary entry — read it from the stat card.';
       return `<button type="button" class="dzc-rule${r ? '' : ' dzc-rule--unknown'}"
         onclick="DZCUnits.showRule(this,'${esc(tok).replace(/'/g, '&#39;')}')"
         title="${esc(tip)}">${esc(tok)}</button>`;
@@ -317,7 +317,7 @@
     pop.id = 'dzc-pop';
     pop.innerHTML = r
       ? `<h5>${esc(r.name)}${r.alias ? ` <span class="dzc-pop-alias">(${esc(r.alias)})</span>` : ''}</h5>
-         <p>${esc(r.text)}</p>
+         <p>${esc(window.DZC.ruleText(token, state.faction))}</p>
          <span class="dzc-pop-src">${esc(r.faction ? r.faction.toUpperCase() + ' rules' : 'Rulebook ' + r.section)}</span>`
       : `<h5>${esc(token)}</h5><p>No glossary entry for this keyword — read it from the stat card.</p>`;
     document.body.appendChild(pop);

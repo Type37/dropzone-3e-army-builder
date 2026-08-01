@@ -219,11 +219,23 @@ def matcher_for(name):
       - X is not always a number. "Ineffective: X" takes a target type and
         "Repair X/Y" takes a die expression, so the wildcard is non-greedy and
         stops at the next literal rather than assuming digits.
+
+    The capture boundaries matter beyond resolution: the app substitutes these
+    groups back into the glossary text, so a wildcard that takes one character
+    too many turns a tooltip into nonsense.
     """
+    parts = PLACEHOLDER_RE.split(name)
     out = []
-    for i, part in enumerate(PLACEHOLDER_RE.split(name)):
+    for i, part in enumerate(parts):
         if i:
-            out.append(r"(.+?)")
+            # A value that runs up to an inches mark or a "+" is one
+            # measurement or one die target, and never contains a space.
+            # Saying so is what keeps "Shield: X Y" Z+" apart: an
+            # any-character wildcard lets X swallow the other two, and
+            # "Shield: Friendly Vehicles 6" 4+" reads back as "as defined by f
+            # within r" of this Unit".
+            bare = bool(part) and part[0] in "”″\"+"
+            out.append(r"([^\s]+?)" if bare else r"(.+?)")
         out.append(_literal(part))
     return re.compile(r"^\s*" + "".join(out) + r"\s*$", re.I)
 
@@ -240,15 +252,23 @@ def _literal(part):
         Dissipate -X    heading    ->  "Dissipate 1"            card
         Shield: X Y Z+  heading    ->  "Shield friendly ..."    card
 
-    So a separator may be any of : / - or nothing, and the inches mark may be
+    So a separator may be any of : / - or a space, and the inches mark may be
     the curly glyph, a straight quote, or absent.
+
+    A separator must consume SOMETHING. Letting it match nothing is how
+    "Repair D6: Medusa" captured X as "D" and Y as "6: Medusa" -- the wildcard
+    stopped one character in because the separator was happy to be empty.
+
+    A space in the heading may be a separator on the card: the rulebook heads
+    "ALT X" and "Critical X" where cards print "Alt-1" and "Critical-1", and
+    reading that hyphen as part of the value gives "inflicts -1 additional DP".
     """
     out = []
     for ch in part:
         if ch.isspace():
-            out.append(r"\s*")
+            out.append(r"[\s:/\-]*")
         elif ch in ":/-":
-            out.append(r"[:/\-\s]*")
+            out.append(r"[:/\-\s]+")
         elif ch in "”″\"":
             out.append(r"[”″\"]?")
         else:
