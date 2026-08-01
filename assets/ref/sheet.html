@@ -211,6 +211,11 @@
           return '<td class="num">' + esc((u.stats || {})[k] || '') + '</td>';
         }).join('')
       + '<td>' + transportCell(u) + '</td>'
+      // Which card this row came off. The sheet is a summary of the cards, not
+      // a replacement for them -- the art, the wording and the upgrade
+      // footnotes are still only on the card -- so the one thing it owes you is
+      // where to look when a row is not enough.
+      + '<td class="num">' + esc(u.page == null ? '' : u.page) + '</td>'
       + '</tr>';
   }
 
@@ -232,7 +237,7 @@
       return '<div class="sec">' + esc(cat) + '<span class="sub">' + esc(note) + '</span></div>'
         + '<table><thead><tr><th>Unit</th><th>Type</th><th>Squad</th><th>Pts</th>'
         + STATS.map(function (k) { return '<th>' + esc(k) + '</th>'; }).join('')
-        + '<th>Transport</th></tr></thead><tbody>'
+        + '<th>Transport</th><th>Card</th></tr></thead><tbody>'
         + rows.map(rosterRow).join('') + '</tbody></table>';
     }).join('');
   }
@@ -252,11 +257,19 @@
         + esc(rare[g.id] == null ? '' : rare[g.id]) + '</td></tr>';
     }).join('');
 
+    // What the Level is worth, which is three numbers out of chapter 4 rather
+    // than anything in the points table: CP replenishes up to your highest
+    // Level (4.1.1), your hand is that many Command Cards (4.1.4), and
+    // Initiative is D6 plus it (4.1.5). This is the sheet on the table when
+    // someone asks why the Level 6 was worth 150 points.
     var levels = ((r.commanders || {}).levels || []).map(function (l) {
       var first = (l.allowedIn || [])[0] || '';
       var size = sizes.filter(function (s) { return s.id === first; })[0];
       return '<tr><td class="unit">Level ' + esc(l.level) + '</td><td class="num">'
-        + esc(l.points) + '</td><td>' + esc(size ? size.label + ' and up' : '') + '</td></tr>';
+        + esc(l.points) + '</td><td class="num">' + esc(l.level)
+        + '</td><td class="num">' + esc(l.level)
+        + '</td><td class="num">+' + esc(l.level) + '</td>'
+        + '<td>' + esc(size ? size.label + ' and up' : '') + '</td></tr>';
     }).join('');
 
     var shapes = ((idx.transportSymbols || {}).shapes || []).map(function (s) {
@@ -269,7 +282,8 @@
       + '<div>'
       + '<table><thead><tr><th>Size</th><th>Points</th><th>Groups</th><th>Rare</th></tr></thead>'
       + '<tbody>' + sizeRows + '</tbody></table>'
-      + '<table style="margin-top:6pt"><thead><tr><th>Commander</th><th>Pts</th><th>From</th></tr></thead>'
+      + '<table style="margin-top:6pt"><thead><tr><th>Commander</th><th>Pts</th>'
+      + '<th>CP</th><th>Cards</th><th>Initiative</th><th>From</th></tr></thead>'
       + '<tbody>' + levels + '</tbody></table>'
       + '</div>'
       + '<div class="facts">'
@@ -357,7 +371,11 @@
       + constructionHtml(idx)
       + rosterHtml(faction)
       + glossaryHtml(faction)
-      + '<div class="foot"><span>Stat cards published free by TTCombat</span>'
+      // Which release the Card column counts pages in. A re-scan can move a
+      // Unit to a different page, so a page number with no edition beside it
+      // is a number you cannot check.
+      + '<div class="foot"><span>Stat cards published free by TTCombat'
+      + (faction.version ? ', ' + esc(faction.version) + ' release' : '') + '</span>'
       + '<span><a href="index.html">Other factions</a></span>'
       + '<span>Army builder by WarLore</span></div>';
   }

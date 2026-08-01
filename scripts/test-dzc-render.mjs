@@ -268,6 +268,19 @@ console.log('\nthe quick reference draws for every faction');
      placeholders.join(', '));
   ok(drawn.every(([, h]) => h.includes('Force construction') && h.includes('Special rules')),
      'each sheet carries the construction rules and the glossary');
+  /* What a Commander Level is worth is chapter 4, not the points table, and
+   * this is the sheet on the table when someone asks why the Level 6 cost 150
+   * points. Level 4 is legal at every size, so its row is always there: 50
+   * points, 4 CP, 4 cards, +4 Initiative. */
+  ok(drawn.every(([, h]) => /Level 4<\/td><td class="num">50<\/td><td class="num">4<\/td><td class="num">4<\/td><td class="num">\+4</.test(h)),
+     'and what each Commander Level buys per Round');
+  /* The sheet summarises the cards, it does not replace them — the art, the
+   * wording and the upgrade footnotes are only on the card — so every roster
+   * row says which page it came off, and the footer says which release those
+   * pages are counted in. A page number with no edition beside it cannot be
+   * checked against anything. */
+  ok(drawn.every(([, h]) => /<th>Card<\/th>/.test(h)), 'every roster row cites its stat card page');
+  ok(drawn.every(([, h]) => /release<\/span>/.test(h)), 'and the footer names the release those pages are in');
   // Generated Units (Bioficer Drones and Hulks) cannot be picked, but they are
   // on the table in play, so the sheet lists them under their own heading.
   ok(drawn.find(([f]) => f === 'bioficer')[1].includes('never chosen'),
