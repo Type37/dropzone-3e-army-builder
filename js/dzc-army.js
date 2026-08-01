@@ -787,7 +787,7 @@
       army.groups.forEach(g => {
         const c = groupCost(army, g);
         if (c > cap) {
-          errors.push({ rule: '3.2', msg: `“${g.name}” costs ${c}pts — no Group may exceed a quarter of the limit (${cap}pts).` });
+          errors.push({ rule: '3.2', msg: `“${groupName(army, g)}” costs ${c}pts — no Group may exceed a quarter of the limit (${cap}pts).` });
         }
       });
     }
@@ -878,7 +878,7 @@
       if (loose.length > 1) {
         errors.push({
           rule: '3.2.4',
-          msg: `“${g.name}” has ${loose.length} Squads with nothing carrying them — a Group is one Squad and its Transports, `
+          msg: `“${groupName(army, g)}” has ${loose.length} Squads with nothing carrying them — a Group is one Squad and its Transports, `
             + 'or up to 4 Squads sharing one larger Transport.'
         });
       }

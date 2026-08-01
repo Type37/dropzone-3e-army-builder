@@ -11,13 +11,15 @@
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g,
     c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
+  // `full` matches the reference's list. UCM and PHR are initials, and an army
+  // card has room to say what they stand for.
   const FACTIONS = [
-    { id: 'ucm', name: 'UCM', accent: '#30903c' },
-    { id: 'phr', name: 'PHR', accent: '#c9a92c' },
-    { id: 'scourge', name: 'Scourge', accent: '#60489c' },
-    { id: 'shaltari', name: 'Shaltari', accent: '#e46024' },
-    { id: 'resistance', name: 'Resistance', accent: '#3c84c0' },
-    { id: 'bioficer', name: 'Bioficers', accent: '#9c1818' }
+    { id: 'ucm', name: 'UCM', full: 'United Colonies of Mankind', accent: '#30903c' },
+    { id: 'phr', name: 'PHR', full: 'Post-Human Republic', accent: '#c9a92c' },
+    { id: 'scourge', name: 'Scourge', full: 'Scourge', accent: '#60489c' },
+    { id: 'shaltari', name: 'Shaltari', full: 'Shaltari', accent: '#e46024' },
+    { id: 'resistance', name: 'Resistance', full: 'Resistance', accent: '#3c84c0' },
+    { id: 'bioficer', name: 'Bioficers', full: 'Bioficers', accent: '#9c1818' }
   ];
   const accentOf = f => (FACTIONS.find(x => x.id === f) || {}).accent || '#1b3a5c';
 
@@ -33,15 +35,25 @@
     await window.DZC.loadIndex();
     const list = window.DZCArmy.load();
 
+    /* Built to the Dropfleet fleet card (app.js:1660), because it already
+     * solved this: the faction crest and its FULL name in a chip along the
+     * top, the list's own name below, the points big with the limit small
+     * beside them, the game size and Group count on the same line, a fill bar,
+     * a strip of what is actually in it, and when it was last touched. */
     const cards = list.map(a => {
       const cost = window.DZCArmy.armyCost(a);
       const size = window.DZC.gameSizeFor(a.pointsLimit);
-      const v = a.groups.length ? window.DZCArmy.validate(a) : { errors: [], warnings: [] };
+      const fac = FACTIONS.find(f => f.id === a.faction) || {};
+      const pct = Math.min((cost / (a.pointsLimit || 1)) * 100, 100);
+      const models = a.groups.reduce((n, g) => n + g.squads.reduce((m, s) => m + s.models.length, 0), 0);
       return `<article class="dzc-army-card" style="--acc:${accentOf(a.faction)}"
                 onclick="DZCBuilder.open('${a.id}')" tabindex="0"
                 onkeydown="if(event.key==='Enter')DZCBuilder.open('${a.id}')">
         <div class="dzc-army-top">
-          <h3>${esc(a.name)}</h3>
+          <span class="dzc-army-fac">
+            <img src="assets/factions/${esc(a.faction)}.webp" alt="" loading="lazy">
+            <b>${esc(fac.full || fac.name || a.faction)}</b>
+          </span>
           <span class="dzc-army-btns">
             <button class="dzc-icon-btn" type="button" title="Duplicate army"
                     onclick="event.stopPropagation();DZCBuilder.duplicate('${a.id}')"
@@ -51,10 +63,14 @@
                     aria-label="Delete ${esc(a.name)}">${window.DZCIcon('delete', { size: 15 })}</button>
           </span>
         </div>
-        <p class="dzc-army-meta"><span>${esc((FACTIONS.find(f => f.id === a.faction) || {}).name || a.faction)}</span>
-          <span>${size ? esc(size.label) : 'Below minimum'}</span>
-          <span>${a.groups.length} Group${a.groups.length === 1 ? '' : 's'}</span></p>
-        <p class="dzc-army-pts"><b>${cost}</b> / ${a.pointsLimit}pts</p>
+        <h3 class="dzc-army-name">${esc(a.name)}</h3>
+        <p class="dzc-army-pts"><b>${cost}</b><i>/ ${a.pointsLimit} pts</i>
+          <span>${size ? esc(size.label) : 'Below minimum'}, ${a.groups.length} group${
+            a.groups.length === 1 ? '' : 's'}${models ? `, ${models} model${models === 1 ? '' : 's'}` : ''}</span></p>
+        <div class="dzc-army-bar"><i class="${cost > a.pointsLimit ? 'is-over' : pct > 85 ? 'is-near' : ''}"
+          style="width:${pct}%"></i></div>
+        ${armyStrip(a)}
+        ${a.updatedAt ? `<p class="dzc-army-time">${esc(timeAgo(a.updatedAt))}</p>` : ''}
       </article>`;
     }).join('');
 
@@ -313,6 +329,42 @@
         </div>
       </div>
     </div>`;
+  }
+
+  /* One thumbnail per distinct Unit, first from each Group, bordered in its
+   * category colour — Dropfleet's renderFleetCardComp (app.js:1809). It is the
+   * fastest way to tell two lists apart at a glance, which is the whole job of
+   * a card in a grid. */
+  const CAT_INK = {
+    Standard: '#3e9945', Vanguard: '#5b9bd5', Heavy: '#d98c1f',
+    Support: '#6a4c9c', Transport: '#c43c2f'
+  };
+  function armyStrip(a) {
+    const seen = {}, out = [];
+    a.groups.forEach(g => g.squads.forEach(s => {
+      const u = window.DZCArmy.unitOf(a, s);
+      if (!u || !u.art || seen[u.id]) return;
+      seen[u.id] = 1;
+      out.push(`<img src="${esc(u.art)}" alt="" loading="lazy" title="${esc(u.name)}"
+        style="--cat:${CAT_INK[u.category] || '#9a9184'}">`);
+    }));
+    if (!out.length) return '';
+    return `<div class="dzc-army-strip">${out.slice(0, 6).join('')}${
+      out.length > 6 ? `<span class="dzc-army-more">+${out.length - 6}</span>` : ''}</div>`;
+  }
+
+  /* Dropfleet's formatTimeAgo (app.js:9007), same thresholds and same words. */
+  function timeAgo(ts) {
+    const mins = Math.floor((Date.now() - ts) / 60000);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    const days = Math.floor(hrs / 24);
+    if (days < 30) return `${days}d ago`;
+    const months = Math.floor(days / 30);
+    if (months < 12) return `${months}mo ago`;
+    return `${Math.floor(months / 12)}y ago`;
   }
 
   /* What this list needs beyond what you own. Advisory only, and separate from

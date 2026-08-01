@@ -266,6 +266,19 @@ console.log('\ntransports and their cargo form one Group (3.2.4)');
   A.remove(a.id);
 }
 
+/* An unnamed Group stores null, so anything quoting a Group by name has to go
+ * through groupName. It did not, and the rail read: "null" has 2 Squads. */
+{
+  const a = A.create('ucm', 'Named errors', 2000);
+  const g = A.addGroup(a);
+  A.addSquad(a, g.id, 'legionnaires', 2);
+  A.addSquad(a, g.id, 'praetorian-snipers', 2);
+  const msgs = A.validate(a).errors.map(e => e.msg).join(' | ');
+  ok(!/null|undefined/.test(msgs), 'no error names a Group "null"', msgs);
+  ok(/Group 1/.test(msgs), 'they use its position instead', msgs);
+  A.remove(a.id);
+}
+
 /* The Vulture deadlock. A Vulture Troopship carries 4 squares; every UCM
  * infantry Squad is 2-3 models filling 1 square each, so no single Squad can
  * ever total 4. Buying one per Squad left it permanently "not full" while
