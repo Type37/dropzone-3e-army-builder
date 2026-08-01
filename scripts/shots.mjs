@@ -30,12 +30,24 @@ const VIEW = {
   height: Number(process.env.SHOT_H) || 1000
 };
 
+/* Windows first, because that is where this is normally run. The Linux paths
+ * below are not decoration: a cloud run reported "there is no Chrome here" and
+ * went a whole session without looking at anything it shipped, while a
+ * Chromium sat at /opt/pw-browsers/chromium the entire time. CHROME_BIN wins
+ * over all of it, so a path nobody predicted still works. */
 const CHROME = [
+  process.env.CHROME_BIN,
   'C:/Program Files/Google/Chrome/Application/chrome.exe',
   'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
   'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
   'C:/Program Files/Microsoft/Edge/Application/msedge.exe',
-];
+  '/opt/pw-browsers/chromium',
+  '/usr/bin/chromium',
+  '/usr/bin/chromium-browser',
+  '/usr/bin/google-chrome',
+  '/usr/bin/google-chrome-stable',
+  '/snap/bin/chromium',
+].filter(Boolean);
 
 /* Each step: [filename, snippet]. The snippet runs in the page and may await;
  * it sets up the state the shot is meant to show. */
@@ -245,6 +257,14 @@ const proc = spawn(bin, [
   '--hide-scrollbars',
   `--window-size=${VIEW.width},${VIEW.height}`,
   '--no-first-run', '--no-default-browser-check',
+  /* Linux only, and not optional there: a container runs this as root, and
+     Chrome refuses to start its sandbox as root — it exits before it ever
+     opens the debugging port, which surfaces as "never exposed a page target"
+     and reads exactly like the browser being missing. --disable-dev-shm-usage
+     is the companion: /dev/shm is small in a container and a renderer that
+     runs out of it dies mid-screenshot. Neither is wanted on Windows, where
+     the sandbox works. */
+  ...(process.platform === 'win32' ? [] : ['--no-sandbox', '--disable-dev-shm-usage']),
   BASE,
 ], { stdio: 'ignore', detached: false });
 
