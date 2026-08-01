@@ -398,24 +398,6 @@
 .dzc-wpn-ma { white-space: nowrap; }
 .dzc-wpn-ma .dzc-i { vertical-align: -3px; margin-right: 3px; }
 
-/* ── Sharp cards ──
-   Every card surface is square. Buttons, chips and inputs keep their radius —
-   a control can be soft, a panel should not be. One rule in one place so the
-   next card someone adds does not have to remember. */
-.dzc-pick,
-.dzc-card,
-.dzc-army-card,
-.dzc-army-new,
-.dzc-rail-card,
-.dzc-group-card,
-.dzc-issues,
-.dzc-cmdr-opt,
-.dzc-cmdr-add,
-.dzc-pcard,
-.dzc-play-group,
-.dzc-stats .dzc-stat,
-.modal-panel { border-radius: 0; }
-
 /* ── Commanders in the rail ──
    One card per Commander with a button beneath, instead of a "— none —" select
    on the bottom of every Squad. You take one or two of these; five Squads
@@ -1396,3 +1378,44 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
 .landing-logo-img { max-width: min(440px, 78vw); width: 100%; height: auto; display: block; margin: 0 auto; }
 [data-theme="dark"] #landing-logo { content: url("../assets/logos/dzc_logo_white.webp"); }
 @media (max-width: 640px) { .topbar-logo { height: 20px; } }
+
+/* ── Sharp cards ──
+   Every card surface is square. Buttons, chips and inputs keep their radius —
+   a control can be soft, a panel should not be. One rule in one place so the
+   next card someone adds does not have to remember.
+
+   IT HAS TO BE LAST IN THE FILE. It used to sit halfway up, above the rules
+   that declare .dzc-pick, .dzc-rail-card and .dzc-cmdr-opt at 8px — so the
+   picker cards and the whole rail were still rounded, weeks after the rule was
+   made, and nothing said so. Same specificity means the later rule wins.
+   scripts/test-house-rules.mjs now reads the cascade and fails if any listed
+   surface's LAST word is not zero, which is how that was found. */
+.dzc-pick,
+.dzc-card,
+.dzc-army-card,
+.dzc-army-new,
+.dzc-rail-card,
+.dzc-group-card,
+.dzc-issues,
+.dzc-cmdr-opt,
+.dzc-cmdr-add,
+.dzc-pcard,
+.dzc-play-group,
+.dzc-stats .dzc-stat,
+/* Panels that were missed the first time and are still panels: the rule
+   popover, the toast, the upgrade block inside a Squad, a Collection row, the
+   shortfall note and the category meters. */
+.dzc-pop,
+.dzc-toast,
+.dzc-upgrades,
+.dzc-coll-row,
+.dzc-short,
+.dzc-ratio,
+/* And the three that live in css/app.css, which is Dropfleet-era and still
+   rounds everything: the landing tiles, and both grids in the New Army dialog.
+   They are the first surfaces anyone sees, so a rounded one there reads as the
+   app's shape rather than as an oversight. */
+.dzc-faction-btn,
+.tool-card,
+.game-size-option,
+.modal-panel { border-radius: 0; }

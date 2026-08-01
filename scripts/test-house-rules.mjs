@@ -291,6 +291,49 @@ eq(back.length, 0, 'and no known-missing asset is still excused after arriving',
    back.join(', '));
 gone.forEach(p => console.log(`!! MISSING ${p} — ${KNOWN_MISSING[p]}`));
 
+// ------------------------------------------------------------- sharp cards
+/* CLAUDE.md §4: "Every card surface is square -- border-radius: 0. Buttons,
+ * chips and inputs may keep a radius; a control can be soft, a panel may not."
+ *
+ * A standing rule, so it needs a standing check. css/app.css is Dropfleet-era
+ * and rounds everything, and css/dzc.css squares things back one selector at a
+ * time -- which means the rule holds only for the surfaces someone remembered
+ * to list. The landing tiles and both grids in the New Army dialog were
+ * rounded for a fortnight after the rule was made, on the first two screens
+ * anyone sees.
+ *
+ * Cascade order is the load order in index.html, so the LAST declaration for a
+ * surface is the one that paints. */
+console.log('\nsharp cards');
+{
+  const SURFACES = [
+    'dzc-pick', 'dzc-card', 'dzc-army-card', 'dzc-army-new', 'dzc-rail-card',
+    'dzc-group-card', 'dzc-issues', 'dzc-cmdr-opt', 'dzc-cmdr-add', 'dzc-pcard',
+    'dzc-play-group', 'dzc-pop', 'dzc-toast', 'dzc-upgrades', 'dzc-coll-row',
+    'dzc-short', 'dzc-ratio', 'dzc-faction-btn', 'tool-card', 'game-size-option',
+    'modal-panel'
+  ];
+  // The order index.html loads them in. A later file wins, which is the whole
+  // reason dzc.css can square what app.css rounded.
+  const sheets = ['css/app.css', 'css/mobile-fixes.css', 'css/dzc.css']
+    .map(f => readFileSync(path.join(ROOT, f), 'utf8').replace(/\/\*[\s\S]*?\*\//g, ''))
+    .join('\n');
+  const last = {};
+  // Innermost blocks only, so an @media wrapper is skipped rather than parsed.
+  for (const m of sheets.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    const radius = (m[2].match(/border-radius\s*:\s*([^;]+)/) || [])[1];
+    if (!radius) continue;
+    for (const cls of SURFACES) {
+      if (new RegExp(`\\.${cls}(?![\\w-])`).test(m[1])) last[cls] = radius.trim();
+    }
+  }
+  const missing = SURFACES.filter(c => last[c] == null);
+  eq(missing.length, 0, 'every listed surface actually declares a radius', missing.join(', '));
+  const soft = SURFACES.filter(c => last[c] && last[c] !== '0');
+  eq(soft.length, 0, 'and the last word on every card surface is border-radius: 0',
+     soft.map(c => `.${c} -> ${last[c]}`).join(', '));
+}
+
 // ------------------------------------------------- everything fetched is staged
 /* The deploy workflow copies a NAMED list of top-level paths into _site, so a
  * directory the site fetches but the list does not name is a 404 on the live
