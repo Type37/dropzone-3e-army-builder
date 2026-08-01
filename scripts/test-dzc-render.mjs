@@ -333,6 +333,14 @@ console.log('\nevery screen renders');
   sandbox.TextEncoder = TextEncoder; sandbox.TextDecoder = TextDecoder;
   sandbox.Response = Response;
   sandbox.queueMicrotask = queueMicrotask;
+  sandbox.setTimeout = setTimeout; sandbox.clearTimeout = clearTimeout;
+  // A browser has these; the app is entitled to expect them. The clipboard is
+  // stubbed to SUCCEED so the ordinary path is the one that gets exercised --
+  // without it every copy falls into the blocked-clipboard branch.
+  sandbox.navigator = { clipboard: { writeText: async () => {} } };
+  win.prompt = () => null;
+  win.URL = { createObjectURL: () => 'blob:x', revokeObjectURL() {} };
+  win.Blob = class { constructor() {} };
   for (const f of ['dzc-share.js', 'dzc-builder.js', 'dzc-play.js', 'dzc-collection.js']) {
     vm.runInContext(readFileSync(path.join(ROOT, 'js', f), 'utf8'), sandbox);
   }
@@ -457,6 +465,74 @@ console.log('\nevery screen renders');
     ok(!/\b(null|undefined|NaN)\b/.test(words), `${name} prints no placeholder`,
        (words.match(/.{0,40}\b(null|undefined|NaN)\b.{0,40}/) || [])[0]);
   }
+
+  /* Every control on the screen, pressed.
+   *
+   * The crash above was in a renderer, and renderers are only half of it: the
+   * other half is fifty handlers hanging off onclick attributes, none of which
+   * had ever been called by anything. A handler that throws is a control that
+   * does nothing when you press it, silently, and there is no browser here to
+   * press them by hand.
+   *
+   * This does not check that a control does the RIGHT thing -- the army suite
+   * owns that, against the model. It checks that pressing it does not throw
+   * and does not leave a placeholder on the screen, which is the failure mode
+   * a stub document can actually see. */
+  const pressed = [];
+  const press = async (label, fn) => {
+    try { await fn(); } catch (e) {
+      pressed.push(`${label}: ${e.message} (${((e.stack || '').split('\n')[1] || '').trim()})`);
+    }
+  };
+  const gid = A.get(a.id).groups[0].id;
+  const sid = A.get(a.id).groups[0].squads.find(x => x.unitId === 'legionnaires').id;
+
+  await press('sortList', () => B.sortList('name'));
+  await press('sortList back', () => B.sortList('recent'));
+  await press('selectGroup', () => B.selectGroup(gid));
+  await press('backToGroups', () => B.backToGroups());
+  await press('openPicker', () => B.openPicker(gid));
+  await press('pickerSearch', () => B.pickerSearch('leg'));
+  await press('pickerSearch empty', () => B.pickerSearch(''));
+  await press('pickerCat', () => B.pickerCat('Standard'));
+  await press('pickerCat All', () => B.pickerCat('All'));
+  await press('pickerSort', () => B.pickerSort('name'));
+  await press('pickerSort reverse', () => B.pickerSort('name'));
+  await press('pickerFilter', () => B.pickerFilter('variants'));
+  await press('pickerShape', () => B.pickerShape('square'));
+  await press('pickerView', () => B.pickerView('list'));
+  await press('pickerView back', () => B.pickerView('grid'));
+  await press('pickerClear', () => B.pickerClear());
+  await press('closePicker', () => B.closePicker());
+  await press('count up', () => B.count(sid, 1));
+  await press('count down', () => B.count(sid, -1));
+  await press('variantCount', () => B.variantCount(sid, 0, 1));
+  await press('openCarry', () => B.openCarry(sid));
+  await press('closeCarry', () => B.closeCarry && B.closeCarry());
+  await press('openCommander', () => B.openCommander());
+  await press('addCommander', () => B.addCommander(4));
+  await press('removeCommander', () => B.removeCommander(A.commanders(A.get(a.id)).slice(-1)[0].id));
+  await press('share', () => B.share());
+  await press('copyShare text', () => B.copyShare('text'));
+  await press('closeShare', () => B.closeShare());
+  await press('sizeChanger', () => B.sizeChanger({ stopPropagation() {}, currentTarget: stub('size-btn') }));
+  await press('applySize', () => B.applySize('battle'));
+  await press('setLimit', () => B.setLimit('1500'));
+  await press('rename', () => B.rename({ textContent: 'Renamed', dataset: {} }));
+  await press('renameGroup', () => B.renameGroup(gid, 'Spearhead'));
+  await press('setDescription', () => B.setDescription('Club night'));
+  await press('duplicateGroup', () => B.duplicateGroup(gid));
+  await press('addGroup', () => B.addGroup());
+  await press('print preview', () => B.print());
+  await press('printOpt', () => B.printOpt('ink', true));
+  await press('closePreview', () => B.closePreview());
+  await press('removeSquad', () => B.removeSquad(sid));
+  await press('removeGroup', () => B.removeGroup(A.get(a.id).groups.slice(-1)[0].id));
+  eq(pressed.length, 0, 'no control on the builder throws when it is pressed');
+  if (pressed.length) console.error('        ' + pressed.join('\n        '));
+  const after = els['view-army'].innerHTML.replace(/<[^>]*>/g, ' ');
+  ok(!/\b(null|undefined|NaN)\b/.test(after), 'and the screen is still clean afterwards',
+     (after.match(/.{0,40}\b(null|undefined|NaN)\b.{0,40}/) || [])[0]);
 
   A.remove(a.id);
 
