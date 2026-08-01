@@ -357,5 +357,62 @@ console.log('\nwarnings that are not errors');
   A.remove(a.id);
 }
 
+/* Jet: "as far as i know, there's no way as written to like, add an albatross?
+ * what would the flow be there?"
+ *
+ * There is, and this is it, built end to end: rulebook Group 5, an Albatross
+ * carrying two Bear APCs with three Legionnaires each plus a tank Squad. The
+ * point is that you never add an Albatross. You give one to a Bear APC exactly
+ * as you gave the Bear to the Legionnaires -- a Transport Squad is a Squad, so
+ * it can be carried, which is what 3.2.4.1's "plus their own Transport Squads"
+ * means. Nesting is recursive and the data is what bounds it.
+ *
+ * Asserted step by step rather than only at the end, because the flow being
+ * REACHABLE is the thing in question. A final assertion on a hand-built object
+ * would pass even if no sequence of clicks could produce it. */
+console.log('\nan Albatross is reached by carrying a Transport (3.2.4.1)');
+{
+  const a = army(2000);
+  const g = A.addGroup(a);
+
+  const l1 = A.addSquad(a, g.id, 'legionnaires', 3);
+  ok(A.assignTransport(a, l1.id, 'bear-apc').ok, 'three Legionnaires take a Bear APC');
+  const l2 = A.addSquad(a, g.id, 'legionnaires', 3);
+  ok(A.assignTransport(a, l2.id, 'bear-apc').ok, 'a second Squad takes a second Bear');
+
+  ok(A.canAddUnit(a, g.id, 'ucm-main-battle-tank').ok,
+     'tanks may join the Group — nothing in 3.2 restricts a Group by category');
+  const tanks = A.addSquad(a, g.id, 'ucm-main-battle-tank', 6);
+
+  // THE step. A Bear fills 3 triangles and an Albatross offers 18, so the
+  // Albatross is in the Bear's own list of Transports.
+  const bears = g.squads.filter(s => s.unitId === 'bear-apc');
+  eq(bears.length, 2, 'two Bear Squads exist');
+  const forBear = A.transportOptions(a, bears[0].id).map(o => o.unit.id);
+  ok(forBear.indexOf('albatross-heavy-dropship') !== -1,
+     'a Bear APC Squad is itself offered an Albatross', JSON.stringify(forBear));
+  ok(A.assignTransport(a, bears[0].id, 'albatross-heavy-dropship').ok,
+     'and it can be taken');
+
+  const alba = g.squads.find(s => s.unitId === 'albatross-heavy-dropship');
+  ok(!!alba, 'the Albatross Squad is created by carrying, never by adding');
+  ok(A.boardTransport(a, bears[1].id, alba.id).ok, 'the second Bear boards the same Albatross');
+  ok(A.boardTransport(a, tanks.id, alba.id).ok, 'and the tanks fill what is left');
+
+  const space = A.groupSpace(a, g);
+  eq(space.length, 1, 'the Group offers one shape — the Albatross triangles');
+  eq(space[0].total, 18, 'eighteen triangles offered');
+  // 2 Bears at 3 + 6 tanks at 2. The Bears' own square capacity is NOT counted:
+  // their cargo is already aboard, so it is ignored (3.2.4.2).
+  eq(space[0].used, 18, 'and eighteen filled, so the Albatross is taken full');
+  eq(alba.models.length, 1, 'exactly one Albatross is bought, derived and not typed');
+
+  const v = A.validate(a);
+  ok(!v.errors.some(e => e.rule.startsWith('3.2.4')),
+     'the finished Group breaks no transport rule',
+     JSON.stringify(v.errors.map(e => `${e.rule} ${e.msg}`)));
+  A.remove(a.id);
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

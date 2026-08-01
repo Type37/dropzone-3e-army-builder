@@ -435,8 +435,22 @@
      * back into a collapsed control you have to open to read. */
     const carrier = s.carriedBy ? window.DZCArmy.findSquad(a, s.carriedBy) : null;
     const carrierUnit = carrier ? window.DZCArmy.unitOf(a, carrier) : null;
-    const opts = isTransport ? [] : window.DZCArmy.transportOptions(a, s.id);
-    const transportPicker = opts.length ? `<div class="dzc-carry">
+    /* A Transport Squad is a Squad, so it gets this control too. 3.2.4.1 says
+     * "up to 4 Squads, PLUS THEIR OWN TRANSPORT SQUADS, may share one larger
+     * Transport", and that is the only way an Albatross is ever bought: you
+     * never add one, you give one to a Bear APC exactly as you gave the Bear to
+     * the Legionnaires. Withholding it here made the whole 18-capacity tier
+     * unreachable through the UI while the model happily built it.
+     *
+     * Nothing needs a depth limit. The data limits itself: transportOptions
+     * only returns carriers whose capacity matches what this Unit FILLS, and a
+     * Transport that prints no solid symbol — an Albatross, a Condor — fills
+     * nothing and so is offered nothing. */
+    const opts = window.DZCArmy.transportOptions(a, s.id);
+    // A Transport already in the Group may have room even when the faction
+    // offers none to buy, so the control has to appear for that case too.
+    const board = window.DZCArmy.boardOptions(a, s.id);
+    const transportPicker = (opts.length || board.length) ? `<div class="dzc-carry">
       <span class="dzc-carry-lab">${window.DZCIcon('local_shipping', { size: 14 })}Transport</span>
       ${carrierUnit
         ? `<span class="dzc-carry-now">${U.transportHtml(carrierUnit)}
