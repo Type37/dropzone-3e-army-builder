@@ -35,7 +35,7 @@
       "rule": "No Group may cost more than a quarter of the agreed points limit.",
       "fraction": 0.25,
       "ofAgreedLimit": true,
-      "note": "A quarter of the number the players agreed, NOT the top of the band -- so the limit must be an input, not derived from the game size.",
+      "note": "A quarter of the number the players agreed, NOT the top of the band — so the limit must be an input, not derived from the game size.",
       "source": "3.2"
     },
     "rare": {
@@ -94,7 +94,7 @@
   },
 
   "transportSymbols": {
-    "note": "Hollow = capacity offered, solid = space filled. A Transport may only carry Units whose symbol SHAPE matches its own. Colour is 1:1 with shape and is decoration -- except that it is the only reliable way to tell an upright triangle from an inverted one, whose convex hulls are identical.",
+    "note": "Hollow = capacity offered, solid = space filled. A Transport may only carry Units whose symbol SHAPE matches its own. Colour is 1:1 with shape and is decoration — except that it is the only reliable way to tell an upright triangle from an inverted one, whose convex hulls are identical.",
     "source": "3.2.4.2",
     "shapes": [
       { "id": "square",        "label": "Square",             "ink": "green"  },
@@ -109,13 +109,13 @@
       "either": { "printed": "/", "rule": "Either shape, never a mixture." }
     },
     "nestedCargoIgnored": {
-      "rule": "When a Transport carries another Transport, the smaller one's cargo is ignored -- it is already aboard.",
+      "rule": "When a Transport carries another Transport, the smaller one's cargo is ignored — it is already aboard.",
       "source": "3.2.4.2"
     }
   },
 
   "entry": {
-    "note": "Vehicles and Infantry that do not begin the game aboard an Aircraft, or in a Transport aboard an Aircraft, always begin Reserved -- off the table until Round 2. This is why air transports earn their points, and the builder should surface it.",
+    "note": "Vehicles and Infantry that do not begin the game aboard an Aircraft, or in a Transport aboard an Aircraft, always begin Reserved — off the table until Round 2. This is why air transports earn their points, and the builder should surface it.",
     "source": "9.4"
   },
 
