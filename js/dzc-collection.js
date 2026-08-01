@@ -15,6 +15,9 @@
   let owned = {};          // { faction: { unitId: count } }
   let state = { faction: 'ucm', search: '', ownedOnly: false };
 
+  // Force-organisation order (3.2), same list the reference uses.
+  const CATEGORIES = ['Standard', 'Vanguard', 'Heavy', 'Support', 'Transport', 'Generated'];
+
   const FACTIONS = [
     { id: 'ucm', name: 'UCM', accent: '#30903c' },
     { id: 'phr', name: 'PHR', accent: '#c9a92c' },
@@ -106,7 +109,26 @@
         <button type="button" class="dzc-chip${state.ownedOnly ? ' is-active' : ''}"
                 onclick="DZCCollection.toggleOwned()">Owned only</button>
       </div>
-      <p class="dzc-count">${totals} model${totals === 1 ? '' : 's'} across ${kinds} unit type${kinds === 1 ? '' : 's'}.</p>
+
+      <!-- Panes on a desktop, like the builder and Play. What you own is a
+           standing total you glance at while scrolling a long list; putting it
+           at the top meant it scrolled away immediately. -->
+      <div class="dzc-coll-body">
+        <aside class="dzc-coll-rail">
+          <div class="dzc-rail-card">
+            <div class="dzc-rail-pts"><b>${totals}</b><span>model${totals === 1 ? '' : 's'}</span></div>
+            <p class="dzc-rail-line">across ${kinds} unit type${kinds === 1 ? '' : 's'}</p>
+          </div>
+          <div class="dzc-rail-card">
+            <div class="dzc-rail-title">By category</div>
+            <div class="dzc-ratios">${CATEGORIES.map(c => {
+              const n = f.units.filter(u => u.category === c)
+                .reduce((t, u) => t + count(state.faction, u.id), 0);
+              return n ? `<div class="dzc-ratio"><span>${esc(c)}</span><b>${n}</b></div>` : '';
+            }).join('') || '<p class="dzc-rail-line">Nothing recorded yet.</p>'}</div>
+          </div>
+        </aside>
+        <div class="dzc-coll-main">
 
       <div class="dzc-coll-list">${units.map(u => {
         const n = count(state.faction, u.id);
@@ -124,6 +146,8 @@
           </span>
         </div>`;
       }).join('') || '<p class="dzc-empty">Nothing matches.</p>'}</div>
+    </div>
+      </div>
     </div>`;
   }
 

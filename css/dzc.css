@@ -125,6 +125,17 @@
 .dzc-stats { border-radius: 0; }
 .dzc-stats .dzc-stat { border-radius: 0; }
 
+/* Collection keeps panes: the running totals stay put while a 178-row list
+   scrolls beside them. */
+.dzc-coll-body { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 10px; align-items: start; }
+.dzc-coll-rail { position: sticky; top: 12px; display: flex; flex-direction: column; gap: 8px; }
+.dzc-coll-main { min-width: 0; }
+@media (max-width: 900px) {
+  .dzc-coll-body { grid-template-columns: 1fr; }
+  .dzc-coll-rail { position: static; flex-direction: row; flex-wrap: wrap; }
+  .dzc-coll-rail .dzc-rail-card { flex: 1 1 200px; }
+}
+
 /* ── rule chips ── */
 .dzc-rule {
   display: inline-block; margin: 2px 3px 2px 0; padding: 2px 7px; cursor: pointer;
