@@ -73,6 +73,41 @@ eq(DZC.commanderLevels('skirmish').length, 2, 'Skirmish allows only L4 and L5');
 eq(DZC.commanderLevels('battle').length, 4, 'Battle allows all four Commander levels');
 eq(DZC.commanderLevels('clash').some(l => l.level === 7), false, 'L7 is not allowed at Clash');
 
+/* The band EDGES and the Commander prices, against the book.
+ *
+ * data/dzc/index.json is the one file in the pipeline that is transcribed
+ * rather than scanned — chapter 3's limits are prose tables, so there is
+ * nothing to parse. That makes it the one file where a slip is a typing
+ * mistake nobody would notice, and every number in it decides whether an
+ * illegal army is refused.
+ *
+ * Read off A5_Dropzone_3.01_Rulebook_Compressed.pdf, pages 9 and 12, verbatim:
+ *
+ *   "Skirmish: 501–1000 points. 9 Groups Max.
+ *    Clash: 1001–2000 points. 12 Groups Max.
+ *    Battle: 2001–3000 points. 16 Groups Max.
+ *    Reconquest: 3001 points and above. 20 Groups Max but add 4 Groups to the
+ *    maximum allowed for every 1000pts above 3000."
+ *
+ *   Level 4 / 50 / All Game Sizes.  Level 5 / 90 / All Game Sizes.
+ *   Level 6 / 150 / Clash, Battle, Reconquest.  Level 7 / 230 / Battle,
+ *   Reconquest.
+ *
+ * The middle of a band is already asserted above; these are the edges, which
+ * is where an off-by-one lives. */
+eq(DZC.gameSizeFor(501).id, 'skirmish', '501 is the first legal points total');
+eq(DZC.gameSizeFor(1000).id, 'skirmish', '1000 is still Skirmish');
+eq(DZC.gameSizeFor(1001).id, 'clash', 'and 1001 is Clash');
+eq(DZC.gameSizeFor(2000).id, 'clash', '2000 is still Clash');
+eq(DZC.gameSizeFor(2001).id, 'battle', 'and 2001 is Battle');
+eq(DZC.gameSizeFor(3000).id, 'battle', '3000 is still Battle');
+eq(DZC.gameSizeFor(3001).id, 'reconquest', 'and 3001 is Reconquest');
+eq(DZC.gameSizeFor(500), null, '500 is one under the minimum and is no game size at all');
+eq(DZC.maxGroups(DZC.gameSizeFor(750), 750), 9, 'Skirmish allows 9 Groups');
+eq(DZC.maxGroups(DZC.gameSizeFor(2500), 2500), 16, 'Battle allows 16');
+eq(JSON.stringify(DZC.commanderLevels('reconquest').map(l => [l.level, l.points])),
+   '[[4,50],[5,90],[6,150],[7,230]]', 'the whole Commander ladder is priced as the book prices it');
+
 // ------------------------------------------------------------------- glossary
 console.log('\nglossary');
 ok(DZC.rule('Surveyor', 'ucm'), 'plain rule resolves');
