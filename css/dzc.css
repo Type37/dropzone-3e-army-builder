@@ -397,7 +397,47 @@
    Desktop keeps panes, mobile does not (HANDOFF §2.2). The rail holds what you
    need while working — points left and what is outstanding — so it stays put
    rather than shoving the Groups down the page each time an alert appears. */
-.dzc-b-body { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 10px; align-items: start; }
+/* Three panes, each scrolling on its own — Dropfleet's builder-layout
+   (app.css:507). The overview stays scannable while the detail pane carries
+   the weapon tables; one long column made you scroll past a full stat block to
+   reach the next Group. */
+.dzc-b-body {
+  display: grid; grid-template-columns: 250px minmax(200px, 300px) minmax(0, 1fr);
+  gap: 10px; align-items: start;
+}
+.dzc-b-list { display: flex; flex-direction: column; gap: 6px; position: sticky; top: 12px; }
+.dzc-b-detail { min-width: 0; }
+.dzc-b-none { margin: 0; padding: 14px 2px; font-size: 13px; color: var(--ink-2, #9a9184); }
+
+/* An overview entry: what you need to choose between Groups, nothing to read. */
+.dzc-bb {
+  display: flex; flex-direction: column; gap: 4px; width: 100%;
+  padding: 8px 9px; cursor: pointer; text-align: left;
+  border: 1px solid var(--line, #d8d0c0); border-left: 3px solid transparent;
+  border-radius: 0; background: var(--surface-2, #fff); color: inherit;
+  transition: border-color .12s, background .12s;
+}
+.dzc-bb:hover { border-color: var(--acc); }
+.dzc-bb.is-on { border-left-color: var(--acc); background: var(--surface-3, #f2ece0); }
+.dzc-bb.is-over { border-color: var(--danger, #b3261e); }
+.dzc-bb:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+.dzc-bb-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.dzc-bb-head b { font: 700 13.5px/1.2 var(--font-ui, 'Jost', sans-serif); overflow-wrap: anywhere; }
+.dzc-bb-head i {
+  font-style: normal; white-space: nowrap;
+  font: 700 13px/1 var(--font-numeric, 'Outfit', sans-serif); color: var(--acc);
+}
+.dzc-bb-head i s { text-decoration: none; font-weight: 500; font-size: 11px; color: var(--ink-2, #9a9184); }
+.dzc-bb.is-over .dzc-bb-head i { color: var(--danger, #b3261e); }
+.dzc-bb-meta { font-size: 11px; color: var(--ink-2, #6b6459); }
+.dzc-bb-spaces { display: flex; flex-wrap: wrap; gap: 3px 8px; }
+.dzc-bb-sp { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; }
+.dzc-bb-sp b { font: 700 12px/1 var(--font-numeric, 'Outfit', sans-serif); }
+.dzc-bb-sp i { font-style: normal; color: var(--ink-2, #9a9184); }
+.dzc-bb-sp.is-full b { color: #14532d; }
+.dzc-bb-sp.is-over b { color: var(--danger, #b3261e); }
+.dzc-bb-art { display: flex; gap: 3px; flex-wrap: wrap; }
+.dzc-bb-art img { width: 30px; height: 22px; object-fit: contain; background: var(--surface-3, #f2ece0); }
 .dzc-rail { position: sticky; top: 12px; display: flex; flex-direction: column; gap: 8px; }
 .dzc-b-main { min-width: 0; }
 .dzc-rail-card {
@@ -431,6 +471,19 @@
 .dzc-rail .dzc-ratios { flex-direction: column; gap: 4px; margin: 0; }
 .dzc-rail .dzc-ratio { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 4px 8px; }
 .dzc-rail .dzc-ratio span { display: inline; font-size: 10.5px; }
+
+/* Three panes need real width. The weapon table alone wants ~620px, so below
+   1400 the overview folds up into a row across the top and the detail pane
+   takes the whole width underneath — two panes, not a squeezed three. */
+@media (max-width: 1400px) {
+  .dzc-b-body { grid-template-columns: 250px minmax(0, 1fr); }
+  .dzc-b-list {
+    grid-column: 1 / -1; position: static;
+    flex-direction: row; flex-wrap: wrap; align-items: stretch;
+  }
+  .dzc-bb { width: auto; flex: 1 1 190px; }
+  .dzc-b-detail { grid-column: 1 / -1; }
+}
 
 @media (max-width: 900px) {
   .dzc-b-body { grid-template-columns: 1fr; }
@@ -990,7 +1043,7 @@
    full-width desktop viewport. */
 /* 640px was right when the builder was one column. With a rail beside it the
    Groups need their own width, or a Squad row is squeezed into 340px. */
-.dzc-builder { max-width: 1120px; }
+.dzc-builder { max-width: 1600px; }
 
 /* ── narrowing down ──
    One responsive app, not two builds. The same markup gets less indent, less

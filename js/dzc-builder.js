@@ -26,6 +26,9 @@
   let current = null;                 // the army being edited
   let picker = { groupId: null, category: 'All', search: '', sort: 'points', dir: 1,
                  view: 'grid', filters: [], shapes: [] };
+  // Which Group the detail pane is showing. Null falls back to the first, so
+  // opening an army always lands on something rather than an empty pane.
+  let selectedGroup = null;
 
   // ------------------------------------------------------------- army list
 
@@ -266,6 +269,12 @@
      * so it stays put instead of shoving the Groups down the page every time
      * an alert appears or clears. Below 900px it stacks above the list.
      * HANDOFF §2.2: desktop keeps panes, mobile does not. */
+    // Fall back to the first Group, and drop a selection whose Group has been
+    // removed, so the detail pane can never point at something deleted.
+    if (selectedGroup && !a.groups.some(g => g.id === selectedGroup)) selectedGroup = null;
+    const sel = a.groups.find(g => g.id === selectedGroup) || a.groups[0] || null;
+    if (sel) selectedGroup = sel.id;
+
     root.innerHTML = `<div class="dzc-wrap dzc-builder" style="--acc:${accentOf(a.faction)}">
       <header class="dzc-b-head">
         <!-- Editable in place, and it has to SAY so. A contenteditable heading
@@ -323,12 +332,50 @@
           ${shortfallHtml(a)}
         </aside>
 
-        <div class="dzc-b-main">
-          ${a.groups.map(g => groupHtml(a, g)).join('')}
+        <!-- Three panes on a desktop, one column on a phone. Dropfleet splits
+             the builder into sidebar / overview / detail, each scrolling on its
+             own (app.css:507), and that is exactly what this needed once a
+             Squad grew a full weapon table: the overview stays scannable and
+             the reading happens in the detail pane.
+
+             On a phone there is no detail pane. A Group is a screen you drill
+             into, so the list IS the screen and opening one replaces it. -->
+        <div class="dzc-b-list">
+          ${a.groups.map(g => groupBrief(a, g)).join('')
+            || '<p class="dzc-b-none">No Groups yet.</p>'}
           <button class="btn btn-outline dzc-add-group" type="button" onclick="DZCBuilder.addGroup()">+ Add Group</button>
+        </div>
+
+        <div class="dzc-b-detail">
+          ${sel ? groupHtml(a, sel) : `<p class="dzc-b-none">${
+            a.groups.length ? 'Pick a Group to work on it.' : 'Add a Group to start.'}</p>`}
         </div>
       </div>
     </div>`;
+  }
+
+  /* The overview entry: enough to choose between Groups, and nothing you have
+   * to read. Name, what it costs, how big it is, and the transport space,
+   * which is the fact that decides where the next Unit can go. */
+  function groupBrief(a, g) {
+    const cost = window.DZCArmy.groupCost(a, g);
+    const cap = window.DZC.maxGroupCost(a.pointsLimit);
+    const models = g.squads.reduce((n, s) => n + s.models.length, 0);
+    const U = window.DZCUnits;
+    const space = window.DZCArmy.groupSpace(a, g).map(sp =>
+      `<span class="dzc-bb-sp${sp.used > sp.total ? ' is-over' : sp.used === sp.total ? ' is-full' : ''}"
+        >${U.shape(sp.shape, 13, true)}<b>${sp.used}</b><i>/${sp.total}</i></span>`).join('');
+    const art = g.squads.map(s => window.DZCArmy.unitOf(a, s)).filter(u => u && u.art)
+      .slice(0, 4).map(u => `<img src="${esc(u.art)}" alt="" loading="lazy" title="${esc(u.name)}">`).join('');
+    return `<button type="button" class="dzc-bb${g.id === selectedGroup ? ' is-on' : ''}${
+      cost > cap ? ' is-over' : ''}" onclick="DZCBuilder.selectGroup('${g.id}')">
+      <span class="dzc-bb-head"><b>${esc(window.DZCArmy.groupName(a, g))}</b>
+        <i>${cost}<s>/${cap}</s></i></span>
+      <span class="dzc-bb-meta">${g.squads.length} Squad${g.squads.length === 1 ? '' : 's'}${
+        models ? `, ${models} model${models === 1 ? '' : 's'}` : ''}</span>
+      ${space ? `<span class="dzc-bb-spaces">${space}</span>` : ''}
+      ${art ? `<span class="dzc-bb-art">${art}</span>` : ''}
+    </button>`;
   }
 
   /* One thumbnail per distinct Unit, first from each Group, bordered in its
@@ -1268,7 +1315,8 @@
     // took the decision "which Group am I filling" away from you and made
     // adding two Groups back to back a fight with a modal.
     addGroup: async () => {
-      window.DZCArmy.addGroup(current);
+      const g = window.DZCArmy.addGroup(current);
+      selectedGroup = g.id;
       await renderBuilder(current.id);
     },
     removeGroup: id => { window.DZCArmy.removeGroup(current, id); refresh(); },
@@ -1287,6 +1335,7 @@
       refresh();
     },
     setCarrier: (id, c) => { window.DZCArmy.setCarrier(current, id, c); refresh(); },
+    selectGroup: id => { selectedGroup = id; refresh(); },
     openCarry, closeCarry,
     boardTransport: (id, carrierId) => {
       const r = window.DZCArmy.boardTransport(current, id, carrierId);
