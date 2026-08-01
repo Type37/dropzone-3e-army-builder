@@ -1231,7 +1231,11 @@
      what you get for it underneath. */
   .dzc-cmdr-opt { flex-wrap: wrap; }
   .dzc-cmdr-opt-pts { order: 1; margin-left: auto; }
-  .dzc-cmdr-opt .btn { order: 2; }
+  /* Add and the refusal that stands in for it both sit after the price. Only
+     .btn was ordered at first, so a Level out of reach put "Battle and up"
+     BEFORE its own price and the blocked rows read in a different order from
+     the ones above them. */
+  .dzc-cmdr-opt .btn, .dzc-cmdr-opt .dzc-pick-blocked { order: 2; }
   .dzc-cmdr-buys { order: 3; flex: 1 1 100%; }
 }
 
