@@ -466,6 +466,14 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-01', title: 'Surprise me, and a bug that called legal armies illegal', items: [
+      'A Squad that needed more than one Transport was being reported illegal. Six Legionnaires in two Bear APCs is a Group the rulebook itself illustrates, and the app measured them against ONE vehicle\'s capacity — so it said "needs 6, has 3" and there was nothing you could do about it. Fixed, and pinned by six tests.',
+      '"Surprise me" builds a whole army to the faction, size and points you have chosen, legal when it stops. It spends the Commander first, Standard before the categories Standard has to pay for, and takes a Transport only where it comes out exactly full.',
+      'A rule links to the rules it names. Grav says it ignores Resilient; Resilient is now one tap away, where before you had to know it existed and go looking. Twenty-three of those cross-references were dead ends.',
+      'Every rule a Unit uses prints in full under its weapon table, not only behind a hover — because on a phone there is no hover, so a tooltip-only rule was simply missing.',
+      'A list pasted out of New Recruit imports. It cannot give you back the Group nesting — a flat list does not record what rode in what — and it says so rather than pretending.',
+      'Sort your armies by Recent, Name, Faction or Points, and an empty list is a grid with a tile in it instead of a sentence saying it is empty.',
+    ]},
     { date: '2026-08-01', title: 'Print what you can see first, and get your armies back', items: [
       'Print opens a preview: your sheet at A4 with the page breaks drawn on it and the page count in the bar. The breaks are measured rather than spaced every 273mm — a Group is kept whole by the stylesheet, so the preview pushes one that would straddle a boundary onto the next page exactly as the printer will, and then it agrees with the paper.',
       'Compact, ink-saver and art, decided in the preview where you can see what each costs you in pages. Art on the sheet is new; it stays off unless you ask, because it is the biggest thing between a two-page list and a four-page one.',
