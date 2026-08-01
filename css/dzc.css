@@ -374,7 +374,7 @@
   .dzc-rail .dzc-ratios { flex-direction: row; flex-wrap: wrap; }
 }
 
-.dzc-issues { margin: 0 0 8px; padding: 8px 10px; border-radius: 6px; font-size: 13px; }
+.dzc-issues { margin: 0 0 8px; padding: 8px 10px; font-size: 13px; }
 .dzc-issues-head {
   margin: 0 0 3px;
   font: 700 10.5px/1.4 var(--font-condensed, 'Jost', sans-serif);
@@ -393,7 +393,7 @@
   color: var(--success-ink, #2f7a37);
 }
 
-.dzc-group-card { border: 1px solid var(--line, #d8d0c0); border-radius: 8px; padding: 12px; margin-bottom: 12px; background: var(--surface-2, #fff); }
+.dzc-group-card { border: 1px solid var(--line, #d8d0c0); padding: 12px; margin-bottom: 12px; background: var(--surface-2, #fff); }
 .dzc-group-card.is-over { border-color: #b3261e; }
 .dzc-g-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 .dzc-g-head h2 { flex: 1 1 auto; margin: 0; font: 700 15px/1.2 var(--font-ui, 'Jost', sans-serif); overflow-wrap: anywhere; }
@@ -1045,7 +1045,7 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 .dzc-vp b { min-width: 22px; text-align: center; font-size: 17px; }
 
 .dzc-play-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; margin-bottom: 16px; }
-.dzc-pcard { padding: 12px; border-radius: 8px; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); }
+.dzc-pcard { padding: 12px; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); }
 .dzc-pcard-k { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-2, #6b6459); }
 .dzc-pcard-v { display: block; font: 800 26px/1.1 var(--font-display, 'Roboto Slab', serif); margin: 2px 0 6px; }
 .dzc-pcard-v i { font-style: normal; font-size: 13px; font-weight: 500; color: var(--ink-2, #6b6459); }
@@ -1053,10 +1053,9 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 .dzc-pcard-act button { padding: 5px 12px; border-radius: 6px; cursor: pointer; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); font-size: 13px; }
 .dzc-pcard-act label { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-2, #6b6459); display: inline-flex; align-items: center; gap: 5px; }
 .dzc-pcard-act input { width: 56px; padding: 4px 6px; border-radius: 5px; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); color: var(--ink, #24201c); }
-/* Rule text stays visible; it is the reason the number is what it is. */
 .dzc-roll { font-weight: 700; font-size: 14px; }
 
-.dzc-play-group { border: 1px solid var(--line, #d8d0c0); border-radius: 8px; padding: 10px; margin-bottom: 10px; background: var(--surface-2, #fff); }
+.dzc-play-group { border: 1px solid var(--line, #d8d0c0); padding: 10px; margin-bottom: 10px; background: var(--surface-2, #fff); }
 .dzc-play-group.is-done { opacity: .58; }
 .dzc-play-group.is-dead { opacity: .4; }
 .dzc-play-group > header { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 6px; }
