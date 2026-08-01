@@ -327,6 +327,16 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-01', title: 'Rules say what they mean, and the Albatross is reachable', items: [
+      'A rule reads back the number your card printed. "Aegis 6”" says "within 6” of this Unit" instead of "within X”", and it works for words as well as numbers, so "Ineffective: Zones" names Zones. Substituting the value also exposed three keywords the app had been reading wrongly — "Pen 6+" was resolving to Passive Countermeasures, which meant every weapon with Penetrator showed the wrong rule.',
+      'Every rule now says which page of the rulebook it is on, in the tooltip and on the printed sheet, so the book falls open in the right place mid-game.',
+      'You can build an Albatross. A Transport Squad is a Squad, so it can be carried too — you give an Albatross to a Bear APC exactly as you gave the Bear to the Legionnaires. The rules always allowed it and the builder was refusing.',
+      'The picker prices the Squad rather than one model: 70pts over "2 × 35". A third of the list has a minimum above one model, so a third of the list had been quietly halving its own price.',
+      'Category tabs say how many units are behind them, and a tab or a filter only appears if it can match something. That adds a filter for units with a paid weapon upgrade — 18 in the whole game — and removes Unique, which could never match anything, because no Unique Unit has been published.',
+      'Search reaches further: category and type, the rules on a weapon rather than only on the Unit, and glossary aliases — so "evasion" finds a Unit whose card only ever prints "Ev1".',
+      'A control that refuses you says why. The model stepper used to go dead under your finger with nothing on screen; it now quotes the squad size that stopped it. An empty list names which of your choices emptied it.',
+      'Renaming an army or a Group looks renameable, and Enter commits while Escape puts it back. Escape used to do nothing, so once you started typing there was no way to change your mind.',
+    ]},
     { date: '2026-07-31', title: 'A Squad reads like the Unit it is', items: [
       'A Squad in your army now shows what the unit page shows: the art, the capacity symbol beside the name, every stat, the rules, a block per variant with its own price, and the whole weapon table with arcs and Move & Attack. The numbers you argue over across a table are on the page instead of behind a modal.',
       'Choosing a Transport is a chooser, not a dropdown. Every option shows what it offers, how many the cargo needs, what it costs, and whether the fit comes out exact. A part-empty fit is offered and marked rather than refused, because one more model fixes it.',
