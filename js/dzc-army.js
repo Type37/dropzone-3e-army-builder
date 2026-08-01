@@ -440,6 +440,82 @@
       });
   }
 
+  /* Transports ALREADY in this Group that still have room for this Squad.
+   *
+   * This is 3.2.4.1 -- "up to 4 Squads, plus their own Transport Squads, may
+   * share one larger Transport" -- and without it some Transports can never be
+   * taken at all. A Vulture Troopship carries 4 squares; every UCM infantry
+   * Squad is 2-3 models filling 1 square each. No single Squad can ever total
+   * 4, so buying a Vulture per Squad leaves it permanently "not full" and the
+   * model stepper refuses to grow past squadMax. The way out is the one the
+   * rules already give you: put a second Squad in the one you have. */
+  function boardOptions(army, squadId) {
+    const s = findSquad(army, squadId);
+    const g = groupOf(army, squadId);
+    const u = s && unitOf(army, s);
+    if (!u || !g) return [];
+    return g.squads.filter(t => {
+      if (t.id === s.id || t.carriedBy) return false;
+      const tu = unitOf(army, t);
+      if (!tu || !(tu.category === 'Transport' || tu.auxiliaryTransport)) return false;
+      if (!window.DZC.canCarry(tu, u)) return false;
+      // 3.2.4.1 caps the sharing at 4 Squads.
+      const aboard = g.squads.filter(x => x.carriedBy === t.id && x.id !== s.id);
+      if (aboard.length >= 4) return false;
+      const load = aboard.map(x => ({ unit: unitOf(army, x), count: x.models.length }))
+        .filter(x => x.unit);
+      load.push({ unit: u, count: s.models.length });
+      return window.DZC.loadCheck(tu, load).ok;
+    }).map(t => {
+      const tu = unitOf(army, t);
+      const aboard = g.squads.filter(x => x.carriedBy === t.id && x.id !== s.id);
+      const load = aboard.map(x => ({ unit: unitOf(army, x), count: x.models.length }))
+        .filter(x => x.unit);
+      const before = window.DZC.loadCheck(tu, load);
+      load.push({ unit: u, count: s.models.length });
+      const after = window.DZC.loadCheck(tu, load);
+      const shape = Object.keys(after.byShape)[0];
+      const room = shape ? window.DZC.capacityFor(tu, shape) * t.models.length : 0;
+      return {
+        squad: t, unit: tu, shape: shape,
+        used: shape ? (before.byShape[shape] || 0) : 0,
+        after: shape ? after.byShape[shape] : 0,
+        room: room,
+        riders: aboard.length,
+        full: shape ? after.byShape[shape] === room : false
+      };
+    });
+  }
+
+  /* Put a Squad aboard a Transport Squad that is already in its Group. */
+  function boardTransport(army, squadId, carrierSquadId) {
+    const s = findSquad(army, squadId);
+    if (!s) return { ok: false, reason: 'Unknown Squad.' };
+    const opt = boardOptions(army, squadId).find(o => o.squad.id === carrierSquadId);
+    if (!opt) return { ok: false, reason: 'That Transport has no room for this Squad (3.2.4.2).' };
+
+    // Drop whatever it was riding first, so a Transport bought only for this
+    // Squad does not linger empty.
+    const g = groupOf(army, squadId);
+    const old = g.squads.find(x => x.id === s.carriedBy);
+    if (old && old.id !== carrierSquadId) {
+      const ou = unitOf(army, old);
+      const others = g.squads.filter(x => x.carriedBy === old.id && x.id !== s.id);
+      s.carriedBy = null;
+      if (ou && ou.category === 'Transport' && !others.length) {
+        g.squads = g.squads.filter(x => x.id !== old.id);
+      }
+    }
+    s.carriedBy = carrierSquadId;
+    refitTransports(army);
+    touch(army);
+    return {
+      ok: true, reason: null,
+      warn: opt.full ? null
+        : `${opt.unit.name} still has room for ${opt.room - opt.after}. Transports must be taken full (3.2.4).`
+    };
+  }
+
   /* Assign (or clear) the Transport carrying a Squad. Creates the Transport
    * Squad, sets its count to exactly what the cargo needs, and links them --
    * "Those Transport(s) form a Squad. Those two Squads form one Group." */
@@ -845,7 +921,8 @@
     // enforcement
     canAddUnit, canSetCount, squadsNamed, squadFill,
     upgradesFor, hasUpgrade, toggleUpgrade, upgradeCost,
-    transportOptions, assignTransport, refitTransports, groupSpace
+    transportOptions, assignTransport, refitTransports, groupSpace,
+    boardOptions, boardTransport
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = window.DZCArmy;
 })();

@@ -238,6 +238,48 @@ console.log('\ntransports and their cargo form one Group (3.2.4)');
   A.remove(a.id);
 }
 
+/* The Vulture deadlock. A Vulture Troopship carries 4 squares; every UCM
+ * infantry Squad is 2-3 models filling 1 square each, so no single Squad can
+ * ever total 4. Buying one per Squad left it permanently "not full" while
+ * canSetCount refused to grow past squadMax -- the Transport was unusable and
+ * nothing you could do fixed it. 3.2.4.1 is the way out: share it. */
+{
+  const a = A.create('ucm', 'Vulture', 2000);
+  const g = A.addGroup(a);
+
+  // The trap itself, asserted so it stays understood rather than rediscovered.
+  const vult = DZC.unit('ucm', 'vulture-troopship');
+  const leg = DZC.unit('ucm', 'legionnaires');
+  eq(DZC.capacityFor(vult, 'square'), 4, 'a Vulture carries 4 squares');
+  eq(leg.squadMax, 3, 'and Legionnaires cap at 3 models');
+  ok(4 % 1 !== 0 || leg.squadMax < 4, 'so one Legionnaire Squad can never fill one');
+
+  const s1 = A.addSquad(a, g.id, 'legionnaires', 2);
+  ok(A.assignTransport(a, s1.id, 'vulture-troopship').ok, 'the Vulture is still takeable');
+  ok(hasErr(A.validate(a), 'not full'), 'and it starts out not full');
+  eq(A.canSetCount(a, s1.id, 4).ok, false, 'growing the Squad to 4 is refused by squadMax');
+
+  // The move that was missing: a second Squad boards the Vulture already here.
+  const s2 = A.addSquad(a, g.id, 'praetorian-snipers', 2);
+  const opts = A.boardOptions(a, s2.id);
+  const here = opts.find(o => (o.unit || {}).id === 'vulture-troopship');
+  ok(here, 'the Vulture already in the Group is offered', JSON.stringify(opts.map(o => o.unit.id)));
+  eq(here.room, 4, 'with 4 squares of room');
+  eq(here.used, 2, '2 of them already taken');
+  ok(here.full, 'and boarding these Snipers fills it exactly');
+
+  const r = A.boardTransport(a, s2.id, here.squad.id);
+  ok(r.ok, 'boarding succeeds', r.reason);
+  eq(r.warn, null, 'with nothing left to report');
+  ok(!hasErr(A.validate(a), 'not full'), 'the Vulture is full and the deadlock is gone');
+
+  // Still one Vulture, not two: sharing must not quietly buy a second.
+  const carriers = g.squads.filter(s => (A.unitOf(a, s) || {}).category === 'Transport');
+  eq(carriers.length, 1, 'and only one Vulture was ever bought');
+  eq(carriers[0].models.length, 1, 'exactly one of it');
+  A.remove(a.id);
+}
+
 console.log('\nsquad size is enforced at the stepper');
 {
   const a = army();

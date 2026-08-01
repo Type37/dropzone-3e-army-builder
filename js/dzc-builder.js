@@ -964,8 +964,30 @@
       </button>`;
     };
 
+    /* Transports already in this Group come FIRST, and they cost nothing.
+     * Without this, a Vulture Troopship can never be filled: it carries 4
+     * squares and every UCM infantry Squad is 2-3 models at 1 square each, so
+     * buying one per Squad leaves it permanently short and the stepper refuses
+     * to grow past squadMax. Sharing one is what 3.2.4.1 is for. */
+    const board = window.DZCArmy.boardOptions(current, squadId);
+    const boardCard = o => `<button type="button" class="dzc-carry-card dzc-carry-here${
+      o.squad.id === s.carriedBy ? ' is-on' : ''}${o.full ? '' : ' is-partial'}"
+      onclick="DZCBuilder.boardTransport('${s.id}','${o.squad.id}')">
+      ${o.unit.art ? `<img src="${esc(o.unit.art)}" alt="" loading="lazy">`
+                   : '<span class="dzc-carry-noart"></span>'}
+      <span class="dzc-carry-name">${esc(o.unit.name)}</span>
+      <span class="dzc-carry-caps">${U.transportHtml(o.unit)}</span>
+      <span class="dzc-carry-sum"><b>${o.after}</b><i>of ${o.room} aboard</i></span>
+      <span class="dzc-carry-fit">${o.full
+        ? `${window.DZCIcon('check_circle', { size: 14 })}Fills it`
+        : `${window.DZCIcon('warning', { size: 14 })}${o.room - o.after} still spare`}</span>
+    </button>`;
+
     document.getElementById('dzc-carry-body').innerHTML = `
       <p class="dzc-carry-for">${esc(u.name)} <span>fills</span> ${U.transportHtml(u)}</p>
+      ${board.length ? `<p class="dzc-carry-head">Already in this Group</p>
+        <div class="dzc-carry-grid">${board.map(boardCard).join('')}</div>
+        <p class="dzc-carry-head">Or take another</p>` : ''}
       <div class="dzc-carry-grid">
         <button type="button" class="dzc-carry-card dzc-carry-walk${nowId ? '' : ' is-on'}"
                 onclick="DZCBuilder.assignTransport('${s.id}','')">
@@ -1162,6 +1184,13 @@
     },
     setCarrier: (id, c) => { window.DZCArmy.setCarrier(current, id, c); refresh(); },
     openCarry, closeCarry,
+    boardTransport: (id, carrierId) => {
+      const r = window.DZCArmy.boardTransport(current, id, carrierId);
+      closeCarry();
+      if (!r.ok) return say(r.reason);
+      if (r.warn) say(r.warn, 'warning');
+      refresh();
+    },
     assignTransport: (id, unitId) => {
       const r = window.DZCArmy.assignTransport(current, id, unitId || null);
       closeCarry();
