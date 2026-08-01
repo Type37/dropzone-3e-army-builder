@@ -1318,9 +1318,9 @@
   /* The printed sheet is the deployment plan, so it keeps the nesting tree and
    * states capacity at each level. Everything else -- chrome, art, colour --
    * is dropped, because none of it helps at a table. */
-  function printSheet() {
+  function sheetHtml() {
     const a = current;
-    if (!a) return;
+    if (!a) return '';
     const size = window.DZC.gameSizeFor(a.pointsLimit);
     const v = window.DZCArmy.validate(a);
     // Keyed by the PRINTED keyword, not the rule id: Aegis 3" and Aegis 6" are
@@ -1395,9 +1395,7 @@
           ? e.rule.faction.toUpperCase()
           : e.rule.section + (e.rule.page ? `, p.${e.rule.page}` : ''))}</span></p></div>`).join('');
 
-    let el = document.getElementById('dzc-print');
-    if (!el) { el = document.createElement('div'); el.id = 'dzc-print'; document.body.appendChild(el); }
-    el.innerHTML = `
+    return `
       <div class="pr-head">
         <h1 class="pr-title">${esc(a.name)}</h1>
         <p class="pr-sub"><span>${esc((FACTIONS.find(f => f.id === a.faction) || {}).name || a.faction)}</span>
@@ -1411,7 +1409,171 @@
       <p class="pr-foot">Indentation shows what is carried aboard what. Transports are taken full (3.2.4);
         Squads not aboard an Aircraft begin Reserved (9.4).</p>
       ${rules ? `<section class="pr-rules"><h2>Rules used</h2>${rules}</section>` : ''}`;
+  }
+
+  /* Print goes through a preview, and the preview is the sheet at A4 with the
+   * page boundaries drawn on it.
+   *
+   * It exists because the one thing you cannot tell from the app is how many
+   * sheets of paper this is about to be, and the one thing that ruins a
+   * deployment sheet is a Group cut in half. Both are answered here, and
+   * answered by measuring — the breaks are drawn from the same numbers that
+   * produce the page count, so the two cannot disagree with each other.
+   *
+   * Ported from Dropfleet's openPrintPreview (app.js:6361) rather than
+   * invented. The one part worth keeping verbatim is its pagination: a naive
+   * "cut every 273mm" draws breaks through the middle of cards the printer
+   * will not cut, because `break-inside: avoid` moves them whole. So a block
+   * that would straddle a boundary gets a spacer pushing it to the next page,
+   * which is what print itself does, and the preview then agrees with the
+   * paper. The spacers are preview-only; printing renders the sheet clean. */
+  const PP = { onKey: null, onPop: null, ro: null, armed: false };
+
+  function closePreview(fromBack) {
+    const ov = document.getElementById('dzc-pp');
+    if (ov) ov.remove();
+    if (PP.onKey) document.removeEventListener('keydown', PP.onKey, true);
+    if (PP.onPop) window.removeEventListener('popstate', PP.onPop);
+    if (PP.ro) PP.ro.disconnect();
+    PP.onKey = PP.onPop = PP.ro = null;
+    // The parked history entry has to be spent, or Back leaves the app one
+    // press early ever after. Not when Back is what closed us — it is gone.
+    const armed = PP.armed;
+    PP.armed = false;
+    if (armed && !fromBack) history.back();
+  }
+
+  function openPreview() {
+    if (!current) return;
+    closePreview();
+    const ov = document.createElement('div');
+    ov.id = 'dzc-pp';
+    ov.className = 'pp-overlay';
+    ov.innerHTML = `
+      <div class="pp-bar">
+        <span class="pp-title">Print preview</span>
+        <span class="pp-count" id="dzc-pp-count"></span>
+        <span class="pp-spacer"></span>
+        <button class="btn btn-ghost btn-sm" type="button" onclick="DZCBuilder.closePreview()">Close</button>
+        <button class="btn btn-primary btn-sm" type="button" onclick="DZCBuilder.printNow()">Print</button>
+      </div>
+      <div class="pp-scroll" id="dzc-pp-scroll">
+        <div class="pp-paper" id="dzc-pp-paper">${sheetHtml()}</div>
+      </div>`;
+    document.body.appendChild(ov);
+
+    /* Escape and Back both close it. Back matters more: on a phone it IS the
+     * close gesture, and without a parked entry it walks out of the app. Same
+     * trick the shell plays for its modals (syncBackGuard, dzc-shell.js). */
+    PP.onKey = e => { if (e.key === 'Escape') { e.stopPropagation(); closePreview(); } };
+    document.addEventListener('keydown', PP.onKey, true);
+    PP.onPop = () => closePreview(true);
+    window.addEventListener('popstate', PP.onPop);
+    history.pushState({ dzcPreview: 1 }, '');
+    PP.armed = true;
+
+    fitPreview();
+    paginate();
+    // Art and webfonts land after the first measurement and change every
+    // height below them, so measure again when they do.
+    ov.querySelectorAll('img').forEach(img => {
+      img.addEventListener('load', paginate);
+      img.addEventListener('error', paginate);
+    });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(paginate);
+    if (window.ResizeObserver) {
+      PP.ro = new ResizeObserver(() => { fitPreview(); paginate(); });
+      PP.ro.observe(document.getElementById('dzc-pp-scroll'));
+    }
+  }
+
+  /* A4 is 210mm and a phone is not. Shrink the whole sheet to fit rather than
+   * letting it reflow: a preview that reflows is showing a page you will not
+   * get. Everything below reads mm off the RENDERED width, so it follows. */
+  function fitPreview() {
+    const scroll = document.getElementById('dzc-pp-scroll');
+    const paper = document.getElementById('dzc-pp-paper');
+    if (!scroll || !paper) return;
+    const cs = getComputedStyle(scroll);
+    const avail = scroll.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
+    // 210mm in this browser's px, asked for rather than assumed to be 793.7.
+    const mm = document.createElement('div');
+    mm.style.cssText = 'position:absolute;visibility:hidden;width:210mm';
+    document.body.appendChild(mm);
+    const full = mm.getBoundingClientRect().width;
+    mm.remove();
+    paper.style.setProperty('--pp-zoom', full > 0 ? Math.min(1, avail / full) : 1);
+  }
+
+  function paginate() {
+    const paper = document.getElementById('dzc-pp-paper');
+    const label = document.getElementById('dzc-pp-count');
+    if (!paper) return;
+    paper.querySelectorAll('.pp-break, .pp-spacer-gap').forEach(el => el.remove());
+
+    const cs = getComputedStyle(paper);
+    const padTop = parseFloat(cs.paddingTop) || 0;
+    const padBot = parseFloat(cs.paddingBottom) || 0;
+    // The paper is 210mm wide, so its own width is the ruler. Reading it back
+    // rather than computing it means the zoom above needs no second thought.
+    const perMm = paper.getBoundingClientRect().width / 210;
+    const page = 273 * perMm;          // A4 minus the 12mm top and bottom margins
+    if (!(page > 0)) return;
+
+    /* The blocks print will not cut. A Group is one atom by design (a Group
+     * torn across a page is the failure this whole sheet exists to avoid) and
+     * so is a rule entry, so those are exactly the two things measured. */
+    const top0 = paper.getBoundingClientRect().top + padTop;
+    const atoms = [...paper.querySelectorAll('.pr-group, .pr-rule, .pr-rules > h2, .pr-head')]
+      .map(el => { const r = el.getBoundingClientRect(); return { el, top: r.top - top0, h: r.height }; })
+      .filter(b => b.h > 0)
+      .sort((x, y) => x.top - y.top);
+
+    let offset = 0, limit = page;
+    const pushes = [];
+    atoms.forEach(b => {
+      const top = b.top + offset, bottom = top + b.h;
+      // Taller than a page: nothing can keep it whole, so print splits it and
+      // the boundary simply advances past it.
+      if (b.h >= page) { while (limit < bottom) limit += page; return; }
+      if (bottom > limit) {
+        const gap = limit - top;
+        if (gap > 1) pushes.push({ el: b.el, gap });
+        offset += gap;
+        limit += page;
+      }
+    });
+    pushes.forEach(({ el, gap }) => {
+      const sp = document.createElement('div');
+      sp.className = 'pp-spacer-gap';
+      sp.style.height = gap + 'px';
+      el.parentNode.insertBefore(sp, el);
+    });
+
+    const content = paper.scrollHeight - padTop - padBot;
+    const pages = Math.max(1, Math.ceil((content - 1) / page));
+    if (label) label.textContent = pages === 1 ? '1 page' : `${pages} pages`;
+    for (let k = 1; k < pages; k++) {
+      const brk = document.createElement('div');
+      brk.className = 'pp-break';
+      brk.style.top = (padTop + k * page) + 'px';
+      brk.innerHTML = `<span class="pp-break-n">Page ${k + 1}</span>`;
+      paper.appendChild(brk);
+    }
+  }
+
+  /* The sheet is rebuilt clean into the hidden print container: the preview's
+   * spacers and break lines are scaffolding for the screen and must not reach
+   * the paper. */
+  function printNow() {
+    let el = document.getElementById('dzc-print');
+    if (!el) { el = document.createElement('div'); el.id = 'dzc-print'; document.body.appendChild(el); }
+    el.innerHTML = sheetHtml();
     window.print();
+  }
+
+  function printSheet() {
+    if (current) openPreview();
   }
 
   // ------------------------------------------------------------------ actions
@@ -1555,7 +1717,7 @@
       if (r && !r.ok) return say(r.reason);
       refresh();
     },
-    openPicker, pick, print: printSheet,
+    openPicker, pick, print: printSheet, closePreview, printNow,
     openCommander, closeCommander,
     addCommander: level => {
       const r = window.DZCArmy.addCommander(current, level);

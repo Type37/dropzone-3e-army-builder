@@ -210,7 +210,7 @@ console.log('\nunused styling');
   const src = SOURCES.map(f => readFileSync(path.join(ROOT, f), 'utf8')).join('\n');
   // Built as `dzc-issues--${kind}` from 'err' and 'warn'; grep cannot see them.
   const INTERPOLATED = /^dzc-issues--(err|warn)$/;
-  const declared = new Set([...css.matchAll(/\.((?:dzc|pr)-[A-Za-z0-9_-]+)/g)].map(m => m[1]));
+  const declared = new Set([...css.matchAll(/\.((?:dzc|pr|pp)-[A-Za-z0-9_-]+)/g)].map(m => m[1]));
   ok(declared.size > 100, 'the stylesheet classes were actually found', `${declared.size}`);
   const unused = [...declared]
     .filter(c => !src.includes(c) && !INTERPOLATED.test(c)).sort();
