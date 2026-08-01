@@ -512,6 +512,17 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-01', title: 'A run spent looking at it', items: [
+      'The print preview was telling a phone that a one-page army was three pages, and drawing a page break through the middle of a Squad — through a Group, which is the one thing the whole sheet is built to keep whole. The sheet was being stretched to the height of your window and then measured, and the measuring itself was mixing what you can see with what the paper actually is. Both fixed; a phone and a desktop now agree, and they agree with the paper.',
+      'On a phone there was no way back. The back arrow lives in a strip that had been hidden below 768px since the days of a separate mobile build, so the only way out of an army was the wordmark — which goes to the front page, not back — and Play Mode’s Reset game could not be reached at all.',
+      'Status Tokens go on the Squad, which is what the rulebook says three separate times. Concussed, Suppressed and Jammed were on every model, so a Squad of five had five of each and you could record a state the game cannot produce. Obscured stays on the model, because that one is about where a model is standing. A status you have set now says its whole name instead of its first letter.',
+      'Every Group card was printing its cost with the last digits under the drag grip: 100/50, with the rest of the ceiling hidden. That number is how you tell whether a Group is legal.',
+      'Category spend drew the Standard line in the same green as the card it sits on, so the one row that explains what the other three mean was a smudge beside a number.',
+      'The Unit Reference was cutting the ends off its own stats — 5+ DEFENC, 5+ BRAVE — on nearly every card in the grid.',
+      'A Commander you have not named reports its Level as its name, and then both the rail and the printed sheet said the Level again beside it. The unit page did the same with the unit’s name.',
+      'A Group with nothing in it was tagged “orphaned transports” in Play Mode and told a rule about transports it did not contain.',
+      'The search box on the Collection was cutting off the line that tells you what you can type. On a phone the magnifying glass beside it gives way instead of the words.',
+    ]},
     { date: '2026-08-01', title: 'What a Level buys, and guns nobody was firing', items: [
       'A Commander Level says what it is worth. CP replenishes up to your highest Level, your Command Card hand is that many cards, and Initiative is D6 plus it (4.1). Play Mode has run on those three numbers since it was written; the screen where you choose a Level had never been told. They are on every option in the chooser, once in the rail for the army, and on the printable reference.',
       'A Level a smaller game cannot reach says which game reaches it, instead of not being there. At Skirmish there was no way to learn that Levels 6 and 7 exist.',
