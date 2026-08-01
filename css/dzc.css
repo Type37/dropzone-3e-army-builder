@@ -1156,7 +1156,21 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 .dzc-vp button { width: 28px; height: 28px; border-radius: 6px; cursor: pointer; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); font-size: 16px; line-height: 1; }
 .dzc-vp b { min-width: 22px; text-align: center; font-size: 17px; }
 
-.dzc-play-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; margin-bottom: 16px; }
+/* Play Mode keeps panes too: the counters you consult stay put, the Groups you
+   act on scroll beside them. */
+.dzc-play-body { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 10px; align-items: start; }
+.dzc-play-cards {
+  display: flex; flex-direction: column; gap: 8px;
+  position: sticky; top: 12px; margin-bottom: 0;
+}
+.dzc-play-main { min-width: 0; }
+@media (max-width: 900px) {
+  .dzc-play-body { grid-template-columns: 1fr; }
+  .dzc-play-cards {
+    position: static; flex-direction: row; flex-wrap: wrap; margin-bottom: 12px;
+  }
+  .dzc-play-cards .dzc-pcard { flex: 1 1 200px; }
+}
 .dzc-pcard { padding: 9px 10px; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); }
 .dzc-pcard-k { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-2, #6b6459); }
 .dzc-pcard-v { display: block; font: 800 26px/1.1 var(--font-display, 'Roboto Slab', serif); margin: 2px 0 6px; }

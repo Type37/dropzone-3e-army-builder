@@ -135,6 +135,11 @@
         </div>
       </header>
 
+      <!-- Two panes on a desktop, same split as the builder: the numbers you
+           consult sit still on the left while the Groups you actually touch
+           scroll on the right. One column meant scrolling the CP counter off
+           the top the moment an army had more than three Groups. -->
+      <div class="dzc-play-body">
       <div class="dzc-play-cards">
         <!-- No captions. Each card had a paragraph under it citing the rule
              that produced its number, which is the app explaining itself. The
@@ -177,7 +182,10 @@
         </div>
       </div>
 
-      ${army.groups.map(g => groupHtml(army, g)).join('')}
+      <div class="dzc-play-main">
+        ${army.groups.map(g => groupHtml(army, g)).join('')}
+      </div>
+      </div>
     </div>`;
   }
 
