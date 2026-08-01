@@ -104,7 +104,6 @@
 
    6px on a 12px-tall chip is a bevel; on a 20px cell it is a notch. The cut
    scales with the thing it is cutting rather than being one number everywhere. */
-.dzc-deco-cut,
 .dzc-flag,
 .dzc-rule,
 .dzc-pick-vchip,
@@ -172,7 +171,6 @@
 .dzc-detail-meta { margin: 0 0 8px; font-size: 13px; color: var(--ink-2, #6b6459); }
 .dzc-detail-rules { margin-bottom: 14px; }
 .dzc-detail-rules h4, .dzc-variants h4 { margin: 0 0 6px; font: 700 12px/1 var(--font-ui, 'Jost', system-ui, sans-serif); text-transform: uppercase; letter-spacing: .07em; color: var(--ink-2, #6b6459); }
-.dzc-hint { font-weight: 400; text-transform: none; letter-spacing: 0; font-style: italic; }
 .dzc-variants ul { list-style: none; margin: 0 0 14px; padding: 0; }
 .dzc-variants li { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; border-bottom: 1px solid var(--line, #eee5d6); }
 
@@ -184,8 +182,7 @@
 .dzc-wpn tr.is-upgrade .dzc-wpn-name { border-left: 3px solid #2e9e4f; padding-left: 6px; }
 .dzc-wpn tr.is-variant .dzc-wpn-name { border-left: 3px solid #e0761c; padding-left: 6px; }
 .dzc-wpn-only, .dzc-wpn-up { display: block; font-weight: 500; font-size: 11px; color: var(--ink-2, #6b6459); }
-.dzc-none, .dzc-source { font-size: 12px; color: var(--ink-2, #6b6459); }
-.dzc-source { margin-top: 14px; }
+.dzc-none { font-size: 12px; color: var(--ink-2, #6b6459); }
 
 @media (max-width: 640px) {
   .dzc-wrap { padding: 10px 12px 56px; }
@@ -217,7 +214,6 @@
   margin: 7px 0 4px;
   font: 700 18px/1.2 var(--font-display, 'Roboto Slab', serif); overflow-wrap: anywhere;
 }
-.dzc-army-meta { margin: 0 0 6px; font-size: 12px; color: var(--ink-2, #6b6459); }
 .dzc-army-pts {
   display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 8px;
   margin: 0 0 5px; font-size: 15px;
@@ -245,18 +241,12 @@
 .dzc-army-more { align-self: center; font-size: 11px; color: var(--ink-2, #6b6459); }
 .dzc-army-time { margin: 0; font-size: 11px; color: #9a9184; }
 .dzc-army-pts b { font-size: 19px; font-weight: 600; }
-.dzc-army-ok { margin: 0; font-size: 12px; font-weight: 600; color: var(--success-ink, #2f7a37); }
-.dzc-army-bad { margin: 0; font-size: 12px; font-weight: 600; color: #b3261e; }
 
 /* ═══ Builder ═══ */
 .dzc-b-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 10px; }
 .dzc-b-name { font: 800 24px/1.2 var(--font-display, 'Roboto Slab', serif); margin: 0 0 4px; overflow-wrap: anywhere; }
 .dzc-b-name:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; }
 .dzc-b-sub { margin: 0; font-size: 12.5px; color: var(--ink-2, #6b6459); }
-.dzc-b-pts { text-align: right; white-space: nowrap; }
-.dzc-b-pts b { font: 800 30px/1 var(--font-display, 'Roboto Slab', serif); }
-.dzc-b-pts span { display: block; font-size: 12px; color: var(--ink-2, #6b6459); }
-.dzc-b-pts.is-over b { color: #b3261e; }
 
 .dzc-ratios { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
 .dzc-ratio { padding: 6px 12px; border-radius: 6px; background: var(--surface-3, #f2ece0); font-size: 12px; }
@@ -450,7 +440,6 @@
 .dzc-bb-art { display: flex; gap: 3px; flex-wrap: wrap; }
 .dzc-bb-art img { width: 30px; height: 22px; object-fit: contain; background: var(--surface-3, #f2ece0); }
 .dzc-rail { position: sticky; top: 12px; display: flex; flex-direction: column; gap: 8px; }
-.dzc-b-main { min-width: 0; }
 .dzc-rail-card {
   padding: 10px 12px; border-radius: 8px;
   border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff);
@@ -707,7 +696,6 @@
    are allowed to be in on the way somewhere (3.2.4). */
 .dzc-carry-card.is-partial .dzc-carry-fit { color: #8a6d1f; }
 .dzc-carry-walk .dzc-carry-fit { color: var(--ink-2, #6b6459); }
-.dzc-capacity { margin: 4px 0 0; font-size: 11px; font-style: italic; color: var(--ink-2, #6b6459); }
 /* Adding a Group is the main move in this screen, so it is sized like one. */
 /* Sticky, so it stays reachable down a long army instead of living at the
    bottom of the list. Smaller than it was, because it no longer has to shout
@@ -925,7 +913,6 @@
    budget is two in the whole app, and a meta line spent four of them on its
    own. Spacing does the same job and reads quieter. */
 .dzc-pick-meta span + span::before,
-.dzc-army-meta span + span::before,
 .dzc-b-sub span + span::before,
 .dzc-detail-meta span + span::before,
 .dzc-coll-meta span + span::before,

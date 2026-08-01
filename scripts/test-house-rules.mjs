@@ -194,5 +194,29 @@ eq(back.length, 0, 'and no known-missing asset is still excused after arriving',
    back.join(', '));
 gone.forEach(p => console.log(`!! MISSING ${p} — ${KNOWN_MISSING[p]}`));
 
+// -------------------------------------------------------------- unused styling
+/* Rules for classes nothing renders any more. Not a failure — ever. A class
+ * built by interpolation (dzc-issues--${kind}) is live and unfindable by
+ * grep, so a hard assertion here would block legitimate work, and a check that
+ * cries wolf gets deleted. It warns, and someone decides.
+ *
+ * Worth having because dead styling is not inert: it is the residue of a
+ * feature that was removed, it describes a screen that no longer exists, and
+ * the next person to read it believes it. */
+console.log('\nunused styling');
+{
+  const css = ['css/dzc.css', 'css/dzc-print.css']
+    .map(f => readFileSync(path.join(ROOT, f), 'utf8')).join('\n');
+  const src = SOURCES.map(f => readFileSync(path.join(ROOT, f), 'utf8')).join('\n');
+  // Built as `dzc-issues--${kind}` from 'err' and 'warn'; grep cannot see them.
+  const INTERPOLATED = /^dzc-issues--(err|warn)$/;
+  const declared = new Set([...css.matchAll(/\.((?:dzc|pr)-[A-Za-z0-9_-]+)/g)].map(m => m[1]));
+  ok(declared.size > 100, 'the stylesheet classes were actually found', `${declared.size}`);
+  const unused = [...declared]
+    .filter(c => !src.includes(c) && !INTERPOLATED.test(c)).sort();
+  unused.forEach(c => console.log(`!! unused style .${c} — nothing renders it`));
+  console.log(`  ${declared.size} classes declared, ${unused.length} unreferenced`);
+}
+
 console.log(`\n${pass} passed, ${fail} failed\n`);
 process.exit(fail ? 1 : 0);
