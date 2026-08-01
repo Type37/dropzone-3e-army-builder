@@ -805,16 +805,41 @@ def upgrade_note(page, below_y, left_edge=None):
 
     "Only one of these upgrades may be taken" constrains army construction, so
     dropping it along with the table boundary would lose real information.
+
+    A footnote is a LINE, not a run of spans that happen to start with "*".
+    Reading it span by span cost both ends of it:
+
+      - the Strikehawk and Carryhawk footnote is three spans on one line --
+        "*May replace transport capacity of", a transport symbol set in the
+        display face, then "with MM-3 Missile Boxes or MC-30 Heavy Gatlings."
+        Only the first survived a test for a leading "*", so both cards
+        recorded "May replace transport capacity of" and stopped there.
+      - a card with no footnote at all handed back its flavour text, because
+        that starts at the same left margin. Drones and Hulks each carried a
+        paragraph of lore in this field.
+
+    So: a line whose FIRST span sits in the left margin below the tables, and
+    is not italic. Italic is how lore_top already tells prose from data, and it
+    is a property of the type rather than of whatever the foundry called the
+    face. Every span on that line is then taken, symbol included -- a footnote
+    reading "capacity of 2" is the count off the symbol without its shape,
+    which is less than the card prints but is the whole sentence.
     """
     out = []
     for blk in page.get_text("dict")["blocks"]:
         for ln in blk.get("lines", []):
-            for sp in ln["spans"]:
-                t = sp["text"].strip()
-                if sp["bbox"][1] <= below_y:
-                    continue
-                if t.startswith("*") or (left_edge is not None and sp["bbox"][0] < left_edge):
-                    out.append(t.lstrip("*").strip())
+            spans = [sp for sp in ln["spans"] if sp["text"].strip()]
+            if not spans:
+                continue
+            first = spans[0]
+            if first["bbox"][1] <= below_y:
+                continue
+            if left_edge is not None and first["bbox"][0] >= left_edge:
+                continue
+            if first["flags"] & ITALIC_FLAG:
+                continue
+            line = " ".join(sp["text"].strip() for sp in spans)
+            out.append(line.lstrip("*").strip())
     return " ".join(out).strip() or None
 
 

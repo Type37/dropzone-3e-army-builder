@@ -62,6 +62,17 @@ for path in sorted(glob.glob(os.path.join("data", "dzc", "faction-*.json"))):
                 warnings.append(f"{tag}: weapon {w['name']!r} orange but names no variant")
             stats[f"weapon box={w['box']}"] += 1
 
+        # An upgrade footnote with no upgrade to qualify is not a footnote, it
+        # is whatever else was printed down the left margin -- which for two
+        # Bioficer cards was a paragraph of lore, sitting in the data for a
+        # month because nothing compared the note to the weapons above it.
+        if u["upgradeNote"] and not any(w["box"] == "upgrade" for w in u["weapons"]):
+            problems.append(f"{tag}: upgradeNote but no upgrade weapon")
+        # It is also a SENTENCE. Stopping mid-clause is how the Strikehawk and
+        # Carryhawk recorded "May replace transport capacity of" and no more.
+        if u["upgradeNote"] and not u["upgradeNote"].rstrip().endswith((".", "!", "?")):
+            problems.append(f"{tag}: upgradeNote does not end a sentence: {u['upgradeNote']!r}")
+
         t = u["transport"]
         stats["has capacity"] += bool(t["capacity"])
         stats["fills a transport"] += bool(t["fills"])

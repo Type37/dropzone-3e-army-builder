@@ -1241,7 +1241,7 @@
           "boxUnresolved": false
         }
       ],
-      "upgradeNote": "May replace transport capacity of",
+      "upgradeNote": "May replace transport capacity of 2 with MM-3 Missile Boxes or MC-30 Heavy Gatlings.",
       "page": 17,
       "auxiliaryTransport": true,
       "selectable": true,
@@ -1418,7 +1418,7 @@
           "boxUnresolved": false
         }
       ],
-      "upgradeNote": "May replace transport capacity of",
+      "upgradeNote": "May replace transport capacity of 2 with MM-3 Missile Boxes or MC-30 Heavy Gatlings.",
       "page": 19,
       "auxiliaryTransport": true,
       "selectable": true,

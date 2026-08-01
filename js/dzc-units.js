@@ -283,11 +283,11 @@
    * an upgrade row said what the gun is and nothing about what taking it costs
    * you.
    *
-   * Gated on there BEING an upgrade. Two Bioficer Units (Drones, Hulks) carry
-   * a paragraph of lore in this field because the scanner reads the bottom of
-   * the card and those two have no upgrade box — neither is selectable, so it
-   * has never surfaced in the builder, but the reference view draws all 178. A
-   * note with nothing to qualify is not a note. */
+   * Gated on there BEING an upgrade, which is belt and braces now that
+   * audit_data refuses a note with no upgrade weapon behind it — the fault it
+   * was written for was Drones and Hulks carrying a paragraph of lore in this
+   * field, and that is fixed in the scanner. The gate stays because a note
+   * with nothing to qualify is not a note, whatever put it there. */
   function upgradeNoteHtml(u) {
     if (!u.upgradeNote) return '';
     if (!(u.weapons || []).some(w => w.box === 'upgrade')) return '';
