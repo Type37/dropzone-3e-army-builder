@@ -422,6 +422,37 @@ console.log('\nevery screen renders');
   }
 
   A.remove(a.id);
+
+  /* And once per faction, over an army the generator built.
+   *
+   * Everything above is UCM, and a render bug does not have to be
+   * faction-agnostic: the Bioficer list carries Units that cannot be selected
+   * at all, Shaltari has a Vehicle that fills a square, and four of the six
+   * use two capacity shapes at once. A generated army is the only way to get
+   * every one of those onto a screen without hand-building six lists, and it
+   * is already trusted to be legal by the army suite.
+   *
+   * Seeded, so a failure reproduces: the generator takes its own rand. */
+  let seed = 20260801;
+  const rand = () => ((seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff);
+  for (const fid of ['ucm', 'phr', 'scourge', 'shaltari', 'resistance', 'bioficer']) {
+    await DZC.loadFaction(fid);
+    const r = A.generate(fid, 1500, rand);
+    ok(r.ok, `the generator built a ${fid.toUpperCase()} army to render`, r.reason);
+    if (!r.ok) continue;
+    const built = r.army;
+    let err = null;
+    try {
+      await B.renderBuilder(built.id);
+      await B.openPicker(built.groups[0].id);
+    } catch (e) { err = e; }
+    ok(!err, `a generated ${fid.toUpperCase()} army renders`,
+       err && `${err.message}\n        ${((err.stack || '').split('\n')[1] || '').trim()}`);
+    const html = els['view-army'].innerHTML.replace(/<[^>]*>/g, ' ');
+    ok(!/\b(null|undefined|NaN)\b/.test(html), `and the ${fid.toUpperCase()} builder prints no placeholder`,
+       (html.match(/.{0,40}\b(null|undefined|NaN)\b.{0,40}/) || [])[0]);
+    A.remove(built.id);
+  }
 }
 
 console.log(`\n${pass} passed, ${fail} failed\n`);
