@@ -223,7 +223,11 @@
           <div class="dzc-chips">${cats}</div>
         </div>
         <p class="dzc-count">${units.length} of ${f.units.length} units${q ? ` matching “${esc(state.search)}”` : ''}</p>
-        ${groups || '<p class="dzc-empty">Nothing matches that search.</p>'}
+        <!-- Named by cause, and worded exactly as the picker words it. "Nothing
+             matches that search" over an empty category is the app blaming a
+             search box you never touched. -->
+        ${groups || `<p class="dzc-empty">${q ? `Nothing matches “${esc(state.search)}”.`
+          : 'Nothing in this category.'}</p>`}
       </div>`;
   }
 

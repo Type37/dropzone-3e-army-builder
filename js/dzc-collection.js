@@ -145,7 +145,10 @@
             <button type="button" onclick="DZCCollection.adjust('${esc(u.id)}',1)" aria-label="One more">${window.DZCIcon('add', { size: 14 })}</button>
           </span>
         </div>`;
-      }).join('') || '<p class="dzc-empty">Nothing matches.</p>'}</div>
+      // Named by cause. Without a search or the owned filter this list is every
+      // unit in the faction and cannot be empty, so those are the only two.
+      }).join('') || `<p class="dzc-empty">${q ? `Nothing matches “${esc(state.search)}”.`
+        : 'Nothing owned in this faction yet.'}</p>`}</div>
     </div>
       </div>
     </div>`;
