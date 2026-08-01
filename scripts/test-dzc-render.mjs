@@ -750,6 +750,62 @@ console.log('\nevery screen renders');
        (html.match(/.{0,40}\b(null|undefined|NaN)\b.{0,40}/) || [])[0]);
   }
 
+  /* Play Mode's arithmetic, which nothing had ever asserted.
+   *
+   * The sweep above proves no control throws. It does not prove a single
+   * number on the screen is right, and these are the numbers you read across a
+   * table mid-game, where being wrong loses you the game rather than failing a
+   * build. Chapter 4, verbatim:
+   *
+   *   4.1.1  "Players generate/replenish their Command Points (CP) up to a
+   *          number equal to their highest Commander Level on the Table...
+   *          Commanders count as Level 0 throughout Round 1"
+   *   4.1.2  "If a player has two fewer Groups on the Table/Ready to enter it
+   *          than their opponent, they generate a Pass token. For each
+   *          additional Group fewer than their opponent, they generate another
+   *          Pass token. Groups which contain only non-auxiliary Transports
+   *          are ignored when generating Pass tokens."
+   *
+   * Read off the rendered screen rather than out of the module: the arithmetic
+   * is private, and what matters is the number a player is looking at. */
+  {
+    const P = win.DZCPlay;
+    const ma = A.create('ucm', 'Mid-game', 1500);
+    const m1 = A.addGroup(ma), lead = A.addSquad(ma, m1.id, 'legionnaires', 3);
+    const m2 = A.addGroup(ma); A.addSquad(ma, m2.id, 'ucm-main-battle-tank', 2);
+    const m3 = A.addGroup(ma); A.addSquad(ma, m3.id, 'legionnaires', 3);
+    const mlive = A.get(ma.id);
+    A.assignCommander(mlive, A.addCommander(mlive, 5).commander.id, lead.id);
+    await P.open(ma.id);
+
+    const cap = () => (els['view-play'].innerHTML
+      .match(/Command Points<\/span>[\s\S]*?<span class="dzc-pcard-v">\d+<i>\/ (\d+)<\/i>/) || [])[1];
+    const passes = () => (els['view-play'].innerHTML
+      .match(/Pass Tokens<\/span>[\s\S]*?<span class="dzc-pcard-v">(\d+)<\/span>/) || [])[1];
+
+    eq(cap(), '0', 'Round 1 caps CP at nothing — every Commander counts as Level 0 (4.1.1)');
+    P.round(1);
+    eq(cap(), '5', 'and from Round 2 the cap is the highest Commander Level');
+
+    P.oppGroups('3');
+    eq(passes(), '0', 'level on Groups earns no Pass token');
+    P.oppGroups('4');
+    eq(passes(), '0', 'and one Group behind still earns none (4.1.2)');
+    P.oppGroups('5');
+    eq(passes(), '1', 'two Groups behind earns one');
+    P.oppGroups('7');
+    eq(passes(), '3', 'and each further Group behind earns another');
+
+    // A Group of only non-auxiliary Transports is not a Group for this
+    // purpose, so adding one must not change the count either way (4.1.2).
+    const m4 = A.addGroup(A.get(ma.id));
+    A.addSquad(A.get(ma.id), m4.id, 'condor-dropship', 1);
+    await P.open(ma.id);
+    P.oppGroups('7');
+    eq(passes(), '3', 'a Group of only Transports is ignored on your own side of it');
+    A.remove(ma.id);
+  }
+
   A.remove(a.id);
 
   /* And once per faction, over an army the generator built.

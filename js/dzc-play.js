@@ -15,6 +15,10 @@
  * Damage is tracked per MODEL rather than per Squad, because DP is a per-model
  * stat and a Squad shrinks as models die.
  *
+ * A game is six Rounds "unless the Scenario says otherwise" (p34), which is
+ * where the "of 6" beside the Round counter comes from and why the counter
+ * still goes past it rather than stopping.
+ *
  * State lives under the army id, so closing the tab mid-game loses nothing.
  */
 (function () {
