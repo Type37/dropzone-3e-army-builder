@@ -357,6 +357,83 @@ top-down by priority there, not from this section.
 
 ---
 
+## 11a. Cloud run — 2026-08-01, the third one, no browser
+
+Nineteen commits, none of them looked at. This run read the RULEBOOK rather
+than the backlog's own descriptions, and that is where most of what follows
+came from. If you only read one thing here, read the first two.
+
+**A Group the rulebook itself draws was reported as walking on.** 9.4 says
+Vehicles and Infantry begin Reserved unless they start "aboard an Aircraft, **or
+in a Transport aboard an Aircraft**". `validate()` looked at the immediate
+carrier only, so six Legionnaires in two Bear APCs in a Condor — the nested
+stack illustrated on p11 — came back as beginning Reserved. Whether a Squad
+starts on the table is the whole reason air transport earns its points (§3), so
+the builder was saying the expensive option had bought you nothing. The
+carriage chain is walked now, with a `seen` set so a corrupt save cannot hang
+the validator.
+
+**Two data faults and a resolver fault, all in the scanned data.**
+`upgrade_note` matched a run of spans beginning with an asterisk; a footnote is
+a LINE. The Strikehawk and Carryhawk stopped mid-clause at "May replace
+transport capacity of", and Drones and Hulks held a paragraph of lore. Both
+now caught by `audit_data.py` — a note with no upgrade weapon behind it, or one
+that does not end a sentence, fails the build. Separately, the rulebook heads a
+rule "Hardy X" and then reads "a save of X+" while every card prints "Hardy
+4+", so the value took the plus with it and every tooltip read "a save of 4++".
+`scan_rulebook.py` has a `KNOWN_HEADING_QUIRKS` table beside `KNOWN_TYPOS` for
+that, correcting the template for matching only.
+
+**`data/dzc/index.json` has been checked against chapter 3, value by value,
+and matches.** It is the one file that is transcribed rather than scanned, so
+it had no audit at all. Eleven assertions now pin the band EDGES (1000 is still
+Skirmish, 1001 is Clash) with the rulebook's words quoted above them.
+
+**A Squad's weapon table is the guns that Squad fires.** It used to print the
+Unit's whole card — the gun only a Rapier carries on a Squad with no Rapier,
+every unbought upgrade as a row. `squadGuns(s)` in `js/dzc-builder.js` is the
+one definition, applied through `DZCUnits.unitWeapons`, shared by the Squad row,
+the printed sheet and the sheet's rules appendix. The appendix was printing the
+full text of rules for guns nobody in the army could fire.
+
+**Two reads that went round the derived names**, which is the failure §10 warns
+about and it had regressed again. `commanderTagName` looked its Commander up by
+an id on the Squad's COPY of it — `syncCommanders` writes `{ level }` and no
+id — so the lookup matched nobody every time and the fallback was the only
+branch that ever ran. And the Aboard select appended a Group only when it had a
+typed name. A share link had both problems too: it wrote the literal string
+"Group" for every unnamed Group, and never carried a Commander's typed name at
+all.
+
+**What a Commander Level buys is chapter 4, not the points table.** CP up to
+your highest Level (4.1.1), a hand of that many cards (4.1.4), D6 plus it for
+Initiative (4.1.5). Play Mode ran on those three numbers from the day it was
+written and no other screen had been told; they are now on the chooser, in the
+rail and on the printable reference. A Level the agreed size cannot reach is on
+the chooser dimmed, saying which game reaches it — it used to be filtered out,
+which is enforcement by absence and the one form this app uses nowhere else.
+
+**Play Mode's numbers had never been asserted, only its controls.** Eight
+assertions read off the rendered screen: Round 1 caps CP at nothing, the Pass
+token ladder, and a Group of only Transports ignored on your own side of it.
+
+**Compact view**, in Settings, off by default, Dropfleet's copy with the noun
+that has no DZC analogue dropped. It hides the weapon table and the stat grid
+repeated under every Variant, and no control — which is the one place it
+deliberately does not follow Dropfleet, whose compact hides the loadout radios.
+
+**Two open questions on the backlog, both with the rule text quoted.** 3.2.5
+places no restriction on a Commander riding in a Transport Squad and the
+builder refuses it anyway; the comment now says that is a decision, not
+enforcement. And the scanner still truncates the Strikehawk and Carryhawk
+footnotes — the render side is guarded, the data is not fixed.
+
+The suite went 499 → 569. Every new assertion in this run was checked to FAIL
+against the code before it, which is worth keeping up: an assertion that passes
+either way is decoration.
+
+---
+
 ## 11. Cloud run — 2026-08-01, the later one, no browser
 
 Thirteen commits, none of them looked at. The load-bearing points:
