@@ -472,6 +472,14 @@
   font-style: normal; font-size: 9.5px; text-transform: uppercase;
   letter-spacing: .05em; color: var(--ink-2, #6b6459);
 }
+/* The same trio in the rail, where it is about the army rather than an option:
+   spread across the rail's width, and no card of its own — it belongs to the
+   Commanders above it, so a border between them would say otherwise. */
+.dzc-cmdr-buys--rail {
+  margin: 6px 0 0; padding: 0 2px;
+  justify-content: space-between;
+}
+.dzc-cmdr-buys--rail b { font-size: 16px; }
 
 /* ── builder: rail + column ──
    Desktop keeps panes, mobile does not (HANDOFF §2.2). The rail holds what you

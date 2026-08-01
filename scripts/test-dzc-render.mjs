@@ -388,6 +388,13 @@ console.log('\nevery screen renders');
   ok(/Bear APC/.test(builder), 'the assigned Transport is on the page');
   ok(/Tachi/.test(second), 'and the second Variant of a mixed Squad, once its Group is open');
   ok(/Level 5/.test(builder), 'and the Commander');
+  /* Gap 51: what the Level is worth per Round, in the rail. Off the HIGHEST
+   * Level on the table (4.1.1, 4.1.4, 4.1.5), so it is one line about the army
+   * rather than a repeat on each Commander card — this army has a single
+   * Level 5, which makes 5 CP, 5 cards and +5 Initiative. */
+  ok(/dzc-cmdr-buys--rail/.test(builder), 'the rail says what the Level is worth per Round');
+  ok(/<b>5<\/b><i>CP<\/i>/.test(builder) && /<b>\+5<\/b><i>Initiative<\/i>/.test(builder),
+     'and reads it off the highest Level in the army');
   /* Gap 47: on a phone the rail collapses behind a line carrying the two
    * numbers you keep glancing at. The line is always in the markup — CSS
    * decides whether it is on screen — so what is asserted here is that it
