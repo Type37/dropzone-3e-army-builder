@@ -11,6 +11,23 @@ Source: `D:\wargaming\Web Apps\Dropfleet-Builder\js\app.js` (9,605 lines),
 `index.html` (572), `css/app.css` (7,820). Line numbers below are `app.js`
 unless stated.
 
+**Without that folder, read it out of this repo's own history instead** — the
+fork point carries the whole app, byte for byte:
+
+```sh
+git fetch --unshallow                 # cloud sessions clone shallow; do this FIRST
+git show 43773fa:js/app.js | sed -n '3472,3520p'
+```
+
+Every line number here resolves against `43773fa`. Skip the unshallow and
+`43773fa` is not a commit this clone has ever heard of, which is how a session
+ends up inventing something that was already written.
+
+The complete list of what that app can do — its whole public surface, sorted
+into ported / cut / not applicable / still missing — is in
+[PORTING.md](PORTING.md). This file is how each thing looks; that one is
+whether we have it.
+
 ---
 
 ## 0. The one rule that explains the rest
