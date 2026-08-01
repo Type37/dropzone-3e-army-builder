@@ -139,7 +139,20 @@ const DZC_STEPS = [
   ['16-collection', `DZCUnits.closeDetail();
      App.toggleSetting('showCollection', true);
      location.hash = '#collection'`],
-  ['17-print-sheet', `location.hash = '#armies'`],
+  /* The print preview, actually opened. This step used to be named
+     17-print-sheet and its whole body was `location.hash = '#armies'`, so the
+     file said print sheet and showed the army list — a shot that lies about
+     what it is, which is worse than a missing one because it is the shot you
+     go back to. Back to the army first, because by here the walk is on the
+     Collection. */
+  ['17-print-preview', `location.hash = '#armies';
+     await new Promise(r => setTimeout(r, 400));
+     const card = document.querySelector('.dzc-army-card');
+     card && card.click();
+     await new Promise(r => setTimeout(r, 700));
+     await DZCBuilder.print();
+     await new Promise(r => setTimeout(r, 700))`],
+  ['18-armies', `DZCBuilder.closePreview(); location.hash = '#armies'`],
 ];
 
 const DFC_STEPS = [
