@@ -505,6 +505,15 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-01', title: 'What a Level buys, and guns nobody was firing', items: [
+      'A Commander Level says what it is worth. CP replenishes up to your highest Level, your Command Card hand is that many cards, and Initiative is D6 plus it (4.1). Play Mode has run on those three numbers since it was written; the screen where you choose a Level had never been told. They are on every option in the chooser, once in the rail for the army, and on the printable reference.',
+      'A Level a smaller game cannot reach says which game reaches it, instead of not being there. At Skirmish there was no way to learn that Levels 6 and 7 exist.',
+      'A Squad’s weapon table is the guns that Squad fires. It was printing the whole card — the gun only a Rapier carries, on a Squad with no Rapier in it, and every paid upgrade whether or not you had bought one. The printed sheet does the same now, where it matters more, and its rules appendix stops printing rules for guns nobody in the army can fire.',
+      'Compact view, in Settings. A Squad reads as its whole stat card by default; this drops the weapon table and the stat grid repeated under every Variant, and takes away no control.',
+      'Every Unit says which stat card page it came off, with the release named beside it. Every rule already cited its rulebook page; the Unit, whose printed card is the one thing this cannot replace, cited nothing.',
+      'The sentence that qualifies an upgrade reads on the unit page as well as over the buttons — and four cards had it wrong in the data. Two stopped mid-clause at “May replace transport capacity of” and two held a paragraph of lore.',
+      '“A save of 4++”, on every Infantry Unit with Hardy. The rulebook heads the rule “Hardy X” and then reads “a save of X+”, while every card prints “Hardy 4+”, so the value took the plus with it.',
+    ]},
     { date: '2026-08-01', title: 'A blank builder, and everything that was never pressed', items: [
       'The builder was drawing nothing at all for any Squad with a Transport, and had been for a day. A helper was used two hundred lines above the line that declares it, which throws rather than coming back empty, so the whole pane stayed blank. Nothing caught it because nothing had ever drawn the builder in a test \u2014 only the pieces it is made of.',
       'Every screen is driven by the tests now, and so is every control on them: the army list, the builder, the picker, both choosers, Share, the print preview, the unit reference, Collection and Play, about seventy controls pressed in turn.',
