@@ -358,6 +358,12 @@ console.log('\nno word more than twice on one screen');
   for (const m of raw.matchAll(/<div class="modal-overlay"[^>]*id="([^"]+)"[\s\S]*?\n<\/div>/g)) {
     screens.push([m[1], m[0]]);
   }
+  /* The quick-reference chooser is a screen of the app too, and it was outside
+   * this check entirely — six faction names down a page is exactly the shape
+   * of thing that repeats a word without anyone noticing. Its sibling
+   * sheet.html is not here because it has no static text at all: every word on
+   * it is drawn from data/dzc at load, and this check reads markup. */
+  screens.push(['reference chooser', readFileSync(path.join(ROOT, 'assets/ref/index.html'), 'utf8')]);
   ok(screens.length > 5, 'the screens were actually found', `${screens.length}`);
 
   const over = [];
