@@ -2046,9 +2046,22 @@
     const cs = getComputedStyle(paper);
     const padTop = parseFloat(cs.paddingTop) || 0;
     const padBot = parseFloat(cs.paddingBottom) || 0;
-    // The paper is 210mm wide, so its own width is the ruler. Reading it back
-    // rather than computing it means the zoom above needs no second thought.
-    const perMm = paper.getBoundingClientRect().width / 210;
+    /* Everything here is measured in the paper's OWN pixels, before its zoom.
+     *
+     * The sheet shrinks to fit the screen with `zoom`, and that splits the
+     * measurements into two coordinate spaces that agree only at zoom 1 — which
+     * is every desktop. getBoundingClientRect reports what you can see, so it
+     * follows the zoom down; scrollHeight, the padding off getComputedStyle,
+     * and any `top`/`height` written back as a style are the element's own
+     * pixels, which do not. Mixing them made a phone read the same one-page
+     * army as three pages, with a break drawn through the middle of a Squad —
+     * on the one screen whose entire promise is that it agrees with the paper.
+     *
+     * So the rect measurements are divided back out, and the page height comes
+     * out in the same space as everything written back. */
+    const zoom = parseFloat(cs.zoom) || 1;
+    const paperRect = paper.getBoundingClientRect();
+    const perMm = (paperRect.width / zoom) / 210;
     const page = 273 * perMm;          // A4 minus the 12mm top and bottom margins
     if (!(page > 0)) return;
 
@@ -2058,9 +2071,13 @@
      * step with the break-inside: avoid rules in css/dzc-print.css — a block
      * the stylesheet keeps whole and this does not is a break drawn where the
      * printer will not make one. */
-    const top0 = paper.getBoundingClientRect().top + padTop;
     const atoms = [...paper.querySelectorAll('.pr-group, .pr-cmdrs, .pr-rule, .pr-rules > h2, .pr-head')]
-      .map(el => { const r = el.getBoundingClientRect(); return { el, top: r.top - top0, h: r.height }; })
+      .map(el => {
+        const r = el.getBoundingClientRect();
+        // Distance from the paper's own top edge, unzoomed, then past the
+        // padding — so it is measured from where the content starts.
+        return { el, top: (r.top - paperRect.top) / zoom - padTop, h: r.height / zoom };
+      })
       .filter(b => b.h > 0)
       .sort((x, y) => x.top - y.top);
 

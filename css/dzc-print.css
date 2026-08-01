@@ -167,7 +167,15 @@
   font-size: 12.5px; white-space: nowrap;
 }
 .pp-opt input { margin: 0; }
-.pp-scroll { flex: 1; overflow: auto; padding: 16px 8px 40px; display: flex; justify-content: center; }
+/* align-items: flex-start, because the default is stretch and a stretched sheet
+   is a sheet as tall as your window. The page count is measured off the paper's
+   own height, so on a phone — where the shrunk sheet is shorter than the scroll
+   box — the paper was being pulled down to fill it and the same one-page army
+   read as three. */
+.pp-scroll {
+  flex: 1; overflow: auto; padding: 16px 8px 40px;
+  display: flex; justify-content: center; align-items: flex-start;
+}
 
 /* The paper. Padding matches @page's 12mm/10mm margins so a line that fits
    here fits there. */
