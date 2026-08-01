@@ -1167,13 +1167,29 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 .dzc-upgrades { margin: 5px 0 2px; padding: 5px 8px; border-radius: 5px; background: var(--surface-3, #f2ece0); }
 .dzc-upg-head { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2, #6b6459); margin-bottom: 3px; }
 .dzc-upg-head i { text-transform: none; letter-spacing: 0; }
-.dzc-upg { display: flex; align-items: baseline; gap: 7px; padding: 2px 0; font-size: 12.5px; cursor: pointer; }
-.dzc-upg input { flex: 0 0 auto; margin: 0; }
-.dzc-upg-name { flex: 1 1 auto; overflow-wrap: anywhere; }
-.dzc-upg-name i { color: var(--ink-2, #6b6459); font-size: 11px; }
-.dzc-upg-cost { flex: 0 0 auto; font-weight: 700; white-space: nowrap; }
-.dzc-upg-cost i { font-style: normal; font-weight: 500; font-size: 10px; color: var(--ink-2, #6b6459); }
+/* An upgrade reads as the weapon it is, in the same columns as the table
+   above it, so the row scrolls in its own box rather than squeezing its
+   numbers — same rule as .dzc-sq-wpn. */
+.dzc-upg-table { margin-top: 2px; }
+.dzc-upgrades { overflow-x: auto; }
+.dzc-upgrades .dzc-wpn { min-width: 680px; }
 .dzc-upg.is-on { color: var(--acc); }
+.dzc-upg-take { text-align: right; }
+/* The price IS the button. Nothing moves on hover — a control that lifts
+   shoves the row it is in. */
+.dzc-upg-btn {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 3px 9px; border-radius: 5px; cursor: pointer; white-space: nowrap;
+  border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff);
+  color: var(--ink, #24201c);
+  font-family: var(--font-numeric, 'Outfit', sans-serif);
+  font-weight: 600; font-size: 12.5px; font-variant-numeric: tabular-nums;
+}
+.dzc-upg-btn small { font-size: 9.5px; font-weight: 500; }
+.dzc-upg-btn i { font-style: normal; font-weight: 500; font-size: 10px; color: var(--ink-2, #6b6459); }
+.dzc-upg-btn:hover { border-color: var(--acc); }
+.dzc-upg-btn.is-on { border-color: var(--acc); background: var(--acc); color: #fff; }
+.dzc-upg-btn.is-on i, .dzc-upg-btn.is-on small { color: inherit; }
 
 /* ── settings / sync dialogs ── */
 /* Settings are grouped, and a setting is a name plus a control. The

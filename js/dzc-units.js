@@ -237,22 +237,41 @@
    * army reads exactly as it does when you open it -- there is no version of
    * this that is "enough for the roster", because the numbers you argue over
    * at the table are the ones in this table. */
+  /* The weapon table's header and one row of it, separately, because the
+   * upgrade chooser needs the same eight columns with a ninth of its own —
+   * an upgrade is a weapon and should be read as one, not as a name and a
+   * price you have to go and look up. */
+  function wpnHead(extra) {
+    return `<tr><th>Weapon</th><th>Arc</th>
+      <th class="dzc-wpn-ma">${window.DZCIcon.moveAttack({ size: 15 })}Move &amp; Attack</th>
+      <th>Range</th><th>Attacks</th><th>Accuracy</th><th>Energy</th><th>Special</th>${extra || ''}</tr>`;
+  }
+
+  /* opts.only overrides the variant note (the upgrade chooser splits one
+   * weapon into a row per variant, so the row says which one it is offering
+   * rather than listing them all), and opts.price drops the +Npts tag when
+   * something else on the row is already the price. */
+  function wpnCells(w, faction, opts) {
+    const fac = faction || state.faction;
+    const o = opts || {};
+    const only = o.only !== undefined ? o.only : ((w.variants || []).length ? w.variants.join(', ') : '');
+    return `<td class="dzc-wpn-name">${esc(w.name)}
+        ${only ? `<span class="dzc-wpn-only">${esc(only)} only</span>` : ''}
+        ${o.price !== false && w.upgradePoints != null ? `<span class="dzc-wpn-up">+${w.upgradePoints}pts</span>` : ''}</td>
+      <td class="dzc-arc-cell">${window.DZCIcon.arc(w.arc)}<span>${esc(w.arc || '')}</span></td>
+      <td>${esc(w.ma || '')}</td><td>${esc(w.r || '')}</td>
+      <td>${esc(w.att || '')}</td><td>${esc(w.ac || '')}</td><td>${esc(w.e || '')}</td>
+      <td>${rulesHtml(w.special, fac)}</td>`;
+  }
+
   function weaponsHtml(u, faction) {
     const fac = faction || state.faction;
     if (!(u.weapons || []).length) return '<p class="dzc-none">No weapons.</p>';
     return `
       <table class="dzc-wpn">
-        <thead><tr><th>Weapon</th><th>Arc</th>
-          <th class="dzc-wpn-ma">${window.DZCIcon.moveAttack({ size: 15 })}Move &amp; Attack</th>
-          <th>Range</th><th>Attacks</th><th>Accuracy</th><th>Energy</th><th>Special</th></tr></thead>
-        <tbody>${u.weapons.map(w => `<tr${w.box === 'upgrade' ? ' class="is-upgrade"' : w.box === 'variant' ? ' class="is-variant"' : ''}>
-          <td class="dzc-wpn-name">${esc(w.name)}
-            ${(w.variants || []).length ? `<span class="dzc-wpn-only">${esc(w.variants.join(', '))} only</span>` : ''}
-            ${w.upgradePoints != null ? `<span class="dzc-wpn-up">+${w.upgradePoints}pts</span>` : ''}</td>
-          <td class="dzc-arc-cell">${window.DZCIcon.arc(w.arc)}<span>${esc(w.arc || '')}</span></td>
-          <td>${esc(w.ma || '')}</td><td>${esc(w.r || '')}</td>
-          <td>${esc(w.att || '')}</td><td>${esc(w.ac || '')}</td><td>${esc(w.e || '')}</td>
-          <td>${rulesHtml(w.special, fac)}</td></tr>`).join('')}</tbody>
+        <thead>${wpnHead()}</thead>
+        <tbody>${u.weapons.map(w => `<tr${w.box === 'upgrade' ? ' class="is-upgrade"' : w.box === 'variant' ? ' class="is-variant"' : ''}
+          >${wpnCells(w, fac)}</tr>`).join('')}</tbody>
       </table>`;
   }
 
@@ -358,6 +377,7 @@
     openDetail, closeDetail, showRule, hideRule,
     // Shared with the builder's picker so a unit reads the same in both places.
     statsHtml, rulesHtml, squadHtml, transportHtml, weaponsHtml, variantsHtml,
+    wpnHead, wpnCells,
     pointsHtml, shape: shapeSvg,
     SHAPES: Object.keys(SYMBOL),
     shapeInk: s => (SYMBOL[s] || {}).ink || 'currentColor',
