@@ -317,6 +317,21 @@ for (const [name, expr, clipSel] of STEPS) {
     .catch(e => ({ error: e.message }));
   if (r?.error) { console.log(`  ! ${name}: ${r.error}`); }
   await sleep(900);
+  /* Finish every running animation before the shot.
+   *
+   * Headless Chrome does not advance the animation timeline when nothing is
+   * asking it for frames: a landing tile four seconds after load reports
+   * slideUp as "running" with currentTime 0. `.stagger > *` starts at
+   * opacity 0, so the whole landing grid captured as an empty page and every
+   * shot of anything that animates in was a picture of its 0% keyframe.
+   *
+   * finish() jumps each animation to its end and leaves it there, which is
+   * the state worth looking at anyway — a shot is for judging the layout, not
+   * for catching the transition halfway. */
+  await s.send('Runtime.evaluate', {
+    expression: `document.getAnimations().forEach(a => { try { a.finish(); } catch (e) {} })`
+  }).catch(() => {});
+  await sleep(120);
   /* A third element clips the shot to one element at 1:1. Legibility is a
    * question about actual pixels, and a full-page shot answers it badly: at
    * 1400px wide a 20px badge is a smudge whether or not it is readable on a
