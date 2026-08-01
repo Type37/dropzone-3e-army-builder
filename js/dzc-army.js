@@ -91,6 +91,113 @@
     return a;
   }
 
+  /* Reading an army back in.
+   *
+   * There was an export and nothing to put it into. A backup you cannot
+   * restore is not a backup, and localStorage is exactly the store a browser
+   * is free to clear — so this is the other half of exportArmies, not a
+   * convenience.
+   *
+   * Every id is reissued, and carriedBy and squadId are remapped through the
+   * same map. Keeping the ids as they are would be the corrupt-but-renders
+   * failure duplicateGroup already had to be taught about: import a backup you
+   * still have the armies from and the new Squads ride the OLD Squads'
+   * Transports. Reissuing also means importing twice adds twice rather than
+   * silently overwriting — nothing an import does may cost you an army.
+   *
+   * Nothing is validated against the rules on the way in. A saved army may be
+   * mid-build or illegal, and refusing to restore it would be the app deciding
+   * your backup is not worth having; validate() reports it afterwards exactly
+   * as it does for one you built by hand. Only the SHAPE is checked, because a
+   * thing without groups is not an army at all. */
+  function readArmy(raw) {
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return { reason: 'not an army' };
+    if (typeof raw.faction !== 'string' || !raw.faction) return { reason: 'no faction' };
+    if (!Array.isArray(raw.groups)) return { reason: 'no Groups' };
+
+    const map = {};                        // old squad id -> new squad id
+    const army = {
+      id: uid(),
+      name: typeof raw.name === 'string' && raw.name.trim() ? raw.name.trim() : 'Imported Army',
+      faction: raw.faction,
+      pointsLimit: Number(raw.pointsLimit) > 0 ? Math.round(Number(raw.pointsLimit)) : 1500,
+      groups: [],
+      created: Number(raw.created) || Date.now(),
+      updatedAt: Date.now(),
+      commanders: []
+    };
+    const unknown = [];
+    (raw.groups || []).forEach(gr => {
+      if (!gr || !Array.isArray(gr.squads)) return;
+      const group = { id: uid(), name: typeof gr.name === 'string' ? gr.name : null, squads: [] };
+      gr.squads.forEach(sq => {
+        if (!sq || typeof sq.unitId !== 'string') return;
+        const id = uid();
+        if (sq.id) map[sq.id] = id;
+        // A unit id the data no longer has is worth SAYING, not worth
+        // refusing: a card can be renamed between releases and the rest of the
+        // army is still yours. It is reported and left in place.
+        if (window.DZC.faction(army.faction) && !window.DZC.unit(army.faction, sq.unitId)) {
+          unknown.push(sq.unitId);
+        }
+        group.squads.push({
+          id: id,
+          unitId: sq.unitId,
+          models: (Array.isArray(sq.models) ? sq.models : []).map(m => ({
+            variant: m && typeof m.variant === 'string' ? m.variant : null
+          })),
+          carriedBy: sq.carriedBy || null,
+          commander: sq.commander ? { id: null, level: Number(sq.commander.level) || 0 } : null,
+          upgrades: sq.upgrades && typeof sq.upgrades === 'object' ? sq.upgrades : undefined
+        });
+      });
+      army.groups.push(group);
+    });
+    // Second pass, once every Squad has its new id.
+    army.groups.forEach(g => g.squads.forEach(s => {
+      s.carriedBy = s.carriedBy && map[s.carriedBy] ? map[s.carriedBy] : null;
+    }));
+    /* A backup taken before Commanders moved to the army carries them on their
+     * Squads instead, and syncCommanders mirrors the store DOWN — so importing
+     * one of those without lifting them first would wipe every Commander in
+     * it. load() already does this for a save on disk; an import is the same
+     * file arriving by a different door. */
+    if (Array.isArray(raw.commanders)) {
+      raw.commanders.forEach(c => {
+        if (!c) return;
+        army.commanders.push({
+          id: uid(),
+          name: typeof c.name === 'string' ? c.name : null,
+          level: Number(c.level) || 0,
+          squadId: c.squadId && map[c.squadId] ? map[c.squadId] : null
+        });
+      });
+    } else {
+      army.groups.forEach(g => g.squads.forEach(s => {
+        if (s.commander) army.commanders.push({ id: uid(), name: null, level: s.commander.level, squadId: s.id });
+      }));
+    }
+    syncCommanders(army);
+    return { army: army, unknown: [...new Set(unknown)] };
+  }
+
+  function importArmies(text) {
+    let data;
+    try { data = JSON.parse(text); } catch (e) {
+      return { ok: false, reason: 'That is not a backup — it will not parse as JSON.', added: [], skipped: [] };
+    }
+    const list = Array.isArray(data) ? data : [data];
+    const added = [], skipped = [];
+    list.forEach((raw, i) => {
+      const r = readArmy(raw);
+      if (!r.army) { skipped.push({ at: i + 1, reason: r.reason }); return; }
+      armies.unshift(r.army);
+      added.push({ id: r.army.id, name: r.army.name, unknown: r.unknown });
+    });
+    if (added.length) save();
+    return { ok: added.length > 0, added: added, skipped: skipped };
+  }
+
   function remove(id) {
     armies = armies.filter(a => a.id !== id);
     if (window.FleetSync && window.FleetSync.recordDeleted) {
@@ -1089,7 +1196,7 @@
   const cap1 = s => s.charAt(0).toUpperCase() + s.slice(1);
 
   window.DZCArmy = {
-    load, save, all, get, create, remove, touch, setPointsLimit,
+    load, save, all, get, create, remove, touch, setPointsLimit, importArmies,
     addGroup, removeGroup, duplicateGroup, groupName, renameGroup,
     commanderName, renameCommander, addSquad, removeSquad, setModelCount, setModelVariant,
     canSetVariantCount, setVariantCount,

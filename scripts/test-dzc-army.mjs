@@ -594,5 +594,56 @@ console.log('\nduplicating a Group (gap 124)');
   A.remove(a.id);
 }
 
+console.log('\nimporting a backup');
+{
+  // The other half of exportArmies. A backup you cannot restore is not a
+  // backup, and the export is the stored shape unmodified — so the round trip
+  // is exactly "stringify the store, read it back".
+  const a = army(2000);
+  a.name = 'Backup probe';
+  const g = A.addGroup(a);
+  const carried = A.addSquad(a, g.id, 'legionnaires', 3);
+  const t = A.transportOptions(a, carried.id).find(o => o.exact);
+  if (t) A.assignTransport(a, carried.id, t.unit.id);
+  A.addCommander(a, 5);
+  const before = JSON.stringify([a]);
+  const cost = A.armyCost(a);
+
+  const r = A.importArmies(before);
+  eq(r.ok, true, 'a backup imports');
+  eq(r.added.length, 1, 'one army came back');
+  eq(r.added[0].unknown.length, 0, 'and every unit id in it resolved');
+  const back = A.get(r.added[0].id);
+  ok(back.id !== a.id, 'the import gets a new id, so it never overwrites what you have');
+  eq(A.armyCost(back), cost, 'and costs what the original costs');
+  eq(back.groups[0].squads.length, a.groups[0].squads.length, 'every Squad came with it');
+  eq(back.commanders.length, 1, 'and the Commander');
+
+  // The nesting is the part an id-preserving import would corrupt silently.
+  const oldIds = a.groups[0].squads.map(s => s.id);
+  const newCarry = back.groups[0].squads.filter(s => s.carriedBy).map(s => s.carriedBy);
+  eq(newCarry.some(id => oldIds.indexOf(id) !== -1), false,
+     'no imported Squad rides a Squad from the ORIGINAL army');
+  newCarry.forEach(id => ok(!!A.findSquad(back, id), 'and every carrier it names is its own'));
+
+  A.importArmies(before);
+  eq(A.all().filter(x => x.name === 'Backup probe').length, 3,
+     'importing twice adds twice — an import never costs you an army');
+
+  A.all().filter(x => x.name === 'Backup probe').forEach(x => A.remove(x.id));
+  A.remove(a.id);
+}
+
+{
+  const bad = A.importArmies('not json at all');
+  eq(bad.ok, false, 'a file that is not JSON is refused');
+  ok(/JSON/.test(bad.reason || ''), 'and says why', bad.reason);
+  const shaped = A.importArmies('[{"name":"nope"},{"faction":"ucm","groups":[]}]');
+  eq(shaped.added.length, 1, 'a list imports what it can');
+  eq(shaped.skipped.length, 1, 'and reports what it could not');
+  eq(shaped.skipped[0].reason, 'no faction', 'naming the reason, not just the count');
+  shaped.added.forEach(x => A.remove(x.id));
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

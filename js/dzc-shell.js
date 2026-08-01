@@ -229,6 +229,8 @@ const App = (() => {
         <div class="dzc-set-actions">
           <button class="btn btn-ghost btn-sm" type="button" onclick="App.exportArmies()"
                   title="Download every army as one JSON file">Export a backup</button>
+          <button class="btn btn-ghost btn-sm" type="button" onclick="App.openImport()"
+                  title="Read a backup, an army or a share link back in">Import</button>
           <button class="btn btn-ghost btn-sm" type="button" onclick="App.openChangelog()">What's New</button>
           <a class="btn btn-ghost btn-sm" href="mailto:warlore1@outlook.com?subject=Dropzone%20builder%20feedback">Send feedback</a>
         </div>
@@ -265,6 +267,95 @@ const App = (() => {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     return { ok: true, count: armies.length, name: name };
+  }
+
+  /* The other half of Export.
+   *
+   * A backup you cannot restore is not a backup, and armies live in
+   * localStorage, which a browser is free to clear. Everything the app can
+   * hand you goes back in through one door: a whole backup, one army, or a
+   * share link — because having to know which kind of thing you are holding is
+   * a question the app can answer for you.
+   *
+   * Nothing is overwritten. Every id is reissued on the way in (DZCArmy.
+   * importArmies), so importing the same file twice adds it twice rather than
+   * quietly replacing what you have. An import may never cost you an army. */
+  function openImport() {
+    $('import-body').innerHTML = `
+      <div class="form-group float-field">
+        <textarea class="form-input dzc-import-text" id="dzc-import-text" rows="6"
+                  placeholder=" " spellcheck="false"></textarea>
+        <label class="float-label" for="dzc-import-text">Backup, army or share link</label>
+      </div>
+      <div class="dzc-set-actions">
+        <label class="btn btn-outline btn-sm">Choose a file
+          <input type="file" accept=".json,application/json,text/plain" hidden
+                 onchange="App.importFile(this)"></label>
+        <button class="btn btn-primary btn-sm" type="button" onclick="App.runImport()">Import</button>
+      </div>
+      <div id="dzc-import-report"></div>`;
+    openModal('modal-import');
+  }
+
+  function importFile(input) {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    const r = new FileReader();
+    r.onload = () => {
+      const box = $('dzc-import-text');
+      if (box) box.value = String(r.result || '');
+      runImport();
+    };
+    r.readAsText(file);
+    input.value = '';        // so choosing the same file twice fires again
+  }
+
+  /* What resolved and what did not, in the modal rather than a toast: a toast
+   * that says "2 armies, 1 skipped" is gone before you can read which. */
+  function report(html) {
+    const el = $('dzc-import-report');
+    if (el) el.innerHTML = html;
+  }
+
+  async function runImport() {
+    const text = (($('dzc-import-text') || {}).value || '').trim();
+    if (!text) return;
+
+    // A share link is the same army by a different road, so it is accepted
+    // here rather than being a thing you have to know to paste in the URL bar.
+    const share = text.match(/#share\/([A-Za-z0-9_-]+)/) || (/^[zu][A-Za-z0-9_-]{20,}$/.test(text) ? [null, text] : null);
+    if (share) {
+      try {
+        const army = await window.DZCShare.importFrom(share[1]);
+        report(`<p class="dzc-set-note">Imported <b>${esc(army.name)}</b>.</p>`);
+        if (window.DZCBuilder) DZCBuilder.renderList();
+        return;
+      } catch (e) {
+        report('<p class="dzc-set-note">That share link will not open.</p>');
+        return;
+      }
+    }
+
+    // Load whatever factions the file names first, or nothing can tell a unit
+    // id the data no longer has from one it simply has not fetched yet.
+    let parsed = null;
+    try { parsed = JSON.parse(text); } catch (e) { /* importArmies says so */ }
+    const facs = [...new Set((Array.isArray(parsed) ? parsed : [parsed])
+      .map(a => a && a.faction).filter(f => typeof f === 'string'))];
+    for (const f of facs) {
+      try { await window.DZC.loadFaction(f); } catch (e) { /* offline: the check is skipped, not the import */ }
+    }
+
+    const r = window.DZCArmy.importArmies(text);
+    if (!r.ok && r.reason) { report(`<p class="dzc-set-note">${esc(r.reason)}</p>`); return; }
+
+    const lines = r.added.map(a => `<li>${esc(a.name)}${a.unknown.length
+      ? ` — ${a.unknown.length} unit${a.unknown.length === 1 ? '' : 's'} this data does not have: ${esc(a.unknown.join(', '))}`
+      : ''}</li>`)
+      .concat(r.skipped.map(s => `<li>Entry ${s.at} skipped — ${esc(s.reason)}</li>`));
+    report(`<p class="dzc-set-note"><b>${r.added.length}</b> ${r.added.length === 1 ? 'army' : 'armies'} imported.</p>
+      ${lines.length ? `<ul class="dzc-import-list">${lines.join('')}</ul>` : ''}`);
+    if (window.DZCBuilder) DZCBuilder.renderList();
   }
 
   // ----------------------------------------------------------------- offline
@@ -445,7 +536,7 @@ const App = (() => {
     openSettings, setTheme, toggleSetting, collectionOn, applyCollectionSetting,
     renderOfflinePanel, runOfflineSync, deleteOfflineData,
     openSyncModal, syncStart, syncStop, syncNow, syncJoin,
-    openChangelog,
+    openChangelog, openImport, importFile, runImport,
     /* Says how many it wrote. A download that produces no visible file and no
        message is indistinguishable from a button that does nothing. */
     exportArmies: () => {
