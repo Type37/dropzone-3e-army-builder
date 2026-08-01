@@ -28,6 +28,10 @@ Dropfleet fixes can still be cherry-picked:
 git fetch upstream-dropfleet && git cherry-pick <sha>
 ```
 
+**In a cloud session, run `git fetch --unshallow` first.** Those checkouts clone
+shallow, so `43773fa` does not resolve and every "check the Dropfleet source
+first" instruction silently has nowhere to look.
+
 ---
 
 ## 2. The data pipeline
@@ -182,8 +186,8 @@ Carried from Dropfleet: per-unit thumbnails, ink-saver and density toggles,
 accurate page-break preview. Two-column print was tried and **removed** on
 mobile — don't reintroduce it.
 
-**§2.10 says print mode is "researched and DZC-specific." That research has not
-happened.** What exists was guessed. It needs a real spec from Jet.
+**Print mode is supposed to be researched and DZC-specific. That research has
+not happened.** What exists was guessed. It needs a real spec from Jet.
 
 ---
 
@@ -237,15 +241,9 @@ list is reported.
 `tools/dzc/layout-check.html` loads the app in real fixed-width iframes and
 reports every element crossing the viewport edge at 320 / 375 / 414 / 768.
 
-```sh
-python -m http.server 8899
-# http://localhost:8899/tools/dzc/layout-check.html?url=../../index.html
-```
-
-**Why it exists:** `resize_window` reports *"Viewport set to 375x812"* while
-leaving `window.innerWidth` at **867**. That is how a horizontal-overflow bug
-shipped to a real phone. The harness asserts `instrumentOk` before trusting any
-measurement — if the instrument disagrees with what you asked for, stop.
+**How to run it, and why it exists, are in [CLAUDE.md](CLAUDE.md) §5** — which
+loads every session, where this file does not. Two copies of one instruction
+drift, and the copy that drifts is the one nobody reads.
 
 ---
 
