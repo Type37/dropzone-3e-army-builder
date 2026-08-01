@@ -59,6 +59,14 @@ for (const f of readdirSync(path.join(ROOT, 'js')).filter(n => n.endsWith('.js')
 eq(punctJs.length, 0, 'and nothing the JS renders spends another one');
 if (punctJs.length) console.error('        ' + punctJs.join('\n        '));
 
+/* The printable references are pages of the app too, and both are spent. The
+ * Dropfleet sheets they are built on use an interpunct in the sub-heading
+ * ("Dropfleet Commander · printable reference sheets"), which is exactly the
+ * copy this rule was written against. */
+const punctRef = ['ref/index.html', 'ref/sheet.html']
+  .filter(f => /·|&middot;/i.test(rendered(f)));
+eq(punctRef.length, 0, 'and the printable references spend none', punctRef.join(', '));
+
 // ------------------------------------------------------------- the banned word
 /* CLAUDE.md §3: never write "datasheet" -- not in the UI, not in code, not in
  * a comment, not in a variable name. It is not Jet's word; it arrived with the
@@ -73,7 +81,8 @@ const SEARCHED = [
   'js/dzc-data.js', 'js/dzc-army.js', 'js/dzc-builder.js', 'js/dzc-units.js',
   'js/dzc-icons.js', 'js/dzc-share.js', 'js/dzc-play.js', 'js/dzc-collection.js',
   'js/dzc-shell.js', 'js/rank-insignia.js', 'js/fleet-sync.js', 'js/offline-sync.js',
-  'js/count.js', 'sw.js', 'manifest.webmanifest', 'scripts/shots.mjs'
+  'js/count.js', 'sw.js', 'manifest.webmanifest', 'scripts/shots.mjs',
+  'ref/index.html', 'ref/sheet.html'
 ];
 // One capture on disk is named for it, and a dozen Todoist tasks cite that
 // filename. Renaming it breaks those citations and changes nothing in the
@@ -279,6 +288,47 @@ const back = Object.keys(KNOWN_MISSING).filter(p => existsSync(path.join(ROOT, p
 eq(back.length, 0, 'and no known-missing asset is still excused after arriving',
    back.join(', '));
 gone.forEach(p => console.log(`!! MISSING ${p} — ${KNOWN_MISSING[p]}`));
+
+// ------------------------------------------- the reference sheet stays in step
+/* ref/ is a separate document, so it cannot import the app's modules — it
+ * carries its own copy of the six factions and the six transport symbols.
+ *
+ * That copy is only safe if something holds it to the original. The symbol
+ * SHAPE is the vocabulary of how a Group forms (3.2.4.2), so a path drawn
+ * slightly differently on the printed sheet is a different symbol; and a
+ * faction whose accent drifts is two brands for one army.
+ *
+ * The accents in ref/index.html are pinned as well, because the chooser is
+ * where all six sit side by side and a wrong one is most visible. */
+console.log('\nthe reference sheet stays in step');
+{
+  const paths = src => [...src.matchAll(/(square|diamond|triangle|triangle-down|circle|pentagon)'?:\s*\{\s*ink:\s*'([^']+)',\s*path:\s*'([^']+)'/g)]
+    .map(m => `${m[1]}|${m[2]}|${m[3]}`);
+  const factions = src => [...src.matchAll(/\{\s*id:\s*'([a-z]+)',\s*name:\s*'[^']*',\s*full:\s*'[^']*',\s*accent:\s*'(#[0-9a-f]{6})'/gi)]
+    .map(m => `${m[1]}|${m[2].toLowerCase()}`);
+
+  const units = readFileSync(path.join(ROOT, 'js/dzc-units.js'), 'utf8');
+  const builder = readFileSync(path.join(ROOT, 'js/dzc-builder.js'), 'utf8');
+  const sheet = readFileSync(path.join(ROOT, 'ref/sheet.html'), 'utf8');
+  const chooser = readFileSync(path.join(ROOT, 'ref/index.html'), 'utf8');
+
+  const appSymbols = paths(units), refSymbols = paths(sheet);
+  eq(appSymbols.length, 6, 'six transport symbols in js/dzc-units.js');
+  eq(refSymbols.join(' '), appSymbols.join(' '),
+     'the sheet draws the same six symbols, same paths, same ink');
+
+  const appFactions = factions(builder), refFactions = factions(sheet);
+  eq(appFactions.length, 6, 'six factions in js/dzc-builder.js');
+  eq(refFactions.join(' '), appFactions.join(' '), 'the sheet carries the same six');
+
+  // The chooser holds its accents in CSS custom properties, one class each.
+  const chooserAccents = appFactions.map(f => f.split('|')[0])
+    .map(id => {
+      const m = chooser.match(new RegExp(`\\.${id}\\s*\\{\\s*--f:\\s*(#[0-9a-f]{6})`, 'i'));
+      return `${id}|${m ? m[1].toLowerCase() : 'missing'}`;
+    });
+  eq(chooserAccents.join(' '), appFactions.join(' '), 'and so does the chooser');
+}
 
 // -------------------------------------------------------------- unused styling
 /* Rules for classes nothing renders any more. Not a failure — ever. A class

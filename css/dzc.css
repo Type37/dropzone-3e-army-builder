@@ -1382,6 +1382,12 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 .dzc-faction-dot { width: 11px; height: 11px; border-radius: 2px; background: var(--acc); flex: 0 0 auto; }
 .dzc-points-row { margin-top: 8px; }
 
+/* The quick-reference tile is a real link, because it goes to a real page
+   rather than a view — so it can be opened in a new tab, which is what you
+   want from something you are about to print. It has to stop looking like a
+   link to sit beside the three tiles that are not. */
+a.tool-card { display: block; text-decoration: none; color: inherit; }
+
 /* ── Dropzone wordmark ──
    TTCombat's own DZC logo, two cuts: all-white for the navy topbar, and the
    black/green cut for the light landing page. Dark mode swaps the landing one

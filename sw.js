@@ -3,7 +3,7 @@
 // populating the cache as resources are fetched.
 // Bump this on every deploy so existing clients purge the old cache on activate
 // (the app updates frequently — stale assets must not survive a new build).
-const CACHE = 'dzc-cache-v393';
+const CACHE = 'dzc-cache-v394';
 // Same-origin code/data that MUST be fresh when online. Network-first alone is
 // not enough: fetch() still consults the browser HTTP cache, so a client can
 // keep running a stale app.js for as long as GitHub Pages' cache headers allow.
@@ -31,6 +31,11 @@ const CORE = [
   './js/dzc-shell.js',
   './data/dzc/index.json',
   './data/dzc/rules.json',
+  // The printable quick references. Precached rather than left to be picked up
+  // on first visit, because the one place you want them is a table with no
+  // signal — and by then it is too late to go and fetch them.
+  './ref/index.html',
+  './ref/sheet.html',
   './manifest.webmanifest'
 ];
 

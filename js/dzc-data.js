@@ -17,7 +17,11 @@
 (function () {
   'use strict';
 
-  const BASE = 'data/dzc';
+  /* Relative to the document, so a page that is not index.html has to say where
+   * the data is. `ref/sheet.html` is the only one that does — the printable
+   * quick reference reads the same three files as the app, and duplicating the
+   * loader there would be a second copy of the glossary resolver. */
+  const BASE = (typeof window !== 'undefined' && window.DZC_DATA_BASE) || 'data/dzc';
 
   const state = {
     index: null,

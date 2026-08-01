@@ -1,0 +1,363 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<title>Quick reference — Dropzone Commander 3E</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&family=Roboto+Slab:wght@700;800&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* One page per faction, drawn from data/dzc rather than typed.
+   *
+   * Dropfleet's ref/ is six hand-written files. That cannot work here: the
+   * stat cards are re-scanned monthly (HANDOFF §7), and a typed sheet is stale
+   * the first time TTCombat move a points value. So this is ONE document that
+   * reads the same JSON the app reads, parameterised by ?faction=<id>.
+   *
+   * The layout language is Dropfleet's: a white sheet on grey, a brand bar
+   * with the faction rule underneath it, section headers in Jost with the
+   * faction colour as an inset underline, alternating table rows. Barlow
+   * Condensed is out (CLAUDE.md §4), so Jost carries the condensed role and
+   * Outfit carries every number. */
+  :root {
+    --ink: #14110c;
+    --ink-2: #5d564a;
+    --hair: #b9b1a1;
+    --rowalt: #f1ece1;
+    --acc: #30903c;
+  }
+  @page { size: 8.5in 11in; margin: 0.28in 0.3in; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #3a3a3a; color: var(--ink);
+    font-family: 'Jost', sans-serif; -webkit-font-smoothing: antialiased;
+  }
+  .sheet {
+    width: 8.5in; min-height: 11in; background: #fff;
+    margin: 0.3in auto; padding: 0.28in 0.3in 0.3in;
+    box-shadow: 0 2px 20px rgba(0,0,0,.45);
+  }
+
+  .brand {
+    display: grid; grid-template-columns: auto 1fr auto; align-items: baseline;
+    gap: 10pt; padding-bottom: 3pt;
+    border-bottom: 1.25pt solid var(--ink); box-shadow: inset 0 -2.5pt 0 0 var(--acc);
+  }
+  .brand h1 {
+    font-family: 'Roboto Slab', serif; font-weight: 800; font-size: 17pt;
+    letter-spacing: .02em; line-height: 1;
+  }
+  .brand .faction {
+    font-weight: 600; font-size: 9pt; letter-spacing: .16em; text-transform: uppercase;
+    padding-left: 8pt; border-left: .5pt solid var(--hair); color: var(--acc);
+  }
+  .brand .meta { font-size: 7.5pt; letter-spacing: .1em; color: var(--ink-2); text-transform: uppercase; }
+
+  .sec {
+    margin-top: 9pt; padding: 3pt 0 2.5pt;
+    font-weight: 700; font-size: 10.5pt; letter-spacing: .04em; text-transform: uppercase;
+    display: flex; align-items: baseline; justify-content: space-between; gap: 6pt;
+    border-bottom: .75pt solid var(--ink); box-shadow: inset 0 -2pt 0 0 var(--acc);
+    break-after: avoid;
+  }
+  .sec .sub {
+    font-weight: 500; font-size: 7.4pt; letter-spacing: .1em; color: var(--ink-2);
+    text-transform: uppercase; white-space: nowrap;
+  }
+
+  .cols { display: grid; grid-template-columns: 1fr 1fr; column-gap: 14pt; }
+  .cols--wide { grid-template-columns: 1.15fr 1fr; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 7.6pt; }
+  th {
+    text-align: left; font-weight: 600; font-size: 6.6pt; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ink-2);
+    border-bottom: .5pt solid var(--hair); padding: 2.5pt 3pt 1.5pt;
+  }
+  td { padding: 1.8pt 3pt; vertical-align: top; border-bottom: .25pt solid #e6e0d4; }
+  tbody tr:nth-child(even) { background: var(--rowalt); }
+  tr { break-inside: avoid; }
+  .num { font-family: 'Outfit', sans-serif; font-weight: 600; text-align: right; white-space: nowrap; }
+  .unit { font-weight: 600; }
+  .mark { color: var(--acc); font-weight: 700; }
+  .vars, .spec { display: block; font-size: 6.9pt; color: var(--ink-2); line-height: 1.25; }
+  .sym { display: inline-flex; align-items: center; gap: 1.5pt; margin-right: 3pt; white-space: nowrap; }
+  .sym b { font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 7pt; }
+  .sym-sep { color: var(--ink-2); margin-right: 3pt; }
+
+  .facts { font-size: 7.8pt; line-height: 1.35; }
+  .facts p { margin-bottom: 3pt; break-inside: avoid; }
+  .facts b { font-weight: 600; }
+  .cite { color: var(--ink-2); }
+
+  .rules { columns: 2; column-gap: 14pt; font-size: 7.4pt; line-height: 1.28; margin-top: 3pt; }
+  .rule { break-inside: avoid; margin-bottom: 3.5pt; }
+  .rule h4 { display: inline; font-weight: 700; font-size: 7.6pt; }
+  .rule .pg { color: var(--ink-2); font-weight: 500; }
+
+  .foot {
+    margin-top: 10pt; padding-top: 4pt; border-top: .5pt solid var(--hair);
+    font-size: 7pt; letter-spacing: .06em; color: var(--ink-2);
+    display: flex; justify-content: space-between; gap: 8pt;
+  }
+  .foot a { color: inherit; }
+
+  @media print {
+    html, body { background: #fff; }
+    .sheet { width: auto; min-height: 0; margin: 0; padding: 0; box-shadow: none; }
+    tbody tr:nth-child(even) { background: #f2f2f2; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet" id="sheet"></div>
+
+<script>window.DZC_DATA_BASE = '../data/dzc';</script>
+<script src="../js/dzc-data.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  // Same six, same accents, as js/dzc-builder.js FACTIONS. scripts/test-house-rules.mjs
+  // holds the two lists to each other so this copy cannot drift.
+  var FACTIONS = [
+    { id: 'ucm', name: 'UCM', full: 'United Colonies of Mankind', accent: '#30903c' },
+    { id: 'phr', name: 'PHR', full: 'Post-Human Republic', accent: '#c9a92c' },
+    { id: 'scourge', name: 'Scourge', full: 'Scourge', accent: '#60489c' },
+    { id: 'shaltari', name: 'Shaltari', full: 'Shaltari', accent: '#e46024' },
+    { id: 'resistance', name: 'Resistance', full: 'Resistance', accent: '#3c84c0' },
+    { id: 'bioficer', name: 'Bioficers', full: 'Bioficers', accent: '#9c1818' }
+  ];
+
+  // Same paths and the same ink as js/dzc-units.js SYMBOL. The shape IS the
+  // vocabulary (3.2.4.2), so a second set drawn differently reads as a
+  // different symbol; the house-rules test pins these to that file.
+  var SYMBOL = {
+    square:          { ink: '#00a04d', path: 'M3 3h18v18H3z' },
+    diamond:         { ink: '#e8b233', path: 'M12 2l10 10-10 10L2 12z' },
+    triangle:        { ink: '#be1622', path: 'M12 2l11 19H1z' },
+    'triangle-down': { ink: '#662483', path: 'M12 22L1 3h22z' },
+    circle:          { ink: '#3b8ac9', path: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z' },
+    pentagon:        { ink: '#e94e1b', path: 'M12 2l10 7.3-3.8 11.7H5.8L2 9.3z' }
+  };
+
+  var CATS = ['Standard', 'Vanguard', 'Heavy', 'Support', 'Transport', 'Generated'];
+  var STATS = ['Mv', 'A', 'DP', 'OF', 'DF', 'B'];
+
+  var esc = function (s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  };
+
+  function glyph(shape, n, hollow) {
+    var s = SYMBOL[shape];
+    if (!s) return '';
+    return '<span class="sym"><svg viewBox="0 0 24 24" width="9" height="9" aria-hidden="true">'
+      + '<path d="' + s.path + '" fill="' + (hollow ? 'none' : s.ink) + '" stroke="' + s.ink
+      + '" stroke-width="3" stroke-linejoin="round"/></svg><b>' + esc(n) + '</b></span>';
+  }
+
+  function transportCell(u) {
+    var t = u.transport || {};
+    var cap = (t.capacity || []).map(function (c) { return glyph(c.shape, c.n, true); });
+    var fills = (t.fills || []).map(function (c) { return glyph(c.shape, c.n, false); });
+    if (!cap.length && !fills.length) return '';
+    // "+" carries both shapes at once, "/" is either but never a mixture.
+    var join = t.capacityMode === 'both' ? '+' : t.capacityMode === 'either' ? '/' : '';
+    var out = cap.join(join ? '<span class="sym-sep">' + join + '</span>' : '');
+    if (cap.length && fills.length) out += '<span class="sym-sep">,</span>';
+    return out + fills.join('');
+  }
+
+  function points(u) {
+    if (u.points != null) return u.points;
+    var ps = (u.variants || []).map(function (v) { return v.points; })
+      .filter(function (p) { return p != null; });
+    if (!ps.length) return '';
+    var lo = Math.min.apply(null, ps), hi = Math.max.apply(null, ps);
+    return lo === hi ? String(lo) : lo + '–' + hi;
+  }
+
+  function squad(u) {
+    if (u.squadMin == null && u.squadMax == null) return '';
+    if (u.squadMin === u.squadMax) return String(u.squadMin);
+    return u.squadMin + '–' + u.squadMax;
+  }
+
+  function rosterRow(u) {
+    var badge = u.unique ? '<span class="mark" title="Unique">U</span> '
+      : u.rare ? '<span class="mark" title="Rare">R</span> ' : '';
+    var vars = (u.variants || []).length
+      ? '<span class="vars">' + (u.variants || []).map(function (v) {
+          return esc(v.name) + (v.points != null ? ' ' + v.points : '');
+        }).join(', ') + '</span>'
+      : '';
+    var spec = u.special ? '<span class="spec">' + esc(u.special) + '</span>' : '';
+    return '<tr>'
+      + '<td class="unit">' + badge + esc(u.name) + vars + spec + '</td>'
+      + '<td>' + esc(u.type || '') + '</td>'
+      + '<td class="num">' + esc(squad(u)) + '</td>'
+      + '<td class="num">' + esc(points(u)) + '</td>'
+      + STATS.map(function (k) {
+          return '<td class="num">' + esc((u.stats || {})[k] || '') + '</td>';
+        }).join('')
+      + '<td>' + transportCell(u) + '</td>'
+      + '</tr>';
+  }
+
+  function rosterHtml(faction) {
+    var units = (faction.units || []).slice();
+    return CATS.map(function (cat) {
+      var rows = units.filter(function (u) { return u.category === cat; })
+        .sort(function (a, b) {
+          var pa = a.points != null ? a.points : 9999, pb = b.points != null ? b.points : 9999;
+          return pa - pb || a.name.localeCompare(b.name);
+        });
+      if (!rows.length) return '';
+      // Transports and Generated are the two categories you cannot simply pick,
+      // and the sheet says which rule refuses them rather than leaving it to
+      // memory at the table.
+      var note = cat === 'Transport' ? 'alongside a Squad they can carry, and full (3.2.4)'
+        : cat === 'Generated' ? 'produced in play, never chosen (3.2)'
+        : rows.length + ' unit' + (rows.length === 1 ? '' : 's');
+      return '<div class="sec">' + esc(cat) + '<span class="sub">' + esc(note) + '</span></div>'
+        + '<table><thead><tr><th>Unit</th><th>Type</th><th>Squad</th><th>Pts</th>'
+        + STATS.map(function (k) { return '<th>' + esc(k) + '</th>'; }).join('')
+        + '<th>Transport</th></tr></thead><tbody>'
+        + rows.map(rosterRow).join('') + '</tbody></table>';
+    }).join('');
+  }
+
+  function constructionHtml(idx) {
+    var sizes = idx.gameSizes || [];
+    var r = idx.armyRules || {};
+    var rare = (r.rare && r.rare.limits) || {};
+    var uniq = r.unique || {};
+    var sizeRows = sizes.map(function (g) {
+      var band = g.max == null ? g.min + ' and up' : g.min + '–' + g.max;
+      var groups = g.groupsPerExtra
+        ? g.maxGroups + ', +' + g.groupsPerExtra.add + ' per ' + g.groupsPerExtra.per
+        : String(g.maxGroups);
+      return '<tr><td class="unit">' + esc(g.label) + '</td><td class="num">' + esc(band)
+        + '</td><td class="num">' + esc(groups) + '</td><td class="num">'
+        + esc(rare[g.id] == null ? '' : rare[g.id]) + '</td></tr>';
+    }).join('');
+
+    var levels = ((r.commanders || {}).levels || []).map(function (l) {
+      var first = (l.allowedIn || [])[0] || '';
+      var size = sizes.filter(function (s) { return s.id === first; })[0];
+      return '<tr><td class="unit">Level ' + esc(l.level) + '</td><td class="num">'
+        + esc(l.points) + '</td><td>' + esc(size ? size.label + ' and up' : '') + '</td></tr>';
+    }).join('');
+
+    var shapes = ((idx.transportSymbols || {}).shapes || []).map(function (s) {
+      return glyph(s.id, '', true) + esc(s.label);
+    }).join(' &nbsp; ');
+
+    return '<div class="sec">Force construction<span class="sub">rulebook '
+      + esc(idx.rulebook || '') + '</span></div>'
+      + '<div class="cols cols--wide">'
+      + '<div>'
+      + '<table><thead><tr><th>Size</th><th>Points</th><th>Groups</th><th>Rare</th></tr></thead>'
+      + '<tbody>' + sizeRows + '</tbody></table>'
+      + '<table style="margin-top:6pt"><thead><tr><th>Commander</th><th>Pts</th><th>From</th></tr></thead>'
+      + '<tbody>' + levels + '</tbody></table>'
+      + '</div>'
+      + '<div class="facts">'
+      + '<p><b>Categories.</b> ' + esc((r.categoryCap || {}).rule || '')
+      + ' <span class="cite">(' + esc((r.categoryCap || {}).source || '') + ')</span></p>'
+      + '<p><b>Group cost.</b> ' + esc((r.groupCostCap || {}).rule || '')
+      + ' <span class="cite">(' + esc((r.groupCostCap || {}).source || '') + ')</span></p>'
+      + '<p><b>Unique.</b> ' + esc(uniq.rule || '')
+      + ' <span class="cite">(' + esc(uniq.source || '') + ')</span></p>'
+      + '<p><b>Variants.</b> ' + esc((r.variants || {}).rule || '') + ' '
+      + esc((r.weaponUpgrades || {}).rule || '')
+      + ' <span class="cite">(' + esc((r.variants || {}).source || '') + ', '
+      + esc((r.weaponUpgrades || {}).source || '') + ')</span></p>'
+      + '<p><b>Groups.</b> ' + esc((r.sharedTransport || {}).rule || '')
+      + ' <span class="cite">(' + esc((r.sharedTransport || {}).source || '') + ')</span></p>'
+      + '<p><b>Auxiliary Transports.</b> ' + esc((r.auxiliaryTransport || {}).rule || '')
+      + ' A carried Squad may not be split across several of them.'
+      + ' <span class="cite">(' + esc((r.auxiliaryTransport || {}).source || '') + ')</span></p>'
+      + '<p><b>Commanders.</b> ' + esc((r.commanders || {}).rule || '')
+      + ' <span class="cite">(' + esc((r.commanders || {}).source || '') + ')</span></p>'
+      + '<p><b>Transport symbols.</b> ' + shapes + '<br>'
+      + esc((idx.transportSymbols || {}).note || '')
+      + ' <span class="cite">(' + esc((idx.transportSymbols || {}).source || '') + ')</span></p>'
+      + '<p><b>Reserves.</b> ' + esc((idx.entry || {}).note || '')
+      + ' <span class="cite">(' + esc((idx.entry || {}).source || '') + ')</span></p>'
+      + '<p><b>Activation.</b> ' + esc((idx.activation || {}).note || '')
+      + ' <span class="cite">(' + esc((idx.activation || {}).source || '') + ')</span></p>'
+      + '</div></div>';
+  }
+
+  /* Only the rules this faction's cards actually print. A quick reference
+   * carrying all 107 glossary entries is the rulebook again, and the rulebook
+   * is already free — the point of the sheet is that everything on it is
+   * something you might need for THIS army. */
+  function glossaryHtml(faction) {
+    var seen = {}, out = [];
+    (faction.units || []).forEach(function (u) {
+      var lines = [u.special || ''].concat((u.weapons || []).map(function (w) { return w.special || ''; }));
+      lines.forEach(function (line) {
+        window.DZC.splitSpecial(line, faction.faction).forEach(function (tok) {
+          var rule = window.DZC.rule(tok, faction.faction);
+          if (!rule || seen[rule.id]) return;
+          seen[rule.id] = true;
+          out.push(rule);
+        });
+      });
+    });
+    if (!out.length) return '';
+    out.sort(function (a, b) { return a.name.localeCompare(b.name); });
+    return '<div class="sec">Special rules<span class="sub">' + out.length
+      + ' in use by this faction</span></div><div class="rules">'
+      + out.map(function (r) {
+          return '<div class="rule"><h4>' + esc(r.name) + '</h4>'
+            + (r.page ? ' <span class="pg">p.' + esc(r.page) + '</span>' : '')
+            + ' ' + esc(r.text) + '</div>';
+        }).join('') + '</div>';
+  }
+
+  function fail(msg) {
+    document.getElementById('sheet').innerHTML =
+      '<div class="brand"><h1>Quick reference</h1><span class="faction"></span></div>'
+      + '<p class="facts" style="margin-top:10pt">' + esc(msg)
+      + ' <a href="index.html">Pick a faction</a></p>';
+  }
+
+  async function render() {
+    var q = (location.search.match(/faction=([a-z]+)/i) || [])[1];
+    var fac = FACTIONS.filter(function (f) { return f.id === (q || '').toLowerCase(); })[0];
+    if (!fac) return fail('No such faction.');
+    document.documentElement.style.setProperty('--acc', fac.accent);
+    document.title = fac.name + ' quick reference — Dropzone Commander 3E';
+
+    var idx, faction;
+    try {
+      idx = await window.DZC.loadIndex();
+      faction = await window.DZC.loadFaction(fac.id);
+    } catch (e) {
+      return fail('Could not load the unit data.');
+    }
+
+    document.getElementById('sheet').innerHTML =
+      '<div class="brand"><h1>Quick reference</h1>'
+      + '<span class="faction">' + esc(fac.full) + '</span>'
+      + '<span class="meta">Dropzone Commander 3E</span></div>'
+      + constructionHtml(idx)
+      + rosterHtml(faction)
+      + glossaryHtml(faction)
+      + '<div class="foot"><span>Stat cards published free by TTCombat</span>'
+      + '<span><a href="index.html">Other factions</a></span>'
+      + '<span>Army builder by WarLore</span></div>';
+  }
+
+  // Exported so scripts/test-dzc-render.mjs can draw all six sheets against a
+  // document stub. There is no browser in the cloud runs, and a page nobody can
+  // open is exactly where a stray "undefined" survives to print.
+  window.DZCRefSheet = { render: render };
+  render();
+})();
+</script>
+</body></html>

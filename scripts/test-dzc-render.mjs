@@ -226,5 +226,56 @@ console.log('\nthe unit renderers survive all 178 units');
   ok(!/title="/.test(block), 'and not as a tooltip');
 }
 
+/* ── 6. The printable quick reference, all six factions ───────────────
+ *
+ * ref/sheet.html is one page parameterised by ?faction=, drawn from the same
+ * JSON the app reads. It is the part of the site least likely to be opened by
+ * anyone -- you go there once, print it, and never load it again -- so a stray
+ * "undefined" in a stat cell could sit there for months. Draw all six.
+ */
+console.log('\nthe quick reference draws for every faction');
+{
+  const html = readFileSync(path.join(ROOT, 'ref', 'sheet.html'), 'utf8');
+  // The page's own script, minus the two <script src> tags above it.
+  const inline = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)]
+    .map(m => m[1]).filter(s => s.includes('function render'));
+  eq(inline.length, 1, 'the sheet has exactly one render script');
+
+  let title = '', painted = '';
+  sandbox.location = { search: '?faction=ucm' };
+  sandbox.document = {
+    getElementById: id => (id === 'sheet'
+      ? { set innerHTML(v) { painted = v; }, get innerHTML() { return painted; } } : null),
+    documentElement: { style: { setProperty() {} } },
+    querySelector: () => null,
+    createElement: () => ({ style: {}, classList: { add() {}, remove() {} } }),
+    addEventListener() {}, removeEventListener() {},
+    set title(v) { title = v; }, get title() { return title; }
+  };
+  vm.runInContext(inline[0], sandbox);
+
+  const drawn = [];
+  for (const fid of ['ucm', 'phr', 'scourge', 'shaltari', 'resistance', 'bioficer']) {
+    sandbox.location.search = `?faction=${fid}`;
+    painted = '';
+    await win.DZCRefSheet.render();
+    drawn.push([fid, painted]);
+  }
+  ok(drawn.every(([, h]) => h.length > 8000), 'every sheet has real content',
+     drawn.map(([f, h]) => `${f}:${h.length}`).join(' '));
+  const placeholders = drawn.filter(([, h]) => /\b(null|undefined|NaN)\b/.test(h)).map(([f]) => f);
+  eq(placeholders.length, 0, 'and none of them prints null, undefined or NaN',
+     placeholders.join(', '));
+  ok(drawn.every(([, h]) => h.includes('Force construction') && h.includes('Special rules')),
+     'each sheet carries the construction rules and the glossary');
+  // Generated Units (Bioficer Drones and Hulks) cannot be picked, but they are
+  // on the table in play, so the sheet lists them under their own heading.
+  ok(drawn.find(([f]) => f === 'bioficer')[1].includes('never chosen'),
+     'the Bioficer sheet says why its Generated Units cannot be taken');
+
+  // CLAUDE.md §3: the banned word never reaches a page, including this one.
+  ok(!/datasheet/i.test(html), 'the sheet markup does not say the banned word');
+}
+
 console.log(`\n${pass} passed, ${fail} failed\n`);
 process.exit(fail ? 1 : 0);
