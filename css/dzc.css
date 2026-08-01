@@ -1247,6 +1247,13 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 .dzc-upgrades { margin: 5px 0 2px; padding: 5px 8px; border-radius: 5px; background: var(--surface-3, #f2ece0); }
 .dzc-upg-head { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2, #6b6459); margin-bottom: 3px; }
 .dzc-upg-head i { text-transform: none; letter-spacing: 0; }
+/* The same sentence on the reference view, where there are no buttons for it
+   to sit over — so it sits under the table instead, marked as the card's own
+   words rather than the app's. */
+.dzc-upg-note {
+  margin: 6px 0 0; font-size: 12.5px; font-style: italic;
+  color: var(--ink-2, #6b6459);
+}
 /* An upgrade reads as the weapon it is, in the same columns as the table
    above it, so the row scrolls in its own box rather than squeezing its
    numbers — same rule as .dzc-sq-wpn. */

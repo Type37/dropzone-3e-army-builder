@@ -275,6 +275,25 @@
       </table>`;
   }
 
+  /* The sentence on the card that qualifies its upgrades — "Only one of these
+   * upgrades may be taken", "May replace both its MC-20 Chainguns with MM-15
+   * Sidearm Missiles". The builder has always shown it over the upgrade
+   * buttons, where it is the constraint on a choice; here it is the same
+   * sentence over the table you are reading the choice out of, and without it
+   * an upgrade row said what the gun is and nothing about what taking it costs
+   * you.
+   *
+   * Gated on there BEING an upgrade. Two Bioficer Units (Drones, Hulks) carry
+   * a paragraph of lore in this field because the scanner reads the bottom of
+   * the card and those two have no upgrade box — neither is selectable, so it
+   * has never surfaced in the builder, but the reference view draws all 178. A
+   * note with nothing to qualify is not a note. */
+  function upgradeNoteHtml(u) {
+    if (!u.upgradeNote) return '';
+    if (!(u.weapons || []).some(w => w.box === 'upgrade')) return '';
+    return `<p class="dzc-upg-note">${esc(u.upgradeNote)}</p>`;
+  }
+
   /* A variant is a different model, so it gets its own block rather than a
    * line in a price list: what it is called, the gun that makes it that
    * variant, what it costs, and the stats it fights with. A weapon marked
@@ -355,8 +374,15 @@
                on one, and the shapes are the whole grammar (3.2.4.2). -->
           <h3 class="dzc-detail-name">${esc(u.name)}
             <span class="dzc-detail-cap">${transportHtml(u)}</span></h3>
+          <!-- Where it is in TTCombat's PDF. Every rule already says which page
+               of the rulebook it is on; the Unit itself said nothing, so the
+               one thing you cannot look up from the app -- the printed card,
+               with the art and the wording -- was the one thing with no
+               reference. Scanned per Unit, so it cannot go stale against a
+               re-scan the way a typed number would. -->
           <p class="dzc-detail-meta"><span>${esc(u.category)}</span> <span>${esc(u.type || '')}</span>
             <span>${pointsHtml(u)}</span> <span>Squad ${squadHtml(u)}</span>
+            ${u.page ? `<span>Stat card p.${esc(u.page)}</span>` : ''}
             ${u.rare ? '<span class="dzc-flag dzc-flag--rare">Rare</span>' : ''}${u.unique ? '<span class="dzc-flag dzc-flag--unique">Unique</span>' : ''}</p>
           <div class="dzc-card-stats">${statsHtml(u)}</div>
         </div>
@@ -364,6 +390,7 @@
       ${u.special ? `<div class="dzc-detail-rules">${rulesHtml(u.special, state.faction)}</div>` : ''}
       ${variants}
       ${weapons}
+      ${upgradeNoteHtml(u)}
       ${unitRulesHtml(u, state.faction)}`;
     document.querySelector('#dzc-detail .modal-title').textContent = u.name;
     document.getElementById('dzc-detail').classList.add('active');

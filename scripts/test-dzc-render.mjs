@@ -459,6 +459,29 @@ console.log('\nevery screen renders');
   await drive('Collection', () => win.DZCCollection.open());
   await drive('Play mode', () => win.DZCPlay.open(a.id));
 
+  /* The detail view against the printed card it is a copy of.
+   *
+   * Two fields were scanned into all 178 Units and rendered nowhere. The page
+   * is the one reference the app cannot replace — the printed card carries art
+   * and wording this does not — and every rule already cites its own page
+   * while the Unit cited nothing. The upgrade note is the sentence that says
+   * what taking an upgrade costs you, and the builder has always shown it over
+   * the buttons while the reference showed the rows with no qualification.
+   *
+   * Hulks is the reason the note is gated on there being an upgrade: it has no
+   * upgrade box, so the scanner took the lore paragraph off the bottom of the
+   * card instead. It is not selectable, so the builder never drew it — but the
+   * reference draws all 178. */
+  await drive('the unit detail', () => win.DZCUnits.openDetail('legionnaires', 'ucm'));
+  ok(/Stat card p\.3</.test(els['dzc-detail-body'].innerHTML),
+     'the detail view says which stat card page the Unit is on');
+  await drive('a unit with upgrades', () => win.DZCUnits.openDetail('harrier-gunship', 'ucm'));
+  ok(/dzc-upg-note/.test(els['dzc-detail-body'].innerHTML),
+     'and prints the sentence that qualifies its upgrades');
+  await drive('a unit with none', () => win.DZCUnits.openDetail('hulks', 'bioficer'));
+  ok(!/dzc-upg-note/.test(els['dzc-detail-body'].innerHTML),
+     'and stays silent where the field holds lore rather than a constraint');
+
   /* What a Level buys is chapter 4 arithmetic, not a points table: CP up to
    * your highest Level (4.1.1), a hand of that many cards (4.1.4), D6 plus it
    * for Initiative (4.1.5). Play Mode has run on those three numbers since it
