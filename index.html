@@ -175,6 +175,19 @@
   </div>
 </div>
 
+<!-- Share. Three targets, because they are three different asks: a link for
+     someone who will open it, text for a message or a forum, JSON for this
+     app's own Import. -->
+<div class="modal-overlay" id="dzc-share" onclick="if(event.target===this)DZCBuilder.closeShare()">
+  <div class="modal-panel">
+    <div class="modal-header">
+      <h2 class="modal-title">Share</h2>
+      <button class="modal-close" type="button" onclick="DZCBuilder.closeShare()" aria-label="Close"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+    </div>
+    <div class="modal-body" id="dzc-share-body"></div>
+  </div>
+</div>
+
 <!-- DZC unit detail. Its own overlay rather than #modal-ship-detail, which is
      wired to the Dropfleet ship model. -->
 <div class="modal-overlay" id="dzc-detail" onclick="if(event.target===this)DZCUnits.closeDetail()">

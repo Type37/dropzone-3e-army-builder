@@ -1342,6 +1342,63 @@
     say(`Added ${u.name}.`, 'add');
   }
 
+  /* Share, three ways.
+   *
+   * They are three different asks and one of them cannot serve the other two.
+   * The LINK carries the whole army in the URL, so it needs no server and
+   * cannot rot — but it is unreadable, and a forum post wants words. The TEXT
+   * is those words, and it is also what this app's own Import reads back. The
+   * JSON is the same file the backup button writes, so a shared army arrives
+   * exactly the way a restored one does.
+   *
+   * Dropfleet offers the same three (app.js showShareModal). Each is a copy,
+   * not a preview: the thing you came here to do is paste it somewhere else. */
+  const SHARE_TARGETS = [
+    ['link', 'Link', 'Opens the army in this app'],
+    ['text', 'Plain text', 'For a message or a forum post'],
+    ['json', 'JSON', 'The file Import reads']
+  ];
+
+  function openShare() {
+    if (!current) return;
+    document.getElementById('dzc-share-body').innerHTML = SHARE_TARGETS.map(([k, label, hint]) =>
+      `<button type="button" class="dzc-share-opt" onclick="DZCBuilder.copyShare('${k}')">
+        <b>${esc(label)}</b><span>${esc(hint)}</span>
+        ${window.DZCIcon('content_copy', { size: 16 })}</button>`).join('');
+    document.getElementById('dzc-share').classList.add('active');
+  }
+
+  async function copyShare(kind) {
+    if (!current) return;
+    let out;
+    try {
+      out = kind === 'link' ? await window.DZCShare.link(current)
+        : kind === 'text' ? window.DZCShare.text(current)
+        : window.DZCShare.json(current);
+    } catch (e) {
+      return say('Could not build that: ' + e.message);
+    }
+    try {
+      await navigator.clipboard.writeText(out);
+      // Dropfleet's words for this exact event (showToast, app.js:6776).
+      say(kind === 'link' ? 'Share link copied!' : 'Copied!');
+    } catch (e) {
+      // Blocked clipboard, usually an insecure origin. The prompt is still a
+      // way to get the text out; JSON is too long for one, so it downloads.
+      if (kind === 'json') download(current.name + '.json', out);
+      else window.prompt('Copy this:', out);
+    }
+  }
+
+  function download(name, body) {
+    const url = URL.createObjectURL(new Blob([body], { type: 'application/json' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name.replace(/[^\w.\- ]+/g, '_');
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   function closePicker() {
     const m = document.getElementById('dzc-picker');
     if (m) m.classList.remove('active');
@@ -1966,23 +2023,9 @@
       }
     },
     play: () => { location.hash = '#play/' + current.id; },
-    /* The link carries the whole army, so it works with no server and cannot
-     * rot. Copied straight to the clipboard; if that is blocked the link is
-     * shown so it can still be copied by hand. */
-    share: async () => {
-      try {
-        const url = await window.DZCShare.link(current);
-        try {
-          await navigator.clipboard.writeText(url);
-          // Dropfleet's words for this exact event (showToast, app.js:6776).
-          say('Share link copied!');
-        } catch (e) {
-          window.prompt('Copy this link:', url);
-        }
-      } catch (e) {
-        say('Could not build a share link: ' + e.message);
-      }
-    },
+    share: () => openShare(),
+    closeShare: () => document.getElementById('dzc-share').classList.remove('active'),
+    copyShare: kind => copyShare(kind),
     // Only the list is redrawn: re-rendering the body would replace the
     // <input> under the caret and swallow every character after the first.
     // None of these rebuild the bar. renderPickList redraws the list and

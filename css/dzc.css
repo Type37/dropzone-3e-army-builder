@@ -1379,6 +1379,21 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
 [data-theme="dark"] #landing-logo { content: url("../assets/logos/dzc_logo_white.webp"); }
 @media (max-width: 640px) { .topbar-logo { height: 20px; } }
 
+/* ── Share, three targets ──
+   A row per target: what it is, and what it is for. Square, because it reads
+   as a card and not as a button, whatever tag it happens to be. */
+.dzc-share-opt {
+  display: flex; align-items: center; gap: 10px; width: 100%; margin-bottom: 6px;
+  padding: 11px 13px; cursor: pointer; text-align: left;
+  border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff);
+  color: var(--ink, #24201c);
+  transition: border-color .12s, background .12s;
+}
+.dzc-share-opt:hover, .dzc-share-opt:focus-visible { border-color: var(--acc, #1b3a5c); }
+.dzc-share-opt b { font: 600 14px/1.2 var(--font-ui, 'Jost', sans-serif); }
+.dzc-share-opt span { flex: 1 1 auto; font-size: 12px; color: var(--ink-2, #6b6459); }
+.dzc-share-opt svg { flex: 0 0 auto; color: var(--ink-2, #6b6459); }
+
 /* ── Sharp cards ──
    Every card surface is square. Buttons, chips and inputs keep their radius —
    a control can be soft, a panel should not be. One rule in one place so the
@@ -1411,6 +1426,7 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
 .dzc-coll-row,
 .dzc-short,
 .dzc-ratio,
+.dzc-share-opt,
 /* And the three that live in css/app.css, which is Dropfleet-era and still
    rounds everything: the landing tiles, and both grids in the New Army dialog.
    They are the first surfaces anyone sees, so a rounded one there reads as the

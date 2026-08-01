@@ -152,6 +152,88 @@
     return army;
   }
 
-  window.DZCShare = { link, importFrom, pack, unpack, deflate, inflate };
+  // -------------------------------------------------------------- plain text
+
+  /* The army as text you can paste into a message.
+   *
+   * Two things it has to be at once, and they do not fight:
+   *
+   *   - readable. It keeps the Group nesting INDENTED, the same tree the print
+   *     sheet draws, because a Condor carrying two Bear APCs carrying six
+   *     Legionnaires is the deployment plan and every competitor's export
+   *     flattens it.
+   *   - readable BACK. Every Unit line is written in the "3 x Name [45pts]"
+   *     convention DZCArmy.parseList already reads, so a list pasted into this
+   *     app's Import comes back as an army. Nesting does not survive that trip
+   *     — a flat list cannot say what rode in what — but the Units and their
+   *     counts do, and the indentation is still there for the human.
+   *
+   * Every line the parser must ignore starts with "#", which is exactly the
+   * rule parseList applies: headings, totals, and the Commander block, which
+   * has no Unit to resolve to.
+   */
+  function text(army) {
+    const A = window.DZCArmy, D = window.DZC;
+    const size = D.gameSizeFor(army.pointsLimit);
+    const cost = A.armyCost(army);
+    const out = [
+      `# ${army.name} [${army.pointsLimit}pts]`,
+      `# ${army.faction.toUpperCase()}, ${size ? size.label : 'below the minimum'}`
+        + `, ${cost} of ${army.pointsLimit}pts, ${army.groups.length} Group`
+        + `${army.groups.length === 1 ? '' : 's'}`,
+      ''
+    ];
+
+    function squad(g, s, depth) {
+      const u = A.unitOf(army, s);
+      if (!u) return;
+      const pad = '  '.repeat(depth);
+      // The mix, because Variants are per model (3.2.2) and a Squad may
+      // legally hold more than one. A Squad of one Variant names it inline so
+      // the line still reads as a single entry.
+      const mix = {};
+      s.models.forEach(m => { const k = m.variant || u.name; mix[k] = (mix[k] || 0) + 1; });
+      const kinds = Object.keys(mix);
+      // A count only where there is one to give: "Sabre, Tachi" reads better
+      // than "1x Sabre, 1x Tachi", and it is also what importList matches a
+      // loadout name against, so one of each survives the trip back.
+      const tail = kinds.length && !(kinds.length === 1 && kinds[0] === u.name)
+        ? `: ${kinds.map(k => (mix[k] > 1 ? `${mix[k]}x ${k}` : k)).join(', ')}` : '';
+      out.push(`${pad}${s.models.length} x ${u.name} [${A.squadCost(army, s)}pts]${tail}`);
+      g.squads.filter(x => x.carriedBy === s.id).forEach(r => squad(g, r, depth + 1));
+    }
+
+    army.groups.forEach(g => {
+      out.push(`# ${A.groupName(army, g)} — ${A.groupCost(army, g)}pts`);
+      g.squads.filter(s => !s.carriedBy).forEach(s => squad(g, s, 1));
+      out.push('');
+    });
+
+    const cmdrs = A.commanders(army);
+    if (cmdrs.length) {
+      out.push('# Commanders');
+      cmdrs.forEach(c => {
+        const sq = c.squadId ? A.findSquad(army, c.squadId) : null;
+        const cu = sq ? A.unitOf(army, sq) : null;
+        // An unnamed Commander already reports its Level as its name, so
+        // saying it twice is the line reading "Level 5 Commander, Level 5".
+        const nm = A.commanderName(army, c);
+        const lvl = `Level ${c.level}`;
+        out.push(`# ${nm}${nm.indexOf(lvl) === -1 ? ', ' + lvl : ''}`
+          + `, ${cu ? 'with ' + cu.name : 'not assigned'} [${A.levelCost(c.level)}pts]`);
+      });
+    }
+    return out.join('\n').replace(/\n{3,}/g, '\n\n').trim() + '\n';
+  }
+
+  /* The army as the file the app's own Import reads (DZCArmy.importArmies).
+   * The backup button writes an array of these; this is one of them, so the
+   * two formats are the same format and a shared army arrives the same way a
+   * restored one does. */
+  function json(army) {
+    return JSON.stringify(army, null, 2);
+  }
+
+  window.DZCShare = { link, text, json, importFrom, pack, unpack, deflate, inflate };
   if (typeof module !== 'undefined' && module.exports) module.exports = window.DZCShare;
 })();

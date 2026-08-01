@@ -105,5 +105,55 @@ let threw = null;
 try { S.unpack({ v: 999 }); } catch (e) { threw = e; }
 ok(threw && /version/i.test(threw.message), 'an unknown payload version is rejected by name');
 
+/* ── plain text and JSON ──────────────────────────────────────────────
+ *
+ * Two more targets, and each has one thing that has to be true. The TEXT keeps
+ * the nesting indented -- that tree is what every competitor's export throws
+ * away -- and it is written in the convention DZCArmy.parseList reads, so it
+ * comes back as an army rather than as a wall someone has to retype. The JSON
+ * is the same file the backup writes, so a shared army arrives the way a
+ * restored one does.
+ */
+console.log('\nplain text');
+{
+  const txt = S.text(army);
+  ok(txt.includes(army.name), 'the army names itself');
+  ok(/\[1500pts\]/.test(txt), 'and states the agreed limit');
+  // The Transport is the PARENT: a Condor carries Bear APCs which carry
+  // Legionnaires, and that tree is the deployment plan (HANDOFF section 3).
+  ok(/^ {2}\d+ x Bear APC \[/m.test(txt), 'the Transport sits at the top of its Group');
+  ok(/^ {4}\d+ x Legionnaires \[/m.test(txt), 'and what it carries is indented under it');
+  ok(/^# Commanders$/m.test(txt), 'the Commander block is there');
+  ok(/Level 5/.test(txt), 'with the level');
+  ok(!/Level 5 Commander, Level 5/.test(txt), 'and it does not say the level twice');
+  // Every line the parser has to ignore starts with "#", which is the rule
+  // parseList already applies -- so nothing is skipped by accident.
+  const entries = A.parseList(txt);
+  ok(entries.length >= 4, 'our own parser reads the Unit lines back', `${entries.length}`);
+  ok(entries.every(e => e.points > 0), 'each with a cost');
+  const names = entries.map(e => e.name);
+  ok(names.includes('Legionnaires') && names.includes('Bear APC'),
+     'including the carried Transport', names.join(' | '));
+  ok(!names.some(n => /^#/.test(n) || /Group|Commander/i.test(n)),
+     'and no heading was read as a Unit', names.join(' | '));
+
+  const r = A.importList(txt);
+  ok(r.ok, 'and it imports', r.reason);
+  eq(r.army.faction, 'ucm', 'onto the right faction');
+  eq(r.unmatched.length, 0, 'with nothing unresolved', r.unmatched.join(' | '));
+}
+
+console.log('\nJSON');
+{
+  const one = S.json(army);
+  const r = A.importArmies(one);
+  ok(r.ok, 'a single army is a backup of one');
+  eq(r.added.length, 1, 'and imports as one army');
+  const copy = A.get(r.added[0].id);
+  eq(A.armyCost(copy), A.armyCost(army), 'costing the same on the way back');
+  eq(copy.groups.length, army.groups.length, 'with the same Groups');
+  ok(copy.id !== army.id, 'and a fresh id');
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
