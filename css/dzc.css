@@ -260,6 +260,14 @@
 
 .dzc-ratios { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
 .dzc-ratio { padding: 6px 12px; border-radius: 6px; background: var(--surface-3, #f2ece0); font-size: 12px; }
+/* Standard is the track; the other three are measured against it, so full
+   means level with Standard and past full is the breach (3.2). */
+.dzc-ratio-track {
+  display: block; height: 3px; margin-top: 5px; min-width: 54px;
+  background: var(--line, #d8d0c0);
+}
+.dzc-ratio-track i { display: block; height: 100%; background: var(--cat, var(--acc)); }
+.dzc-ratio.is-over .dzc-ratio-track i { background: var(--danger, #b3382c); }
 .dzc-ratio span { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2, #6b6459); }
 .dzc-ratio b {
   font-size: 17px; font-weight: 600;

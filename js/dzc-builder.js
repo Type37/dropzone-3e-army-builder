@@ -259,12 +259,26 @@
     const std = spend.standard || 0;
     const playable = a.groups.some(g => g.squads.some(s => s.commander));
 
+    /* The ratio rule, drawn.
+     *
+     * Dropfleet has a composition bar (renderCompositionBar, app.js:2359) that
+     * segments the whole list by category. That is the wrong picture here,
+     * because DZC's rule is not about shares of the total: Vanguard, Heavy and
+     * Support may EACH not exceed Standard (3.2). So Standard is the track and
+     * the other three are measured against it — full means level with
+     * Standard, and past full is the breach. The number that would be over is
+     * the number you are already reading beside it.
+     *
+     * Spend with no Standard at all is a full red track rather than an empty
+     * one: it is the most broken this can be, and an empty bar reads as fine. */
     const ratio = ['vanguard', 'heavy', 'support'].map(c => {
       const val = spend[c] || 0;
       const over = val > std;
-      return `<div class="dzc-ratio${over ? ' is-over' : ''}">
+      const pct = std ? Math.min(100, Math.round((val / std) * 100)) : (val ? 100 : 0);
+      return `<div class="dzc-ratio${over ? ' is-over' : ''}" style="--cat:${CAT_INK[c[0].toUpperCase() + c.slice(1)]}">
         <span>${c[0].toUpperCase() + c.slice(1)}</span>
-        <b>${val}</b><i>of ${std}</i></div>`;
+        <b>${val}</b><i>of ${std}</i>
+        <span class="dzc-ratio-track"><i style="width:${pct}%"></i></span></div>`;
     }).join('');
 
     const left = Math.max(0, a.pointsLimit - cost);
@@ -333,7 +347,8 @@
           <div class="dzc-rail-card">
             <div class="dzc-rail-title">Category spend</div>
             <div class="dzc-ratios" title="Vanguard, Heavy and Support may each not exceed Standard spend (3.2)">
-              <div class="dzc-ratio is-std"><span>Standard</span><b>${std}</b></div>${ratio}
+              <div class="dzc-ratio is-std" style="--cat:${CAT_INK.Standard}"><span>Standard</span><b>${std}</b>
+                <span class="dzc-ratio-track"><i style="width:100%"></i></span></div>${ratio}
             </div>
           </div>
 
