@@ -126,6 +126,11 @@ const App = (() => {
     }
     document.body.dataset.view = view || 'landing';
     const ctx = $('topbar-context');
+    /* Cleared on every route. The builder fills it with Play, Share and Print
+     * on each render, so leaving it alone would carry an army's buttons onto
+     * the screen after it -- and they would still be wired to that army. */
+    const actions = $('topbar-actions');
+    if (actions) actions.innerHTML = '';
     const back = (to, label) =>
       `<a href="#${to}" class="topbar-back" onclick="App.navigate('${to}'); return false;" aria-label="Back">`
       + `<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2L4 8l6 6"/></svg></a> ${label}`;

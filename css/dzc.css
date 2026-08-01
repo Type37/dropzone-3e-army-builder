@@ -1125,7 +1125,6 @@
   opacity: 0; visibility: hidden; transition: opacity .16s, transform .16s, visibility .16s;
 }
 .dzc-toast.is-on { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
-.dzc-b-right { display: flex; align-items: center; gap: 14px; }
 
 /* A <select> sizes itself to its widest OPTION, so "Bear APC × 1 — cannot be
    full (carries 4, needs 6)" made the row 440px wide and the page scrolled
@@ -1157,7 +1156,6 @@
 
 @media (max-width: 640px) {
   .dzc-b-head { gap: 8px; }
-  .dzc-b-right { width: 100%; justify-content: space-between; }
   .dzc-builder { --sq-indent: 8px; }
   .dzc-group-card { padding: 10px; }
   .dzc-squad .dzc-squad { padding-left: 8px; }

@@ -343,7 +343,7 @@ console.log('\nevery screen renders');
   ['view-armies', 'view-army', 'view-units', 'view-play', 'view-collection',
     'dzc-picker', 'dzc-picker-body', 'dzc-carry', 'dzc-carry-body',
     'dzc-cmdr', 'dzc-cmdr-body', 'dzc-share', 'dzc-share-body',
-    'dzc-detail', 'dzc-detail-body', 'dzc-print'].forEach(stub);
+    'dzc-detail', 'dzc-detail-body', 'dzc-print', 'topbar-actions'].forEach(stub);
 
   // Everything a Squad can be at once: carried, commanded, and a legally mixed
   // Squad of two Variants (3.2.2). The Transport is the case that threw.
@@ -381,6 +381,27 @@ console.log('\nevery screen renders');
   ok(/Level 5/.test(builder), 'and the Commander');
   ok(/For the club night/.test(builder) && /For the club night/.test(list),
      'and what the army is for, on both screens');
+
+  /* Gap 53: Play, Share and Print belong to the whole army, so they live in
+   * the topbar and not in a row above the Group list. Play is the one that
+   * has state -- it cannot run without a Commander. */
+  const bar = els['topbar-actions'].innerHTML;
+  ok(/>Play</.test(bar) && /Share/.test(bar) && /Print/.test(bar),
+     'the topbar carries Play, Share and Print');
+  ok(!/dzc-b-right/.test(builder), 'and the row above the list is gone');
+  // Play needs a Commander ON a Squad, not merely in the army: CP, hand size
+  // and Initiative all come from a Commander who is on the table (4.1).
+  const playBtn = h => (h.match(/<button[\s\S]*?<\/button>/) || [''])[0];
+  ok(/disabled/.test(playBtn(bar)), 'Play is refused while the Commander is unassigned');
+  /* Re-fetched, not reused. DZCArmy.load() re-parses localStorage, and
+   * renderBuilder calls it on every render -- so an object handed back by
+   * create() or addSquad() is stale the moment a screen has drawn. Ids are
+   * stable across that; object identity is not. */
+  const live = A.get(a.id);
+  A.assignCommander(live, A.commanders(live)[0].id, legion.id);
+  await B.renderBuilder(a.id);
+  ok(!/disabled/.test(playBtn(els['topbar-actions'].innerHTML)),
+     'and live once they are aboard a Squad');
 
   for (const [name, html] of [['army list', list], ['builder', builder], ['second Group', second]]) {
     const words = html.replace(/<[^>]*>/g, ' ');

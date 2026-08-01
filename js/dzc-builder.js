@@ -349,6 +349,42 @@
     const sel = a.groups.find(g => g.id === selectedGroup) || a.groups[0] || null;
     if (sel) selectedGroup = sel.id;
 
+    /* Play, Share and Print live in the topbar, where Dropfleet puts them
+     * (app.js:900) and where gap 53 asks for them. Three reasons, and the
+     * third is the one that decided it:
+     *
+     *   - they act on the whole army, and the topbar is the only strip that
+     *     belongs to the whole army rather than to a Group;
+     *   - the bar is already there, with a back link on the left and an empty
+     *     actions slot on the right that had never been filled;
+     *   - on a phone they cost nothing. The label hides below 768px and the
+     *     button becomes its icon, so the row above the list -- which was
+     *     three buttons wide -- is simply gone.
+     *
+     * Written on every render rather than once on route, because Play's
+     * disabled state depends on the army having a Commander and that changes
+     * while you are on the screen. App.showView clears the slot on the way out.
+     */
+    const actions = document.getElementById('topbar-actions');
+    if (actions) {
+      // Play needs a Commander: CP per Round, hand size and the Initiative
+      // modifier all come from Commander Level (4.1), so offering it on an
+      // army with none would open a mode that cannot run. Share and Print stay
+      // live -- a half-built list is worth sending someone or taking to a table.
+      actions.innerHTML = `
+        <button class="btn btn-ghost btn-sm topbar-action-btn" type="button" onclick="DZCBuilder.play()"
+                ${playable ? '' : 'disabled'} aria-label="Play"
+                title="${playable ? 'Run a game with this army'
+                  : 'Add a Commander first — CP, hand size and Initiative all come from Commander Level (4.1)'}"
+          >${window.DZCIcon('layers', { size: 15 })}<span class="topbar-action-label">Play</span></button>
+        <button class="btn btn-ghost btn-sm topbar-action-btn" type="button" onclick="DZCBuilder.share()"
+                aria-label="Share" title="Copy a link to this army"
+          >${window.DZCIcon('share', { size: 15 })}<span class="topbar-action-label">Share</span></button>
+        <button class="btn btn-ghost btn-sm topbar-action-btn" type="button" onclick="DZCBuilder.print()"
+                aria-label="Print" title="Print the deployment sheet"
+          >${window.DZCIcon('print', { size: 15 })}<span class="topbar-action-label">Print</span></button>`;
+    }
+
     root.innerHTML = `<div class="dzc-wrap dzc-builder" style="--acc:${accentOf(a.faction)}">
       <header class="dzc-b-head">
         <!-- Editable in place, and it has to SAY so. A contenteditable heading
@@ -361,22 +397,6 @@
             role="textbox" aria-label="Army name" title="Click to rename"
             data-orig="${esc(a.name)}" onkeydown="DZCBuilder.nameKey(event)"
             onblur="DZCBuilder.rename(this)">${esc(a.name)}</h1>
-        <div class="dzc-b-right">
-          <!-- Play needs a Commander: CP per Round, hand size and the Initiative
-               modifier all come from Commander Level (4.1). Offering it on an
-               army that has none would open a mode that cannot run. Share and
-               Print stay live, because a half-built list is worth sending
-               someone or taking to a table. -->
-          <button class="btn btn-ghost btn-sm" type="button" onclick="DZCBuilder.play()"
-                  ${playable ? '' : 'disabled'}
-                  title="${playable ? 'Run a game with this army'
-                    : 'Add a Commander first — CP, hand size and Initiative all come from Commander Level (4.1)'}"
-                  >${window.DZCIcon('layers', { size: 15 })} Play</button>
-          <button class="btn btn-ghost btn-sm" type="button" onclick="DZCBuilder.share()"
-                  title="Copy a link to this army">${window.DZCIcon('share', { size: 15 })} Share</button>
-          <button class="btn btn-ghost btn-sm" type="button" onclick="DZCBuilder.print()"
-                  title="Print the deployment sheet">${window.DZCIcon('print', { size: 15 })} Print</button>
-        </div>
         <!-- Free text about the list, editable where it is read, on its own row
              under the name. Empty until you write something: an empty box with
              "notes" over it on every army is the caption-under-a-control
