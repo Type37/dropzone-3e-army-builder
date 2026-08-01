@@ -817,10 +817,7 @@
           (t.capacity || []).some(c => c.shape === sh) || (t.fills || []).some(c => c.shape === sh));
       });
     }
-    if (q) units = units.filter(u => u.name.toLowerCase().includes(q)
-      || (u.variants || []).some(v => v.name.toLowerCase().includes(q))
-      || (u.weapons || []).some(w => (w.name || '').toLowerCase().includes(q))
-      || (u.special || '').toLowerCase().includes(q));
+    if (q) units = units.filter(u => window.DZC.matches(u, q, a.faction));
 
     const s = SORTS.find(x => x.key === picker.sort) || SORTS[0];
     units = units.slice().sort((x, y) => {

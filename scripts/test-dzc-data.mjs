@@ -216,6 +216,43 @@ console.log('\nno dead chips (gap 38)');
      stale.join(', '));
 }
 
+/* Gap 30: one search, and it reaches further than the name.
+ *
+ * The picker, the unit reference and the collection all ran their own copy of
+ * the filter. They are one function now, which is the only way a field worded
+ * the same in three places behaves the same in three places. */
+console.log('\nsearch (gap 30)');
+{
+  const m = (id, q) => DZC.matches(ucm.byId[id], q, 'ucm');
+  ok(m('legionnaires', 'legion'), 'the name still matches');
+  ok(m('ucm-main-battle-tank', 'sabre'), 'a variant name matches');
+  ok(m('legionnaires', 'standard'), 'the CATEGORY matches — it did not before');
+  ok(m('legionnaires', 'infantry'), 'and the type');
+  ok(!m('legionnaires', 'transport'), 'and it does not match a category it is not');
+
+  // A weapon's Special line is where most of the interesting words live, and
+  // none of the three copies were reading it.
+  const alt = ucm.units.find(u => (u.weapons || []).some(w => /Alt/i.test(w.special || '')));
+  ok(alt && DZC.matches(alt, 'alt', 'ucm'), 'a WEAPON rule matches', alt && alt.name);
+
+  // The card prints "Ev1"; the player thinks "evasion". Resolved names and
+  // aliases are indexed so both find it.
+  const ev = ucm.units.find(u => /\bEv\s?\d/.test(u.special || ''));
+  const evTok = ev && (ev.special.match(/\bEv\s?\d/) || [])[0];
+  ok(!!evTok, 'a UCM unit printing Ev was found to test the alias against');
+  if (evTok) {
+    ok(DZC.matches(ev, evTok, 'ucm'), `the printed keyword matches (${evTok})`, ev.name);
+    ok(DZC.matches(ev, 'evasion', 'ucm'), 'and so does its glossary alias', ev.name);
+  }
+
+  // Rule TEXT is deliberately NOT indexed: half the glossary mentions Units and
+  // damage, so matching bodies makes every search return everything.
+  eq(ucm.units.filter(u => DZC.matches(u, 'this weapon inflicts', 'ucm')).length, 0,
+     'glossary prose is not indexed');
+  eq(ucm.units.filter(u => DZC.matches(u, '', 'ucm')).length, ucm.units.length,
+     'an empty query matches everything');
+}
+
 console.log('\nsplitSpecial');
 const sp = DZC.splitSpecial('Battery 2, Blast, Concussion, Indirect, Pen 6+', 'ucm');
 eq(sp.length, 5, 'a plain comma list splits into five keywords');

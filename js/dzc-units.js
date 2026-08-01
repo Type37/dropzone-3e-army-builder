@@ -189,13 +189,7 @@
 
     const q = state.search.trim().toLowerCase();
     let units = f.units.slice();
-    if (q) {
-      units = units.filter(u =>
-        u.name.toLowerCase().includes(q) ||
-        (u.special || '').toLowerCase().includes(q) ||
-        (u.weapons || []).some(w => (w.name || '').toLowerCase().includes(q)) ||
-        (u.variants || []).some(v => (v.name || '').toLowerCase().includes(q)));
-    }
+    if (q) units = units.filter(u => window.DZC.matches(u, q, state.faction));
     if (state.category !== 'All') units = units.filter(u => u.category === state.category);
 
     const tabs = FACTIONS.map(x =>

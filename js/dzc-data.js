@@ -211,6 +211,54 @@
     return out;
   }
 
+  // -------------------------------------------------------------------- search
+
+  /* One search, used everywhere. The picker, the unit reference and the
+   * collection all offer the same field with the same words on it, so they had
+   * better behave the same way -- and three copies of the filter is precisely
+   * how they stop doing that.
+   *
+   * Indexed: the name, the category, the type, every variant name, every
+   * weapon name, and every rule keyword the card prints -- on the Unit AND on
+   * its weapons, which none of the three were searching. A weapon's Special
+   * line is where most of the interesting words live.
+   *
+   * Resolved rule names and aliases go in as well, so "evasion" finds a Unit
+   * whose card only ever prints "Ev1", and "penetrator" finds one printing
+   * "Pen 6+". Rule TEXT deliberately does not: matching the body of a glossary
+   * entry turns every search into a shrug, because half the entries mention
+   * Units and damage.
+   *
+   * Built once per Unit and kept. It walks the glossary, and a search box runs
+   * it on every keystroke across 178 Units. */
+  const searchBlobs = new Map();
+
+  function searchBlob(unit, faction) {
+    const key = `${faction}/${unit.id}`;
+    const hit = searchBlobs.get(key);
+    if (hit != null) return hit;
+    const parts = [unit.name, unit.category, unit.type];
+    (unit.variants || []).forEach(v => parts.push(v.name));
+    (unit.weapons || []).forEach(w => parts.push(w.name));
+    [unit.special || ''].concat((unit.weapons || []).map(w => w.special || ''))
+      .forEach(line => splitSpecial(line, faction).forEach(tok => {
+        parts.push(tok);
+        const r = rule(tok, faction);
+        if (r) parts.push(r.name, r.alias);
+      }));
+    const blob = parts.filter(Boolean).join(' ').toLowerCase();
+    // Only keep it once the glossary is loaded, or the aliases are missing from
+    // a blob that then never gets rebuilt.
+    if (state.rules) searchBlobs.set(key, blob);
+    return blob;
+  }
+
+  function matches(unit, query, faction) {
+    const q = String(query == null ? '' : query).trim().toLowerCase();
+    if (!q) return true;
+    return searchBlob(unit, faction).indexOf(q) !== -1;
+  }
+
   // --------------------------------------------------------- transport nesting
 
   /* Can `carrier` carry `passenger`, and how much room does it take?
@@ -335,7 +383,7 @@
     get rules() { return state.rules; },
     faction: id => state.factions[id],
     unit: (fid, uid) => (state.factions[fid] || { byId: {} }).byId[uid],
-    rule, ruleText, splitSpecial,
+    rule, ruleText, splitSpecial, matches,
     capacityFor, fillsOf, canCarry, loadCheck, isFull,
     gameSizeFor, maxGroups, maxGroupCost, rareLimit, commanderLevels,
     _state: state, _compileRules: compileRules

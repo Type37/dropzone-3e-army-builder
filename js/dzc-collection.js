@@ -86,13 +86,9 @@
     const q = state.search.trim().toLowerCase();
 
     let units = f.units.filter(u => u.selectable !== false);
-    // Same reach as the picker and the reference. One search field worded one
-    // way should behave one way; matching names only while the placeholder
-    // offered variants, weapons and rules would be the field lying.
-    if (q) units = units.filter(u => u.name.toLowerCase().includes(q)
-      || (u.variants || []).some(v => v.name.toLowerCase().includes(q))
-      || (u.weapons || []).some(w => (w.name || '').toLowerCase().includes(q))
-      || (u.special || '').toLowerCase().includes(q));
+    // Same reach as the picker and the reference, because it is now literally
+    // the same function (DZC.matches). One field worded one way behaves one way.
+    if (q) units = units.filter(u => window.DZC.matches(u, q, state.faction));
     if (state.ownedOnly) units = units.filter(u => count(state.faction, u.id) > 0);
 
     const totals = f.units.reduce((n, u) => n + count(state.faction, u.id), 0);
