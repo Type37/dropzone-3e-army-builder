@@ -165,7 +165,7 @@
     ].join('');
     return `<article class="dzc-card" onclick="DZCUnits.openDetail('${esc(u.id)}')" tabindex="0"
       onkeydown="if(event.key==='Enter'){DZCUnits.openDetail('${esc(u.id)}')}">
-      <div class="dzc-card-art">${u.art ? `<img src="${esc(u.art)}" alt="" loading="lazy">` : ''}</div>
+      <div class="dzc-card-art">${u.art ? `<img src="${esc(u.art)}" alt="" loading="lazy" onerror="this.remove()">` : ''}</div>
       <div class="dzc-card-body">
         <h3 class="dzc-card-name">${esc(u.name)}</h3>
         <div class="dzc-card-meta">
@@ -348,7 +348,7 @@
 
     document.getElementById('dzc-detail-body').innerHTML = `
       <div class="dzc-detail-head">
-        ${u.art ? `<img class="dzc-detail-art" src="${esc(u.art)}" alt="">` : ''}
+        ${u.art ? `<img class="dzc-detail-art" src="${esc(u.art)}" alt="" onerror="this.remove()">` : ''}
         <div>
           <!-- Capacity sits beside the name at size, not buried under the meta
                line: what a Transport can carry is the first thing you look for

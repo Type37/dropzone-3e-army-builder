@@ -70,7 +70,7 @@
                 onkeydown="if(event.key==='Enter')DZCBuilder.open('${a.id}')">
         <div class="dzc-army-top">
           <span class="dzc-army-fac">
-            <img src="assets/factions/${esc(a.faction)}.webp" alt="" loading="lazy">
+            <img src="assets/factions/${esc(a.faction)}.webp" alt="" loading="lazy" onerror="this.remove()">
             <b>${esc(fac.full || fac.name || a.faction)}</b>
           </span>
           <!-- One menu rather than two loose icons. Two was already a row of
@@ -674,7 +674,8 @@
       `<span class="dzc-bb-sp${sp.used > sp.total ? ' is-over' : sp.used === sp.total ? ' is-full' : ''}"
         >${U.shape(sp.shape, 13, true)}<b>${sp.used}</b><i>/${sp.total}</i></span>`).join('');
     const art = g.squads.map(s => window.DZCArmy.unitOf(a, s)).filter(u => u && u.art)
-      .slice(0, 4).map(u => `<img src="${esc(u.art)}" alt="" loading="lazy" title="${esc(u.name)}">`).join('');
+      .slice(0, 4).map(u => `<img src="${esc(u.art)}" alt="" loading="lazy" title="${esc(u.name)}"
+        onerror="this.remove()">`).join('');
     return `<button type="button" class="dzc-bb${g.id === selectedGroup ? ' is-on' : ''}${
       cost > cap ? ' is-over' : ''}" data-gid="${g.id}" onclick="DZCBuilder.selectGroup('${g.id}')">
       <!-- The grip, and it has to be a separate target: dragging anywhere on
@@ -708,6 +709,7 @@
       if (!u || !u.art || seen[u.id]) return;
       seen[u.id] = 1;
       out.push(`<img src="${esc(u.art)}" alt="" loading="lazy" title="${esc(u.name)}"
+        onerror="this.remove()"
         style="--cat:${CAT_INK[u.category] || '#9a9184'}">`);
     }));
     if (!out.length) return '';
@@ -1007,7 +1009,7 @@
 
     return `<div class="dzc-squad${isTransport ? ' is-transport' : ''}" style="--depth:${depth}">
       <div class="dzc-sq-main">
-        ${u.art ? `<img class="dzc-sq-art" src="${esc(u.art)}" alt="" loading="lazy">` : ''}
+        ${u.art ? `<img class="dzc-sq-art" src="${esc(u.art)}" alt="" loading="lazy" onerror="this.remove()">` : ''}
         <div class="dzc-sq-id">
           <h3 class="dzc-sq-title">
             <button type="button" class="dzc-sq-name" title="Stats, weapons and rules"
@@ -1449,7 +1451,7 @@
            title="Stats, weapons and rules"
            onclick="DZCUnits.openDetail('${esc(u.id)}','${esc(a.faction)}')"
            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();DZCUnits.openDetail('${esc(u.id)}','${esc(a.faction)}')}">
-        ${u.art ? `<img class="dzc-pick-art" src="${esc(u.art)}" alt="" loading="lazy">`
+        ${u.art ? `<img class="dzc-pick-art" src="${esc(u.art)}" alt="" loading="lazy" onerror="this.remove()">`
                 : '<span class="dzc-pick-noart"></span>'}
         <div class="dzc-pick-head">
           <span class="dzc-pick-name">${esc(u.name)}</span>
@@ -1614,7 +1616,7 @@
       const total = (o.unit.points != null ? o.unit.points : 0) * o.need;
       return `<button type="button" class="dzc-carry-card${o.unit.id === nowId ? ' is-on' : ''}${
         o.exact ? '' : ' is-partial'}" onclick="DZCBuilder.assignTransport('${s.id}','${esc(o.unit.id)}')">
-        ${o.unit.art ? `<img src="${esc(o.unit.art)}" alt="" loading="lazy">`
+        ${o.unit.art ? `<img src="${esc(o.unit.art)}" alt="" loading="lazy" onerror="this.remove()">`
                      : '<span class="dzc-carry-noart"></span>'}
         <span class="dzc-carry-name">${esc(o.unit.name)}</span>
         <span class="dzc-carry-caps">${U.transportHtml(o.unit)}</span>
@@ -1635,7 +1637,7 @@
     const boardCard = o => `<button type="button" class="dzc-carry-card dzc-carry-here${
       o.squad.id === s.carriedBy ? ' is-on' : ''}${o.full ? '' : ' is-partial'}"
       onclick="DZCBuilder.boardTransport('${s.id}','${o.squad.id}')">
-      ${o.unit.art ? `<img src="${esc(o.unit.art)}" alt="" loading="lazy">`
+      ${o.unit.art ? `<img src="${esc(o.unit.art)}" alt="" loading="lazy" onerror="this.remove()">`
                    : '<span class="dzc-carry-noart"></span>'}
       <span class="dzc-carry-name">${esc(o.unit.name)}</span>
       <span class="dzc-carry-caps">${U.transportHtml(o.unit)}</span>
@@ -1721,7 +1723,7 @@
           <td>${esc(w.special || '')}</td></tr>`).join('')}</table>` : '';
 
       return `<div class="pr-squad${depth ? ' pr-squad--nested' : ''}" style="--depth:${depth}">
-        ${printOpts.art && u.art ? `<img class="pr-art" src="${esc(u.art)}" alt="">` : ''}
+        ${printOpts.art && u.art ? `<img class="pr-art" src="${esc(u.art)}" alt="" onerror="this.remove()">` : ''}
         <div class="pr-sq-line">
           <span class="pr-sq-n">${s.models.length}×</span>
           <span class="pr-sq-name">${esc(u.name)}</span>

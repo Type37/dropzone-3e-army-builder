@@ -291,6 +291,30 @@ eq(back.length, 0, 'and no known-missing asset is still excused after arriving',
    back.join(', '));
 gone.forEach(p => console.log(`!! MISSING ${p} — ${KNOWN_MISSING[p]}`));
 
+// -------------------------------------------------- art degrades quietly
+/* Gap 37: a missing image must leave the layout intact -- no broken-image
+ * icon, no gap where a picture was. Every <img> the JS builds therefore
+ * removes itself on error.
+ *
+ * It matters because unit art is INTERPOLATED from data, so the asset check
+ * above cannot see it: tools/dzc/audit_art.py proves every Unit has a file
+ * today, and the day a re-scan renames one is the day this is the only thing
+ * standing between you and twelve broken icons on the picker. */
+console.log('\nart degrades quietly');
+{
+  const imgs = [];
+  for (const f of readdirSync(path.join(ROOT, 'js')).filter(n => n.endsWith('.js'))) {
+    const src = readFileSync(path.join(ROOT, 'js', f), 'utf8');
+    for (const m of src.matchAll(/<img\b[\s\S]{0,300}?>/g)) {
+      imgs.push({ at: `js/${f}:${src.slice(0, m.index).split('\n').length}`, tag: m[0] });
+    }
+  }
+  ok(imgs.length > 8, 'the images were actually found', `${imgs.length}`);
+  const bare = imgs.filter(i => !/onerror=/.test(i.tag)).map(i => i.at);
+  eq(bare.length, 0, 'every image the app builds removes itself if it 404s');
+  if (bare.length) console.error('        ' + bare.join('\n        '));
+}
+
 // ------------------------------------------ no word twice more than twice
 /* CLAUDE.md §3: "No single word or phrase appears more than twice on one
  * screen."

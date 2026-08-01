@@ -133,7 +133,7 @@
       <div class="dzc-coll-list">${units.map(u => {
         const n = count(state.faction, u.id);
         return `<div class="dzc-coll-row${n ? ' is-owned' : ''}">
-          ${u.art ? `<img src="${esc(u.art)}" alt="" loading="lazy">` : '<span class="dzc-pick-noart"></span>'}
+          ${u.art ? `<img src="${esc(u.art)}" alt="" loading="lazy" onerror="this.remove()">` : '<span class="dzc-pick-noart"></span>'}
           <span class="dzc-coll-body">
             <span class="dzc-coll-name">${esc(u.name)}</span>
             <span class="dzc-coll-meta"><span>${esc(u.category)}</span> <span>${esc(u.type || '')}</span>${
