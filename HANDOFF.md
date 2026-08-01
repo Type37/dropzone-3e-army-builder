@@ -291,9 +291,66 @@ that file is the twenty-five.
 - **New Recruit import/export** — Dropfleet has it; DZC does not.
 - **Print extras** — preview with page-break markers, ink-saver, density,
   thumbnails, weapon tables, Commander block.
-- **Commander renaming** — a Commander is currently a level with no name.
 - **Monthly auto-update workflow** — §7.
 - **Lore panels** — 6 PDFs in `Lore/`; art was the priority.
 
 Repo slug is `dropzone-3e-army-builder`, title "Dropzone Commander 3E Army
 Builder". Rename if you'd prefer something else.
+
+---
+
+## 10. Session handoff — 2026-08-01
+
+Long overnight session, both an interactive one and an unattended cloud
+routine (`RemoteTrigger`, recurring every 2h against the same Todoist backlog)
+working the same repo in parallel. Read git log for the full list; the load-
+bearing points a fresh session needs:
+
+**The Vulture deadlock (fixed).** A Vulture Troopship carries 4 squares;
+every UCM infantry Squad is 2–3 models at 1 square each, so no single Squad
+could ever fill one — and the model stepper refused to grow past `squadMax`.
+3.2.4.1 (up to 4 Squads may share one larger Transport) was never offered as
+an option. `boardOptions`/`boardTransport` in `js/dzc-army.js` let a Squad
+join a Transport already in its Group; the Transport chooser (`openCarry` in
+`js/dzc-builder.js`) lists those first, under "Already in this Group".
+
+**Group and Commander names are derived, not stored**, unless you actually
+typed one. `groupName(army, g)` / `commanderName(army, c)` — an unnamed one
+reports its position/Level, so deleting from the middle of a list can never
+produce two things with the same default name again. Every renderer must go
+through these functions; a raw `g.name` or `c.level` read is the bug that
+regressed twice this session (see FAILINGS.md if that keeps happening).
+
+**Desktop keeps panes now, on all four views** (builder, Play, Collection,
+reference), per CLAUDE.md §4. Builder is three panes above 1400px (rail /
+Group list / Group detail); below 900px a Group is a screen you drill into on
+mobile (`selectedGroup`/`drilled` state in `js/dzc-builder.js`), not a long
+stacked column.
+
+**New test suite: `scripts/test-dzc-render.mjs`**, registered in
+`test-all.mjs`. Catches markup-string bugs (null/undefined leaking into
+rendered text, an inline `style="--x:"` shadowing a global CSS custom
+property, one class name used on two unrelated elements, a class the JS
+emits with no CSS rule behind it). Written after three regressions in one
+night were caught by screenshots and none by tests — see the "render tests"
+commit for the reasoning and a proof that each check catches its bug.
+
+**No pull requests, ever — CLAUDE.md §6.** Commit to `master` and push,
+always, even when a change can't be visually verified; say what wasn't
+checked in the commit message instead of parking it in a branch.
+
+**Turn discipline — CLAUDE.md §7.** "Work autonomously" means chaining many
+tasks in one turn (finish → test → commit → push → next), not one task per
+turn with a status report in between. Written down after Jet had to say it
+four different ways in one session.
+
+**Left mid-flight:** Commander naming (this session's last change) is
+tested (306 assertions) but not yet visually verified — no screenshot was
+taken of the rail card before this handoff was written. Worth a look before
+trusting the layout.
+
+**Todoist is still the real backlog.** This file is a map, not a task list —
+`#dropzone3` in *Generators & Web Apps* has the live priority order, and a
+lot of p1s remain (explainer-slop passes, Fluent wording guidance, print
+mode research, the points-limit-after-creation gap). Work top-down by
+priority there, not from this section.
