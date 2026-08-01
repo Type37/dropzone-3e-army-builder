@@ -17,7 +17,7 @@ const SUITES = [
   ['army construction', 'test-dzc-army.mjs'],
   ['share links', 'test-dzc-share.mjs'],
   ['fleet sync', 'test-fleet-sync.mjs'],
-  ['copy rules', 'test-copy-rules.mjs']
+  ['house rules', 'test-house-rules.mjs']
 ];
 
 let failed = 0;

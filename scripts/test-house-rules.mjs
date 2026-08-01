@@ -1,14 +1,14 @@
-/* Tests for the copy rules in CLAUDE.md that a machine can actually check.
+/* Tests for the rules in CLAUDE.md that a machine can actually check.
  *
- * These are not code correctness. They are the house style rules that keep
- * being re-broken because nothing enforces them -- FAILINGS.md asks for checks
- * that do not depend on anyone remembering, and a rule with a number in it is
- * the easiest kind to enforce.
+ * These are not code correctness. They are the house rules that keep being
+ * re-broken because nothing enforces them -- FAILINGS.md asks for checks that
+ * do not depend on anyone remembering, and a rule with a number in it is the
+ * easiest kind to enforce.
  *
  * Only rules with an unambiguous mechanical reading live here. "Default to
  * silence over explaining" is real and is not testable; "two interpuncts" is.
  *
- *   node scripts/test-copy-rules.mjs
+ *   node scripts/test-house-rules.mjs
  */
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -72,6 +72,23 @@ for (const file of SEARCHED) {
 }
 eq(offenders.length, 0, 'nothing in the app says "datasheet"');
 if (offenders.length) console.error('        ' + offenders.join('\n        '));
+
+// ------------------------------------------------------------ nothing off-site
+/* CLAUDE.md §4: never a CDN -- it breaks offline, which is the one thing the
+ * service worker exists to prevent. Written for icons, true of any script.
+ *
+ * d3 and topojson sat here for months after the only thing that used them --
+ * the Dropfleet world-map thumbnail -- was deleted, because a script tag that
+ * loads successfully looks exactly like a script tag that is needed.
+ *
+ * The analytics counter is not an exception: data-goatcounter names a remote
+ * endpoint, but the script itself is js/count.js and ships with the app. */
+console.log('\nnothing off-site');
+const srcs = [...markup.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["']/g)].map(m => m[1]);
+const offsite = srcs.filter(s => /^(https?:)?\/\//.test(s));
+ok(srcs.length > 0, 'the script tags were actually found', `matched ${srcs.length}`);
+eq(offsite.length, 0, 'every script the page loads ships with the app');
+if (offsite.length) console.error('        ' + offsite.join('\n        '));
 
 console.log(`\n${pass} passed, ${fail} failed\n`);
 process.exit(fail ? 1 : 0);

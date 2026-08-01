@@ -262,8 +262,11 @@
   </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<!-- No third-party script tags here, and none should come back. d3 and
+     topojson used to load from a CDN on every visit for the Dropfleet world-map
+     thumbnail (js/app.js, deleted), which has no Dropzone equivalent. A CDN
+     script is a blocking request to a host we do not control and it fails
+     offline, which is the one thing the service worker exists to prevent. -->
 <script src="js/rank-insignia.js"></script>
 <script src="js/offline-sync.js"></script>
 <script src="js/fleet-sync.js"></script>
