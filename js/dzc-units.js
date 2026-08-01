@@ -264,13 +264,34 @@
       <td>${rulesHtml(w.special, fac)}</td>`;
   }
 
-  function weaponsHtml(u, faction) {
+  /* By default this IS the card: every weapon printed on it, including guns
+   * that only a variant you did not take carries, and upgrades nobody has
+   * bought. In the reference view that is correct — you are reading the card.
+   *
+   * In a Squad it was a lie. `opts.variants` is what your models actually are
+   * and `opts.hasUpgrade` says which upgrades you actually bought, and with
+   * both the table becomes the guns this Squad fires rather than the guns this
+   * Unit could ever fire (gap 63). Nothing becomes unreachable: the upgrade
+   * block underneath still offers every upgrade, and the variant blocks above
+   * still name every variant's gun. What stops is the table quietly claiming
+   * six weapons for three models that have four. */
+  function weaponsHtml(u, faction, opts) {
     const fac = faction || state.faction;
-    if (!(u.weapons || []).length) return '<p class="dzc-none">No weapons.</p>';
+    const o = opts || {};
+    let ws = u.weapons || [];
+    // Only when the Unit HAS variants. A model on a Unit with none carries
+    // variant: null, and filtering against a list of nulls would drop every
+    // variant-boxed row on a Unit that has no variants to have taken.
+    if (o.variants && (u.variants || []).length) {
+      ws = ws.filter(w => w.box !== 'variant' || !(w.variants || []).length
+        || w.variants.some(v => o.variants.indexOf(v) !== -1));
+    }
+    if (o.hasUpgrade) ws = ws.filter(w => w.box !== 'upgrade' || o.hasUpgrade(w));
+    if (!ws.length) return '<p class="dzc-none">No weapons.</p>';
     return `
       <table class="dzc-wpn">
         <thead>${wpnHead()}</thead>
-        <tbody>${u.weapons.map(w => `<tr${w.box === 'upgrade' ? ' class="is-upgrade"' : w.box === 'variant' ? ' class="is-variant"' : ''}
+        <tbody>${ws.map(w => `<tr${w.box === 'upgrade' ? ' class="is-upgrade"' : w.box === 'variant' ? ' class="is-variant"' : ''}
           >${wpnCells(w, fac)}</tr>`).join('')}</tbody>
       </table>`;
   }

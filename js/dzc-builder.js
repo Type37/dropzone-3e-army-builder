@@ -1062,7 +1062,10 @@
       <div class="dzc-sq-stats">${U.statsHtml(u)}</div>
       ${u.special ? `<div class="dzc-sq-rules">${U.rulesHtml(u.special, a.faction)}</div>` : ''}
       ${U.variantsHtml(u, (v, i) => variantStepper(a, s, u, i), { stats: !compact })}
-      ${compact ? '' : `<div class="dzc-sq-wpn">${U.weaponsHtml(u, a.faction)}</div>`}
+      ${compact ? '' : `<div class="dzc-sq-wpn">${U.weaponsHtml(u, a.faction, {
+        variants: s.models.map(m => m.variant),
+        hasUpgrade: w => Object.keys(s.upgrades || {}).some(k => s.upgrades[k][w.name])
+      })}</div>`}
       ${upgradesHtml(a, s, u)}
       <div class="dzc-sq-opts">
         ${transportPicker}
