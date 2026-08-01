@@ -569,7 +569,31 @@
   }
   .dzc-rail { position: static; }
   .dzc-rail .dzc-ratios { flex-direction: row; flex-wrap: wrap; }
+  /* The peek line, phone only. Above 900px the rail is a column beside the
+     list and there is nothing to collapse. */
+  .dzc-rail-peek { display: flex; }
+  .dzc-rail-body { display: none; }
+  .dzc-rail-body.is-open { display: block; }
+  .dzc-rail-body > * + * { margin-top: 8px; }
 }
+
+/* Hidden by default so the desktop rail is untouched: the phone rule above
+   turns it on. */
+.dzc-rail-peek { display: none; }
+.dzc-rail-peek {
+  align-items: baseline; gap: 7px; width: 100%; padding: 9px 11px; cursor: pointer;
+  border: 1px solid var(--line, #d8d0c0); border-left: 3px solid var(--acc);
+  background: var(--surface-2, #fff); color: var(--ink, #24201c); text-align: left;
+}
+.dzc-rail-peek b { font: 700 18px/1 var(--font-numeric, 'Outfit', sans-serif); }
+.dzc-rail-peek span { font-size: 11.5px; color: var(--ink-2, #6b6459); }
+.dzc-rail-peek i { flex: 1 1 auto; font-style: normal; font-size: 11.5px; color: var(--ink-2, #6b6459); }
+.dzc-rail-peek em {
+  font-style: normal; font-size: 11.5px; font-weight: 600; color: var(--ink-2, #6b6459);
+}
+.dzc-rail-peek em.is-err { color: var(--danger, #b3261e); }
+.dzc-rail-peek em.is-ok { color: var(--acc); }
+.dzc-rail-peek svg { flex: 0 0 auto; align-self: center; color: var(--ink-2, #6b6459); }
 
 .dzc-issues { margin: 0 0 6px; padding: 6px 8px; font-size: 13px; }
 .dzc-issues-head {

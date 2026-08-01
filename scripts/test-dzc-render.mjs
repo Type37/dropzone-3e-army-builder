@@ -388,6 +388,13 @@ console.log('\nevery screen renders');
   ok(/Bear APC/.test(builder), 'the assigned Transport is on the page');
   ok(/Tachi/.test(second), 'and the second Variant of a mixed Squad, once its Group is open');
   ok(/Level 5/.test(builder), 'and the Commander');
+  /* Gap 47: on a phone the rail collapses behind a line carrying the two
+   * numbers you keep glancing at. The line is always in the markup — CSS
+   * decides whether it is on screen — so what is asserted here is that it
+   * carries them. */
+  ok(/dzc-rail-peek/.test(builder), 'the rail has a peek line');
+  ok(/pts left/.test(builder) && /of \d+ Groups/.test(builder),
+     'and it carries the points left and the Group count');
   ok(/For the club night/.test(builder) && /For the club night/.test(list),
      'and what the army is for, on both screens');
 
@@ -488,6 +495,8 @@ console.log('\nevery screen renders');
   const gid = A.get(a.id).groups[0].id;
   const sid = A.get(a.id).groups[0].squads.find(x => x.unitId === 'legionnaires').id;
 
+  await press('toggleRail open', () => B.toggleRail());
+  await press('toggleRail shut', () => B.toggleRail());
   await press('armyMenu open', () => B.armyMenu({
     stopPropagation() {}, currentTarget: stub('army-menu-btn') }, a.id));
   await press('armyMenu close', () => B.armyMenu({

@@ -36,6 +36,10 @@
   // How the army list is ordered. Not stored: it is a way of looking at the
   // list for a moment, not a preference about it.
   let listSort = 'recent';
+  // Phone only, and not stored: whether the rail is showing is a thing you do
+  // for a moment, not a preference about the app. Closed to start, because the
+  // peek line above it carries the two numbers you keep glancing at.
+  let railOpen = false;
 
   // ------------------------------------------------------------- army list
 
@@ -412,6 +416,24 @@
 
       <div class="dzc-b-body${drilled && sel ? ' is-drilled' : ''}">
         <aside class="dzc-rail">
+          <!-- A peek line, and it only exists on a phone (CSS hides it above
+               900px, where the whole rail is beside the list anyway).
+               Everything under it collapses behind this summary, because on a
+               phone the rail was four cards of preamble between you and your
+               army — and the two numbers you actually keep glancing at are the
+               points left and how many issues there are. Those are here.
+               Gap 47 asks for a drag handle over a bottom sheet; this is the
+               same outcome without a gesture. -->
+          <button type="button" class="dzc-rail-peek" aria-expanded="${railOpen}"
+                  aria-controls="dzc-rail-body" onclick="DZCBuilder.toggleRail()">
+            <b>${left}</b><span>pts left</span>
+            <i>${a.groups.length} of ${maxG || '—'} Groups</i>
+            ${v.errors.length ? `<em class="is-err">${v.errors.length} to fix</em>`
+              : v.warnings.length ? `<em>${v.warnings.length} note${v.warnings.length === 1 ? '' : 's'}</em>`
+              : '<em class="is-ok">legal</em>'}
+            ${window.DZCIcon(railOpen ? 'remove' : 'add', { size: 16 })}
+          </button>
+          <div class="dzc-rail-body${railOpen ? ' is-open' : ''}" id="dzc-rail-body">
           <div class="dzc-rail-card">
             <!-- The size is the control that changes the agreed limit. It is
                  the only place the band is named, so it is where you would go
@@ -442,6 +464,7 @@
           ${alertList(v.warnings, 'warn', 'note', 'notes')}
           ${v.ok && a.groups.length ? `<p class="dzc-legal">${window.DZCIcon('check_circle', { size: 15 })}This army is legal.</p>` : ''}
           ${shortfallHtml(a)}
+          </div>
         </aside>
 
         <!-- Three panes on a desktop, one column on a phone. Dropfleet splits
@@ -2163,6 +2186,7 @@
     },
     renameCommander: (id, t) => { window.DZCArmy.renameCommander(current, id, t); refresh(); },
     gripDown,
+    toggleRail: () => { railOpen = !railOpen; refresh(); },
     selectGroup: id => { selectedGroup = id; drilled = true; refresh(); },
     backToGroups: () => { drilled = false; refresh(); },
     openCarry, closeCarry,
