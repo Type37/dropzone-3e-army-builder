@@ -795,6 +795,14 @@
 /* The direction arrow sits in a slot that is always there, empty or not, so a
  * sort chip is the same width active as inactive and the row never reflows. */
 .dzc-dir { display: inline-block; width: 9px; text-align: center; font-style: normal; }
+/* How many units are behind a category tab. Quieter than the label, and it
+   inherits colour on the active chip so it does not go grey-on-navy. Numeric
+   font, like every other number the user reads as a value. */
+.dzc-chip-n {
+  margin-left: 5px; font-style: normal; font-family: var(--font-numeric, inherit);
+  font-size: .85em; opacity: .6;
+}
+.dzc-chip.is-active .dzc-chip-n { opacity: .75; }
 
 /* Transport-symbol filters. The glyph IS the label -- these are the six shapes
  * printed on the stat cards, and 3.2.4.2 turns entirely on telling them apart,

@@ -787,7 +787,26 @@
      * is explicit that choosing a Transport alongside a Squad is how a Group
      * forms. canAddUnit refuses the ones that make no sense here, and says
      * which rule refuses them. */
-    const cats = ['All', 'Standard', 'Vanguard', 'Heavy', 'Support', 'Transport'];
+    /* Category tabs, built from what this faction actually has and carrying
+     * how many. Dropfleet does both in renderCategoryTabs (app.js:4283): it
+     * walks CATEGORY_ORDER, skips any category with nothing in it, and puts
+     * the count in the label.
+     *
+     * Hardcoding the six meant a faction with no Support units still offered a
+     * Support tab that led to an empty list, and every tab was a guess about
+     * how much was behind it. Generated is absent by construction rather than
+     * by being listed: those Units are never selectable, so they never reach
+     * the count.
+     *
+     * The number is what EXISTS in the category, not what survives the current
+     * search. It is fixed at open, which is what lets the bar be built once and
+     * never rebuilt — the thing that stopped the modal jumping under your
+     * finger every time you touched a sort. */
+    const pickable = f.units.filter(u => u.selectable !== false);
+    const catCounts = CATEGORY_ORDER
+      .map(c => ({ name: c, n: pickable.filter(u => u.category === c).length }))
+      .filter(c => c.n > 0);
+    const cats = [{ name: 'All', n: pickable.length }].concat(catCounts);
     /* --acc is declared inline on .dzc-wrap, and this modal lives outside it,
      * so the active chip was painting white text on an undefined background —
      * the filters worked, you just could not see which one was on. */
@@ -807,8 +826,9 @@
                   aria-label="Show as a list" onclick="DZCBuilder.pickerView()"></button>
         </div>
         <div class="dzc-chips">${cats.map(c =>
-          `<button type="button" class="dzc-chip" data-cat="${esc(c)}"
-            onclick="DZCBuilder.pickerCat('${c}')">${esc(c)}</button>`).join('')}</div>
+          `<button type="button" class="dzc-chip" data-cat="${esc(c.name)}"
+            onclick="DZCBuilder.pickerCat('${c.name}')"
+            >${esc(c.name)}<i class="dzc-chip-n">${c.n}</i></button>`).join('')}</div>
         <div class="dzc-pick-sorts">
           <span class="dzc-pick-sortlab">Sort</span>
           ${SORTS.map(s => `<button type="button" class="dzc-chip dzc-chip--sm" data-sort="${s.key}"
