@@ -1377,6 +1377,28 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
 [data-theme="dark"] #landing-logo { content: url("../assets/logos/dzc_logo_white.webp"); }
 @media (max-width: 640px) { .topbar-logo { height: 20px; } }
 
+/* ── Drag a Group to reorder it ──
+   Six dots drawn with a gradient rather than an icon: it is the one glyph in
+   the app that means "hold this", it has to read at 10px, and inlining a
+   seventh SVG for it would be more markup than the thing it draws.
+
+   The card is position:relative already; the grip sits in its top-right corner
+   so it never lands under the name, and it is the only drag target — dragging
+   the card itself would fight the tap that opens it. */
+.dzc-bb { position: relative; }
+.dzc-bb-grip {
+  position: absolute; top: 5px; right: 5px; width: 16px; height: 18px;
+  cursor: grab; touch-action: none; opacity: .35;
+  background-image: radial-gradient(currentColor 1px, transparent 1.2px);
+  background-size: 5px 5px; background-position: 2px 3px;
+  transition: opacity .12s;
+}
+.dzc-bb:hover .dzc-bb-grip, .dzc-bb-grip:hover { opacity: .8; }
+/* No shadow and no lift: the card must not move except with the finger. */
+.dzc-bb.is-dragging { opacity: .9; position: relative; z-index: 50; cursor: grabbing; }
+.dzc-bb.is-before { box-shadow: inset 0 3px 0 0 var(--acc); }
+.dzc-bb.is-after { box-shadow: inset 0 -3px 0 0 var(--acc); }
+
 /* ── What an army is for ──
    On the card it is one quiet line under the name. In the builder it is
    editable where it is read, like the name above it — and when it is empty it

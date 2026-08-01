@@ -635,6 +635,29 @@
     return army.description;
   }
 
+  /* Move a Group so it sits before or after another.
+   *
+   * The array order IS the order on the screen and on the printed sheet, and
+   * that order is the deployment plan -- which Group you put down first is a
+   * decision, and until now it was whatever order you happened to add them in.
+   *
+   * Dropfleet constrains the same move to a weight class (reorderGroupWithinClass,
+   * app.js:2760) because its groups bucket by one. A DZC Group has no category:
+   * it is one Squad and its Transports (3.2.4), and the Squads inside it can be
+   * anything. So there is nothing to constrain it to and any order is legal. */
+  function moveGroup(army, draggedId, targetId, placeAfter) {
+    if (!draggedId || draggedId === targetId) return false;
+    const gs = army.groups;
+    const dragged = gs.find(g => g.id === draggedId);
+    const target = gs.find(g => g.id === targetId);
+    if (!dragged || !target) return false;
+    gs.splice(gs.indexOf(dragged), 1);
+    const at = gs.indexOf(target);
+    gs.splice(placeAfter ? at + 1 : at, 0, dragged);
+    touch(army);
+    return true;
+  }
+
   function renameGroup(army, groupId, text) {
     const g = army.groups.find(x => x.id === groupId);
     if (!g) return;
@@ -1517,7 +1540,7 @@
   window.DZCArmy = {
     load, save, all, get, create, remove, touch, setPointsLimit, setDescription,
     importArmies, importList, parseList, generate,
-    addGroup, removeGroup, duplicateGroup, groupName, renameGroup,
+    addGroup, removeGroup, duplicateGroup, moveGroup, groupName, renameGroup,
     commanderName, renameCommander, addSquad, removeSquad, setModelCount, setModelVariant,
     canSetVariantCount, setVariantCount,
     setCarrier, setCommander, findSquad, groupOf, unitOf,

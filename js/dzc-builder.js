@@ -475,6 +475,81 @@
    * Shape taken from Dropfleet rather than invented — a row per band, then a
    * number for the exact figure, because the band is the shorthand and the
    * number is what the rules key off. */
+  /* Drag to reorder Groups.
+   *
+   * The array order is the order on screen and on the printed sheet, and that
+   * order is the deployment plan — which Group goes down first is a decision,
+   * and it used to be whatever order you happened to add them in.
+   *
+   * Pointer Events, NOT native HTML5 drag-and-drop, and that is not a
+   * preference: native drag never fires on touch at all in iOS Safari and is
+   * inconsistent on Android. Dropfleet rewrote this for exactly that reason
+   * (app.js:2686, after an "unusably bad on touch" report) and this is that
+   * code with the weight-class constraint taken out — a DZC Group has no
+   * category to be constrained to.
+   *
+   * setPointerCapture keeps the events coming to the grip even when the finger
+   * leaves it, which is what makes a drag survive a fast flick. */
+  let groupDrag = null;
+
+  function gripDown(ev, gid) {
+    if (!current || ev.button === 2) return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    const grip = ev.currentTarget;
+    const row = grip.closest('.dzc-bb');
+    if (!row) return;
+    const peers = [...document.querySelectorAll('.dzc-bb')].map(r => {
+      const rc = r.getBoundingClientRect();
+      return { gid: r.dataset.gid, el: r, top: rc.top, height: rc.height };
+    });
+    if (peers.length < 2) return;
+    const rect = row.getBoundingClientRect();
+    groupDrag = { gid, rowEl: row, startY: ev.clientY, rowTop: rect.top,
+                  rowH: rect.height, peers, targetGid: null, after: false };
+    row.classList.add('is-dragging');
+    try { grip.setPointerCapture(ev.pointerId); } catch (e) { /* no capture, still works */ }
+    grip.addEventListener('pointermove', gripMove);
+    grip.addEventListener('pointerup', gripUp);
+    grip.addEventListener('pointercancel', gripCancel);
+  }
+
+  function gripMove(ev) {
+    if (!groupDrag) return;
+    ev.preventDefault();
+    const dy = ev.clientY - groupDrag.startY;
+    groupDrag.rowEl.style.transform = `translateY(${dy}px)`;
+    const centre = groupDrag.rowTop + groupDrag.rowH / 2 + dy;
+    groupDrag.peers.forEach(p => p.el.classList.remove('is-before', 'is-after'));
+    let best = null, bestDist = Infinity;
+    groupDrag.peers.forEach(p => {
+      if (p.gid === groupDrag.gid) return;
+      const d = Math.abs(centre - (p.top + p.height / 2));
+      if (d < bestDist) { bestDist = d; best = p; }
+    });
+    if (!best) { groupDrag.targetGid = null; return; }
+    const after = centre > (best.top + best.height / 2);
+    best.el.classList.add(after ? 'is-after' : 'is-before');
+    groupDrag.targetGid = best.gid;
+    groupDrag.after = after;
+  }
+
+  function endGrip(grip, commit) {
+    grip.removeEventListener('pointermove', gripMove);
+    grip.removeEventListener('pointerup', gripUp);
+    grip.removeEventListener('pointercancel', gripCancel);
+    if (!groupDrag) return;
+    const { gid, targetGid, after, rowEl, peers } = groupDrag;
+    rowEl.style.transform = '';
+    rowEl.classList.remove('is-dragging');
+    peers.forEach(p => p.el.classList.remove('is-before', 'is-after'));
+    groupDrag = null;
+    if (commit && targetGid && window.DZCArmy.moveGroup(current, gid, targetGid, after)) refresh();
+  }
+
+  function gripUp(ev) { endGrip(ev.currentTarget, true); }
+  function gripCancel(ev) { endGrip(ev.currentTarget, false); }
+
   function closeSizePop() {
     const el = document.getElementById('dzc-size-pop');
     if (el) el.remove();
@@ -552,7 +627,14 @@
     const art = g.squads.map(s => window.DZCArmy.unitOf(a, s)).filter(u => u && u.art)
       .slice(0, 4).map(u => `<img src="${esc(u.art)}" alt="" loading="lazy" title="${esc(u.name)}">`).join('');
     return `<button type="button" class="dzc-bb${g.id === selectedGroup ? ' is-on' : ''}${
-      cost > cap ? ' is-over' : ''}" onclick="DZCBuilder.selectGroup('${g.id}')">
+      cost > cap ? ' is-over' : ''}" data-gid="${g.id}" onclick="DZCBuilder.selectGroup('${g.id}')">
+      <!-- The grip, and it has to be a separate target: dragging anywhere on
+           the card would fight the tap that opens it, which is the commonest
+           thing you do to one. -->
+      <span class="dzc-bb-grip" role="button" tabindex="-1"
+            aria-label="Drag to reorder ${esc(window.DZCArmy.groupName(a, g))}"
+            title="Drag to reorder"
+            onpointerdown="DZCBuilder.gripDown(event, '${g.id}')"></span>
       <span class="dzc-bb-head"><b>${esc(window.DZCArmy.groupName(a, g))}</b>
         <i>${cost}<s>/${cap}</s></i></span>
       <span class="dzc-bb-meta">${g.squads.length} Squad${g.squads.length === 1 ? '' : 's'}${
@@ -2029,6 +2111,7 @@
       if (now !== was) refresh();
     },
     renameCommander: (id, t) => { window.DZCArmy.renameCommander(current, id, t); refresh(); },
+    gripDown,
     selectGroup: id => { selectedGroup = id; drilled = true; refresh(); },
     backToGroups: () => { drilled = false; refresh(); },
     openCarry, closeCarry,

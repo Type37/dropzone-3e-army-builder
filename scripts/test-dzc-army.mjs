@@ -738,5 +738,25 @@ console.log('\nwhat an army is for');
   A.remove(a.id);
 }
 
+console.log('\nreordering Groups');
+{
+  const a = A.create('ucm', 'Order', 2000);
+  const g1 = A.addGroup(a, 'One');
+  const g2 = A.addGroup(a, 'Two');
+  const g3 = A.addGroup(a, 'Three');
+  const order = () => A.get(a.id).groups.map(g => g.name).join(' ');
+
+  ok(A.moveGroup(a, g3.id, g1.id, false), 'a Group moves before another');
+  eq(order(), 'Three One Two', 'and the array order is the order on the page');
+  ok(A.moveGroup(a, g3.id, g2.id, true), 'and after another');
+  eq(order(), 'One Two Three', 'which puts it back');
+
+  // The two cases that must do nothing rather than corrupt the list.
+  ok(!A.moveGroup(a, g1.id, g1.id, true), 'a Group cannot be moved past itself');
+  ok(!A.moveGroup(a, g1.id, 'nosuchgroup', true), 'and not next to one that is not there');
+  eq(order(), 'One Two Three', 'neither of those moved anything');
+  A.remove(a.id);
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
