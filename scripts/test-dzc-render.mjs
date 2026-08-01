@@ -1,0 +1,187 @@
+/* Render tests: what the builder actually puts on the page.
+ *
+ * These exist because three regressions in one night were caught by opening a
+ * screenshot and none by the suite, and all three were plain string bugs that
+ * a test could have seen:
+ *
+ *   - a Group with no stored name rendered "null" has 2 Squads, because
+ *     validate() read g.name directly instead of going through groupName
+ *   - the army card set --ink for a category colour, which is the GLOBAL ink
+ *     token, so every thumbnail repainted its own text colour
+ *   - the Collection rail wrapper was given .dzc-coll-body, a class that was
+ *     already on all 178 unit rows, and forced a two-column grid onto them
+ *
+ * Screenshots caught those because they were visual. That is not an argument
+ * that looking beats testing -- it is an argument that nothing was testing the
+ * markup. So: render the real functions against the real data and assert on
+ * the strings.
+ *
+ *   node scripts/test-dzc-render.mjs
+ */
+import { readFileSync, readdirSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+import vm from 'node:vm';
+
+const ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+
+let pass = 0, fail = 0;
+const ok = (c, label, extra) => c ? pass++ : (fail++, console.error(`  FAIL  ${label}${extra ? `\n        ${extra}` : ''}`));
+const eq = (a, b, label) => ok(a === b, label, `expected ${JSON.stringify(b)}, got ${JSON.stringify(a)}`);
+
+/* ── 1. Nothing renders a JS placeholder ──────────────────────────────
+ *
+ * A template literal that reaches an absent field prints the word null or
+ * undefined straight into the page. It is never correct and it is the exact
+ * shape of the Group-name bug, so it is checked structurally: every `${...}`
+ * that interpolates a bare `.name` must go through a resolver.
+ */
+console.log('\nno template prints a placeholder');
+
+const store = new Map();
+const win = {};
+const sandbox = {
+  window: win, console,
+  localStorage: {
+    getItem: k => (store.has(k) ? store.get(k) : null),
+    setItem: (k, v) => store.set(k, String(v)),
+    removeItem: k => store.delete(k)
+  },
+  fetch: async (p) => {
+    try {
+      return { ok: true, status: 200, json: async () => JSON.parse(readFileSync(path.join(ROOT, p), 'utf8')) };
+    } catch { return { ok: false, status: 404, json: async () => null }; }
+  }
+};
+sandbox.globalThis = sandbox;
+vm.createContext(sandbox);
+vm.runInContext(readFileSync(path.join(ROOT, 'js', 'dzc-data.js'), 'utf8'), sandbox);
+vm.runInContext(readFileSync(path.join(ROOT, 'js', 'dzc-army.js'), 'utf8'), sandbox);
+const DZC = win.DZC, A = win.DZCArmy;
+
+await DZC.loadIndex();
+await DZC.loadFaction('ucm');
+
+/* Every message validate() can produce, over an army built to trip as many of
+ * them as possible. A Group with no name is the default state now, so this is
+ * the case that regressed. */
+{
+  const a = A.create('ucm', 'Render probe', 2000);
+  const g = A.addGroup(a);
+  A.addSquad(a, g.id, 'legionnaires', 2);
+  A.addSquad(a, g.id, 'praetorian-snipers', 2);
+  const g2 = A.addGroup(a);
+  A.addSquad(a, g2.id, 'ucm-light-battle-tank', 2);
+
+  const v = A.validate(a);
+  const all = [...v.errors, ...v.warnings].map(x => x.msg).join(' ~ ');
+  ok(all.length > 0, 'the probe army actually produces messages', all);
+  ok(!/\bnull\b/.test(all), 'no message contains "null"', all);
+  ok(!/\bundefined\b/.test(all), 'no message contains "undefined"', all);
+  ok(/Group 1|Group 2/.test(all), 'Groups are named by position in messages', all);
+
+  // groupName is the only sanctioned way to read a Group's name.
+  eq(A.groupName(a, g), 'Group 1', 'groupName resolves an unnamed Group');
+  eq(g.name, null, 'and the Group really has nothing stored');
+  A.remove(a.id);
+}
+
+/* ── 2. No custom property collides with a global token ───────────────
+ *
+ * --ink, --acc, --line, --gold and --danger are app-wide. Setting one inline
+ * for a local purpose silently repaints everything inside that element, which
+ * is what --ink did on the army-card thumbnails and --acc did on the picker's
+ * active chip. Local variables must be named for their job.
+ */
+console.log('\nno inline style hijacks a global token');
+
+const GLOBAL_TOKENS = ['ink', 'ink-2', 'acc', 'line', 'gold', 'danger', 'surface', 'surface-2', 'surface-3'];
+const jsFiles = readdirSync(path.join(ROOT, 'js')).filter(f => f.endsWith('.js'));
+const hijacks = [];
+for (const f of jsFiles) {
+  const src = readFileSync(path.join(ROOT, 'js', f), 'utf8');
+  // style="--x:..." written into markup, which is the only way a local value
+  // can shadow a token for a subtree.
+  // Read the whole attribute, not the line around it: what matters is the
+  // value assigned, and a line number is not a reliable way back to it.
+  for (const m of src.matchAll(/style="([^"]*)"/g)) {
+    const attr = m[1];
+    for (const d of attr.matchAll(/--([a-z0-9-]+)\s*:\s*([^;"]*)/gi)) {
+      const name = d[1].toLowerCase(), value = d[2];
+      if (!GLOBAL_TOKENS.includes(name)) continue;
+      // --acc assigned FROM an accent is the token doing its job, not a hijack.
+      if (name === 'acc' && /acc/i.test(value)) continue;
+      const line = src.slice(0, m.index).split('\n').length;
+      hijacks.push(`js/${f}:${line} --${name}: ${value.trim()}`);
+    }
+  }
+}
+eq(hijacks.length, 0, 'no inline custom property shadows a global token');
+if (hijacks.length) console.error('        ' + hijacks.join('\n        '));
+
+/* ── 3. A class name means one thing ──────────────────────────────────
+ *
+ * .dzc-coll-body was the inner span of a unit row and then became the
+ * Collection pane wrapper, so a grid meant for one element landed on 178. Two
+ * elements with the same class and unrelated jobs is the bug; this catches the
+ * case where a class is used at two different nesting depths in one file with
+ * different tag names, which is what that was.
+ */
+console.log('\na class name is not reused for two different things');
+
+const KNOWN_SHARED = new Set([
+  // Deliberately shared: the same visual component in several places.
+  'dzc-rail-card', 'dzc-rail-line', 'dzc-rail-title', 'dzc-rail-pts',
+  'dzc-chip', 'dzc-tab', 'dzc-search', 'dzc-search-row', 'dzc-ratios',
+  'dzc-ratio', 'dzc-badge', 'dzc-badge-n', 'dzc-transport', 'dzc-sep',
+  'dzc-stat', 'dzc-stats', 'dzc-rule', 'dzc-flag', 'dzc-icon-btn',
+  'dzc-empty', 'dzc-count', 'dzc-card-stats', 'dzc-wrap', 'dzc-grid',
+  'dzc-pts', 'dzc-none', 'dzc-toolbar', 'dzc-tabs', 'dzc-pop'
+]);
+const clashes = [];
+for (const f of jsFiles) {
+  const src = readFileSync(path.join(ROOT, 'js', f), 'utf8');
+  const byClass = new Map();
+  for (const m of src.matchAll(/<(\w+)[^>]*?class="([^"]*)"/g)) {
+    const tag = m[1];
+    for (const cls of m[2].split(/\s+/)) {
+      const name = cls.split('$')[0].trim();
+      if (!name.startsWith('dzc-') || name.length < 5 || KNOWN_SHARED.has(name)) continue;
+      if (!byClass.has(name)) byClass.set(name, new Set());
+      byClass.get(name).add(tag);
+    }
+  }
+  for (const [name, tags] of byClass) {
+    if (tags.size > 1) clashes.push(`js/${f}: .${name} on <${[...tags].join('> and <')}>`);
+  }
+}
+eq(clashes.length, 0, 'no class is used on two different element types in one file');
+if (clashes.length) console.error('        ' + clashes.join('\n        '));
+
+/* ── 4. Every class the JS emits has a rule behind it ─────────────────
+ *
+ * A styled element whose class was renamed in one file and not the other looks
+ * fine in the markup and unstyled on screen — which is how the faction-mark
+ * revert could have left dead classes behind.
+ */
+console.log('\nevery class the JS emits is styled somewhere');
+
+const css = readFileSync(path.join(ROOT, 'css', 'dzc.css'), 'utf8')
+  + readFileSync(path.join(ROOT, 'css', 'app.css'), 'utf8');
+const emitted = new Set();
+for (const f of jsFiles) {
+  const src = readFileSync(path.join(ROOT, 'js', f), 'utf8');
+  for (const m of src.matchAll(/class="([^"]*)"/g)) {
+    for (const cls of m[1].split(/\s+/)) {
+      const name = cls.split('$')[0].replace(/[^a-z0-9-]/gi, '').trim();
+      if (name.startsWith('dzc-') && name.length > 4) emitted.add(name);
+    }
+  }
+}
+ok(emitted.size > 40, 'the class scan actually found classes', `found ${emitted.size}`);
+const unstyled = [...emitted].filter(c => !css.includes('.' + c));
+eq(unstyled.length, 0, 'every dzc- class the JS emits appears in the CSS');
+if (unstyled.length) console.error('        ' + unstyled.join('\n        '));
+
+console.log(`\n${pass} passed, ${fail} failed\n`);
+process.exit(fail ? 1 : 0);

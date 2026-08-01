@@ -169,7 +169,7 @@
       <div class="dzc-card-body">
         <h3 class="dzc-card-name">${esc(u.name)}</h3>
         <div class="dzc-card-meta">
-          <span class="dzc-type">${esc(u.type || '')}</span>
+          <span>${esc(u.type || '')}</span>
           <span class="dzc-points">${pointsHtml(u)}</span>
           <span class="dzc-squad">Squad ${squadHtml(u)}</span>
           ${flags}
