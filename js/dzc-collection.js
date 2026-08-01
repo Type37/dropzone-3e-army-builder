@@ -113,7 +113,7 @@
       <!-- Panes on a desktop, like the builder and Play. What you own is a
            standing total you glance at while scrolling a long list; putting it
            at the top meant it scrolled away immediately. -->
-      <div class="dzc-coll-body">
+      <div class="dzc-coll-panes">
         <aside class="dzc-coll-rail">
           <div class="dzc-rail-card">
             <div class="dzc-rail-pts"><b>${totals}</b><span>model${totals === 1 ? '' : 's'}</span></div>

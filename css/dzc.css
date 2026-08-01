@@ -126,11 +126,11 @@
 
 /* Collection keeps panes: the running totals stay put while a 178-row list
    scrolls beside them. */
-.dzc-coll-body { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 10px; align-items: start; }
+.dzc-coll-panes { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 10px; align-items: start; }
 .dzc-coll-rail { position: sticky; top: 12px; display: flex; flex-direction: column; gap: 8px; }
 .dzc-coll-main { min-width: 0; }
 @media (max-width: 900px) {
-  .dzc-coll-body { grid-template-columns: 1fr; }
+  .dzc-coll-panes { grid-template-columns: 1fr; }
   .dzc-coll-rail { position: static; flex-direction: row; flex-wrap: wrap; }
   .dzc-coll-rail .dzc-rail-card { flex: 1 1 200px; }
 }
