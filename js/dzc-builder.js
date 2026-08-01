@@ -247,7 +247,9 @@
     const cost = window.DZCArmy.armyCost(a);
     const size = window.DZC.gameSizeFor(a.pointsLimit);
     const maxG = size ? window.DZC.maxGroups(size, a.pointsLimit) : 0;
-    const cap = window.DZC.maxGroupCost(a.pointsLimit);
+    // No per-Group cap here on purpose. It is a constant, and every Group card
+    // already meters itself against it — printing it once more at the top was
+    // the header telling you something the thing below it was showing you.
     const v = triage(window.DZCArmy.validate(a), a);
     const spend = window.DZCArmy.categorySpend(a);
     const std = spend.standard || 0;
