@@ -252,8 +252,16 @@
      * HANDOFF §2.2: desktop keeps panes, mobile does not. */
     root.innerHTML = `<div class="dzc-wrap dzc-builder" style="--acc:${accentOf(a.faction)}">
       <header class="dzc-b-head">
+        <!-- Editable in place, and it has to SAY so. A contenteditable heading
+             with no affordance is a trap in both directions: nobody discovers
+             it, and anyone who does discover it by accident has already typed
+             into their army title. Dropfleet makes the same two things
+             renameable and marks both (editFleetName, "Click to rename
+             fleet"). -->
         <h1 contenteditable="true" spellcheck="false" class="dzc-b-name"
-            onblur="DZCBuilder.rename(this.textContent)">${esc(a.name)}</h1>
+            role="textbox" aria-label="Army name" title="Click to rename"
+            data-orig="${esc(a.name)}" onkeydown="DZCBuilder.nameKey(event)"
+            onblur="DZCBuilder.rename(this)">${esc(a.name)}</h1>
         <div class="dzc-b-right">
           <!-- Play needs a Commander: CP per Round, hand size and the Initiative
                modifier all come from Commander Level (4.1). Offering it on an
@@ -368,7 +376,10 @@
     return `<section class="dzc-group-card${cost > cap ? ' is-over' : ''}">
       <header class="dzc-g-head">
         <h2 contenteditable="true" spellcheck="false"
+            role="textbox" aria-label="Group name"
             title="Rename this Group, or clear it to go back to its number"
+            data-orig="${esc(window.DZCArmy.groupName(a, g))}"
+            onkeydown="DZCBuilder.nameKey(event)"
             onblur="DZCBuilder.renameGroup('${g.id}', this.textContent)">${esc(window.DZCArmy.groupName(a, g))}</h2>
         <button class="dzc-icon-btn" type="button" title="Remove Group"
                 onclick="DZCBuilder.removeGroup('${g.id}')" aria-label="Remove ${esc(window.DZCArmy.groupName(a, g))}">&times;</button>
@@ -1175,7 +1186,32 @@
       picked.points = isNaN(n) ? 0 : n;
       updatePointsNote();
     },
-    rename: t => { current.name = (t || '').trim() || 'Army'; window.DZCArmy.touch(current); },
+    /* Enter commits, Escape abandons — the two keys everyone already tries. A
+     * contenteditable does neither on its own: Enter inserts a newline into
+     * your army name, and Escape does nothing, so the only way out was to
+     * click away, which SAVES. There was no way to change your mind.
+     *
+     * Escape restores from data-orig and lets blur run as normal. */
+    nameKey: e => {
+      if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); }
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        e.target.textContent = e.target.dataset.orig || '';
+        e.target.blur();
+      }
+    },
+    /* Falling back to "Army" when the field is cleared is right, but it left
+     * the heading blank on screen while storage said otherwise. The element is
+     * corrected in place rather than by redrawing: replacing the markup inside
+     * a blur handler destroys the element the click is still travelling to, so
+     * renaming and then reaching for another control would do nothing. A Group
+     * can redraw because clearing it has to show the number coming back. */
+    rename: el => {
+      current.name = (el.textContent || '').trim() || 'Army';
+      el.textContent = current.name;
+      el.dataset.orig = current.name;
+      window.DZCArmy.touch(current);
+    },
     renameGroup: (id, t) => { window.DZCArmy.renameGroup(current, id, t); refresh(); },
     // Just the empty Group. It used to open the picker straight away, which
     // took the decision "which Group am I filling" away from you and made
