@@ -529,11 +529,19 @@
     // is about a Squad that exists, not about being unable to change your
     // mind.
     const downOk = down.ok || n === 1;
-    const btn = (dir, ok, why, label, icon) =>
-      `<button type="button" ${ok ? '' : 'disabled'}
-               ${ok || !why ? '' : `title="${esc(why)}"`}
+    /* The reason goes on a WRAPPER, not on the button.
+     *
+     * A disabled form control does not reliably fire hover, and browsers
+     * disagree about whether title= still shows on one — so a tooltip put
+     * there is a coin flip. A span is never disabled and always gets the
+     * pointer. The button keeps aria-label either way, because that is read
+     * out rather than hovered. */
+    const btn = (dir, ok, why, label, icon) => {
+      const b = `<button type="button" ${ok ? '' : 'disabled'}
                onclick="DZCBuilder.count('${sq.id}',${dir})"
                aria-label="${label}">${window.DZCIcon(icon, { size: 14 })}</button>`;
+      return ok || !why ? b : `<span class="dzc-step-why" title="${esc(why)}">${b}</span>`;
+    };
     return `<span class="dzc-stepper">
       ${btn(-1, downOk, down.reason, 'Remove one model', 'remove')}
       <b>${n}</b>

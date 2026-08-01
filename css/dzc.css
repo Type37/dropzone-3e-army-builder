@@ -611,6 +611,10 @@
 .dzc-stepper { display: inline-flex; align-items: center; gap: 2px; }
 .dzc-stepper button { width: 24px; height: 24px; border-radius: 4px; cursor: pointer; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); font-size: 15px; line-height: 1; }
 .dzc-stepper button:hover { border-color: var(--acc); }
+/* Carries the title for a disabled stepper button. A disabled control does not
+   reliably fire hover and browsers disagree about whether its tooltip shows at
+   all; a span always gets the pointer. Laid out as if it were not there. */
+.dzc-step-why { display: inline-flex; }
 .dzc-stepper b {
   min-width: 20px; text-align: center; font-size: 15px; font-weight: 600;
   font-family: var(--font-numeric, 'Outfit', sans-serif);
