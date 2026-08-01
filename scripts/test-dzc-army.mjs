@@ -373,6 +373,45 @@ console.log('\nCommander levels are gated by game size (3.2.5)');
   A.remove(a.id);
 }
 
+/* Where a Commander may go. commanderTargets is what fills the Aboard select,
+ * and until now nothing in the suite had ever called it — so the one control
+ * that decides which Unit a Commander leads was answering from untested code.
+ *
+ * "A Squad may contain only one" (3.2.5) is the rule it enforces: a Squad
+ * already holding somebody else is not offered, and the Squad holding THIS
+ * Commander is, because otherwise the select could not show where they are.
+ *
+ * Excluding Transport Squads is the app's own decision and not something 3.2.5
+ * says; it is pinned here as behaviour, with a question raised on the backlog
+ * rather than a rule claimed for it.
+ */
+console.log('\nwhere a Commander may be assigned (3.2.5)');
+{
+  const a = army();
+  const g = A.addGroup(a);
+  const legion = A.addSquad(a, g.id, 'legionnaires', 3);
+  A.assignTransport(a, legion.id, 'bear-apc');
+  const g2 = A.addGroup(a);
+  const tank = A.addSquad(a, g2.id, 'ucm-main-battle-tank', 2);
+
+  const first = A.addCommander(a, 5).commander;
+  let ids = A.commanderTargets(a, first.id).map(t => t.squad.id);
+  eq(ids.length, 2, 'both fighting Squads are offered');
+  ok(ids.includes(legion.id) && ids.includes(tank.id), 'and they are the right two');
+  ok(!A.commanderTargets(a, first.id).some(t => (A.unitOf(a, t.squad) || {}).category === 'Transport'),
+     'the Transport Squad is not among them');
+
+  A.assignCommander(a, first.id, legion.id);
+  ids = A.commanderTargets(a, first.id).map(t => t.squad.id);
+  ok(ids.includes(legion.id), 'a Commander is still offered the Squad it is already aboard');
+
+  const second = A.addCommander(a, 4).commander;
+  ids = A.commanderTargets(a, second.id).map(t => t.squad.id);
+  eq(ids.length, 1, 'a second Commander is offered only the free Squad');
+  eq(ids[0], tank.id, 'and it is the one nobody is aboard');
+  A.remove(a.id);
+}
+
 console.log('\nsymbol shape decides what may be offered at all');
 {
   await DZC.loadFaction('resistance');
