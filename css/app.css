@@ -867,7 +867,7 @@ h1, h2, h3, h4, h5, h6 {
    (managed via the admiral slot), gold accent, "incl." instead of points since
    its cost is already counted with the admiral. */
 .overview-flagship-card { cursor: default; }
-/* The flagship is a hero ship: clicking opens its datasheet. */
+/* The flagship is a hero ship: clicking opens its stat card. */
 .overview-flagship-clickable { cursor: pointer; transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out); }
 .overview-flagship-clickable:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
 .overview-flagship-pts {
@@ -2283,7 +2283,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ── 14. Ship Stats Grid ─────────────────────────────────────── */
-/* Stat block: stats STACKED one per row (a vertical datasheet list), NOT all
+/* Stat block: stats STACKED one per row (a vertical stat-card list), NOT all
    across a single row. Each row: icon + stat name on the left, value on the
    right. Scans straight down. */
 /* 2-col grid: each main stat paired with a save on its row (Scan|KS, Sig|ES,
@@ -2465,7 +2465,7 @@ h1, h2, h3, h4, h5, h6 {
 #builder-detail .weapon-col-name { white-space: normal; }
 #builder-detail .weapon-row-header .weapon-col-special { display: none; }
 
-/* Name-less datasheet: used in the systems picker where the option's bold name
+/* Name-less stat card: used in the systems picker where the option's bold name
    already heads the card, so repeating it (and the "Weapon" column) is just
    noise. Drop the first column. */
 .weapon-list-noname .weapon-row {
@@ -2810,7 +2810,7 @@ h1, h2, h3, h4, h5, h6 {
   outline-offset: 1px;
 }
 
-/* Either/or loadout (e.g. Laser Refit): radio cards, each with its datasheet. */
+/* Either/or loadout (e.g. Laser Refit): radio cards, each with its stat card. */
 .loadout-picker { margin-top: var(--sp-sm); }
 .loadout-radio {
   display: flex;
@@ -3305,7 +3305,7 @@ h1, h2, h3, h4, h5, h6 {
 .weapon-list, .launch-ref, .launch-ref-table { max-width: 100%; overflow-x: auto; }
 .sys-opt { flex-wrap: wrap; }
 .sys-opt-main { flex: 1 1 60%; }
-/* Full-width mini weapon-datasheet under a weapon hardpoint option. */
+/* Full-width mini weapon table under a weapon hardpoint option. */
 .sys-opt-sheet { flex-basis: 100%; width: 100%; margin: 2px 0 4px; }
 
 /* ── 16. Ship Cards (selection modal) ────────────────────────── */
@@ -3836,7 +3836,7 @@ h1, h2, h3, h4, h5, h6 {
   color: #c4bfb5;
   margin-bottom: var(--sp-sm);
 }
-/* Compact flagship link inside the (light) admiral card -> opens its datasheet. */
+/* Compact flagship link inside the (light) admiral card -> opens its stat card. */
 .admiral-flagship-link {
   display: inline-flex; align-items: center; gap: var(--sp-xs);
   margin-top: var(--sp-sm); width: 100%; justify-content: flex-start;
@@ -3997,7 +3997,7 @@ h1, h2, h3, h4, h5, h6 {
   font-style: italic;
 }
 
-/* Famous-admiral flagship datasheet (full stats + weapons) */
+/* Famous-admiral flagship stat card (full stats + weapons) */
 .admiral-flagship {
   margin-top: var(--sp-md);
   padding: var(--sp-sm);
@@ -5825,7 +5825,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 7.5pt;
 }
 
-/* ── Dense print datasheet (.dp-*) ──────────────────────────────
+/* ── Dense print stat card (.dp-*) ──────────────────────────────
    Compact, self-contained print markup that renders IDENTICALLY on screen (in the
    preview) and on paper, so the preview is WYSIWYG and a whole fleet fits onto a few
    readable pages (Army-App / Hobgoblin style). Backgrounds force colour in print. */

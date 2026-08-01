@@ -42,5 +42,36 @@ const puncts = (markup.match(/·/g) || []).length;
 ok(puncts <= 2, 'at most two interpuncts reach the screen', `found ${puncts} in index.html`);
 eq(puncts, 2, 'both are in the footer, and nothing else has taken one');
 
+// ------------------------------------------------------------- the banned word
+/* CLAUDE.md §3: never write "datasheet" -- not in the UI, not in code, not in
+ * a comment, not in a variable name. It is not Jet's word; it arrived with the
+ * Dropfleet source and was smuggled in from there. Where a noun is unavoidable
+ * the domain term is "stat card", which is what TTCombat call the source PDFs.
+ *
+ * Comments count for this one, unlike the interpunct: the rule says so, and a
+ * word that lives in the comments is a word that comes back into the UI. */
+console.log('\nthe banned word');
+const SEARCHED = [
+  'index.html', 'css/app.css', 'css/dzc.css', 'css/dzc-print.css', 'css/mobile-fixes.css',
+  'js/dzc-data.js', 'js/dzc-army.js', 'js/dzc-builder.js', 'js/dzc-units.js',
+  'js/dzc-icons.js', 'js/dzc-share.js', 'js/dzc-play.js', 'js/dzc-collection.js',
+  'js/dzc-shell.js', 'js/rank-insignia.js', 'js/fleet-sync.js', 'js/offline-sync.js',
+  'js/count.js', 'sw.js', 'manifest.webmanifest', 'scripts/shots.mjs'
+];
+// One capture on disk is named for it, and a dozen Todoist tasks cite that
+// filename. Renaming it breaks those citations and changes nothing in the
+// product, so the exception is written down rather than quietly tolerated.
+const ALLOWED = /'17-detail-datasheet'|banned word|Renaming it breaks/;
+const offenders = [];
+for (const file of SEARCHED) {
+  let src;
+  try { src = readFileSync(path.join(ROOT, file), 'utf8'); } catch { continue; }
+  src.split('\n').forEach((line, i) => {
+    if (/datasheet/i.test(line) && !ALLOWED.test(line)) offenders.push(`${file}:${i + 1}`);
+  });
+}
+eq(offenders.length, 0, 'nothing in the app says "datasheet"');
+if (offenders.length) console.error('        ' + offenders.join('\n        '));
+
 console.log(`\n${pass} passed, ${fail} failed\n`);
 process.exit(fail ? 1 : 0);

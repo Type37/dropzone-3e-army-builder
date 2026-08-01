@@ -160,7 +160,7 @@ const DFC_STEPS = [
 
   // Ship keys are UUIDs, so read them off the rendered onclick rather than
   // guessing. Adds must happen while the picker is open: clicking a card body
-  // opens the datasheet AND closes the picker, so doing that first leaves the
+  // opens the stat card AND closes the picker, so doing that first leaves the
   // add buttons detached and every later step shoots an empty fleet.
   ['15-groups-added', `const keys = [...document.querySelectorAll('#ship-select-grid .ship-card button')]
        .map(b => (b.getAttribute('onclick') || '').match(/addShipToGroup\\('([^']+)','([^']+)'\\)/))
@@ -169,9 +169,13 @@ const DFC_STEPS = [
      await new Promise(r => setTimeout(r, 250));
      App.addShipToGroup(keys[1][1], keys[1][2])`],
 
-  // Card body opens the datasheet; + Add is a separate target.
+  // Card body opens the stat card; + Add is a separate target.
   ['16-ship-detail-modal', `[...document.querySelectorAll('#ship-select-grid .ship-card')][0].click()`],
 
+  // The one place the banned word survives: this label names a capture that is
+  // already on disk and is cited by filename from a dozen Todoist tasks.
+  // Renaming it breaks those citations and changes nothing in the product, so
+  // it stays until Jet says otherwise.
   ['17-detail-datasheet', `App.closeModal('modal-ship-detail');
      App.closeModal('modal-ship-select');
      const f = JSON.parse(localStorage.dfc_fleets).find(x => x.name === 'Bioficer Reconquest');

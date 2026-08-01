@@ -742,7 +742,7 @@
 
 /* ── unit picker ──
  * Four across at the modal's full width. Everything you need to choose is on
- * the card; the card body opens the datasheet, Add is its own target. */
+ * the card; the card body opens the stat card, Add is its own target. */
 /* A grid means a grid: cards align top AND bottom, and every Add button in a
    row sits on the same line. The card body takes the slack so the button stays
    pinned to the bottom. */
