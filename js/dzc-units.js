@@ -351,7 +351,7 @@
     pop.id = 'dzc-pop';
     pop.innerHTML = r
       ? `<h5>${esc(r.name)}${r.alias ? ` <span class="dzc-pop-alias">(${esc(r.alias)})</span>` : ''}</h5>
-         <p>${esc(window.DZC.ruleText(token, state.faction))}</p>
+         <p>${window.DZC.linkKeywords(window.DZC.ruleText(token, state.faction), state.faction, r.name)}</p>
          <span class="dzc-pop-src">${esc(ruleSource(r))}</span>`
       : `<h5>${esc(token)}</h5><p>No glossary entry for this keyword — read it from the stat card.</p>`;
     document.body.appendChild(pop);

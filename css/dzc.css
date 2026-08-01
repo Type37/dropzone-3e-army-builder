@@ -151,6 +151,16 @@
   text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1.5px;
 }
 .dzc-rule--unknown { border-style: dashed; opacity: .7; }
+/* A rule named inside a sentence is not a chip. A chip mid-prose breaks the
+   line it is in and reads as a label rather than as part of what you are
+   reading, so it keeps the sentence's own type and takes a dotted underline —
+   the same affordance the size in the rail uses. */
+.dzc-rule--inline {
+  display: inline; margin: 0; padding: 0; border: 0; border-radius: 0;
+  font: inherit; color: inherit;
+  text-decoration: underline dotted; text-underline-offset: 2px;
+}
+.dzc-rule--inline:hover, .dzc-rule--inline:focus-visible { text-decoration: underline; }
 
 /* ── rule popover: absolute at body level, so the page never shifts ── */
 .dzc-pop {

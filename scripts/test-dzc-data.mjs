@@ -404,5 +404,37 @@ console.log('\nfiring arcs are 90-degree wedges (6.1.2)');
   eq(undrawn.length, 0, 'every arc printed on a card has an icon', undrawn.join(', '));
 }
 
+/* Gap 41: a rule that sends you to another rule is tappable where it says so.
+ * Overcharge ends "counts as a High Power weapon"; the chips on the card never
+ * carried High Power, because the card never printed it, so the only route was
+ * to know it existed and go looking. */
+console.log('\nrules link to the rules they name');
+{
+  await DZC.loadFaction('shaltari');
+  const link = (k, f) => DZC.linkKeywords(DZC.ruleText(k, f), f, (DZC.rule(k, f) || {}).name);
+
+  const grav = link('Grav', 'shaltari');
+  ok(/>Resilient</.test(grav), 'Grav links the Resilient it ignores', grav);
+  ok(/>Large</.test(grav), 'and the Large it looks for', grav);
+
+  /* "First Strike" is the ALIAS of "FS X", and without aliases in the pool the
+   * longest-first sort matches the bare "Strike" inside it -- a different rule
+   * entirely, about Disembarking. That is the "Pen 6+" failure again: a
+   * shorter name eating part of a longer one and confidently showing the wrong
+   * text. */
+  const agile = link('Agile 2', 'shaltari');
+  ok(/>First Strike</.test(agile), 'First Strike links whole', agile);
+  ok(!/>Strike</.test(agile), 'and never as the bare "Strike" inside it', agile);
+
+  // A definition that links to itself is a circle, and the popover is already
+  // headed with the rule's own name.
+  const scout = link('Scout', 'shaltari');
+  ok(!/>Scout</.test(scout), 'a rule does not link to itself', scout);
+
+  eq(DZC.linkKeywords('', 'ucm'), '', 'no text, no markup');
+  eq(DZC.linkKeywords('a < b & c', 'ucm'), 'a &lt; b &amp; c',
+     'and the text is escaped BEFORE anything is wrapped, so it cannot open a tag');
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

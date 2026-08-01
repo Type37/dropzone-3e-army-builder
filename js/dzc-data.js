@@ -64,6 +64,11 @@
     return state._loading[id];
   }
 
+  // linkKeywords returns MARKUP, so it escapes its own input rather than
+  // trusting the caller to have done it -- everything else here returns text.
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g,
+    c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
   // ------------------------------------------------------------ rules glossary
 
   // Misspellings in TTCombat's published PDFs, corrected on lookup only. Kept
@@ -138,6 +143,54 @@
   function rule(keyword, faction) {
     const hit = resolve(keyword, faction);
     return hit ? hit.rule : null;
+  }
+
+  /* Rule names found INSIDE prose, so a rule that sends you to another rule is
+   * tappable where it says so.
+   *
+   * Overcharge ends "...this weapon counts as a High Power weapon", and High
+   * Power is its own glossary entry — the chips on the card do not carry it,
+   * because the card never printed it, so the only way to it was to know it
+   * existed and go looking. Dropfleet solved the same problem with
+   * linkKeywords (app.js:3566).
+   *
+   * Longest name first, so "High Power" is not eaten by a shorter entry that
+   * happens to start the same way, and each match is skipped once wrapped so
+   * nothing nests. Parameterised entries ("Aegis X\"") are left out: their
+   * names contain the placeholder rather than anything prose ever says.
+   *
+   * `skip` is the rule you are already reading — a definition that links to
+   * itself is a circle, and the popover is already headed with its name. */
+  function linkKeywords(text, faction, skip) {
+    const t = String(text == null ? '' : text);
+    if (!state.rules || !t) return esc(t);
+    const pool = (state.rules.byFaction[faction] || []).concat(state.rules.core)
+      .filter(r => !(skip && r.name.toLowerCase() === String(skip).toLowerCase()));
+    if (!pool.length) return esc(t);
+    /* Aliases are in, and they are not a nicety. Prose writes "First Strike",
+     * which is the alias of "FS X" — and without it the longest-first sort
+     * matches the bare "Strike" inside it, which is a DIFFERENT rule about
+     * Disembarking. That is the "Pen 6+" failure again: a shorter name eating
+     * part of a longer one and confidently showing the wrong text. */
+    const seen = {};
+    const names = pool.reduce((out, r) => out.concat([r.name, r.alias]), [])
+      .filter(n => {
+        // Longer than three characters, because "UC" and "AA" appear inside
+        // ordinary words; and never a name carrying the value placeholder
+        // ("Aegis X"", "Ev X"), which prose does not write — the alias is what
+        // it writes.
+        if (!n || n.length <= 3 || /\bX\b/.test(n)) return false;
+        const k = n.toLowerCase();
+        if (seen[k]) return false;
+        seen[k] = true;
+        return true;
+      }).sort((a, b) => b.length - a.length);
+    const re = new RegExp('\\b(' + names.map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')\\b', 'gi');
+    // Escape FIRST, then wrap, so the markup this adds is the only markup in
+    // the result and a rule whose text contains "<" cannot open a tag.
+    return esc(t).replace(re, m =>
+      `<button type="button" class="dzc-rule dzc-rule--inline"`
+      + ` onclick="DZCUnits.showRule(this,'${m.replace(/'/g, '&#39;')}')">${m}</button>`);
   }
 
   /* The glossary text with the printed value folded in.
@@ -428,7 +481,7 @@
     get rules() { return state.rules; },
     faction: id => state.factions[id],
     unit: (fid, uid) => (state.factions[fid] || { byId: {} }).byId[uid],
-    rule, ruleText, splitSpecial, matches, squadPrice,
+    rule, ruleText, linkKeywords, splitSpecial, matches, squadPrice,
     capacityFor, fillsOf, canCarry, loadCheck, isFull,
     gameSizeFor, maxGroups, maxGroupCost, rareLimit, commanderLevels,
     _state: state, _compileRules: compileRules
