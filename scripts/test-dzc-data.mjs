@@ -430,6 +430,41 @@ eq(strikehawk.transport.capacityMode, 'both', 'Strikehawk carries both at once')
 const tegu = shaltari.byId['tegu-gatestrider'];
 eq(tegu.transport.capacityMode, 'either', 'Tegu is either/or');
 
+/* And the mode ENFORCED, not merely recorded. Until now the suite proved the
+ * scanner read the "/" and the "+" correctly and never proved the builder did
+ * anything with either. 3.2.4.2, verbatim:
+ *
+ *   "A Transport with two hollow Symbols separated by a /, e.g. [] / /\, may
+ *    not carry a mix of those Symbol shapes (in this case, either all solid
+ *    squares or all solid triangles). A Transport with two hollow Symbols
+ *    separated by a +, e.g. [] + O, may carry both simultaneously."
+ *
+ * The Harbinger is 3 squares OR 4 inverted triangles; the Strikehawk is 4
+ * squares AND 2 circles. Loading each with one of each shape is the only case
+ * that tells them apart, and it is the case that decides whether an illegal
+ * Group is buildable. */
+{
+  const warriors = scourge.byId.warriors;
+  const skimmer2 = scourge.byId['scourge-light-skimmer'];
+  ok(DZC.loadCheck(harbinger, [{ unit: warriors, count: 3 }], 1).ok,
+     'a Harbinger takes three Warriors, filling its squares');
+  ok(DZC.loadCheck(harbinger, [{ unit: skimmer2, count: 4 }], 1).ok,
+     'or four Light Skimmers, filling its inverted triangles');
+  const mixed = DZC.loadCheck(harbinger,
+    [{ unit: warriors, count: 1 }, { unit: skimmer2, count: 1 }], 1);
+  ok(!mixed.ok, 'but never one of each — a "/" Transport carries no mixture');
+  ok(/not a mixture/.test(mixed.reason || ''), 'and it says so rather than just refusing',
+     mixed.reason);
+
+  const strike = resistance.byId['strikehawk-tilt-rotor'];
+  const fighters = resistance.byId['resistance-fighters'];
+  const sentry = resistance.byId['resistance-sentry-unit'];
+  ok(DZC.loadCheck(strike, [{ unit: fighters, count: 4 }, { unit: sentry, count: 2 }], 1).ok,
+     'a "+" Transport carries both shapes at once, filled to both numbers');
+  ok(!DZC.loadCheck(strike, [{ unit: fighters, count: 5 }, { unit: sentry, count: 1 }], 1).ok,
+     'and still refuses one over on either of them');
+}
+
 // ------------------------------------------------------------------ arc icons
 console.log('\nfiring arcs are 90-degree wedges (6.1.2)');
 {
