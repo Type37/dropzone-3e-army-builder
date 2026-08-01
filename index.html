@@ -56,7 +56,9 @@
     <img src="assets/logos/dzc_logo_white.webp" alt="Dropzone Commander" class="topbar-logo">
   </a>
   <div class="topbar-sep desktop-only"></div>
-  <span class="topbar-context" id="topbar-context">Army Builder</span>
+  <!-- Filled in by App.showView. Empty on the landing screen, where the
+       wordmark to the left already says what this is. -->
+  <span class="topbar-context" id="topbar-context"></span>
   <div class="topbar-actions" id="topbar-actions"></div>
   <button class="topbar-global-settings-btn" id="topbar-settings-btn" type="button" onclick="App.openSettings()" aria-label="Settings" title="Settings">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87a.49.49 0 0 0 .12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.61l-2.01-1.58zM12 15.6a3.6 3.6 0 1 1 0-7.2 3.6 3.6 0 0 1 0 7.2z"/></svg>
@@ -80,7 +82,7 @@
           <svg width="32" height="32" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM19 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM21 19a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM5 21a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" fill="currentColor"/><path d="M7.83 6a2.995 2.995 0 0 0 0-2h4.67A2.5 2.5 0 0 1 15 6.5V9h2.5a2.5 2.5 0 0 1 2.5 2.5v4.67a2.997 2.997 0 0 0-2 0V11.5a.5.5 0 0 0-.5-.5H15v1.5a2.5 2.5 0 0 1-2.5 2.5H11v2.5a.5.5 0 0 0 .5.5h4.67a2.997 2.997 0 0 0 0 2H11.5A2.5 2.5 0 0 1 9 17.5V15H6.5A2.5 2.5 0 0 1 4 12.5V7.83a2.995 2.995 0 0 0 2 0v4.67a.5.5 0 0 0 .5.5H9v-1.5A2.5 2.5 0 0 1 11.5 9H13V6.5a.5.5 0 0 0-.5-.5H7.83ZM13 12.5V11h-1.5a.5.5 0 0 0-.5.5V13h1.5a.5.5 0 0 0 .5-.5Z" fill="currentColor"/></svg>
         </div>
         <h2 class="tool-card-title">Army Builder</h2>
-        <p class="tool-card-desc">Build and manage army rosters for all six factions.</p>
+        <p class="tool-card-desc">Build and manage rosters for all six factions.</p>
       </div>
       <!-- Collection is opt-in and off by default, as in the Dropfleet builder.
            App.applyCollectionSetting() reveals this card when it is switched on. -->
@@ -99,14 +101,15 @@
         <p class="tool-card-desc">Stats, weapons and rules for all 178 units.</p>
       </div>
       <!-- A separate page, not a view: it is a sheet you print once and take to
-           a table, so it is styled for paper and reads the same data. Dropfleet
-           links its ref/ from the landing page and the footer; so does this. -->
-      <a class="tool-card tool-card--ref card-deco" href="assets/ref/index.html">
+           a table, so it is styled for paper and reads the same data. Title,
+           wording and the new tab are Dropfleet's own Faction References card
+           (git show 43773fa:index.html) rather than newly written. -->
+      <a class="tool-card tool-card--ref card-deco" href="assets/ref/index.html" target="_blank" rel="noopener">
         <div class="tool-card-icon">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/></svg>
         </div>
-        <h2 class="tool-card-title">Quick references</h2>
-        <p class="tool-card-desc">One printable sheet per faction.</p>
+        <h2 class="tool-card-title">Faction References</h2>
+        <p class="tool-card-desc">Printable quick-reference sheets for all six factions.</p>
       </a>
     </div>
     <div class="landing-objectives" id="landing-objectives"></div>
@@ -294,7 +297,7 @@
          watches. -->
     <span>by <a href="https://ttcombat.com/pages/dropzone-commander-resources" target="_blank" rel="noopener">TTCombat</a></span>
     <span class="gif-builder">Army builder by <a class="warlore-mark warlore-mark-inline" href="https://linktr.ee/warlore" target="_blank" rel="noopener" title="WarLore">War<span class="wl-lore">Lore</span></a></span>
-    <a href="assets/ref/index.html">Quick references</a>
+    <a href="assets/ref/index.html" target="_blank" rel="noopener">Faction References</a>
     <a id="footer-feedback" href="mailto:warlore1@outlook.com">Send Feedback</a>
     <span class="gif-sep">·</span>
     <a href="https://github.com/Type37/dropzone-3e-army-builder" target="_blank" rel="noopener">Source on GitHub</a>

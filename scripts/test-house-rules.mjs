@@ -291,6 +291,72 @@ eq(back.length, 0, 'and no known-missing asset is still excused after arriving',
    back.join(', '));
 gone.forEach(p => console.log(`!! MISSING ${p} — ${KNOWN_MISSING[p]}`));
 
+// ------------------------------------------ no word twice more than twice
+/* CLAUDE.md §3: "No single word or phrase appears more than twice on one
+ * screen."
+ *
+ * The landing screen was carrying "Army Builder" three times -- the topbar
+ * context, the tile, and the footer credit -- and nobody counted, because
+ * counting words on a screen is not something a person does.
+ *
+ * SCOPE, stated plainly rather than implied: this reads the STATIC markup of
+ * index.html only, split into the screens it declares -- the landing screen
+ * (topbar, landing section, footer) and each modal. The views the JS builds
+ * are not covered and this does not pretend they are; they would need the
+ * renderers driven for real, which is scripts/test-dzc-render.mjs's job.
+ *
+ * A repeat is allowed by being listed, with the reason. Same shape as the
+ * known-missing assets above: a listed one is a decision, an unlisted one is
+ * the rule being broken. */
+console.log('\nno word more than twice on one screen');
+{
+  // Words too small or too common to mean anything on a screen.
+  const NOISE = new Set(['and', 'the', 'for', 'you', 'your', 'with', 'what',
+    'all', 'own', 'still', 'needs', 'from', 'this', 'that', 'are', 'not', 'its']);
+  // Empty, and it should stay that way. Keyed "screen: word", valued with the
+  // reason -- an excuse with no reason beside it is how a rule quietly stops
+  // meaning anything.
+  const ALLOWED = {};
+  const strip = s => s
+    .replace(/<!--[\s\S]*?-->/g, ' ')
+    .replace(/<script[\s\S]*?<\/script>/g, ' ')
+    .replace(/<style[\s\S]*?<\/style>/g, ' ')
+    .replace(/<svg[\s\S]*?<\/svg>/g, ' ')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&[a-z]+;/g, ' ');
+  const raw = readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const grab = re => (raw.match(re) || [''])[0];
+  const screens = [
+    ['landing', grab(/<header class="topbar"[\s\S]*?<\/header>/)
+      + grab(/<section class="landing"[\s\S]*?<\/section>/)
+      + grab(/<footer class="game-info-footer"[\s\S]*?<\/footer>/)]
+  ];
+  for (const m of raw.matchAll(/<div class="modal-overlay"[^>]*id="([^"]+)"[\s\S]*?\n<\/div>/g)) {
+    screens.push([m[1], m[0]]);
+  }
+  ok(screens.length > 5, 'the screens were actually found', `${screens.length}`);
+
+  const over = [];
+  for (const [name, html] of screens) {
+    const words = (strip(html).toLowerCase().match(/[a-z][a-z'’-]+/g) || [])
+      .filter(w => w.length > 3 && !NOISE.has(w));
+    const seen = {};
+    words.forEach(w => { seen[w] = (seen[w] || 0) + 1; });
+    // Two-word phrases as well: "army builder" was the real offender, and
+    // neither of its halves was over on its own once the tile was counted.
+    for (let i = 0; i < words.length - 1; i++) {
+      const g = words[i] + ' ' + words[i + 1];
+      seen[g] = (seen[g] || 0) + 1;
+    }
+    Object.keys(seen).filter(k => seen[k] > 2).forEach(k => {
+      const key = `${name}: ${k}`;
+      if (!ALLOWED[key]) over.push(`${key} ×${seen[k]}`);
+    });
+  }
+  eq(over.length, 0, 'no word or pair is said three times on one screen');
+  if (over.length) console.error('        ' + over.join('\n        '));
+}
+
 // ------------------------------------------------------------- sharp cards
 /* CLAUDE.md §4: "Every card surface is square -- border-radius: 0. Buttons,
  * chips and inputs may keep a radius; a control can be soft, a panel may not."

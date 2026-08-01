@@ -172,7 +172,12 @@ const App = (() => {
         break;
       default:
         show('view-landing');
-        ctx.textContent = 'Army Builder';
+        /* Blank on the landing screen. Dropfleet writes "Fleet Builder" here
+         * and it is the third "Army Builder" on ours — the tile below says it
+         * and the footer says it again, which is the rule about no phrase more
+         * than twice. The wordmark is directly to the left; naming the app
+         * beside its own logo was never telling anyone anything. */
+        ctx.textContent = '';
     }
   }
 
