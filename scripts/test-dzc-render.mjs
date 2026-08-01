@@ -296,7 +296,7 @@ console.log('\nthe quick reference draws for every faction');
  * not claim to be -- but "it renders at all" is a real assertion and there was
  * not one.
  */
-console.log('\nthe army list and the builder render');
+console.log('\nevery screen renders');
 {
   const els = {};
   const stub = id => (els[id] = els[id] || {
@@ -305,25 +305,45 @@ console.log('\nthe army list and the builder render');
     classList: { add() {}, remove() {}, toggle() {}, contains: () => false },
     getBoundingClientRect: () => ({ top: 0, left: 0, bottom: 0, right: 0, width: 0, height: 0 }),
     appendChild() {}, removeChild() {}, remove() {}, focus() {},
-    querySelector: () => null, querySelectorAll: () => [],
+    // A modal titles itself through querySelector rather than by id, so this
+    // has to answer with something writable rather than null.
+    querySelector: () => stub('scratch'), querySelectorAll: () => [],
     addEventListener() {}, removeEventListener() {}, scrollTop: 0
   });
   sandbox.document = {
     body: stub('body'), documentElement: stub('html'),
     getElementById: id => els[id] || null,
-    querySelector: () => null, querySelectorAll: () => [],
+    querySelector: () => stub('scratch'), querySelectorAll: () => [],
     createElement: () => stub('scratch'),
     addEventListener() {}, removeEventListener() {}
   };
   sandbox.location = { hash: '', href: 'https://e.test/', search: '' };
+  // The print preview measures the page and listens for a resize; in a real
+  // browser these are on window, and the app is entitled to expect them.
+  win.addEventListener = () => {};
+  win.removeEventListener = () => {};
+  win.innerWidth = 1280; win.innerHeight = 900;
+  win.scrollX = 0; win.scrollY = 0;
+  win.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} });
+  // The preview parks a history entry so Back closes it, the same guard the
+  // modals use.
+  sandbox.history = { pushState() {}, back() {} };
+  sandbox.requestAnimationFrame = fn => fn();
   sandbox.btoa = btoa; sandbox.atob = atob;
   sandbox.TextEncoder = TextEncoder; sandbox.TextDecoder = TextDecoder;
   sandbox.Response = Response;
   sandbox.queueMicrotask = queueMicrotask;
-  vm.runInContext(readFileSync(path.join(ROOT, 'js', 'dzc-share.js'), 'utf8'), sandbox);
-  vm.runInContext(readFileSync(path.join(ROOT, 'js', 'dzc-builder.js'), 'utf8'), sandbox);
+  for (const f of ['dzc-share.js', 'dzc-builder.js', 'dzc-play.js', 'dzc-collection.js']) {
+    vm.runInContext(readFileSync(path.join(ROOT, 'js', f), 'utf8'), sandbox);
+  }
   const B = win.DZCBuilder;
-  stub('view-armies'); stub('view-army');
+  // Every mount point index.html declares for these screens. A missing one
+  // reads as "no such element" and the renderer quietly does nothing, so they
+  // are all created up front rather than on demand.
+  ['view-armies', 'view-army', 'view-units', 'view-play', 'view-collection',
+    'dzc-picker', 'dzc-picker-body', 'dzc-carry', 'dzc-carry-body',
+    'dzc-cmdr', 'dzc-cmdr-body', 'dzc-share', 'dzc-share-body',
+    'dzc-detail', 'dzc-detail-body', 'dzc-print'].forEach(stub);
 
   // Everything a Squad can be at once: carried, commanded, and a legally mixed
   // Squad of two Variants (3.2.2). The Transport is the case that threw.
@@ -365,6 +385,42 @@ console.log('\nthe army list and the builder render');
     ok(!/\b(null|undefined|NaN)\b/.test(words), `the ${name} prints no placeholder`,
        (words.match(/.{0,40}\b(null|undefined|NaN)\b.{0,40}/) || [])[0]);
   }
+  /* Every other screen, opened the way the app opens it.
+   *
+   * The builder crash above was invisible for a day because nothing had ever
+   * driven the screen that assembles the renderers. The same was true of all
+   * of these. Each one is a whole view or dialog that either comes up or does
+   * not; a thrown error in any of them is a blank pane, not a wrong pixel. */
+  const drive = async (name, fn) => {
+    let err = null;
+    try { await fn(); } catch (e) { err = e; }
+    ok(!err, `${name} does not throw`,
+       err && `${err.message}\n        ${((err.stack || '').split('\n')[1] || '').trim()}`);
+  };
+  await drive('the picker', () => B.openPicker(g.id));
+  await drive('the Transport chooser', () => B.openCarry(legion.id));
+  await drive('the Commander chooser', () => B.openCommander());
+  await drive('Share', () => B.share());
+  await drive('the print preview', () => B.print());
+  await drive('the unit reference', () => win.DZCUnits.open());
+  await drive('Collection', () => win.DZCCollection.open());
+  await drive('Play mode', () => win.DZCPlay.open(a.id));
+
+  for (const [name, html, min] of [
+    ['the picker', els['dzc-picker-body'].innerHTML, 2000],
+    ['the Transport chooser', els['dzc-carry-body'].innerHTML, 500],
+    ['the Commander chooser', els['dzc-cmdr-body'].innerHTML, 200],
+    ['Share', els['dzc-share-body'].innerHTML, 200],
+    ['the unit reference', els['view-units'].innerHTML, 20000],
+    ['Collection', els['view-collection'].innerHTML, 5000],
+    ['Play mode', els['view-play'].innerHTML, 1000]
+  ]) {
+    ok(html.length > min, `${name} drew something`, `${html.length} chars`);
+    const words = html.replace(/<[^>]*>/g, ' ');
+    ok(!/\b(null|undefined|NaN)\b/.test(words), `${name} prints no placeholder`,
+       (words.match(/.{0,40}\b(null|undefined|NaN)\b.{0,40}/) || [])[0]);
+  }
+
   A.remove(a.id);
 }
 
