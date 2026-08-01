@@ -175,8 +175,15 @@ const DZC_STEPS = [
      the whole of what was ever known about how they look. Play needs a
      Commander actually ON a Squad before it will open (4.1), so the Commander
      added earlier is assigned first. */
-  ['17b-share', `DZCBuilder.closePreview(); await DZCBuilder.share()`],
-  ['17c-play', `App.closeModal('modal-share');
+  // closePreview spends the history entry it parked, so it takes the hash back
+  // to the army list with it. Re-open the army before sharing it.
+  ['17b-share', `DZCBuilder.closePreview();
+     await new Promise(r => setTimeout(r, 500));
+     const card = document.querySelector('.dzc-army-card');
+     card && card.click();
+     await new Promise(r => setTimeout(r, 700));
+     DZCBuilder.share()`],
+  ['17c-play', `App.closeModal('dzc-share'); DZCBuilder.closeShare && DZCBuilder.closeShare();
      const sel = document.querySelector('.dzc-cmdr-assign select');
      if (sel && sel.options.length > 1) {
        sel.value = sel.options[1].value;
