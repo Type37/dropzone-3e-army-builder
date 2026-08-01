@@ -136,7 +136,13 @@
       </header>
 
       <div class="dzc-play-cards">
-        <div class="dzc-pcard">
+        <!-- No captions. Each card had a paragraph under it citing the rule
+             that produced its number, which is the app explaining itself. The
+             rules still live here, on hover, where they are there when you
+             want them and silent when you do not. -->
+        <div class="dzc-pcard" title="${state.round <= 1
+          ? 'Commanders count as Level 0 throughout Round 1 (4.1.1)'
+          : `Hand size is also ${lvl} card${lvl === 1 ? '' : 's'} (4.1.4)`}">
           <span class="dzc-pcard-k">Command Points</span>
           <span class="dzc-pcard-v">${state.cp}<i>/ ${lvl}</i></span>
           <div class="dzc-pcard-act">
@@ -144,31 +150,28 @@
             <button type="button" onclick="DZCPlay.cp(1)">+</button>
             <button type="button" onclick="DZCPlay.replenish()" title="Replenish up to your highest Commander Level (4.1.1)">Refill</button>
           </div>
-          <p class="dzc-pcard-note">${state.round <= 1
-            ? 'Commanders count as Level 0 throughout Round 1 (4.1.1).'
-            : `Hand size is also ${lvl} card${lvl === 1 ? '' : 's'} (4.1.4).`}</p>
         </div>
 
-        <div class="dzc-pcard">
+        <!-- Your own Group count is the other half of the Pass arithmetic, so
+             it stays — as a number beside theirs, not as a sentence about it. -->
+        <div class="dzc-pcard" title="A Group of only non-auxiliary Transports cannot be activated and is ignored here (4.1.2)">
           <span class="dzc-pcard-k">Pass Tokens</span>
           <span class="dzc-pcard-v">${pass}</span>
           <div class="dzc-pcard-act">
-            <label>Opp Groups
+            <label>Yours<input type="number" value="${groups.length}" disabled></label>
+            <label>Theirs
               <input type="number" min="0" max="40" value="${state.oppGroups}"
                      oninput="DZCPlay.oppGroups(this.value)"></label>
           </div>
-          <p class="dzc-pcard-note">You have ${groups.length} activatable Group${groups.length === 1 ? '' : 's'}.
-            Groups of only non-auxiliary Transports are ignored (4.1.2).</p>
         </div>
 
-        <div class="dzc-pcard">
+        <div class="dzc-pcard" title="A natural 6 wins outright; re-roll ties after adding Level (4.1.5)">
           <span class="dzc-pcard-k">Initiative</span>
           <span class="dzc-pcard-v">D6 +${lvl}</span>
           <div class="dzc-pcard-act">
             <button type="button" onclick="DZCPlay.roll()">Roll</button>
             <span id="dzc-roll" class="dzc-roll"></span>
           </div>
-          <p class="dzc-pcard-note">A natural 6 wins outright; re-roll ties after adding Level (4.1.5).</p>
         </div>
       </div>
 
