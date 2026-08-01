@@ -452,6 +452,37 @@ console.log('\neverything the site fetches is staged for deploy');
      unstaged.join(', '));
 }
 
+// --------------------------------------------------- every route lands somewhere
+/* The router is the one part of the app nothing drives.
+ *
+ * It is also the part that carries a link somebody else clicked: #army/<id> off
+ * a bookmark, #share/<payload> out of a message, #play/<id> off the topbar. A
+ * route naming a view id that index.html does not declare shows a blank page
+ * and throws nothing, which is exactly how ref/ once 404'd — the same shape of
+ * fault, a name pointing at something that is not there.
+ *
+ * Static, deliberately: it reads the switch out of the source and holds it
+ * against the markup, which needs no browser and cannot go stale against one.
+ */
+console.log('\nevery route lands on a view that exists');
+{
+  const shell = readFileSync(path.join(ROOT, 'js/dzc-shell.js'), 'utf8');
+  const body = (shell.match(/function showView\([\s\S]*?\n  \}\n/) || [''])[0];
+  ok(body.length > 400, 'showView was found in the shell', `${body.length} chars`);
+
+  const views = [...new Set([...body.matchAll(/show\('([\w-]+)'\)/g)].map(m => m[1]))];
+  ok(views.length >= 6, 'and it names at least six views', views.join(', '));
+  const missing = views.filter(v => !new RegExp(`id="${v}"`).test(markup));
+  eq(missing.length, 0, 'every view it shows is declared in index.html', missing.join(', '));
+
+  // The routes HANDOFF §5 lists. A case quietly disappearing sends a real link
+  // to the landing page, which looks like the app working.
+  const routes = ['armies', 'army', 'play', 'collection', 'units', 'share'];
+  const gone = routes.filter(r => !new RegExp(`case '${r}':`).test(body));
+  eq(gone.length, 0, 'and every documented route still has a case', gone.join(', '));
+  ok(/default:/.test(body), 'with a default, so an unknown hash lands on the landing screen');
+}
+
 // ------------------------------------------- the reference sheet stays in step
 /* ref/ is a separate document, so it cannot import the app's modules — it
  * carries its own copy of the six factions and the six transport symbols.
