@@ -765,6 +765,16 @@
   function squadHtml(a, g, s, depth) {
     const u = window.DZCArmy.unitOf(a, s);
     if (!u) return '';
+    /* Declared HERE, at the top, and it has to stay here. It used to sit
+     * beside the meta line two hundred lines down, while the Transport chip
+     * above it already called U.transportHtml — a const is in its temporal
+     * dead zone until its own line runs, so reading it earlier is a thrown
+     * ReferenceError, not an undefined.
+     *
+     * That only fired when a Squad actually HAD a Transport, which is the
+     * commonest thing in the app, and it took the whole builder view down with
+     * it: renderBuilder threw, so nothing was written to the pane at all. */
+    const U = window.DZCUnits;
     const cost = window.DZCArmy.squadCost(a, s);
     const riders = g.squads.filter(x => x.carriedBy === s.id);
     const isTransport = u.category === 'Transport';
@@ -820,7 +830,6 @@
      * is no "enough for a roster" version of a Unit -- the numbers you argue
      * over across a table are the ones in that weapon table, and having to
      * open a modal mid-game to see them is the app failing at its job. */
-    const U = window.DZCUnits;
     const meta = [esc(u.category), esc(u.type || ''),
       u.squadMin != null ? `Squad ${U.squadHtml(u)}` : '']
       .filter(Boolean).map(t => `<span>${t}</span>`).join('');

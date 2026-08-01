@@ -277,5 +277,96 @@ console.log('\nthe quick reference draws for every faction');
   ok(!/datasheet/i.test(html), 'the sheet markup does not say the banned word');
 }
 
+/* ── 7. The whole builder, driven for real ────────────────────────────
+ *
+ * Sections 1-5 test the renderers a Unit goes through. Nothing tested the two
+ * screens themselves, and the first time they were driven against a document
+ * stub the builder threw outright:
+ *
+ *   ReferenceError: Cannot access 'U' before initialization
+ *
+ * squadHtml read U.transportHtml two hundred lines above the `const U` that
+ * declares it -- a temporal dead zone, so a thrown error rather than an
+ * undefined. It only fired when a Squad actually HAD a Transport, which is the
+ * commonest thing in the app, and it took the entire builder view down with
+ * it: renderBuilder threw, so nothing reached the pane at all.
+ *
+ * A stub document is enough because these renderers build a string and assign
+ * it to innerHTML. That is not the same as looking at the screen and this does
+ * not claim to be -- but "it renders at all" is a real assertion and there was
+ * not one.
+ */
+console.log('\nthe army list and the builder render');
+{
+  const els = {};
+  const stub = id => (els[id] = els[id] || {
+    id, innerHTML: '', textContent: '', dataset: {},
+    style: { setProperty() {} },
+    classList: { add() {}, remove() {}, toggle() {}, contains: () => false },
+    getBoundingClientRect: () => ({ top: 0, left: 0, bottom: 0, right: 0, width: 0, height: 0 }),
+    appendChild() {}, removeChild() {}, remove() {}, focus() {},
+    querySelector: () => null, querySelectorAll: () => [],
+    addEventListener() {}, removeEventListener() {}, scrollTop: 0
+  });
+  sandbox.document = {
+    body: stub('body'), documentElement: stub('html'),
+    getElementById: id => els[id] || null,
+    querySelector: () => null, querySelectorAll: () => [],
+    createElement: () => stub('scratch'),
+    addEventListener() {}, removeEventListener() {}
+  };
+  sandbox.location = { hash: '', href: 'https://e.test/', search: '' };
+  sandbox.btoa = btoa; sandbox.atob = atob;
+  sandbox.TextEncoder = TextEncoder; sandbox.TextDecoder = TextDecoder;
+  sandbox.Response = Response;
+  sandbox.queueMicrotask = queueMicrotask;
+  vm.runInContext(readFileSync(path.join(ROOT, 'js', 'dzc-share.js'), 'utf8'), sandbox);
+  vm.runInContext(readFileSync(path.join(ROOT, 'js', 'dzc-builder.js'), 'utf8'), sandbox);
+  const B = win.DZCBuilder;
+  stub('view-armies'); stub('view-army');
+
+  // Everything a Squad can be at once: carried, commanded, and a legally mixed
+  // Squad of two Variants (3.2.2). The Transport is the case that threw.
+  const a = A.create('ucm', 'Driven probe', 1500);
+  const g = A.addGroup(a);
+  const legion = A.addSquad(a, g.id, 'legionnaires', 3);
+  A.assignTransport(a, legion.id, 'bear-apc');
+  A.addCommander(a, 5);
+  const g2 = A.addGroup(a);
+  const tank = A.addSquad(a, g2.id, 'ucm-main-battle-tank', 2);
+  A.setModelVariant(a, tank.id, 1, 'Tachi');
+
+  let threw = null;
+  try {
+    await B.renderList();
+    await B.renderBuilder(a.id);
+  } catch (e) { threw = e; }
+  ok(!threw, 'neither screen throws', threw && `${threw.message}\n        ${(threw.stack || '').split('\n')[1]}`);
+
+  const list = els['view-armies'].innerHTML;
+  const builder = els['view-army'].innerHTML;
+  // The detail pane shows ONE Group, so the mixed-variant Squad has to be
+  // selected before it is on the page at all. selectGroup sets the selection
+  // and kicks a render it does not await, so the render is repeated here --
+  // reading innerHTML straight after it returns reads the previous frame.
+  B.selectGroup(g2.id);
+  await B.renderBuilder(a.id);
+  const second = els['view-army'].innerHTML;
+  ok(list.length > 400, 'the army list actually drew something', `${list.length} chars`);
+  ok(builder.length > 2000, 'and so did the builder', `${builder.length} chars`);
+  // The Transport chip is the thing that was throwing, so name it rather than
+  // trusting a length.
+  ok(/Bear APC/.test(builder), 'the assigned Transport is on the page');
+  ok(/Tachi/.test(second), 'and the second Variant of a mixed Squad, once its Group is open');
+  ok(/Level 5/.test(builder), 'and the Commander');
+
+  for (const [name, html] of [['army list', list], ['builder', builder], ['second Group', second]]) {
+    const words = html.replace(/<[^>]*>/g, ' ');
+    ok(!/\b(null|undefined|NaN)\b/.test(words), `the ${name} prints no placeholder`,
+       (words.match(/.{0,40}\b(null|undefined|NaN)\b.{0,40}/) || [])[0]);
+  }
+  A.remove(a.id);
+}
+
 console.log(`\n${pass} passed, ${fail} failed\n`);
 process.exit(fail ? 1 : 0);
