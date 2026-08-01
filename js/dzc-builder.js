@@ -807,6 +807,19 @@
       .map(c => ({ name: c, n: pickable.filter(u => u.category === c).length }))
       .filter(c => c.n > 0);
     const cats = [{ name: 'All', n: pickable.length }].concat(catCounts);
+
+    /* Same rule for the filters: a chip that cannot match anything is a
+     * control that does nothing, and this faction is the only scope that
+     * matters because an army has exactly one.
+     *
+     * It removes Unique from every faction — there is not a single Unique Unit
+     * in the game as published. The rule is still enforced in canAddUnit for
+     * when TTCombat print one; the chip was just an empty promise. Upgrades
+     * goes on Scourge, Shaltari and Bioficer for the same reason. */
+    const filters = FILTERS.filter(fl => pickable.some(fl.test));
+    // An active filter that is no longer on offer would go on quietly cutting
+    // the list with nothing on screen to say so.
+    picker.filters = picker.filters.filter(k => filters.some(fl => fl.key === k));
     /* --acc is declared inline on .dzc-wrap, and this modal lives outside it,
      * so the active chip was painting white text on an undefined background —
      * the filters worked, you just could not see which one was on. */
@@ -834,7 +847,7 @@
           ${SORTS.map(s => `<button type="button" class="dzc-chip dzc-chip--sm" data-sort="${s.key}"
             onclick="DZCBuilder.pickerSort('${s.key}')"
             >${esc(s.label)}<i class="dzc-dir"></i></button>`).join('')}
-          ${FILTERS.map(fl => `<button type="button" class="dzc-chip dzc-chip--sm" data-filter="${fl.key}"
+          ${filters.map(fl => `<button type="button" class="dzc-chip dzc-chip--sm" data-filter="${fl.key}"
             onclick="DZCBuilder.pickerFilter('${fl.key}')">${esc(fl.label)}</button>`).join('')}
         </div>
         <!-- The six transport symbols are the grammar of what fits with what
@@ -900,7 +913,12 @@
     { key: 'unique',   label: 'Unique',   test: u => !!u.unique },
     { key: 'variants', label: 'Variants', test: u => (u.variants || []).length > 0 },
     { key: 'carries',  label: 'Carries',  test: u => totalCapacity(u) > 0 },
-    { key: 'aux',      label: 'Auxiliary', test: u => !!u.auxiliaryTransport }
+    { key: 'aux',      label: 'Auxiliary', test: u => !!u.auxiliaryTransport },
+    // The sixth gap 24 asked for. A paid weapon upgrade is a green name box
+    // with a points cost (3.2.3), and only 18 Units in the game have one — so
+    // "what can I spend the last 40 points on" is a real question this answers.
+    { key: 'upgrades', label: 'Upgrades',
+      test: u => (u.weapons || []).some(w => w.box === 'upgrade' && w.upgradePoints != null) }
   ];
   const CATEGORY_ORDER = ['Standard', 'Vanguard', 'Heavy', 'Support', 'Transport', 'Generated'];
 

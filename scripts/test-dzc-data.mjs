@@ -223,6 +223,36 @@ console.log('\nno dead chips (gap 38)');
  * the same in three places behaves the same in three places. */
 /* Gap 13: the picker prints what taking this Unit actually costs -- the
  * smallest legal Squad -- with the arithmetic under it. */
+/* Gap 24's filters are only as good as the data shape behind them, and a
+ * predicate that silently matches nothing looks exactly like a filter nobody
+ * uses. Both of these guard a decision made in the picker. */
+console.log('\nwhat the picker filters can actually find');
+{
+  const all = [];
+  for (const id of ['ucm', 'phr', 'scourge', 'shaltari', 'resistance', 'bioficer']) {
+    const f = await DZC.loadFaction(id);
+    for (const u of f.units || []) if (u.selectable !== false) all.push(u);
+  }
+  ok(all.length > 150, 'the sweep saw the pickable units', `${all.length}`);
+
+  // A paid weapon upgrade is a green name box with a cost (3.2.3). If the
+  // scanner renames either field the Upgrades filter goes quietly dead.
+  const upgradeable = all.filter(u =>
+    (u.weapons || []).some(w => w.box === 'upgrade' && w.upgradePoints != null));
+  ok(upgradeable.length > 0, 'paid weapon upgrades exist to filter for',
+     `${upgradeable.length} units`);
+  ok(upgradeable.length < all.length / 2,
+     'and they are selective enough to be worth a filter', `${upgradeable.length}`);
+
+  /* Not one Unique Unit is published. The picker therefore does not draw a
+   * Unique chip -- it could never match. canAddUnit still enforces the rule
+   * (3.2.1), so when TTCombat print one the enforcement is already there; this
+   * assertion is what will tell you to put the chip back. */
+  const unique = all.filter(u => u.unique);
+  eq(unique.length, 0, 'no Unique Unit exists yet — if this fails, restore the Unique filter',
+     unique.map(u => u.id).join(', '));
+}
+
 console.log('\nsquadPrice (gap 13)');
 {
   // Dropfleet's own example shape: "70 pts" over "2x 35".
