@@ -408,6 +408,15 @@ token cannot edit a workflow file** — git push, the contents API and the
 git-data API all refuse. There is a Todoist task with the one-line diff. Both
 files say the same at the top.
 
+**Shipped in the second half.** Drag a Group to reorder it (`DZCArmy.moveGroup`,
+Pointer Events ported from Dropfleet — native drag does not fire on touch in
+iOS Safari). An army description, set at creation and edited in the builder.
+Play/Share/Print in the topbar, where the label hides below 768px. One overflow
+menu on an army card instead of two loose icons. On a phone the rail collapses
+behind a peek line carrying points left and the issue count — a disclosure, not
+the drag sheet gap 47 asks for, because a gesture that cannot be tested is the
+wrong thing to put on the phone case. Every image now removes itself on error.
+
 **What shipped besides.** A printable quick reference per faction, generated
 from `data/dzc` rather than typed (one page, `?faction=<id>`), linked from the
 landing page and the footer. Share as three targets — link, plain text, JSON —

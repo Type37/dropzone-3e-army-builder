@@ -493,6 +493,14 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-01', title: 'A blank builder, and everything that was never pressed', items: [
+      'The builder was drawing nothing at all for any Squad with a Transport, and had been for a day. A helper was used two hundred lines above the line that declares it, which throws rather than coming back empty, so the whole pane stayed blank. Nothing caught it because nothing had ever drawn the builder in a test \u2014 only the pieces it is made of.',
+      'Every screen is driven by the tests now, and so is every control on them: the army list, the builder, the picker, both choosers, Share, the print preview, the unit reference, Collection and Play, about seventy controls pressed in turn.',
+      'Drag a Group to reorder it. The order is the order on your printed sheet, and that is the deployment plan \u2014 until now it was whatever order you happened to add them in.',
+      'An army can say what it is for. Set it when you make one, edit it in the builder, and it travels in the link, the JSON and the text.',
+      'Play, Share and Print moved into the topbar, which on a phone costs no vertical space at all. On a phone the rail also collapses behind the two numbers you keep glancing at.',
+      'One menu on an army card instead of two loose icons crowding the thing you are trying to tap. The picker can show only what you own. Missing art removes itself rather than leaving a broken icon and a hole.',
+    ]},
     { date: '2026-08-01', title: 'A sheet for the table, and corners that were never sharp', items: [
       'A printable quick reference for each faction: every game size with its Group cap and Rare limit, the Commander ladder, the category and Group-cost rules, the transport symbols, the whole roster as one table, and the special rules those units actually print. It reads the same data the app reads, so a re-scanned points value cannot leave it lying. Linked from the landing page and the footer.',
       'Sharp cards, actually. The rule was written into the stylesheet above the rules that round the picker cards, the rail and the Commander chooser, so those had been rounded the whole time. Nine more surfaces are square now, including the landing tiles and both grids in the New Army dialog.',
