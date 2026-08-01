@@ -166,12 +166,11 @@ if (nameless.length) console.error('        ' + nameless.join('\n        '));
  * unlisted one is a bug. A listed one that has since appeared fails, so the
  * list cannot go stale. */
 console.log('\nevery asset actually exists');
-const KNOWN_MISSING = {
-  'assets/logos/dzc_logo_white.webp':
-    'the topbar wordmark — on Jet\'s disk, never committed (gitignore DZC_Logo_*)',
-  'assets/logos/dzc_logo_dark.webp':
-    'the landing wordmark — same cause. Brand art, so only Jet can supply it.'
-};
+// Empty, and it should stay that way. Both wordmarks were listed here: they
+// were on disk and simply never `git add`ed -- not ignored, just missed -- so
+// the deployed site 404'd on its own logo while localhost looked fine. They
+// are committed now. This test is what found it.
+const KNOWN_MISSING = {};
 const refs = new Set();
 for (const file of ['index.html', ...readdirSync(path.join(ROOT, 'js'))
   .filter(f => f.endsWith('.js')).map(f => `js/${f}`)]) {
