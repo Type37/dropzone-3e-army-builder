@@ -106,8 +106,14 @@
           .map(([k, label]) => `<button type="button" class="dzc-chip${
             listSort === k ? ' is-active' : ''}" onclick="DZCBuilder.sortList('${k}')"
             aria-pressed="${listSort === k}">${label}</button>`).join('')}</div>` : ''}
-      ${list.length ? `<div class="dzc-army-grid">${cards}</div>`
-        : `<p class="dzc-empty">No armies yet.</p>`}
+      <!-- An empty list is the grid with one tile in it, not a different
+           screen with a sentence on it. "No armies yet." told you what you
+           could already see; the tile is the thing to press. It appears ONLY
+           when the list is empty — once there are armies the button in the
+           header is the same action, and a third way to do it is clutter. -->
+      <div class="dzc-army-grid">${cards}${list.length ? '' : `
+        <button type="button" class="dzc-army-new" onclick="DZCBuilder.openNew()">
+          ${window.DZCIcon('add', { size: 26 })}<b>New Army</b></button>`}</div>
     </div>`;
   }
 

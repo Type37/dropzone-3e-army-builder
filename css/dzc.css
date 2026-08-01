@@ -232,6 +232,18 @@
 .dzc-army-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 8px; }
 .dzc-army-card { padding: 8px 9px; cursor: pointer; border: 1px solid var(--line, #d8d0c0); border-left: 4px solid var(--acc); border-radius: 8px; background: var(--surface-2, #fff); }
 .dzc-army-card:hover { border-color: var(--acc); }
+/* The empty list IS the grid, with one tile in it. Dashed rather than solid so
+   it reads as a place for something rather than a thing, and nothing moves on
+   hover — a tile that lifts shoves the grid it sits in. */
+.dzc-army-new {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6px; min-height: 148px; cursor: pointer;
+  border: 2px dashed var(--line, #d8d0c0); background: transparent;
+  color: var(--ink-2, #6b6459);
+  font: 600 15px/1.2 var(--font-ui, 'Jost', system-ui, sans-serif);
+}
+.dzc-army-new:hover { border-color: var(--navy, #1b3a5c); color: var(--ink, #24201c); }
+.dzc-army-new:focus-visible { outline: 2px solid var(--navy, #1b3a5c); outline-offset: 2px; }
 .dzc-army-card:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
 .dzc-army-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 /* The crest and the faction's full name, as one chip. The crest alone was
@@ -393,6 +405,7 @@
 .dzc-pick,
 .dzc-card,
 .dzc-army-card,
+.dzc-army-new,
 .dzc-rail-card,
 .dzc-group-card,
 .dzc-issues,
