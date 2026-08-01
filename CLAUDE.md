@@ -109,7 +109,22 @@ A floating action button must live at `<body>` level. `.screen` carries
 `will-change: transform`, which makes it a containing block for
 `position: fixed` and parks a nested FAB off-screen.
 
-## 6. Working style
+## 6. Shipping — never open a pull request
+
+**Commit to `master` and push. No branches, no PRs, not ever.** Not for a big
+change, not for one you could not verify, not "so Jet can review it". A PR is
+work parked where Jet has to go and find it, and this is a one-person repo with
+an automatic deploy — the review is Jet using the app.
+
+This applies to every agent, including unattended cloud runs. If a change
+cannot be verified, push it anyway and **say plainly what was not checked**.
+Unverified-and-shipped is the accepted trade; unverified-and-hidden-in-a-branch
+is not.
+
+GitHub has no switch for this — a repo cannot have pull requests turned off.
+The rule is this file, which is why it lives here.
+
+## 7. Working style
 
 - Terse, opinionated recommendations. Make the call; don't present menus.
 - Bias to doing the work over asking permission.

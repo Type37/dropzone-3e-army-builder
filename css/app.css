@@ -7399,7 +7399,8 @@ body[data-view="builder"] .game-info-footer {
 .changelog-date {
   font-family: var(--font-condensed);
   font-weight: 600;
-  text-transform: uppercase;
+  /* Inherited from Dropfleet as uppercase. An entry title is a sentence, not a
+     label, and this app is sentence case. */
   letter-spacing: 0.03em;
   font-size: var(--text-sm);
   color: var(--fg2);

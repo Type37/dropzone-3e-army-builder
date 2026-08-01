@@ -70,6 +70,16 @@ Fonts: [Jost](https://fonts.google.com/specimen/Jost), [Libre Baskerville](https
 
 ## Changelog
 
+### 2026-07-31 — Groups form by transport, and the picker becomes usable
+- **Groups form by transport, which is what 3.2.4 says.** A Transport may only be chosen alongside a Squad it can carry, and up to four Squads plus their own Transport Squads may share one larger Transport. Nothing else puts a second Squad in a Group — there is no restriction by category anywhere in 3.2, and no "air groups". An empty Group takes any fighting Unit; after that the picker offers only a Transport for something already there, or a Squad that fits inside one, and greys the rest out quoting the rule that refuses it.
+- **Composition is reported, not blocked.** A lone Transport is unfinished, not illegal. The line is whether adding something else could put it right: a second Rare Squad never can, so it stays refused, while a Transport waiting for cargo is reported when you stop building. Two tests changed because the behaviour they asserted was overruled.
+- **The picker holds still.** Every control used to rebuild the whole bar, resetting the scroll and moving what you were aiming at. The bar is built once now. Sorting by Price, Name, Category, Squad or Capacity, reversible; filters for Rare, Unique, Variants, Carries and Auxiliary; filters by transport symbol, drawn with the same paths the stat cards print; search across names, variants, weapons and rules; a list view beside the card grid.
+- **The Group header meters itself.** Points against the quarter-army ceiling, Squads, models, and per Transport how much of each shape's capacity is used against what it offers — green when full, red when overloaded.
+- **A Squad in your army reads as the Unit it is.** Art, capacity symbol, every stat, the rules, a block per variant with its own price, and the whole weapon table. `weaponsHtml` and `variantsHtml` come out of the unit view rather than being written twice, so the two cannot drift.
+- **The Transport dropdown is a chooser.** Every option shows what it offers, how many the cargo needs, what it costs and whether the fit is exact.
+- **Verified at 375 through CDP device metrics**, not `resize_window`, which reports a viewport the page never sees. `shots.mjs` takes `SHOT_W`/`SHOT_H` and can clip one element at 1:1 — two badges looked right full-page and were missing their count when cropped.
+- **What's New has real content.** The modal was a shell pointing at this file on GitHub.
+
 ### 2026-07-31 — Play Mode, Collection, and the Dropfleet app is gone
 - **Play Mode** tracks a Round the way chapter 4 defines it: CP replenishing up to your highest Commander Level (and Commanders counting as Level 0 in Round 1), Pass tokens from having fewer Groups than your opponent, Initiative as D6 + Level, and damage per model. Every card states the rule that produced its number.
 - **Collection** counts models, not Squads, and stays advisory — owning too few models is a shopping list, not a rules violation, so it never blocks a legal choice.

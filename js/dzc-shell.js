@@ -322,11 +322,57 @@ const App = (() => {
 
   // ------------------------------------------------------------- changelog
 
+  /* What's New. Same shape as the Dropfleet builder's log — {date, title,
+   * items}, newest first, written for someone using the app rather than
+   * reading the commits. No interpunct between date and title: the footer
+   * already spends the app's budget for that glyph. */
+  const CHANGELOG = [
+    { date: '2026-07-31', title: 'A Squad reads like the Unit it is', items: [
+      'A Squad in your army now shows what the unit page shows: the art, the capacity symbol beside the name, every stat, the rules, a block per variant with its own price, and the whole weapon table with arcs and Move & Attack. The numbers you argue over across a table are on the page instead of behind a modal.',
+      'Choosing a Transport is a chooser, not a dropdown. Every option shows what it offers, how many the cargo needs, what it costs, and whether the fit comes out exact. A part-empty fit is offered and marked rather than refused, because one more model fixes it.',
+      'The weapon table scrolls inside its own box, so a phone gets every column rather than a squeezed version, and the nesting indent tightens as the screen narrows instead of the tree being flattened.',
+    ]},
+    { date: '2026-07-31', title: 'Add Squad, and the transport symbols', items: [
+      'Add Squad is the widest thing in a Group card now, in your faction\'s colour, and adding closes the picker and puts you back on your army.',
+      'The transport symbols are on the picker card. Which shape a unit fills and which it offers is what decides whether two things can share a Group (3.2.4.2), so it should not be the fact you have to open the unit to find.',
+      'Capacity has its own band in the Group header, the shape drawn large with the count beside it, instead of one more small grey pill in a row of them.',
+    ]},
+    { date: '2026-07-31', title: 'The picker holds still', items: [
+      'Sorting or filtering used to rebuild the whole bar and throw you back to the top of the list. Nothing moves now, and the list keeps its place across a re-sort.',
+      'Filter by transport symbol. The six shapes are the whole grammar of what fits with what, drawn as the stat cards print them, and a shape matches whether a unit offers it or fills it.',
+      'The Group header meters itself: points against the quarter-army ceiling, Squads, models, and for every Transport how much of each shape it has used against what it offers. Green when full, red when overloaded.',
+      'Add Group leaves you an empty Group rather than opening the picker on you.',
+    ]},
+    { date: '2026-07-31', title: 'Sort, filter and search the picker', items: [
+      'Sort by Price, Name, Category, Squad or Capacity, each reversible. Filters for Rare, Unique, Variants, Carries and Auxiliary. Search covers names, variants, weapons and rules. A list view sits beside the card grid for scanning rather than comparing.',
+      'A Group that does not yet make sense is reported when you stop building, not blocked while you build. A lone Transport is unfinished, not illegal — you are probably about to fill it. A second Rare Squad is still refused, because nothing you add later puts it right.',
+      'The active filter pill was painting white on white, and typing in the search box replaced the box under your caret. Both fixed.',
+    ]},
+    { date: '2026-07-31', title: 'Groups form by transport', items: [
+      'Rulebook 3.2.4: a Transport may only be chosen alongside a Squad it can carry, and those two form one Group, and up to four Squads plus their own Transport Squads may share one larger Transport. Nothing else puts a second Squad in a Group, so Add Squad no longer offers all 178 units. An empty Group takes any fighting Unit; after that, only a Transport for something already there, or a Squad that fits inside a Transport already there. Everything else greys out quoting the rule that refuses it.',
+      'Transports are in the picker rather than hidden behind a dropdown. Picking one builds the Transport Squad, links it, and works out how many models it takes to fill.',
+      'With Infantry in the Group the picker offers Troopships and refuses Dropships, because a Transport may only carry matching shapes (3.2.4.2).',
+    ]},
+    { date: '2026-07-31', title: 'Play Mode, Collection and share links', items: [
+      'Play Mode tracks a Round the way chapter 4 defines it: CP replenishing up to your highest Commander Level, Pass tokens from having fewer Groups than your opponent, Initiative as D6 + Level, and damage per model.',
+      'Collection counts models, not Squads, and stays advisory. Owning too few is a shopping list, not a rules violation, so it never blocks a legal choice.',
+      'Share links carry the whole army in the URL. There is no server, so a shared list cannot rot.',
+      'Two data faults found by chasing an odd firing arc: every paid weapon upgrade was costing nothing, and eight weapons had arcs made out of footnote text.',
+    ]},
+    { date: '2026-07-30', title: 'The army builder', items: [
+      'Groups, Squads and per-model variants, with transport nesting drawn as a tree — a Bear APC with its Legionnaires indented beneath it, because that is the deployment plan.',
+      'Illegal choices are unreachable rather than flagged after you have made them.',
+      'The print sheet keeps the nesting and appends the verbatim text of every rule your list uses. Groups never split across a page and no rule breaks mid-sentence.',
+      'All 178 units are readable on their own, with a 106-rule glossary taken from the rulebook and the faction front matter.',
+    ]},
+  ];
+
   function openChangelog() {
-    $('changelog-body').innerHTML = `
-      <p>The full changelog lives in the repository's README.</p>
-      <p><a href="https://github.com/Type37/dropzone-3e-army-builder#changelog"
-            target="_blank" rel="noopener">Read it on GitHub</a></p>`;
+    $('changelog-body').innerHTML = CHANGELOG.map(e => `
+      <div class="changelog-entry">
+        <div class="changelog-date">${esc(e.date)} &mdash; <span class="changelog-title">${esc(e.title)}</span></div>
+        <ul class="changelog-list">${e.items.map(i => `<li>${esc(i)}</li>`).join('')}</ul>
+      </div>`).join('');
     openModal('modal-changelog');
   }
 

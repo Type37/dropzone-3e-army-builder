@@ -110,7 +110,9 @@ const DZC_STEPS = [
   ['13-commander-added', `const b = [...document.querySelectorAll('#dzc-cmdr-body button')]
      .find(x => x.textContent.trim() === 'Add'); b && b.click()`],
   ['12-settings', `App.openSettings()`],
-  ['13-unit-detail', `App.closeModal('modal-settings');
+  ['12b-whats-new', `App.openChangelog()`],
+  ['13-unit-detail', `App.closeModal('modal-changelog');
+     App.closeModal('modal-settings');
      const btn = document.querySelector('.dzc-sq-name');
      btn && btn.click()`],
   // statsHtml is shared with the reference and the collection, so both get
