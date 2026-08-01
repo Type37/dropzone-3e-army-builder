@@ -155,6 +155,49 @@ eq(DZC.rule('P5+', 'shaltari').id, 'px', 'P5+ is still PX+');
   if (leaked.length) console.error('        ' + leaked.slice(0, 8).join('\n        '));
 }
 
+/* Gap 38: no dead chips. Every keyword a card prints must reach glossary text,
+ * because a chip that opens nothing is worse than no chip -- it looks live.
+ *
+ * tools/dzc/audit_rules.py proves the same thing, but against its own Python
+ * resolver. This is the one the app actually renders through, and two
+ * implementations of the same rule drift. So it is asserted on both sides.
+ *
+ * The exceptions are not ours. The Totem Shieldspire's card prints its Shield
+ * rule in two broken halves -- one with no "Shield:" prefix, one with no
+ * radius or save -- and inventing the missing numbers would be writing rules
+ * TTCombat did not print. They are named here so that a release which fixes
+ * the card shows up as an entry that has stopped being needed. */
+console.log('\nno dead chips (gap 38)');
+{
+  const KNOWN_CARD_DEFECTS = [
+    'Friendly Vehicles and Aircraft 6” 5+',   // Shield, missing its prefix
+    'Shield: Zones'                            // Shield, missing radius and save
+  ];
+  const factions = ['ucm', 'phr', 'scourge', 'shaltari', 'resistance', 'bioficer'];
+  const dead = new Set();
+  let seen = 0;
+  for (const id of factions) {
+    const f = await DZC.loadFaction(id);
+    for (const u of f.units || []) {
+      const lines = [u.special || ''].concat((u.weapons || []).map(w => w.special || ''));
+      for (const line of lines) {
+        for (const tok of DZC.splitSpecial(line, id)) {
+          seen++;
+          if (!DZC.rule(tok, id)) dead.add(tok);
+        }
+      }
+    }
+  }
+  ok(seen > 1000, 'the sweep saw every keyword on every card', `saw ${seen}`);
+  const unexpected = [...dead].filter(t => KNOWN_CARD_DEFECTS.indexOf(t) === -1);
+  eq(unexpected.length, 0, 'every printed keyword resolves to a glossary entry');
+  if (unexpected.length) console.error('        ' + unexpected.join('\n        '));
+  // If the cards get fixed, this fails and the exception list gets shorter.
+  const stale = KNOWN_CARD_DEFECTS.filter(t => !dead.has(t));
+  eq(stale.length, 0, 'and no card defect is still excused after being fixed',
+     stale.join(', '));
+}
+
 console.log('\nsplitSpecial');
 const sp = DZC.splitSpecial('Battery 2, Blast, Concussion, Indirect, Pen 6+', 'ucm');
 eq(sp.length, 5, 'a plain comma list splits into five keywords');
