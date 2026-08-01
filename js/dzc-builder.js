@@ -1143,7 +1143,12 @@
                title="Click to rename, or clear it to go back to the Level"
                onblur="DZCBuilder.renameCommander('${c.id}', this.textContent)"
                >${esc(window.DZCArmy.commanderName(a, c))}</b>
-            <span class="dzc-cmdr-pts">Level ${c.level}, ${window.DZCArmy.levelCost(c.level)}pts</span>
+            <!-- The Level only prints here when you have NAMED this Commander.
+                 Unnamed, the name above IS the Level ("Level 4 Commander"),
+                 and repeating it under itself was the derived name and this
+                 line disagreeing about whose job it is (CLAUDE.md §3). -->
+            <span class="dzc-cmdr-pts">${c.name ? `Level ${c.level}, ` : ''}${
+              window.DZCArmy.levelCost(c.level)}pts</span>
           </div>
         </div>
         ${assign}
@@ -1855,7 +1860,11 @@
      * Group of nothing but non-auxiliary Transports cannot be picked for a
      * normal activation (4.1.2, 4.2.1) — it goes in the Orphaned Transport
      * step — so counting Groups and counting activations give different
-     * answers, and the one you want at the table is this one. */
+     * answers, and the one you want at the table is this one.
+     *
+     * The Level cell is empty on a Commander you have not named, because then
+     * the name already IS the Level: the row read "Level 4 Commander  Level 4
+     * not assigned". */
     const cmdrs = window.DZCArmy.commanders(a);
     const top = cmdrs.reduce((n, c) => Math.max(n, c.level || 0), 0);
     const activations = a.groups.filter(g => g.squads.some(s => {
@@ -1869,7 +1878,7 @@
         const cu = sq ? window.DZCArmy.unitOf(a, sq) : null;
         return `<div class="pr-cmdr-row">
           <span class="pr-cmdr-name">${esc(window.DZCArmy.commanderName(a, c))}</span>
-          <span>Level ${c.level}</span>
+          <span>${c.name ? `Level ${c.level}` : ''}</span>
           <span>${cu ? 'with ' + esc(cu.name) : 'not assigned'}</span>
           <span class="pr-cmdr-pts">${window.DZCArmy.levelCost(c.level)}pts</span>
         </div>`;

@@ -553,6 +553,21 @@ console.log('\nevery screen renders');
   const sheet = els['dzc-print'].innerHTML;
   ok(/UM-702 Laser/.test(sheet), 'the printed sheet lists the Squad\'s guns');
   ok(!/UM-28 Gatling/.test(sheet), 'and not the ones it does not have');
+  /* A Commander you have not named reports its Level AS its name, so the field
+   * beside it must not say the Level again. Both places that draw one did:
+   * "Level 5 Commander  Level 5  not assigned" on the sheet, and "Level 5,
+   * 90pts" under "Level 5 Commander" in the rail.
+   *
+   * Counted rather than matched, because "Level 5" appearing at all is right —
+   * it is the name. Twice in one row is the fault. */
+  {
+    const row = (sheet.match(/<div class="pr-cmdr-row">[\s\S]*?<\/div>/) || [''])[0];
+    ok((row.match(/Level 5/g) || []).length === 1,
+       'an unnamed Commander says its Level once on the printed sheet', row);
+    const card = (els['view-army'].innerHTML.match(/<div class="dzc-rail-card dzc-cmdr-card[\s\S]*?<\/div>\s*<\/div>/) || [''])[0];
+    ok((card.match(/Level 5/g) || []).length === 1,
+       'and once on its rail card', card);
+  }
   await drive('the unit reference', () => win.DZCUnits.open());
   await drive('Collection', () => win.DZCCollection.open());
   await drive('Play mode', () => win.DZCPlay.open(a.id));
