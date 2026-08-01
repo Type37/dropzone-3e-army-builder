@@ -455,5 +455,71 @@ console.log('\nan Albatross is reached by carrying a Transport (3.2.4.1)');
   A.remove(a.id);
 }
 
+/* Gap 124. Two Groups of the same thing is a normal army, not an edge case:
+ * three Legionnaire Squads each in their own Bear is the same six clicks and
+ * the same Transport chooser, three times. */
+console.log('\nduplicating a Group (gap 124)');
+{
+  const a = army(2000);
+  const g = A.addGroup(a);
+  const l = A.addSquad(a, g.id, 'legionnaires', 3);
+  A.assignTransport(a, l.id, 'bear-apc');
+  const before = A.groupCost(a, g);
+
+  const r = A.duplicateGroup(a, g.id);
+  ok(r.ok, 'a Group duplicates', r.reason);
+  eq(a.groups.length, 2, 'and there are two Groups');
+  const copy = a.groups[1];
+  eq(copy.squads.length, g.squads.length, 'with the same number of Squads');
+  eq(A.groupCost(a, copy), before, 'and the same cost');
+
+  // THE thing that has to be right. carriedBy holds a Squad id; copying the
+  // ids as they are leaves the new Squads riding the OLD Group's Transports,
+  // which is a corrupt army that still renders.
+  const rider = copy.squads.find(s => s.carriedBy);
+  ok(!!rider, 'the copy kept its nesting');
+  ok(copy.squads.some(s => s.id === rider.carriedBy),
+     'and rides a Transport in its OWN Group, not the original\'s');
+  ok(!g.squads.some(s => s.id === rider.carriedBy), 'nothing points back at the original');
+  // Ids must be fresh, or findSquad returns whichever it hits first.
+  const ids = new Set(a.groups.flatMap(x => x.squads.map(s => s.id)));
+  eq(ids.size, g.squads.length + copy.squads.length, 'every Squad id is unique across the Army');
+
+  // The copy is unnamed, so it takes its own number rather than a second
+  // "Group 1".
+  eq(A.groupName(a, copy), 'Group 2', 'the copy is numbered by position');
+  A.remove(a.id);
+}
+
+{
+  // Per-model variants are the thing a duplicate is FOR: rebuilding a mixed
+  // Squad by hand is the tedium this removes.
+  const a = army(2000);
+  const g = A.addGroup(a);
+  const s = A.addSquad(a, g.id, 'ucm-main-battle-tank', 2);
+  A.setModelVariant(a, s.id, 0, 'Tachi');
+  const cost = A.squadCost(a, s);
+  ok(A.duplicateGroup(a, g.id).ok, 'a Group with a mixed Squad duplicates');
+  const copied = a.groups[1].squads[0];
+  eq(copied.models.map(m => m.variant).join(','), s.models.map(m => m.variant).join(','),
+     'every model keeps the variant it had');
+  eq(A.squadCost(a, copied), cost, 'so the copy costs what the original costs');
+  A.remove(a.id);
+}
+
+{
+  // Refused where it could never be legal, quoting the rule -- not recorded
+  // and reported afterwards.
+  const a = army(1000);           // Skirmish: Rare limit 1
+  const rare = (DZC.faction('ucm').units || []).find(u => u.rare && u.selectable !== false);
+  const g = A.addGroup(a);
+  A.addSquad(a, g.id, rare.id, rare.squadMin || 1);
+  const r = A.duplicateGroup(a, g.id);
+  eq(r.ok, false, 'a Group holding a Rare Squad will not duplicate past the limit');
+  ok(/Rare/.test(r.reason || ''), 'and says which rule refuses it', r.reason);
+  eq(a.groups.length, 1, 'nothing was added');
+  A.remove(a.id);
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

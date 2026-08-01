@@ -117,6 +117,76 @@
     return g;
   }
 
+  /* Duplicate a Group: every Squad, its models and their variants, the weapon
+   * upgrades, and the nesting.
+   *
+   * The nesting is the part that has to be got right. carriedBy holds a Squad
+   * id, so every id is reissued and every link is remapped through the same
+   * map — copy the ids as they are and the new Group's Squads ride the OLD
+   * Group's Transports, which is a corrupt army that still renders.
+   *
+   * Refused rather than reported where it could never be legal: the Group cap
+   * and Rare/Unique, which is exactly what Dropfleet refuses (copyGroup).
+   * Everything else about a Group is a question of what it looks like when you
+   * have finished, and validate() asks that.
+   *
+   * The Commander does not come along. One is assigned to a Unit and costs
+   * points from the Army (3.2.5); copying a Squad should not quietly buy you a
+   * second Commander. */
+  function duplicateGroup(army, groupId) {
+    const g = (army.groups || []).find(x => x.id === groupId);
+    if (!g) return { ok: false, reason: 'Unknown Group.' };
+
+    const size = window.DZC.gameSizeFor(army.pointsLimit);
+    const maxG = size ? window.DZC.maxGroups(size, army.pointsLimit) : 0;
+    if (maxG && army.groups.length >= maxG) {
+      return { ok: false, reason: `${size.label} allows ${maxG} Groups (3.1).` };
+    }
+
+    // Rare and Unique are counted in Squads across the whole Army, so a Group
+    // holding two Squads of the same Rare Unit adds two, not one.
+    const adding = new Map();
+    g.squads.forEach(s => {
+      const u = unitOf(army, s);
+      if (u) adding.set(u, (adding.get(u) || 0) + 1);
+    });
+    for (const [u, n] of adding) {
+      const after = squadsNamed(army, u.name) + n;
+      if (u.unique && after > 1) {
+        return { ok: false, reason: `${u.name} is Unique — one per Army (3.2.1).` };
+      }
+      if (u.rare) {
+        const lim = size ? window.DZC.rareLimit(size.id) : 1;
+        if (after > lim) {
+          return { ok: false,
+                   reason: `${u.name} is Rare — ${size ? size.label : 'this size'} allows ${lim} (3.2.1).` };
+        }
+      }
+    }
+
+    const idMap = {};
+    const squads = g.squads.map(s => {
+      const id = uid();
+      idMap[s.id] = id;
+      const copy = {
+        id: id,
+        unitId: s.unitId,
+        models: s.models.map(m => ({ variant: m.variant })),
+        carriedBy: s.carriedBy,
+        commander: null
+      };
+      if (s.upgrades) copy.upgrades = JSON.parse(JSON.stringify(s.upgrades));
+      return copy;
+    });
+    squads.forEach(s => { if (s.carriedBy) s.carriedBy = idMap[s.carriedBy] || null; });
+
+    // No name, so it takes its own number rather than a second "Group 3".
+    const copy = { id: uid(), name: null, squads: squads };
+    army.groups.push(copy);
+    touch(army);
+    return { ok: true, reason: null, group: copy };
+  }
+
   function groupName(army, g) {
     if (g.name) return g.name;
     return `Group ${army.groups.indexOf(g) + 1}`;
@@ -943,7 +1013,7 @@
 
   window.DZCArmy = {
     load, save, all, get, create, remove, touch,
-    addGroup, removeGroup, groupName, renameGroup, addSquad, removeSquad, setModelCount, setModelVariant,
+    addGroup, removeGroup, duplicateGroup, groupName, renameGroup, addSquad, removeSquad, setModelCount, setModelVariant,
     setCarrier, setCommander, findSquad, groupOf, unitOf,
     commanders, commanderFor, commanderTargets,
     addCommander, removeCommander, assignCommander, syncCommanders, levelCost,

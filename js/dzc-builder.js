@@ -482,6 +482,13 @@
             data-orig="${esc(window.DZCArmy.groupName(a, g))}"
             onkeydown="DZCBuilder.nameKey(event)"
             onblur="DZCBuilder.renameGroup('${g.id}', this.textContent)">${esc(window.DZCArmy.groupName(a, g))}</h2>
+        <!-- Two Groups of the same thing is a normal army, not an edge case:
+             three Legionnaire Squads each in their own Bear is six clicks and
+             a Transport chooser, repeated. -->
+        <button class="dzc-icon-btn" type="button" title="Duplicate Group"
+                onclick="DZCBuilder.duplicateGroup('${g.id}')"
+                aria-label="Duplicate ${esc(window.DZCArmy.groupName(a, g))}"
+                >${window.DZCIcon('content_copy', { size: 14 })}</button>
         <button class="dzc-icon-btn" type="button" title="Remove Group"
                 onclick="DZCBuilder.removeGroup('${g.id}')" aria-label="Remove ${esc(window.DZCArmy.groupName(a, g))}">&times;</button>
       </header>
@@ -1395,6 +1402,12 @@
       await renderBuilder(current.id);
     },
     removeGroup: id => { window.DZCArmy.removeGroup(current, id); refresh(); },
+    duplicateGroup: id => {
+      const r = window.DZCArmy.duplicateGroup(current, id);
+      if (!r.ok) return say(r.reason);
+      refresh();
+      say('Group duplicated.', 'add');
+    },
     removeSquad: id => { window.DZCArmy.removeSquad(current, id); refresh(); },
     count: (id, d) => {
       const s = window.DZCArmy.findSquad(current, id);
