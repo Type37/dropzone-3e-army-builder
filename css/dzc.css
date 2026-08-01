@@ -1170,6 +1170,12 @@
    units, variants, wea" with a third of the toolbar empty beside it. */
 .dzc-search-row { display: flex; align-items: center; gap: 6px; flex: 1 1 280px; min-width: 0; }
 .dzc-search-row .dzc-i { flex: 0 0 auto; color: var(--ink-2, #6b6459); }
+/* On a phone the magnifier goes and the field keeps its width. The placeholder
+   is Jet's, and its whole job is to say what you can type — "Search units,
+   variants, weapons or rules" — so it is the icon that gives way, not the
+   words: a type="search" field with that in it does not need a picture of a
+   magnifying glass to say it is a search. */
+@media (max-width: 560px) { .dzc-search-row > .dzc-i { display: none; } }
 #dzc-picker-body .dzc-search-row { flex-wrap: wrap; }
 #dzc-picker-body .dzc-search { flex: 1 1 200px; padding: 6px 10px; font-size: 13px; }
 #dzc-picker-body .dzc-chips { display: flex; gap: 4px; margin: 0; }
