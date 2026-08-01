@@ -316,7 +316,21 @@
    *
    * Returns { ok, byShape, mode, reason }. When a carrier is "either", a load
    * mixing two of its shapes is illegal however much room is left. */
-  function loadCheck(carrier, passengers) {
+  /* `carriers` is HOW MANY of that Transport are in the Transport Squad, and
+   * leaving it out was a real bug rather than a nicety.
+   *
+   * "You may take as many identical Transports as needed" (3.2.4), and the
+   * rulebook's own worked Group 3 is a single Squad filling several identical
+   * Transports. Measuring against one vehicle's capacity therefore reported
+   * six Legionnaires in two Bear APCs as "Bear APC has 3 square capacity,
+   * needs 6" — an army the rules explicitly allow, called illegal, with
+   * nothing you could do to make it legal. Found by the random generator,
+   * which has to produce a legal army and so argues with every rule at once.
+   *
+   * Defaults to 1 so a caller asking "could this carry that at all" — the
+   * picker, the Transport chooser — keeps asking about one vehicle. */
+  function loadCheck(carrier, passengers, carriers) {
+    const fleetOf = shape => capacityFor(carrier, shape) * (carriers > 0 ? carriers : 1);
     const mode = (carrier.transport && carrier.transport.capacityMode) || null;
     const byShape = {};
     for (const p of passengers) {
@@ -336,7 +350,7 @@
                reason: `${carrier.name} carries either ${used.join(' or ')}, not a mixture` };
     }
     for (const shape of used) {
-      const room = capacityFor(carrier, shape);
+      const room = fleetOf(shape);
       if (byShape[shape] > room) {
         return { ok: false, byShape, mode,
                  reason: `${carrier.name} has ${room} ${shape} capacity, needs ${byShape[shape]}` };
@@ -345,13 +359,17 @@
     return { ok: true, byShape, mode, reason: null };
   }
 
-  /* Transports must be taken FULL (3.2.4). Auxiliary Transports need not be. */
-  function isFull(carrier, passengers) {
-    const chk = loadCheck(carrier, passengers);
+  /* Transports must be taken FULL (3.2.4). Auxiliary Transports need not be.
+   * Full means every one of them full, so the count matters here for the same
+   * reason it matters above: three Legionnaires across two Bear APCs fills
+   * neither, and is not a legal Group. */
+  function isFull(carrier, passengers, carriers) {
+    const n = carriers > 0 ? carriers : 1;
+    const chk = loadCheck(carrier, passengers, n);
     if (!chk.ok) return false;
     const shapes = Object.keys(chk.byShape);
     if (!shapes.length) return false;
-    return shapes.every(s => chk.byShape[s] === capacityFor(carrier, s));
+    return shapes.every(s => chk.byShape[s] === capacityFor(carrier, s) * n);
   }
 
   // -------------------------------------------------------------- army limits

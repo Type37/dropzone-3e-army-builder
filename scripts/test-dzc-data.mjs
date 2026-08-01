@@ -345,6 +345,20 @@ ok(!DZC.loadCheck(condor, [{ unit: bear, count: 3 }]).ok, '3 Bear APCs overfill 
 ok(!DZC.isFull(condor, [{ unit: bear, count: 1 }]), '1 Bear APC leaves a Condor short');
 eq(DZC.loadCheck(bear, [{ unit: legion, count: 3 }]).ok, true, 'a Bear APC carries 3 Legionnaires');
 
+/* "You may take as many identical Transports as needed" (3.2.4), and Group 3
+ * of the rulebook's worked examples is a single Squad filling SEVERAL
+ * identical Transports. Both of these read one vehicle's capacity until
+ * 2026-08-01, so six Legionnaires in two Bear APCs — a legal Group, and an
+ * ordinary one — was reported as "Bear APC has 3 square capacity, needs 6"
+ * with nothing you could do about it. Found by the random army generator,
+ * which has to produce a legal army and so argues with every rule at once. */
+ok(!DZC.loadCheck(bear, [{ unit: legion, count: 6 }]).ok, 'six Legionnaires do not fit ONE Bear APC');
+ok(DZC.loadCheck(bear, [{ unit: legion, count: 6 }], 2).ok, 'but they fit two of them (3.2.4)');
+ok(DZC.isFull(bear, [{ unit: legion, count: 6 }], 2), 'and fill both exactly');
+ok(!DZC.isFull(bear, [{ unit: legion, count: 5 }], 2), 'five fills neither, so the Group is not legal');
+ok(!DZC.loadCheck(bear, [{ unit: legion, count: 7 }], 2).ok, 'and seven overfills the pair');
+ok(DZC.isFull(bear, [{ unit: legion, count: 3 }]), 'a count of one is still the default');
+
 // The inverted triangle is a DIFFERENT symbol. This is the bug that let a
 // Condor load a K9 Pack, so it is pinned here.
 console.log('\ninverted triangle is not a triangle');

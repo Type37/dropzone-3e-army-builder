@@ -735,7 +735,7 @@
         .map(x => ({ unit: unitOf(army, x), count: x.models.length }))
         .filter(x => x.unit);
       aboard.push({ unit: unit, count: 1 });
-      return window.DZC.loadCheck(tu, aboard).ok;
+      return window.DZC.loadCheck(tu, aboard, t.models.length).ok;
     });
   }
 
@@ -759,7 +759,7 @@
       const aboard = group.squads.filter(x => x.carriedBy === t.id)
         .map(x => ({ unit: unitOf(army, x), count: x.models.length }))
         .filter(x => x.unit);
-      const chk = window.DZC.loadCheck(tu, aboard);
+      const chk = window.DZC.loadCheck(tu, aboard, t.models.length);
       Object.keys(chk.byShape).forEach(sh => { slot(sh).used += chk.byShape[sh]; });
     });
     return Object.keys(by).map(k => by[k]);
@@ -892,15 +892,15 @@
       const load = aboard.map(x => ({ unit: unitOf(army, x), count: x.models.length }))
         .filter(x => x.unit);
       load.push({ unit: u, count: s.models.length });
-      return window.DZC.loadCheck(tu, load).ok;
+      return window.DZC.loadCheck(tu, load, t.models.length).ok;
     }).map(t => {
       const tu = unitOf(army, t);
       const aboard = g.squads.filter(x => x.carriedBy === t.id && x.id !== s.id);
       const load = aboard.map(x => ({ unit: unitOf(army, x), count: x.models.length }))
         .filter(x => x.unit);
-      const before = window.DZC.loadCheck(tu, load);
+      const before = window.DZC.loadCheck(tu, load, t.models.length);
       load.push({ unit: u, count: s.models.length });
-      const after = window.DZC.loadCheck(tu, load);
+      const after = window.DZC.loadCheck(tu, load, t.models.length);
       const shape = Object.keys(after.byShape)[0];
       const room = shape ? window.DZC.capacityFor(tu, shape) * t.models.length : 0;
       return {
@@ -1242,9 +1242,12 @@
           errors.push({ rule: '3.2.4', msg: `${u.name} carries nothing — a Transport may only be taken alongside a Squad it can carry.` });
           return;
         }
-        const chk = window.DZC.loadCheck(u, cargo);
+        // s.models.length is how many of that Transport the Squad holds, and
+        // "as many identical Transports as needed" (3.2.4) means their capacity
+        // adds up. Without it, every Group needing two reported as illegal.
+        const chk = window.DZC.loadCheck(u, cargo, s.models.length);
         if (!chk.ok) errors.push({ rule: '3.2.4.2', msg: chk.reason });
-        else if (!window.DZC.isFull(u, cargo)) {
+        else if (!window.DZC.isFull(u, cargo, s.models.length)) {
           errors.push({ rule: '3.2.4', msg: `${u.name} is not full — Transports must be taken full.` });
         }
       });
@@ -1258,7 +1261,7 @@
           .map(x => ({ unit: unitOf(army, x), count: x.models.length }))
           .filter(x => x.unit);
         if (cargo.length) {
-          const chk = window.DZC.loadCheck(u, cargo);
+          const chk = window.DZC.loadCheck(u, cargo, s.models.length);
           if (!chk.ok) errors.push({ rule: '3.2.4.3', msg: chk.reason });
         }
       });

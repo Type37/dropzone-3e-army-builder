@@ -1291,7 +1291,7 @@
         .map(y => ({ unit: window.DZCArmy.unitOf(current, y), count: y.models.length }))
         .filter(y => y.unit);
       aboard.push({ unit: u, count: s.models.length });
-      return window.DZC.loadCheck(xu, aboard).ok;
+      return window.DZC.loadCheck(xu, aboard, x.models.length).ok;
     });
     if (carrier) s.carriedBy = carrier.id;
 
