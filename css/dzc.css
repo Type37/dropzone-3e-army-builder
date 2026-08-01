@@ -485,8 +485,21 @@
   .dzc-b-detail { grid-column: 1 / -1; }
 }
 
+/* Desktop never needs it: both panes are on screen at once. */
+.dzc-b-back { display: none; }
+
 @media (max-width: 900px) {
   .dzc-b-body { grid-template-columns: 1fr; }
+  /* The list IS the screen until you pick a Group, and then the Group is. */
+  .dzc-b-body .dzc-b-detail { display: none; }
+  .dzc-b-body.is-drilled .dzc-b-list { display: none; }
+  .dzc-b-body.is-drilled .dzc-b-detail { display: block; }
+  .dzc-b-back {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-bottom: 8px; padding: 8px 12px; cursor: pointer;
+    border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff);
+    color: inherit; font: 600 13px/1 var(--font-ui, 'Jost', sans-serif);
+  }
   .dzc-rail { position: static; }
   .dzc-rail .dzc-ratios { flex-direction: row; flex-wrap: wrap; }
 }

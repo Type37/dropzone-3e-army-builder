@@ -29,6 +29,10 @@
   // Which Group the detail pane is showing. Null falls back to the first, so
   // opening an army always lands on something rather than an empty pane.
   let selectedGroup = null;
+  // Phone only. A Group is a screen you drill into (CLAUDE.md §4), so the list
+  // and the detail take turns rather than stacking into one long scroll — that
+  // stack is the thing the three panes replaced.
+  let drilled = false;
 
   // ------------------------------------------------------------- army list
 
@@ -307,7 +311,7 @@
         </div>
       </header>
 
-      <div class="dzc-b-body">
+      <div class="dzc-b-body${drilled && sel ? ' is-drilled' : ''}">
         <aside class="dzc-rail">
           <div class="dzc-rail-card">
             <p class="dzc-b-sub"><span>${esc((FACTIONS.find(f => f.id === a.faction) || {}).name)}</span>
@@ -349,6 +353,8 @@
         </div>
 
         <div class="dzc-b-detail">
+          <button type="button" class="dzc-b-back" onclick="DZCBuilder.backToGroups()">
+            ${window.DZCIcon('arrow_back', { size: 16 })}All Groups</button>
           ${sel ? groupHtml(a, sel) : `<p class="dzc-b-none">${
             a.groups.length ? 'Pick a Group to work on it.' : 'Add a Group to start.'}</p>`}
         </div>
@@ -1403,6 +1409,7 @@
     addGroup: async () => {
       const g = window.DZCArmy.addGroup(current);
       selectedGroup = g.id;
+      drilled = true;
       await renderBuilder(current.id);
     },
     removeGroup: id => { window.DZCArmy.removeGroup(current, id); refresh(); },
@@ -1427,7 +1434,8 @@
       refresh();
     },
     setCarrier: (id, c) => { window.DZCArmy.setCarrier(current, id, c); refresh(); },
-    selectGroup: id => { selectedGroup = id; refresh(); },
+    selectGroup: id => { selectedGroup = id; drilled = true; refresh(); },
+    backToGroups: () => { drilled = false; refresh(); },
     openCarry, closeCarry,
     boardTransport: (id, carrierId) => {
       const r = window.DZCArmy.boardTransport(current, id, carrierId);
