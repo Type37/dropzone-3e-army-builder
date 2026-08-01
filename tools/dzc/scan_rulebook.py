@@ -204,6 +204,26 @@ def split_alias(name):
 PLACEHOLDER_RE = re.compile(r"[XYZ]")
 
 
+# Headings the rulebook's own body text contradicts, corrected for MATCHING
+# only -- the name stays what the book calls it.
+#
+# 10.1 heads "Hardy X" and then reads "may use a save of X+", and every card in
+# the game prints "Hardy 2+", "Hardy 3+" or "Hardy 4+". Built from the heading
+# as printed, X ends at the end of the string and captures "4+", so the app
+# substituted it into "a save of X+" and produced "a save of 4++". Saying the
+# template is "Hardy X+" gives the value the same shape its siblings already
+# have -- Pen X+, Destroyer X+, Demo Charges X+ all end their capture before
+# the plus.
+#
+# Listed explicitly, like KNOWN_TYPOS: an entry here is a decision someone
+# made about a specific heading, and a new one still has to be looked at.
+KNOWN_HEADING_QUIRKS = {"Hardy X": "Hardy X+"}
+
+
+def matcher_pattern(head):
+    return matcher_for(KNOWN_HEADING_QUIRKS.get(head, head)).pattern
+
+
 def matcher_for(name):
     """
     Build a regex that recognises a printed instance of this rule.
@@ -447,7 +467,7 @@ def main():
                 # A template rule ("Aegis X") is matched with a wildcard; a
                 # plain one ("Climber") is matched literally.
                 "parameterised": bool(PLACEHOLDER_RE.search(head)),
-                "match": matcher_for(head).pattern,
+                "match": matcher_pattern(head),
                 "text": tidy(r["text"]),
                 "page": r["page"],
             })
@@ -473,7 +493,7 @@ def main():
                 "name": head,
                 "alias": alias,
                 "parameterised": bool(PLACEHOLDER_RE.search(head)),
-                "match": matcher_for(head).pattern,
+                "match": matcher_pattern(head),
                 "text": tidy(text),
                 "page": 1,
             })

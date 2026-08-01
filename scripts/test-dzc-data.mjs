@@ -128,6 +128,14 @@ ok(/as defined by Friendly Vehicles within 6” of this Unit gain 4\+/.test(shie
 // Passive Countermeasures on every weapon that had Penetrator.
 eq(DZC.rule('Pen 6+', 'ucm').id, 'pen-x', 'Pen 6+ is Penetrator, not PX+');
 eq(DZC.rule('P5+', 'shaltari').id, 'px', 'P5+ is still PX+');
+/* The rulebook heads it "Hardy X" and then reads "a save of X+", and every
+ * card in the game prints "Hardy 2+", "3+" or "4+". Built from the heading as
+ * printed, X ran to the end of the string and took the plus with it, so the
+ * tooltip read "a save of 4++". Its siblings -- Pen X+, Destroyer X+, Demo
+ * Charges X+ -- all end their capture before the plus, and scan_rulebook now
+ * says Hardy does too. */
+ok(/save of 4\+ against/.test(DZC.ruleText('Hardy 4+', 'bioficer')),
+   'Hardy 4+ reads one plus, not two', DZC.ruleText('Hardy 4+', 'bioficer'));
 
 // Sweep every keyword the six factions actually print. A placeholder surviving
 // into a tooltip is the bug this is here to catch, and it is only visible
@@ -137,6 +145,11 @@ eq(DZC.rule('P5+', 'shaltari').id, 'px', 'P5+ is still PX+');
                     await DZC.loadFaction('phr'), await DZC.loadFaction('bioficer')];
   let checked = 0;
   const leaked = [];
+  /* A capture one character too long does not leave a placeholder behind -- it
+   * substitutes, and reads as nonsense. "Hardy 4+" took the plus into the
+   * value and came out "a save of 4++", which the placeholder sweep was blind
+   * to. A doubled operator beside a digit is the shape of that mistake. */
+  const doubled = [];
   for (const f of factions) {
     for (const u of f.units || []) {
       const lines = [u.special || ''].concat((u.weapons || []).map(w => w.special || ''));
@@ -146,6 +159,7 @@ eq(DZC.rule('P5+', 'shaltari').id, 'px', 'P5+ is still PX+');
           if (text == null) continue;
           checked++;
           if (/\b[XYZ]\b/.test(text)) leaked.push(`${f.id}/${u.id}: ${tok}`);
+          if (/\d\+\+|\d””|\d""/.test(text)) doubled.push(`${f.id}/${u.id}: ${tok}`);
         }
       }
     }
@@ -153,6 +167,8 @@ eq(DZC.rule('P5+', 'shaltari').id, 'px', 'P5+ is still PX+');
   ok(checked > 500, 'the sweep saw the whole printed glossary', `checked ${checked}`);
   eq(leaked.length, 0, 'no printed keyword leaves a placeholder in its text');
   if (leaked.length) console.error('        ' + leaked.slice(0, 8).join('\n        '));
+  eq(doubled.length, 0, 'and none doubles the operator the value already carried');
+  if (doubled.length) console.error('        ' + doubled.slice(0, 8).join('\n        '));
 }
 
 /* Gap 38: no dead chips. Every keyword a card prints must reach glossary text,

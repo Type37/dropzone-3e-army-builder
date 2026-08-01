@@ -199,7 +199,7 @@
    "name": "Hardy X",
    "alias": null,
    "parameterised": true,
-   "match": "^\\s*Hardy[\\s:/\\-]*(.+?)\\s*$",
+   "match": "^\\s*Hardy[\\s:/\\-]*([^\\s]+?)\\+\\s*$",
    "text": "Instead of using its DF, even if it would not normally be able to, this Infantry Unit may use a save of X+ against hits from Weapons, Collateral Damage, and Command Cards. Hits from anything above E2 ignore this rule.",
    "page": 45
   },
