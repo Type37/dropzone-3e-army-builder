@@ -146,8 +146,10 @@
           <span class="dzc-pcard-k">Command Points</span>
           <span class="dzc-pcard-v">${state.cp}<i>/ ${lvl}</i></span>
           <div class="dzc-pcard-act">
-            <button type="button" onclick="DZCPlay.cp(-1)">−</button>
-            <button type="button" onclick="DZCPlay.cp(1)">+</button>
+            <button type="button" aria-label="One fewer Command Point"
+                    onclick="DZCPlay.cp(-1)">−</button>
+            <button type="button" aria-label="One more Command Point"
+                    onclick="DZCPlay.cp(1)">+</button>
             <button type="button" onclick="DZCPlay.replenish()" title="Replenish up to your highest Commander Level (4.1.1)">Refill</button>
           </div>
         </div>

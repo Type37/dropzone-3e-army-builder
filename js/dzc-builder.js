@@ -691,7 +691,7 @@
                  value="${esc(picker.search)}"
                  oninput="DZCBuilder.pickerSearch(this.value)" aria-label="Search units">
           <button type="button" class="dzc-view-toggle" id="dzc-pick-view"
-                  onclick="DZCBuilder.pickerView()"></button>
+                  aria-label="Show as a list" onclick="DZCBuilder.pickerView()"></button>
         </div>
         <div class="dzc-chips">${cats.map(c =>
           `<button type="button" class="dzc-chip" data-cat="${esc(c)}"
@@ -741,7 +741,12 @@
     const v = document.getElementById('dzc-pick-view');
     if (v) {
       const grid = picker.view === 'grid';
-      v.title = grid ? 'Show as a list' : 'Show as cards';
+      // Its only content is an icon, so the name has to be the label. title
+      // alone is a hover affordance and reaches neither a screen reader
+      // reliably nor a touch device at all.
+      const lab = grid ? 'Show as a list' : 'Show as cards';
+      v.title = lab;
+      v.setAttribute('aria-label', lab);
       v.innerHTML = window.DZCIcon(grid ? 'list_alt' : 'grid_view', { size: 16 });
     }
   }

@@ -10,7 +10,7 @@
  *
  *   node scripts/test-house-rules.mjs
  */
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -89,6 +89,65 @@ const offsite = srcs.filter(s => /^(https?:)?\/\//.test(s));
 ok(srcs.length > 0, 'the script tags were actually found', `matched ${srcs.length}`);
 eq(offsite.length, 0, 'every script the page loads ships with the app');
 if (offsite.length) console.error('        ' + offsite.join('\n        '));
+
+// --------------------------------------------------- every control has a name
+/* Gap 103: a control whose only content is an icon has no name at all in the
+ * accessibility tree, and title= does not fix that -- it is a hover
+ * affordance, which a screen reader treats as optional and a phone cannot
+ * produce. So an icon-only button needs aria-label, and this counts them.
+ *
+ * It found three: the picker's view toggle had no name whatsoever, and Play
+ * Mode's Command Point steppers announced themselves as "minus" and "plus".
+ *
+ * Not testable from the pixels, which is why it lives here rather than waiting
+ * on a browser someone has to open. */
+console.log('\nevery control has a name');
+
+/* Split a template literal's body into its literal text and its ${...}
+ * expressions, balancing braces so ${DZCIcon('add', { size: 14 })} comes out
+ * as one expression rather than being cut at the first inner brace. */
+function splitInterpolations(src) {
+  const literals = [], exprs = [];
+  let i = 0, last = 0;
+  while ((i = src.indexOf('${', i)) !== -1) {
+    literals.push(src.slice(last, i));
+    let depth = 0, j = i + 1;
+    for (; j < src.length; j++) {
+      if (src[j] === '{') depth++;
+      else if (src[j] === '}' && --depth === 0) break;
+    }
+    exprs.push(src.slice(i + 2, j));
+    i = last = j + 1;
+  }
+  literals.push(src.slice(last));
+  return { literals, exprs };
+}
+
+// These render a glyph, never a word, so a button holding only one of them is
+// as nameless as an empty button.
+const DRAWS_NO_WORDS = /DZCIcon|RankInsignia|transportHtml/;
+
+const SOURCES = ['index.html', ...readdirSync(path.join(ROOT, 'js'))
+  .filter(f => f.endsWith('.js')).map(f => `js/${f}`)];
+let buttons = 0;
+const nameless = [];
+for (const file of SOURCES) {
+  const src = readFileSync(path.join(ROOT, file), 'utf8');
+  for (const m of src.matchAll(/<button\b([^>]*)>([\s\S]*?)<\/button>/g)) {
+    buttons++;
+    if (/aria-label\s*=/.test(m[1])) continue;
+    const { literals, exprs } = splitInterpolations(m[2]);
+    const words = literals.join(' ')
+      .replace(/<svg[\s\S]*?<\/svg>/g, '')
+      .replace(/<[^>]*>/g, '');
+    if (/[A-Za-z]/.test(words)) continue;
+    if (exprs.some(e => !DRAWS_NO_WORDS.test(e))) continue;
+    nameless.push(`${file}:${src.slice(0, m.index).split('\n').length}`);
+  }
+}
+ok(buttons > 50, 'the buttons were actually found', `matched ${buttons}`);
+eq(nameless.length, 0, 'no button is left without an accessible name');
+if (nameless.length) console.error('        ' + nameless.join('\n        '));
 
 console.log(`\n${pass} passed, ${fail} failed\n`);
 process.exit(fail ? 1 : 0);
