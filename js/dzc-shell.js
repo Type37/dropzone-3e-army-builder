@@ -483,6 +483,12 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-01', title: 'A sheet for the table, and corners that were never sharp', items: [
+      'A printable quick reference for each faction: every game size with its Group cap and Rare limit, the Commander ladder, the category and Group-cost rules, the transport symbols, the whole roster as one table, and the special rules those units actually print. It reads the same data the app reads, so a re-scanned points value cannot leave it lying. Linked from the landing page and the footer.',
+      'Sharp cards, actually. The rule was written into the stylesheet above the rules that round the picker cards, the rail and the Commander chooser, so those had been rounded the whole time. Nine more surfaces are square now, including the landing tiles and both grids in the New Army dialog.',
+      'Share is three things: a link for someone who will open it, plain text for a message or a forum, and JSON for this app’s own Import. The text keeps the Group nesting indented, and pastes back in as an army.',
+      'Feedback asks the four questions instead of opening a blank message.',
+    ]},
     { date: '2026-08-01', title: 'Surprise me, and a bug that called legal armies illegal', items: [
       'A Squad that needed more than one Transport was being reported illegal. Six Legionnaires in two Bear APCs is a Group the rulebook itself illustrates, and the app measured them against ONE vehicle\'s capacity — so it said "needs 6, has 3" and there was nothing you could do about it. Fixed, and pinned by six tests.',
       '"Surprise me" builds a whole army to the faction, size and points you have chosen, legal when it stops. It spends the Commander first, Standard before the categories Standard has to pay for, and takes a Transport only where it comes out exactly full.',
