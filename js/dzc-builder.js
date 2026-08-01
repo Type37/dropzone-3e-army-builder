@@ -1431,6 +1431,43 @@
       </div>`;
     }
 
+    /* The Commander block.
+     *
+     * A Commander was on the sheet only as a tag beside the Squad they ride
+     * with, so one you had not assigned yet did not print at all — and the
+     * numbers that come off Commander Level did not print anywhere. Those are
+     * the ones you reach for every Round: CP replenishes up to your highest
+     * Level and so does your Command Card hand (4.1.1, 4.1.4), and Initiative
+     * is D6 + Level (4.1).
+     *
+     * The activation count goes here too, because it is not the Group count. A
+     * Group of nothing but non-auxiliary Transports cannot be picked for a
+     * normal activation (4.1.2, 4.2.1) — it goes in the Orphaned Transport
+     * step — so counting Groups and counting activations give different
+     * answers, and the one you want at the table is this one. */
+    const cmdrs = window.DZCArmy.commanders(a);
+    const top = cmdrs.reduce((n, c) => Math.max(n, c.level || 0), 0);
+    const activations = a.groups.filter(g => g.squads.some(s => {
+      const cu = window.DZCArmy.unitOf(a, s);
+      return cu && cu.category !== 'Transport';
+    })).length;
+    const commanderBlock = cmdrs.length ? `<section class="pr-cmdrs">
+      <h2 class="pr-cmdrs-head">Commanders</h2>
+      ${cmdrs.map(c => {
+        const sq = c.squadId ? window.DZCArmy.findSquad(a, c.squadId) : null;
+        const cu = sq ? window.DZCArmy.unitOf(a, sq) : null;
+        return `<div class="pr-cmdr-row">
+          <span class="pr-cmdr-name">${esc(window.DZCArmy.commanderName(a, c))}</span>
+          <span>Level ${c.level}</span>
+          <span>${cu ? 'with ' + esc(cu.name) : 'not assigned'}</span>
+          <span class="pr-cmdr-pts">${window.DZCArmy.levelCost(c.level)}pts</span>
+        </div>`;
+      }).join('')}
+      <p class="pr-cmdr-play">CP per Round ${top}, hand ${top} card${top === 1 ? '' : 's'},
+        Initiative D6 + ${top} (4.1). ${activations} activation${
+        activations === 1 ? '' : 's'} (4.2.1).</p>
+    </section>` : '';
+
     const groups = a.groups.map(g => `<section class="pr-group">
       <div class="pr-g-head">
         <h2 class="pr-g-name">${esc(window.DZCArmy.groupName(a, g))}</h2>
@@ -1453,6 +1490,7 @@
           <span>${a.groups.length} Group${a.groups.length === 1 ? '' : 's'}</span>
           <span><b>${window.DZCArmy.armyCost(a)}</b> / ${a.pointsLimit}pts</span></p>
       </div>
+      ${commanderBlock}
       ${v.errors.length ? `<p class="pr-warn"><b>Not legal:</b> ${v.errors.map(e => esc(e.msg)).join(' ')}</p>` : ''}
       ${v.warnings.map(w => `<p class="pr-warn">${esc(w.msg)}</p>`).join('')}
       ${groups}
@@ -1595,10 +1633,13 @@
     if (!(page > 0)) return;
 
     /* The blocks print will not cut. A Group is one atom by design (a Group
-     * torn across a page is the failure this whole sheet exists to avoid) and
-     * so is a rule entry, so those are exactly the two things measured. */
+     * torn across a page is the failure this whole sheet exists to avoid), and
+     * so are the Commander block and a rule entry. This list has to stay in
+     * step with the break-inside: avoid rules in css/dzc-print.css — a block
+     * the stylesheet keeps whole and this does not is a break drawn where the
+     * printer will not make one. */
     const top0 = paper.getBoundingClientRect().top + padTop;
-    const atoms = [...paper.querySelectorAll('.pr-group, .pr-rule, .pr-rules > h2, .pr-head')]
+    const atoms = [...paper.querySelectorAll('.pr-group, .pr-cmdrs, .pr-rule, .pr-rules > h2, .pr-head')]
       .map(el => { const r = el.getBoundingClientRect(); return { el, top: r.top - top0, h: r.height }; })
       .filter(b => b.h > 0)
       .sort((x, y) => x.top - y.top);

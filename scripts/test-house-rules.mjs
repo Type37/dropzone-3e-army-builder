@@ -42,6 +42,23 @@ const puncts = (markup.match(/·/g) || []).length;
 ok(puncts <= 2, 'at most two interpuncts reach the screen', `found ${puncts} in index.html`);
 eq(puncts, 2, 'both are in the footer, and nothing else has taken one');
 
+/* Most of the app's text is built in JS, not written in index.html, so
+ * counting only the markup file left the rule enforced over the smaller half.
+ * &middot; counts too — it is the same character by the time anyone reads it,
+ * and it is the form that slips past a search for the glyph. Found by writing
+ * one into the printed Commander block and catching it by hand, which is
+ * exactly the kind of check that should not depend on catching it by hand. */
+const punctJs = [];
+for (const f of readdirSync(path.join(ROOT, 'js')).filter(n => n.endsWith('.js'))) {
+  const src = readFileSync(path.join(ROOT, 'js', f), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  src.split('\n').forEach((line, i) => {
+    if (line.trim().startsWith('//')) return;
+    if (/·|&middot;/i.test(line)) punctJs.push(`js/${f}:${i + 1}`);
+  });
+}
+eq(punctJs.length, 0, 'and nothing the JS renders spends another one');
+if (punctJs.length) console.error('        ' + punctJs.join('\n        '));
+
 // ------------------------------------------------------------- the banned word
 /* CLAUDE.md §3: never write "datasheet" -- not in the UI, not in code, not in
  * a comment, not in a variable name. It is not Jet's word; it arrived with the
