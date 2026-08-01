@@ -1343,6 +1343,10 @@
 
   window.DZCBuilder = {
     renderList, renderBuilder, openNew, createArmy, del, open,
+    // The app's toast. Exported because the shell has things worth saying too
+    // (a backup written, a sync finished) and a second toast implementation
+    // would be a second thing to keep in step.
+    say,
     /* Redraw whatever is on screen. Settings changes call this because a
      * toggle can change what the builder is allowed to show. */
     refresh: () => { if (current) renderBuilder(current.id); },

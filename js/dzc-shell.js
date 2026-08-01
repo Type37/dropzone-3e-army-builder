@@ -227,6 +227,8 @@ const App = (() => {
       </div>
       <div class="dzc-set-group">
         <div class="dzc-set-actions">
+          <button class="btn btn-ghost btn-sm" type="button" onclick="App.exportArmies()"
+                  title="Download every army as one JSON file">Export a backup</button>
           <button class="btn btn-ghost btn-sm" type="button" onclick="App.openChangelog()">What's New</button>
           <a class="btn btn-ghost btn-sm" href="mailto:warlore1@outlook.com?subject=Dropzone%20builder%20feedback">Send feedback</a>
         </div>
@@ -236,6 +238,33 @@ const App = (() => {
       </div>`;
     openModal('modal-settings');
     renderOfflinePanel();
+  }
+
+  /* Every army, as one JSON file you keep.
+   *
+   * Armies live in localStorage, which a browser is free to clear and a
+   * "clear site data" click will. Sync copies them between your own devices
+   * but is still not a backup — it propagates a deletion just as happily.
+   * This is the copy that survives both.
+   *
+   * The exact stored shape, unmodified, so it can be pasted straight back. No
+   * schema of its own: a backup format that is not the storage format is a
+   * second thing to keep in step. */
+  function exportArmies() {
+    const armies = (window.DZCArmy && DZCArmy.all()) || [];
+    if (!armies.length) return { ok: false, reason: 'No armies to export.' };
+    const stamp = new Date().toISOString().slice(0, 10);
+    const name = `dropzone-armies-${stamp}.json`;
+    const blob = new Blob([JSON.stringify(armies, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    return { ok: true, count: armies.length, name: name };
   }
 
   // ----------------------------------------------------------------- offline
@@ -416,7 +445,17 @@ const App = (() => {
     openSettings, setTheme, toggleSetting, collectionOn, applyCollectionSetting,
     renderOfflinePanel, runOfflineSync, deleteOfflineData,
     openSyncModal, syncStart, syncStop, syncNow, syncJoin,
-    openChangelog
+    openChangelog,
+    /* Says how many it wrote. A download that produces no visible file and no
+       message is indistinguishable from a button that does nothing. */
+    exportArmies: () => {
+      const r = exportArmies();
+      if (window.DZCBuilder && DZCBuilder.say) {
+        DZCBuilder.say(r.ok ? `${r.count} ${r.count === 1 ? 'army' : 'armies'} saved to ${r.name}`
+                            : r.reason);
+      }
+      return r;
+    }
   };
 })();
 window.App = App;
