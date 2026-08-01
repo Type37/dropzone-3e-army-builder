@@ -1086,7 +1086,7 @@
      * in the game as published. The rule is still enforced in canAddUnit for
      * when TTCombat print one; the chip was just an empty promise. Upgrades
      * goes on Scourge, Shaltari and Bioficer for the same reason. */
-    const filters = FILTERS.filter(fl => pickable.some(fl.test));
+    const filters = FILTERS.filter(fl => (!fl.when || fl.when()) && pickable.some(fl.test));
     // An active filter that is no longer on offer would go on quietly cutting
     // the list with nothing on screen to say so.
     picker.filters = picker.filters.filter(k => filters.some(fl => fl.key === k));
@@ -1188,7 +1188,18 @@
     // with a points cost (3.2.3), and only 18 Units in the game have one — so
     // "what can I spend the last 40 points on" is a real question this answers.
     { key: 'upgrades', label: 'Upgrades',
-      test: u => (u.weapons || []).some(w => w.box === 'upgrade' && w.upgradePoints != null) }
+      test: u => (u.weapons || []).some(w => w.box === 'upgrade' && w.upgradePoints != null) },
+    /* Gap 32. Only when the Collection is switched on: the builder does not
+     * mention what you own unless you have said you want it to, which is the
+     * same gate applyCollectionSetting puts on the landing tile.
+     *
+     * It hides itself the rest of the time by the same rule every other filter
+     * follows -- nothing owned in this faction, no chip -- so it never sits
+     * there as a control that empties the list and does not say why. */
+    { key: 'owned', label: 'Owned',
+      when: () => !!(window.App && window.App.collectionOn && window.App.collectionOn()),
+      test: u => !!(window.DZCCollection
+        && window.DZCCollection.count(current.faction, u.id) > 0) }
   ];
   const CATEGORY_ORDER = ['Standard', 'Vanguard', 'Heavy', 'Support', 'Transport', 'Generated'];
 

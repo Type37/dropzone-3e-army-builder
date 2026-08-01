@@ -400,6 +400,20 @@ console.log('\nevery screen renders');
        err && `${err.message}\n        ${((err.stack || '').split('\n')[1] || '').trim()}`);
   };
   await drive('the picker', () => B.openPicker(g.id));
+  /* Gap 32: the Owned filter is gated twice -- on the Collection setting and
+   * on actually owning something in this faction -- so with neither it must
+   * not be on the bar at all. A filter that empties the list and does not say
+   * why is worse than no filter. */
+  ok(!/>Owned</.test(els['dzc-picker-body'].innerHTML),
+     'the Owned filter stays off the bar with the Collection switched off');
+  const realCollection = win.DZCCollection;
+  win.App = { collectionOn: () => true };
+  win.DZCCollection = { count: (fid, id) => (id === 'legionnaires' ? 2 : 0) };
+  await B.openPicker(g.id);
+  ok(/>Owned</.test(els['dzc-picker-body'].innerHTML),
+     'and appears once the Collection is on and something is owned');
+  delete win.App;
+  win.DZCCollection = realCollection;
   await drive('the Transport chooser', () => B.openCarry(legion.id));
   await drive('the Commander chooser', () => B.openCommander());
   await drive('Share', () => B.share());
