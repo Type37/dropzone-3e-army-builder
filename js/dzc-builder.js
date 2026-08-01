@@ -33,6 +33,9 @@
   // and the detail take turns rather than stacking into one long scroll — that
   // stack is the thing the three panes replaced.
   let drilled = false;
+  // How the army list is ordered. Not stored: it is a way of looking at the
+  // list for a moment, not a preference about it.
+  let listSort = 'recent';
 
   // ------------------------------------------------------------- army list
 
@@ -40,7 +43,16 @@
     const root = document.getElementById('view-armies');
     if (!root) return;
     await window.DZC.loadIndex();
-    const list = window.DZCArmy.load();
+    /* Sorted, and only offered once there is something to sort. Dropfleet
+     * hides its sort bar below two fleets (app.js:1627) and that is right: a
+     * control that cannot change anything is noise on the screen you see
+     * first. Recent is the default because the list you were last in is
+     * almost always the one you came back for. */
+    const list = window.DZCArmy.load().slice().sort(
+      listSort === 'name' ? (a, b) => a.name.localeCompare(b.name)
+      : listSort === 'faction' ? (a, b) => a.faction.localeCompare(b.faction) || a.name.localeCompare(b.name)
+      : listSort === 'points' ? (a, b) => window.DZCArmy.armyCost(b) - window.DZCArmy.armyCost(a)
+      : (a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
 
     /* Built to the Dropfleet fleet card (app.js:1660), because it already
      * solved this: the faction crest and its FULL name in a chip along the
@@ -89,6 +101,11 @@
           <button class="btn btn-primary" type="button" onclick="DZCBuilder.openNew()">New Army</button>
         </span>
       </div>
+      ${list.length > 1 ? `<div class="dzc-chips dzc-list-sort">${
+        [['recent', 'Recent'], ['name', 'Name'], ['faction', 'Faction'], ['points', 'Points']]
+          .map(([k, label]) => `<button type="button" class="dzc-chip${
+            listSort === k ? ' is-active' : ''}" onclick="DZCBuilder.sortList('${k}')"
+            aria-pressed="${listSort === k}">${label}</button>`).join('')}</div>` : ''}
       ${list.length ? `<div class="dzc-army-grid">${cards}</div>`
         : `<p class="dzc-empty">No armies yet.</p>`}
     </div>`;
@@ -1771,6 +1788,7 @@
 
   window.DZCBuilder = {
     renderList, renderBuilder, openNew, createArmy, surpriseMe, del, open,
+    sortList: k => { listSort = k; renderList(); },
     // The app's toast. Exported because the shell has things worth saying too
     // (a backup written, a sync finished) and a second toast implementation
     // would be a second thing to keep in step.

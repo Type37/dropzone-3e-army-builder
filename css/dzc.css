@@ -222,6 +222,13 @@
 /* ═══ Army list ═══ */
 .dzc-list-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
 .dzc-list-head h1 { font: 800 24px/1.2 var(--font-display, 'Roboto Slab', serif); margin: 0; }
+/* Shown only once there is more than one army to order. The armies view has no
+   faction, so --acc is undefined here and the active chip would paint white on
+   white — the picker had exactly that bug. It takes the navy instead. */
+.dzc-list-sort { margin: -4px 0 14px; }
+.dzc-list-sort .dzc-chip.is-active {
+  background: var(--navy, #1b3a5c); border-color: var(--navy, #1b3a5c); color: #fff;
+}
 .dzc-army-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 8px; }
 .dzc-army-card { padding: 8px 9px; cursor: pointer; border: 1px solid var(--line, #d8d0c0); border-left: 4px solid var(--acc); border-radius: 8px; background: var(--surface-2, #fff); }
 .dzc-army-card:hover { border-color: var(--acc); }
