@@ -153,7 +153,10 @@ const App = (() => {
       case 'play':
         show('view-play');
         ctx.innerHTML = back('army/' + param, 'Play Mode')
-          + ` <button class="btn btn-ghost btn-sm" type="button" onclick="DZCPlay.reset()">Reset game</button>`;
+          // btn-ghost-light, not btn-ghost: this sits on the navy topbar, and
+          // btn-ghost's grey is picked for the paper background — it came out
+          // washed out enough to read as a control you cannot press.
+          + ` <button class="btn btn-ghost-light btn-sm" type="button" onclick="DZCPlay.reset()">Reset game</button>`;
         if (window.DZCPlay) DZCPlay.open(param);
         break;
       case 'collection':
