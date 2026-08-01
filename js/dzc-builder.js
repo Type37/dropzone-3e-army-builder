@@ -1167,18 +1167,32 @@
       { n: '+' + level, k: 'Initiative' }];
   }
 
-  /* Every level the agreed game size allows, with what it costs and what it
-   * brings to the table. Famous Commanders are not released, so this is the
-   * generic ladder only — the schema slot is there for when they are. */
+  /* The whole ladder, with what each level costs and what it brings to the
+   * table. Famous Commanders are not released, so this is the generic ladder
+   * only — the schema slot is there for when they are.
+   *
+   * Every level, including the ones this game size does not allow. Filtering
+   * them out enforced 3.2.5 by making them not exist, which is the one form of
+   * enforcement this app does not use anywhere else: a Rare Squad at its limit
+   * is disabled quoting the limit, an option that cannot be taken full is
+   * disabled with the arithmetic. An absent option teaches nothing — at
+   * Skirmish there was no way to learn that Levels 6 and 7 exist, or that a
+   * bigger game is what unlocks them. addCommander refuses them either way. */
   function openCommander() {
     const a = current;
     if (!a) return;
     const size = window.DZC.gameSizeFor(a.pointsLimit);
-    const levels = window.DZC.commanderLevels((size || {}).id || 'skirmish');
-    const rows = levels.map(l => {
+    const sizes = (window.DZC.index || {}).gameSizes || [];
+    const all = (((window.DZC.index || {}).armyRules || {}).commanders || {}).levels || [];
+    const allowed = window.DZC.commanderLevels((size || {}).id || 'skirmish').map(l => l.level);
+    const rows = all.map(l => {
+      const ok = allowed.indexOf(l.level) !== -1;
+      // The size that DOES allow it, named the way the printable reference
+      // names it: the first entry in allowedIn is the smallest game it fits.
+      const from = sizes.find(s => s.id === (l.allowedIn || [])[0]);
       const insignia = window.RankInsignia
         ? window.RankInsignia(a.faction, Math.max(1, l.level - 3), 30) : '';
-      return `<div class="dzc-cmdr-opt">
+      return `<div class="dzc-cmdr-opt${ok ? '' : ' is-blocked'}">
         ${insignia}
         <div class="dzc-cmdr-opt-body"><b>Level ${l.level}</b></div>
         <div class="dzc-cmdr-buys"
@@ -1186,8 +1200,11 @@
           levelBuys(l.level).map(b =>
             `<span><b>${b.n}</b><i>${b.k}</i></span>`).join('')}</div>
         <span class="dzc-cmdr-opt-pts">${l.points}pts</span>
-        <button type="button" class="btn btn-primary btn-sm"
-                onclick="DZCBuilder.addCommander(${l.level})">Add</button>
+        ${ok
+          ? `<button type="button" class="btn btn-primary btn-sm"
+                onclick="DZCBuilder.addCommander(${l.level})">Add</button>`
+          : `<span class="dzc-pick-blocked">${window.DZCIcon('lock', { size: 14 })}${
+              esc(from ? from.label + ' and up' : 'A larger game')}</span>`}
       </div>`;
     }).join('');
     document.getElementById('dzc-cmdr-body').innerHTML = rows

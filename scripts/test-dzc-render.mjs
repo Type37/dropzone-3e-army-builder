@@ -562,6 +562,13 @@ console.log('\nevery screen renders');
     ok(/<b>4<\/b><i>CP<\/i>/.test(html), 'the Commander chooser prices Level 4 at 4 CP');
     ok(/<b>4<\/b><i>cards<\/i>/.test(html), 'and a hand of 4 cards');
     ok(/<b>\+4<\/b><i>Initiative<\/i>/.test(html), 'and +4 Initiative');
+    /* Gap 35: a refused option says why rather than not being there. This army
+     * is 1500pts, which is a Clash, so Level 7 is out — and it is on the
+     * chooser, dimmed, naming the size that reaches it. Filtering it away
+     * enforced 3.2.5 by making it unlearnable: at Skirmish there was no way to
+     * find out Levels 6 and 7 exist. */
+    ok(/Level 7/.test(html), 'a Level the agreed size cannot reach is still on the chooser');
+    ok(/is-blocked/.test(html) && /Battle and up/.test(html), 'refused, and naming the size that reaches it');
   }
 
   for (const [name, html, min] of [

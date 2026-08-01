@@ -1132,6 +1132,9 @@
 /* ── enforcement affordances ── */
 .dzc-pick.is-blocked { opacity: .6; }
 .dzc-pick.is-blocked:hover { border-color: var(--line, #d8d0c0); }
+/* A Commander Level the agreed size does not reach, dimmed the same amount as
+   a Unit you may not take — same refusal, so it should read the same. */
+.dzc-cmdr-opt.is-blocked { opacity: .6; }
 .dzc-pick-blocked {
   display: flex; align-items: center; gap: 4px; margin-top: 8px; padding: 8px 10px;
   border-radius: 5px; background: rgba(138, 75, 18, .09);
