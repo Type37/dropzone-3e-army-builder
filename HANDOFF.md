@@ -205,7 +205,7 @@ not happened.** What exists was guessed. It needs a real spec from Jet.
 | `js/dzc-collection.js` | what you own; advisory, never blocking |
 | `js/dzc-shell.js` | routing, modals, settings, theme, offline, sync |
 | `css/dzc.css`, `css/dzc-print.css` | |
-| `scripts/test-all.mjs` | 167 assertions across four suites |
+| `scripts/test-all.mjs` | 381 assertions across six suites |
 
 Routes: `#armies`, `#army/<id>`, `#units`, `#collection`, `#play/<id>`,
 `#share/<payload>`.
@@ -342,13 +342,79 @@ tasks in one turn (finish → test → commit → push → next), not one task p
 turn with a status report in between. Written down after Jet had to say it
 four different ways in one session.
 
-**Left mid-flight:** Commander naming (this session's last change) is
-tested (306 assertions) but not yet visually verified — no screenshot was
-taken of the rail card before this handoff was written. Worth a look before
-trusting the layout.
-
 **Todoist is still the real backlog.** This file is a map, not a task list —
-`#dropzone3` in *Generators & Web Apps* has the live priority order, and a
-lot of p1s remain (explainer-slop passes, Fluent wording guidance, print
-mode research, the points-limit-after-creation gap). Work top-down by
-priority there, not from this section.
+`#dropzone3` in *Generators & Web Apps* has the live priority order. Work
+top-down by priority there, not from this section.
+
+---
+
+## 11. Cloud run — 2026-08-01, no browser
+
+Thirteen commits from an unattended run with no Chrome and no access to the
+Dropfleet working folder, so **everything below is tested and none of it has
+been looked at.** Each commit says what it did not check; the Todoist comment
+on each task says the same. The one thing worth doing before trusting any of
+it is opening the app.
+
+**Two real bugs, one of them serious.**
+
+- **A Squad needing more than one Transport was reported illegal.**
+  `DZC.loadCheck` / `DZC.isFull` measured against one vehicle's capacity and
+  were never told how many Transports were in the Transport Squad, so six
+  Legionnaires in two Bear APCs — the rulebook's own worked Group 3 — came
+  back as "Bear APC has 3 square capacity, needs 6". Both now take a carrier
+  count, defaulting to 1; every caller looking at a Squad that exists passes
+  `s.models.length`.
+- **"Pen 6+"** was already fixed before this run; the note stands in the
+  changelog.
+
+**The generator is a test, not a toy.** `DZCArmy.generate(faction, limit,
+rand)` behind "Surprise me" in the New Army dialog. It has to produce a
+*legal* army, which makes it the only thing in the suite that argues with
+every rule at once — and it is what found the Transport bug above. 72 armies
+across six factions and four points levels are asserted legal on every run,
+with an injected `rand` so a failure reproduces. Three things it had to be
+taught, all of them non-obvious: the category ratio must be checked *after* a
+Group is built (the Transport's cost moves it), the Commander must be assigned
+*before* Squads grow (their points land on the Group they join and can push it
+past the quarter-of-the-army ceiling), and a rejected Group must not cost one
+of the Group slots.
+
+**Things that changed shape, not just gained a feature.**
+
+- **Print goes through a preview** (`openPreview` in `js/dzc-builder.js`) with
+  measured page breaks — a block the stylesheet keeps whole is pushed to the
+  next page exactly as print does it, so the preview and the paper agree. The
+  atom list in `paginate()` must stay in step with the `break-inside: avoid`
+  rules in `css/dzc-print.css`. The sheet's styling came *out* of `@media
+  print` for this: a rule that only exists at print time is a preview that
+  lies. Compact / ink-saver / art live in the preview bar, not Settings.
+- **The per-model variant dropdowns are gone.** `setVariantCount` /
+  `canSetVariantCount`; the variant block carries the count, so a Squad's
+  shape is "how many of each" rather than a dropdown per model.
+- **Upgrades render as whole weapon rows** with the price as the button,
+  built from `wpnHead`/`wpnCells` so they cannot drift from the table above.
+- **Import exists** — `DZCArmy.importArmies` (backup/single army, ids all
+  reissued so nothing is overwritten) and `DZCArmy.importList` (a pasted New
+  Recruit list; conventions read out of Dropfleet's `parseArmyListText`). A
+  pasted list cannot recover the Group nesting and says so.
+- **The points limit is changeable** — `setPointsLimit`, off the size in the
+  rail.
+- **Rule text links the rules it names**, `DZC.linkKeywords`. Aliases are in
+  the pool on purpose: without "First Strike" the sort matches the bare
+  "Strike" inside it, which is a different rule.
+- **Every rule a Unit uses prints in full** under its weapon table
+  (`unitRulesHtml`) — a tooltip does not exist on a phone.
+
+**The suite grew from 306 to 381** and two of the new checks are house rules
+rather than code: the interpunct budget is now counted across the JS as well
+as `index.html` (and `&middot;` counts), and every `<input>`/`<select>`/
+`<textarea>`/`contenteditable` must carry an accessible name. The render suite
+now loads `js/dzc-units.js` against a document stub and draws all 178 Units.
+
+**Left for Jet, not guessable from here:** the monthly stat-card workflow
+wants a PR, which CLAUDE.md §6 forbids — three options are on that task and
+the recommendation is to gate on the four audits and commit to master. "Group
+list sectioned by category" cannot be built as written: a DZC Group has no
+category. New Recruit's *DZC* export format needs a real sample pasted onto
+its task.
