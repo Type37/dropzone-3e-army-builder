@@ -272,10 +272,16 @@
       <div class="dzc-play-sq-head">
         <span class="dzc-play-name">${esc(u.name)}</span>
         ${s.commander ? `<span class="dzc-cmdr-tag">${window.DZCIcon('military_tech', { size: 11 })}L${s.commander.level}</span>` : ''}
-        <span class="dzc-statuses">${SQUAD_STATUSES.map(st => `<button type="button"
-          class="dzc-st${((state.squads[s.id] || {}).st || []).indexOf(st) !== -1 ? ' is-on' : ''}"
+        <!-- A set status says its whole name; an unset one is its letter. The
+             alternative was a legend line under the row, which is the caption
+             under a control this app does not write, and a title alone is
+             nothing at all on a phone. -->
+        <span class="dzc-statuses">${SQUAD_STATUSES.map(st => {
+    const on = ((state.squads[s.id] || {}).st || []).indexOf(st) !== -1;
+    return `<button type="button" class="dzc-st${on ? ' is-on' : ''}"
           title="${st}" aria-label="${st}"
-          onclick="DZCPlay.squadStatus('${s.id}','${st}')">${st[0]}</button>`).join('')}</span>
+          onclick="DZCPlay.squadStatus('${s.id}','${st}')">${on ? st : st[0]}</button>`;
+  }).join('')}</span>
         <span class="dzc-play-alive">${aliveIn(s)}/${models.length}</span>
       </div>
       <div class="dzc-play-models">
@@ -283,10 +289,12 @@
           <button type="button" onclick="DZCPlay.dp('${s.id}',${i},-1)" aria-label="Damage">−</button>
           <b>${m.dp}</b><i>/${m.max}</i>
           <button type="button" onclick="DZCPlay.dp('${s.id}',${i},1)" aria-label="Repair">+</button>
-          <span class="dzc-statuses">${MODEL_STATUSES.map(st => `<button type="button"
-            class="dzc-st${(m.st || []).indexOf(st) !== -1 ? ' is-on' : ''}"
+          <span class="dzc-statuses">${MODEL_STATUSES.map(st => {
+    const on = (m.st || []).indexOf(st) !== -1;
+    return `<button type="button" class="dzc-st${on ? ' is-on' : ''}"
             title="${st}" aria-label="${st}"
-            onclick="DZCPlay.status('${s.id}',${i},'${st}')">${st[0]}</button>`).join('')}</span>
+            onclick="DZCPlay.status('${s.id}',${i},'${st}')">${on ? st : st[0]}</button>`;
+  }).join('')}</span>
         </div>`).join('')}
       </div>
     </div>`;

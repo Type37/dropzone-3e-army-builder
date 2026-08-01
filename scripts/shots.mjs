@@ -183,7 +183,16 @@ const DZC_STEPS = [
        sel.dispatchEvent(new Event('change'));
      }
      await new Promise(r => setTimeout(r, 500));
-     DZCBuilder.play()`],
+     DZCBuilder.play();
+     await new Promise(r => setTimeout(r, 700));
+     // One Squad token and one model token set, because an unset status is a
+     // letter and a set one says its whole name -- so the shot has to carry
+     // both states or it only shows half the control.
+     const st = document.querySelectorAll('.dzc-st');
+     st[1] && st[1].click();
+     await new Promise(r => setTimeout(r, 200));
+     const st2 = document.querySelectorAll('.dzc-model .dzc-st');
+     st2[0] && st2[0].click()`],
   ['18-armies', `location.hash = '#armies'`],
 ];
 
