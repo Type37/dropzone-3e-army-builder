@@ -497,6 +497,20 @@ console.log('\nevery screen renders');
   await drive('the Commander chooser', () => B.openCommander());
   await drive('Share', () => B.share());
   await drive('the print preview', () => B.print());
+  /* Gap 63 on paper, where it matters more: you cannot expand a row on a
+   * printed sheet to discover that the gun above it belongs to a Variant
+   * nobody in the Squad is. The sheet takes its guns from the same definition
+   * the Squad row does.
+   *
+   * printNow is the one that builds the sheet the printer gets -- print()
+   * opens the preview, which draws into a node this stub registry does not
+   * hold. window.print is stubbed because the sandbox has no printer and the
+   * call is the last thing the function does. */
+  win.print = () => {};
+  await drive('the printed sheet', () => B.printNow());
+  const sheet = els['dzc-print'].innerHTML;
+  ok(/UM-702 Laser/.test(sheet), 'the printed sheet lists the Squad\'s guns');
+  ok(!/UM-28 Gatling/.test(sheet), 'and not the ones it does not have');
   await drive('the unit reference', () => win.DZCUnits.open());
   await drive('Collection', () => win.DZCCollection.open());
   await drive('Play mode', () => win.DZCPlay.open(a.id));

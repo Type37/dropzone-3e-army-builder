@@ -275,8 +275,7 @@
    * block underneath still offers every upgrade, and the variant blocks above
    * still name every variant's gun. What stops is the table quietly claiming
    * six weapons for three models that have four. */
-  function weaponsHtml(u, faction, opts) {
-    const fac = faction || state.faction;
+  function unitWeapons(u, opts) {
     const o = opts || {};
     let ws = u.weapons || [];
     // Only when the Unit HAS variants. A model on a Unit with none carries
@@ -287,6 +286,12 @@
         || w.variants.some(v => o.variants.indexOf(v) !== -1));
     }
     if (o.hasUpgrade) ws = ws.filter(w => w.box !== 'upgrade' || o.hasUpgrade(w));
+    return ws;
+  }
+
+  function weaponsHtml(u, faction, opts) {
+    const fac = faction || state.faction;
+    const ws = unitWeapons(u, opts);
     if (!ws.length) return '<p class="dzc-none">No weapons.</p>';
     return `
       <table class="dzc-wpn">
@@ -469,7 +474,7 @@
     setSearch: v => { state.search = v; render(); },
     openDetail, closeDetail, showRule, hideRule,
     // Shared with the builder's picker so a unit reads the same in both places.
-    statsHtml, rulesHtml, squadHtml, transportHtml, weaponsHtml, variantsHtml,
+    statsHtml, rulesHtml, squadHtml, transportHtml, unitWeapons, weaponsHtml, variantsHtml,
     unitRulesHtml, wpnHead, wpnCells,
     pointsHtml, shape: shapeSvg,
     SHAPES: Object.keys(SYMBOL),

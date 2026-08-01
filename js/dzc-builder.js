@@ -855,6 +855,19 @@
    * same Variant must be upgraded equally" (3.2.3) makes the upgrade a
    * per-variant purchase — so the row names its variant instead of listing
    * every variant the weapon is printed for. */
+  /* Which guns a Squad actually has, in the shape DZCUnits.unitWeapons wants:
+   * the Variants its models are, and the upgrades it bought. One definition,
+   * because the Squad row, the printed sheet and the sheet's rules appendix
+   * must not disagree about what is in the Squad — and the appendix is where
+   * disagreeing costs paper, since a rule collected off a gun nobody fires is
+   * a paragraph printed for nothing. */
+  function squadGuns(s) {
+    return {
+      variants: s.models.map(m => m.variant),
+      hasUpgrade: w => Object.keys(s.upgrades || {}).some(k => s.upgrades[k][w.name])
+    };
+  }
+
   function upgradesHtml(a, s, u) {
     const opts = window.DZCArmy.upgradesFor(a, s);
     if (!opts.length) return '';
@@ -1035,6 +1048,7 @@
      * the Transport chooser are all still there, because a denser overview
      * that also refuses you a purchase is a different feature. */
     const compact = !!(window.App && App.compactView && App.compactView());
+
     const meta = [esc(u.category), esc(u.type || ''),
       u.squadMin != null ? `Squad ${U.squadHtml(u)}` : '']
       .filter(Boolean).map(t => `<span>${t}</span>`).join('');
@@ -1062,10 +1076,7 @@
       <div class="dzc-sq-stats">${U.statsHtml(u)}</div>
       ${u.special ? `<div class="dzc-sq-rules">${U.rulesHtml(u.special, a.faction)}</div>` : ''}
       ${U.variantsHtml(u, (v, i) => variantStepper(a, s, u, i), { stats: !compact })}
-      ${compact ? '' : `<div class="dzc-sq-wpn">${U.weaponsHtml(u, a.faction, {
-        variants: s.models.map(m => m.variant),
-        hasUpgrade: w => Object.keys(s.upgrades || {}).some(k => s.upgrades[k][w.name])
-      })}</div>`}
+      ${compact ? '' : `<div class="dzc-sq-wpn">${U.weaponsHtml(u, a.faction, squadGuns(s))}</div>`}
       ${upgradesHtml(a, s, u)}
       <div class="dzc-sq-opts">
         ${transportPicker}
@@ -1745,8 +1756,8 @@
     // in, and the sheet has to carry the one the model actually has.
     const used = new Map();          // printed keyword -> { token, rule, text }
 
-    function collectRules(u) {
-      [u.special || ''].concat((u.weapons || []).map(w => w.special || '')).forEach(sp => {
+    function collectRules(u, guns) {
+      [u.special || ''].concat((guns || []).map(w => w.special || '')).forEach(sp => {
         window.DZC.splitSpecial(sp, a.faction).forEach(tok => {
           const r = window.DZC.rule(tok, a.faction);
           if (r && !used.has(tok)) {
@@ -1759,7 +1770,8 @@
     function squad(g, s, depth) {
       const u = window.DZCArmy.unitOf(a, s);
       if (!u) return '';
-      collectRules(u);
+      const guns = window.DZCUnits.unitWeapons(u, squadGuns(s));
+      collectRules(u, guns);
       const riders = g.squads.filter(x => x.carriedBy === s.id);
       const cost = window.DZCArmy.squadCost(a, s);
       const stats = Object.keys(u.stats || {})
@@ -1775,9 +1787,12 @@
         ? `carries ${(u.transport.capacity).map(c => `${c.n} ${c.shape}`)
             .join(u.transport.capacityMode === 'both' ? ' + ' : ' / ')}` : '';
 
-      const wpns = (u.weapons || []).length ? `<table class="pr-wpn">
+      // The sheet is the deployment plan, and on paper you cannot expand a row
+      // to find out that the gun above it belongs to a Variant you did not
+      // take. Same guns as the Squad row, from the same definition.
+      const wpns = guns.length ? `<table class="pr-wpn">
         <tr><th>Weapon</th><th>Arc</th><th>Move &amp; Attack</th><th>Range</th><th>Attacks</th><th>Accuracy</th><th>Energy</th><th>Special</th></tr>
-        ${u.weapons.map(w => `<tr><td>${esc(w.name)}${(w.variants || []).length ? ` <i>(${esc(w.variants.join(', '))})</i>` : ''}</td>
+        ${guns.map(w => `<tr><td>${esc(w.name)}${(w.variants || []).length ? ` <i>(${esc(w.variants.join(', '))})</i>` : ''}</td>
           <td>${esc(w.arc || '')}</td><td>${esc(w.ma || '')}</td><td>${esc(w.r || '')}</td>
           <td>${esc(w.att || '')}</td><td>${esc(w.ac || '')}</td><td>${esc(w.e || '')}</td>
           <td>${esc(w.special || '')}</td></tr>`).join('')}</table>` : '';
