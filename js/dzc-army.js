@@ -812,6 +812,21 @@
 
   /* Which Squads this Commander may join: a fighting Unit, one Commander each
    * (3.2.5), and never a Transport Squad. */
+  /* Which Squads this Commander may be assigned to.
+   *
+   * "Squads can only contain one Commander" (3.2.5) is the rule, and it is why
+   * a Squad holding somebody else is not offered. The Squad holding THIS
+   * Commander stays on the list, because the select has to be able to show
+   * where they already are.
+   *
+   * Excluding TRANSPORT Squads is not that rule. 3.2.5 reads, in full, that a
+   * Commander "must be assigned to a Unit when building your Army" and that a
+   * Squad may contain one — a Transport is a Unit and a Transport Squad is a
+   * Squad, so the rules permit it and this refuses it. It is a design decision
+   * and it is marked as one: 3.2.5 also says a Commander is killed with the
+   * Unit they are assigned to, and riding in the Bear APC instead of with the
+   * Legionnaires it carries is strictly the worse place to be. Whether the
+   * builder should still allow it is on the backlog, unsettled. */
   function commanderTargets(army, cmdrId) {
     const out = [];
     army.groups.forEach(g => g.squads.forEach(s => {
