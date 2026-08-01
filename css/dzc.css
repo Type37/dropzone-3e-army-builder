@@ -1068,9 +1068,17 @@
 /* Two columns, three rows. Every cell carries its icon AND its word AND its
    value — an icon alone does not tell you what a number means. Same shape as
    the Dropfleet builder's .stat-grid. */
-.dzc-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+/* minmax(0, 1fr), not 1fr. A bare 1fr is minmax(AUTO, 1fr), so every column is
+   floored at its content's min-content width — and .dzc-stat-k refuses to break
+   inside a word, so DEFENCE and BRAVERY have a floor they cannot go under.
+   Three of those were wider than a reference card, the grid overflowed, and the
+   card clipped it: the Legionnaire Weapon Team read "5+ DEFENC". */
+.dzc-stats { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 3px; }
 .dzc-stat {
-  display: flex; align-items: baseline; gap: 4px; min-width: 0;
+  /* And the label drops under the value rather than out of the cell when even
+     that is not enough. DAMAGE POINTS already wrapped, because it is two
+     words; this is the same escape for the one-word labels. */
+  display: flex; align-items: baseline; gap: 4px; min-width: 0; flex-wrap: wrap;
   padding: 3px 5px; border-radius: 4px;
   background: var(--surface-3, #f2ece0);
   border: 1px solid var(--line, #e3dcce);
@@ -1099,8 +1107,8 @@
 /* A unit shows only the stats its card prints, so the grid fits the count:
    three across for a Vehicle or Aircraft (Mv A DP), and Infantry's five run
    three then two. */
-.dzc-stats.n-3 { grid-template-columns: repeat(3, 1fr); }
-.dzc-stats.n-5 { grid-template-columns: repeat(3, 1fr); }
+.dzc-stats.n-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.dzc-stats.n-5 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .dzc-stats.is-compact { gap: 2px; }
 .dzc-stats.is-compact .dzc-stat { padding: 2px 4px; gap: 3px; justify-content: center; }
 .dzc-stats.is-compact .dzc-stat-k { font-size: 9px; letter-spacing: .04em; }

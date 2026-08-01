@@ -115,12 +115,16 @@ const DZC_STEPS = [
   // exactly one Group in the middle pane, so nothing that only goes wrong with
   // two of them could ever be seen -- which is how every card's drag grip came
   // to be drawn on top of the first card's points and nobody noticed.
-  ['11b2-two-groups', `await DZCBuilder.addGroup(); DZCBuilder.closePicker()`],
+  // addGroup selects the new Group, so the selection goes back to the first
+  // one: every step after this shoots the Group with something in it, which is
+  // what they were written to show.
+  ['11b2-two-groups', `await DZCBuilder.addGroup(); DZCBuilder.closePicker();
+     const first = document.querySelector('.dzc-bb'); first && first.click()`],
   ['11b3-group-list-1to1', `void 0`, '.dzc-b-list'],
   // The rail at 1:1. It carries points left, the category ratios and the
   // outstanding issues -- the numbers you work from -- and had only ever been
   // seen shrunk into a 1400px-wide page shot.
-  ['11b4-rail-1to1', `DZCBuilder.selectGroup(DZCArmy.get(DZCArmy.list()[0].id).groups[0].id)`, '.dzc-rail'],
+  ['11b4-rail-1to1', `void 0`, '.dzc-rail'],
   // The Group itself, clipped. At 1400 it is most of the screen; at 375 this
   // is the shot that shows whether anything is spilling sideways.
   ['11c-group-card', `document.querySelector('.dzc-group-card').scrollIntoView();
@@ -140,6 +144,10 @@ const DZC_STEPS = [
   // statsHtml is shared with the reference and the collection, so both get
   // shot too: changing it under them is exactly how a view breaks unnoticed.
   ['14-unit-reference', `DZCUnits.closeDetail(); location.hash = '#units'`],
+  // One reference card at 1:1. The stat cells carry the whole word — MOVE,
+  // ARMOUR, DAMAGE POINTS — in a card a quarter the width of a Squad row, so
+  // this is where they run out of room, and a 1400px page shot cannot show it.
+  ['14b-ref-card-1to1', `void 0`, '.dzc-card'],
   ['15-unit-reference-detail', `const c = document.querySelector('.dzc-card'); c && c.click()`],
   // A Transport, to see the capacity shapes beside the name at size.
   ['15b-transport-detail', `DZCUnits.closeDetail();
