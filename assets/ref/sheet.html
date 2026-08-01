@@ -6,18 +6,27 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&family=Roboto+Slab:wght@700;800&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-  /* One page per faction, drawn from data/dzc rather than typed.
-   *
-   * Dropfleet's ref/ is six hand-written files. That cannot work here: the
-   * stat cards are re-scanned monthly (HANDOFF §7), and a typed sheet is stale
-   * the first time TTCombat move a points value. So this is ONE document that
-   * reads the same JSON the app reads, parameterised by ?faction=<id>.
-   *
-   * The layout language is Dropfleet's: a white sheet on grey, a brand bar
-   * with the faction rule underneath it, section headers in Jost with the
-   * faction colour as an inset underline, alternating table rows. Barlow
-   * Condensed is out (CLAUDE.md §4), so Jost carries the condensed role and
-   * Outfit carries every number. */
+  /* WHY THIS LIVES UNDER assets/ AND NOT ref/
+     .github/workflows/deploy.yml stages a NAMED list of paths into _site, so a
+     directory it does not name is a 404 on the live site however right it is in
+     the repo. assets/ is on that list; ref/ is not, and the cloud run that
+     wrote this could not edit a workflow file (no workflow scope on its token,
+     by git push and by both GitHub API routes). A page nobody can open is not
+     shipped, so it went where it deploys. Move it to /ref/ the moment the
+     workflow names it — there is a Todoist task with the one-line diff.
+
+     One page per faction, drawn from data/dzc rather than typed.
+
+     Dropfleet's ref/ is six hand-written files. That cannot work here: the
+     stat cards are re-scanned monthly (HANDOFF §7), and a typed sheet is stale
+     the first time TTCombat move a points value. So this is ONE document that
+     reads the same JSON the app reads, parameterised by ?faction=<id>.
+
+     The layout language is Dropfleet's: a white sheet on grey, a brand bar
+     with the faction rule underneath it, section headers in Jost with the
+     faction colour as an inset underline, alternating table rows. Barlow
+     Condensed is out (CLAUDE.md §4), so Jost carries the condensed role and
+     Outfit carries every number. */
   :root {
     --ink: #14110c;
     --ink-2: #5d564a;
@@ -111,8 +120,8 @@
 <body>
 <div class="sheet" id="sheet"></div>
 
-<script>window.DZC_DATA_BASE = '../data/dzc';</script>
-<script src="../js/dzc-data.js"></script>
+<script>window.DZC_DATA_BASE = '../../data/dzc';</script>
+<script src="../../js/dzc-data.js"></script>
 <script>
 (function () {
   'use strict';

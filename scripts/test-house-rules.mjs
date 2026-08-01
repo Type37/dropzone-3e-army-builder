@@ -63,7 +63,7 @@ if (punctJs.length) console.error('        ' + punctJs.join('\n        '));
  * Dropfleet sheets they are built on use an interpunct in the sub-heading
  * ("Dropfleet Commander · printable reference sheets"), which is exactly the
  * copy this rule was written against. */
-const punctRef = ['ref/index.html', 'ref/sheet.html']
+const punctRef = ['assets/ref/index.html', 'assets/ref/sheet.html']
   .filter(f => /·|&middot;/i.test(rendered(f)));
 eq(punctRef.length, 0, 'and the printable references spend none', punctRef.join(', '));
 
@@ -82,7 +82,7 @@ const SEARCHED = [
   'js/dzc-icons.js', 'js/dzc-share.js', 'js/dzc-play.js', 'js/dzc-collection.js',
   'js/dzc-shell.js', 'js/rank-insignia.js', 'js/fleet-sync.js', 'js/offline-sync.js',
   'js/count.js', 'sw.js', 'manifest.webmanifest', 'scripts/shots.mjs',
-  'ref/index.html', 'ref/sheet.html'
+  'assets/ref/index.html', 'assets/ref/sheet.html'
 ];
 // One capture on disk is named for it, and a dozen Todoist tasks cite that
 // filename. Renaming it breaks those citations and changes nothing in the
@@ -272,14 +272,16 @@ for (const file of ['index.html', ...readdirSync(path.join(ROOT, 'js'))
   const src = readFileSync(path.join(ROOT, file), 'utf8');
   // Only literal paths. An interpolated src is built at runtime from data and
   // is covered by tools/dzc/audit_art.py instead.
-  for (const m of src.matchAll(/["'`](assets\/[A-Za-z0-9_\-./]+\.(?:webp|png|svg|jpg|jpeg|ico))["'`]/g)) {
+  // html too: the printable quick references live under assets/, and a landing
+  // tile pointing at a page that is not there is the same 404 as a missing logo.
+  for (const m of src.matchAll(/["'`](assets\/[A-Za-z0-9_\-./]+\.(?:webp|png|svg|jpg|jpeg|ico|html))["'`]/g)) {
     refs.add(m[1]);
   }
 }
-// Only three literal asset paths exist: the two wordmarks and the touch icon.
+// The two wordmarks, the touch icon, and the quick-reference chooser.
 // Everything else — faction art, unit art — is interpolated from data and is
 // audited by tools/dzc/audit_art.py.
-ok(refs.size >= 3, 'the asset references were actually found', `found ${refs.size}`);
+ok(refs.size >= 4, 'the asset references were actually found', `found ${refs.size}`);
 const gone = [...refs].filter(p => !existsSync(path.join(ROOT, p)));
 const unexpected = gone.filter(p => !KNOWN_MISSING[p]);
 eq(unexpected.length, 0, 'every asset the page names is in the repo');
@@ -288,6 +290,34 @@ const back = Object.keys(KNOWN_MISSING).filter(p => existsSync(path.join(ROOT, p
 eq(back.length, 0, 'and no known-missing asset is still excused after arriving',
    back.join(', '));
 gone.forEach(p => console.log(`!! MISSING ${p} — ${KNOWN_MISSING[p]}`));
+
+// ------------------------------------------------- everything fetched is staged
+/* The deploy workflow copies a NAMED list of top-level paths into _site, so a
+ * directory the site fetches but the list does not name is a 404 on the live
+ * site and fine on localhost. That is the failure mode the two missing logos
+ * had, in a different disguise: the only way to notice is to load the deployed
+ * page, and nobody does that on the one screen the change was not about.
+ *
+ * So: every top-level path index.html and the service worker reach for has to
+ * be on the cp line. This is a read of the workflow, not a write — the token a
+ * cloud run gets cannot edit one. */
+console.log('\neverything the site fetches is staged for deploy');
+{
+  const wf = readFileSync(path.join(ROOT, '.github/workflows/deploy.yml'), 'utf8');
+  const cp = (wf.match(/cp -r ([\s\S]*?)\n\s*echo/) || [])[1] || '';
+  const staged = new Set(cp.replace(/\\\n/g, ' ').split(/\s+/)
+    .filter(Boolean).filter(w => w !== '_site/'));
+  ok(staged.size > 5, 'the staged list was actually found', [...staged].join(' '));
+
+  const wanted = new Set();
+  const add = p => { const top = p.replace(/^\.\//, '').split('/')[0]; if (top) wanted.add(top); };
+  for (const m of markup.matchAll(/(?:href|src)="(?!https?:|mailto:|#|data:)([^"]+)"/g)) add(m[1]);
+  for (const m of readFileSync(path.join(ROOT, 'sw.js'), 'utf8')
+    .matchAll(/'\.\/([^']+)'/g)) add('./' + m[1]);
+  const unstaged = [...wanted].filter(p => p && !staged.has(p) && existsSync(path.join(ROOT, p)));
+  eq(unstaged.length, 0, 'every top-level path the site fetches is on the cp line',
+     unstaged.join(', '));
+}
 
 // ------------------------------------------- the reference sheet stays in step
 /* ref/ is a separate document, so it cannot import the app's modules — it
@@ -298,7 +328,7 @@ gone.forEach(p => console.log(`!! MISSING ${p} — ${KNOWN_MISSING[p]}`));
  * slightly differently on the printed sheet is a different symbol; and a
  * faction whose accent drifts is two brands for one army.
  *
- * The accents in ref/index.html are pinned as well, because the chooser is
+ * The accents in the chooser are pinned as well, because the chooser is
  * where all six sit side by side and a wrong one is most visible. */
 console.log('\nthe reference sheet stays in step');
 {
@@ -309,8 +339,8 @@ console.log('\nthe reference sheet stays in step');
 
   const units = readFileSync(path.join(ROOT, 'js/dzc-units.js'), 'utf8');
   const builder = readFileSync(path.join(ROOT, 'js/dzc-builder.js'), 'utf8');
-  const sheet = readFileSync(path.join(ROOT, 'ref/sheet.html'), 'utf8');
-  const chooser = readFileSync(path.join(ROOT, 'ref/index.html'), 'utf8');
+  const sheet = readFileSync(path.join(ROOT, 'assets/ref/sheet.html'), 'utf8');
+  const chooser = readFileSync(path.join(ROOT, 'assets/ref/index.html'), 'utf8');
 
   const appSymbols = paths(units), refSymbols = paths(sheet);
   eq(appSymbols.length, 6, 'six transport symbols in js/dzc-units.js');

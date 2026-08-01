@@ -34,8 +34,8 @@ const CORE = [
   // The printable quick references. Precached rather than left to be picked up
   // on first visit, because the one place you want them is a table with no
   // signal — and by then it is too late to go and fetch them.
-  './ref/index.html',
-  './ref/sheet.html',
+  './assets/ref/index.html',
+  './assets/ref/sheet.html',
   './manifest.webmanifest'
 ];
 

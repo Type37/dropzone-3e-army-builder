@@ -228,14 +228,14 @@ console.log('\nthe unit renderers survive all 178 units');
 
 /* ── 6. The printable quick reference, all six factions ───────────────
  *
- * ref/sheet.html is one page parameterised by ?faction=, drawn from the same
+ * The quick reference is one page parameterised by ?faction=, drawn from the same
  * JSON the app reads. It is the part of the site least likely to be opened by
  * anyone -- you go there once, print it, and never load it again -- so a stray
  * "undefined" in a stat cell could sit there for months. Draw all six.
  */
 console.log('\nthe quick reference draws for every faction');
 {
-  const html = readFileSync(path.join(ROOT, 'ref', 'sheet.html'), 'utf8');
+  const html = readFileSync(path.join(ROOT, 'assets', 'ref', 'sheet.html'), 'utf8');
   // The page's own script, minus the two <script src> tags above it.
   const inline = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)]
     .map(m => m[1]).filter(s => s.includes('function render'));
