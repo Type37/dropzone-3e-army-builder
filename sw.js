@@ -3,7 +3,7 @@
 // populating the cache as resources are fetched.
 // Bump this on every deploy so existing clients purge the old cache on activate
 // (the app updates frequently — stale assets must not survive a new build).
-const CACHE = 'dzc-cache-v394';
+const CACHE = 'dzc-cache-v395';
 // Same-origin code/data that MUST be fresh when online. Network-first alone is
 // not enough: fetch() still consults the browser HTTP cache, so a client can
 // keep running a stale app.js for as long as GitHub Pages' cache headers allow.
@@ -20,6 +20,14 @@ const CORE = [
   './css/dzc-print.css',
   './js/rank-insignia.js',
   './js/offline-sync.js',
+  // Both of these were loaded by index.html and precached by nothing, so an
+  // install that happened before either had been fetched went offline without
+  // them. Neither is fatal missing — a <script> that 404s takes only itself
+  // down, and both callers are guarded — but a precache list that does not
+  // match what the page loads is a list nobody can trust, and this is the same
+  // shape of drift as a path missing from the deploy staging.
+  './js/count.js',
+  './js/fleet-sync.js',
   './js/dzc-data.js',
   './js/dzc-share.js',
   './js/dzc-builder.js',

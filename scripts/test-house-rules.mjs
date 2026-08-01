@@ -452,6 +452,27 @@ console.log('\neverything the site fetches is staged for deploy');
      unstaged.join(', '));
 }
 
+// ------------------------------------- the offline precache matches the page
+/* Everything index.html loads has to be in the service worker's CORE list.
+ *
+ * Not because a missing entry crashes anything — a <script> that 404s takes
+ * only itself down — but because the list is a promise that the app works at a
+ * table with no signal, and a promise nobody checks is the same drift that put
+ * ref/ on the live site as a 404. Two files had been outside it since they
+ * were added.
+ */
+console.log('\nthe offline precache matches what the page loads');
+{
+  const sw = readFileSync(path.join(ROOT, 'sw.js'), 'utf8');
+  const core = new Set([...sw.matchAll(/'\.\/([^']+)'/g)].map(m => m[1]));
+  ok(core.size > 15, 'the precache list was found', `${core.size} entries`);
+  const loaded = [...markup.matchAll(/(?:src|href)="((?:js|css)\/[^"]+)"/g)].map(m => m[1]);
+  ok(loaded.length > 10, 'and index.html loads a good few of them', `${loaded.length}`);
+  const uncached = [...new Set(loaded)].filter(p => !core.has(p));
+  eq(uncached.length, 0, 'every script and stylesheet the page loads is precached',
+     uncached.join(', '));
+}
+
 // --------------------------------------------------- every route lands somewhere
 /* The router is the one part of the app nothing drives.
  *
