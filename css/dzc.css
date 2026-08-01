@@ -1165,7 +1165,10 @@
 }
 /* Search and the category chips are one row's worth of function, so they get
    one row. Everything above the first card is chrome and it was taking three. */
-.dzc-search-row { display: flex; align-items: center; gap: 6px; }
+/* The row grows, not just the input inside it. Without this the row sized to
+   the input's 280px basis and stopped, so the Collection's box read "Search
+   units, variants, wea" with a third of the toolbar empty beside it. */
+.dzc-search-row { display: flex; align-items: center; gap: 6px; flex: 1 1 280px; min-width: 0; }
 .dzc-search-row .dzc-i { flex: 0 0 auto; color: var(--ink-2, #6b6459); }
 #dzc-picker-body .dzc-search-row { flex-wrap: wrap; }
 #dzc-picker-body .dzc-search { flex: 1 1 200px; padding: 6px 10px; font-size: 13px; }
