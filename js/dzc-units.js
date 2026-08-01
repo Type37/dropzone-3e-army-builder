@@ -434,7 +434,12 @@
       ${weapons}
       ${upgradeNoteHtml(u)}
       ${unitRulesHtml(u, state.faction)}`;
-    document.querySelector('#dzc-detail .modal-title').textContent = u.name;
+    /* NOT the Unit's name: the body opens with it, at size and beside its
+     * capacity symbol, and on a phone both were on screen at once. The header
+     * is what stays put when the body scrolls, so it says what the panel is —
+     * in the app's own words for it, and not the word this project does not
+     * write (CLAUDE.md §3). */
+    document.querySelector('#dzc-detail .modal-title').textContent = 'Stats, weapons and rules';
     document.getElementById('dzc-detail').classList.add('active');
   }
 
