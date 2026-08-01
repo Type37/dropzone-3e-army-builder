@@ -858,6 +858,7 @@
           ${insignia}
           <div>
             <b contenteditable="true" spellcheck="false" class="dzc-cmdr-name"
+               role="textbox" aria-label="Commander name"
                title="Click to rename, or clear it to go back to the Level"
                onblur="DZCBuilder.renameCommander('${c.id}', this.textContent)"
                >${esc(window.DZCArmy.commanderName(a, c))}</b>

@@ -166,6 +166,75 @@ ok(buttons > 50, 'the buttons were actually found', `matched ${buttons}`);
 eq(nameless.length, 0, 'no button is left without an accessible name');
 if (nameless.length) console.error('        ' + nameless.join('\n        '));
 
+/* The same rule for the controls that are not buttons. An <input> or a
+ * <select> with nothing naming it is announced as "edit text" or "combo box"
+ * and nothing else, and a placeholder does not fix it — a placeholder is
+ * cleared the moment you type, so it names the field only while the field is
+ * empty. Three ways count, all of which the app already uses somewhere:
+ * aria-label, a <label for> pointing at its id, or being wrapped in a <label>
+ * that contains words. */
+const controls = [];
+const unnamed = [];
+/* Comments out first. This file's own prose says "<select>" and "<input>" more
+ * than once, and a note to a future reader is not a control on the page --
+ * same reasoning as rendered() above. Line comments only where the line starts
+ * with one, so a URL keeps its slashes. */
+const decommented = src => src
+  .replace(/\/\*[\s\S]*?\*\//g, m => m.replace(/[^\n]/g, ' '))
+  .split('\n').map(l => (l.trim().startsWith('//') ? '' : l)).join('\n');
+for (const file of SOURCES) {
+  const src = file.endsWith('.js')
+    ? decommented(readFileSync(path.join(ROOT, file), 'utf8'))
+    : readFileSync(path.join(ROOT, file), 'utf8');
+  const fors = new Set([...src.matchAll(/<label\b[^>]*\bfor=["']([^"']+)["']/g)].map(m => m[1]));
+  // Every <label> that has words of its own, as [start, end) ranges.
+  const wrapping = [];
+  for (const m of src.matchAll(/<label\b[^>]*>([\s\S]*?)<\/label>/g)) {
+    // An interpolated label ("${label}") is words at runtime, so it counts --
+    // unless it renders a glyph, which is the same exception the buttons make.
+    const body = m[1].replace(/<svg[\s\S]*?<\/svg>/g, '');
+    const { literals, exprs } = splitInterpolations(body);
+    const named = /[A-Za-z]/.test(literals.join(' ').replace(/<[^>]*>/g, ''))
+      || exprs.some(e => !DRAWS_NO_WORDS.test(e));
+    if (named) wrapping.push([m.index, m.index + m[0].length]);
+  }
+  for (const m of src.matchAll(/<(input|select|textarea)\b([^>]*)>/g)) {
+    const attrs = m[2];
+    if (/\btype=["']hidden["']/.test(attrs)) continue;
+    controls.push(1);
+    if (/aria-label\s*=/.test(attrs)) continue;
+    const id = (attrs.match(/\bid=["']([^"']+)["']/) || [])[1];
+    if (id && fors.has(id)) continue;
+    if (wrapping.some(([a, b]) => m.index > a && m.index < b)) continue;
+    unnamed.push(`${file}:${src.slice(0, m.index).split('\n').length} <${m[1]}>`);
+  }
+}
+ok(controls.length > 10, 'the form controls were actually found', `matched ${controls.length}`);
+eq(unnamed.length, 0, 'no input, select or textarea is left without an accessible name');
+if (unnamed.length) console.error('        ' + unnamed.join('\n        '));
+
+/* A contenteditable is a text field that does not look like one to anything
+ * but a mouse. With no role it is announced as a generic container and its
+ * CONTENT is read as the name, so an army called "Untitled" is a field called
+ * "Untitled" -- the label and the value are the same string and neither says
+ * it can be typed in. role=textbox plus aria-label is what the army name and
+ * the Group name already do; the Commander name did not, and this found it. */
+const editables = [];
+const untyped = [];
+for (const file of SOURCES) {
+  const src = file.endsWith('.js')
+    ? decommented(readFileSync(path.join(ROOT, file), 'utf8'))
+    : readFileSync(path.join(ROOT, file), 'utf8');
+  for (const m of src.matchAll(/<(\w+)\b([^>]*\bcontenteditable=["']true["'][^>]*)>/g)) {
+    editables.push(1);
+    if (/role=["']textbox["']/.test(m[2]) && /aria-label\s*=/.test(m[2])) continue;
+    untyped.push(`${file}:${src.slice(0, m.index).split('\n').length} <${m[1]}>`);
+  }
+}
+ok(editables.length >= 3, 'the editable headings were actually found', `matched ${editables.length}`);
+eq(untyped.length, 0, 'every contenteditable says it is a text box and what it names');
+if (untyped.length) console.error('        ' + untyped.join('\n        '));
+
 // ------------------------------------------------- every asset actually exists
 /* An <img> whose file is not in the repo cannot deploy: .github/workflows
  * deploy.yml copies assets/ straight out of the checkout, so a file that was
