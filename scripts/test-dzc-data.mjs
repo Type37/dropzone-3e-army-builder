@@ -221,6 +221,39 @@ console.log('\nno dead chips (gap 38)');
  * The picker, the unit reference and the collection all ran their own copy of
  * the filter. They are one function now, which is the only way a field worded
  * the same in three places behaves the same in three places. */
+/* Gap 13: the picker prints what taking this Unit actually costs -- the
+ * smallest legal Squad -- with the arithmetic under it. */
+console.log('\nsquadPrice (gap 13)');
+{
+  // Dropfleet's own example shape: "70 pts" over "2x 35".
+  const lbt = DZC.squadPrice(ucm.byId['ucm-light-battle-tank']);
+  eq(lbt.n, 2, 'a Squad of Light Battle Tanks starts at two');
+  eq(lbt.lo, 70, 'so it costs 70, not 35');
+  eq(lbt.perLo, 35, 'and the breakdown is 2 x 35');
+
+  // Priced per variant, so the floor and the ceiling really are different.
+  const mbt = DZC.squadPrice(ucm.byId['ucm-main-battle-tank']);
+  eq(mbt.lo, 70, 'two Sabres are 70');
+  eq(mbt.hi, 80, 'two Tachi are 80');
+
+  // A Transport has no squad size: its count follows its cargo, so there is no
+  // minimum Squad and the per-model price is the honest number.
+  const bear = DZC.squadPrice(ucm.byId['bear-apc']);
+  eq(bear.n, 1, 'a Transport prices per model');
+  eq(bear.lo, ucm.byId['bear-apc'].points, 'at its own points');
+
+  eq(DZC.squadPrice(null), null, 'no unit, no price');
+
+  // Nothing anywhere should come out below its own per-model price, which is
+  // the shape of a multiply-by-zero bug.
+  let bad = [];
+  for (const u of ucm.units) {
+    const p = DZC.squadPrice(u);
+    if (p && p.lo < p.perLo) bad.push(u.id);
+  }
+  eq(bad.length, 0, 'no Squad costs less than one of its models', bad.join(', '));
+}
+
 console.log('\nsearch (gap 30)');
 {
   const m = (id, q) => DZC.matches(ucm.byId[id], q, 'ucm');

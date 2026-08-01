@@ -910,7 +910,15 @@
   font-variant-numeric: tabular-nums;
   color: var(--acc-ink, #1b3a5c);
 }
+.dzc-pick-cost { text-align: right; }
 .dzc-pick-cost small { font-size: 10px; font-weight: 600; margin-left: 1px; }
+/* The arithmetic behind the total, under it and quieter. Only drawn when the
+   Squad starts above one model, because "1 × 35" under "35pts" is noise. */
+.dzc-pick-each {
+  display: block; margin-top: 1px; font-style: normal;
+  font: 500 10px/1 var(--font-numeric, 'Outfit', sans-serif);
+  color: var(--ink-2, #6b6459); white-space: nowrap;
+}
 .dzc-pick-meta { display: block; margin-top: 1px; font-size: 11px; color: var(--ink-2, #6b6459); }
 
 /* Facts in a row are separated by space, not by punctuation. The interpunct

@@ -904,10 +904,13 @@
   ];
   const CATEGORY_ORDER = ['Standard', 'Vanguard', 'Heavy', 'Support', 'Transport', 'Generated'];
 
+  const squadPrice = u => window.DZC.squadPrice(u);
+  const span = (lo, hi) => (lo === hi ? `${lo}` : `${lo}–${hi}`);
+
+  // Sorting by Price sorts by the number on the card, which is now the Squad's.
   function unitLowPoints(u) {
-    if (u.points != null) return u.points;
-    const ps = (u.variants || []).map(v => v.points).filter(p => p != null);
-    return ps.length ? Math.min.apply(null, ps) : 0;
+    const p = squadPrice(u);
+    return p ? p.lo : 0;
   }
   function totalCapacity(u) {
     return (((u.transport || {}).capacity) || []).reduce((t, c) => t + (c.n || 0), 0);
@@ -978,9 +981,11 @@
    * card body opens the unit's stats, weapons and rules in full; adding is its
    * own button. */
   function pickCard(u, a) {
-    const ps = (u.variants || []).map(v => v.points).filter(p => p != null);
-    const price = u.points != null ? `${u.points}` : ps.length
-      ? `${Math.min.apply(null, ps)}–${Math.max.apply(null, ps)}` : '—';
+    // The total for the smallest legal Squad, with the arithmetic under it when
+    // that is more than one model — so "70pts" never has to be read as 35.
+    const sp = squadPrice(u);
+    const price = sp ? span(sp.lo, sp.hi) : '—';
+    const each = sp && sp.n > 1 ? `${sp.n} × ${span(sp.perLo, sp.perHi)}` : '';
     const chk = window.DZCArmy.canAddUnit(a, picker.groupId, u.id);
     const U = window.DZCUnits;
     const meta = [esc(u.category), esc(u.type || ''),
@@ -998,7 +1003,8 @@
                 : '<span class="dzc-pick-noart"></span>'}
         <div class="dzc-pick-head">
           <span class="dzc-pick-name">${esc(u.name)}</span>
-          <span class="dzc-pick-cost">${price}<small>pts</small></span>
+          <span class="dzc-pick-cost">${price}<small>pts</small>${
+            each ? `<i class="dzc-pick-each">${each}</i>` : ''}</span>
         </div>
         <span class="dzc-pick-meta">${meta}</span>
         <!-- The symbols, on the card you choose from. Which shape a unit fills

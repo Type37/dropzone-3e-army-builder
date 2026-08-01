@@ -211,6 +211,33 @@
     return out;
   }
 
+  // --------------------------------------------------------------------- price
+
+  /* What it costs to take this Unit AT ALL: the smallest legal Squad, not one
+   * model. A picker card reading "35pts" for a Unit whose Squad starts at two
+   * is off by half at the exact moment you are deciding, and deciding is the
+   * whole job of that screen. 60 of the 178 have a minimum above one.
+   *
+   * Transports have no squad size (3.2.4) -- their count is derived from what
+   * they carry -- so there is no minimum Squad to price, and the per-model
+   * number is the honest one. n comes back as 1 for those.
+   *
+   * 49 Units are priced per VARIANT with no unit price at all, so the floor and
+   * the ceiling genuinely differ (a Squad of two UCM Main Battle Tanks is 70 as
+   * Sabres and 80 as Tachi). Both are returned rather than picking one and
+   * being wrong about the other half the time.
+   *
+   * null when nothing is priced, which is not the same as free. */
+  function squadPrice(unit) {
+    if (!unit) return null;
+    const ps = unit.points != null ? [unit.points]
+      : (unit.variants || []).map(v => v.points).filter(p => p != null);
+    if (!ps.length) return null;
+    const lo = Math.min.apply(null, ps), hi = Math.max.apply(null, ps);
+    const n = unit.squadMin > 0 ? unit.squadMin : 1;
+    return { n: n, perLo: lo, perHi: hi, lo: lo * n, hi: hi * n };
+  }
+
   // -------------------------------------------------------------------- search
 
   /* One search, used everywhere. The picker, the unit reference and the
@@ -383,7 +410,7 @@
     get rules() { return state.rules; },
     faction: id => state.factions[id],
     unit: (fid, uid) => (state.factions[fid] || { byId: {} }).byId[uid],
-    rule, ruleText, splitSpecial, matches,
+    rule, ruleText, splitSpecial, matches, squadPrice,
     capacityFor, fillsOf, canCarry, loadCheck, isFull,
     gameSizeFor, maxGroups, maxGroupCost, rareLimit, commanderLevels,
     _state: state, _compileRules: compileRules
