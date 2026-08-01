@@ -966,9 +966,15 @@
    * Squad carries only its id and level, so the name comes from the army's own
    * record; falling back to the Level keeps the chip meaningful when it has no
    * name of its own. */
-  function commanderTagName(a, mirror) {
-    const c = window.DZCArmy.commanders(a).find(x => x.id === mirror.id);
-    return c ? window.DZCArmy.commanderName(a, c) : `Level ${mirror.level}`;
+  /* Looked up by SQUAD, not by the id on the Squad's copy of the Commander.
+   * There is no id on that copy: syncCommanders writes `{ level }` and nothing
+   * else, so matching on it found nobody every time and the tag fell back to
+   * "Level 5" on a Commander you had named. squadId is the real link between
+   * the two, and it is the one the assignment is stored as. */
+  function commanderTagName(a, squad) {
+    const c = window.DZCArmy.commanders(a).find(x => x.squadId === squad.id);
+    return c ? window.DZCArmy.commanderName(a, c)
+      : `Level ${(squad.commander || {}).level}`;
   }
 
   function squadHtml(a, g, s, depth) {
@@ -1061,7 +1067,7 @@
             <button type="button" class="dzc-sq-name" title="Stats, weapons and rules"
                     onclick="DZCUnits.openDetail('${esc(u.id)}','${esc(a.faction)}')">${esc(u.name)}</button>
             ${s.commander ? `<span class="dzc-cmdr-tag" title="Level ${s.commander.level} Commander"
-              >${window.DZCIcon('military_tech', { size: 13 })}${esc(commanderTagName(a, s.commander))}</span>` : ''}
+              >${window.DZCIcon('military_tech', { size: 13 })}${esc(commanderTagName(a, s))}</span>` : ''}
             <span class="dzc-sq-cap">${U.transportHtml(u)}</span>
           </h3>
           <p class="dzc-sq-meta">${meta}</p>
@@ -1115,12 +1121,17 @@
       const targets = window.DZCArmy.commanderTargets(a, c.id);
       const insignia = window.RankInsignia
         ? window.RankInsignia(a.faction, Math.max(1, c.level - 3), 26) : '';
+      /* Every option names its Group, and names it through groupName. Reading
+       * t.group.name raw meant an unnamed Group contributed nothing, so two
+       * Squads of Legionnaires in two unnamed Groups were two options both
+       * reading "Legionnaires" — the collision the derived name exists to
+       * prevent, in the one control where picking the wrong one is silent. */
       const assign = targets.length
         ? `<label class="dzc-cmdr-assign">Aboard
              <select onchange="DZCBuilder.assignCommander('${c.id}', this.value)">
                <option value="">Choose a Squad</option>
                ${targets.map(t => `<option value="${t.squad.id}"${t.squad.id === c.squadId ? ' selected' : ''}
-                 >${esc(t.unit.name)}${t.group.name ? ' — ' + esc(t.group.name) : ''}</option>`).join('')}
+                 >${esc(t.unit.name)} — ${esc(window.DZCArmy.groupName(a, t.group))}</option>`).join('')}
              </select></label>`
         : '<p class="dzc-cmdr-hint">Add a squad that this Commander can join.</p>';
       return `<div class="dzc-rail-card dzc-cmdr-card${c.squadId ? '' : ' is-loose'}">
@@ -1820,7 +1831,7 @@
           <span class="pr-sq-n">${s.models.length}×</span>
           <span class="pr-sq-name">${esc(u.name)}</span>
           <span class="pr-sq-cat">${esc(u.category)}</span>
-          ${s.commander ? `<span class="pr-cmdr">${esc(commanderTagName(a, s.commander))}</span>` : ''}
+          ${s.commander ? `<span class="pr-cmdr">${esc(commanderTagName(a, s))}</span>` : ''}
           <span class="pr-sq-cost">${cost}pts</span>
         </div>
         ${mixStr ? `<div class="pr-variants">${mixStr}</div>` : ''}

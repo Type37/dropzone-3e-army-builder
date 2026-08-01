@@ -474,6 +474,35 @@ console.log('\nevery screen renders');
   ok(!/disabled/.test(playBtn(els['topbar-actions'].innerHTML)),
      'and live once they are aboard a Squad');
 
+  /* Both places a Commander or a Group is named on the builder, and both were
+   * reading round the derived name.
+   *
+   * The tag on a Squad looked the Commander up by an id on the Squad's COPY of
+   * it — syncCommanders writes `{ level }` and no id, so it matched nobody
+   * every time and a Commander you had named still read "Level 5". And the
+   * Aboard select appended the Group only where the Group had a typed name, so
+   * two Squads of the same Unit in two unnamed Groups were two identical
+   * options with no way to tell which was which. */
+  {
+    const held = A.get(a.id);
+    A.renameCommander(held, A.commanders(held)[0].id, 'Colonel Vance');
+    // The tag lives on the Squad, and only the SELECTED Group's Squads are in
+    // the detail pane. The Commander is aboard the Legionnaires, in the first
+    // Group, and the second one has been open since the mixed-Variant check.
+    B.selectGroup(g.id);
+    await B.renderBuilder(a.id);
+    const named = els['view-army'].innerHTML;
+    // Scoped to the tag on the Squad. The rail card beside it has always read
+    // the name correctly, so a whole-page match would pass either way and
+    // prove nothing about the tag.
+    const tag = (named.match(/<span class="dzc-cmdr-tag"[\s\S]*?<\/span>/) || [''])[0];
+    ok(/Colonel Vance/.test(tag), 'a named Commander reads as its name on the Squad it is aboard', tag);
+    ok(/Legionnaires — Group 1/.test(named),
+       'and every Aboard option names its Group, even one nobody named');
+    A.renameCommander(A.get(a.id), A.commanders(A.get(a.id))[0].id, '');
+    await B.renderBuilder(a.id);
+  }
+
   for (const [name, html] of [['army list', list], ['builder', builder], ['second Group', second]]) {
     const words = html.replace(/<[^>]*>/g, ' ');
     ok(!/\b(null|undefined|NaN)\b/.test(words), `the ${name} prints no placeholder`,
