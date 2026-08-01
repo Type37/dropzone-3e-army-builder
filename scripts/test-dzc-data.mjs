@@ -430,6 +430,24 @@ eq(strikehawk.transport.capacityMode, 'both', 'Strikehawk carries both at once')
 const tegu = shaltari.byId['tegu-gatestrider'];
 eq(tegu.transport.capacityMode, 'either', 'Tegu is either/or');
 
+/* What a column MEANS, in the rulebook's words. Chapter 2 defines every one,
+ * and the two that matter most are the ones you cannot work out from the
+ * numbers around them: an Accuracy of "A" hits automatically and a Bravery of
+ * "A" passes automatically (2.6.1, 2.7), and both are printed on real cards.
+ *
+ * The hover used to carry the label, which the cell already prints — a tooltip
+ * saying what is written directly under it. */
+console.log('\nwhat a stat means, not just what it is called');
+ok(/^Bravery — /.test(DZC.statHelp('B')), 'a stat hover leads with the stat name', DZC.statHelp('B'));
+ok(/a value of A passes automatically/.test(DZC.statHelp('B')),
+   'and Bravery says what an A means', DZC.statHelp('B'));
+ok(/a value of A hits automatically/.test(DZC.weaponColHelp('Ac')),
+   'as does Accuracy', DZC.weaponColHelp('Ac'));
+ok(/in place of an Armour value/.test(DZC.statHelp('DF')),
+   'Defence says it stands in for Armour', DZC.statHelp('DF'));
+eq(DZC.statHelp('Nonsense'), 'Nonsense', 'an unknown key falls back to itself, never to undefined');
+eq(DZC.weaponColHelp('Special'), '', 'and a column with no definition gets no empty tooltip');
+
 /* And the mode ENFORCED, not merely recorded. Until now the suite proved the
  * scanner read the "/" and the "+" correctly and never proved the builder did
  * anything with either. 3.2.4.2, verbatim:

@@ -475,12 +475,42 @@
     Name: 'Weapon', Arc: 'Arc', MA: 'Move & Attack', R: 'Range',
     Att: 'Attacks', Ac: 'Accuracy', E: 'Energy', Special: 'Special'
   };
+  /* What each one MEANS, in the rulebook's words rather than anybody's.
+   *
+   * Chapter 2 defines every column on a stat card, one line each (2.5, 2.6,
+   * 2.6.1, 2.7). These are those lines with the label taken off the front,
+   * because the cell already prints the label and the hover repeating it was a
+   * tooltip that said nothing.
+   *
+   * Two of them carry the thing you cannot work out from the number: an
+   * Accuracy of "A" hits automatically and a Bravery of "A" passes
+   * automatically, and both appear on real cards. */
+  const STAT_HELP = {
+    Mv: 'How far it may move (2.5)',
+    A: 'How well protected it is physically (2.5)',
+    DP: 'The amount of damage it can take before being destroyed (2.5)',
+    OF: 'Its lethality against Infantry up close (2.6)',
+    DF: 'Its skill at surviving certain situations, in place of an Armour value (2.6)',
+    B: 'Roll 1D6 against it for a Bravery Test; a value of A passes automatically (2.6.1)'
+  };
+  const WEAPON_HELP = {
+    Arc: 'The directions in which it may attack (2.7)',
+    MA: 'The furthest its Unit may move and still attack with it; Full is its whole move (2.7)',
+    R: 'Its range; a second value is used against Vehicles and Aircraft (2.7)',
+    Att: 'The number of dice it attacks with (2.7)',
+    Ac: 'How accurate it is; a value of A hits automatically (2.7)',
+    E: 'Its power (2.7)'
+  };
   const statLabel = k => STAT_LABELS[k] || k;
   const weaponColLabel = k => WEAPON_LABELS[k] || k;
+  // Label first, then the definition, so a hover reads as a sentence about a
+  // named thing rather than a fragment.
+  const statHelp = k => (STAT_HELP[k] ? `${statLabel(k)} — ${STAT_HELP[k]}` : statLabel(k));
+  const weaponColHelp = k => (WEAPON_HELP[k] ? `${weaponColLabel(k)} — ${WEAPON_HELP[k]}` : '');
 
   const api = {
     loadIndex, loadFaction,
-    statLabel, weaponColLabel,
+    statLabel, weaponColLabel, statHelp, weaponColHelp,
     get index() { return state.index; },
     get rules() { return state.rules; },
     faction: id => state.factions[id],

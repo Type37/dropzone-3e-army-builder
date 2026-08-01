@@ -128,7 +128,10 @@
     const compact = !!(opts && opts.compact);
     const cells = keys.map(k => {
       const label = window.DZC.statLabel(k);
-      return `<div class="dzc-stat" title="${esc(label)}">
+      // The hover carries what the stat MEANS. It used to carry the label,
+      // which the cell prints directly underneath — a tooltip repeating what
+      // is already on the screen.
+      return `<div class="dzc-stat" title="${esc(window.DZC.statHelp(k))}">
         <span class="dzc-stat-i">${window.DZCIcon.stat(k, { size: 14, type: u.type })}</span>
         <span class="dzc-stat-v">${esc(stats[k])}</span>
         <span class="dzc-stat-k">${esc(compact ? k : label)}</span>
@@ -241,10 +244,16 @@
    * upgrade chooser needs the same eight columns with a ninth of its own —
    * an upgrade is a weapon and should be read as one, not as a name and a
    * price you have to go and look up. */
+  /* Every column heading carries its rulebook definition on hover, the same
+   * way the stat cells do — "Accuracy" over a column of 3+ and 4+ tells you
+   * nothing about the "A" two rows down, which hits automatically (2.7). */
   function wpnHead(extra) {
-    return `<tr><th>Weapon</th><th>Arc</th>
-      <th class="dzc-wpn-ma">${window.DZCIcon.moveAttack({ size: 15 })}Move &amp; Attack</th>
-      <th>Range</th><th>Attacks</th><th>Accuracy</th><th>Energy</th><th>Special</th>${extra || ''}</tr>`;
+    const h = k => esc(window.DZC.weaponColHelp(k));
+    return `<tr><th>Weapon</th><th title="${h('Arc')}">Arc</th>
+      <th class="dzc-wpn-ma" title="${h('MA')}">${window.DZCIcon.moveAttack({ size: 15 })}Move &amp; Attack</th>
+      <th title="${h('R')}">Range</th><th title="${h('Att')}">Attacks</th>
+      <th title="${h('Ac')}">Accuracy</th><th title="${h('E')}">Energy</th>
+      <th>Special</th>${extra || ''}</tr>`;
   }
 
   /* opts.only overrides the variant note (the upgrade chooser splits one
