@@ -129,7 +129,29 @@ is not.
 GitHub has no switch for this — a repo cannot have pull requests turned off.
 The rule is this file, which is why it lives here.
 
-## 7. Working style
+## 7. Keep going — a turn is many tasks, not one
+
+**When told to work autonomously, do not stop after one item.** A turn ends the
+moment Claude stops calling tools, so "work until I wake up" is only ever
+honoured by chaining: finish a task, test it, commit it, push it, take the next
+one, in the same turn. Ten items before speaking is normal.
+
+Jet has said this four separate ways — *"work autonomously until i wake up"*,
+*"you're getting distracted, you're not doing any work"*, *"do you not
+understand how to loop"*, *"why are you talking to me? that's not autonomous"*.
+Every one of those followed Claude shipping something real and then stopping to
+describe it.
+
+- **Do not narrate between tasks.** No progress reports, no "next I'll…". The
+  commit message is the report; Jet reads git.
+- **Do not stop to ask** unless proceeding would be unsafe or destructive. A
+  missing asset or an ambiguous call goes in Todoist and the next task starts.
+- **Speak once, at the end**, and only about what shipped and what broke.
+- Stop early only when the backlog is genuinely blocked, not when it feels
+  like enough has been done. Deciding for yourself what "enough" means is
+  failing pattern #1 in [FAILINGS.md](FAILINGS.md).
+
+## 8. Working style
 
 - Terse, opinionated recommendations. Make the call; don't present menus.
 - Bias to doing the work over asking permission.
