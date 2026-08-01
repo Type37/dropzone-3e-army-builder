@@ -1473,6 +1473,20 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
 [data-theme="dark"] #landing-logo { content: url("../assets/logos/dzc_logo_white.webp"); }
 @media (max-width: 640px) { .topbar-logo { height: 20px; } }
 
+/* css/app.css hides .topbar-context entirely below 768px. That is Dropfleet-era
+   and it was right there, because a phone got the separate mobile/ build with
+   its own chrome. That build is deleted and this is one responsive app, so the
+   rule left a phone with no back chevron on any view and no Reset game at all
+   in Play Mode — on the case CLAUDE.md §4 says has to work, because it is the
+   one used at a table.
+
+   The chevron and the buttons stay; the label goes, because it is the label
+   that has no room beside four icon buttons. */
+@media (max-width: 768px) {
+  .topbar-context { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+  .topbar-back-label { display: none; }
+}
+
 /* ── A menu hanging off a card ──
    At <body> level and fixed, so opening it moves nothing on the page. Square,
    like every other panel; the items inside are rows, not buttons you aim at

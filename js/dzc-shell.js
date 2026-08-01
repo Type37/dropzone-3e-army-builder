@@ -133,7 +133,11 @@ const App = (() => {
     if (actions) actions.innerHTML = '';
     const back = (to, label) =>
       `<a href="#${to}" class="topbar-back" onclick="App.navigate('${to}'); return false;" aria-label="Back">`
-      + `<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2L4 8l6 6"/></svg></a> ${label}`;
+      + `<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2L4 8l6 6"/></svg></a>`
+      // The label is its own element so a phone can drop it and keep the
+      // chevron. The chevron is the only way back from a view; the label is
+      // the name of the screen you would be going to.
+      + ` <span class="topbar-back-label">${label}</span>`;
 
     switch (view) {
       case 'armies':

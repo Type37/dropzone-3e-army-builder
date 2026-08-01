@@ -430,6 +430,32 @@ console.log('\nsharp cards');
      soft.map(c => `.${c} -> ${last[c]}`).join(', '));
 }
 
+// ------------------------------------------------------------ the way back
+/* The topbar's context slot carries the back chevron on every view, and Play
+ * Mode's Reset game beside it. css/app.css hides the whole slot below 768px --
+ * correct when a phone got the separate mobile/ build with its own chrome, and
+ * left behind when that build was deleted. For a fortnight a phone had no way
+ * back from an army except the wordmark, which goes to the landing screen, and
+ * no way to reset a game at all.
+ *
+ * CLAUDE.md §4: the phone is the case that has to work, because it is the one
+ * used at a table. So the last word on this slot may not be display: none.
+ * Cascade order is the load order in index.html. */
+console.log('\nthe way back');
+{
+  const sheets = ['css/app.css', 'css/mobile-fixes.css', 'css/dzc.css']
+    .map(f => readFileSync(path.join(ROOT, f), 'utf8').replace(/\/\*[\s\S]*?\*\//g, ''))
+    .join('\n');
+  let last = null;
+  for (const m of sheets.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    if (!/\.topbar-context(?![\w-])/.test(m[1])) continue;
+    const d = (m[2].match(/display\s*:\s*([^;]+)/) || [])[1];
+    if (d) last = d.trim();
+  }
+  ok(last && last !== 'none',
+     'the topbar keeps its back chevron at every width', `display: ${last}`);
+}
+
 // ------------------------------------------------- everything fetched is staged
 /* The deploy workflow copies a NAMED list of top-level paths into _site, so a
  * directory the site fetches but the list does not name is a 404 on the live
