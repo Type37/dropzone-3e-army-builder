@@ -465,6 +465,37 @@ console.log('\nwarnings that are not errors');
   A.remove(a.id);
 }
 
+/* 9.4, in full: "Vehicles and Infantry which do not begin the game aboard an
+ * Aircraft, OR IN A TRANSPORT ABOARD AN AIRCRAFT, always begin Reserved."
+ *
+ * That second clause is the whole test. Six Legionnaires ride two Bear APCs
+ * which ride one Condor — the rulebook's own illustration of nested transport
+ * (3.2.4.2, p11) — so nothing in that Group begins Reserved. The check used to
+ * look at the immediate carrier only, so the Legionnaires, whose carrier is a
+ * Vehicle, were reported as walking on while they were in the air.
+ */
+console.log('\nwho actually begins Reserved (9.4)');
+{
+  const a = army();
+  const g = A.addGroup(a);
+  const legion = A.addSquad(a, g.id, 'legionnaires', 6);
+  ok(A.assignTransport(a, legion.id, 'bear-apc').ok, 'six Legionnaires take two Bear APCs');
+  const bears = g.squads.find(s => (A.unitOf(a, s) || {}).id === 'bear-apc');
+  eq(bears.models.length, 2, 'two of them, derived from the load');
+  ok(A.assignTransport(a, bears.id, 'condor-dropship').ok, 'and the Bears take a Condor');
+
+  const v = A.validate(a);
+  ok(!v.warnings.some(w => w.msg.includes('Reserved')),
+     'nothing in that Group begins Reserved — the Legionnaires are in a Transport aboard an Aircraft',
+     JSON.stringify(v.warnings));
+
+  // Take the Condor away and every one of them is on the ground again.
+  A.assignTransport(a, bears.id, '');
+  ok(A.validate(a).warnings.some(w => w.msg.includes('Reserved')),
+     'without the Aircraft they are back to starting Reserved');
+  A.remove(a.id);
+}
+
 /* Jet: "as far as i know, there's no way as written to like, add an albatross?
  * what would the flow be there?"
  *

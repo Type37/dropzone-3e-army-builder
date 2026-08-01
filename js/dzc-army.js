@@ -1525,14 +1525,36 @@
       errors.push({ rule: '3.2.5', msg: `Your Level ${c.level} Commander is not with a Squad yet.` });
     });
 
-    // Not illegal, but worth saying: anything not aboard an Aircraft starts
-    // Reserved, off the table until Round 2 (9.4).
+    /* Not illegal, but worth saying: anything not aboard an Aircraft starts
+     * Reserved, off the table until Round 2 (9.4).
+     *
+     * 9.4 reads "Vehicles and Infantry which do not begin the game aboard an
+     * Aircraft, OR IN A TRANSPORT ABOARD AN AIRCRAFT, always begin Reserved."
+     * That second clause is the whole of it: this used to look at the
+     * immediate carrier only, so Legionnaires in a Bear APC in a Condor were
+     * reported as beginning Reserved when they fly in — and that stack is the
+     * rulebook's own illustration of nested transport (3.2.4.2, p11).
+     *
+     * So the chain is walked. The intermediate carriers are Transports by
+     * construction, which is exactly the case the clause describes, and the
+     * seen set is there because a corrupt save could point two Squads at each
+     * other and a validator must not be the thing that hangs. */
+    const flying = s => {
+      const seen = new Set();
+      let cur = s;
+      while (cur && cur.carriedBy && !seen.has(cur.id)) {
+        seen.add(cur.id);
+        cur = findSquad(army, cur.carriedBy);
+        const cu = cur && unitOf(army, cur);
+        if (cu && cu.type === 'Aircraft') return true;
+      }
+      return false;
+    };
     let grounded = 0;
     army.groups.forEach(g => g.squads.forEach(s => {
       const u = unitOf(army, s);
       if (!u || u.type === 'Aircraft') return;
-      const carrier = s.carriedBy ? unitOf(army, findSquad(army, s.carriedBy) || {}) : null;
-      if (!carrier || carrier.type !== 'Aircraft') grounded++;
+      if (!flying(s)) grounded++;
     }));
     if (grounded) {
       warnings.push({ rule: '9.4', msg: `${grounded} Squad${grounded === 1 ? '' : 's'} will begin Reserved — only Units aboard an Aircraft start on the table.` });
