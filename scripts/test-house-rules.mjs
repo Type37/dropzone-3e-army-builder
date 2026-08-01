@@ -452,6 +452,61 @@ console.log('\neverything the site fetches is staged for deploy');
      unstaged.join(', '));
 }
 
+// -------------------------------- the preview and the printer agree on breaks
+/* The print preview draws the page breaks. It can only draw them where the
+ * printer will actually make them, and the two know that from different
+ * places: the stylesheet says which blocks must not be cut, and paginate()
+ * carries its own list of the blocks it treats as unbreakable.
+ *
+ * A block the stylesheet keeps whole and paginate does not know about is a
+ * break drawn where the printer will not make one — a preview that lies, which
+ * is worse than no preview, because the whole reason it exists is that you can
+ * trust what you see before spending paper. The source comment on paginate
+ * says the two lists have to stay in step; nothing was holding them there.
+ *
+ * One direction only. paginate may treat MORE things as atoms than the
+ * stylesheet marks — a heading it keeps with what follows is not a
+ * break-inside rule — but it may never know about fewer.
+ */
+console.log('\nthe print preview knows every block the stylesheet keeps whole');
+{
+  const css = readFileSync(path.join(ROOT, 'css/dzc-print.css'), 'utf8');
+  const builder = readFileSync(path.join(ROOT, 'js/dzc-builder.js'), 'utf8');
+
+  /* Every rule block that declares break-inside: avoid, back to the class it
+   * actually applies to.
+   *
+   * The SUBJECT of the selector, not every class in it. Each rule here is
+   * scoped ":is(#dzc-print, .pp-paper) .pr-group", so taking every class would
+   * report .pp-paper — the paper the sheet is drawn on — as a block that must
+   * not be cut. Commas are split at paren depth zero so the :is() list is not
+   * mistaken for a selector list. */
+  const subjects = sel => {
+    const parts = [];
+    let depth = 0, start = 0;
+    for (let i = 0; i < sel.length; i++) {
+      if (sel[i] === '(') depth++;
+      else if (sel[i] === ')') depth--;
+      else if (sel[i] === ',' && depth === 0) { parts.push(sel.slice(start, i)); start = i + 1; }
+    }
+    parts.push(sel.slice(start));
+    return parts.map(p => p.trim().split(/\s+/).pop() || '');
+  };
+  const whole = new Set();
+  for (const m of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
+    if (!/break-inside\s*:\s*avoid/.test(m[2])) continue;
+    for (const s of subjects(m[1])) {
+      for (const c of s.matchAll(/\.([a-z][\w-]*)/g)) whole.add(c[1]);
+    }
+  }
+  ok(whole.size >= 3, 'the stylesheet names blocks it will not cut', [...whole].join(', '));
+
+  const atoms = (builder.match(/paper\.querySelectorAll\('([^']*pr-[^']*)'\)/) || [])[1] || '';
+  ok(atoms.length > 10, 'and paginate has its own list of them', atoms);
+  const unknown = [...whole].filter(c => !atoms.includes('.' + c));
+  eq(unknown.length, 0, 'and knows about every one of them', unknown.join(', '));
+}
+
 // ------------------------------------- the offline precache matches the page
 /* Everything index.html loads has to be in the service worker's CORE list.
  *
