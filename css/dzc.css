@@ -325,6 +325,13 @@
 .dzc-ratio i { font-style: normal; color: var(--ink-2, #6b6459); margin-left: 4px; }
 .dzc-ratio.is-std { background: var(--acc); color: #fff; }
 .dzc-ratio.is-std span, .dzc-ratio.is-std i { color: rgba(255,255,255,.85); }
+/* Standard's track is always full — it is the line the other three are
+   measured against, not a value of its own. It was being drawn in the category
+   green ON the faction-green card, which made the one row that explains the
+   other three read as a smudge next to the number. White, so the full line is
+   the thing you see and the shorter ones below it mean something. */
+.dzc-ratio.is-std .dzc-ratio-track { background: rgba(255,255,255,.3); }
+.dzc-ratio.is-std .dzc-ratio-track i { background: #fff; }
 .dzc-ratio.is-over { background: #fde8e6; color: #7a1c15; }
 
 /* ── Create: the one button that should feel like something ──

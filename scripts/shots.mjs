@@ -117,6 +117,10 @@ const DZC_STEPS = [
   // to be drawn on top of the first card's points and nobody noticed.
   ['11b2-two-groups', `await DZCBuilder.addGroup(); DZCBuilder.closePicker()`],
   ['11b3-group-list-1to1', `void 0`, '.dzc-b-list'],
+  // The rail at 1:1. It carries points left, the category ratios and the
+  // outstanding issues -- the numbers you work from -- and had only ever been
+  // seen shrunk into a 1400px-wide page shot.
+  ['11b4-rail-1to1', `DZCBuilder.selectGroup(DZCArmy.get(DZCArmy.list()[0].id).groups[0].id)`, '.dzc-rail'],
   // The Group itself, clipped. At 1400 it is most of the screen; at 375 this
   // is the shot that shows whether anything is spilling sideways.
   ['11c-group-card', `document.querySelector('.dzc-group-card').scrollIntoView();
