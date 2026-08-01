@@ -67,7 +67,7 @@
         </span>
       </div>
       ${list.length ? `<div class="dzc-army-grid">${cards}</div>`
-        : `<p class="dzc-empty">No armies yet. Start one and it saves in this browser.</p>`}
+        : `<p class="dzc-empty">No armies yet.</p>`}
     </div>`;
   }
 
@@ -1306,7 +1306,8 @@
         const url = await window.DZCShare.link(current);
         try {
           await navigator.clipboard.writeText(url);
-          say('Link copied — it carries the whole army, no account needed.');
+          // Dropfleet's words for this exact event (showToast, app.js:6776).
+          say('Share link copied!');
         } catch (e) {
           window.prompt('Copy this link:', url);
         }

@@ -212,7 +212,7 @@ const App = (() => {
       <div class="dzc-set-group">
         <div class="dzc-set-title">Builder</div>
         ${tog('showCollection', 'Collection',
-          'Track what you own, and show what a list still needs. Counts come from the Collection page.')}
+          'Show what a list still needs, using counts from the Collection page')}
       </div>
       <div class="dzc-set-group">
         <div class="dzc-set-title">Offline use</div>
