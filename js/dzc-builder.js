@@ -1156,7 +1156,7 @@
      * than a repeat on each card — and a second Commander that changes nothing
      * about them should visibly change nothing about them. */
     const best = list.reduce((n, c) => Math.max(n, c.level), 0);
-    const perRound = best ? `<div class="dzc-cmdr-buys dzc-cmdr-buys--rail"
+    const perRound = best ? `<div class="dzc-rail-card dzc-cmdr-buys dzc-cmdr-buys--rail"
       title="From your highest Commander Level, and Round 1 counts every Commander as Level 0 (4.1)"
       >${levelBuys(best).map(b => `<span><b>${b.n}</b><i>${b.k}</i></span>`).join('')}</div>` : '';
     return cards + perRound + `<button type="button" class="dzc-cmdr-add" onclick="DZCBuilder.openCommander()"
