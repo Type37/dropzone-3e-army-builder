@@ -96,6 +96,35 @@
 .dzc-badge-n { position: relative; font: 700 10px/1 var(--font-ui, 'Jost', system-ui, sans-serif); }
 .dzc-sep { font-weight: 700; font-size: 13px; color: var(--ink-2, #6b6459); padding: 0 1px; }
 
+/* ── Art Deco pills ──
+   The chip already carried the chamfer; everything else pill-shaped in the app
+   was still a rounded rectangle, so the vocabulary only half existed. One
+   variable, one clip, applied to every small label: Rare and Unique flags,
+   rule keywords, variant chips, the faction chip and the stat cells.
+
+   6px on a 12px-tall chip is a bevel; on a 20px cell it is a notch. The cut
+   scales with the thing it is cutting rather than being one number everywhere. */
+.dzc-deco-cut,
+.dzc-flag,
+.dzc-rule,
+.dzc-pick-vchip,
+.dzc-army-fac,
+.dzc-wpn-up,
+.dzc-shape-chip,
+.dzc-view-toggle {
+  border-radius: 0;
+  clip-path: polygon(var(--cut, 5px) 0, 100% 0, 100% calc(100% - var(--cut, 5px)),
+                     calc(100% - var(--cut, 5px)) 100%, 0 100%, 0 var(--cut, 5px));
+}
+.dzc-flag, .dzc-wpn-up { --cut: 4px; }
+.dzc-army-fac { --cut: 7px; }
+.dzc-shape-chip, .dzc-view-toggle { --cut: 6px; }
+/* Stat cells are a grid, not a row of pills: cutting each one would make the
+   block read as six loose chips instead of one table. Only the outer corners
+   of the whole block are cut. */
+.dzc-stats { border-radius: 0; }
+.dzc-stats .dzc-stat { border-radius: 0; }
+
 /* ── rule chips ── */
 .dzc-rule {
   display: inline-block; margin: 2px 3px 2px 0; padding: 2px 7px; cursor: pointer;
