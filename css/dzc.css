@@ -1377,6 +1377,25 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
 [data-theme="dark"] #landing-logo { content: url("../assets/logos/dzc_logo_white.webp"); }
 @media (max-width: 640px) { .topbar-logo { height: 20px; } }
 
+/* ── A menu hanging off a card ──
+   At <body> level and fixed, so opening it moves nothing on the page. Square,
+   like every other panel; the items inside are rows, not buttons you aim at
+   individually, so they have no radius either. */
+.dzc-pop-menu {
+  z-index: 9200; min-width: 168px; padding: 4px;
+  border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .18);
+}
+.dzc-pop-menu button {
+  display: flex; align-items: center; gap: 9px; width: 100%; padding: 8px 10px;
+  border: 0; border-radius: 0; background: none; cursor: pointer; text-align: left;
+  font: 500 13px/1.2 var(--font-ui, 'Jost', sans-serif); color: var(--ink, #24201c);
+}
+.dzc-pop-menu button:hover, .dzc-pop-menu button:focus-visible {
+  background: var(--surface-3, #f2ece0);
+}
+.dzc-pop-menu button.is-danger { color: var(--danger, #b3261e); }
+
 /* ── Drag a Group to reorder it ──
    Six dots drawn with a gradient rather than an icon: it is the one glyph in
    the app that means "hold this", it has to read at 10px, and inlining a

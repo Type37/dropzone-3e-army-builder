@@ -305,6 +305,7 @@ console.log('\nevery screen renders');
     classList: { add() {}, remove() {}, toggle() {}, contains: () => false },
     getBoundingClientRect: () => ({ top: 0, left: 0, bottom: 0, right: 0, width: 0, height: 0 }),
     appendChild() {}, removeChild() {}, remove() {}, focus() {},
+    setAttribute() {}, removeAttribute() {}, offsetHeight: 84, offsetWidth: 168,
     // A modal titles itself through querySelector rather than by id, so this
     // has to answer with something writable rather than null.
     querySelector: () => stub('scratch'), querySelectorAll: () => [],
@@ -487,6 +488,10 @@ console.log('\nevery screen renders');
   const gid = A.get(a.id).groups[0].id;
   const sid = A.get(a.id).groups[0].squads.find(x => x.unitId === 'legionnaires').id;
 
+  await press('armyMenu open', () => B.armyMenu({
+    stopPropagation() {}, currentTarget: stub('army-menu-btn') }, a.id));
+  await press('armyMenu close', () => B.armyMenu({
+    stopPropagation() {}, currentTarget: stub('army-menu-btn') }, a.id));
   await press('sortList', () => B.sortList('name'));
   await press('sortList back', () => B.sortList('recent'));
   await press('selectGroup', () => B.selectGroup(gid));

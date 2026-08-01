@@ -73,13 +73,15 @@
             <img src="assets/factions/${esc(a.faction)}.webp" alt="" loading="lazy">
             <b>${esc(fac.full || fac.name || a.faction)}</b>
           </span>
+          <!-- One menu rather than two loose icons. Two was already a row of
+               small targets beside the faction name on a card whose whole job
+               is to be tapped, and every card that grows an action grows the
+               row. Dropfleet uses the same overflow menu (gap 100). -->
           <span class="dzc-army-btns">
-            <button class="dzc-icon-btn" type="button" title="Duplicate army"
-                    onclick="event.stopPropagation();DZCBuilder.duplicate('${a.id}')"
-                    aria-label="Duplicate ${esc(a.name)}">${window.DZCIcon('content_copy', { size: 15 })}</button>
-            <button class="dzc-icon-btn" type="button" title="Delete army"
-                    onclick="event.stopPropagation();DZCBuilder.del('${a.id}')"
-                    aria-label="Delete ${esc(a.name)}">${window.DZCIcon('delete', { size: 15 })}</button>
+            <button class="dzc-icon-btn" type="button" title="More"
+                    onclick="event.stopPropagation();DZCBuilder.armyMenu(event, '${a.id}')"
+                    aria-label="More for ${esc(a.name)}"
+                    aria-haspopup="menu">${window.DZCIcon('more_vert', { size: 16 })}</button>
           </span>
         </div>
         <h3 class="dzc-army-name">${esc(a.name)}</h3>
@@ -283,6 +285,7 @@
   }
 
   function del(id) {
+    closeArmyMenu();
     if (!confirm('Delete this army? This cannot be undone.')) return;
     window.DZCArmy.remove(id);
     renderList();
@@ -549,6 +552,52 @@
 
   function gripUp(ev) { endGrip(ev.currentTarget, true); }
   function gripCancel(ev) { endGrip(ev.currentTarget, false); }
+
+  /* The per-army menu.
+   *
+   * At <body> level and position:fixed, for the reason the size popover is:
+   * .screen carries will-change:transform, so a popover nested inside it is
+   * positioned against the screen and not the viewport. Detached also means
+   * opening it moves nothing on the page, which is the rule (CLAUDE.md §4).
+   *
+   * Flipped above the button when there is no room below, because the card
+   * this hangs off is usually near the bottom of a grid. */
+  function closeArmyMenu() {
+    const el = document.getElementById('dzc-army-pop');
+    if (el) el.remove();
+    document.removeEventListener('click', outsideArmyMenu, true);
+    document.removeEventListener('keydown', escArmyMenu, true);
+  }
+  function outsideArmyMenu(e) {
+    const el = document.getElementById('dzc-army-pop');
+    if (el && !el.contains(e.target)) closeArmyMenu();
+  }
+  function escArmyMenu(e) { if (e.key === 'Escape') closeArmyMenu(); }
+
+  function armyMenu(ev, id) {
+    ev.stopPropagation();
+    if (document.getElementById('dzc-army-pop')) { closeArmyMenu(); return; }
+    const pop = document.createElement('div');
+    pop.id = 'dzc-army-pop';
+    pop.className = 'dzc-pop-menu';
+    pop.setAttribute('role', 'menu');
+    pop.innerHTML = `
+      <button type="button" role="menuitem" onclick="DZCBuilder.duplicate('${id}')"
+        >${window.DZCIcon('content_copy', { size: 15 })}Duplicate</button>
+      <button type="button" role="menuitem" class="is-danger" onclick="DZCBuilder.del('${id}')"
+        >${window.DZCIcon('delete', { size: 15 })}Delete</button>`;
+    const at = ev.currentTarget.getBoundingClientRect();
+    pop.style.position = 'fixed';
+    document.body.appendChild(pop);
+    const h = pop.offsetHeight || 84;
+    const below = window.innerHeight - at.bottom;
+    pop.style.top = (below < h + 8 ? at.top - h - 4 : at.bottom + 4) + 'px';
+    pop.style.left = Math.max(8, at.right - pop.offsetWidth) + 'px';
+    setTimeout(() => {
+      document.addEventListener('click', outsideArmyMenu, true);
+      document.addEventListener('keydown', escArmyMenu, true);
+    }, 0);
+  }
 
   function closeSizePop() {
     const el = document.getElementById('dzc-size-pop');
@@ -2151,7 +2200,9 @@
     },
     /* Copying a list to try a variant is the commonest thing you do to one, so
      * it gets a button rather than a share-then-reimport round trip. */
+    armyMenu,
     duplicate: async id => {
+      closeArmyMenu();
       const src = window.DZCArmy.get(id);
       if (!src) return;
       const url = await window.DZCShare.link(src);
