@@ -292,6 +292,49 @@
     if (s && s.models[index]) { s.models[index].variant = variantName; touch(army); }
   }
 
+  /* Variants are per MODEL (3.2.2), so what a Squad actually is is HOW MANY OF
+   * EACH — not "which one". Asking each model in turn which variant it is, one
+   * dropdown per model, describes the same fact from the wrong end: it makes
+   * the count the fixed thing and the mix the fiddly thing, when the mix is
+   * the decision and the count falls out of it.
+   *
+   * So the count is per variant, and the Squad's size is whatever they add up
+   * to. Squad min and max are still the only limits, and they are still
+   * canSetCount's to state, so the same sentence refuses this as refuses the
+   * Squad stepper. */
+  function canSetVariantCount(army, squadId, variantName, n) {
+    const s = findSquad(army, squadId);
+    if (!s) return { ok: false, reason: 'Unknown Squad.' };
+    const want = Math.round(n);
+    if (want < 0) return { ok: false, reason: null };
+    const have = s.models.filter(m => m.variant === variantName).length;
+    const total = s.models.length + (want - have);
+    if (total < 1) {
+      return { ok: false, reason: 'The last model in a Squad goes by removing the Squad.' };
+    }
+    return canSetCount(army, squadId, total);
+  }
+
+  function setVariantCount(army, squadId, variantName, n) {
+    const chk = canSetVariantCount(army, squadId, variantName, n);
+    if (!chk.ok) return chk;
+    const s = findSquad(army, squadId);
+    const have = s.models.filter(m => m.variant === variantName).length;
+    const want = Math.round(n);
+    if (want === have) return chk;
+    if (want > have) {
+      for (let i = have; i < want; i++) s.models.push({ variant: variantName });
+    } else {
+      // Drop from the end, so the models you already had keep their order.
+      let drop = have - want;
+      for (let i = s.models.length - 1; i >= 0 && drop > 0; i--) {
+        if (s.models[i].variant === variantName) { s.models.splice(i, 1); drop--; }
+      }
+    }
+    touch(army);
+    return chk;
+  }
+
   function removeSquad(army, squadId) {
     army.groups.forEach(g => {
       // Anything this Squad was carrying is orphaned, not deleted.
@@ -1049,6 +1092,7 @@
     load, save, all, get, create, remove, touch, setPointsLimit,
     addGroup, removeGroup, duplicateGroup, groupName, renameGroup,
     commanderName, renameCommander, addSquad, removeSquad, setModelCount, setModelVariant,
+    canSetVariantCount, setVariantCount,
     setCarrier, setCommander, findSquad, groupOf, unitOf,
     commanders, commanderFor, commanderTargets,
     addCommander, removeCommander, assignCommander, syncCommanders, levelCost,

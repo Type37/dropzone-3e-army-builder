@@ -641,6 +641,40 @@
     </span>`;
   }
 
+  /* How many models in this Squad are this variant.
+   *
+   * It replaces one <select> per model. The dropdowns hid the choice twice
+   * over: you could not see what a variant was without opening one, and you
+   * could not see the mix without reading every one of them in turn. The
+   * blocks were already on the page saying what each variant is and costs —
+   * putting the count on the block makes the thing you read the thing you
+   * press, and a Squad of eight stops being eight dropdowns.
+   *
+   * Addressed by INDEX, not by name: a name goes into an inline handler as a
+   * quoted string, and one apostrophe in a variant name would break it.
+   *
+   * Same disabled-reason wrapper as the Squad stepper, for the same reason —
+   * a disabled control does not reliably fire hover, so the title goes on a
+   * span that is never disabled. */
+  function variantStepper(a, s, u, idx) {
+    const v = (u.variants || [])[idx];
+    if (!v) return '';
+    const A = window.DZCArmy;
+    const have = s.models.filter(m => m.variant === v.name).length;
+    const step = (to, icon, label) => {
+      const chk = A.canSetVariantCount(a, s.id, v.name, to);
+      const b = `<button type="button" ${chk.ok ? '' : 'disabled'}
+              onclick="DZCBuilder.variantCount('${s.id}',${idx},${to})"
+              aria-label="${esc(label)} ${esc(v.name)}">${window.DZCIcon(icon, { size: 14 })}</button>`;
+      return chk.ok || !chk.reason ? b : `<span class="dzc-step-why" title="${esc(chk.reason)}">${b}</span>`;
+    };
+    return `<span class="dzc-stepper dzc-v-step${have ? ' is-on' : ''}">
+      ${step(have - 1, 'remove', 'One fewer')}
+      <b>${have}</b>
+      ${step(have + 1, 'add', 'One more')}
+    </span>`;
+  }
+
   /* The Commander riding with a Squad, named. A Commander mirrored onto a
    * Squad carries only its id and level, so the name comes from the army's own
    * record; falling back to the Level keeps the chip meaningful when it has no
@@ -665,11 +699,6 @@
            ${window.DZCIcon('lock', { size: 12 })}<b>${s.models.length}</b></span>`
       : stepperHtml(a, s);
 
-    const variantPicker = (u.variants || []).length ? s.models.map((m, i) =>
-      `<select class="dzc-variant" onchange="DZCBuilder.setVariant('${s.id}',${i},this.value)"
-               aria-label="Model ${i + 1} variant">
-        ${u.variants.map(vr => `<option value="${esc(vr.name)}"${vr.name === m.variant ? ' selected' : ''}>${esc(vr.name)} — ${vr.points}pts</option>`).join('')}
-      </select>`).join('') : '';
 
     /* Transport assignment. A select could show a name and a number and
      * nothing else -- not the shapes, not whether the fit is exact, not what
@@ -740,11 +769,10 @@
       </div>
       <div class="dzc-sq-stats">${U.statsHtml(u)}</div>
       ${u.special ? `<div class="dzc-sq-rules">${U.rulesHtml(u.special, a.faction)}</div>` : ''}
-      ${U.variantsHtml(u)}
+      ${U.variantsHtml(u, (v, i) => variantStepper(a, s, u, i))}
       <div class="dzc-sq-wpn">${U.weaponsHtml(u, a.faction)}</div>
       ${upgradesHtml(a, s, u)}
       <div class="dzc-sq-opts">
-        ${variantPicker}
         ${transportPicker}
       </div>
       ${riders.map(r => squadHtml(a, g, r, depth + 1)).join('')}
@@ -1687,7 +1715,19 @@
       if (r && !r.ok) return say(r.reason);
       refresh();
     },
-    setVariant: (id, i, v) => { window.DZCArmy.setModelVariant(current, id, i, v); refresh(); },
+    /* By index, so a variant name never has to survive a trip through an
+     * inline handler. The refusal is spoken because the button is disabled
+     * only while the reason is on its wrapper — a keyboard reaching it another
+     * way should still hear why. */
+    variantCount: (id, idx, n) => {
+      const s = window.DZCArmy.findSquad(current, id);
+      const u = s && window.DZCArmy.unitOf(current, s);
+      const v = u && (u.variants || [])[idx];
+      if (!v) return;
+      const r = window.DZCArmy.setVariantCount(current, id, v.name, n);
+      if (!r.ok && r.reason) say(r.reason);
+      refresh();
+    },
     toggleUpgrade: (id, scope, name) => {
       const r = window.DZCArmy.toggleUpgrade(current, id, scope, name);
       if (!r.ok) say(r.reason);

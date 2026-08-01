@@ -566,5 +566,33 @@ console.log('\nduplicating a Group (gap 124)');
   A.remove(a.id);
 }
 
+{
+  // Variants are per MODEL (3.2.2), so a Squad is "how many of each", and the
+  // count is the control. Squad min/max are still the only limits.
+  const a = army(2000);
+  const g = A.addGroup(a);
+  const s = A.addSquad(a, g.id, 'ucm-main-battle-tank', 2);   // Sabre 35, Tachi 40
+  const mix = () => s.models.map(m => m.variant).sort().join(',');
+  eq(mix(), 'Sabre,Sabre', 'a new Squad is all of the first variant');
+  ok(A.setVariantCount(a, s.id, 'Tachi', 1).ok, 'a Tachi can be added');
+  eq(s.models.length, 3, 'and the Squad grew by one — the size follows the mix');
+  eq(A.squadCost(a, s), 110, 'two Sabres and a Tachi cost 70 + 40');
+  const min = A.canSetVariantCount(a, s.id, 'Sabre', 0);
+  eq(min.ok, false, 'dropping both Sabres would leave one model, under the Squad minimum');
+  ok(/minimum/i.test(min.reason || ''), 'and says so in the stepper’s own sentence', min.reason);
+  A.setVariantCount(a, s.id, 'Tachi', 2);
+  ok(A.setVariantCount(a, s.id, 'Sabre', 0).ok, 'with two Tachi the Sabres can go');
+  eq(mix(), 'Tachi,Tachi', 'leaving a Squad of Tachi');
+  eq(A.canSetVariantCount(a, s.id, 'Tachi', 0).ok, false,
+     'but a Squad is never emptied this way — that is what Remove Squad is');
+  // 2-9, so ten is over the maximum.
+  A.setVariantCount(a, s.id, 'Sabre', 7);
+  eq(s.models.length, 9, 'the Squad fills to nine');
+  const over = A.canSetVariantCount(a, s.id, 'Greave', 1);
+  eq(over.ok, false, 'and the Squad maximum refuses one more');
+  ok(/maximum/i.test(over.reason || ''), 'in the same sentence the stepper uses', over.reason);
+  A.remove(a.id);
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

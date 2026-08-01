@@ -260,10 +260,14 @@
    * line in a price list: what it is called, the gun that makes it that
    * variant, what it costs, and the stats it fights with. A weapon marked
    * "all" is on every variant, so only the variant-restricted ones name it. */
-  function variantsHtml(u) {
+  /* `control` lets the builder hang a count on each block without this file
+   * learning anything about armies. The reference view passes nothing and the
+   * blocks stay what they are: a description. In a Squad they become the
+   * control itself, which is how the per-model dropdowns went away. */
+  function variantsHtml(u, control) {
     if (!(u.variants || []).length) return '';
     return `<div class="dzc-variants">
-      ${u.variants.map(v => {
+      ${u.variants.map((v, i) => {
         const own = (u.weapons || []).filter(w =>
           w.box === 'variant' && (w.variants || []).indexOf(v.name) !== -1);
         const head = [esc(v.name)]
@@ -271,7 +275,7 @@
           .concat([v.points != null ? v.points + 'pts' : '—'])
           .join(' — ');
         return `<div class="dzc-variant">
-          <div class="dzc-variant-head">${head}</div>
+          <div class="dzc-variant-head"><span>${head}</span>${control ? control(v, i) : ''}</div>
           ${statsHtml(u)}
         </div>`;
       }).join('')}
