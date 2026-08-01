@@ -220,7 +220,7 @@
       <div class="dzc-wrap" style="--acc:${acc}">
         <div class="dzc-tabs">${tabs}</div>
         <div class="dzc-toolbar">
-          <input class="dzc-search" type="search" placeholder="Search units, weapons, variants or rules"
+          <input class="dzc-search" type="search" placeholder="Search units, variants, weapons or rules"
                  value="${esc(state.search)}" oninput="DZCUnits.setSearch(this.value)" aria-label="Search units">
           <div class="dzc-chips">${cats}</div>
         </div>

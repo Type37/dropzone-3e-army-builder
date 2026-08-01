@@ -86,7 +86,13 @@
     const q = state.search.trim().toLowerCase();
 
     let units = f.units.filter(u => u.selectable !== false);
-    if (q) units = units.filter(u => u.name.toLowerCase().includes(q));
+    // Same reach as the picker and the reference. One search field worded one
+    // way should behave one way; matching names only while the placeholder
+    // offered variants, weapons and rules would be the field lying.
+    if (q) units = units.filter(u => u.name.toLowerCase().includes(q)
+      || (u.variants || []).some(v => v.name.toLowerCase().includes(q))
+      || (u.weapons || []).some(w => (w.name || '').toLowerCase().includes(q))
+      || (u.special || '').toLowerCase().includes(q));
     if (state.ownedOnly) units = units.filter(u => count(state.faction, u.id) > 0);
 
     const totals = f.units.reduce((n, u) => n + count(state.faction, u.id), 0);
@@ -99,7 +105,7 @@
 
       <div class="dzc-toolbar">
         <div class="dzc-search-row">${window.DZCIcon('search')}
-          <input class="dzc-search" type="search" placeholder="Search units" value="${esc(state.search)}"
+          <input class="dzc-search" type="search" placeholder="Search units, variants, weapons or rules" value="${esc(state.search)}"
                  oninput="DZCCollection.setSearch(this.value)" aria-label="Search units"></div>
         <button type="button" class="dzc-chip${state.ownedOnly ? ' is-active' : ''}"
                 onclick="DZCCollection.toggleOwned()">Owned only</button>
