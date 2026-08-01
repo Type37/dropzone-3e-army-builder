@@ -806,6 +806,50 @@ console.log('\nevery screen renders');
     A.remove(ma.id);
   }
 
+  /* The Collection's arithmetic, which nothing had asserted either.
+   *
+   * It counts MODELS, not Squads — "I own four Sabres" is what decides whether
+   * a Squad of six is buildable tonight — and it is advisory, never enforcing.
+   * That second half is the one worth a test: owning too few models is a
+   * shopping list, or a proxy, or a friend's box, and it must never make a
+   * legal army illegal. The builder enforces the RULES and reports the rest.
+   */
+  {
+    const C = win.DZCCollection;
+    C.load();
+    const ca = A.create('ucm', 'Shopping list', 1500);
+    const cg = A.addGroup(ca);
+    const clegion = A.addSquad(ca, cg.id, 'legionnaires', 6);
+    A.assignTransport(ca, clegion.id, 'bear-apc');
+    const cg2 = A.addGroup(ca);
+    const ctank = A.addSquad(ca, cg2.id, 'ucm-main-battle-tank', 3);
+    A.setModelVariant(ca, ctank.id, 1, 'Tachi');
+
+    const need = C.needed(A.get(ca.id));
+    eq(need.legionnaires, 6, 'six models of Legionnaires are needed, not one Squad of them');
+    eq(need['bear-apc'], 2, 'and both Bear APCs, because a Transport Squad is models you own');
+    eq(need['ucm-main-battle-tank'], 3, 'a mixed-Variant Squad counts under the one Unit it is');
+
+    C.set('ucm', 'legionnaires', 4);
+    let short = C.shortfall(A.get(ca.id));
+    const legionShort = short.find(s => s.unitId === 'legionnaires');
+    ok(legionShort, 'owning four of six puts Legionnaires on the shortfall');
+    eq(legionShort.need + '/' + legionShort.have, '6/4', 'with both numbers, not just a flag');
+    C.set('ucm', 'legionnaires', 6);
+    ok(!C.shortfall(A.get(ca.id)).some(s => s.unitId === 'legionnaires'),
+       'and owning six takes it off again');
+
+    // The line that matters: nothing above may touch legality.
+    C.set('ucm', 'legionnaires', 0);
+    C.set('ucm', 'bear-apc', 0);
+    C.set('ucm', 'ucm-main-battle-tank', 0);
+    const withNone = A.validate(A.get(ca.id));
+    ok(!withNone.errors.some(e => /collection|own/i.test(e.msg)),
+       'owning none of it is never an error — the Collection is advisory');
+    ok(C.shortfall(A.get(ca.id)).length === 3, 'though it is still the whole shopping list');
+    A.remove(ca.id);
+  }
+
   A.remove(a.id);
 
   /* And once per faction, over an army the generator built.
