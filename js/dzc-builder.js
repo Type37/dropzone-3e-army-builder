@@ -514,6 +514,33 @@
       ${rows}</div>`;
   }
 
+  /* A stepper that stops working says why it stopped.
+   *
+   * canSetCount has always returned the sentence — "Legionnaires has a
+   * maximum Squad size of 3" — and both buttons threw it away, so the control
+   * just went dead under your finger with nothing on screen. The rule that
+   * refuses an action is the one thing worth saying (3.2), and everywhere
+   * else in this builder already says it. */
+  function stepperHtml(army, sq) {
+    const n = sq.models.length;
+    const down = window.DZCArmy.canSetCount(army, sq.id, n - 1);
+    const up = window.DZCArmy.canSetCount(army, sq.id, n + 1);
+    // Going to zero removes the Squad, which is always allowed — the minimum
+    // is about a Squad that exists, not about being unable to change your
+    // mind.
+    const downOk = down.ok || n === 1;
+    const btn = (dir, ok, why, label, icon) =>
+      `<button type="button" ${ok ? '' : 'disabled'}
+               ${ok || !why ? '' : `title="${esc(why)}"`}
+               onclick="DZCBuilder.count('${sq.id}',${dir})"
+               aria-label="${label}">${window.DZCIcon(icon, { size: 14 })}</button>`;
+    return `<span class="dzc-stepper">
+      ${btn(-1, downOk, down.reason, 'Remove one model', 'remove')}
+      <b>${n}</b>
+      ${btn(1, up.ok, up.reason, 'Add one model', 'add')}
+    </span>`;
+  }
+
   function squadHtml(a, g, s, depth) {
     const u = window.DZCArmy.unitOf(a, s);
     if (!u) return '';
@@ -527,13 +554,7 @@
     const stepper = isTransport
       ? `<span class="dzc-stepper is-derived" title="A Transport’s count follows its cargo (3.2.4)">
            ${window.DZCIcon('lock', { size: 12 })}<b>${s.models.length}</b></span>`
-      : `<span class="dzc-stepper">
-          <button type="button" ${window.DZCArmy.canSetCount(a, s.id, s.models.length - 1).ok || s.models.length === 1 ? '' : 'disabled'}
-                  onclick="DZCBuilder.count('${s.id}',-1)" aria-label="Remove one model">${window.DZCIcon('remove', { size: 14 })}</button>
-          <b>${s.models.length}</b>
-          <button type="button" ${window.DZCArmy.canSetCount(a, s.id, s.models.length + 1).ok ? '' : 'disabled'}
-                  onclick="DZCBuilder.count('${s.id}',1)" aria-label="Add one model">${window.DZCIcon('add', { size: 14 })}</button>
-        </span>`;
+      : stepperHtml(a, s);
 
     const variantPicker = (u.variants || []).length ? s.models.map((m, i) =>
       `<select class="dzc-variant" onchange="DZCBuilder.setVariant('${s.id}',${i},this.value)"

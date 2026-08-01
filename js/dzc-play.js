@@ -165,7 +165,10 @@
           <span class="dzc-pcard-k">Pass Tokens</span>
           <span class="dzc-pcard-v">${pass}</span>
           <div class="dzc-pcard-act">
-            <label>Yours<input type="number" value="${groups.length}" disabled></label>
+            <!-- Derived from the army, not typed. Uneditable IS the enforcement,
+                 so it has to say why rather than just refuse the caret. -->
+            <label>Yours<input type="number" value="${groups.length}" disabled
+                   title="Counted from your army — Groups of only Transports are ignored (4.1.2)"></label>
             <label>Theirs
               <input type="number" min="0" max="40" value="${state.oppGroups}"
                      oninput="DZCPlay.oppGroups(this.value)"></label>
@@ -205,7 +208,11 @@
     return `<section class="dzc-play-group${done ? ' is-done' : ''}${live.length ? '' : ' is-dead'}">
       <header>
         <label class="dzc-act">
+          <!-- The tag beside this says the same thing, but a disabled control
+               has to carry its own reason: the tag is a separate hover target
+               and you are pointing at the box that will not tick. -->
           <input type="checkbox" ${done ? 'checked' : ''} ${canAct ? '' : 'disabled'}
+                 ${canAct ? '' : 'title="Cannot be picked for a normal activation (4.2.1); activates in the Orphaned Transport step (4.2.2)"'}
                  onchange="DZCPlay.activate('${g.id}')">
           <b>${esc(window.DZCArmy.groupName(army, g))}</b>
         </label>
