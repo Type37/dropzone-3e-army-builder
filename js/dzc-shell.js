@@ -466,6 +466,22 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-01', title: 'Print what you can see first, and get your armies back', items: [
+      'Print opens a preview: your sheet at A4 with the page breaks drawn on it and the page count in the bar. The breaks are measured rather than spaced every 273mm — a Group is kept whole by the stylesheet, so the preview pushes one that would straddle a boundary onto the next page exactly as the printer will, and then it agrees with the paper.',
+      'Compact, ink-saver and art, decided in the preview where you can see what each costs you in pages. Art on the sheet is new; it stays off unless you ask, because it is the biggest thing between a two-page list and a four-page one.',
+      'Import. There was an Export button and nothing to put it into, which made the backup a file rather than a backup. A whole backup, one army, a share link or a list pasted from New Recruit all go in through the same box, and the report says what came in and what it could not match. Nothing is overwritten — importing twice adds twice.',
+      'A pasted list will not give you back the Group nesting, and says so: a flat list does not record what rode in what.',
+      'The agreed points limit can be changed after you make the army. The size in the rail opens it. This mattered more than it sounds: the per-Group ceiling is a quarter of the AGREED number, so agreeing 1500 on the day instead of the 2000 you built at moves what is legal, and there was no way to tell the app.',
+      'The per-model variant dropdowns are gone. A Squad of eight was eight dropdowns, and you could not see the mix without opening every one. The variant blocks — which already said what each variant is, which gun makes it that and what it costs — now carry the count, so the thing you read is the thing you press.',
+      'An upgrade reads as the weapon it is: the same columns as the table above it, arc, range, attacks, accuracy, energy and every special, with the price as the button. The question an upgrade asks is whether the new gun beats the old one, and a name cannot answer it.',
+    ]},
+    { date: '2026-08-01', title: 'Commanders, Groups you can copy, and tests that read the markup', items: [
+      'Commanders have names, the same way Groups do. An unnamed one reports its Level, so deleting one from the middle can never leave two things called the same thing.',
+      'Duplicate a Group — every Squad, its models and their variants, the upgrades and the nesting, with every id reissued so the copy rides its own Transports rather than the original\'s.',
+      'Every army as one JSON file you keep. Armies live in your browser, which is free to clear them; sync moves them between your devices but propagates a deletion just as happily.',
+      'On a phone a Group is a screen you drill into rather than another slab in a long column; on a desktop the builder keeps its three panes.',
+      'A test suite that reads the rendered markup. Three regressions in one night were caught by looking at a screenshot and none by the tests, which was an argument that nothing was testing the markup rather than an argument for screenshots.',
+    ]},
     { date: '2026-08-01', title: 'Rules say what they mean, and the Albatross is reachable', items: [
       'A rule reads back the number your card printed. "Aegis 6”" says "within 6” of this Unit" instead of "within X”", and it works for words as well as numbers, so "Ineffective: Zones" names Zones. Substituting the value also exposed three keywords the app had been reading wrongly — "Pen 6+" was resolving to Passive Countermeasures, which meant every weapon with Penetrator showed the wrong rule.',
       'Every rule now says which page of the rulebook it is on, in the tooltip and on the printed sheet, so the book falls open in the right place mid-game.',
