@@ -95,6 +95,41 @@ eq(bg.squads.find(s => s.commander).commander.level, 5, 'at the right level');
 const backArch = back.groups.flatMap(g => g.squads).find(s => s.unitId === 'archangel');
 ok(A.hasUpgrade(backArch, '*', 'UM-115 Missile Spread'), 'the weapon upgrade survives');
 
+/* Names, and the difference between one you typed and one derived from a
+ * position. Both were losing something across a link.
+ *
+ * A Group you never named has NO name — groupName reads its position instead
+ * (js/dzc-army.js) so that deleting one from the middle can never leave two
+ * things called the same thing. unpack handed back the literal string "Group"
+ * for those, which is that collision exactly, with no position in it either.
+ *
+ * A Commander's typed name was not shipped at all: only the level travelled,
+ * so "Colonel Vance" arrived as "Level 5 Commander". Group names have always
+ * travelled, and these are the same field on the other renameable thing. */
+console.log('\nnames, typed and derived');
+{
+  const plain = A.create('ucm', 'Unnamed', 1500);
+  const pg = A.addGroup(plain);
+  const legion = A.addSquad(plain, pg.id, 'legionnaires', 3);
+  A.addGroup(plain);
+  const loose = A.addCommander(plain, 5);
+  A.renameCommander(plain, loose.commander.id, 'Colonel Vance');
+  const aboard = A.addCommander(plain, 4);
+  A.assignCommander(plain, aboard.commander.id, legion.id);
+  A.renameCommander(plain, aboard.commander.id, 'Major Iyer');
+
+  const there = S.unpack(S.pack(plain));
+  eq(there.groups[0].name, null, 'an unnamed Group comes back unnamed, not called "Group"');
+  eq(A.groupName(there, there.groups[1]), 'Group 2',
+     'so its name is still read from its position, and two of them are not the same');
+  const names = A.commanders(there).map(c => A.commanderName(there, c)).sort();
+  eq(JSON.stringify(names), '["Colonel Vance","Major Iyer"]',
+     'a Commander you named keeps it, aboard a Squad or not');
+  eq(A.commanders(there).find(c => c.name === 'Major Iyer').level, 4,
+     'and still at the right level');
+  A.remove(plain.id);
+}
+
 console.log('\nids are not shipped');
 ok(back.id !== army.id, 'the imported army gets a fresh id, so it cannot collide');
 ok(bg.squads.every(s => army.groups[0].squads.every(o => o.id !== s.id)),

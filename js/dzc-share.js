@@ -35,6 +35,14 @@
       // today still opens in a build from before they moved to the army. `u`
       // carries the ones not yet with a Squad, which had nowhere to live.
       u: ((army.commanders || []).filter(c => !c.squadId).map(c => c.level)),
+      // Their TYPED names, parallel to `u` and absent unless somebody typed
+      // one. A Commander you named "Colonel Vance" arrived as "Level 5
+      // Commander", which is the derived name — so a link silently undid the
+      // one thing about a Commander you had chosen. Group names have always
+      // travelled; this is the same field on the other renameable thing.
+      w: ((army.commanders || []).filter(c => !c.squadId).some(c => c.name)
+        ? (army.commanders || []).filter(c => !c.squadId).map(c => c.name || 0)
+        : undefined),
       g: army.groups.map(gr => ({
         n: gr.name,
         s: gr.squads.map(sq => {
@@ -48,7 +56,13 @@
             const i = gr.squads.findIndex(x => x.id === sq.carriedBy);
             if (i >= 0) o.c = i;
           }
-          if (sq.commander) o.k = sq.commander.level;
+          if (sq.commander) {
+            o.k = sq.commander.level;
+            // The name is on the army's Commander, not on the Squad's copy of
+            // it -- syncCommanders mirrors the level down and nothing else.
+            const c = (army.commanders || []).find(x => x.squadId === sq.id);
+            if (c && c.name) o.j = c.name;
+          }
           if (sq.upgrades) {
             const up = {};
             Object.keys(sq.upgrades).forEach(scope => {
@@ -72,13 +86,19 @@
       created: Date.now(), updatedAt: Date.now()
     };
     (data.g || []).forEach(gr => {
-      const group = { id: uid(), name: gr.n || 'Group', squads: [] };
+      /* null, never "Group". A Group's name is DERIVED unless you typed one
+       * (groupName in js/dzc-army.js), so a shared army of six unnamed Groups
+       * arrived as six things all called "Group" — the exact collision the
+       * derived name exists to prevent, and it reported no position either. */
+      const group = { id: uid(), name: gr.n || null, squads: [] };
       (gr.s || []).forEach(sq => {
         group.squads.push({
           id: uid(), unitId: sq.u,
           models: (sq.m || []).map(v => ({ variant: v || null })),
           carriedBy: null,
-          commander: sq.k ? { level: sq.k } : null,
+          // The name rides on the Squad's copy only as far as the rebuild
+          // below; syncCommanders writes the copy back as a bare level.
+          commander: sq.k ? { level: sq.k, name: sq.j || null } : null,
           upgrades: sq.g ? Object.keys(sq.g).reduce((acc, scope) => {
             acc[scope] = {};
             sq.g[scope].forEach(n => { acc[scope][n] = true; });
@@ -96,9 +116,15 @@
     // Commander that had not been given a Squad when the link was made.
     army.commanders = [];
     army.groups.forEach(g => g.squads.forEach(s => {
-      if (s.commander) army.commanders.push({ id: uid(), level: s.commander.level, squadId: s.id });
+      if (s.commander) {
+        army.commanders.push({
+          id: uid(), name: s.commander.name || null, level: s.commander.level, squadId: s.id
+        });
+      }
     }));
-    (data.u || []).forEach(lv => army.commanders.push({ id: uid(), level: lv, squadId: null }));
+    (data.u || []).forEach((lv, i) => army.commanders.push({
+      id: uid(), name: (data.w || [])[i] || null, level: lv, squadId: null
+    }));
     return army;
   }
 
