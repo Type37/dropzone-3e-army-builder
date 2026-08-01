@@ -22,6 +22,11 @@ const SUITES = [
 
 let failed = 0;
 const rows = [];
+// A suite can flag something that is real but not a failure -- a known missing
+// asset, a defect in a source PDF. Those lines are marked "!!" and reprinted
+// below the table, because a passing suite prints nothing and a warning nobody
+// sees is not a warning.
+const warnings = [];
 for (const [label, file] of SUITES) {
   const r = spawnSync(process.execPath, [path.join(HERE, file)], { encoding: 'utf8' });
   const out = (r.stdout || '') + (r.stderr || '');
@@ -32,6 +37,8 @@ for (const [label, file] of SUITES) {
     failed += fail || 1;
     process.stderr.write(out);
   }
+  out.split('\n').filter(l => l.trimStart().startsWith('!!'))
+    .forEach(l => warnings.push(l.trim().replace(/^!!\s*/, '')));
   rows.push([label, pass, fail]);
 }
 
@@ -41,6 +48,10 @@ rows.forEach(([label, pass, fail]) => {
   console.log(`  ${label.padEnd(width)}  ${String(pass).padStart(3)} passed` +
               (fail ? `, ${fail} FAILED` : ''));
 });
+if (warnings.length) {
+  console.log('');
+  warnings.forEach(w => console.log(`  !! ${w}`));
+}
 const total = rows.reduce((n, r) => n + r[1], 0);
 console.log(`\n  ${String(total).padStart(width + 3)} assertions, ${failed ? failed + ' failing' : 'all passing'}\n`);
 process.exit(failed ? 1 : 0);

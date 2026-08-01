@@ -10,7 +10,7 @@
  *
  *   node scripts/test-house-rules.mjs
  */
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -148,6 +148,52 @@ for (const file of SOURCES) {
 ok(buttons > 50, 'the buttons were actually found', `matched ${buttons}`);
 eq(nameless.length, 0, 'no button is left without an accessible name');
 if (nameless.length) console.error('        ' + nameless.join('\n        '));
+
+// ------------------------------------------------- every asset actually exists
+/* An <img> whose file is not in the repo cannot deploy: .github/workflows
+ * deploy.yml copies assets/ straight out of the checkout, so a file that was
+ * never committed is a 404 on the live site and a broken-image icon on the
+ * page.
+ *
+ * This is here because it happened. .gitignore carried an unanchored
+ * "DZC_Logo_*" from before the fork, and on Windows -- where git defaults to
+ * core.ignorecase=true -- that also matched assets/logos/dzc_logo_white.webp.
+ * git add skipped the topbar and landing logos without a word, and nothing
+ * noticed for two days, because the only way to notice was to load the page.
+ *
+ * Missing files that are already known are warnings, matching how
+ * audit_rules.py treats a known card defect: a listed one is a decision, an
+ * unlisted one is a bug. A listed one that has since appeared fails, so the
+ * list cannot go stale. */
+console.log('\nevery asset actually exists');
+const KNOWN_MISSING = {
+  'assets/logos/dzc_logo_white.webp':
+    'the topbar wordmark — on Jet\'s disk, never committed (gitignore DZC_Logo_*)',
+  'assets/logos/dzc_logo_dark.webp':
+    'the landing wordmark — same cause. Brand art, so only Jet can supply it.'
+};
+const refs = new Set();
+for (const file of ['index.html', ...readdirSync(path.join(ROOT, 'js'))
+  .filter(f => f.endsWith('.js')).map(f => `js/${f}`)]) {
+  const src = readFileSync(path.join(ROOT, file), 'utf8');
+  // Only literal paths. An interpolated src is built at runtime from data and
+  // is covered by tools/dzc/audit_art.py instead.
+  for (const m of src.matchAll(/["'`](assets\/[A-Za-z0-9_\-./]+\.(?:webp|png|svg|jpg|jpeg|ico))["'`]/g)) {
+    refs.add(m[1]);
+  }
+}
+// Only three literal asset paths exist: the two wordmarks and the touch icon.
+// Everything else — faction art, unit art — is interpolated from data and is
+// audited by tools/dzc/audit_art.py.
+ok(refs.size >= 3, 'the asset references were actually found', `found ${refs.size}`);
+const gone = [...refs].filter(p => !existsSync(path.join(ROOT, p)));
+const unexpected = gone.filter(p => !KNOWN_MISSING[p]);
+eq(unexpected.length, 0, 'every asset the page names is in the repo');
+if (unexpected.length) console.error('        ' + unexpected.join('\n        '));
+const back = Object.keys(KNOWN_MISSING).filter(p => existsSync(path.join(ROOT, p)));
+eq(back.length, 0, 'and no known-missing asset is still excused after arriving',
+   back.join(', '));
+gone.forEach(p => console.log(`!! MISSING ${p} — ${KNOWN_MISSING[p]}`));
 
 console.log(`\n${pass} passed, ${fail} failed\n`);
 process.exit(fail ? 1 : 0);

@@ -18,8 +18,16 @@ Faction Icons/
 robert-mallinson-*
 ship_database.json
 
-# DZC logos (wrong game, reference only)
-DZC_Logo_*
+# Source logo cuts sitting in the repo ROOT, reference only. Anchored with a
+# leading slash, and it has to stay anchored.
+#
+# This rule was written while this was still the Dropfleet repo, where "DZC
+# logos" genuinely meant the wrong game. After the fork they are this app's
+# brand. Unanchored, and on Windows where git defaults to core.ignorecase=true,
+# DZC_Logo_* also matches assets/logos/dzc_logo_white.webp — so `git add`
+# silently skipped the topbar and landing logos, and every deploy since
+# 2026-07-30 has shipped an <img> pointing at a 404.
+/DZC_Logo_*
 
 # Stale / reference files
 faction_data.json
