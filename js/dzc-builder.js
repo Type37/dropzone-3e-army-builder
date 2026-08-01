@@ -1115,7 +1115,9 @@
 
     const rules = [...used.values()].sort((x, y) => x.token.localeCompare(y.token))
       .map(e => `<div class="pr-rule"><h3>${esc(e.token)}${e.rule.alias ? ` (${esc(e.rule.alias)})` : ''}</h3>
-        <p>${esc(e.text)} <span class="pr-src">${esc(e.rule.faction ? e.rule.faction.toUpperCase() : e.rule.section)}</span></p></div>`).join('');
+        <p>${esc(e.text)} <span class="pr-src">${esc(e.rule.faction
+          ? e.rule.faction.toUpperCase()
+          : e.rule.section + (e.rule.page ? `, p.${e.rule.page}` : ''))}</span></p></div>`).join('');
 
     let el = document.getElementById('dzc-print');
     if (!el) { el = document.createElement('div'); el.id = 'dzc-print'; document.body.appendChild(el); }

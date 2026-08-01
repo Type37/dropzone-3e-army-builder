@@ -167,6 +167,24 @@ eq(DZC.rule('P5+', 'shaltari').id, 'px', 'P5+ is still PX+');
  * radius or save -- and inventing the missing numbers would be writing rules
  * TTCombat did not print. They are named here so that a release which fixes
  * the card shows up as an entry that has stopped being needed. */
+/* Gap 39: a rule cites the page it is printed on, so the book falls open at
+ * the right place mid-game. Core rules only -- a faction rule is scanned from
+ * that faction's own card PDF, where the rules block is always page 1, and
+ * printing "p.1" would point at a different document. */
+console.log('\npage numbers (gap 39)');
+{
+  const aegis = DZC.rule('Aegis 6\u201d', 'ucm');
+  eq(aegis.page, 44, 'a core rule carries its rulebook page');
+  eq(DZC.rule('Nanomachines', 'phr').page, null,
+     'a faction rule carries none, because its page 1 is not the rulebook\'s');
+  const core = DZC.rules.core;
+  eq(core.filter(r => !r.page).length, 0, 'every core rule has a page');
+  const pages = core.map(r => r.page);
+  ok(Math.min(...pages) >= 44 && Math.max(...pages) <= 50,
+     'and every one of them is in chapters 10-11 (pp.44-50)',
+     `${Math.min(...pages)}-${Math.max(...pages)}`);
+}
+
 console.log('\nno dead chips (gap 38)');
 {
   const KNOWN_CARD_DEFECTS = [

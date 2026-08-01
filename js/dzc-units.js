@@ -145,7 +145,11 @@
     if (!special) return '';
     return window.DZC.splitSpecial(special, faction).map(tok => {
       const r = window.DZC.rule(tok, faction);
-      const tip = window.DZC.ruleText(tok, faction) || 'No glossary entry — read it from the stat card.';
+      // The page goes on the hover too, not only in the popover: someone
+      // reading the tooltip with the rulebook open wants to turn to it without
+      // a second click to find out where.
+      const tip = (window.DZC.ruleText(tok, faction) || 'No glossary entry — read it from the stat card.')
+        + (r && r.page ? ` (p.${r.page})` : '');
       return `<button type="button" class="dzc-rule${r ? '' : ' dzc-rule--unknown'}"
         onclick="DZCUnits.showRule(this,'${esc(tok).replace(/'/g, '&#39;')}')"
         title="${esc(tip)}">${esc(tok)}</button>`;
@@ -308,6 +312,14 @@
 
   function closeDetail() { document.getElementById('dzc-detail').classList.remove('active'); }
 
+  /* Where a rule comes from, close enough to go and read it. The section
+   * number says which rule; the page number says where the book falls open,
+   * which is the one you want mid-game with the rulebook on the table. */
+  function ruleSource(r) {
+    if (r.faction) return r.faction.toUpperCase() + ' rules';
+    return 'Rulebook ' + r.section + (r.page ? `, p.${r.page}` : '');
+  }
+
   /* Rule popover. Positioned absolutely against the page so opening one never
    * displaces the content behind it. */
   function showRule(el, token) {
@@ -319,7 +331,7 @@
     pop.innerHTML = r
       ? `<h5>${esc(r.name)}${r.alias ? ` <span class="dzc-pop-alias">(${esc(r.alias)})</span>` : ''}</h5>
          <p>${esc(window.DZC.ruleText(token, state.faction))}</p>
-         <span class="dzc-pop-src">${esc(r.faction ? r.faction.toUpperCase() + ' rules' : 'Rulebook ' + r.section)}</span>`
+         <span class="dzc-pop-src">${esc(ruleSource(r))}</span>`
       : `<h5>${esc(token)}</h5><p>No glossary entry for this keyword — read it from the stat card.</p>`;
     document.body.appendChild(pop);
     const b = el.getBoundingClientRect();

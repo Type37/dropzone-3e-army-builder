@@ -85,6 +85,11 @@
       alias: r.alias || null,
       text: r.text,
       section: r.section,
+      /* Only a CORE rule's page is worth printing. A faction rule is scanned
+       * from that faction's own stat-card PDF, where the rules block is always
+       * page 1 -- citing "p.1" would point at a different document and read as
+       * a rulebook page it is not. */
+      page: r.faction ? null : (r.page || null),
       parameterised: !!r.parameterised,
       re: new RegExp(r.match, 'i')
     }));
