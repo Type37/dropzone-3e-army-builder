@@ -203,6 +203,23 @@
     touch(army);
   }
 
+  /* A Commander's name, the same deal as a Group's: derived unless you gave it
+   * one. The rulebook never names Commanders — 3.2.5 only sets a Level and a
+   * cost — so the default has to say the thing that matters, and the thing
+   * that matters is the Level. */
+  function commanderName(army, c) {
+    if (c.name) return c.name;
+    return `Level ${c.level} Commander`;
+  }
+
+  function renameCommander(army, commanderId, text) {
+    const c = commanders(army).find(x => x.id === commanderId);
+    if (!c) return;
+    const t = (text || '').trim();
+    c.name = (!t || t === `Level ${c.level} Commander`) ? null : t;
+    touch(army);
+  }
+
   function removeGroup(army, groupId) {
     army.groups = army.groups.filter(g => g.id !== groupId);
     touch(army);
@@ -307,7 +324,7 @@
     if (allowed.indexOf(level) === -1) {
       return { ok: false, reason: `A Level ${level} Commander is not allowed in ${size ? size.label : 'this game size'} (3.2.5).` };
     }
-    const c = { id: uid(), level: level, squadId: null };
+    const c = { id: uid(), level: level, squadId: null, name: null };
     commanders(army).push(c);
     syncCommanders(army);
     touch(army);
@@ -1013,7 +1030,8 @@
 
   window.DZCArmy = {
     load, save, all, get, create, remove, touch,
-    addGroup, removeGroup, duplicateGroup, groupName, renameGroup, addSquad, removeSquad, setModelCount, setModelVariant,
+    addGroup, removeGroup, duplicateGroup, groupName, renameGroup,
+    commanderName, renameCommander, addSquad, removeSquad, setModelCount, setModelVariant,
     setCarrier, setCommander, findSquad, groupOf, unitOf,
     commanders, commanderFor, commanderTargets,
     addCommander, removeCommander, assignCommander, syncCommanders, levelCost,

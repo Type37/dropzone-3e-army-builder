@@ -238,6 +238,34 @@ console.log('\ntransports and their cargo form one Group (3.2.4)');
   A.remove(a.id);
 }
 
+/* Commanders are named the same way Groups are: derived from the Level unless
+ * you gave one a name. The rulebook never names them -- 3.2.5 sets a Level and
+ * a cost and nothing else -- so the default has to carry the Level. */
+{
+  const a = A.create('ucm', 'Commander names', 2000);
+  const g = A.addGroup(a);
+  const s1 = A.addSquad(a, g.id, 'legionnaires', 2);
+  // Levels are 4-7 (armyRules.commanders.levels); 5 is legal in Clash.
+  const r = A.addCommander(a, 5);
+  ok(r.ok, 'a Level 5 Commander is allowed at 2000pts', r.reason);
+  const c = r.commander;
+  eq(A.commanderName(a, c), 'Level 5 Commander', 'and is named for its Level');
+  eq(c.name, null, 'with nothing stored');
+
+  A.renameCommander(a, c.id, 'Marshal Aguilar');
+  eq(A.commanderName(a, c), 'Marshal Aguilar', 'a chosen name sticks');
+  A.renameCommander(a, c.id, '  ');
+  eq(A.commanderName(a, c), 'Level 5 Commander', 'clearing it goes back to the Level');
+  A.renameCommander(a, c.id, 'Level 5 Commander');
+  eq(c.name, null, 'and typing the default back stores nothing');
+
+  // A Level 3 does not exist and a Level 7 is Battle-and-up, so neither is
+  // takeable here (3.2.5).
+  eq(A.addCommander(a, 3).ok, false, 'a Level that does not exist is refused');
+  eq(A.addCommander(a, 7).ok, false, 'and a Level above the game size is refused');
+  A.remove(a.id);
+}
+
 /* Group names track position. Baking the number in at creation produced two
  * Groups both called "Group 3" as soon as you deleted from the middle. */
 {

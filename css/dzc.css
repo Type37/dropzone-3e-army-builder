@@ -347,6 +347,14 @@
 .dzc-cmdr-card.is-loose { border-left-color: var(--warn-ink, #6b4e00); }
 .dzc-cmdr-head { display: flex; align-items: center; gap: 8px; }
 .dzc-cmdr-head b { display: block; font-size: 13px; }
+/* Editable in place, and it has to say so — the same trap as the Group and
+   army headings: nobody finds it, or somebody finds it by typing into it. */
+.dzc-cmdr-name {
+  cursor: text; border-bottom: 1px dotted var(--ink-2, #9a9285);
+  overflow-wrap: anywhere;
+}
+.dzc-cmdr-name:hover { border-bottom-color: var(--acc); }
+.dzc-cmdr-name:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
 .dzc-cmdr-pts {
   font-family: var(--font-numeric, 'Outfit', sans-serif);
   font-size: 12px; font-weight: 600; color: var(--ink-2, #6b6459);

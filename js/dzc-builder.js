@@ -562,6 +562,15 @@
     </span>`;
   }
 
+  /* The Commander riding with a Squad, named. A Commander mirrored onto a
+   * Squad carries only its id and level, so the name comes from the army's own
+   * record; falling back to the Level keeps the chip meaningful when it has no
+   * name of its own. */
+  function commanderTagName(a, mirror) {
+    const c = window.DZCArmy.commanders(a).find(x => x.id === mirror.id);
+    return c ? window.DZCArmy.commanderName(a, c) : `Level ${mirror.level}`;
+  }
+
   function squadHtml(a, g, s, depth) {
     const u = window.DZCArmy.unitOf(a, s);
     if (!u) return '';
@@ -637,7 +646,8 @@
           <h3 class="dzc-sq-title">
             <button type="button" class="dzc-sq-name" title="Stats, weapons and rules"
                     onclick="DZCUnits.openDetail('${esc(u.id)}','${esc(a.faction)}')">${esc(u.name)}</button>
-            ${s.commander ? `<span class="dzc-cmdr-tag">${window.DZCIcon('military_tech', { size: 13 })}Level ${s.commander.level}</span>` : ''}
+            ${s.commander ? `<span class="dzc-cmdr-tag" title="Level ${s.commander.level} Commander"
+              >${window.DZCIcon('military_tech', { size: 13 })}${esc(commanderTagName(a, s.commander))}</span>` : ''}
             <span class="dzc-sq-cap">${U.transportHtml(u)}</span>
           </h3>
           <p class="dzc-sq-meta">${meta}</p>
@@ -704,8 +714,11 @@
         <div class="dzc-cmdr-head">
           ${insignia}
           <div>
-            <b>Level ${c.level} Commander</b>
-            <span class="dzc-cmdr-pts">${window.DZCArmy.levelCost(c.level)}pts</span>
+            <b contenteditable="true" spellcheck="false" class="dzc-cmdr-name"
+               title="Click to rename, or clear it to go back to the Level"
+               onblur="DZCBuilder.renameCommander('${c.id}', this.textContent)"
+               >${esc(window.DZCArmy.commanderName(a, c))}</b>
+            <span class="dzc-cmdr-pts">Level ${c.level}, ${window.DZCArmy.levelCost(c.level)}pts</span>
           </div>
         </div>
         ${assign}
@@ -1278,7 +1291,7 @@
           <span class="pr-sq-n">${s.models.length}×</span>
           <span class="pr-sq-name">${esc(u.name)}</span>
           <span class="pr-sq-cat">${esc(u.category)}</span>
-          ${s.commander ? `<span class="pr-cmdr">Commander L${s.commander.level}</span>` : ''}
+          ${s.commander ? `<span class="pr-cmdr">${esc(commanderTagName(a, s.commander))}</span>` : ''}
           <span class="pr-sq-cost">${cost}pts</span>
         </div>
         ${mixStr ? `<div class="pr-variants">${mixStr}</div>` : ''}
@@ -1434,6 +1447,7 @@
       refresh();
     },
     setCarrier: (id, c) => { window.DZCArmy.setCarrier(current, id, c); refresh(); },
+    renameCommander: (id, t) => { window.DZCArmy.renameCommander(current, id, t); refresh(); },
     selectGroup: id => { selectedGroup = id; drilled = true; refresh(); },
     backToGroups: () => { drilled = false; refresh(); },
     openCarry, closeCarry,
