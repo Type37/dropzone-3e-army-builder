@@ -41,6 +41,13 @@
           if (s.commander) a.commanders.push({ id: uid(), level: s.commander.level, squadId: s.id });
         }));
       }
+      // Groups saved with a baked "Group 3" go back to tracking their position.
+      // Only a name you actually chose survives, which is the whole point of
+      // the change -- an old save should not keep a number that has since
+      // stopped matching where the Group sits.
+      (a.groups || []).forEach(g => {
+        if (typeof g.name === 'string' && /^Group \d+$/.test(g.name.trim())) g.name = null;
+      });
       syncCommanders(a);
     });
     return armies;
@@ -96,11 +103,34 @@
 
   // ------------------------------------------------------------------ edits
 
+  /* A Group's name is its POSITION unless you have actually given it one.
+   *
+   * Baking "Group 3" in at creation went wrong two ways: delete Group 1 and
+   * "Group 2" is sitting first, and delete the middle of three and the next
+   * one you add is numbered from the length, so you get two Groups both called
+   * "Group 3". Storing nothing and deriving the number means the list always
+   * counts 1, 2, 3 no matter what you remove. */
   function addGroup(army, name) {
-    const g = { id: uid(), name: name || `Group ${army.groups.length + 1}`, squads: [] };
+    const g = { id: uid(), name: name || null, squads: [] };
     army.groups.push(g);
     touch(army);
     return g;
+  }
+
+  function groupName(army, g) {
+    if (g.name) return g.name;
+    return `Group ${army.groups.indexOf(g) + 1}`;
+  }
+
+  /* Typing the auto name back in, or clearing the field, hands the Group
+   * to the numbering again rather than freezing today's number as a custom
+   * name that stops tracking. */
+  function renameGroup(army, groupId, text) {
+    const g = army.groups.find(x => x.id === groupId);
+    if (!g) return;
+    const t = (text || '').trim();
+    g.name = (!t || t === `Group ${army.groups.indexOf(g) + 1}`) ? null : t;
+    touch(army);
   }
 
   function removeGroup(army, groupId) {
@@ -913,7 +943,7 @@
 
   window.DZCArmy = {
     load, save, all, get, create, remove, touch,
-    addGroup, removeGroup, addSquad, removeSquad, setModelCount, setModelVariant,
+    addGroup, removeGroup, groupName, renameGroup, addSquad, removeSquad, setModelCount, setModelVariant,
     setCarrier, setCommander, findSquad, groupOf, unitOf,
     commanders, commanderFor, commanderTargets,
     addCommander, removeCommander, assignCommander, syncCommanders, levelCost,

@@ -199,7 +199,7 @@
         <label class="dzc-act">
           <input type="checkbox" ${done ? 'checked' : ''} ${canAct ? '' : 'disabled'}
                  onchange="DZCPlay.activate('${g.id}')">
-          <b>${esc(g.name)}</b>
+          <b>${esc(window.DZCArmy.groupName(army, g))}</b>
         </label>
         ${canAct ? '' : `<span class="dzc-play-tag" title="Cannot be picked for a normal activation (4.2.1); activates in the Orphaned Transport step (4.2.2)">${window.DZCIcon('local_shipping', { size: 12 })} orphaned transports</span>`}
       </header>

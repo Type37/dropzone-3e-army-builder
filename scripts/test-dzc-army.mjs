@@ -238,6 +238,34 @@ console.log('\ntransports and their cargo form one Group (3.2.4)');
   A.remove(a.id);
 }
 
+/* Group names track position. Baking the number in at creation produced two
+ * Groups both called "Group 3" as soon as you deleted from the middle. */
+{
+  const a = A.create('ucm', 'Naming', 2000);
+  const g1 = A.addGroup(a), g2 = A.addGroup(a), g3 = A.addGroup(a);
+  eq(A.groupName(a, g2), 'Group 2', 'a new Group is named for its position');
+
+  A.removeGroup(a, g1.id);
+  eq(A.groupName(a, g2), 'Group 1', 'deleting the first renumbers the rest');
+  eq(A.groupName(a, g3), 'Group 2', 'all the way down');
+
+  const g4 = A.addGroup(a);
+  eq(A.groupName(a, g4), 'Group 3', 'and the next one added continues the count');
+
+  // The old bug, stated: length+1 after a middle deletion collided.
+  const names = a.groups.map(g => A.groupName(a, g));
+  eq(new Set(names).size, names.length, 'no two Groups ever share a name');
+
+  // A name you actually chose is kept; typing the auto name back gives it up.
+  A.renameGroup(a, g2.id, 'Air wing');
+  eq(A.groupName(a, g2), 'Air wing', 'a chosen name sticks');
+  A.removeGroup(a, g3.id);
+  eq(A.groupName(a, g2), 'Air wing', 'and does not renumber');
+  A.renameGroup(a, g2.id, '   ');
+  eq(A.groupName(a, g2), 'Group 1', 'clearing it hands the Group back to the numbering');
+  A.remove(a.id);
+}
+
 /* The Vulture deadlock. A Vulture Troopship carries 4 squares; every UCM
  * infantry Squad is 2-3 models filling 1 square each, so no single Squad can
  * ever total 4. Buying one per Squad left it permanently "not full" while

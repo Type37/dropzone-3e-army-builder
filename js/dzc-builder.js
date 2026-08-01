@@ -368,9 +368,10 @@
     return `<section class="dzc-group-card${cost > cap ? ' is-over' : ''}">
       <header class="dzc-g-head">
         <h2 contenteditable="true" spellcheck="false"
-            onblur="DZCBuilder.renameGroup('${g.id}', this.textContent)">${esc(g.name)}</h2>
+            title="Rename this Group, or clear it to go back to its number"
+            onblur="DZCBuilder.renameGroup('${g.id}', this.textContent)">${esc(window.DZCArmy.groupName(a, g))}</h2>
         <button class="dzc-icon-btn" type="button" title="Remove Group"
-                onclick="DZCBuilder.removeGroup('${g.id}')" aria-label="Remove ${esc(g.name)}">&times;</button>
+                onclick="DZCBuilder.removeGroup('${g.id}')" aria-label="Remove ${esc(window.DZCArmy.groupName(a, g))}">&times;</button>
       </header>
       ${groupMeters(a, g)}
       ${rows || '<p class="dzc-g-empty">No Squads yet.</p>'}
@@ -1095,7 +1096,7 @@
 
     const groups = a.groups.map(g => `<section class="pr-group">
       <div class="pr-g-head">
-        <h2 class="pr-g-name">${esc(g.name)}</h2>
+        <h2 class="pr-g-name">${esc(window.DZCArmy.groupName(a, g))}</h2>
         <span class="pr-g-cost">${window.DZCArmy.groupCost(a, g)}pts</span>
       </div>
       ${g.squads.filter(s => !s.carriedBy).map(s => squad(g, s, 0)).join('')}
@@ -1175,10 +1176,7 @@
       updatePointsNote();
     },
     rename: t => { current.name = (t || '').trim() || 'Army'; window.DZCArmy.touch(current); },
-    renameGroup: (id, t) => {
-      const g = current.groups.find(x => x.id === id);
-      if (g) { g.name = (t || '').trim() || 'Group'; window.DZCArmy.touch(current); }
-    },
+    renameGroup: (id, t) => { window.DZCArmy.renameGroup(current, id, t); refresh(); },
     // Just the empty Group. It used to open the picker straight away, which
     // took the decision "which Group am I filling" away from you and made
     // adding two Groups back to back a fight with a modal.
