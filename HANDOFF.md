@@ -357,6 +357,77 @@ top-down by priority there, not from this section.
 
 ---
 
+## 11b. Cloud run — 2026-08-01, the fourth one
+
+**The brief for this run said again that there is no browser here, and it was
+wrong again.** That is three runs in a row. §11a already says it in capitals and
+it still had to be rediscovered, so if a brief tells you the app cannot be
+looked at, check before you believe it: `/opt/pw-browsers/chromium`, and
+`scripts/shots.mjs` drives it.
+
+**And then a shot turned out to be a lie in a new way.** Headless Chrome does
+not advance the animation timeline while nothing is asking it for frames. Four
+seconds after load, a landing tile still reported `slideUp` as *running* with
+`currentTime: 0` — and `.stagger > *` starts at `opacity: 0`, so the landing
+page captured as one grey ghost of a card on an empty page, in every set anyone
+has ever taken. The script finishes every animation before the capture now, and
+both committed sets were retaken. **If you are looking at a screenshot in
+`docs/screens/dropzone/` from before this run, it is the 0% keyframe of
+whatever it shows.**
+
+Ten commits, every one of them found by looking rather than by reading code.
+The two worth knowing:
+
+**The print preview was lying to a phone, which is the one thing it exists not
+to do.** The same one-page army read "1 page" at 1500 and "3 pages" at 375, with
+a break drawn through the middle of a Squad — through a Group, the one atom the
+sheet is built to keep whole. Two faults, and neither shows on a desktop.
+`.pp-scroll` is a flex container, so its default `align-items: stretch` pulled
+the paper down to the height of the window, and the page count is measured off
+the paper's own height. And `paginate()` mixed two coordinate spaces that agree
+only at zoom 1: `getBoundingClientRect` follows the sheet's zoom down, while
+`scrollHeight`, the padding off `getComputedStyle` and every `top`/`height`
+written back as a style are the element's own pixels. **Anything measured inside
+`.pp-paper` has to be divided back out by its zoom.**
+
+**On a phone there was no way back from anything.** `css/app.css` hides
+`.topbar-context` below 768px — the back chevron on every view, and Play Mode's
+Reset game. That was right when a phone got the separate `mobile/` build with
+its own chrome; that build is deleted, and nobody went back over what the
+deletion left behind. **Go looking for more of these**: `css/app.css` is 6800
+lines of Dropfleet-era rules and some of them are still assuming an app that no
+longer exists.
+
+**Where a rule puts a thing is part of the rule.** Play Mode had Concussed,
+Suppressed, Jammed and Obscured on every model. Three of those are Status
+Tokens and the rule that creates each one names where it goes — 11.1.7, 11.1.22
+and 11.1.34 all say "on its Squad" — so a Squad of five had five independent
+Concussed toggles and could record a state the game cannot produce. Obscured is
+not a token at all (10.1.21 makes it a question of where a model is standing),
+so that one stays per model. Read the rule that *creates* a thing, not just the
+one that names it.
+
+**Four things were being drawn over or cut off**, all of them on screens that
+had been shot dozens of times at page scale and never at 1:1: a Group's cost
+under the drag grip, `5+ DEFENC` on the reference card (a bare `1fr` is
+`minmax(auto, 1fr)`, and the stat label refuses to break inside a word), the
+Standard track drawn in the category green on a card whose background is the
+faction accent, and the Collection's search box cutting off its own placeholder.
+**Clip a component at 1:1 before believing a page shot.** The harness now shoots
+the rail, the Group list, a reference card, Share and Play, none of which had
+ever been shot at all.
+
+**Two things §11a says that are no longer true**, corrected here so they are not
+re-derived: the rank insignia IS wired in (the rail Commander card and the
+chooser, offset by 3 because DZC ranks run 4–7), and the truncated Strikehawk
+and Carryhawk upgrade notes ARE fixed in the data — `audit_data.py` passes with
+one known source-data warning, the Bioficer Surge Gunship.
+
+The suite went 594 → 600. Every new assertion was checked to FAIL against the
+code before it.
+
+---
+
 ## 11a. Cloud run — 2026-08-01, the third one
 
 **THERE IS A BROWSER IN A CLOUD RUN. Do not believe otherwise again.**
