@@ -306,6 +306,37 @@ Builder". Rename if you'd prefer something else.
 
 ---
 
+## 9b. Session — 2026-08-02, verification pass
+
+An overnight loop had been running unattended against Todoist; stopped on
+request (`ScheduleWakeup{stop:true}`, confirmed no `CronList` jobs either).
+Working tree was already clean — every prior run's work was committed and
+pushed. This pass verified rather than built:
+
+- `node scripts/test-all.mjs` — **606 assertions, all passing**, six suites
+  (data layer, army construction, share links, fleet sync, house rules,
+  render). Up from 167 at the start of the previous session.
+- `python tools/dzc/rebuild.py --skip-scan` — all four data audits clean.
+- Latest Pages deploy: success. Live site: 200.
+
+**Confirmed live, the thing Jet was angriest about:** the unit picker did not
+show variants, so a Squad's real choice (Flak Team vs Mortar Team, a
+completely different weapon) was invisible until after you'd already added
+the base unit. That is fixed and verified in a running browser, not just read
+in a diff: `Legionnaire Weapon Team`'s pick card now carries `Flak Team ·
+25pts` and `Mortar Team · 25pts` as chips, priced, before you click. Separately,
+Transports (`Bear APC`, `Condor Dropship`, ...) now appear in the same picker
+as ordinary Squads, sorted together, so either can be added first — the
+"click to add new Group, then add transports or units in either order"
+rework Jet asked for directly. Per-model variant dropdowns are gone in favour
+of a per-variant count.
+
+Per the standing rule, no Todoist tasks were closed. Several already-closed
+ones from earlier in the day may not reflect Jet's review — that rule was
+violated once, in this same document's history (§0), before it existed.
+
+---
+
 ## 10. Session handoff — 2026-08-01
 
 Long overnight session, both an interactive one and an unattended cloud
