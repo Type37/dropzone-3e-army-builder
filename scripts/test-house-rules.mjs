@@ -594,6 +594,37 @@ console.log('\nevery route lands on a view that exists');
   ok(/default:/.test(body), 'with a default, so an unknown hash lands on the landing screen');
 }
 
+// ---------------------------------------------------- a phone can hit the control
+/* Measured at 390x844 before this was written: the way back 18x18, the card
+ * menu 24x24, the model stepper 24x24 with 2px between plus and minus,
+ * Settings and every modal close 32x32, the chips 28 high. A finger pad is
+ * about 45px across, so those are aimed at, not pressed -- "buttons are hard
+ * to press on mobile".
+ *
+ * Static, because a stylesheet is where the answer lives and a headless DOM
+ * has no layout to measure. It checks the phone block still names each of
+ * them: the sizes came back one at a time as each control was found, and the
+ * way this regresses is a selector quietly dropping off the list. */
+console.log('\na phone can hit the control');
+{
+  const css = readFileSync(path.join(ROOT, 'css/mobile-fixes.css'), 'utf8');
+  const phone = (css.match(/@media \(max-width: 768px\)\s*\{[\s\S]*\}/) || [''])[0];
+  ok(phone.length > 400, 'the phone block was found in mobile-fixes.css', `${phone.length} chars`);
+  // The stepper is first because it is the one pressed most: it is how a
+  // Squad gets its models, and it was the smallest thing on the screen.
+  const CONTROLS = [
+    '.dzc-stepper button', '.topbar-back', '.topbar-global-settings-btn',
+    '.modal-close', '.dzc-icon-btn', '.dzc-carry-add', '.btn', '.dzc-chip',
+    '.dzc-tab', '.dzc-search', '.form-input', '.dzc-faction-btn',
+  ];
+  const unnamed = CONTROLS.filter(c => !phone.includes(c + ',') && !phone.includes(c + ' {'));
+  eq(unnamed.length, 0, 'and every control it sized is still named there', unnamed.join(', '));
+  const targets = [...phone.matchAll(/min-(?:width|height):\s*(\d+)px/g)].map(m => +m[1]);
+  ok(targets.length >= 4, 'and it sets touch targets at all', `${targets.length} declarations`);
+  const short = targets.filter(n => n < 44);
+  eq(short.length, 0, 'none of them below 44px', short.join(', '));
+}
+
 // ------------------------------------ a control that disables itself gets put back
 /* Create disables itself for the length of an await, which is right — two
  * presses would build two armies. What it must not do is stay that way.
