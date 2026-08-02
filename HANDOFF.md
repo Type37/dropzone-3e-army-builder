@@ -310,8 +310,8 @@ Builder". Rename if you'd prefer something else.
 
 An overnight loop had been running unattended against Todoist; stopped on
 request (`ScheduleWakeup{stop:true}`, confirmed no `CronList` jobs either).
-Working tree was already clean — every prior run's work was committed and
-pushed. This pass verified rather than built:
+Working tree was clean at that point — every prior run's work was committed
+and pushed. This pass verified rather than built:
 
 - `node scripts/test-all.mjs` — **606 assertions, all passing**, six suites
   (data layer, army construction, share links, fleet sync, house rules,
@@ -334,6 +334,22 @@ of a per-variant count.
 Per the standing rule, no Todoist tasks were closed. Several already-closed
 ones from earlier in the day may not reflect Jet's review — that rule was
 violated once, in this same document's history (§0), before it existed.
+
+**Then the tree stopped being clean.** After the check above, a concurrent
+process (same overnight loop, or another session against the same repo) wrote
+four files without committing: 44px touch targets on every mobile control
+(`css/mobile-fixes.css` — the stepper was 24px square with 2px between plus
+and minus), a Group capacity meter's always-visible label folded into its
+hover/`aria-label`, a triangle badge's digit nudged off dead centre, and the
+picker's "cannot be added here" units sinking to the bottom of every sort
+instead of staying mixed in. Found by `git status` turning up dirty again
+mid-write of this section. Verified — syntax, full suite (610, four new),
+audits, and the one part not covered by a test (blocked units sinking)
+checked live — then committed in two pieces, since part of the
+`mobile-fixes.css` change had *already* landed separately as `1db2967`
+(same content, different commit) between the two checks; `git add` on that
+file found nothing left to stage. No duplicate content shipped; confirmed by
+reading `git show --stat` on both commits rather than assuming.
 
 ---
 
