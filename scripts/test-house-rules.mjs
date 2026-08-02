@@ -574,7 +574,10 @@ console.log('\nthe offline precache matches what the page loads');
  */
 console.log('\nevery route lands on a view that exists');
 {
-  const shell = readFileSync(path.join(ROOT, 'js/dzc-shell.js'), 'utf8');
+  // \r stripped: this is the one assertion that matches on a line ending, and a
+  // Windows checkout (core.autocrlf=true) hands it CRLF, so the closing brace
+  // never matched and four route assertions failed on a tree with nothing wrong.
+  const shell = readFileSync(path.join(ROOT, 'js/dzc-shell.js'), 'utf8').replace(/\r/g, '');
   const body = (shell.match(/function showView\([\s\S]*?\n  \}\n/) || [''])[0];
   ok(body.length > 400, 'showView was found in the shell', `${body.length} chars`);
 
