@@ -252,21 +252,32 @@
     return `${label} Army ${used.length ? Math.max.apply(null, used) + 1 : 1}`;
   }
 
+  /* The button is disabled while this runs, so whatever happens it has to be
+   * put back — a throw between create() and the render left Create dead with
+   * its pressed look on, and every click after it did nothing, for the rest of
+   * the session. Silent, too: the rejection went nowhere an onclick could see.
+   * Now the failure says what it was and the button comes back. */
   async function createArmy() {
     const btn = document.getElementById('dzc-create-btn');
     const typed = (document.getElementById('dzc-new-name').value || '').trim();
-    const name = typed || defaultArmyName(picked.faction);
     if (btn) { btn.classList.add('is-going'); btn.disabled = true; }
     try {
-      await window.DZC.loadFaction(picked.faction);
-    } catch (e) { /* offline or a bad fetch: fall through and let the view report it */ }
-    const a = window.DZCArmy.create(picked.faction, name, picked.points, picked.description);
-    location.hash = '#army/' + a.id;
-    await renderBuilder(a.id);
-    document.getElementById('dzc-new').classList.remove('active');
-    if (btn) { btn.classList.remove('is-going'); btn.disabled = false; }
-    picked.name = null;   // next dialog suggests afresh
-    picked.description = '';
+      const name = typed || defaultArmyName(picked.faction);
+      try {
+        await window.DZC.loadFaction(picked.faction);
+      } catch (e) { /* offline or a bad fetch: fall through and let the view report it */ }
+      const a = window.DZCArmy.create(picked.faction, name, picked.points, picked.description);
+      location.hash = '#army/' + a.id;
+      await renderBuilder(a.id);
+      document.getElementById('dzc-new').classList.remove('active');
+      picked.name = null;   // next dialog suggests afresh
+      picked.description = '';
+    } catch (e) {
+      say(`The army was not created — ${e.message}`);
+      throw e;
+    } finally {
+      if (btn) { btn.classList.remove('is-going'); btn.disabled = false; }
+    }
   }
 
   /* Create, but filled. Same faction, size and limit already chosen in the
@@ -276,16 +287,22 @@
   async function surpriseMe() {
     const btn = document.getElementById('dzc-create-btn');
     if (btn) { btn.classList.add('is-going'); btn.disabled = true; }
-    try { await window.DZC.loadFaction(picked.faction); } catch (e) { /* the view will report it */ }
-    const r = window.DZCArmy.generate(picked.faction, picked.points);
-    if (btn) { btn.classList.remove('is-going'); btn.disabled = false; }
-    if (!r.ok) { say(r.reason); return; }
-    const typed = (document.getElementById('dzc-new-name').value || '').trim();
-    if (typed) { r.army.name = typed; window.DZCArmy.touch(r.army); }
-    location.hash = '#army/' + r.army.id;
-    await renderBuilder(r.army.id);
-    document.getElementById('dzc-new').classList.remove('active');
-    picked.name = null;
+    try {
+      try { await window.DZC.loadFaction(picked.faction); } catch (e) { /* the view will report it */ }
+      const r = window.DZCArmy.generate(picked.faction, picked.points);
+      if (!r.ok) { say(r.reason); return; }
+      const typed = (document.getElementById('dzc-new-name').value || '').trim();
+      if (typed) { r.army.name = typed; window.DZCArmy.touch(r.army); }
+      location.hash = '#army/' + r.army.id;
+      await renderBuilder(r.army.id);
+      document.getElementById('dzc-new').classList.remove('active');
+      picked.name = null;
+    } catch (e) {
+      say(`The army was not created — ${e.message}`);
+      throw e;
+    } finally {
+      if (btn) { btn.classList.remove('is-going'); btn.disabled = false; }
+    }
   }
 
   function del(id) {

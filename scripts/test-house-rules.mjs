@@ -594,6 +594,29 @@ console.log('\nevery route lands on a view that exists');
   ok(/default:/.test(body), 'with a default, so an unknown hash lands on the landing screen');
 }
 
+// ------------------------------------ a control that disables itself gets put back
+/* Create disables itself for the length of an await, which is right — two
+ * presses would build two armies. What it must not do is stay that way.
+ *
+ * It did. A throw anywhere between DZCArmy.create() and the render skipped the
+ * line that re-enabled it, so Create sat there pressed and dead, silently, and
+ * no click after it built anything for the rest of the session: "i can't make
+ * lists". The re-enable belongs in a finally, where a throw cannot step over
+ * it, and the catch has to say something or the failure is invisible.
+ */
+console.log('\na control that disables itself gets put back');
+{
+  const builder = readFileSync(path.join(ROOT, 'js/dzc-builder.js'), 'utf8').replace(/\r/g, '');
+  for (const fn of ['createArmy', 'surpriseMe']) {
+    const body = (builder.match(new RegExp(`async function ${fn}\\([\\s\\S]*?\\n  \\}\\n`)) || [''])[0];
+    ok(body.length > 200, `${fn} was found in the builder`, `${body.length} chars`);
+    ok(/\} finally \{[\s\S]*?btn\.disabled = false/.test(body),
+       `and ${fn} re-enables the button in a finally`);
+    ok(/\} catch \([\s\S]*?say\(/.test(body),
+       `and a failed ${fn} says so`);
+  }
+}
+
 // ------------------------------------------- the reference sheet stays in step
 /* ref/ is a separate document, so it cannot import the app's modules — it
  * carries its own copy of the six factions and the six transport symbols.
