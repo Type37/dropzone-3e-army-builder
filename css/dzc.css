@@ -91,16 +91,23 @@
 
 /* ── transport badges ── */
 .dzc-transport { display: inline-flex; align-items: center; gap: 3px; flex-wrap: wrap; }
-.dzc-badge { position: relative; display: inline-grid; place-items: center; width: 22px; height: 22px; }
+.dzc-badge { position: relative; display: inline-block; width: 22px; height: 22px; }
 .dzc-badge svg { position: absolute; inset: 0; }
-.dzc-badge-n { position: relative; font: 700 10px/1 var(--font-ui, 'Jost', system-ui, sans-serif); }
+/* Absolute + top/left % + translate(-50%,-50%), not grid place-items: the
+   default (50%,50%) centres on the BOX, but a triangle's own area sits well
+   off box-centre, so each shape below moves the anchor point, not the glyph
+   directly — the translate always re-centres on whatever point that is. */
+.dzc-badge-n { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font: 700 10px/1 var(--font-ui, 'Jost', system-ui, sans-serif); }
 .dzc-sep { font-weight: 700; font-size: 13px; color: var(--ink-2, #6b6459); padding: 0 1px; }
-/* A triangle's visual weight sits near its base, not the middle of its
-   bounding box, so a digit placed at the box centre reads as pushed up
-   toward the empty apex. Nudge it toward whichever edge is wider — in em so
-   the offset tracks font-size across every badge size on the sheet. */
-.dzc-badge-triangle .dzc-badge-n { transform: translateY(.28em); }
-.dzc-badge-triangle-down .dzc-badge-n { transform: translateY(-.28em); }
+/* Exact area centroid of the SYMBOL.triangle / .triangle-down paths (dzc-
+   units.js), as a % of the 24-unit viewBox: a triangle's mass sits 2/3 of the
+   way from apex to base, not at the box's geometric middle. (2,21,21)/3=14.667
+   → 61.11%; (22,3,3)/3=9.333 → 38.89%. Was an em-based translateY nudge that
+   only ever approximated this and drifted a fraction of a px off at sizes
+   where the font-size : box-size ratio wasn't exactly the base case's. */
+.dzc-badge-triangle .dzc-badge-n { top: 61.11%; }
+.dzc-badge-triangle-down .dzc-badge-n { top: 38.89%; }
 
 /* ── Art Deco pills ──
    The chip already carried the chamfer; everything else pill-shaped in the app
@@ -1109,6 +1116,24 @@
 .dzc-stats.is-compact { gap: 2px; }
 .dzc-stats.is-compact .dzc-stat { padding: 2px 4px; gap: 3px; justify-content: center; }
 .dzc-stats.is-compact .dzc-stat-k { font-size: 9px; letter-spacing: .04em; }
+
+/* The detail view only (not .is-compact — the picker still needs four cards
+   across, spread wide is the point there). A short table going down, icon /
+   value / label lined up in their own columns across rows, left-aligned and
+   only as wide as the longest label — not stretched to fill the row like the
+   picker's spread grid. .dzc-stat becomes `display: contents` so its three
+   spans join the parent grid directly instead of boxing them off in a row;
+   that also voids the chip background/border/padding above for free, since a
+   `display: contents` box never paints one. Frees the rest of the row for
+   whatever sits beside it (weapons, rules) instead of stats owning the
+   full width above them. */
+.dzc-stats:not(.is-compact) {
+  display: grid; grid-template-columns: auto auto 1fr;
+  column-gap: 8px; row-gap: 5px; width: max-content; max-width: 100%;
+}
+.dzc-stats:not(.is-compact) .dzc-stat { display: contents; }
+.dzc-stats:not(.is-compact) .dzc-stat-v { text-align: right; }
+.dzc-stats:not(.is-compact) .dzc-stat-k { align-self: center; }
 .dzc-pick-wpns { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
 .dzc-pick-wpn {
   display: inline-flex; align-items: center; gap: 3px; padding: 1px 5px;

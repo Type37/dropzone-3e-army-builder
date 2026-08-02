@@ -57,10 +57,17 @@
     const s = SYMBOL[shape];
     if (!s) return '';
     const label = `${hollow ? 'Carries' : 'Takes up'} ${n} ${shape.replace('-', ' ')}`;
+    // A triangle narrows to a point, so its interior at the centroid height
+    // (where the digit sits, see .dzc-badge-triangle in dzc.css) is nowhere
+    // near as wide as a square or diamond's. A 2-digit count (12/18/24 appear
+    // 9 times across the six factions) is wide enough at the default size to
+    // overhang the sloped edge. Shrink only when both things are true.
+    const tight = (shape === 'triangle' || shape === 'triangle-down') && String(n).length > 1;
+    const style = `color:${hollow ? s.ink : '#fff'}${tight ? ';font-size:.78em' : ''}`;
     return `<span class="dzc-badge dzc-badge-${shape}" title="${esc(label)}" aria-label="${esc(label)}">
       <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
         <path d="${s.path}" fill="${hollow ? 'none' : s.ink}" stroke="${s.ink}" stroke-width="2.5" stroke-linejoin="round"/>
-      </svg><span class="dzc-badge-n" style="color:${hollow ? s.ink : '#fff'}">${esc(n)}</span></span>`;
+      </svg><span class="dzc-badge-n" style="${style}">${esc(n)}</span></span>`;
   }
 
   function transportHtml(u) {

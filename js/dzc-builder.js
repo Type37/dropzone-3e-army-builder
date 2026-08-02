@@ -805,7 +805,7 @@
       const name = U.shapeName(sp.shape);
       const status = free > 0 ? `room for ${free}` : sp.used > sp.total ? 'overloaded' : 'full';
       return `<span class="dzc-space${sp.used > sp.total ? ' is-over' : free === 0 ? ' is-full' : ''}"
-        style="--sh:${U.shapeInk(sp.shape)}" title="${esc(name)}: ${status}" aria-label="${esc(name)}, ${sp.used} of ${sp.total}, ${status}">
+        style="--sh:${U.shapeInk(sp.shape)}" aria-label="${esc(name)}, ${sp.used} of ${sp.total}, ${status}">
         ${U.shape(sp.shape, 30, true)}
         <span class="dzc-space-n"><b>${sp.used}</b><s>/</s><em>${sp.total}</em></span></span>`;
     }).join('');
