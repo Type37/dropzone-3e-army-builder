@@ -803,12 +803,11 @@
     const space = window.DZCArmy.groupSpace(a, g).map(sp => {
       const free = sp.total - sp.used;
       const name = U.shapeName(sp.shape);
+      const status = free > 0 ? `room for ${free}` : sp.used > sp.total ? 'overloaded' : 'full';
       return `<span class="dzc-space${sp.used > sp.total ? ' is-over' : free === 0 ? ' is-full' : ''}"
-        style="--sh:${U.shapeInk(sp.shape)}">
+        style="--sh:${U.shapeInk(sp.shape)}" title="${esc(name)}: ${status}" aria-label="${esc(name)}, ${sp.used} of ${sp.total}, ${status}">
         ${U.shape(sp.shape, 30, true)}
-        <span class="dzc-space-n"><b>${sp.used}</b><s>/</s><em>${sp.total}</em></span>
-        <span class="dzc-space-lab">${esc(name)}<i>${
-          free > 0 ? `room for ${free}` : sp.used > sp.total ? 'overloaded' : 'full'}</i></span></span>`;
+        <span class="dzc-space-n"><b>${sp.used}</b><s>/</s><em>${sp.total}</em></span></span>`;
     }).join('');
 
     return `<div class="dzc-g-meters">
@@ -1516,8 +1515,18 @@
     }
     if (q) units = units.filter(u => window.DZC.matches(u, q, a.faction));
 
+    // Checked once per unit and reused for the sort, the count and the card
+    // itself, rather than three separate calls landing on three separate
+    // answers if the Group changes mid-render.
+    const checks = new Map(units.map(u => [u.id, window.DZCArmy.canAddUnit(a, picker.groupId, u.id)]));
+
     const s = SORTS.find(x => x.key === picker.sort) || SORTS[0];
     units = units.slice().sort((x, y) => {
+      // What cannot join this Group sinks to the bottom regardless of sort or
+      // direction -- it is not a result, it is a "not here" -- so a Group
+      // under construction stops surfacing things that would refuse it.
+      const bx = !checks.get(x.id).ok, by = !checks.get(y.id).ok;
+      if (bx !== by) return bx ? 1 : -1;
       const ax = s.get(x), ay = s.get(y);
       return (ax < ay ? -1 : ax > ay ? 1 : x.name.localeCompare(y.name)) * picker.dir;
     });
@@ -1529,7 +1538,7 @@
       const scroller = list.parentElement;
       const y = scroller ? scroller.scrollTop : 0;
       list.className = 'dzc-pick-list' + (picker.view === 'list' ? ' is-list' : '');
-      list.innerHTML = units.map(u => pickCard(u, a)).join('')
+      list.innerHTML = units.map(u => pickCard(u, a, checks.get(u.id))).join('')
         || `<p class="dzc-empty">${q ? `Nothing matches “${esc(picker.search)}”.`
             : picker.shapes.length ? 'No unit carries or fills that shape.'
             : picker.filters.length ? 'Nothing matches those filters.'
@@ -1541,7 +1550,7 @@
     const bar = document.getElementById('dzc-pick-results');
     if (bar) {
       const filtered = q || picker.filters.length || picker.shapes.length || picker.category !== 'All';
-      const blocked = units.filter(u => !window.DZCArmy.canAddUnit(a, picker.groupId, u.id).ok).length;
+      const blocked = units.filter(u => !checks.get(u.id).ok).length;
       bar.innerHTML = `<span>${units.length} unit${units.length === 1 ? '' : 's'}${
         blocked ? `, ${blocked} unavailable here` : ''}</span>${
         filtered ? '<button type="button" onclick="DZCBuilder.pickerClear()">Clear</button>' : ''}`;
@@ -1553,13 +1562,13 @@
    * art, cost, every stat, the guns every variant shares, and the rules. The
    * card body opens the unit's stats, weapons and rules in full; adding is its
    * own button. */
-  function pickCard(u, a) {
+  function pickCard(u, a, chk) {
     // The total for the smallest legal Squad, with the arithmetic under it when
     // that is more than one model — so "70pts" never has to be read as 35.
     const sp = squadPrice(u);
     const price = sp ? span(sp.lo, sp.hi) : '—';
     const each = sp && sp.n > 1 ? `${sp.n} × ${span(sp.perLo, sp.perHi)}` : '';
-    const chk = window.DZCArmy.canAddUnit(a, picker.groupId, u.id);
+    if (!chk) chk = window.DZCArmy.canAddUnit(a, picker.groupId, u.id);
     const U = window.DZCUnits;
     const meta = [esc(u.category), esc(u.type || ''),
       u.squadMin != null ? `Squad ${U.squadHtml(u)}` : '']

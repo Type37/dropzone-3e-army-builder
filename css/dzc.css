@@ -95,6 +95,12 @@
 .dzc-badge svg { position: absolute; inset: 0; }
 .dzc-badge-n { position: relative; font: 700 10px/1 var(--font-ui, 'Jost', system-ui, sans-serif); }
 .dzc-sep { font-weight: 700; font-size: 13px; color: var(--ink-2, #6b6459); padding: 0 1px; }
+/* A triangle's visual weight sits near its base, not the middle of its
+   bounding box, so a digit placed at the box centre reads as pushed up
+   toward the empty apex. Nudge it toward whichever edge is wider — in em so
+   the offset tracks font-size across every badge size on the sheet. */
+.dzc-badge-triangle .dzc-badge-n { transform: translateY(.28em); }
+.dzc-badge-triangle-down .dzc-badge-n { transform: translateY(-.28em); }
 
 /* ── Art Deco pills ──
    The chip already carried the chamfer; everything else pill-shaped in the app
@@ -687,17 +693,8 @@
 .dzc-space-n b { font-size: 26px; font-weight: 700; line-height: 1; color: var(--ink, #2c2a26); }
 .dzc-space-n s { text-decoration: none; font-size: 18px; color: #b3aa9a; padding: 0 2px; }
 .dzc-space-n em { font-style: normal; font-size: 18px; font-weight: 600; color: var(--ink-2, #6b6459); }
-.dzc-space-lab {
-  display: flex; flex-direction: column; gap: 1px;
-  font: 600 11px/1.2 var(--font-ui, 'Jost', sans-serif);
-  text-transform: uppercase; letter-spacing: .05em; color: var(--ink-2, #5b544a);
-}
-.dzc-space-lab i {
-  font: 500 10.5px/1.2 var(--font-ui, 'Jost', sans-serif);
-  text-transform: none; letter-spacing: 0; color: #9a9184;
-}
-.dzc-space.is-full .dzc-space-n b, .dzc-space.is-full .dzc-space-lab i { color: #14532d; }
-.dzc-space.is-over .dzc-space-n b, .dzc-space.is-over .dzc-space-lab i { color: var(--danger, #b3261e); }
+.dzc-space.is-full .dzc-space-n b { color: #14532d; }
+.dzc-space.is-over .dzc-space-n b { color: var(--danger, #b3261e); }
 
 /* Nesting is drawn: a carried Squad is indented under its carrier. The indent
    is a variable because 22 levels of it would eat a phone alive; it drops to 8

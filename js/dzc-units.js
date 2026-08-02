@@ -57,7 +57,7 @@
     const s = SYMBOL[shape];
     if (!s) return '';
     const label = `${hollow ? 'Carries' : 'Takes up'} ${n} ${shape.replace('-', ' ')}`;
-    return `<span class="dzc-badge" title="${esc(label)}" aria-label="${esc(label)}">
+    return `<span class="dzc-badge dzc-badge-${shape}" title="${esc(label)}" aria-label="${esc(label)}">
       <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
         <path d="${s.path}" fill="${hollow ? 'none' : s.ink}" stroke="${s.ink}" stroke-width="2.5" stroke-linejoin="round"/>
       </svg><span class="dzc-badge-n" style="color:${hollow ? s.ink : '#fff'}">${esc(n)}</span></span>`;
