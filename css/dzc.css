@@ -10,7 +10,7 @@
 .dzc-wrap { max-width: 1440px; margin: 0 auto; padding: 8px 10px 48px; }
 
 /* ── faction tabs ── */
-.dzc-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.dzc-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
 .dzc-tab {
   font: 600 13px/1 var(--font-ui, 'Jost', system-ui, sans-serif);
   letter-spacing: .02em; padding: 9px 14px; border-radius: 6px; cursor: pointer;
@@ -46,16 +46,19 @@
 .dzc-chip.is-active {
   background: var(--acc, #1b3a5c); border-color: var(--acc, #1b3a5c); color: #fff;
 }
-.dzc-count { font-size: 12px; color: var(--ink-2, #6b6459); margin: 6px 0 16px; }
+/* One line of text had 22px of margin around it. */
+.dzc-count { font-size: 12px; color: var(--ink-2, #6b6459); margin: 4px 0 10px; }
 .dzc-empty { padding: 32px 0; text-align: center; color: var(--ink-2, #6b6459); }
 
 /* ── category groups ── */
-.dzc-group { margin-bottom: 30px; }
+/* 30px between category sections, with a headed rule already separating
+   them, was two devices doing one job. */
+.dzc-group { margin-bottom: 16px; }
 .dzc-group-head {
   display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px;
   font: 700 15px/1.2 var(--font-ui, 'Jost', system-ui, sans-serif);
   text-transform: uppercase; letter-spacing: .08em;
-  border-bottom: 2px solid var(--acc); padding-bottom: 6px; margin-bottom: 12px;
+  border-bottom: 2px solid var(--acc); padding-bottom: 4px; margin-bottom: 8px;
 }
 .dzc-group-count { font-weight: 500; font-size: 12px; letter-spacing: 0; text-transform: none; color: var(--ink-2, #6b6459); }
 .dzc-group-note { font-weight: 400; font-size: 12px; letter-spacing: 0; text-transform: none; font-style: italic; color: var(--ink-2, #6b6459); }
@@ -164,7 +167,10 @@
    Fixed height on the strip so a Unit that prints no symbol leaves the same
    gap as one that does — the row is only worth having if it is in the same
    place on all 178 of them. */
-.dzc-card-side { flex: 0 0 72px; display: flex; flex-direction: column; gap: 3px; }
+/* align-self: start — the column holds art and the capacity strip and nothing
+   else, so stretching it to the height of a taller body just made 59px of
+   empty column on every card. */
+.dzc-card-side { flex: 0 0 72px; align-self: start; display: flex; flex-direction: column; gap: 3px; }
 .dzc-card-caps {
   display: flex; align-items: center; justify-content: center;
   gap: 3px; flex-wrap: wrap; min-height: 32px;
