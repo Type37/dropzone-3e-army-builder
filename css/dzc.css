@@ -1283,11 +1283,16 @@
   .dzc-space-n b { font-size: 22px; }
   .dzc-ratios { gap: 6px; }
   .dzc-ratio { flex: 1 1 calc(50% - 3px); }
-  /* Four category chips plus five sorts plus six shapes will not fit; the rows
-     scroll sideways instead of wrapping into a wall of chrome above the cards. */
-  .dzc-chips, .dzc-pick-sorts, .dzc-pick-shapes { flex-wrap: nowrap; overflow-x: auto; }
-  .dzc-chips::-webkit-scrollbar, .dzc-pick-sorts::-webkit-scrollbar,
-  .dzc-pick-shapes::-webkit-scrollbar { height: 3px; }
+  /* These rows used to go flex-wrap: nowrap with a 3px scrollbar, to keep the
+     chrome above the cards down to one line each. What that actually did was
+     put "Support" and "Transport" past the right edge of a 375px screen behind
+     a scrollbar three pixels tall: a filter you cannot see is a filter you do
+     not have, and on a narrow desktop window there is no swipe to find it
+     with. They wrap. The row grows a line and every chip is on screen, which
+     is the rule (CLAUDE.md §4) and was the rule when the scroller was written.
+
+     Nothing shrinks to buy the space back. Chips are min-height 44px on a
+     phone and that is deliberate — "rows get taller, that is the trade". */
   .dzc-chip, .dzc-shape-chip { flex: 0 0 auto; }
   /* The three numbers a Level buys take their own row rather than squeezing
      the Level name to nothing — insignia, Level, price and Add first, then
