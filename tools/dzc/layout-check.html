@@ -37,10 +37,80 @@ const WIDTHS = [320, 375, 414, 768];
 const q = new URLSearchParams(location.search);
 const TARGET = q.get("url") || "../index.html";
 // Cold-loadable views, in the router's own words (js/dzc-shell.js showView).
-// `army` and `play` need an army id and cannot be reached from a bare URL.
-const ROUTES = (q.get("routes") || "landing,armies,units,collection").split(",");
+// `army` and `play` need an army id, which seedArmy() below supplies.
+const ROUTES = (q.get("routes") || "landing,armies,units,collection,army,play").split(",");
 const out = document.getElementById("out");
 const results = [];
+
+/* The builder is the screen the app IS, and until now the harness could not
+ * reach it: #army needs an army id, so a bare URL always fell through to the
+ * landing view. Every "responsive check passed" this tool ever reported was a
+ * check of four screens that are mostly a headline and a button.
+ *
+ * So one hidden desktop-width frame loads the app first and builds a demo army
+ * through DZCArmy itself — not a JSON literal typed out here, which would go
+ * stale against the schema in silence and still load. Same origin, so the
+ * localStorage it saves to is the one the measured frames read.
+ *
+ * The army is deliberately awkward: a Group with a Transport carrying a Squad,
+ * a variant Unit, and a bought upgrade, because those are the rows that carry
+ * the widest content — a nested Squad card, a capacity chip, and the weapon
+ * table with an upgrade table under it. */
+const SEED_NAME = "Layout check";
+let seedFrame = null;
+
+/* Put the store back when the run is done. This page shares an origin with the
+ * app, so a demo army left behind is one that turns up in your army list the
+ * next time you open localhost.
+ *
+ * Through DZCArmy, not by rewriting localStorage from here: the store key is
+ * the app's business, and a copy of it in this file would silently stop
+ * matching one day and quietly leave the army behind. */
+function dropSeed() {
+  try {
+    const A = seedFrame && seedFrame.contentWindow.DZCArmy;
+    if (A) A.all().slice().filter((a) => a.name === SEED_NAME).forEach((a) => A.remove(a.id));
+  } catch (e) { /* the frame is gone; nothing to put back */ }
+  if (seedFrame) seedFrame.remove();
+  seedFrame = null;
+}
+
+function seedArmy() {
+  return new Promise((resolve) => {
+    const f = document.createElement("iframe");
+    f.width = 1280;
+    f.style.cssText = "position:absolute;left:-9999px;top:0;height:900px";
+    f.src = TARGET;
+    document.body.append(f);
+    // Kept alive for the whole run, because dropSeed needs the same API that
+    // built the army to take it away again.
+    seedFrame = f;
+    f.addEventListener("load", async () => {
+      try {
+        const w = f.contentWindow;
+        await w.DZC.loadFaction("ucm");
+        const A = w.DZCArmy;
+        // Anything left by a run that died before its cleanup.
+        A.all().slice().filter((a) => a.name === SEED_NAME).forEach((a) => A.remove(a.id));
+
+        const army = A.create("ucm", SEED_NAME, 1500);
+        const tanks = A.addSquad(army, A.addGroup(army).id, "ucm-main-battle-tank", 3);
+        A.assignTransport(army, tanks.id, "condor-dropship");
+        const legion = A.addSquad(army, A.addGroup(army).id, "legionnaires", 3);
+        A.assignTransport(army, legion.id, "bear-apc");
+        const arch = A.addSquad(army, A.addGroup(army).id, "archangel", 1);
+        A.toggleUpgrade(army, arch.id, "*", "UM-115 Missile Spread");
+        A.save();
+        resolve(army.id);
+      } catch (e) {
+        // Surfaced, not swallowed: a seed that fails quietly turns the two
+        // screens worth measuring into eight PASS lines about nothing.
+        window.SEED_ERROR = String((e && e.stack) || e);
+        resolve(null);
+      }
+    });
+  });
+}
 
 function audit(doc, win, width, route) {
   const de = doc.documentElement;
@@ -80,44 +150,63 @@ function audit(doc, win, width, route) {
   };
 }
 
-let pending = WIDTHS.length * ROUTES.length;
-for (const route of ROUTES) {
-  const h = document.createElement("h2");
-  h.textContent = "#" + route;
-  out.append(h);
-  for (const w of WIDTHS) {
-    const row = document.createElement("div");
-    row.className = "row";
-    const f = document.createElement("iframe");
-    f.width = w;
-    f.src = TARGET + "#" + route;
-    const pre = document.createElement("pre");
-    pre.textContent = "loading " + route + " at " + w + "px…";
-    row.append(f, pre);
-    out.append(row);
+// Routes that need an army id appended. Play Mode is in because it is the
+// screen used standing at a table, which is the case CLAUDE.md §4 says has to
+// work.
+const NEEDS_ARMY = new Set(["army", "play"]);
 
-    f.addEventListener("load", () => {
-      setTimeout(() => {                       // let fonts + data settle
-        let r;
-        try {
-          r = audit(f.contentDocument, f.contentWindow, w, route);
-        } catch (e) {
-          r = { route, width: w, error: String(e) };
-        }
-        results.push(r);
-        const clean = !r.error && r.instrumentOk && r.routeOk
-          && !r.horizontalScroll && r.offendersTotal === 0;
-        pre.className = clean ? "ok" : "bad";
-        pre.textContent = (clean ? "PASS " : "FAIL ") + JSON.stringify(r, null, 1);
-        if (--pending === 0) {
-          window.LAYOUT_RESULTS = results.sort((a, b) =>
-            ROUTES.indexOf(a.route) - ROUTES.indexOf(b.route) || a.width - b.width);
-          window.LAYOUT_DONE = true;
-        }
-      }, 700);
-    });
+async function run() {
+  const armyId = ROUTES.some((r) => NEEDS_ARMY.has(r)) ? await seedArmy() : null;
+  let pending = WIDTHS.length * ROUTES.length;
+
+  for (const route of ROUTES) {
+    const h = document.createElement("h2");
+    h.textContent = "#" + route;
+    out.append(h);
+    for (const w of WIDTHS) {
+      const row = document.createElement("div");
+      row.className = "row";
+      const f = document.createElement("iframe");
+      f.width = w;
+      f.src = TARGET + "#" + route + (NEEDS_ARMY.has(route) && armyId ? "/" + armyId : "");
+      const pre = document.createElement("pre");
+      pre.textContent = "loading " + route + " at " + w + "px…";
+      row.append(f, pre);
+      out.append(row);
+
+      f.addEventListener("load", () => {
+        setTimeout(() => {                     // let fonts + data settle
+          let r;
+          try {
+            r = audit(f.contentDocument, f.contentWindow, w, route);
+            // A seed that failed leaves #army with no id, which routes to the
+            // builder's empty state and measures nothing. Say so rather than
+            // pass.
+            if (NEEDS_ARMY.has(route) && !armyId) r.error = "could not seed an army";
+          } catch (e) {
+            r = { route, width: w, error: String(e) };
+          }
+          results.push(r);
+          const clean = !r.error && r.instrumentOk && r.routeOk
+            && !r.horizontalScroll && r.offendersTotal === 0;
+          pre.className = clean ? "ok" : "bad";
+          pre.textContent = (clean ? "PASS " : "FAIL ") + JSON.stringify(r, null, 1);
+          if (--pending === 0) {
+            window.LAYOUT_RESULTS = results.sort((a, b) =>
+              ROUTES.indexOf(a.route) - ROUTES.indexOf(b.route) || a.width - b.width);
+            // Put the store back. This shares an origin with the app, so a
+            // demo army left behind is one that turns up in your army list the
+            // next time you open localhost.
+            if (armyId) dropSeed();
+            window.LAYOUT_DONE = true;
+          }
+        }, 700);
+      });
+    }
   }
 }
+
+run();
 </script>
 </body>
 </html>
