@@ -396,7 +396,12 @@
      * over Standard -- used to cost one of the twelve, so a list could stop at
      * four Groups and half the budget having simply been unlucky. Four tries
      * per slot is enough to fill a list and still terminate. */
-    for (let n = 0; n < maxG * 4 && a.groups.length < maxG; n++) {
+    /* groupsUsed, not groups.length. A Behemoth Group is worth three to five
+     * of the allowance (Behemoth rules 1.1), so counting cards let this build
+     * a Shaltari 3000 with sixteen Groups that count as eighteen — an illegal
+     * list, from the one thing in here whose job is to produce a legal one.
+     * Found by the generator, which is what it is for. */
+    for (let n = 0; n < maxG * 4 && groupsUsed(a) < maxG; n++) {
       const spend = categorySpend(a);
       const std = spend.standard || 0;
       /* Standard until there is something for the rest to be measured
@@ -570,7 +575,7 @@
 
     const size = window.DZC.gameSizeFor(army.pointsLimit);
     const maxG = size ? window.DZC.maxGroups(size, army.pointsLimit) : 0;
-    if (maxG && army.groups.length >= maxG) {
+    if (maxG && groupsUsed(army) >= maxG) {
       return { ok: false, reason: `${size.label} allows ${maxG} Groups (3.1).` };
     }
 
@@ -1255,6 +1260,26 @@
     return null;
   }
 
+  /* How many Groups this army actually spends against its allowance.
+   *
+   * Normally one per Group. A Behemoth is the exception: "A Behemoth counts as
+   * that many Groups when building your Army and generating Pass tokens"
+   * (Behemoth rules 1.1), and they are worth three to five each. Counting the
+   * cards instead would let a Reconquest list field four Dragons inside a
+   * twenty-Group allowance that they alone are worth.
+   *
+   * A Group containing a Behemoth costs its Groups Equivalent INSTEAD of one,
+   * not as well — the Behemoth is what the Group is. */
+  function groupsUsed(army) {
+    return (army.groups || []).reduce((n, g) => {
+      const ge = (g.squads || []).map(s => {
+        const u = unitOf(army, s);
+        return (u && u.groupEquivalent) || 0;
+      }).filter(Boolean);
+      return n + (ge.length ? Math.max.apply(null, ge) : 1);
+    }, 0);
+  }
+
   function groupOf(army, squadId) {
     return army.groups.find(g => g.squads.some(s => s.id === squadId)) || null;
   }
@@ -1447,8 +1472,13 @@
 
     if (size) {
       const maxG = window.DZC.maxGroups(size, limit);
-      if (army.groups.length > maxG) {
-        errors.push({ rule: '3.1', msg: `${army.groups.length} Groups, but ${size.label} allows ${maxG}.` });
+      const used = groupsUsed(army);
+      if (used > maxG) {
+        // Says the card count too when a Behemoth has made the two differ,
+        // or "9 Groups, but Clash allows 12" reads as a bug.
+        const how = used === army.groups.length ? `${used} Groups`
+          : `${army.groups.length} Groups counting as ${used} (Behemoths count as several, 1.1)`;
+        errors.push({ rule: '3.1', msg: `${how}, but ${size.label} allows ${maxG}.` });
       }
       const cap = window.DZC.maxGroupCost(limit);
       army.groups.forEach(g => {
@@ -1655,7 +1685,7 @@
     // enforcement
     canAddUnit, canSetCount, squadsNamed, squadFill,
     upgradesFor, hasUpgrade, toggleUpgrade, upgradeCost,
-    transportOptions, assignTransport, refitTransports, groupSpace,
+    transportOptions, assignTransport, refitTransports, groupSpace, groupsUsed,
     boardOptions, boardTransport
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = window.DZCArmy;

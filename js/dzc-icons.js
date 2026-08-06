@@ -161,9 +161,19 @@
     F: 'Front', Sl: 'Side Left', Sr: 'Side Right', R: 'Rear'
   };
 
+  /* Case-insensitively, because the Behemoth cards write "F/SL" and "F/SR"
+     where every faction card writes "F/Sl" and "F/Sr". Same arc, different
+     typesetting — and an arc is a code, not prose, so the capital is not
+     carrying meaning. Matching exactly meant nine Behemoth weapons drew no
+     arc at all. */
+  const ARC_KEYS = Object.keys(ARC_PARTS).reduce((m, k) => {
+    m[k.toLowerCase()] = ARC_PARTS[k];
+    return m;
+  }, {});
+
   function arc(spec, opts) {
     const key = String(spec || '').trim();
-    const parts = ARC_PARTS[key];
+    const parts = ARC_KEYS[key.toLowerCase()];
     if (!parts) return '';
     const s = (opts && opts.size) || 20;
     const title = parts.map(p => ARC_LABEL[p]).join(', ');
@@ -206,7 +216,7 @@
   icon.has = n => Object.prototype.hasOwnProperty.call(P, n);
   icon.names = () => Object.keys(P);
   icon.arc = arc;
-  icon.arcLabel = spec => (ARC_PARTS[String(spec || '').trim()] || [])
+  icon.arcLabel = spec => (ARC_KEYS[String(spec || '').trim().toLowerCase()] || [])
     .map(p => ARC_LABEL[p]).join(', ');
   window.DZCIcon = icon;
 })();

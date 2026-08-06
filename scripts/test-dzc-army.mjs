@@ -186,6 +186,40 @@ console.log('\na swap removes what it replaces (3.2.3)');
   A.remove(a.id);
 }
 
+/* "A Behemoth counts as that many Groups when building your Army and
+ * generating Pass tokens" (Behemoth rules 1.1). They are worth three to five
+ * each, so counting Group cards instead would let a Reconquest list field four
+ * Dragons inside an allowance they alone are worth. */
+console.log('\na Behemoth counts as several Groups (Behemoth rules 1.1)');
+{
+  await DZC.loadFaction('shaltari');
+  const a = A.create('shaltari', 'Behemoths', 3000);
+  const f = DZC.faction('shaltari');
+
+  ok(f.byId['dragon'], 'a faction carries its own Behemoths, not just its stat-card units');
+  eq(f.byId['dragon'].groupEquivalent, 5, 'and the Dragon is worth five Groups');
+  eq(f.byId['venus-drone'], undefined, "and not another faction's");
+
+  ok(A.addSquad(a, A.addGroup(a).id, 'dragon', 1), 'a Dragon is added like any other Unit');
+  eq(A.groupsUsed(a), 5, 'one Group card, five Groups spent');
+  A.addSquad(a, A.addGroup(a).id, 'shaltari-warstrider', 1);
+  eq(A.groupsUsed(a), 6, 'and an ordinary Group is worth one');
+
+  /* Skirmish allows 9. One Dragon is 5 and legal; two are 10 on two cards,
+   * which the old card count called two. */
+  const b = A.create('shaltari', 'Small', 1000);
+  A.addSquad(b, A.addGroup(b).id, 'dragon', 1);
+  ok(!A.validate(b).errors.some(e => e.rule === '3.1' && /Groups/.test(e.msg)),
+     'one Dragon is five of the nine Skirmish allows, and legal');
+  A.addSquad(b, A.addGroup(b).id, 'dragon', 1);
+  const over = A.validate(b).errors.find(e => e.rule === '3.1' && /Groups/.test(e.msg));
+  ok(over && /counting as 10/.test(over.msg),
+     "and two say so in the Behemoths' own terms, not as two Groups",
+     JSON.stringify(A.validate(b).errors.map(e => e.msg)));
+  A.remove(b.id);
+  A.remove(a.id);
+}
+
 console.log('\n"only one of these upgrades" is enforced (3.2.3)');
 {
   await DZC.loadFaction('resistance');

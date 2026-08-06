@@ -248,9 +248,13 @@ console.log('\npage numbers (gap 39)');
 
 console.log('\nno dead chips (gap 38)');
 {
+  /* Kept in step with KNOWN_CARD_QUIRKS in tools/dzc/audit_rules.py. Both
+   * lists exist because the CARD is wrong, not the parser, and each entry is a
+   * decision someone made; anything not listed still fails. */
   const KNOWN_CARD_DEFECTS = [
     'Friendly Vehicles and Aircraft 6” 5+',   // Shield, missing its prefix
-    'Shield: Zones'                            // Shield, missing radius and save
+    'Shield: Zones',                          // Shield, missing radius and save
+    'Macro Critical 1'                        // Death Mech, two keywords with no comma
   ];
   const factions = ['ucm', 'phr', 'scourge', 'shaltari', 'resistance', 'bioficer'];
   const dead = new Set();

@@ -66,12 +66,28 @@
   async function loadFaction(id) {
     if (state.factions[id]) return state.factions[id];
     if (!state._loading[id]) {
-      state._loading[id] = getJSON(`${BASE}/${FILE_FOR(id)}.json`).then(f => {
-        f.byId = {};
-        (f.units || []).forEach(u => { f.byId[u.id] = u; });
-        state.factions[id] = f;
-        return f;
-      });
+      state._loading[id] = getJSON(`${BASE}/${FILE_FOR(id)}.json`)
+        .then(async f => {
+          /* A faction's Behemoths live in behemoths.json, not in its stat-card
+           * file, because TTCombat ship them as a separate release. They are
+           * still that faction's Units: two Heavy choices each, priced in
+           * points and legal in its army.
+           *
+           * Merged in here rather than special-cased downstream. The picker,
+           * the costing, the category ratio, validate, share links and the
+           * printed sheet all ask DZC.faction(id) for a list of Units; a
+           * Behemoth that is anything other than an ordinary member of that
+           * list is a branch in every one of them. */
+          if (id !== 'behemoth') {
+            const b = await getJSON(`${BASE}/behemoths.json`).catch(() => null);
+            if (b) f.units = (f.units || []).concat(
+              (b.units || []).filter(u => u.faction === id));
+          }
+          f.byId = {};
+          (f.units || []).forEach(u => { f.byId[u.id] = u; });
+          state.factions[id] = f;
+          return f;
+        });
     }
     return state._loading[id];
   }
