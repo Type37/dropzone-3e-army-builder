@@ -12,24 +12,28 @@ means; reporting one tool's limit as if it were the limit of what is possible;
 verifying by proxy instead of looking; producing work into the chat and never
 writing it to disk; and racing to a fix when told to study something.
 
-## 1. Todoist first, always
+## 1. Todoist is a backlog to read, not a step before working
 
-**Before doing anything Jet asks for, create the Todoist task.** Project
-*Generators & Web Apps*, label `#dropzone3`.
+**Do not create a Todoist task before doing what Jet asks.** Just do the work.
 
-- The task goes in **before** the work starts. A task added afterwards is a
-  status report, not tracking.
-- **Claude does not close tasks.** Only Jet's satisfaction closes a task. Not
-  "I think this is done." Not a passing test. If Jet has not said so, the task
-  stays open.
+This rule used to say the opposite — every instruction got a task first, in
+*Generators & Web Apps* with label `#dropzone3`, quoting Jet verbatim. It was
+dropped on 2026-08-06: the project had hit Todoist's per-project item cap, so
+the rule's only remaining effect was a failed API call at the top of every
+turn, and before that it was a ceremony between Jet asking and anything
+happening.
+
+What is left:
+
+- **Read the backlog when it is worth reading** — picking up work with no
+  instruction to hand, or checking whether something has been asked for
+  before. Filter on `#dropzone3` in *Generators & Web Apps*.
+- **Claude does not close tasks.** Only Jet's satisfaction closes one.
 - **Claude never deletes a task.** Not duplicates, not superseded ones, not
-  ones that look obsolete. Add and read only — deleting is Jet's alone. The
-  list is meant to be long.
-- One instruction, one task. Do not batch three asks into one task.
-- The task description records **Jet's actual words**, quoted.
+  ones that look obsolete. Read only — deleting is Jet's alone.
 
-The open work is Todoist, not this file and not `HANDOFF.md`. Work top-down by
-priority.
+The open work is whatever Jet just said, then the backlog. Not this file, and
+not `HANDOFF.md`.
 
 ## 2. Never invent what already exists
 

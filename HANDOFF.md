@@ -1,8 +1,9 @@
 # Dropzone Commander 3E Army Builder — Handoff
 
 Reference for a fresh session. **Rules live in `CLAUDE.md`** (loaded
-automatically). **Open work lives in Todoist** — project *Generators & Web
-Apps*, label `#dropzone3`. This file is neither; it is the game and
+automatically). **The backlog is Todoist** — `#dropzone3` in *Generators & Web
+Apps* — read when there is no instruction to hand, never written to before
+starting work (CLAUDE.md §1). This file is neither; it is the game and
 infrastructure reference.
 
 ---
@@ -398,9 +399,12 @@ tasks in one turn (finish → test → commit → push → next), not one task p
 turn with a status report in between. Written down after Jet had to say it
 four different ways in one session.
 
-**Todoist is still the real backlog.** This file is a map, not a task list —
-`#dropzone3` in *Generators & Web Apps* has the live priority order. Work
-top-down by priority there, not from this section.
+**Todoist is the backlog, not a step before working.** This file is a map, not
+a task list — `#dropzone3` in *Generators & Web Apps* has the standing priority
+order, and it is where to look when there is no instruction to hand. Nothing is
+filed there before starting work, and nothing there is closed or deleted by
+Claude (CLAUDE.md §1). It is also currently at Todoist's per-project item cap,
+so it cannot accept new tasks until Jet clears it.
 
 ---
 

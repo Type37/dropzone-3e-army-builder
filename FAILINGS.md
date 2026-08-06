@@ -228,6 +228,12 @@ already failed.
 | Documenting a guess | Anything written into a reference doc is checked against source, or marked as an unverified observation. |
 
 Enforcement that does not depend on me: `CLAUDE.md` loads every session, and a
-`UserPromptSubmit` hook in `.claude/settings.json` injects the Todoist rule into
-every prompt. **Claude does not close Todoist tasks. Only Jet's satisfaction
-closes a task.**
+`UserPromptSubmit` hook in `.claude/settings.json` injects the rules that keep
+being broken into every prompt.
+
+**Todoist is no longer one of them.** Filing a task before starting work was a
+standing rule until 2026-08-06, when the project hit Todoist's per-project item
+cap and the rule's only remaining effect was a failed API call at the top of
+every turn. Failure 9 below is history, not a live rule. Todoist is a backlog
+to read when it is worth reading. **Claude still does not close a Todoist task
+— only Jet's satisfaction closes one — and never deletes one.**
