@@ -117,14 +117,24 @@
    * ones filled — "F/Sl" is instantly a different picture from "F/Sr", which
    * is the whole reason to draw it.
    *
-   * The wedge endpoints are the circle's diagonals: cos/sin of 45 degrees on
-   * r=10 is 7.07, hence 12±7.07.
+   * Each wedge is inset 3 degrees from the diagonals it shares, so 84 degrees
+   * of ink with 6 degrees of paper between. They used to meet exactly on the
+   * diagonal, which meant two lit wedges fused into one shape with no boundary
+   * at all — "F/S" read as a single 270-degree blob and told you nothing that
+   * "F/S/R" did not. Uily spotted it: the separators were not visible enough.
+   *
+   * Cut into the geometry rather than drawn over it with a background-coloured
+   * stroke, because the background is not one colour — paper, the tinted band
+   * on a live row, the dark theme — and a gap is a gap on all of them.
+   *
+   * Endpoints are cos/sin on r=10 about (12,12), y inverted: 48 degrees gives
+   * 12±6.69 and 12∓7.43, 42 degrees the same pair the other way round.
    */
   const WEDGE = {
-    F: 'M12 12 L4.93 4.93 A10 10 0 0 1 19.07 4.93 Z',
-    Sr: 'M12 12 L19.07 4.93 A10 10 0 0 1 19.07 19.07 Z',
-    R: 'M12 12 L19.07 19.07 A10 10 0 0 1 4.93 19.07 Z',
-    Sl: 'M12 12 L4.93 19.07 A10 10 0 0 1 4.93 4.93 Z'
+    F: 'M12 12 L5.31 4.57 A10 10 0 0 1 18.69 4.57 Z',
+    Sr: 'M12 12 L19.43 5.31 A10 10 0 0 1 19.43 18.69 Z',
+    R: 'M12 12 L18.69 19.43 A10 10 0 0 1 5.31 19.43 Z',
+    Sl: 'M12 12 L4.57 18.69 A10 10 0 0 1 4.57 5.31 Z'
   };
 
   const ARC_PARTS = {
@@ -148,9 +158,12 @@
     if (!parts) return '';
     const s = (opts && opts.size) || 20;
     const title = parts.map(p => ARC_LABEL[p]).join(', ');
+    // An unlit wedge is drawn, not omitted: "which quarters" is only readable
+    // against the ones it is not. At .18 it was close enough to nothing that
+    // the icon read as a shape floating on its own.
     const wedges = Object.keys(WEDGE).map(k =>
-      `<path d="${WEDGE[k]}" fill="${parts.indexOf(k) !== -1 ? 'currentColor' : 'none'}"` +
-      ` opacity="${parts.indexOf(k) !== -1 ? '1' : '.18'}"/>`).join('');
+      `<path d="${WEDGE[k]}" fill="currentColor"` +
+      ` opacity="${parts.indexOf(k) !== -1 ? '1' : '.22'}"/>`).join('');
     return `<span class="dzc-arc" title="${title}" aria-label="Arc: ${title}">`
       + `<svg width="${s}" height="${s}" viewBox="0 0 24 24" aria-hidden="true">`
       + `<circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1" opacity=".35"/>`

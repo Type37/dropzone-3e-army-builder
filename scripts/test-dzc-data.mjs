@@ -502,12 +502,24 @@ eq(DZC.weaponColHelp('Special'), '', 'and a column with no definition gets no em
 // ------------------------------------------------------------------ arc icons
 console.log('\nfiring arcs are 90-degree wedges (6.1.2)');
 {
-  const wedges = a => (Icon.arc(a).match(/fill="currentColor"/g) || []).length;
-  eq(wedges('F'), 1, 'F fills one wedge');
-  eq(wedges('F/S'), 3, 'F/S fills front and both sides');
-  eq(wedges('F/S/R'), 4, 'F/S/R fills all four');
-  eq(wedges('F/Sl'), 2, 'F/Sl fills two');
-  eq(wedges('R'), 1, 'R fills one');
+  /* Counted off OPACITY, not off fill. Every wedge is drawn now — an unlit one
+   * is what a lit one is read against — so "how many are filled" stopped being
+   * a question about the fill attribute and became one about which are lit. */
+  const wedges = a => (Icon.arc(a).match(/opacity="1"/g) || []).length;
+  const drawn = a => (Icon.arc(a).match(/<path /g) || []).length;
+  eq(wedges('F'), 1, 'F lights one wedge');
+  eq(wedges('F/S'), 3, 'F/S lights front and both sides');
+  eq(wedges('F/S/R'), 4, 'F/S/R lights all four');
+  eq(wedges('F/Sl'), 2, 'F/Sl lights two');
+  eq(wedges('R'), 1, 'R lights one');
+  eq(drawn('F'), 4, 'and the other three are still drawn, or there is nothing to read it against');
+  /* The wedges must not share an edge. They used to meet exactly on the
+   * diagonal, so two lit ones fused into a single shape with no boundary and
+   * "F/S" read as one 270-degree blob. Each is inset 3 degrees; the test is
+   * that no two paths name the same point. */
+  const corners = Icon.arc('F/S/R').match(/L([\d.]+) ([\d.]+)/g) || [];
+  eq(corners.length, 4, 'each wedge starts at its own corner');
+  eq(new Set(corners).size, 4, 'and no two wedges start at the same point — they do not touch');
   eq(Icon.arc('-'), '', 'a dash draws nothing');
   // The Side Left / Side Right split is the reason these are drawn at all:
   // "F/Sl" and "F/Sr" read identically as text and differently as pictures.

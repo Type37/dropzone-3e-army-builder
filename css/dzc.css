@@ -212,7 +212,7 @@
 .dzc-detail-head h3 { margin: 0 0 4px; font: 800 20px/1.2 var(--font-ui, 'Jost', system-ui, sans-serif); overflow-wrap: anywhere; }
 .dzc-detail-meta { margin: 0 0 8px; font-size: 13px; color: var(--ink-2, #6b6459); }
 .dzc-detail-rules { margin-bottom: 14px; }
-.dzc-detail-rules h4, .dzc-variants h4 { margin: 0 0 6px; font: 700 12px/1 var(--font-ui, 'Jost', system-ui, sans-serif); text-transform: uppercase; letter-spacing: .07em; color: var(--ink-2, #6b6459); }
+/* The <h4> eyebrows these styled are gone; nothing in the app renders one. */
 .dzc-variants ul { list-style: none; margin: 0 0 14px; padding: 0; }
 .dzc-variants li { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; border-bottom: 1px solid var(--line, #eee5d6); }
 
@@ -1371,7 +1371,11 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 
 /* ── weapon upgrades (3.2.3) ── */
 .dzc-upgrades { margin: 5px 0 2px; padding: 5px 8px; border-radius: 5px; background: var(--surface-3, #f2ece0); }
-.dzc-upg-head { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2, #6b6459); margin-bottom: 3px; }
+/* Sentence case, not an all-caps kicker (CLAUDE.md §3). The word is only
+   here to carry the note beside it — "Upgrades — only one of these may be
+   taken" — and a label set in caps above a block is the one thing on this
+   screen that was decoration rather than a rule. */
+.dzc-upg-head { display: block; font-size: 11px; font-weight: 600; letter-spacing: .01em; color: var(--ink-2, #6b6459); margin-bottom: 3px; }
 .dzc-upg-head i { text-transform: none; letter-spacing: 0; }
 /* The same sentence on the reference view, where there are no buttons for it
    to sit over — so it sits under the table instead, marked as the card's own
