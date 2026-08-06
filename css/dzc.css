@@ -91,14 +91,33 @@
 
 /* ── transport badges ── */
 .dzc-transport { display: inline-flex; align-items: center; gap: 3px; flex-wrap: wrap; }
-.dzc-badge { position: relative; display: inline-block; width: 22px; height: 22px; }
-.dzc-badge svg { position: absolute; inset: 0; }
+/* ONE number per context.
+   Every place that shows a badge used to set width, height and font-size
+   separately, so the digit's size drifted against the shape's — and the
+   capacity/cargo size difference set from JS did nothing at all, because
+   `svg { inset: 0 }` stretched both back to the box. A context sets
+   --badge-px now and everything else follows it.
+
+   --cargo-px is the smaller solid. A solid that looks like it would drop into
+   a hollow is the whole grammar of these symbols, so the two sizes travel
+   together and neither is set on its own. */
+.dzc-badge {
+  --badge-px: 28px;
+  --cargo-px: 22px;
+  position: relative; display: inline-block;
+  width: var(--badge-px); height: var(--badge-px);
+}
+.dzc-badge.is-cargo { width: var(--cargo-px); height: var(--cargo-px); }
+.dzc-badge svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 /* Absolute + top/left % + translate(-50%,-50%), not grid place-items: the
    default (50%,50%) centres on the BOX, but a triangle's own area sits well
    off box-centre, so each shape below moves the anchor point, not the glyph
    directly — the translate always re-centres on whatever point that is. */
-.dzc-badge-n { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  font: 700 10px/1 var(--font-ui, 'Jost', system-ui, sans-serif); }
+.dzc-badge-n {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font: 700 calc(var(--badge-px) * .45) / 1 var(--font-ui, 'Jost', system-ui, sans-serif);
+}
+.dzc-badge.is-cargo .dzc-badge-n { font-size: calc(var(--cargo-px) * .45); }
 .dzc-sep { font-weight: 700; font-size: 13px; color: var(--ink-2, #6b6459); padding: 0 1px; }
 /* Exact area centroid of the SYMBOL.triangle / .triangle-down paths (dzc-
    units.js), as a % of the 24-unit viewBox: a triangle's mass sits 2/3 of the
@@ -108,6 +127,12 @@
    where the font-size : box-size ratio wasn't exactly the base case's. */
 .dzc-badge-triangle .dzc-badge-n { top: 61.11%; }
 .dzc-badge-triangle-down .dzc-badge-n { top: 38.89%; }
+/* The pentagon is not symmetric about its box either: two vertices at the
+   waist and a flat base put its mass 12.517/24 down, not 12/24. It sat on the
+   box centre with the square and the circle, which is a half-pixel at 22px and
+   a visible drop at 66. Area centroid by the shoelace formula, same as the
+   triangles. */
+.dzc-badge-pentagon .dzc-badge-n { top: 52.15%; }
 
 /* ── Art Deco pills ──
    The chip already carried the chamfer; everything else pill-shaped in the app
@@ -142,7 +167,7 @@
 .dzc-card-side { flex: 0 0 72px; display: flex; flex-direction: column; gap: 3px; }
 .dzc-card-caps {
   display: flex; align-items: center; justify-content: center;
-  gap: 3px; flex-wrap: wrap; min-height: 26px;
+  gap: 3px; flex-wrap: wrap; min-height: 32px;
 }
 .dzc-caps-none { font-size: 13px; color: var(--ink-2, #9a9184); }
 .dzc-stats .dzc-stat { border-radius: 0; }
@@ -443,9 +468,7 @@
    number on top, so all three have to grow together — sizing the svg alone
    did nothing. */
 .dzc-detail-cap .dzc-transport { gap: 6px; }
-.dzc-detail-cap .dzc-badge { width: 66px; height: 66px; }
-.dzc-detail-cap .dzc-badge svg { width: 100%; height: 100%; }
-.dzc-detail-cap .dzc-badge-n { font-size: 26px; }
+.dzc-detail-cap .dzc-badge { --badge-px: 66px; --cargo-px: 52px; }
 .dzc-detail-cap .dzc-sep { font-size: 30px; font-weight: 700; }
 
 /* One block per variant: what it is, the gun that makes it that, the price,
@@ -785,12 +808,10 @@
 /* The capacity symbol, at the size it has in the unit view. It is the fact
    that decides what may join this Group (3.2.4.2), not a footnote. */
 .dzc-sq-cap .dzc-transport { gap: 4px; }
-.dzc-sq-cap .dzc-badge { width: 40px; height: 40px; }
+.dzc-sq-cap .dzc-badge { --badge-px: 44px; --cargo-px: 35px; }
 /* The svg is absolutely positioned inside the badge box and keeps its own
    22px width attribute, so growing the box alone leaves the glyph small —
    the same trap .dzc-detail-cap documents above. */
-.dzc-sq-cap .dzc-badge svg { width: 100%; height: 100%; }
-.dzc-sq-cap .dzc-badge-n { font-size: 16px; }
 .dzc-sq-cap .dzc-sep { font-size: 19px; }
 .dzc-sq-meta {
   display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 3px 0 0;
@@ -839,9 +860,7 @@
   text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2, #6b6459);
 }
 .dzc-carry-now { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; }
-.dzc-carry-now .dzc-badge { width: 26px; height: 26px; }
-.dzc-carry-now .dzc-badge svg { width: 100%; height: 100%; }
-.dzc-carry-now .dzc-badge-n { font-size: 11px; }
+.dzc-carry-now .dzc-badge { --badge-px: 30px; --cargo-px: 24px; }
 .dzc-carry-now i { font-style: normal; font-family: var(--font-numeric, 'Outfit', sans-serif); color: var(--ink-2, #6b6459); }
 .dzc-carry-none { font-size: 13px; color: var(--ink-2, #6b6459); }
 .dzc-carry-add {
@@ -857,9 +876,7 @@
    what that costs, and whether it comes out exactly full (3.2.4). */
 .dzc-carry-for { margin: 0 0 10px; font-size: 14px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .dzc-carry-for span { font-size: 12px; color: var(--ink-2, #6b6459); }
-.dzc-carry-for .dzc-badge { width: 30px; height: 30px; }
-.dzc-carry-for .dzc-badge svg { width: 100%; height: 100%; }
-.dzc-carry-for .dzc-badge-n { font-size: 12px; }
+.dzc-carry-for .dzc-badge { --badge-px: 34px; --cargo-px: 27px; }
 .dzc-carry-head {
   margin: 14px 0 6px;
   font: 700 10px/1 var(--font-condensed, 'Jost', sans-serif);
@@ -886,9 +903,7 @@
   background: var(--surface-3, #f2ece0); color: var(--ink-2, #9a9184);
 }
 .dzc-carry-name { font: 700 14px/1.25 var(--font-display, 'Roboto Slab', serif); overflow-wrap: anywhere; }
-.dzc-carry-caps .dzc-badge { width: 30px; height: 30px; }
-.dzc-carry-caps .dzc-badge svg { width: 100%; height: 100%; }
-.dzc-carry-caps .dzc-badge-n { font-size: 12px; }
+.dzc-carry-caps .dzc-badge { --badge-px: 34px; --cargo-px: 27px; }
 .dzc-carry-sum { display: inline-flex; align-items: baseline; gap: 7px; font-family: var(--font-numeric, 'Outfit', sans-serif); }
 .dzc-carry-sum b { font-size: 17px; font-weight: 700; }
 .dzc-carry-sum i { font-style: normal; font-size: 13px; color: var(--ink-2, #6b6459); }
@@ -969,9 +984,7 @@
    room for a digit near its base, so shrinking these hid the count, and the
    count is half the symbol. */
 .dzc-pick .dzc-transport { margin: 5px 0 1px; gap: 4px; }
-.dzc-pick .dzc-badge { width: 38px; height: 38px; }
-.dzc-pick .dzc-badge svg { width: 100%; height: 100%; }
-.dzc-pick .dzc-badge-n { font-size: 15px; }
+.dzc-pick .dzc-badge { --badge-px: 40px; --cargo-px: 32px; }
 .dzc-pick .dzc-sep { font-size: 17px; }
 
 .dzc-add-group {
@@ -1320,8 +1333,7 @@
   .dzc-group-card { padding: 12px; }
   .dzc-sq-art { width: 68px; height: 50px; }
   button.dzc-sq-name { font-size: 16px; }
-  .dzc-sq-cap .dzc-badge { width: 34px; height: 34px; }
-  .dzc-sq-cap .dzc-badge-n { font-size: 14px; }
+  .dzc-sq-cap .dzc-badge { --badge-px: 38px; --cargo-px: 30px; }
 }
 
 @media (max-width: 640px) {
@@ -1367,10 +1379,8 @@
 @media (max-width: 420px) {
   .dzc-builder { --sq-indent: 4px; }
   .dzc-sq-art { width: 100%; height: 96px; }
-  .dzc-sq-cap .dzc-badge { width: 30px; height: 30px; }
-  .dzc-sq-cap .dzc-badge-n { font-size: 12.5px; }
-  .dzc-pick .dzc-badge { width: 32px; height: 32px; }
-  .dzc-pick .dzc-badge-n { font-size: 13px; }
+  .dzc-sq-cap .dzc-badge { --badge-px: 34px; --cargo-px: 27px; }
+  .dzc-pick .dzc-badge { --badge-px: 36px; --cargo-px: 29px; }
   .dzc-add-squad { padding: 11px 12px; font-size: 14px; }
 }
 

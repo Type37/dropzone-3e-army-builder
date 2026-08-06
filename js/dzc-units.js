@@ -65,9 +65,12 @@
    * because that is exactly what it does. Same path, same ink, same digit —
    * only the size says which way round it is, so the shape stays free to mean
    * what the rulebook says it means (3.2.4.2).
+   *
+   * The two sizes are CSS (--badge-px / --cargo-px on .dzc-badge), not values
+   * passed in from here. They were set inline once and it did nothing: the SVG
+   * is `position: absolute; inset: 0`, so it takes the box's size whatever its
+   * width attribute says, and both badges came out identical.
    */
-  const BADGE_PX = { capacity: 22, cargo: 16 };
-
   function badge(shape, n, hollow) {
     const s = SYMBOL[shape];
     if (!s) return '';
@@ -75,14 +78,14 @@
     // A triangle narrows to a point, so its interior at the centroid height
     // (where the digit sits, see .dzc-badge-triangle in dzc.css) is nowhere
     // near as wide as a square or diamond's. A 2-digit count (12/18/24 appear
-    // 9 times across the six factions) is wide enough at the default size to
-    // overhang the sloped edge. Shrink only when both things are true.
+    // 9 times across the six factions) is wide enough to overhang the sloped
+    // edge. Shrink only when both things are true — and as a ratio, so it
+    // follows whatever size the context asked for.
     const tight = (shape === 'triangle' || shape === 'triangle-down') && String(n).length > 1;
     const style = `color:${hollow ? s.ink : '#fff'}${tight ? ';font-size:.78em' : ''}`;
-    const px = hollow ? BADGE_PX.capacity : BADGE_PX.cargo;
     return `<span class="dzc-badge dzc-badge-${shape}${hollow ? '' : ' is-cargo'}"
-      style="--badge-px:${px}px" title="${esc(label)}" aria-label="${esc(label)}">
-      <svg viewBox="0 0 24 24" width="${px}" height="${px}" aria-hidden="true">
+      title="${esc(label)}" aria-label="${esc(label)}">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="${s.path}" fill="${hollow ? 'none' : s.ink}" stroke="${s.ink}" stroke-width="2.5" stroke-linejoin="round"/>
       </svg><span class="dzc-badge-n" style="${style}">${esc(n)}</span></span>`;
   }

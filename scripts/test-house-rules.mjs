@@ -706,8 +706,24 @@ console.log('\nunused styling');
   const css = ['css/dzc.css', 'css/dzc-print.css']
     .map(f => readFileSync(path.join(ROOT, f), 'utf8')).join('\n');
   const src = SOURCES.map(f => readFileSync(path.join(ROOT, f), 'utf8')).join('\n');
-  // Built as `dzc-issues--${kind}` from 'err' and 'warn'; grep cannot see them.
-  const INTERPOLATED = /^dzc-issues--(err|warn)$/;
+  /* Classes the app builds by interpolation, which grep cannot see.
+   *
+   * Resolved from the source they are built out of rather than listed here by
+   * hand. `dzc-badge-${shape}` takes its shape from the SYMBOL map in
+   * js/dzc-units.js, so the six names are read back out of that map — rename a
+   * shape and the exemption follows it, instead of going stale and warning
+   * about a class that is very much rendered.
+   *
+   * That warning stood for weeks: .dzc-badge-pentagon and
+   * .dzc-badge-triangle-down were reported dead every run while both were on
+   * screen, once a card each on Shaltari and Resistance. A warning that is
+   * always wrong is one nobody reads when it is right. */
+  const shapes = [...(src.match(/const SYMBOL = \{[\s\S]*?\n  \};/) || [''])[0]
+    .matchAll(/^\s{4}'?([a-z-]+)'?:\s*\{/gm)].map(m => m[1]);
+  ok(shapes.length === 6, 'the six transport symbols were found in the source',
+     shapes.join(', '));
+  const INTERPOLATED = new RegExp(
+    `^(dzc-issues--(err|warn)|dzc-badge-(${shapes.join('|')}))$`);
   const declared = new Set([...css.matchAll(/\.((?:dzc|pr|pp)-[A-Za-z0-9_-]+)/g)].map(m => m[1]));
   ok(declared.size > 100, 'the stylesheet classes were actually found', `${declared.size}`);
   const unused = [...declared]
