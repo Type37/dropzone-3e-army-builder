@@ -95,6 +95,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 2,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -189,6 +190,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 3,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -310,6 +312,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 4,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -389,6 +392,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 5,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -457,6 +461,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 6,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -553,6 +558,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 7,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -644,6 +650,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 8,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -750,6 +757,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 9,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -844,6 +852,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 10,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -938,6 +947,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 11,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1006,6 +1016,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 12,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1059,6 +1070,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 13,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1155,6 +1167,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 14,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1239,6 +1252,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 15,
       "auxiliaryTransport": true,
       "selectable": true,
@@ -1313,6 +1327,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 16,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1387,6 +1402,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 17,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1468,6 +1484,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 18,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1521,6 +1538,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 19,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1647,6 +1665,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 20,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1741,6 +1760,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 21,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1815,6 +1835,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 22,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1881,6 +1902,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 23,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1960,6 +1982,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 24,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2006,6 +2029,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 25,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2057,6 +2081,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 26,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2123,6 +2148,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 27,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2178,6 +2204,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 28,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2229,6 +2256,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 29,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2280,6 +2308,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 30,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2320,6 +2349,7 @@
       },
       "weapons": [],
       "upgradeNote": null,
+      "swaps": [],
       "page": 31,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2371,6 +2401,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 32,
       "auxiliaryTransport": false,
       "selectable": true,

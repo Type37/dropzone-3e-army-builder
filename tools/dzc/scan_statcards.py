@@ -151,6 +151,20 @@ class Header(TypedDict):
     pointsRaw: str | None
 
 
+class Swap(TypedDict):
+    """A swap sentence printed under the table, as arithmetic.
+
+    `note` is kept alongside because the card is the authority and this parse
+    is not -- the reader sees the sentence whatever the structure says."""
+
+    note: str
+    grants: str | None
+    grantsRules: list[str]
+    variants: list[str]
+    removes: list[dict[str, object]]
+    removesCapacity: list[Badge]
+
+
 class Unit(TypedDict):
     id: str
     name: str
@@ -168,6 +182,7 @@ class Unit(TypedDict):
     transport: Transport
     weapons: list[Weapon]
     upgradeNote: str | None
+    swaps: list[Swap]
     page: int
     auxiliaryTransport: bool
     selectable: bool
@@ -989,6 +1004,127 @@ def apply_capacity_upgrades(unit: Unit) -> None:
             w["capacityDelta"] = [{"shape": hits[0]["shape"], "n": -n}]
 
 
+# "May replace both its MC-20 Chainguns with MM-15 Sidearm Missiles."
+# "Menchit and Styx may replace Twin RX-20 Miniguns with RM-4 Foeslayer Missiles."
+# "May also replace one MM-3 Missile Pod and one MG-6 Twin Heavy Machineguns
+#  with a MC-20 Chaingun Pair."
+SWAP_RE = re.compile(
+    r"^(?P<who>.*?)\bmay\s+(?:also\s+)?replace\b(?P<lose>.+?)\bwith\b(?P<gain>.+?)\.?\s*$",
+    re.I)
+
+# "May remove one UM-117 Cannons and gain Scanner and Scout." -- one card, and
+# the only option that trades a weapon for rules rather than for another gun.
+GIVE_UP_RE = re.compile(
+    r"^(?P<who>.*?)\bmay\s+remove\b(?P<lose>.+?)\band\s+gain\b(?P<gain>.+?)\.?\s*$", re.I)
+
+# "both its MC-20 Chainguns", "one MM-3 Missile Pod", "Twin RX-20 Miniguns"
+LOSE_RE = re.compile(
+    r"^\s*(?:(both|one|two|three|\d+)\s+)?(?:its\s+|the\s+|an?\s+)?(?P<name>.+?)\s*$", re.I)
+COUNT_WORDS = {"one": 1, "two": 2, "three": 3}
+
+
+def norm_weapon(name: str) -> str:
+    """A weapon name as the sentence writes it, reduced to what the table says.
+
+    A card's prose pluralises what its table lists singular -- "both its MC-20
+    Chainguns" against two rows each reading "MC-20 Chaingun" -- and that is the
+    only difference between the two spellings on any current card."""
+    return re.sub(r"\s+", " ", name).strip().rstrip(".").lower().rstrip("s")
+
+
+def parse_swaps(unit: Unit) -> None:
+    """
+    Read the swap sentence into what it removes and what it grants.
+
+    Five cards print one. Three of them take a weapon AWAY, and until this
+    existed the app granted the new gun and kept the old one -- so a Super Heavy
+    Tank that had traded both its MC-20 Chainguns for Sidearm Missiles went to
+    the table with all three printed on its sheet.
+
+    Every weapon a sentence names is matched against the card's own weapon table
+    first. A sentence this does not really understand yields nothing, because an
+    invented removal is worse than a note the reader has to apply themselves --
+    and the note is shown either way, since the card is the authority and this
+    parse is not.
+    """
+    note = unit.get("upgradeNote") or ""
+    rules_only = False
+    m = SWAP_RE.match(note)
+    if not m:
+        m = GIVE_UP_RE.match(note)
+        rules_only = True
+    if not m:
+        return
+    by_norm: dict[str, list[str]] = {}
+    for w in unit["weapons"]:
+        by_norm.setdefault(norm_weapon(w["name"]), []).append(w["name"])
+
+    # What it grants: one swap per gun offered, since "A or B" is a choice.
+    # The article belongs to the sentence, not to the weapon -- "with A MC-20
+    # Chaingun Pair" names the gun the table calls "MC-20 Chaingun Pair".
+    rules: list[str] = []
+    gains: list[str | None]
+    if rules_only:
+        rules = [g.strip(" .") for g in re.split(r",|\band\b", m.group("gain"))
+                 if g.strip(" .")]
+        if not rules:
+            return
+        gains = [None]
+    else:
+        gains = [re.sub(r"^(?:an?|the)\s+", "", g.strip(" ."), flags=re.I)
+                 for g in re.split(r"\bor\b", m.group("gain")) if g.strip(" .")]
+        gains = [g for g in gains
+                 if any(w["box"] == "upgrade" and w["name"] == g for w in unit["weapons"])]
+        if not gains:
+            return
+
+    # Which variants may take it, when the sentence names them.
+    who = m.group("who") or ""
+    known = {v["name"] for v in unit["variants"]}
+    variants = [n for n in re.split(r",|\band\b", who) if n.strip() in known]
+    variants = [n.strip() for n in variants]
+
+    removes: list[dict[str, object]] = []
+    capacity: list[Badge] = []
+    for piece in re.split(r"\band\b", m.group("lose")):
+        piece = piece.strip()
+        if not piece:
+            continue
+        cap = re.match(r"^(?:transport\s+)?capacity\s+of\s+(\d+)$", piece, re.I)
+        if cap:
+            n = int(cap.group(1))
+            hits = [c for c in unit["transport"].get("capacity") or [] if c["n"] == n]
+            if len(hits) != 1:
+                return                       # ambiguous shape; say nothing
+            capacity.append({"shape": hits[0]["shape"], "n": n})
+            continue
+        lm = LOSE_RE.match(piece)
+        if not lm:
+            return
+        hit = by_norm.get(norm_weapon(lm.group("name")))
+        if not hit:
+            return                           # a name the table does not carry
+        word = (lm.group(1) or "").lower()
+        # "both" means every copy the card prints; a bare name means the same,
+        # since a sentence that meant one of two would have to say which.
+        n_taken = COUNT_WORDS.get(word) or (int(word) if word.isdigit() else len(hit))
+        removes.append({"weapon": hit[0], "count": n_taken})
+
+    if not removes and not capacity:
+        return
+    unit["swaps"] = [
+        {
+            "note": note,
+            "grants": g,
+            "grantsRules": rules,
+            "variants": variants,
+            "removes": removes,
+            "removesCapacity": capacity,
+        }
+        for g in gains
+    ]
+
+
 def parse_weapons(page, lines) -> list[Weapon]:
     hit = find_header_row(lines, WEAPON_HEADERS, need=5)
     if hit is None:
@@ -1260,6 +1396,7 @@ def parse_page(page, doc, art_dir) -> Unit | None:
         # "*Only one of these upgrades may be taken." -- a real construction
         # constraint, so it is kept rather than discarded with the footnote.
         "upgradeNote": upgrade_note(page, 200, 20),
+        "swaps": [],
         "page": (page.number or 0) + 1,
         "auxiliaryTransport": bool(transport["capacity"] and (category or "") != "Transport"),
         "selectable": selectable,
@@ -1273,6 +1410,7 @@ def parse_page(page, doc, art_dir) -> Unit | None:
     # Needs the weapons, the transport badges and the footnote all parsed, so
     # it runs on the assembled unit rather than inside any one of them.
     apply_capacity_upgrades(unit)
+    parse_swaps(unit)
     if art_dir:
         extract_art(page, doc, art_dir, header["name"])
     return unit

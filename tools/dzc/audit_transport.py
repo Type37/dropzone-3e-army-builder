@@ -103,6 +103,36 @@ for (fid, name), u in sorted(units.items()):
                 problems.append(f"{fid}/{name}: {w['name']} spends {d['shape']} capacity "
                                 f"the unit does not have")
 
+# --- swaps ------------------------------------------------------------------
+#
+# A swap must name weapons the card actually prints, or it removes a row that
+# was never there and leaves the real one in the loadout. Eight cards print one.
+swap_total = 0
+for (fid, name), u in sorted(units.items()):
+    printed = [w["name"] for w in u.get("weapons") or []]
+    for sw in u.get("swaps") or []:
+        swap_total += 1
+        if sw["grants"] and sw["grants"] not in printed:
+            problems.append(f"{fid}/{name}: a swap grants {sw['grants']!r}, "
+                            f"which is not on the card")
+        if not sw["grants"] and not sw["grantsRules"]:
+            problems.append(f"{fid}/{name}: a swap grants nothing at all -- {sw['note']!r}")
+        if not sw["removes"] and not sw["removesCapacity"]:
+            problems.append(f"{fid}/{name}: a swap removes nothing -- {sw['note']!r}")
+        for r in sw["removes"]:
+            have = printed.count(r["weapon"])
+            if not have:
+                problems.append(f"{fid}/{name}: a swap removes {r['weapon']!r}, "
+                                f"which is not on the card")
+            elif r["count"] is not None and r["count"] > have:
+                problems.append(f"{fid}/{name}: a swap removes {r['count']} of "
+                                f"{r['weapon']!r} and the card prints {have}")
+        for v in sw["variants"]:
+            if not any(x["name"] == v for x in u.get("variants") or []):
+                problems.append(f"{fid}/{name}: a swap is limited to variant {v!r}, "
+                                f"which the card does not have")
+print(f"swaps parsed: {swap_total}")
+
 # A delta anywhere else is a parse gone wrong: no other card sells its room.
 for (fid, name), u in sorted(units.items()):
     note = (u.get("upgradeNote") or "").lower()

@@ -238,6 +238,16 @@
 .dzc-wpn--marked tr.is-off .dzc-wpn-name { font-weight: 500; border-left-color: var(--line, #d8d0c0); }
 .dzc-wpn--marked tr.is-off .dzc-rule { color: var(--ink-2, #6b6459); border-color: var(--line, #d8d0c0); }
 
+/* A gun a bought swap traded in — "May replace both its MC-20 Chainguns with
+   MM-15 Sidearm Missiles". Struck through, not dimmed: a dead variant row is a
+   gun this Squad could have had, and this is one the card prints that the
+   purchase above has taken away. Two different sentences, two different marks.
+   The row stays, because what you gave up is worth seeing next to what you
+   got. */
+.dzc-wpn--marked tr.is-swapped td { color: var(--ink-2, #6b6459); text-decoration: line-through; }
+.dzc-wpn--marked tr.is-swapped .dzc-wpn-name { font-weight: 500; border-left-color: var(--line, #d8d0c0); }
+.dzc-wpn--marked tr.is-swapped .dzc-rule { text-decoration: line-through; color: var(--ink-2, #6b6459); border-color: var(--line, #d8d0c0); }
+
 @media (max-width: 640px) {
   .dzc-wrap { padding: 10px 12px 56px; }
   .dzc-grid { grid-template-columns: 1fr; }

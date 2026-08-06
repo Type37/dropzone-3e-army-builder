@@ -296,6 +296,42 @@
     return true;
   }
 
+  /* Which printed weapons a bought upgrade has taken AWAY, by index.
+   *
+   * Five cards print a swap — "May replace both its MC-20 Chainguns with MM-15
+   * Sidearm Missiles" — and the app used to grant the new gun and keep the old
+   * ones, so a Super Heavy Tank went to the table with a sheet listing three
+   * guns it does not have. The scanner reads the sentence into what it removes
+   * and what it grants; this applies it.
+   *
+   * By INDEX, not by name: a card prints "MC-20 Chaingun" on two separate rows
+   * and the Lifthawk's swap takes ONE of its two MM-3 Missile Pods. A name is
+   * not enough to say which rows went. */
+  function removedByUpgrades(u, opts) {
+    const o = opts || {};
+    const out = {};
+    if (!o.hasUpgrade) return out;
+    const ws = u.weapons || [];
+    (u.swaps || []).forEach(sw => {
+      // A swap with no gun to buy has no control to take it with yet — the
+      // Harrier Gunship's "remove one UM-117 Cannons and gain Scanner and
+      // Scout". Its sentence is still printed; nothing is removed for it.
+      if (!sw.grants) return;
+      const gun = ws.find(w => w.box === 'upgrade' && w.name === sw.grants);
+      if (!gun || !o.hasUpgrade(gun)) return;
+      // "Menchit and Styx may replace..." only bites on a Squad fielding one.
+      if ((sw.variants || []).length && o.variants
+          && !sw.variants.some(v => o.variants.indexOf(v) !== -1)) return;
+      (sw.removes || []).forEach(r => {
+        let left = r.count == null ? ws.length : r.count;
+        ws.forEach((w, i) => {
+          if (left > 0 && !out[i] && w.name === r.weapon) { out[i] = true; left--; }
+        });
+      });
+    });
+    return out;
+  }
+
   /* The guns a Squad fires, with the rest dropped. This is the PAPER answer:
    * the printed sheet cannot dim a row, and its rules appendix must not collect
    * a rule off a gun nobody fires — a paragraph printed for nothing. On screen
@@ -303,7 +339,8 @@
   function unitWeapons(u, opts) {
     const o = opts || {};
     if (!o.variants && !o.hasUpgrade) return u.weapons || [];
-    return (u.weapons || []).filter(w => weaponLive(u, w, o));
+    const gone = removedByUpgrades(u, o);
+    return (u.weapons || []).filter((w, i) => !gone[i] && weaponLive(u, w, o));
   }
 
   /* Every weapon printed on the card, always — including guns that only a
@@ -322,9 +359,14 @@
     const marking = !!(o.variants || o.hasUpgrade);
     const ws = u.weapons || [];
     if (!ws.length) return '<p class="dzc-none">No weapons.</p>';
-    const rows = ws.map(w => {
+    const gone = marking ? removedByUpgrades(u, o) : {};
+    const rows = ws.map((w, i) => {
+      // A weapon a swap took away is struck out rather than dimmed. It is not
+      // "a gun this Squad could have" — it is one the card printed and the
+      // purchase above traded in, which is a different thing to say.
+      const state = gone[i] ? 'is-swapped' : weaponLive(u, w, o) ? 'is-live' : 'is-off';
       const cls = [w.box === 'upgrade' ? 'is-upgrade' : w.box === 'variant' ? 'is-variant' : '']
-        .concat(marking ? [weaponLive(u, w, o) ? 'is-live' : 'is-off'] : [])
+        .concat(marking ? [state] : [])
         .filter(Boolean).join(' ');
       return `<tr${cls ? ` class="${cls}"` : ''}>${wpnCells(w, fac)}</tr>`;
     }).join('');
@@ -513,7 +555,8 @@
     setSearch: v => { state.search = v; render(); },
     openDetail, closeDetail, showRule, hideRule,
     // Shared with the builder's picker so a unit reads the same in both places.
-    statsHtml, rulesHtml, squadHtml, transportHtml, unitWeapons, weaponLive, weaponsHtml, variantsHtml,
+    statsHtml, rulesHtml, squadHtml, transportHtml, unitWeapons, weaponLive,
+    removedByUpgrades, weaponsHtml, variantsHtml,
     unitRulesHtml, wpnHead, wpnCells,
     pointsHtml, shape: shapeSvg,
     SHAPES: Object.keys(SYMBOL),

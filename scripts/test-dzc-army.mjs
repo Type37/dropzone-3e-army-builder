@@ -31,6 +31,11 @@ sandbox.globalThis = sandbox;
 vm.createContext(sandbox);
 vm.runInContext(readFileSync(path.join(ROOT, 'js', 'dzc-data.js'), 'utf8'), sandbox);
 vm.runInContext(readFileSync(path.join(ROOT, 'js', 'dzc-army.js'), 'utf8'), sandbox);
+/* dzc-units.js is the renderer, but unitWeapons and removedByUpgrades in it are
+ * the definition of what guns a Squad actually has — which is an army question,
+ * asked here and by the printed sheet. It touches the DOM only inside render
+ * functions nothing below calls. */
+vm.runInContext(readFileSync(path.join(ROOT, 'js', 'dzc-units.js'), 'utf8'), sandbox);
 const DZC = win.DZC, A = win.DZCArmy;
 
 let pass = 0, fail = 0;
@@ -131,6 +136,53 @@ console.log('\nno Commander on a Fast Mover or a Living Weapon (10.1.12, 10.1.20
      'an army that already has one is reported rather than passed');
 
   A.remove(b.id);
+  A.remove(a.id);
+}
+
+/* A swap takes a printed weapon AWAY. Five cards print one and the app used to
+ * grant the new gun and keep the old ones, so a Super Heavy Tank that had
+ * traded both its MC-20 Chainguns for Sidearm Missiles went to the table with a
+ * sheet listing three guns it does not have. */
+console.log('\na swap removes what it replaces (3.2.3)');
+{
+  await DZC.loadFaction('resistance');
+  const a = A.create('resistance', 'Swaps', 2000);
+  const U = win.DZCUnits;
+  const g = A.addGroup(a);
+  const tank = A.addSquad(a, g.id, 'resistance-super-heavy-tank', 1);
+  const u = A.unitOf(a, tank);
+  const guns = () => U.unitWeapons(u, {
+    variants: tank.models.map(m => m.variant),
+    hasUpgrade: w => A.hasUpgrade(tank, '*', w.name)
+  }).map(w => w.name);
+
+  eq(guns().filter(n => n === 'MC-20 Chaingun').length, 2, 'the card prints two Chainguns');
+  ok(A.toggleUpgrade(a, tank.id, '*', 'MM-15 Sidearm Missiles').ok, 'the Sidearms are taken');
+  eq(guns().filter(n => n === 'MC-20 Chaingun').length, 0,
+     '"replace BOTH its MC-20 Chainguns" takes both');
+  ok(guns().includes('MM-15 Sidearm Missiles'), 'and the Squad has what it bought');
+  ok(A.toggleUpgrade(a, tank.id, '*', 'MM-15 Sidearm Missiles').ok, 'dropping it again');
+  eq(guns().filter(n => n === 'MC-20 Chaingun').length, 2, 'gives both Chainguns back');
+
+  /* The Lifthawk's takes ONE of two Missile Pods and ONE of two Machineguns,
+   * which is why removal is by index and not by name. */
+  const lift = A.addSquad(a, A.addGroup(a).id, 'lifthawk-troopship', 1);
+  const lu = A.unitOf(a, lift);
+  const lguns = () => U.unitWeapons(lu, {
+    variants: lift.models.map(m => m.variant),
+    hasUpgrade: w => A.hasUpgrade(lift, '*', w.name)
+  }).map(w => w.name);
+  eq(lguns().filter(n => n === 'MM-3 Missile Pod').length, 2, 'two Missile Pods to start');
+  ok(A.toggleUpgrade(a, lift.id, '*', 'MC-20 Chaingun Pair').ok, 'the Chaingun Pair is bought');
+  eq(lguns().filter(n => n === 'MM-3 Missile Pod').length, 1, 'and it costs ONE Missile Pod');
+  eq(lguns().filter(n => n === 'MG-6 Twin Heavy Machineguns').length, 1,
+     'and one Twin Heavy Machineguns, not both');
+
+  // The other upgrade on the same card removes nothing, so nothing moves.
+  ok(A.toggleUpgrade(a, lift.id, '*', 'MC-20 Chaingun Pair').ok, 'dropping it');
+  ok(A.toggleUpgrade(a, lift.id, '*', 'Flamethrower').ok, 'and buying the Flamethrower instead');
+  eq(lguns().filter(n => n === 'MM-3 Missile Pod').length, 2,
+     'leaves both Missile Pods, because that upgrade is not a swap');
   A.remove(a.id);
 }
 

@@ -55,6 +55,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 3,
       "auxiliaryTransport": true,
       "selectable": true,
@@ -146,6 +147,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 4,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -214,6 +216,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 5,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -369,6 +372,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 6,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -448,6 +452,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 7,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -542,6 +547,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 8,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -636,6 +642,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 9,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -763,6 +770,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 10,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -816,6 +824,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 11,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -950,6 +959,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 12,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1020,6 +1030,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 13,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1071,6 +1082,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 14,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1122,6 +1134,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 15,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1201,6 +1214,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 16,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1296,6 +1310,34 @@
         }
       ],
       "upgradeNote": "May replace transport capacity of 2 with MM-3 Missile Boxes or MC-30 Heavy Gatlings.",
+      "swaps": [
+        {
+          "note": "May replace transport capacity of 2 with MM-3 Missile Boxes or MC-30 Heavy Gatlings.",
+          "grants": "MM-3 Missile Boxes",
+          "grantsRules": [],
+          "variants": [],
+          "removes": [],
+          "removesCapacity": [
+            {
+              "shape": "circle",
+              "n": 2
+            }
+          ]
+        },
+        {
+          "note": "May replace transport capacity of 2 with MM-3 Missile Boxes or MC-30 Heavy Gatlings.",
+          "grants": "MC-30 Heavy Gatlings",
+          "grantsRules": [],
+          "variants": [],
+          "removes": [],
+          "removesCapacity": [
+            {
+              "shape": "circle",
+              "n": 2
+            }
+          ]
+        }
+      ],
       "page": 17,
       "auxiliaryTransport": true,
       "selectable": true,
@@ -1394,6 +1436,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 18,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1489,6 +1532,34 @@
         }
       ],
       "upgradeNote": "May replace transport capacity of 2 with MM-3 Missile Boxes or MC-30 Heavy Gatlings.",
+      "swaps": [
+        {
+          "note": "May replace transport capacity of 2 with MM-3 Missile Boxes or MC-30 Heavy Gatlings.",
+          "grants": "MM-3 Missile Boxes",
+          "grantsRules": [],
+          "variants": [],
+          "removes": [],
+          "removesCapacity": [
+            {
+              "shape": "circle",
+              "n": 2
+            }
+          ]
+        },
+        {
+          "note": "May replace transport capacity of 2 with MM-3 Missile Boxes or MC-30 Heavy Gatlings.",
+          "grants": "MC-30 Heavy Gatlings",
+          "grantsRules": [],
+          "variants": [],
+          "removes": [],
+          "removesCapacity": [
+            {
+              "shape": "circle",
+              "n": 2
+            }
+          ]
+        }
+      ],
       "page": 19,
       "auxiliaryTransport": true,
       "selectable": true,
@@ -1580,6 +1651,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 20,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1648,6 +1720,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 21,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1776,6 +1849,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 22,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1961,6 +2035,21 @@
         }
       ],
       "upgradeNote": "May replace both its MC-20 Chainguns with MM-15 Sidearm Missiles.",
+      "swaps": [
+        {
+          "note": "May replace both its MC-20 Chainguns with MM-15 Sidearm Missiles.",
+          "grants": "MM-15 Sidearm Missiles",
+          "grantsRules": [],
+          "variants": [],
+          "removes": [
+            {
+              "weapon": "MC-20 Chaingun",
+              "count": 2
+            }
+          ],
+          "removesCapacity": []
+        }
+      ],
       "page": 23,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2057,6 +2146,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 24,
       "auxiliaryTransport": true,
       "selectable": true,
@@ -2092,6 +2182,7 @@
       },
       "weapons": [],
       "upgradeNote": null,
+      "swaps": [],
       "page": 25,
       "auxiliaryTransport": true,
       "selectable": true,
@@ -2127,6 +2218,7 @@
       },
       "weapons": [],
       "upgradeNote": null,
+      "swaps": [],
       "page": 26,
       "auxiliaryTransport": true,
       "selectable": true,
@@ -2225,6 +2317,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 27,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2293,6 +2386,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 28,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2350,6 +2444,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 29,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2454,6 +2549,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 30,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2507,6 +2603,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 31,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2553,6 +2650,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 32,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2647,6 +2745,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 33,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2750,6 +2849,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 34,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2821,6 +2921,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 35,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2877,6 +2978,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 36,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2928,6 +3030,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 37,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -3058,6 +3161,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 38,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -3139,6 +3243,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 39,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -3265,6 +3370,25 @@
         }
       ],
       "upgradeNote": "May also replace one MM-3 Missile Pod and one MG-6 Twin Heavy Machineguns with a MC-20 Chaingun Pair.",
+      "swaps": [
+        {
+          "note": "May also replace one MM-3 Missile Pod and one MG-6 Twin Heavy Machineguns with a MC-20 Chaingun Pair.",
+          "grants": "MC-20 Chaingun Pair",
+          "grantsRules": [],
+          "variants": [],
+          "removes": [
+            {
+              "weapon": "MM-3 Missile Pod",
+              "count": 1
+            },
+            {
+              "weapon": "MG-6 Twin Heavy Machineguns",
+              "count": 1
+            }
+          ],
+          "removesCapacity": []
+        }
+      ],
       "page": 40,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -3364,6 +3488,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 41,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -3430,6 +3555,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 42,
       "auxiliaryTransport": false,
       "selectable": true,

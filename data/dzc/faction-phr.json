@@ -83,6 +83,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 2,
       "auxiliaryTransport": true,
       "selectable": true,
@@ -151,6 +152,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 3,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -197,6 +199,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 4,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -366,6 +369,24 @@
         }
       ],
       "upgradeNote": "Menchit and Styx may replace Twin RX-20 Miniguns with RM-4 Foeslayer Missiles.",
+      "swaps": [
+        {
+          "note": "Menchit and Styx may replace Twin RX-20 Miniguns with RM-4 Foeslayer Missiles.",
+          "grants": "RM-4 Foeslayer Missiles",
+          "grantsRules": [],
+          "variants": [
+            "Menchit",
+            "Styx"
+          ],
+          "removes": [
+            {
+              "weapon": "Twin RX-20 Miniguns",
+              "count": 1
+            }
+          ],
+          "removesCapacity": []
+        }
+      ],
       "page": 5,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -427,6 +448,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 6,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -488,6 +510,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 7,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -556,6 +579,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 8,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -635,6 +659,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 9,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -731,6 +756,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 10,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -768,6 +794,7 @@
       },
       "weapons": [],
       "upgradeNote": null,
+      "swaps": [],
       "page": 11,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -864,6 +891,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 12,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -945,6 +973,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 13,
       "auxiliaryTransport": true,
       "selectable": true,
@@ -1041,6 +1070,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 14,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1117,6 +1147,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 15,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1198,6 +1229,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 16,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1334,6 +1366,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 17,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1490,6 +1523,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 18,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1599,6 +1633,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 19,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1820,6 +1855,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 20,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1873,6 +1909,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 21,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -1908,6 +1945,7 @@
       },
       "weapons": [],
       "upgradeNote": null,
+      "swaps": [],
       "page": 22,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2012,6 +2050,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 23,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2116,6 +2155,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 24,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2233,6 +2273,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 25,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2327,6 +2368,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 26,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2380,6 +2422,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 27,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2464,6 +2507,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 28,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2515,6 +2559,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 29,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2596,6 +2641,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 30,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2647,6 +2693,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 31,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2728,6 +2775,7 @@
         }
       ],
       "upgradeNote": "Only one of these upgrades may be taken.",
+      "swaps": [],
       "page": 32,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2809,6 +2857,7 @@
         }
       ],
       "upgradeNote": "Only one of these upgrades may be taken.",
+      "swaps": [],
       "page": 33,
       "auxiliaryTransport": false,
       "selectable": true,
@@ -2880,6 +2929,7 @@
         }
       ],
       "upgradeNote": null,
+      "swaps": [],
       "page": 34,
       "auxiliaryTransport": false,
       "selectable": true,
