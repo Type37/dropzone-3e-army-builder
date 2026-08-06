@@ -130,6 +130,17 @@ def slug(s):
     return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
 
 
+def _newest_behemoth(cards_dir):
+    """The newest Behemoth PDF in cards_dir, by TTCombat's date stamp."""
+    def stamp(f):
+        m = re.search(r"_(\d{6})\.pdf$", f)
+        return m.group(1) if m else ""
+
+    got = [f for f in os.listdir(cards_dir)
+           if f.startswith("Behemoth_Rules_Stats") and f.endswith(".pdf")]
+    return os.path.join(cards_dir, max(got, key=stamp)) if got else None
+
+
 def faction_pdfs(cards_dir):
     """Map faction id -> its stat-card PDF. Bioficers ship 'Stat_Sheets'."""
     out = {}
@@ -434,11 +445,54 @@ def parse_front_matter(doc):
     return out
 
 
+# "3.1.4 Huge Blast" — number and name in ONE span, which is why parse() finds
+# nothing here: the rulebook sets the number and the heading beside it as two
+# spans, and parse() keys off a span that is only a number.
+BEHEMOTH_HEAD_RE = re.compile(r"^(\d+(?:\.\d+)+)\s+(\S.*)$")
+
+
+def parse_behemoth_rules(doc, pages) -> list[Rule]:
+    """The Behemoth PDF's own rules pages.
+
+    Its own parser rather than parse(), because the typography is different in
+    two ways that both matter: the section number and the heading share a span,
+    and the headings are 10pt against 9pt body rather than the rulebook's much
+    larger step. Size alone is the whole signal, so it is the whole test.
+
+    These are not optional extras. A Behemoth card prints Macro, Integral, Huge
+    Blast, Secondary, AS X, Alt X and Walker X"xY" and none of them is in the
+    core rulebook — without this every keyword on all ten cards is a chip with
+    nothing behind it."""
+    body_size = 9.0
+    out: list[Rule] = []
+    cur: Rule | None = None
+    for pno in range(pages[0], pages[1] + 1):
+        for blk in doc[pno].get_text("dict")["blocks"]:
+            for ln in blk.get("lines", []):
+                for sp in ln["spans"]:
+                    txt = sp["text"].strip()
+                    if not txt:
+                        continue
+                    m = BEHEMOTH_HEAD_RE.match(txt)
+                    if m and sp["size"] > body_size + 0.4:
+                        if cur:
+                            out.append(cur)
+                        cur = {"section": m.group(1), "name": m.group(2),
+                               "text": "", "page": pno + 1}
+                    elif cur is not None and not txt.isdigit():
+                        cur["text"] = (cur["text"] + " " + txt) if cur["text"] else txt
+    if cur:
+        out.append(cur)
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--pdf", default="rules/A5_Dropzone_3.01_Rulebook_Compressed.pdf")
     ap.add_argument("--cards-dir", default="rules",
                     help="directory holding the six faction stat-card PDFs")
+    ap.add_argument("--behemoth-pdf", default=None,
+                    help="the Behemoth PDF; its rules pages are read too")
     ap.add_argument("--out", default="data/dzc/rules.json")
     args = ap.parse_args()
 
@@ -510,6 +564,43 @@ def main():
             })
             found += 1
         print(f"  {fac:<12} {found:>3} faction rules  ({os.path.basename(pdf)})")
+
+    # Behemoth rules. Namespaced like a faction's, because "Integral" and
+    # "Secondary" are Behemoth words and must not shadow a core rule of the
+    # same name if one ever appears.
+    beh_pdf = args.behemoth_pdf or _newest_behemoth(args.cards_dir)
+    beh_count = 0
+    if beh_pdf:
+        bdoc = fitz.open(beh_pdf)
+        # The rules run until the first stat card. Found rather than
+        # hardcoded at 10 — and keyed on "Squad Size:" WITH the colon, which
+        # only a card prints. Page 1's prose says "a Groups Equivalent stat
+        # instead of Squad Size", so testing without the colon stopped the
+        # scan on the first page and found one rule out of thirty.
+        last = 0
+        for pno in range(bdoc.page_count):
+            if "Squad Size:" in bdoc[pno].get_text():
+                break
+            last = pno
+        for r in parse_behemoth_rules(bdoc, (0, last)):
+            name = tidy(r["name"])
+            if not name or not tidy(r["text"]):
+                continue
+            head, alias = split_alias(name)
+            out.append({
+                "id": f"behemoth-{slug(head)}",
+                "faction": "behemoth",
+                "section": r["section"],
+                "chapter": "Behemoth rules",
+                "name": head,
+                "alias": alias,
+                "parameterised": bool(PLACEHOLDER_RE.search(head)),
+                "match": matcher_pattern(head),
+                "text": tidy(r["text"]),
+                "page": r["page"],
+            })
+            beh_count += 1
+        print(f"  {'behemoth':<12} {beh_count:>3} rules  ({os.path.basename(beh_pdf)})")
 
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
     with open(args.out, "w", encoding="utf-8") as fh:

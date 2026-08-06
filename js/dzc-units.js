@@ -16,7 +16,12 @@
     { id: 'scourge', name: 'Scourge', full: 'Scourge', accent: '#60489c' },
     { id: 'shaltari', name: 'Shaltari', full: 'Shaltari', accent: '#e46024' },
     { id: 'resistance', name: 'Resistance', full: 'Resistance', accent: '#3c84c0' },
-    { id: 'bioficer', name: 'Bioficers', full: 'Bioficers', accent: '#9c1818' }
+    { id: 'bioficer', name: 'Bioficers', full: 'Bioficers', accent: '#9c1818' },
+    /* Not a faction, and it is last for that reason: the Behemoth PDF prints
+       ten of them and none of the cards says whose they are. Until that is
+       known they are a set you can read, not a faction you can build from —
+       every one is selectable: false, so they never reach the picker. */
+    { id: 'behemoth', name: 'Behemoths', full: 'Behemoths', accent: '#6b6459' }
   ];
 
   // Force-organisation order (rulebook 3.2). Generated units are produced in
@@ -125,7 +130,9 @@
    * and how much it takes to kill. Copied from the Dropfleet builder's
    * renderStatGrid (app.js:3472), which is a 2-column grid of
    * icon + value + label cells. */
-  const STAT_ORDER = ['Mv', 'A', 'OF', 'DF', 'B', 'DP'];
+  // Power last: only Behemoths print one, and it is the stat their whole turn
+  // is spent out of rather than one you compare against another Unit's.
+  const STAT_ORDER = ['Mv', 'A', 'OF', 'DF', 'B', 'DP', 'Power'];
 
   /* Two views of the same block.
    *
@@ -239,7 +246,15 @@
       `<button type="button" class="dzc-chip${c === state.category ? ' is-active' : ''}"
         onclick="DZCUnits.setCategory('${c}')">${esc(c)}</button>`).join('');
 
-    const groups = CATEGORIES.map(cat => {
+    /* Every category the six know about, and then anything else the data
+     * carries. That tail is not defensive padding: the Venus Drone's card
+     * prints "N/A" where a category goes, and mapping over a fixed list of six
+     * dropped it off the page while the count line above still said eleven of
+     * eleven. A Unit that is on the screen's own count and not on the screen
+     * is the worst version of hiding something. */
+    const extra = [...new Set(units.map(u => u.category)
+      .filter(c => c && CATEGORIES.indexOf(c) === -1))];
+    const groups = CATEGORIES.concat(extra).map(cat => {
       const inCat = units.filter(u => u.category === cat);
       if (!inCat.length) return '';
       const pts = inCat.map(u => u.points).filter(p => p != null);

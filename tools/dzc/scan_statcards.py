@@ -1187,6 +1187,24 @@ def parse_swaps(unit: Unit) -> None:
 GEAR_RE = re.compile(r"^\s*(\d+\+?)\s*PT\s*:\s*(.+?)\s*$", re.I)
 
 
+def gear_top(page, below_y):
+    """Y of the "Gear" heading on a Behemoth card, or None.
+
+    The weapon table otherwise runs straight into the Gear list underneath it,
+    because lore_top only knows how to stop at italic flavour text and a
+    footnote, and "Gear" is neither. The Type 6 Grand Walker came out with a
+    weapon whose Special read "Demo 0 2PT: Director 2: 4 Venus Drones
+    (Porphyrion)" -- one gun's rule welded to another card element entirely."""
+    best = None
+    for blk in page.get_text("dict")["blocks"]:
+        for ln in blk.get("lines", []):
+            text = " ".join(sp["text"] for sp in ln["spans"]).strip()
+            y = ln["bbox"][1]
+            if text.lower() == "gear" and y > below_y and (best is None or y < best):
+                best = y
+    return best
+
+
 def parse_gear(page) -> list[Gear]:
     """A Behemoth's Power-priced Gear, off the card's Gear list.
 
@@ -1234,7 +1252,11 @@ def parse_weapons(page, lines) -> tuple[list[Weapon], float]:
     xs = [c[1] for c in cols]
     tbl = fitz.Rect(min(xs) - 40, hdr_bottom, max(xs) + 60, page.rect.height)
     # Stop at the flavour text. Everything below it is prose, not table data.
-    lore_y = lore_top(page, hdr_bottom, tbl.x0)
+    # Whichever comes first: the flavour text, the footnote, or a Behemoth's
+    # Gear list. All three sit below the table and none of them is table data.
+    stops = [y for y in (lore_top(page, hdr_bottom, tbl.x0), gear_top(page, hdr_bottom))
+             if y is not None]
+    lore_y = min(stops) if stops else None
     if lore_y is not None:
         tbl.y1 = min(tbl.y1, lore_y)
     below = [w for w in words_in(page, tbl) if w[1] > hdr_bottom

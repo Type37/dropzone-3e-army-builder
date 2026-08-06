@@ -65,6 +65,10 @@
     },
     stat_a: 'M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z',
     stat_dp: 'M12 2 21 7v10l-9 5-9-5V7l9-5z',
+    // Power — a Behemoth's activation currency (Behemoth rules 1.2). A bolt,
+    // because it is spent and replenished rather than compared: the other five
+    // stats say what a Unit IS, this one says what it has left.
+    stat_power: 'M13 2 4 14h6l-1 8 9-12h-6l1-8z',
     // Offence — a soldier firing. Supplied by Jet; carries its own 640 box.
     stat_of: {
       box: '0 0 640 640',

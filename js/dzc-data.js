@@ -55,10 +55,18 @@
     return state._loading.index;
   }
 
+  /* The Behemoths are their own file, not a seventh faction's.
+   *
+   * The cards do not print a faction and none is inferred, so they load as
+   * "behemoth" and read as one set. Every other path treats them like any
+   * other faction file, which is why the id maps to a filename rather than
+   * getting a branch of its own everywhere downstream. */
+  const FILE_FOR = id => (id === 'behemoth' ? 'behemoths' : `faction-${id}`);
+
   async function loadFaction(id) {
     if (state.factions[id]) return state.factions[id];
     if (!state._loading[id]) {
-      state._loading[id] = getJSON(`${BASE}/faction-${id}.json`).then(f => {
+      state._loading[id] = getJSON(`${BASE}/${FILE_FOR(id)}.json`).then(f => {
         f.byId = {};
         (f.units || []).forEach(u => { f.byId[u.id] = u; });
         state.factions[id] = f;
@@ -81,7 +89,9 @@
   const KNOWN_TYPOS = {
     infliltrate: 'Infiltrate',
     devastor: 'Devastator',
-    precison: 'Precision'
+    precison: 'Precision',
+    // Scourge Hyperbio Cannon, on the Death Mech's card.
+    ineffecive: 'Ineffective'
   };
   const TYPO_RE = new RegExp('\\b(' + Object.keys(KNOWN_TYPOS).join('|') + ')\\b', 'gi');
   const VARIANT_TAIL = /\s*\([^)]*\)\s*$/;
@@ -499,7 +509,9 @@
   // each one; a bare "A" or "DP" means nothing without having read the book.
   const STAT_LABELS = {
     Mv: 'Move', A: 'Armour', DP: 'Damage Points',
-    OF: 'Offence', DF: 'Defence', B: 'Bravery'
+    OF: 'Offence', DF: 'Defence', B: 'Bravery',
+    // Behemoths only.
+    Power: 'Power'
   };
   const WEAPON_LABELS = {
     Name: 'Weapon', Arc: 'Arc', MA: 'Move & Attack', R: 'Range',
@@ -521,7 +533,8 @@
     DP: 'The amount of damage it can take before being destroyed (2.5)',
     OF: 'Its lethality against Infantry up close (2.6)',
     DF: 'Its skill at surviving certain situations, in place of an Armour value (2.6)',
-    B: 'Roll 1D6 against it for a Bravery Test; a value of A passes automatically (2.6.1)'
+    B: 'Roll 1D6 against it for a Bravery Test; a value of A passes automatically (2.6.1)',
+    Power: 'What it spends to act, and to run its Gear (Behemoth rules 1.2)'
   };
   const WEAPON_HELP = {
     Arc: 'The directions in which it may attack (2.7)',

@@ -38,6 +38,7 @@ KNOWN_TYPOS = {
     "infliltrate": "Infiltrate",     # Scourge Battle/Support Beetle
     "devastor": "Devastator",        # Remote Bomb Bus, UCM Artillery Vehicle
     "precison": "Precision",         # UCM Heavy Tank
+    "ineffecive": "Ineffective",     # Scourge Hyperbio Cannon, on the Death Mech
 }
 TYPO_RE = re.compile(r"\b(" + "|".join(KNOWN_TYPOS) + r")\b", re.I)
 
@@ -64,6 +65,17 @@ KNOWN_CARD_QUIRKS = {
         "Totem Shieldspire: a Shield rule printed without its 'Shield:' prefix",
     "Shield: Zones":
         "Totem Shieldspire: a Shield rule printed without its radius and save",
+    # Two keywords with no comma between them. Splitting on the comma is what
+    # every other card in the game supports, so this is the card, not the split.
+    "Macro Critical 1":
+        "Death Mech: 'Macro' and 'Critical 1' printed with no comma between them",
+    # Faction rules, on cards that never name a faction. Razorworm Pod and
+    # Nanomachines live in the Scourge and PHR front matter and resolve the
+    # moment a Behemoth knows which faction it belongs to; "Particle" is the
+    # Shaltari weapon rule. Nothing to fix here until that mapping exists.
+    "Razorworm Pod": "Terror Mech: a Scourge rule, on a card with no faction on it",
+    "Nanomachines": "Type 7 Grand Walker: a PHR rule, on a card with no faction on it",
+    "Particle": "Dragon: a Shaltari rule, on a card with no faction on it",
 }
 
 
@@ -172,7 +184,11 @@ def main():
 
     refs = collections.Counter()
     where = collections.defaultdict(set)
-    for path in sorted(glob.glob(FACTIONS)):
+    # The Behemoth file too. It prints Macro, Integral, Huge Blast and the
+    # rest, none of which is in the core rulebook — an audit that only looked
+    # at the six faction files would have called that coverage.
+    sources = [*sorted(glob.glob(FACTIONS)), os.path.join("data", "dzc", "behemoths.json")]
+    for path in [p for p in sources if os.path.exists(p)]:
         with open(path, encoding="utf-8") as fh:
             data = json.load(fh)
         fac = data["faction"]
