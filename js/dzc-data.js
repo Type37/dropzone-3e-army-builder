@@ -365,6 +365,36 @@
     return (unit.transport && unit.transport.fills) || [];
   }
 
+  /* A carrier's capacity AFTER its weapon upgrades, because two cards in the
+   * game sell their room for guns: the Strikehawk and the Carryhawk, "May
+   * replace transport capacity of 2 with MM-3 Missile Boxes or MC-30 Heavy
+   * Gatlings" (3.2.3). Until this existed that sentence was a note nobody
+   * read, and the app would happily load two circles into a Strikehawk that
+   * had already traded them away -- a wrong army it called legal.
+   *
+   * `taken` is asked about each weapon; the scanner puts the arithmetic on the
+   * weapon as capacityDelta, so nothing here parses English.
+   *
+   * Returns the unit ITSELF when nothing changes. The clone is the rare path,
+   * so every identity check downstream still holds for the other 176 units. */
+  function carrierWithUpgrades(unit, taken) {
+    if (!unit || typeof taken !== 'function') return unit;
+    const deltas = [];
+    (unit.weapons || []).forEach(w => {
+      if ((w.capacityDelta || []).length && taken(w)) deltas.push.apply(deltas, w.capacityDelta);
+    });
+    if (!deltas.length) return unit;
+    const cap = (((unit.transport || {}).capacity) || []).map(c => ({ shape: c.shape, n: c.n }));
+    deltas.forEach(d => {
+      const hit = cap.find(c => c.shape === d.shape);
+      if (hit) hit.n = Math.max(0, hit.n + d.n);
+    });
+    return Object.assign({}, unit, {
+      transport: Object.assign({}, unit.transport || {},
+        { capacity: cap.filter(c => c.n > 0) })
+    });
+  }
+
   function canCarry(carrier, passenger) {
     return fillsOf(passenger).some(f => capacityFor(carrier, f.shape) > 0);
   }
@@ -516,7 +546,7 @@
     faction: id => state.factions[id],
     unit: (fid, uid) => (state.factions[fid] || { byId: {} }).byId[uid],
     rule, ruleText, linkKeywords, splitSpecial, matches, squadPrice,
-    capacityFor, fillsOf, canCarry, loadCheck, isFull,
+    capacityFor, fillsOf, canCarry, carrierWithUpgrades, loadCheck, isFull,
     gameSizeFor, maxGroups, maxGroupCost, rareLimit, commanderLevels,
     _state: state, _compileRules: compileRules
   };

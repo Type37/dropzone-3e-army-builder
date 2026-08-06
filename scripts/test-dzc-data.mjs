@@ -481,6 +481,22 @@ eq(DZC.weaponColHelp('Special'), '', 'and a column with no definition gets no em
      'a "+" Transport carries both shapes at once, filled to both numbers');
   ok(!DZC.loadCheck(strike, [{ unit: fighters, count: 5 }, { unit: sentry, count: 1 }], 1).ok,
      'and still refuses one over on either of them');
+
+  /* The Strikehawk footnote, as arithmetic: "May replace transport capacity of
+   * 2 with MM-3 Missile Boxes or MC-30 Heavy Gatlings". The scanner puts the
+   * delta on the weapon so nothing at runtime parses English. */
+  const gatlings = strike.weapons.find(w => w.name === 'MC-30 Heavy Gatlings');
+  eq(JSON.stringify(gatlings.capacityDelta), '[{"shape":"circle","n":-2}]',
+     'the scanner read the capacity footnote onto the weapon');
+  const armed = DZC.carrierWithUpgrades(strike, w => w.name === 'MC-30 Heavy Gatlings');
+  eq(DZC.capacityFor(armed, 'circle'), 0, 'buying it spends the circle capacity');
+  eq(DZC.capacityFor(armed, 'square'), 4, 'and leaves the square capacity alone');
+  ok(!DZC.loadCheck(armed, [{ unit: sentry, count: 1 }], 1).ok,
+     'so the armed Strikehawk carries no Sentry Unit at all');
+  ok(DZC.carrierWithUpgrades(strike, () => false) === strike,
+     'an unarmed carrier is the unit itself, not a copy of it');
+  ok(DZC.carrierWithUpgrades(fighters, () => true) === fighters,
+     'and so is anything with no capacity to sell');
 }
 
 // ------------------------------------------------------------------ arc icons

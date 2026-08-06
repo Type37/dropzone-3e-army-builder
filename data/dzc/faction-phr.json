@@ -61,6 +61,7 @@
             "Angelos A1"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -77,6 +78,7 @@
             "Angelos A2"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -129,6 +131,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -143,6 +146,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -187,6 +191,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -254,6 +259,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -270,6 +276,7 @@
             "Ares"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -286,6 +293,7 @@
             "Phobos"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -302,6 +310,7 @@
             "Menchit"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -318,6 +327,7 @@
             "Styx"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -335,6 +345,7 @@
             "Styx"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -349,6 +360,7 @@
           "box": "upgrade",
           "variants": [],
           "upgradePoints": 5,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -393,6 +405,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -407,6 +420,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -451,6 +465,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -465,6 +480,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -517,6 +533,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -531,6 +548,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -592,6 +610,7 @@
             "Diana"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -608,6 +627,7 @@
             "Aurora"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -669,6 +689,7 @@
             "Thor"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -685,6 +706,7 @@
             "Taranis"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -701,6 +723,7 @@
             "Taranis"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -799,6 +822,7 @@
             "Phaethon"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -815,6 +839,7 @@
             "Helios"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -831,6 +856,7 @@
             "Helios"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -881,6 +907,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -895,6 +922,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -909,6 +937,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -970,6 +999,7 @@
             "Erebos A"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -986,6 +1016,7 @@
             "Erebos B"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1002,6 +1033,7 @@
             "Erebos B"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -1046,6 +1078,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1060,6 +1093,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1074,6 +1108,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -1124,6 +1159,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1138,6 +1174,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1152,6 +1189,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -1219,6 +1257,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1235,6 +1274,7 @@
             "Odin"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1251,6 +1291,7 @@
             "Enyo"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1267,6 +1308,7 @@
             "Hyperion"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1283,6 +1325,7 @@
             "Zeus"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -1344,6 +1387,7 @@
             "Hades"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1360,6 +1404,7 @@
             "Persephone"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1376,6 +1421,7 @@
             "Persephone"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1390,6 +1436,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1404,6 +1451,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1418,6 +1466,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1432,6 +1481,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -1493,6 +1543,7 @@
             "Nemesis"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1509,6 +1560,7 @@
             "Bellona"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1523,6 +1575,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1537,6 +1590,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -1604,6 +1658,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1620,6 +1675,7 @@
             "Rashnu"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1636,6 +1692,7 @@
             "Agas"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1652,6 +1709,7 @@
             "Agas"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1668,6 +1726,7 @@
             "Agas"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1684,6 +1743,7 @@
             "Dahaka"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1700,6 +1760,7 @@
             "Dahaka"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1716,6 +1777,7 @@
             "Dahaka"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1732,6 +1794,7 @@
             "Mithra"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1748,6 +1811,7 @@
             "Mithra"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -1800,6 +1864,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -1888,6 +1953,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1902,6 +1968,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1918,6 +1985,7 @@
             "Athena"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -1934,6 +2002,7 @@
             "Minerva"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -1987,6 +2056,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -2001,6 +2071,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -2017,6 +2088,7 @@
             "Columbus A"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -2033,6 +2105,7 @@
             "Columbus B"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -2098,6 +2171,7 @@
             "Hera"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -2114,6 +2188,7 @@
             "Apollo A"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -2130,6 +2205,7 @@
             "Apollo B"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -2146,6 +2222,7 @@
             "Apollo B"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -2205,6 +2282,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -2221,6 +2299,7 @@
             "Janus"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -2237,6 +2316,7 @@
             "Hermes"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -2289,6 +2369,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -2355,6 +2436,7 @@
             "Juno A1"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -2371,6 +2453,7 @@
             "Juno A2"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -2421,6 +2504,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -2471,6 +2555,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -2485,6 +2570,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -2499,6 +2585,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -2549,6 +2636,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -2599,6 +2687,7 @@
           "box": "upgrade",
           "variants": [],
           "upgradePoints": 10,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -2613,6 +2702,7 @@
           "box": "upgrade",
           "variants": [],
           "upgradePoints": 5,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -2627,6 +2717,7 @@
           "box": "upgrade",
           "variants": [],
           "upgradePoints": 15,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -2677,6 +2768,7 @@
           "box": "upgrade",
           "variants": [],
           "upgradePoints": 10,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -2691,6 +2783,7 @@
           "box": "upgrade",
           "variants": [],
           "upgradePoints": 5,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -2705,6 +2798,7 @@
           "box": "upgrade",
           "variants": [],
           "upgradePoints": 15,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -2760,6 +2854,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -2774,6 +2869,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],

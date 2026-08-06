@@ -78,6 +78,38 @@ for (fid, name), u in units.items():
             warnings.append(f"{fid}/{name}: {u['type']} fills a {c['shape']} "
                             f"(usually {exp}) -- verify against the card")
 
+# --- capacity sold for guns -------------------------------------------------
+#
+# A card that says "May replace transport capacity of N with ..." must come out
+# of the scan with that arithmetic ON the weapons it names, or the builder will
+# let you carry room you have already traded away and call the army legal.
+# Prose in upgradeNote is not enforcement; capacityDelta is.
+for (fid, name), u in sorted(units.items()):
+    note = u.get("upgradeNote") or ""
+    if "transport capacity" not in note.lower():
+        continue
+    armed = [w for w in u.get("weapons") or [] if w.get("capacityDelta")]
+    if not armed:
+        problems.append(f"{fid}/{name}: the card sells transport capacity for a weapon "
+                        f"and no weapon carries the delta -- {note!r}")
+        continue
+    for w in armed:
+        for d in w["capacityDelta"]:
+            if d["n"] >= 0:
+                problems.append(f"{fid}/{name}: {w['name']} changes capacity by "
+                                f"{d['n']:+d} -- the footnote only ever takes room away")
+            if not any(c["shape"] == d["shape"] for c in u["transport"]["capacity"]):
+                problems.append(f"{fid}/{name}: {w['name']} spends {d['shape']} capacity "
+                                f"the unit does not have")
+
+# A delta anywhere else is a parse gone wrong: no other card sells its room.
+for (fid, name), u in sorted(units.items()):
+    note = (u.get("upgradeNote") or "").lower()
+    for w in u.get("weapons") or []:
+        if w.get("capacityDelta") and "transport capacity" not in note:
+            problems.append(f"{fid}/{name}: {w['name']} carries a capacity delta "
+                            f"with no footnote to justify it")
+
 # diamond must remain distinct from square
 sq = sum(by_shape["square"].values())
 di = sum(by_shape["diamond"].values())

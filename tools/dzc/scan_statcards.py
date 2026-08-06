@@ -843,6 +843,45 @@ def upgrade_note(page, below_y, left_edge=None):
     return " ".join(out).strip() or None
 
 
+# "*May replace transport capacity of 2 with MM-3 Missile Boxes or MC-30 Heavy
+# Gatlings." Two cards in the game, both Resistance tilt-rotors.
+CAPACITY_SWAP_RE = re.compile(
+    r"replace\s+transport\s+capacity\s+of\s+(\d+)\s+with\s+(.+?)\s*\.?\s*$", re.I)
+
+
+def apply_capacity_upgrades(unit):
+    """
+    Turn the capacity footnote into arithmetic on the weapons it names.
+
+    This is the only sentence on any card where buying a weapon costs you room,
+    and until it was parsed it was a note nobody read: the builder would load
+    two circles into a Strikehawk that had already sold them for missiles, and
+    call the army legal.
+
+    The footnote loses its shape symbol on the way out of the PDF -- see
+    upgrade_note, where the symbol is set in the display face and comes through
+    as the count alone -- so "capacity of 2" is all there is to go on. That is
+    enough when exactly ONE of the unit's capacity badges reads 2, which is the
+    case on both cards: a circle 2 beside a square 4, and a circle 2 beside a
+    triangle 3.
+
+    When it is not enough, nothing is attached and audit_transport fails on the
+    note with no arithmetic behind it. A guess here would be a wrong army the
+    builder calls legal, which is the exact failure this exists to stop.
+    """
+    m = CAPACITY_SWAP_RE.search(unit.get("upgradeNote") or "")
+    if not m:
+        return
+    n = int(m.group(1))
+    hits = [c for c in unit["transport"].get("capacity") or [] if c["n"] == n]
+    if len(hits) != 1:
+        return
+    names = {x.strip(" .") for x in re.split(r"\bor\b|,", m.group(2)) if x.strip(" .")}
+    for w in unit["weapons"]:
+        if w["box"] == "upgrade" and w["name"] in names:
+            w["capacityDelta"] = [{"shape": hits[0]["shape"], "n": -n}]
+
+
 def parse_weapons(page, lines):
     i, hdr = find_header_row(lines, WEAPON_HEADERS, need=5)
     if hdr is None:
@@ -911,6 +950,10 @@ def parse_weapons(page, lines):
     for w in weapons:
         w["variants"] = []
         w["upgradePoints"] = None
+        # Filled by apply_capacity_upgrades once the unit's own capacity is
+        # known. Present on every weapon so the shape of a weapon never depends
+        # on which card it came off.
+        w["capacityDelta"] = []
         while True:
             m = re.search(r"\(([^)]*)\)\s*$", w["name"])
             if not m:
@@ -1095,6 +1138,9 @@ def parse_page(page, doc, art_dir):
         "upgradeNote": upgrade_note(page, 200, 20),
         "page": page.number + 1,
     }
+    # Needs the weapons, the transport badges and the footnote all parsed, so
+    # it runs on the assembled unit rather than inside any one of them.
+    apply_capacity_upgrades(unit)
     unit["auxiliaryTransport"] = bool(
         unit["transport"]["capacity"] and (unit["category"] or "") != "Transport"
     )

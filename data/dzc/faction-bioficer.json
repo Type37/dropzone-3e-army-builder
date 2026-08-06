@@ -61,6 +61,7 @@
             "Grievance 1"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -77,6 +78,7 @@
             "Grievance 2"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -142,6 +144,7 @@
             "Thorn 1"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -158,6 +161,7 @@
             "Thorn 2"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -174,6 +178,7 @@
             "Thorn 3"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -190,6 +195,7 @@
             "Thorn 3"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -255,6 +261,7 @@
             "Tusk 1"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -271,6 +278,7 @@
             "Tusk 2"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -287,6 +295,7 @@
             "Tusk 3"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -348,6 +357,7 @@
           "box": "variant",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": true
         },
         {
@@ -364,6 +374,7 @@
             "Surge 1"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -380,6 +391,7 @@
             "Surge 2"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -396,6 +408,7 @@
             "Surge 3"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -412,6 +425,7 @@
             "Surge 4"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -428,6 +442,7 @@
             "Surge 4"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -493,6 +508,7 @@
             "Tangent 1"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -509,6 +525,7 @@
             "Tangent 2"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -525,6 +542,7 @@
             "Tangent 3"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -592,6 +610,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -608,6 +627,7 @@
             "Silence 1"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -624,6 +644,7 @@
             "Silence 2"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -640,6 +661,7 @@
             "Silence 3"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -656,6 +678,7 @@
             "Silence 4"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         },
         {
@@ -672,6 +695,7 @@
             "Silence 4"
           ],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -722,6 +746,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -772,6 +797,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -822,6 +848,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -872,6 +899,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -924,6 +952,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],
@@ -976,6 +1005,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "capacityDelta": [],
           "boxUnresolved": false
         }
       ],

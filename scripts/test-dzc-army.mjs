@@ -106,6 +106,43 @@ console.log('\n"only one of these upgrades" is enforced (3.2.3)');
   A.remove(a.id);
 }
 
+/* "May replace transport capacity of 2 with MM-3 Missile Boxes or MC-30 Heavy
+ * Gatlings" -- the Strikehawk and the Carryhawk, the only two cards in the
+ * game where buying a gun costs you room. It used to be prose in upgradeNote
+ * and nothing else, so the builder would load two circles into a Strikehawk
+ * that had already sold them and call the army legal. */
+console.log('\nan upgrade that sells transport capacity (3.2.3)');
+{
+  await DZC.loadFaction('resistance');
+  const a = A.create('resistance', 'U', 1500);
+  const g = A.addGroup(a);
+  // The Strikehawk is Support, not Transport -- an auxiliary carrier (3.2.4.3)
+  // that is boarded rather than assigned.
+  const hawk = A.addSquad(a, g.id, 'strikehawk-tilt-rotor', 1);
+  const sentry = A.addSquad(a, g.id, 'resistance-sentry-unit', 2);   // fills circles
+  const r = A.boardTransport(a, sentry.id, hawk.id);
+  ok(r.ok, 'a Strikehawk carries two Sentry Units', r.reason);
+
+  eq(A.carrierOf(a, hawk).transport.capacity.find(c => c.shape === 'circle').n, 2,
+     'and offers 2 circle capacity while it is unarmed');
+  ok(!A.validate(a).errors.some(e => /3\.2\.4\.3/.test(e.rule)),
+     'the army is legal as built');
+
+  ok(A.toggleUpgrade(a, hawk.id, '*', 'MC-30 Heavy Gatlings').ok, 'the Gatlings are bought');
+  ok(!A.carrierOf(a, hawk).transport.capacity.some(c => c.shape === 'circle'),
+     'and the circle capacity goes with them');
+  ok(A.validate(a).errors.some(e => /3\.2\.4\.3/.test(e.rule)),
+     'so the Sentry Units it was carrying are now an error, not a silent pass');
+
+  // The square capacity is untouched: the footnote sells one badge, not both.
+  eq(A.carrierOf(a, hawk).transport.capacity.find(c => c.shape === 'square').n, 4,
+     'the square capacity survives');
+  ok(A.toggleUpgrade(a, hawk.id, '*', 'MC-30 Heavy Gatlings').ok, 'dropping the gun');
+  eq(A.carrierOf(a, hawk).transport.capacity.find(c => c.shape === 'circle').n, 2,
+     'gives the room back');
+  A.remove(a.id);
+}
+
 console.log('\ncategory ratios (3.2)');
 {
   const a = army();

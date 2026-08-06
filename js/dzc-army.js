@@ -938,7 +938,7 @@
   function roomSomewhere(army, group, unit) {
     if (!group) return false;
     return group.squads.some(t => {
-      const tu = unitOf(army, t);
+      const tu = carrierOf(army, t);
       if (!tu || t.carriedBy) return false;
       if (!(tu.category === 'Transport' || tu.auxiliaryTransport)) return false;
       if (!window.DZC.canCarry(tu, unit)) return false;
@@ -962,7 +962,7 @@
     const by = {};
     const slot = sh => (by[sh] = by[sh] || { shape: sh, total: 0, used: 0 });
     (group.squads || []).forEach(t => {
-      const tu = unitOf(army, t);
+      const tu = carrierOf(army, t);
       if (!tu || t.carriedBy) return;
       const cap = ((tu.transport || {}).capacity) || [];
       if (!cap.length) return;
@@ -1094,7 +1094,7 @@
     if (!u || !g) return [];
     return g.squads.filter(t => {
       if (t.id === s.id || t.carriedBy) return false;
-      const tu = unitOf(army, t);
+      const tu = carrierOf(army, t);
       if (!tu || !(tu.category === 'Transport' || tu.auxiliaryTransport)) return false;
       if (!window.DZC.canCarry(tu, u)) return false;
       // 3.2.4.1 caps the sharing at 4 Squads.
@@ -1105,7 +1105,7 @@
       load.push({ unit: u, count: s.models.length });
       return window.DZC.loadCheck(tu, load, t.models.length).ok;
     }).map(t => {
-      const tu = unitOf(army, t);
+      const tu = carrierOf(army, t);
       const aboard = g.squads.filter(x => x.carriedBy === t.id && x.id !== s.id);
       const load = aboard.map(x => ({ unit: unitOf(army, x), count: x.models.length }))
         .filter(x => x.unit);
@@ -1201,7 +1201,7 @@
   function refitTransports(army) {
     army.groups.forEach(g => {
       g.squads.slice().forEach(t => {
-        const tu = unitOf(army, t);
+        const tu = carrierOf(army, t);
         if (!tu || tu.category !== 'Transport') return;
         const riders = g.squads.filter(x => x.carriedBy === t.id);
         if (!riders.length) { g.squads = g.squads.filter(x => x.id !== t.id); return; }
@@ -1229,6 +1229,20 @@
   }
 
   function unitOf(army, squad) { return window.DZC.unit(army.faction, squad.unitId); }
+
+  /* The Unit a Transport Squad IS, with the room its own upgrades cost it
+   * already taken off. Every question about how much a Transport in an army
+   * can carry goes through this rather than through unitOf, because the
+   * Strikehawk that sold its capacity for missiles is a different carrier from
+   * the one on the card and both are called "Strikehawk Tilt-Rotor". */
+  function carrierOf(army, squad) {
+    return window.DZC.carrierWithUpgrades(unitOf(army, squad), w => hasAnyUpgrade(squad, w.name));
+  }
+
+  function hasAnyUpgrade(squad, name) {
+    const up = squad.upgrades || {};
+    return Object.keys(up).some(k => up[k][name]);
+  }
 
   // ------------------------------------------------------------- upgrades
   //
@@ -1444,7 +1458,7 @@
     // Transports: only alongside a Squad they can carry, and taken FULL.
     army.groups.forEach(g => {
       g.squads.forEach(s => {
-        const u = unitOf(army, s);
+        const u = carrierOf(army, s);
         if (!u || u.category !== 'Transport') return;
         const cargo = g.squads.filter(x => x.carriedBy === s.id)
           .map(x => ({ unit: unitOf(army, x), count: x.models.length }))
@@ -1466,7 +1480,7 @@
       // Auxiliary Transports need NOT be full, but still cannot be overloaded,
       // and a carried Squad may not be split across several of them (3.2.4.3).
       g.squads.forEach(s => {
-        const u = unitOf(army, s);
+        const u = carrierOf(army, s);
         if (!u || u.category === 'Transport' || !u.auxiliaryTransport) return;
         const cargo = g.squads.filter(x => x.carriedBy === s.id)
           .map(x => ({ unit: unitOf(army, x), count: x.models.length }))
@@ -1580,7 +1594,7 @@
     addGroup, removeGroup, duplicateGroup, moveGroup, groupName, renameGroup,
     commanderName, renameCommander, addSquad, removeSquad, setModelCount, setModelVariant,
     canSetVariantCount, setVariantCount,
-    setCarrier, setCommander, findSquad, groupOf, unitOf,
+    setCarrier, setCommander, findSquad, groupOf, unitOf, carrierOf,
     commanders, commanderFor, commanderTargets,
     addCommander, removeCommander, assignCommander, syncCommanders, levelCost,
     modelCost, squadCost, groupCost, armyCost, categorySpend, validate,

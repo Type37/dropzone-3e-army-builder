@@ -1025,7 +1025,9 @@
      * everything else here uses. What is already chosen is shown, not folded
      * back into a collapsed control you have to open to read. */
     const carrier = s.carriedBy ? window.DZCArmy.findSquad(a, s.carriedBy) : null;
-    const carrierUnit = carrier ? window.DZCArmy.unitOf(a, carrier) : null;
+    // carrierOf, not unitOf: the chip prints capacity symbols, and a Transport
+    // that sold its room for guns must print the room it has left.
+    const carrierUnit = carrier ? window.DZCArmy.carrierOf(a, carrier) : null;
     /* A Transport Squad is a Squad, so it gets this control too. 3.2.4.1 says
      * "up to 4 Squads, PLUS THEIR OWN TRANSPORT SQUADS, may share one larger
      * Transport", and that is the only way an Albatross is ever bought: you
@@ -1084,7 +1086,7 @@
                     onclick="DZCUnits.openDetail('${esc(u.id)}','${esc(a.faction)}')">${esc(u.name)}</button>
             ${s.commander ? `<span class="dzc-cmdr-tag" title="Level ${s.commander.level} Commander"
               >${window.DZCIcon('military_tech', { size: 13 })}${esc(commanderTagName(a, s))}</span>` : ''}
-            <span class="dzc-sq-cap">${U.transportHtml(u)}</span>
+            <span class="dzc-sq-cap">${U.transportHtml(window.DZCArmy.carrierOf(a, s) || u)}</span>
           </h3>
           <p class="dzc-sq-meta">${meta}</p>
         </div>
@@ -1648,7 +1650,7 @@
      * BECAUSE of that room (3.2.4.1), so put it aboard rather than leaving it
      * standing next to the thing it is supposed to be riding in. */
     const carrier = g.squads.find(x => {
-      const xu = window.DZCArmy.unitOf(current, x);
+      const xu = window.DZCArmy.carrierOf(current, x);
       if (x.id === s.id || x.carriedBy || !xu) return false;
       if (!(xu.category === 'Transport' || xu.auxiliaryTransport)) return false;
       if (!window.DZC.canCarry(xu, u)) return false;
