@@ -1162,9 +1162,17 @@
    fixed, so the digits start on the same line in every cell and the labels do
    too.
 
-   2.4em holds 18" and 5+ at this size, which are the widest anything prints. */
+   In PX, not em. An em track resolves against whatever font-size the cell has
+   inherited, which is not the same on a reference card, a Squad row and the
+   picker — so the label started at a different x on each of them and the
+   column only looked aligned within one screen at a time.
+
+   38px holds 18" and 5+ and 3+. A Behemoth's damage track prints "9, 14, 18",
+   which is wider than any of them; it WRAPS inside its own column rather than
+   widening the track, because one card with a long value must not move the
+   label on every card beside it. */
 .dzc-stat {
-  display: grid; grid-template-columns: 15px 2.4em minmax(0, 1fr);
+  display: grid; grid-template-columns: 15px 38px minmax(0, 1fr);
   align-items: baseline; gap: 4px; min-width: 0;
   padding: 2px 4px; border-radius: 4px;
   background: var(--surface-3, #f2ece0);
@@ -1175,7 +1183,8 @@
   font-family: var(--font-numeric, 'Outfit', sans-serif);
   /* 600, not 700: heavier closes the counters on 3 / 5 / 8 at this size. The
      Dropfleet stat cell carries the same note. */
-  font-size: 14px; font-weight: 600; line-height: 1;
+  font-size: 14px; font-weight: 600; line-height: 1.15;
+  min-width: 0; overflow-wrap: anywhere;
   font-variant-numeric: tabular-nums lining-nums;
   color: var(--ink, #24201c);
 }
