@@ -26,7 +26,8 @@ problems, warnings = [], []
 units = {}
 
 for path in sorted(glob.glob(os.path.join("data", "dzc", "faction-*.json"))):
-    data = json.load(open(path, encoding="utf-8"))
+    with open(path, encoding="utf-8") as fh:
+        data = json.load(fh)
     for u in data["units"]:
         units[(data["faction"], u["name"])] = u
 
@@ -56,8 +57,7 @@ if mbt:
 
 # --- shape/type coherence ---------------------------------------------------
 by_shape = collections.defaultdict(collections.Counter)
-odd = []
-for (fid, name), u in units.items():
+for u in units.values():
     for c in u["transport"]["fills"]:
         by_shape[c["shape"]][u["type"]] += 1
 
@@ -69,7 +69,8 @@ for shape, expected in EXPECT.items():
         continue
     dominant, n = counts.most_common(1)[0]
     if dominant != expected:
-        problems.append(f"{shape} is filled mostly by {dominant}, expected {expected}: {dict(counts)}")
+        problems.append(f"{shape} is filled mostly by {dominant}, "
+                        f"expected {expected}: {dict(counts)}")
 
 for (fid, name), u in units.items():
     for c in u["transport"]["fills"]:
@@ -116,7 +117,7 @@ di = sum(by_shape["diamond"].values())
 if not (sq and di):
     problems.append("square and diamond are no longer both present -- did they collapse?")
 
-print(f"fills by shape: " + ", ".join(
+print("fills by shape: " + ", ".join(
     f"{s}={dict(c)}" for s, c in sorted(by_shape.items())))
 print(f"\n=== {len(warnings)} warnings ===")
 for w in warnings:

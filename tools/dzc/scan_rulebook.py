@@ -33,6 +33,7 @@ import json
 import os
 import re
 import sys
+from typing import TypedDict
 
 import fitz
 
@@ -62,6 +63,16 @@ SIZE_TOL = 0.35
 
 # A span that is nothing but a bracketed phrase, e.g. "(Anti-Aircraft-Reactive)".
 PAREN_ONLY = re.compile(r"^\([^)]*\)$")
+
+
+class Rule(TypedDict):
+    """One glossary entry, as it is printed: a number, a name, its text, and
+    the page the book falls open at."""
+
+    section: str
+    name: str
+    text: str
+    page: int
 
 
 def max_size(doc, pages):
@@ -328,8 +339,8 @@ def parse(doc, pages):
     phrase, immediately after a heading, belongs to the heading.
     """
     title_size = max_size(doc, pages)
-    rules = []
-    cur = None
+    rules: list[Rule] = []
+    cur: Rule | None = None
     for pno in range(pages[0], pages[1] + 1):
         spans = spans_in_order(doc[pno])
         i = 0

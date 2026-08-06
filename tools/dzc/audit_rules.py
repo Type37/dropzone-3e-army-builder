@@ -14,12 +14,12 @@ Three things make matching non-trivial, all of them handled here:
   aliased         a card prints "Ev", the rulebook heads it "Ev X (Evasion)"
 """
 
+import collections
 import glob
 import json
 import os
 import re
 import sys
-import collections
 
 RULES = os.path.join("data", "dzc", "rules.json")
 FACTIONS = os.path.join("data", "dzc", "faction-*.json")
@@ -173,7 +173,8 @@ def main():
     refs = collections.Counter()
     where = collections.defaultdict(set)
     for path in sorted(glob.glob(FACTIONS)):
-        data = json.load(open(path, encoding="utf-8"))
+        with open(path, encoding="utf-8") as fh:
+            data = json.load(fh)
         fac = data["faction"]
         for u in data["units"]:
             for src in [u.get("special") or ""] + [

@@ -10,6 +10,7 @@ photographed miniature has hundreds of distinct colours, a flat logo a handful.
 """
 
 import glob
+import json
 import os
 import sys
 
@@ -21,11 +22,10 @@ NEAR_SQUARE = 0.02  # logos are drawn as exact squares
 # Every unit must reference art, and that file must exist. The art path used to
 # be written only when --art ran, so a routine re-scan stripped the image from
 # all 178 units -- invisible in the JSON, and only visible as a blank builder.
-import json
-
 missing_ref, missing_file = [], []
 for dp in sorted(glob.glob(os.path.join("data", "dzc", "faction-*.json"))):
-    data = json.load(open(dp, encoding="utf-8"))
+    with open(dp, encoding="utf-8") as fh:
+        data = json.load(fh)
     for u in data["units"]:
         if not u.get("art"):
             missing_ref.append(f"{data['faction']}/{u['name']}")
@@ -36,7 +36,7 @@ rows = []
 for path in sorted(glob.glob(os.path.join("assets", "units", "**", "*.webp"), recursive=True)):
     im = Image.open(path)
     w, h = im.size
-    thumb = im.convert("RGB").resize((64, 64), Image.NEAREST)
+    thumb = im.convert("RGB").resize((64, 64), Image.Resampling.NEAREST)
     colours = len(thumb.getcolors(maxcolors=4096) or [])
     square = abs(w - h) / max(w, h) < NEAR_SQUARE
     rows.append((path, w, h, colours, im.mode, square))

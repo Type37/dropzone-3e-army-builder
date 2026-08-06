@@ -81,3 +81,10 @@ NOTES.md
 upstream/
 # Python bytecode from the DZC scanner
 tools/dzc/__pycache__/
+
+# Python: uv owns the environment. The lockfile is committed; the venv and the
+# caches are not.
+.venv/
+__pycache__/
+*.py[cod]
+.ruff_cache/

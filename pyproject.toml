@@ -1,0 +1,63 @@
+# The scanners and audits under tools/dzc are the whole data pipeline: every
+# number in this app comes out of a PDF through them, and until this file
+# existed they ran against whatever happened to be installed globally, with no
+# lockfile, no linter and no type checker.
+#
+# uv owns the environment, ruff the style and pyright the types. All three are
+# run by scripts/test-all.mjs, so a rule nobody runs is not a rule.
+
+[project]
+name = "dzc-tools"
+version = "0"
+description = "Stat-card and rulebook scanners for the Dropzone Commander 3E army builder"
+requires-python = ">=3.12"
+dependencies = [
+    "pymupdf>=1.24",     # scan_statcards, scan_rulebook: the PDF reader
+    "pillow>=10",        # extract_art: the unit portraits
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.6",
+    "pyright>=1.1.390",
+]
+
+# Nothing here is importable and nothing is published; uv would otherwise look
+# for a package named dzc_tools and fail the sync.
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+include = ["tools/dzc/**/*.py"]
+
+[tool.ruff.lint]
+# Beyond the default E/F: bugbear for the traps (mutable defaults, loop-variable
+# capture), the import and comprehension sets, pyupgrade, and the naming rules.
+# Not the docstring set — these are scripts with long prose docstrings where
+# they earn it and none where they do not.
+# BLE is in because the code was already written against it — scan_statcards
+# carries "# noqa: BLE001" on the two places a bare Exception is deliberate.
+select = ["E", "F", "W", "B", "I", "C4", "UP", "N", "SIM", "RUF", "BLE"]
+
+[tool.pyright]
+# tools/dzc only. tools/bsdata-convert.py is Dropfleet-era, inherited whole at
+# the fork point: it reads a bsdata-repo/ that does not exist in this repo and
+# writes data/fleet-data.json, which this app does not have either. It is not
+# part of the DZC pipeline and holding it to this file's standard would mean
+# maintaining a converter nothing runs.
+include = ["tools/dzc"]
+typeCheckingMode = "strict"
+pythonVersion = "3.12"
+# fitz (PyMuPDF) ships no stubs worth the name: every Page, Rect and span dict
+# comes back as Unknown, so strict mode would report the entire scanner as
+# untyped third-party access and say nothing about our own code. The library is
+# untyped; that is a fact about PyMuPDF, not a defect here.
+reportMissingTypeStubs = false
+reportUnknownMemberType = false
+reportUnknownArgumentType = false
+reportUnknownVariableType = false
+reportUnknownParameterType = false
+reportUnknownLambdaType = false
+reportMissingParameterType = false

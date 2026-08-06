@@ -32,9 +32,17 @@ Only what genuinely depends on a finished list is reported instead — you have 
 Everything comes from TTCombat's own PDFs, which they publish free and publicly on the [Dropzone Commander resources page](https://ttcombat.com/pages/dropzone-commander-resources). Nothing is retyped by hand, so a new stat-card release is re-ingested rather than transcribed.
 
 ```sh
-python -m pip install pymupdf pillow
-python tools/dzc/rebuild.py
+pip install uv
+uv run python tools/dzc/rebuild.py
 ```
+
+`uv` owns the environment and `uv.lock` pins it, so the pipeline runs against
+the same PyMuPDF that produced the data on disk rather than whatever happens
+to be installed. `pyproject.toml` also holds ruff and pyright in **strict**
+mode over `tools/dzc`, both wired into `node scripts/test-all.mjs`: the
+scanners are where every number in the app comes from, and the records they
+emit are declared as `TypedDict`s so a key renamed here is an error where it is
+written rather than a blank card a player finds.
 
 | Stage | Reads | Writes |
 |---|---|---|

@@ -49,7 +49,7 @@ AUDITS = [
 def run(label, argv):
     print(f"\n{'=' * 62}\n  {label}\n{'=' * 62}")
     t0 = time.time()
-    rc = subprocess.call([sys.executable, os.path.join(HERE, argv[0])] + argv[1:])
+    rc = subprocess.call([sys.executable, os.path.join(HERE, argv[0]), *argv[1:]])
     dt = time.time() - t0
     if rc != 0:
         print(f"\n  FAILED: {label} (exit {rc}, {dt:.0f}s)", file=sys.stderr)

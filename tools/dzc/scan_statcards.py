@@ -28,6 +28,7 @@ import os
 import re
 import sys
 from collections import defaultdict
+from typing import TypedDict
 
 from PIL import Image
 
@@ -91,13 +92,108 @@ STAT_HEADERS_INFANTRY = ["Type", "Mv", "OF", "DF", "B", "DP", "Special"]
 WEAPON_HEADERS = ["Name", "Arc", "MA", "R", "Att", "Ac", "E", "Special"]
 
 
+# The records this scanner emits, written down.
+#
+# They were plain dicts, which meant the only statement of what a unit IS lived
+# in the JavaScript that reads them -- and a key renamed here went unnoticed
+# until the builder drew a blank card. Pyright checks the two ends against each
+# other now: an emitted key nothing declares is an error at the point it is
+# written, not a bug reported by a player.
+
+
+class Badge(TypedDict):
+    """One transport symbol: the shape, and the digit printed inside it."""
+
+    shape: str
+    n: int
+
+
+class Transport(TypedDict):
+    """Room offered (hollow badges) and room taken (solid ones)."""
+
+    capacity: list[Badge]
+    capacityMode: str | None
+    fills: list[Badge]
+
+
+class Weapon(TypedDict):
+    name: str
+    arc: str | None
+    ma: str | None
+    r: str | None
+    att: str | None
+    ac: str | None
+    e: str | None
+    special: str
+    box: str | None
+    variants: list[str]
+    upgradePoints: int | None
+    capacityDelta: list[Badge]
+    boxUnresolved: bool
+
+
+class Variant(TypedDict):
+    name: str
+    points: int | None
+
+
+class Header(TypedDict):
+    """The top banner: what the card calls this unit and what it costs."""
+
+    name: str
+    category: str | None
+    squadMin: int | None
+    squadMax: int | None
+    points: int | None
+    variantPoints: dict[str, int]
+    rare: bool
+    unique: bool
+    pointsRaw: str | None
+
+
+class Unit(TypedDict):
+    id: str
+    name: str
+    category: str | None
+    squadMin: int | None
+    squadMax: int | None
+    points: int | None
+    pointsRaw: str | None
+    rare: bool
+    unique: bool
+    type: str | None
+    stats: dict[str, str]
+    special: str | None
+    variants: list[Variant]
+    transport: Transport
+    weapons: list[Weapon]
+    upgradeNote: str | None
+    page: int
+    auxiliaryTransport: bool
+    selectable: bool
+    art: str
+
+
+class FactionFile(TypedDict):
+    faction: str
+    name: str
+    sourcePdf: str
+    version: str | None
+    units: list[Unit]
+
+
 def slug(s):
     return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
 
 
 # Hyphen-like break glyphs only. A broad [^\w\s] also matches the comma in
 # "(Surge 1, 2, and 3)" and welds it into "2and", losing a variant.
-HYPHENISH = r"(\w)[-­‐-―�]"
+#
+# The class deliberately holds the LOOK-ALIKES as well as the ASCII hyphen --
+# U+2010 HYPHEN, the en and em dashes, the soft hyphen. That is the whole job:
+# the PDF sets its line breaks with them and a scanner that only knew "-" would
+# leave every wrapped weapon name broken. noqa RUF001 for exactly that reason.
+HYPHENISH = r"(\w)[-­‐-―�]"  # noqa: RUF001
 
 
 def dehyphenate(s):
@@ -151,7 +247,7 @@ def colour_name(rgb):
         return None
     best, bestd = None, 1e9
     for name, ref in BOX_COLOURS.items():
-        d = sum((a - b) ** 2 for a, b in zip(rgb, ref))
+        d = sum((a - b) ** 2 for a, b in zip(rgb, ref, strict=True))
         if d < bestd:
             best, bestd = name, d
     return best if bestd < 0.12 else None
@@ -201,7 +297,7 @@ def parse_points(s):
     return flat, per, rare, unique
 
 
-def parse_header(page):
+def parse_header(page) -> Header | None:
     """
     Category, squad size, name and points from the top banner.
 
@@ -261,7 +357,7 @@ def parse_header(page):
     cat = m2.group(1).title() if m2 else cat
 
     flat, per, rare, unique = parse_points(ptxt or rtxt)
-    return {
+    header: Header = {
         "name": name,
         "category": cat,
         "squadMin": smin,
@@ -272,6 +368,7 @@ def parse_header(page):
         "unique": unique,
         "pointsRaw": ptxt,
     }
+    return header
 
 
 # ------------------------------------------------------- transport symbols
@@ -279,7 +376,7 @@ def parse_header(page):
 
 def _hull(points):
     """Convex hull (monotone chain). Returns hull vertices in order."""
-    pts = sorted(set((round(p[0], 1), round(p[1], 1)) for p in points))
+    pts = sorted({(round(p[0], 1), round(p[1], 1)) for p in points})
     if len(pts) < 3:
         return pts
 
@@ -363,7 +460,7 @@ def nearest_symbol(rgb):
         return None, 1e9
     best, bestd = None, 1e9
     for name, ref in SYMBOL_INK.items():
-        d = sum((a - b) ** 2 for a, b in zip(rgb, ref))
+        d = sum((a - b) ** 2 for a, b in zip(rgb, ref, strict=True))
         if d < bestd:
             best, bestd = name, d
     return best, bestd
@@ -418,12 +515,11 @@ def classify_shape(drawing):
                 )
                 if on_axis >= len(hull) * 0.6:
                     shape = "diamond"
-        if shape == "triangle":
-            # Upright and inverted triangles are the SAME convex hull, so this
-            # is decided by which side the lone vertex sits on -- then checked
-            # against the ink below.
-            if triangle_points_down(_corner_points(_hull(pts))):
-                shape = "triangle-down"
+        # Upright and inverted triangles are the SAME convex hull, so this is
+        # decided by which side the lone vertex sits on -- then checked against
+        # the ink below.
+        if shape == "triangle" and triangle_points_down(_corner_points(_hull(pts))):
+            shape = "triangle-down"
         if shape is None and rects:
             shape = "square"
     elif rects:
@@ -482,7 +578,7 @@ def badge_is_hollow(page, rect):
     return white > coloured * 0.5
 
 
-def parse_transport(page):
+def parse_transport(page) -> Transport:
     """
     Symbols sit in the upper-left of the art panel. A hollow symbol is carrying
     capacity; a solid one is the space this unit occupies aboard a transport.
@@ -505,7 +601,7 @@ def parse_transport(page):
                     # Printed between badges; x-order is what links them.
                     seps.append((t, fitz.Rect(sp["bbox"])))
     if not digits:
-        return {"capacity": [], "fills": []}
+        return {"capacity": [], "capacityMode": None, "fills": []}
     seps.sort(key=lambda s: s[1].x0)
 
     badges = []
@@ -565,11 +661,14 @@ def parse_transport(page):
 
 
 def find_header_row(lines, headers, need=4):
+    """The header row's index and words, or None. One value, not two: returning
+    (None, None) left every caller holding an index the checker could not tell
+    was safe even after it had tested the row."""
     for i, ln in enumerate(lines):
         got = {w[4] for w in ln}
         if sum(1 for h in headers if h in got) >= need:
             return i, ln
-    return None, None
+    return None
 
 
 def vertical_rules(page, y0, y1):
@@ -672,14 +771,18 @@ def split_row(line, cols, rules=None):
     return out
 
 
-def parse_stat_table(page, lines):
-    i, hdr = find_header_row(lines, STAT_HEADERS_INFANTRY, need=5)
+def parse_stat_table(page, lines) -> tuple[str, dict[str, str], str] | None:
+    """Type, stats and Special, or None. One value rather than a triple of
+    Nones, for the same reason as find_header_row: a caller that tested only
+    the first of three still held two the checker could not vouch for."""
+    hit = find_header_row(lines, STAT_HEADERS_INFANTRY, need=5)
     infantry = True
-    if hdr is None:
-        i, hdr = find_header_row(lines, STAT_HEADERS_VEHICLE, need=4)
+    if hit is None:
+        hit = find_header_row(lines, STAT_HEADERS_VEHICLE, need=4)
         infantry = False
-    if hdr is None:
-        return None, None, None
+    if hit is None:
+        return None
+    i, hdr = hit
 
     headers = STAT_HEADERS_INFANTRY if infantry else STAT_HEADERS_VEHICLE
     cols = columns_from_header(hdr, headers)
@@ -708,7 +811,7 @@ def parse_stat_table(page, lines):
             utype = row.pop("Type")
             return (utype, {k: v for k, v in row.items() if v},
                     join_broken_hyphen(special.strip(" -")))
-    return None, None, None
+    return None
 
 
 def weapon_swatches(page):
@@ -843,13 +946,17 @@ def upgrade_note(page, below_y, left_edge=None):
     return " ".join(out).strip() or None
 
 
+# The bracket on a weapon name that is a PRICE rather than a variant:
+# "RM-7 Skyhammer Missiles (+15pts*)".
+COST_RE = re.compile(r"^\+?(\d+)\s*pts?\*?$", re.I)
+
 # "*May replace transport capacity of 2 with MM-3 Missile Boxes or MC-30 Heavy
 # Gatlings." Two cards in the game, both Resistance tilt-rotors.
 CAPACITY_SWAP_RE = re.compile(
     r"replace\s+transport\s+capacity\s+of\s+(\d+)\s+with\s+(.+?)\s*\.?\s*$", re.I)
 
 
-def apply_capacity_upgrades(unit):
+def apply_capacity_upgrades(unit: Unit) -> None:
     """
     Turn the capacity footnote into arithmetic on the weapons it names.
 
@@ -882,10 +989,11 @@ def apply_capacity_upgrades(unit):
             w["capacityDelta"] = [{"shape": hits[0]["shape"], "n": -n}]
 
 
-def parse_weapons(page, lines):
-    i, hdr = find_header_row(lines, WEAPON_HEADERS, need=5)
-    if hdr is None:
+def parse_weapons(page, lines) -> list[Weapon]:
+    hit = find_header_row(lines, WEAPON_HEADERS, need=5)
+    if hit is None:
         return []
+    _, hdr = hit
     cols = columns_from_header(hdr, WEAPON_HEADERS)
 
     boxes = weapon_swatches(page)
@@ -921,7 +1029,7 @@ def parse_weapons(page, lines):
             for k, v in split_row(ln, cols, rules).items():
                 cells[k].append(v)
         joined = {k: " ".join(v).strip() for k, v in cells.items()}
-        weapons.append({
+        weapon: Weapon = {
             "name": re.sub(r"\s+", " ", joined.get("Name", "")).strip(),
             "arc": joined.get("Arc") or None,
             "ma": joined.get("MA") or None,
@@ -932,7 +1040,15 @@ def parse_weapons(page, lines):
             "special": join_broken_hyphen(
                 re.sub(r"\s+", " ", joined.get("Special", "")).strip(" -")),
             "box": kind,
-        })
+            # Filled by the bracket pass below, and by apply_capacity_upgrades
+            # once the unit's own capacity is known. Declared here so a weapon
+            # is a whole record the moment it exists.
+            "variants": [],
+            "upgradePoints": None,
+            "capacityDelta": [],
+            "boxUnresolved": False,
+        }
+        weapons.append(weapon)
 
     # Pull the trailing brackets out of the name now that wraps are joined.
     #
@@ -946,14 +1062,7 @@ def parse_weapons(page, lines):
     # restricted to a variant named "+15pts*", and left upgradePoints null on
     # every upgrade in the game -- so a paid upgrade cost nothing. The audit
     # caught it as "variant '+5pts*' has no points".
-    COST_RE = re.compile(r"^\+?(\d+)\s*pts?\*?$", re.I)
     for w in weapons:
-        w["variants"] = []
-        w["upgradePoints"] = None
-        # Filled by apply_capacity_upgrades once the unit's own capacity is
-        # known. Present on every weapon so the shape of a weapon never depends
-        # on which card it came off.
-        w["capacityDelta"] = []
         while True:
             m = re.search(r"\(([^)]*)\)\s*$", w["name"])
             if not m:
@@ -982,7 +1091,8 @@ def parse_weapons(page, lines):
 # ------------------------------------------------------------- variants
 
 
-def collect_variants(header, weapons, special):
+def collect_variants(header: Header, weapons: list[Weapon],
+                     special: str | None) -> list[Variant]:
     """
     The variant roster is the UNION of names in the points line, in weapon
     brackets and in the Special column. No single source is complete: the
@@ -1020,7 +1130,7 @@ def collect_variants(header, weapons, special):
         return []
     by_norm = {norm_variant(k): v for k, v in header["variantPoints"].items()}
     return [
-        {"name": n, "points": by_norm.get(norm_variant(n), header["points"])}
+        Variant(name=n, points=by_norm.get(norm_variant(n), header["points"]))
         for n in names
     ]
 
@@ -1067,7 +1177,7 @@ def extract_art(page, doc, dest, name, max_px=1400, quality=90):
     for xref, smask, r in cands:
         try:
             probe = Image.open(io.BytesIO(doc.extract_image(xref)["image"])).convert("RGB")
-            probe.thumbnail((64, 64), Image.NEAREST)
+            probe.thumbnail((64, 64), Image.Resampling.NEAREST)
             richness = len(probe.getcolors(maxcolors=4096) or [])
         except Exception:                                # noqa: BLE001
             richness = 0
@@ -1085,13 +1195,13 @@ def extract_art(page, doc, dest, name, max_px=1400, quality=90):
             m = doc.extract_image(smask)
             mask = Image.open(io.BytesIO(m["image"])).convert("L")
             if mask.size != img.size:
-                mask = mask.resize(img.size, Image.LANCZOS)
+                mask = mask.resize(img.size, Image.Resampling.LANCZOS)
             img.putalpha(mask)
             box = img.getbbox()          # trim fully transparent margins
             if box:
                 img = img.crop(box)
         if max(img.size) > max_px:
-            img.thumbnail((max_px, max_px), Image.LANCZOS)
+            img.thumbnail((max_px, max_px), Image.Resampling.LANCZOS)
     except Exception:                                    # noqa: BLE001
         return None
 
@@ -1104,7 +1214,7 @@ def extract_art(page, doc, dest, name, max_px=1400, quality=90):
 # --------------------------------------------------------------- driver
 
 
-def parse_page(page, doc, art_dir):
+def parse_page(page, doc, art_dir) -> Unit | None:
     header = parse_header(page)
     if not header or not header["name"]:
         return None
@@ -1112,12 +1222,26 @@ def parse_page(page, doc, art_dir):
     body = fitz.Rect(0, 200, page.rect.width, page.rect.height - 20)
     lines = line_group(words_in(page, body))
 
-    utype, stats, special = parse_stat_table(page, lines)
-    if utype is None:
+    stat_table = parse_stat_table(page, lines)
+    if stat_table is None:
         return None
+    utype, stats, special = stat_table
     weapons = parse_weapons(page, lines)
 
-    unit = {
+    transport = parse_transport(page)
+    category = header["category"]
+    # Reference-only profiles: no squad size, or a rule that bars selection.
+    # Transports are the exception -- 3.2.4 says they "do not have a minimum or
+    # maximum Squad size", so a missing squad size is normal for them and must
+    # not hide them from the picker. Excluding them removed all 39 Transports
+    # and with them the entire nested-Group half of the game.
+    selectable = not (
+        (header["squadMin"] is None and (category or "") != "Transport")
+        or (category or "") == "Generated"
+        or re.search(r"\bRemote Drone\b", special or "", re.I)
+    )
+
+    unit: Unit = {
         "id": slug(header["name"]),
         "name": header["name"],
         "category": header["category"],
@@ -1131,60 +1255,53 @@ def parse_page(page, doc, art_dir):
         "stats": stats,
         "special": special,
         "variants": collect_variants(header, weapons, special),
-        "transport": parse_transport(page),
+        "transport": transport,
         "weapons": weapons,
         # "*Only one of these upgrades may be taken." -- a real construction
         # constraint, so it is kept rather than discarded with the footnote.
         "upgradeNote": upgrade_note(page, 200, 20),
-        "page": page.number + 1,
+        "page": (page.number or 0) + 1,
+        "auxiliaryTransport": bool(transport["capacity"] and (category or "") != "Transport"),
+        "selectable": selectable,
+        # The art PATH is derived from the unit name, never conditional on
+        # whether extraction ran this time. Making it conditional meant a
+        # routine re-scan without --art silently stripped the image from all
+        # 178 units, which is invisible in the JSON and only shows up as a
+        # blank builder.
+        "art": f"{ART_DIR}/{slug(header['name'])}.webp",
     }
     # Needs the weapons, the transport badges and the footnote all parsed, so
     # it runs on the assembled unit rather than inside any one of them.
     apply_capacity_upgrades(unit)
-    unit["auxiliaryTransport"] = bool(
-        unit["transport"]["capacity"] and (unit["category"] or "") != "Transport"
-    )
-    # Reference-only profiles: no squad size, or a rule that bars selection.
-    # Transports are the exception -- 3.2.4 says they "do not have a minimum or
-    # maximum Squad size", so a missing squad size is normal for them and must
-    # not hide them from the picker. Excluding them removed all 39 Transports
-    # and with them the entire nested-Group half of the game.
-    unit["selectable"] = not (
-        (unit["squadMin"] is None and (unit["category"] or "") != "Transport")
-        or (unit["category"] or "") == "Generated"
-        or re.search(r"\bRemote Drone\b", special or "", re.I)
-    )
-    # The art PATH is derived from the unit name, never conditional on whether
-    # extraction ran this time. Making it conditional meant a routine re-scan
-    # without --art silently stripped the image from all 178 units, which is
-    # invisible in the JSON and only shows up as a blank builder.
-    unit["art"] = f"{ART_DIR}/{slug(header['name'])}.webp"
     if art_dir:
         extract_art(page, doc, art_dir, header["name"])
     return unit
 
 
-def scan(pdf_path, faction_id, faction_name, art_dir):
+def scan(pdf_path, faction_id, faction_name,
+         art_dir) -> tuple[FactionFile, list[tuple[int, str]]]:
     doc = fitz.open(pdf_path)
-    units, skipped = [], []
+    units: list[Unit] = []
+    skipped: list[tuple[int, str]] = []
     for page in doc:
         try:
             u = parse_page(page, doc, art_dir)
         except Exception as exc:                     # noqa: BLE001
-            skipped.append((page.number + 1, f"error: {exc}"))
+            skipped.append(((page.number or 0) + 1, f"error: {exc}"))
             continue
         if u:
             units.append(u)
         elif "Squad Size" in page.get_text():
-            skipped.append((page.number + 1, "has Squad Size but did not parse"))
+            skipped.append(((page.number or 0) + 1, "has Squad Size but did not parse"))
     ver = re.search(r"_(\d{6})\.pdf$", os.path.basename(pdf_path))
-    return {
+    data: FactionFile = {
         "faction": faction_id,
         "name": faction_name,
         "sourcePdf": os.path.basename(pdf_path),
         "version": ver.group(1) if ver else None,
         "units": units,
-    }, skipped
+    }
+    return data, skipped
 
 
 def main():

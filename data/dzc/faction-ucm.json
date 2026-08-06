@@ -688,6 +688,7 @@
       ],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": []
       },
       "weapons": [
@@ -891,6 +892,7 @@
       ],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": []
       },
       "weapons": [
@@ -1344,6 +1346,7 @@
       "variants": [],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": []
       },
       "weapons": [
@@ -1447,6 +1450,7 @@
       ],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": []
       },
       "weapons": [
@@ -1686,6 +1690,7 @@
       ],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": []
       },
       "weapons": [
@@ -1904,6 +1909,7 @@
       ],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": []
       },
       "weapons": [
@@ -2223,6 +2229,7 @@
       ],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": []
       },
       "weapons": [
@@ -2566,6 +2573,7 @@
       "variants": [],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": []
       },
       "weapons": [
@@ -2620,6 +2628,7 @@
       ],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": []
       },
       "weapons": [

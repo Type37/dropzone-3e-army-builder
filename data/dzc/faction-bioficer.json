@@ -342,6 +342,7 @@
       ],
       "transport": {
         "capacity": [],
+        "capacityMode": null,
         "fills": []
       },
       "weapons": [
