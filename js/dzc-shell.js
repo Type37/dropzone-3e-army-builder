@@ -142,12 +142,12 @@ const App = (() => {
     switch (view) {
       case 'armies':
         show('view-armies');
-        ctx.innerHTML = back('landing', 'Your Armies');
+        ctx.innerHTML = back('landing', 'Armies');
         if (window.DZCBuilder) DZCBuilder.renderList();
         break;
       case 'army':
         show('view-army');
-        ctx.innerHTML = back('armies', 'Army Builder');
+        ctx.innerHTML = back('armies', 'Armies list');
         if (window.DZCBuilder) DZCBuilder.renderBuilder(param);
         break;
       case 'play':

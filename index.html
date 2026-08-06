@@ -56,12 +56,17 @@
     <img src="assets/logos/dzc_logo_white.webp" alt="Dropzone Commander" class="topbar-logo">
   </a>
   <div class="topbar-sep desktop-only"></div>
-  <!-- Filled in by App.showView. Empty on the landing screen, where the
-       wordmark to the left already says what this is. -->
+  <!-- "Unofficial" is the load-bearing word. Dropzone Commander, its rules and
+       every faction name belong to TTCombat; this is a fan tool built on the
+       PDFs they publish free. Saying so in the chrome rather than only in a
+       footer nobody scrolls to is the honest place for it. -->
+  <span class="topbar-title">Unofficial<span class="topbar-title-rest"> Army Builder</span></span>
+  <div class="topbar-sep desktop-only"></div>
+  <!-- Filled in by App.showView: the way back, and what it goes back to. -->
   <span class="topbar-context" id="topbar-context"></span>
   <div class="topbar-actions" id="topbar-actions"></div>
   <button class="topbar-global-settings-btn" id="topbar-settings-btn" type="button" onclick="App.openSettings()" aria-label="Settings" title="Settings">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87a.49.49 0 0 0 .12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.61l-2.01-1.58zM12 15.6a3.6 3.6 0 1 1 0-7.2 3.6 3.6 0 0 1 0 7.2z"/></svg>
+    <svg width="18" height="18" viewBox="0 0 26 26" fill="currentColor" aria-hidden="true"><path d="m11.469.969l-.563 3.562A8.7 8.7 0 0 0 8.5 5.5L5.562 3.406L3.438 5.531L5.5 8.47a8.8 8.8 0 0 0-1 2.406l-3.531.594v3l3.531.625a8.7 8.7 0 0 0 1 2.406l-2.094 2.938l2.125 2.125L8.47 20.5a8.7 8.7 0 0 0 2.406.969l.594 3.562h3l.656-3.562a8.6 8.6 0 0 0 2.375-1l2.969 2.093l2.125-2.125L20.47 17.5c.438-.73.79-1.526 1-2.375l3.562-.656v-3l-3.562-.594a8.8 8.8 0 0 0-1-2.375l2.093-2.969l-2.125-2.125L17.5 5.531a8.8 8.8 0 0 0-2.406-1L14.469.97zM13 6.469A6.535 6.535 0 0 1 19.531 13A6.535 6.535 0 0 1 13 19.531A6.536 6.536 0 0 1 6.469 13A6.536 6.536 0 0 1 13 6.469m0 1.593A4.95 4.95 0 0 0 8.062 13A4.95 4.95 0 0 0 13 17.938A4.95 4.95 0 0 0 17.938 13A4.95 4.95 0 0 0 13 8.062m-.031 2.876c1.146 0 2.094.915 2.094 2.062s-.948 2.063-2.094 2.063A2.054 2.054 0 0 1 10.906 13c0-1.147.917-2.063 2.063-2.063z"/></svg>
   </button>
 </header>
 
@@ -81,7 +86,11 @@
         <div class="tool-card-icon">
           <svg width="32" height="32" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM19 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM21 19a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM5 21a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" fill="currentColor"/><path d="M7.83 6a2.995 2.995 0 0 0 0-2h4.67A2.5 2.5 0 0 1 15 6.5V9h2.5a2.5 2.5 0 0 1 2.5 2.5v4.67a2.997 2.997 0 0 0-2 0V11.5a.5.5 0 0 0-.5-.5H15v1.5a2.5 2.5 0 0 1-2.5 2.5H11v2.5a.5.5 0 0 0 .5.5h4.67a2.997 2.997 0 0 0 0 2H11.5A2.5 2.5 0 0 1 9 17.5V15H6.5A2.5 2.5 0 0 1 4 12.5V7.83a2.995 2.995 0 0 0 2 0v4.67a.5.5 0 0 0 .5.5H9v-1.5A2.5 2.5 0 0 1 11.5 9H13V6.5a.5.5 0 0 0-.5-.5H7.83ZM13 12.5V11h-1.5a.5.5 0 0 0-.5.5V13h1.5a.5.5 0 0 0 .5-.5Z" fill="currentColor"/></svg>
         </div>
-        <h2 class="tool-card-title">Army Builder</h2>
+        <!-- Not "Army Builder": the bar directly above it now says that, and
+             the footer says it a third time. This tile goes to the list of
+             armies you have, which is what it should have been called anyway
+             — you land on a list, not on a builder. -->
+        <h2 class="tool-card-title">Your Armies</h2>
       </div>
       <!-- Collection is opt-in and off by default, as in the Dropfleet builder.
            App.applyCollectionSetting() reveals this card when it is switched on. -->

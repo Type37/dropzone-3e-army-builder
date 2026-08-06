@@ -124,9 +124,36 @@ function audit(doc, win, width, route) {
   // The failure that actually happens: content running off the right edge.
   // Note this needs no overflow:hidden anywhere, which is why an
   // "overflow:hidden + scrollWidth>clientWidth" sweep returns 0 by construction.
+  /* Content inside a scroll container is SUPPOSED to reach past the viewport
+     — that is what scrolling is. A weapon table is `overflow-x: auto` and 660px
+     wide by design; measuring its cells against the window reported 110
+     offenders for a table behaving exactly as intended, which is how an
+     instrument turns into noise nobody reads.
+
+     So the box each element is judged against is its nearest scrolling
+     ancestor, and only the outermost thing that escapes ITS OWN scroller is a
+     real offender. The page itself is the outermost box, so anything that runs
+     off the window with no scroller above it still counts. */
+  const scrollerOf = (n) => {
+    for (let p = n.parentElement; p && p !== doc.body; p = p.parentElement) {
+      const ox = win.getComputedStyle(p).overflowX;
+      if (ox === "auto" || ox === "scroll") return p;
+    }
+    return null;
+  };
+
   for (const n of doc.querySelectorAll("body *")) {
     const r = n.getBoundingClientRect();
     if (r.width === 0 && r.height === 0) continue;
+    const box = scrollerOf(n);
+    if (box) {
+      const b = box.getBoundingClientRect();
+      // Judged against the scroller it lives in, not against the window.
+      if (r.right <= b.right + 1 && r.left >= b.left - 1) continue;
+      // It escapes its scroller, but the scroller itself is on screen — then
+      // the scroller is the offender and will be reported in its own right.
+      if (b.right <= width + 1 && b.left >= -1) continue;
+    }
     if (r.right > width + 1 || r.left < -1) {
       bad.push({
         sel: n.tagName.toLowerCase() + (n.id ? "#" + n.id : "") +

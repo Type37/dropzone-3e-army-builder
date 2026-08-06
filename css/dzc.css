@@ -376,7 +376,7 @@
 .dzc-army-pts b { font-size: 19px; font-weight: 600; }
 
 /* ═══ Builder ═══ */
-.dzc-b-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 10px; }
+.dzc-b-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
 .dzc-b-name { font: 800 24px/1.2 var(--font-display, 'Roboto Slab', serif); margin: 0 0 4px; overflow-wrap: anywhere; }
 .dzc-b-name:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; }
 .dzc-b-sub { margin: 0; font-size: 12.5px; color: var(--ink-2, #6b6459); }
@@ -473,7 +473,7 @@
 
 /* One block per variant: what it is, the gun that makes it that, the price,
    and the stats it fights with. */
-.dzc-variant { padding: 8px 10px; margin-bottom: 6px; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); }
+.dzc-variant { padding: 5px 8px; margin-bottom: 6px; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); }
 /* The count sits on the block, so the head is a row: what the variant is on
    the left, how many of it you have taken on the right. */
 .dzc-variant-head {
@@ -584,7 +584,7 @@
    reach the next Group. */
 .dzc-b-body {
   display: grid; grid-template-columns: 250px minmax(200px, 300px) minmax(0, 1fr);
-  gap: 10px; align-items: start;
+  gap: 8px; align-items: start;
 }
 .dzc-b-list { display: flex; flex-direction: column; gap: 6px; position: sticky; top: 12px; }
 .dzc-b-detail { min-width: 0; }
@@ -626,7 +626,7 @@
 .dzc-bb-art img { width: 30px; height: 22px; object-fit: contain; background: var(--surface-3, #f2ece0); }
 .dzc-rail { position: sticky; top: 12px; display: flex; flex-direction: column; gap: 8px; }
 .dzc-rail-card {
-  padding: 10px 12px; border-radius: 8px;
+  padding: 8px 10px; border-radius: 8px;
   border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff);
 }
 .dzc-rail-title {
@@ -743,7 +743,7 @@
   color: var(--success-ink, #2f7a37);
 }
 
-.dzc-group-card { border: 1px solid var(--line, #d8d0c0); padding: 9px 10px; margin-bottom: 8px; background: var(--surface-2, #fff); }
+.dzc-group-card { border: 1px solid var(--line, #d8d0c0); padding: 7px 9px; margin-bottom: 6px; background: var(--surface-2, #fff); }
 .dzc-group-card.is-over { border-color: #b3261e; }
 .dzc-g-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 .dzc-g-head h2 { flex: 1 1 auto; margin: 0; font: 700 15px/1.2 var(--font-ui, 'Jost', sans-serif); overflow-wrap: anywhere; }
@@ -789,7 +789,7 @@
    at the narrow breakpoint rather than the tree being flattened away. */
 .dzc-squad {
   margin-left: calc(var(--depth) * var(--sq-indent, 22px));
-  padding: 9px 0; border-top: 1px solid var(--line, #eee5d6);
+  padding: 6px 0; border-top: 1px solid var(--line, #eee5d6);
 }
 .dzc-squad:first-of-type { border-top: 0; padding-top: 4px; }
 .dzc-squad .dzc-squad { border-left: 2px solid var(--acc); padding-left: 12px; }
@@ -798,7 +798,7 @@
    variant and the whole weapon table. Laid out with flex and wrapping rather
    than a fixed grid, so the same markup collapses down a phone without a
    second build. */
-.dzc-sq-main { display: flex; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.dzc-sq-main { display: flex; align-items: flex-start; gap: 9px; flex-wrap: wrap; }
 .dzc-sq-art {
   flex: 0 0 auto; width: 84px; height: 60px; object-fit: contain;
   background: var(--surface-3, #f2ece0);
@@ -818,13 +818,13 @@
   font-size: 12px; color: var(--ink-2, #6b6459);
 }
 .dzc-sq-ctl { display: flex; align-items: center; gap: 8px; margin-left: auto; }
-.dzc-sq-stats { margin-top: 8px; }
+.dzc-sq-stats { margin-top: 5px; }
 .dzc-sq-rules { margin-top: 6px; }
 /* The table never shrinks its columns to fit — it scrolls inside its own box,
    so a phone gets every number rather than a squeezed, unreadable version. */
 .dzc-sq-wpn { margin-top: 8px; overflow-x: auto; }
 .dzc-sq-wpn .dzc-wpn { min-width: 620px; }
-.dzc-squad .dzc-variants { margin-top: 8px; }
+.dzc-squad .dzc-variants { margin-top: 5px; }
 .dzc-sq-cost {
   font-family: var(--font-numeric, 'Outfit', sans-serif);
   font-weight: 600; font-size: 14px; white-space: nowrap;
@@ -1522,8 +1522,17 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 .dzc-play-models { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
 /* The guns this Squad fires, at a table. Scrolls sideways in its own box like
    every other weapon table; the page never does. */
-.dzc-play-wpn { margin-top: 6px; overflow-x: auto; }
-.dzc-play-wpn .dzc-wpn { font-size: 11.5px; min-width: 560px; }
+/* No second scroller, and no min-width.
+   .dzc-wpn is already `display: block; overflow-x: auto` — it scrolls itself,
+   the way it does in the reference and the builder. Wrapping it in another
+   scroller and then setting min-width: 560px on the table made the SCROLL
+   CONTAINER 560px wide, so on a 320px phone Play Mode ran 260px off the right
+   of the page instead of scrolling inside its card. min-width: 0 on the chain
+   above it, because a flex item's default min-width is its content and that is
+   what stops a scroller from ever being narrower than its table. */
+.dzc-play-wpn { margin-top: 6px; min-width: 0; }
+.dzc-play-wpn .dzc-wpn { font-size: 11.5px; }
+.dzc-play-squad, .dzc-play-models { min-width: 0; }
 .dzc-model { display: flex; align-items: center; gap: 4px; padding: 4px 7px; border-radius: 6px; background: var(--surface-3, #f2ece0); }
 .dzc-model.is-dead { opacity: .45; text-decoration: line-through; }
 .dzc-model button { width: 26px; height: 26px; border-radius: 5px; cursor: pointer; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); font-size: 15px; line-height: 1; }

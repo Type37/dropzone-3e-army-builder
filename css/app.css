@@ -446,12 +446,22 @@ h1, h2, h3, h4, h5, h6 {
   background: rgba(255,255,255,0.2);
 }
 
+/* What this is, in the chrome, on every screen. */
+.topbar-title {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: rgba(255,255,255,0.82);
+  white-space: nowrap;
+}
+
 .topbar-context {
   font-family: var(--font-body);
   font-size: var(--text-sm);
   color: rgba(255,255,255,0.88);
-  overflow: hidden;
-  text-overflow: ellipsis;
+  /* No ellipsis. These are four words naming where the chevron goes, and a
+     clipped one reads as a different destination — "Armies li…". If the bar
+     runs out of room the title beside it gives way first (below). */
   white-space: nowrap;
   display: flex;
   align-items: center;
@@ -6783,6 +6793,12 @@ h1, h2, h3, h4, h5, h6 {
   .topbar { padding: 0 var(--sp-lg); }
   .topbar-context { display: none; }
   .topbar-brand { font-size: var(--text-sm); }
+  /* On a phone only "Unofficial" survives. It is the word that is actually
+     doing work — Dropzone Commander belongs to TTCombat and this is a fan tool
+     — and "Army Builder" is already said by the logo beside it and the screen
+     underneath. Dropping the disclosure entirely on the one device this app is
+     built for would be the wrong thing to save 90px on. */
+  .topbar-title-rest { display: none; }
   .topbar-action-label { display: none; }
   .topbar-action-btn { padding: var(--sp-xs); }
 
