@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Test and deploy to GitHub Pages
 
 on:
   push:
@@ -19,7 +19,40 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # 629 assertions and four data audits existed before this job did, and none
+  # of them had ever run anywhere but a laptop. Every push went straight to
+  # Pages: a commit that broke the builder was live before anyone could know,
+  # and CLAUDE.md §6 says to push unverified work rather than hide it in a
+  # branch — which only works if something downstream is checking.
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v9.0.0
+        with:
+          enable-cache: true
+          prune-cache: true
+
+      # Everything: the six JS suites, plus ruff and pyright over tools/dzc,
+      # which test-all.mjs runs itself when uv is on the machine.
+      - name: The suite
+        run: node scripts/test-all.mjs
+
+      # The stat-card PDFs are not in the repo, so the scan cannot run here.
+      # The audits read data/ and assets/ and catch a bad commit of either.
+      - name: Data audits
+        run: uv run python tools/dzc/rebuild.py --skip-scan
+
   deploy:
+    needs: test
     runs-on: ubuntu-latest
     environment:
       name: github-pages

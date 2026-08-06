@@ -827,11 +827,40 @@
    * Unit they are assigned to, and riding in the Bear APC instead of with the
    * Legionnaires it carries is strictly the worse place to be. Whether the
    * builder should still allow it is on the backlog, unsettled. */
+  /* Units no Commander may ever be assigned to, in the rulebook's own words:
+   *
+   *   10.1.12 Fast Mover     "Commanders may not be assigned to Fast Movers."
+   *   10.1.20 Living Weapons "Commanders cannot be assigned to Living Weapons."
+   *
+   * Both sentences have been in data/dzc/rules.json since the rulebook was
+   * scanned, and both were shown on the card and enforced nowhere — so the app
+   * would put a Level 5 Commander on an Archangel and price it, which is an
+   * illegal army it never mentioned. Its own test suite built one.
+   *
+   * Matched off the Unit's printed Special, which is where the keyword is:
+   * "Ev3, Fast Mover" on the Archangel, "Agile 1, Dogs, FS2, Living Weapons"
+   * on the K9 Pack. Ten Units carry one or the other. */
+  const NO_COMMANDER = [
+    [/\bFast Mover\b/i, 'a Fast Mover', '10.1.12'],
+    [/\bLiving Weapons?\b/i, 'a Living Weapon', '10.1.20'],
+  ];
+
+  function commanderBan(unit) {
+    if (!unit) return null;
+    const sp = unit.special || '';
+    for (const [re, what, rule] of NO_COMMANDER) {
+      if (re.test(sp)) {
+        return { reason: `${unit.name} is ${what} — Commanders may not be assigned to one (${rule}).` };
+      }
+    }
+    return null;
+  }
+
   function commanderTargets(army, cmdrId) {
     const out = [];
     army.groups.forEach(g => g.squads.forEach(s => {
       const u = unitOf(army, s);
-      if (!u || u.category === 'Transport') return;
+      if (!u || u.category === 'Transport' || commanderBan(u)) return;
       const held = commanderFor(army, s.id);
       if (held && held.id !== cmdrId) return;
       out.push({ squad: s, unit: u, group: g });
@@ -869,6 +898,8 @@
     if (u && u.category === 'Transport') {
       return { ok: false, reason: 'A Commander is assigned to a fighting Unit, not to a Transport Squad.' };
     }
+    const ban = commanderBan(u);
+    if (ban) return { ok: false, reason: ban.reason };
     const held = commanderFor(army, squadId);
     if (held && held.id !== cmdrId) {
       return { ok: false, reason: 'That Squad already has a Commander — one per Squad (3.2.5).' };
@@ -1537,6 +1568,15 @@
     // than nagging about them from the first Squad.
     cmdrs.filter(c => !c.squadId).forEach(c => {
       errors.push({ rule: '3.2.5', msg: `Your Level ${c.level} Commander is not with a Squad yet.` });
+    });
+    /* Riding with a Unit that may never carry one (10.1.12, 10.1.20).
+     * assignCommander refuses this now, so it cannot be built here — but an
+     * army arriving from a share link or from storage predates that refusal,
+     * and validate is where an army the app did not build is checked. */
+    cmdrs.filter(c => c.squadId).forEach(c => {
+      const s = findSquad(army, c.squadId);
+      const ban = s && commanderBan(unitOf(army, s));
+      if (ban) errors.push({ rule: '10.1.12', msg: ban.reason });
     });
 
     /* Not illegal, but worth saying: anything not aboard an Aircraft starts

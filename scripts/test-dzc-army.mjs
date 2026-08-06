@@ -91,6 +91,49 @@ console.log('\nweapon upgrades are per VARIANT, not per model (3.2.3)');
   A.remove(a.id);
 }
 
+/* 10.1.12 "Commanders may not be assigned to Fast Movers."
+ * 10.1.20 "Commanders cannot be assigned to Living Weapons."
+ *
+ * Both sentences have been in data/dzc/rules.json since the rulebook was
+ * scanned, shown on the card, and enforced nowhere — the app would put a Level
+ * 5 Commander on an Archangel and charge you 90pts for an army no opponent
+ * would accept. Ten Units carry one keyword or the other. */
+console.log('\nno Commander on a Fast Mover or a Living Weapon (10.1.12, 10.1.20)');
+{
+  const a = army();
+  const g = A.addGroup(a);
+  const arch = A.addSquad(a, g.id, 'archangel', 1);            // Ev3, Fast Mover
+  const mbt = A.addSquad(a, A.addGroup(a).id, 'ucm-main-battle-tank', 1);
+
+  const r = A.setCommander(a, arch.id, 5);
+  eq(r.ok, false, 'a Commander is refused on a Fast Mover');
+  ok(/Fast Mover/.test(r.reason || '') && /10\.1\.12/.test(r.reason || ''),
+     'and the refusal names the rule', r.reason);
+  eq(A.squadCost(a, arch), 40, 'so the Squad is not charged for one');
+  eq((a.commanders || []).length, 0, 'and no Commander is left stranded by the refusal');
+
+  ok(A.setCommander(a, mbt.id, 5).ok, 'the same Commander goes on a tank');
+  const targets = A.commanderTargets(a, A.commanders(a)[0].id).map(t => t.unit.name);
+  ok(!targets.includes('Archangel'), 'and the Fast Mover is not even offered', targets.join(', '));
+
+  await DZC.loadFaction('resistance');
+  const b = A.create('resistance', 'Living', 1500);
+  const pack = A.addSquad(b, A.addGroup(b).id, 'k9-pack', 1);  // Living Weapons
+  const lr = A.setCommander(b, pack.id, 5);
+  eq(lr.ok, false, 'and a Living Weapon refuses one too');
+  ok(/10\.1\.20/.test(lr.reason || ''), 'naming its own rule', lr.reason);
+
+  /* An army from a share link or from storage predates the refusal, so
+   * validate has to catch what it could not stop being built. */
+  A.addCommander(b, 5);
+  A.commanders(b)[0].squadId = pack.id;
+  ok(A.validate(b).errors.some(e => e.rule === '10.1.12'),
+     'an army that already has one is reported rather than passed');
+
+  A.remove(b.id);
+  A.remove(a.id);
+}
+
 console.log('\n"only one of these upgrades" is enforced (3.2.3)');
 {
   await DZC.loadFaction('resistance');
