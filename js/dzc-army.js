@@ -1275,6 +1275,20 @@
     return Object.keys(up).some(k => up[k][name]);
   }
 
+  /* What this Squad's models actually are and what it actually bought, in the
+   * shape DZCUnits.unitWeapons wants.
+   *
+   * One definition, because the Squad row, the printed sheet, its rules
+   * appendix and Play Mode must not disagree about what is in the Squad — and
+   * the appendix is where disagreeing costs paper, since a rule collected off a
+   * gun nobody fires is a paragraph printed for nothing. */
+  function squadGuns(squad) {
+    return {
+      variants: squad.models.map(m => m.variant),
+      hasUpgrade: w => hasAnyUpgrade(squad, w.name)
+    };
+  }
+
   // ------------------------------------------------------------- upgrades
   //
   // 3.2.3: a green name box is a paid Weapon upgrade, and "All Units of the
@@ -1634,7 +1648,7 @@
     addGroup, removeGroup, duplicateGroup, moveGroup, groupName, renameGroup,
     commanderName, renameCommander, addSquad, removeSquad, setModelCount, setModelVariant,
     canSetVariantCount, setVariantCount,
-    setCarrier, setCommander, findSquad, groupOf, unitOf, carrierOf,
+    setCarrier, setCommander, findSquad, groupOf, unitOf, carrierOf, squadGuns,
     commanders, commanderFor, commanderTargets,
     addCommander, removeCommander, assignCommander, syncCommanders, levelCost,
     modelCost, squadCost, groupCost, armyCost, categorySpend, validate,

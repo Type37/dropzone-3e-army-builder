@@ -264,6 +264,27 @@
     </section>`;
   }
 
+  /* The guns this Squad fires, and only those.
+   *
+   * Play Mode had no weapons on it at all, which made it a damage tracker
+   * rather than something you could play off — the numbers you argue over
+   * across a table are in this table, and the alternative was leaving the game
+   * to go and open the card.
+   *
+   * FILTERED, not marked, which is the opposite of the builder and deliberate:
+   * while you are building, a gun you did not take is a comparison, and while
+   * you are playing it is a distraction. Same definition of what is in the
+   * Squad either way — DZCArmy.squadGuns — so the two cannot drift. */
+  function weaponsHtml(army, s, u) {
+    const U = window.DZCUnits;
+    const ws = U.unitWeapons(u, window.DZCArmy.squadGuns(s));
+    if (!ws.length) return '';
+    return `<div class="dzc-play-wpn">
+      <table class="dzc-wpn"><thead>${U.wpnHead()}</thead>
+        <tbody>${ws.map(w => `<tr>${U.wpnCells(w, army.faction, { price: false })}</tr>`).join('')}</tbody>
+      </table></div>`;
+  }
+
   function squadHtml(army, s) {
     const u = window.DZCArmy.unitOf(army, s);
     if (!u) return '';
@@ -297,6 +318,7 @@
   }).join('')}</span>
         </div>`).join('')}
       </div>
+      ${weaponsHtml(army, s, u)}
     </div>`;
   }
 

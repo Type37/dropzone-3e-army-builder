@@ -33,7 +33,13 @@
 <div id="out"></div>
 
 <script>
-const WIDTHS = [320, 375, 414, 768];
+/* Phones, and then the band a DESKTOP window lands in when someone drags it
+   narrower — which is how this app's one reported layout bug was actually
+   found ("I just made my browser narrower"). 900 and 1024 sit between the
+   860px and 1100px breakpoints where the panes are still panes but there is no
+   longer room for them; 1100 is the edge itself. Testing four phone widths and
+   nothing else is how a broken desktop window passed clean. */
+const WIDTHS = [320, 375, 414, 768, 900, 1024, 1100];
 const q = new URLSearchParams(location.search);
 const TARGET = q.get("url") || "../index.html";
 // Cold-loadable views, in the router's own words (js/dzc-shell.js showView).

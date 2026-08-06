@@ -871,18 +871,9 @@
    * same Variant must be upgraded equally" (3.2.3) makes the upgrade a
    * per-variant purchase — so the row names its variant instead of listing
    * every variant the weapon is printed for. */
-  /* Which guns a Squad actually has, in the shape DZCUnits.unitWeapons wants:
-   * the Variants its models are, and the upgrades it bought. One definition,
-   * because the Squad row, the printed sheet and the sheet's rules appendix
-   * must not disagree about what is in the Squad — and the appendix is where
-   * disagreeing costs paper, since a rule collected off a gun nobody fires is
-   * a paragraph printed for nothing. */
-  function squadGuns(s) {
-    return {
-      variants: s.models.map(m => m.variant),
-      hasUpgrade: w => Object.keys(s.upgrades || {}).some(k => s.upgrades[k][w.name])
-    };
-  }
+  // Moved to DZCArmy.squadGuns — Play Mode needs the same answer, and two
+  // copies of "what is in this Squad" is how they come to disagree.
+  const squadGuns = s => window.DZCArmy.squadGuns(s);
 
   function upgradesHtml(a, s, u) {
     const opts = window.DZCArmy.upgradesFor(a, s);

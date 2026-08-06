@@ -238,6 +238,21 @@
 .dzc-wpn--marked tr.is-off .dzc-wpn-name { font-weight: 500; border-left-color: var(--line, #d8d0c0); }
 .dzc-wpn--marked tr.is-off .dzc-rule { color: var(--ink-2, #6b6459); border-color: var(--line, #d8d0c0); }
 
+/* Both ends of it, not just the quiet one.
+   Dimming alone left the difference to a shade of grey, and "which of these
+   nine rows are mine" is the question the table exists to answer — it should
+   be answerable at arm's length, not by comparing two greys. So the live rows
+   are lit as well: a tinted band the whole row wide, and the name at full
+   weight and full ink. The dead ones keep the bare paper.
+
+   Deliberately NOT a coloured left bar. That edge already carries the card's
+   own vocabulary — green is an upgrade, orange is variant-only — and on UCM
+   the faction accent is the same green as the upgrade bar, so "this row is
+   live" and "this row is an upgrade" would have been the same mark. The band
+   says live; the bar keeps saying what kind of row it is. */
+.dzc-wpn--marked tr.is-live td { background: var(--surface-3, #f2ece0); }
+.dzc-wpn--marked tr.is-live .dzc-wpn-name { font-weight: 700; color: var(--ink, #24201c); }
+
 /* A gun a bought swap traded in — "May replace both its MC-20 Chainguns with
    MM-15 Sidearm Missiles". Struck through, not dimmed: a dead variant row is a
    gun this Squad could have had, and this is one the card prints that the
@@ -610,16 +625,27 @@
 .dzc-rail .dzc-ratio span { display: inline; font-size: 10.5px; }
 
 /* Three panes need real width. The weapon table alone wants ~620px, so below
-   1400 the overview folds up into a row across the top and the detail pane
-   takes the whole width underneath — two panes, not a squeezed three. */
+   1400 the overview folds up into a row and the detail pane takes the width
+   under it — two columns, not a squeezed three.
+
+   Both fold into COLUMN 2, beside the rail. They used to be `grid-column:
+   1 / -1`, which put each on a row of its own spanning the whole width and
+   left the rail alone in row 1 with a void where the other two columns were —
+   250px of card and a thousand pixels of nothing beside it, then the list, then
+   the detail, all stacked. That is not "two panes"; it is one pane and a hole,
+   and it was the layout on every window from 901px to 1400px — an ordinary
+   1280 laptop included, not just a window dragged narrow.
+
+   The rail stays sticky in column 1 where it is useful, and the list sits on
+   top of the detail in column 2. */
 @media (max-width: 1400px) {
   .dzc-b-body { grid-template-columns: 250px minmax(0, 1fr); }
   .dzc-b-list {
-    grid-column: 1 / -1; position: static;
+    grid-column: 2; position: static;
     flex-direction: row; flex-wrap: wrap; align-items: stretch;
   }
   .dzc-bb { width: auto; flex: 1 1 190px; }
-  .dzc-b-detail { grid-column: 1 / -1; }
+  .dzc-b-detail { grid-column: 2; }
 }
 
 /* Desktop never needs it: both panes are on screen at once. */
@@ -960,6 +986,10 @@
   margin-right: 2px;
 }
 .dzc-chip--sm { padding: 4px 8px; font-size: 11px; }
+/* The variant switcher over a weapon table. A lens, not a choice: it changes
+   nothing about the Unit, so it sits with the table it filters rather than up
+   with the variant blocks, which ARE choices in a Squad. */
+.dzc-lens { margin: 8px 0 4px; }
 /* The direction arrow sits in a slot that is always there, empty or not, so a
  * sort chip is the same width active as inactive and the row never reflows. */
 .dzc-dir { display: inline-block; width: 9px; text-align: center; font-style: normal; }
@@ -1459,6 +1489,10 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 .dzc-play-name { font-weight: 600; font-size: 13.5px; overflow-wrap: anywhere; }
 .dzc-play-alive { margin-left: auto; font-size: 12px; font-weight: 700; }
 .dzc-play-models { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
+/* The guns this Squad fires, at a table. Scrolls sideways in its own box like
+   every other weapon table; the page never does. */
+.dzc-play-wpn { margin-top: 6px; overflow-x: auto; }
+.dzc-play-wpn .dzc-wpn { font-size: 11.5px; min-width: 560px; }
 .dzc-model { display: flex; align-items: center; gap: 4px; padding: 4px 7px; border-radius: 6px; background: var(--surface-3, #f2ece0); }
 .dzc-model.is-dead { opacity: .45; text-decoration: line-through; }
 .dzc-model button { width: 26px; height: 26px; border-radius: 5px; cursor: pointer; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); font-size: 15px; line-height: 1; }

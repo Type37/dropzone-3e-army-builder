@@ -34,7 +34,8 @@
     pentagon:        { ink: '#e94e1b', path: 'M12 2l10 7.3-3.8 11.7H5.8L2 9.3z' }
   };
 
-  let state = { faction: 'ucm', search: '', category: 'All' };
+  // `lens` is per unit id: which variant's guns the weapon table is showing.
+  let state = { faction: 'ucm', search: '', category: 'All', lens: {} };
 
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g,
     c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -353,23 +354,55 @@
    * holding, and stops it changing height every time you toggle an upgrade.
    * Nothing on a row needs explaining that the row does not already say — the
    * name cell carries "Alexander only" and "+10pts" as it always has. */
+  /* The variant switcher over a weapon table.
+   *
+   * A Unit with four variants prints eight guns and only three of them are on
+   * the model in front of you; reading the card means holding "Alexander only"
+   * in your head down the whole Name column. The switcher does that reading:
+   * pick a variant and the table is that variant's guns and the ones every
+   * variant carries.
+   *
+   * It is a LENS, not a choice — it changes nothing about the Unit and nothing
+   * about a Squad. Which is why it opens on "All": the card is the whole card
+   * until you ask it to be less, and a switcher that starts filtered is a
+   * switcher that hides seven eighths of a stat card from someone who did not
+   * ask. */
+  function variantLensHtml(u) {
+    const vs = u.variants || [];
+    if (vs.length < 2) return '';
+    const sel = state.lens[u.id] || '';
+    const chip = (val, label) => `<button type="button" class="dzc-chip dzc-chip--sm${
+      sel === val ? ' is-active' : ''}" aria-pressed="${sel === val}"
+      onclick="DZCUnits.setLens('${esc(u.id)}','${esc(val).replace(/'/g, '&#39;')}')"
+      >${esc(label)}</button>`;
+    return `<div class="dzc-chips dzc-lens">${
+      [chip('', 'All')].concat(vs.map(v => chip(v.name, v.name))).join('')}</div>`;
+  }
+
   function weaponsHtml(u, faction, opts) {
     const fac = faction || state.faction;
     const o = opts || {};
     const marking = !!(o.variants || o.hasUpgrade);
-    const ws = u.weapons || [];
-    if (!ws.length) return '<p class="dzc-none">No weapons.</p>';
+    const all = u.weapons || [];
+    if (!all.length) return '<p class="dzc-none">No weapons.</p>';
+    /* The lens narrows what is drawn to one variant's guns plus the ones every
+     * variant carries. Rows keep their ORIGINAL index, because a swap removes
+     * the second of two identically-named rows and a re-indexed list would
+     * strike out the wrong one. */
+    const lens = o.lens === undefined ? state.lens[u.id] : o.lens;
     const gone = marking ? removedByUpgrades(u, o) : {};
-    const rows = ws.map((w, i) => {
-      // A weapon a swap took away is struck out rather than dimmed. It is not
-      // "a gun this Squad could have" — it is one the card printed and the
-      // purchase above traded in, which is a different thing to say.
-      const state = gone[i] ? 'is-swapped' : weaponLive(u, w, o) ? 'is-live' : 'is-off';
-      const cls = [w.box === 'upgrade' ? 'is-upgrade' : w.box === 'variant' ? 'is-variant' : '']
-        .concat(marking ? [state] : [])
-        .filter(Boolean).join(' ');
-      return `<tr${cls ? ` class="${cls}"` : ''}>${wpnCells(w, fac)}</tr>`;
-    }).join('');
+    const rows = all.map((w, i) => [w, i])
+      .filter(([w]) => !lens || w.box !== 'variant' || (w.variants || []).indexOf(lens) !== -1)
+      .map(([w, i]) => {
+        // A weapon a swap took away is struck out rather than dimmed. It is not
+        // "a gun this Squad could have" — it is one the card printed and the
+        // purchase above traded in, which is a different thing to say.
+        const mark = gone[i] ? 'is-swapped' : weaponLive(u, w, o) ? 'is-live' : 'is-off';
+        const cls = [w.box === 'upgrade' ? 'is-upgrade' : w.box === 'variant' ? 'is-variant' : '']
+          .concat(marking ? [mark] : [])
+          .filter(Boolean).join(' ');
+        return `<tr${cls ? ` class="${cls}"` : ''}>${wpnCells(w, fac)}</tr>`;
+      }).join('');
     return `
       <table class="dzc-wpn${marking ? ' dzc-wpn--marked' : ''}">
         <thead>${wpnHead()}</thead>
@@ -472,6 +505,7 @@
     const u = f && f.byId[unitId];
     if (!u) return;
     const weapons = weaponsHtml(u, state.faction);
+    detailOf = { id: unitId, faction: state.faction };
     const variants = variantsHtml(u);
 
     document.getElementById('dzc-detail-body').innerHTML = `
@@ -498,6 +532,7 @@
       </div>
       ${u.special ? `<div class="dzc-detail-rules">${rulesHtml(u.special, state.faction)}</div>` : ''}
       ${variants}
+      ${variantLensHtml(u)}
       ${weapons}
       ${upgradeNoteHtml(u)}
       ${unitRulesHtml(u, state.faction)}`;
@@ -509,6 +544,16 @@
     document.querySelector('#dzc-detail .modal-title').textContent = 'Stats, weapons and rules';
     document.getElementById('dzc-detail').classList.add('active');
   }
+
+  /* Redraw the open card with a different variant selected. The whole panel is
+   * rebuilt rather than the table swapped in place, because the variant blocks
+   * above it carry the same selection and would otherwise disagree with it. */
+  function setLens(unitId, variant) {
+    state.lens[unitId] = variant || '';
+    if (detailOf && detailOf.id === unitId) openDetail(unitId, detailOf.faction);
+  }
+
+  let detailOf = null;
 
   function closeDetail() { document.getElementById('dzc-detail').classList.remove('active'); }
 
@@ -553,11 +598,11 @@
     setFaction: id => { state.faction = id; state.search = ''; render(); },
     setCategory: c => { state.category = c; render(); },
     setSearch: v => { state.search = v; render(); },
-    openDetail, closeDetail, showRule, hideRule,
+    openDetail, closeDetail, setLens, showRule, hideRule,
     // Shared with the builder's picker so a unit reads the same in both places.
     statsHtml, rulesHtml, squadHtml, transportHtml, unitWeapons, weaponLive,
     removedByUpgrades, weaponsHtml, variantsHtml,
-    unitRulesHtml, wpnHead, wpnCells,
+    unitRulesHtml, wpnHead, wpnCells, variantLensHtml,
     pointsHtml, shape: shapeSvg,
     SHAPES: Object.keys(SYMBOL),
     shapeInk: s => (SYMBOL[s] || {}).ink || 'currentColor',
