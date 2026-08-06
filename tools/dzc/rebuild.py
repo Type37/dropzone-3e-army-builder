@@ -12,6 +12,7 @@ consumes the one before it: a bad unit scan would be audited against itself and
 a bad glossary would silently leave rule keywords dead on the page.
 
     scan_statcards   PDFs        -> data/dzc/faction-*.json  + assets/units/*
+    ...--behemoths               -> data/dzc/behemoths.json
     scan_rulebook    PDFs        -> data/dzc/rules.json
     audit_data       shape, categories, weapon boxes
     audit_transport  symbol shapes and the carrier/passenger lineages
@@ -35,6 +36,11 @@ SCANS = [
                          "--pdf-dir", "rules",
                          "--out", "data/dzc",
                          "--art", "assets/units"]),
+    ("scan behemoths", ["scan_statcards.py",
+                        "--pdf-dir", "rules",
+                        "--out", "data/dzc",
+                        "--art", "assets/units",
+                        "--behemoths"]),
     ("scan rulebook", ["scan_rulebook.py"]),
 ]
 

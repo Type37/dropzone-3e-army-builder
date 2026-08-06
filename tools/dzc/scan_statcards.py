@@ -89,6 +89,9 @@ ART_DIR = "assets/units"
 
 STAT_HEADERS_VEHICLE = ["Type", "Mv", "A", "DP", "Special"]
 STAT_HEADERS_INFANTRY = ["Type", "Mv", "OF", "DF", "B", "DP", "Special"]
+# A Behemoth is a Vehicle card with a Power column. Power is what it spends to
+# activate and to run its Gear (Behemoth rules 1.2), so it belongs in stats.
+STAT_HEADERS_BEHEMOTH = ["Type", "Mv", "A", "DP", "Power", "Special"]
 WEAPON_HEADERS = ["Name", "Arc", "MA", "R", "Att", "Ac", "E", "Special"]
 
 
@@ -149,6 +152,18 @@ class Header(TypedDict):
     rare: bool
     unique: bool
     pointsRaw: str | None
+    groupEquivalent: int | None
+
+
+class Gear(TypedDict):
+    """A Behemoth's Power-priced equipment: "3PT: Redundancy".
+
+    Priced in POWER, not points — it comes out of the same pool the Behemoth
+    spends to activate, so it costs nothing at list-building time and
+    everything during a game."""
+
+    name: str
+    power: str
 
 
 class Swap(TypedDict):
@@ -184,6 +199,10 @@ class Unit(TypedDict):
     weapons: list[Weapon]
     upgradeNote: str | None
     swaps: list[Swap]
+    # Behemoths only: how many Groups this one Unit counts as (1.1), and the
+    # Power-priced Gear it may run. Everything else leaves them null / empty.
+    groupEquivalent: int | None
+    gear: list[Gear]
     page: int
     auxiliaryTransport: bool
     selectable: bool
@@ -375,6 +394,10 @@ def parse_header(page) -> Header | None:
 
     cat = re.split(r"Squad\s*Size", ltxt or rtxt, flags=re.I)[0].strip()
     cat = re.sub(r"\s*\d+\s*pts?.*$", "", cat, flags=re.I).strip(" ,") or None
+    # "Heavy, Group Equivalent 4". A Behemoth has no Squad Size worth the name
+    # -- it is always one model -- and counts as several Groups instead, which
+    # is what the army's Group allowance is spent against (Behemoth rules 1.1).
+    ge = re.search(r"Groups?\s*Equivalent\s*(\d+)", (ltxt or "") + " " + (rtxt or ""), re.I)
     m2 = re.search(r"(Standard|Vanguard|Heavy|Support|Transport|Generated)", cat or "", re.I)
     cat = m2.group(1).title() if m2 else cat
 
@@ -389,6 +412,7 @@ def parse_header(page) -> Header | None:
         "rare": rare,
         "unique": unique,
         "pointsRaw": ptxt,
+        "groupEquivalent": int(ge.group(1)) if ge else None,
     }
     return header
 
@@ -802,7 +826,7 @@ def split_row(line, cols, rules=None):
 # UCM came back with 20 units instead of 36 and no dropships at all. The audit
 # caught it on the two the rulebook names, which is the only reason it was not
 # shipped. Match the word, keep the bracket.
-TYPE_RE = re.compile(r"^(Vehicle|Aircraft|Infantry)(?:\s*\(([^)]*)\))?$", re.I)
+TYPE_RE = re.compile(r"^(Vehicle|Aircraft|Infantry|Behemoth)(?:\s*\(([^)]*)\))?$", re.I)
 
 
 def parse_stat_table(page, lines) -> tuple[str, str | None, dict[str, str], str, float] | None:
@@ -815,16 +839,21 @@ def parse_stat_table(page, lines) -> tuple[str, str | None, dict[str, str], str,
     The bottom is returned for the cards with no weapon table at all. The
     footnote reader needs a floor to start below, and on those cards the stat
     table is the only thing to measure from."""
-    hit = find_header_row(lines, STAT_HEADERS_INFANTRY, need=5)
-    infantry = True
+    # Behemoth first: its header is the Vehicle one plus Power, so testing
+    # Vehicle first would match four of its five names and lose the Power
+    # column off the end.
+    headers = STAT_HEADERS_BEHEMOTH
+    hit = find_header_row(lines, headers, need=6)
     if hit is None:
-        hit = find_header_row(lines, STAT_HEADERS_VEHICLE, need=4)
-        infantry = False
+        headers = STAT_HEADERS_INFANTRY
+        hit = find_header_row(lines, headers, need=5)
+    if hit is None:
+        headers = STAT_HEADERS_VEHICLE
+        hit = find_header_row(lines, headers, need=4)
     if hit is None:
         return None
     i, hdr = hit
 
-    headers = STAT_HEADERS_INFANTRY if infantry else STAT_HEADERS_VEHICLE
     cols = columns_from_header(hdr, headers)
     # Column boundaries come from THIS table's own drawn dividers, taken from
     # the header row's tight y-band.
@@ -1153,6 +1182,28 @@ def parse_swaps(unit: Unit) -> None:
     ]
 
 
+# "3PT: Redundancy", "1+PT: Shield Booster", "0PT: Scrambler 2+". Only Behemoth
+# cards carry these.
+GEAR_RE = re.compile(r"^\s*(\d+\+?)\s*PT\s*:\s*(.+?)\s*$", re.I)
+
+
+def parse_gear(page) -> list[Gear]:
+    """A Behemoth's Power-priced Gear, off the card's Gear list.
+
+    Read as whole LINES rather than by position: the list is set in one column
+    on some cards and two on others, and the "NPT:" prefix is unambiguous
+    enough that geometry buys nothing. A card with no Gear yields nothing,
+    which is every card in the six faction PDFs."""
+    out: list[Gear] = []
+    for blk in page.get_text("dict")["blocks"]:
+        for ln in blk.get("lines", []):
+            text = " ".join(sp["text"] for sp in ln["spans"]).strip()
+            m = GEAR_RE.match(text)
+            if m:
+                out.append({"power": m.group(1), "name": m.group(2)})
+    return out
+
+
 def parse_weapons(page, lines) -> tuple[list[Weapon], float]:
     """The weapon rows, and the y the table ends at.
 
@@ -1447,6 +1498,8 @@ def parse_page(page, doc, art_dir) -> Unit | None:
         # itself now reaches into.
         "upgradeNote": upgrade_note(page, tables_bottom, 20),
         "swaps": [],
+        "groupEquivalent": header["groupEquivalent"],
+        "gear": parse_gear(page),
         "page": (page.number or 0) + 1,
         "auxiliaryTransport": bool(transport["capacity"] and (category or "") != "Transport"),
         "selectable": selectable,
@@ -1492,15 +1545,68 @@ def scan(pdf_path, faction_id, faction_name,
     return data, skipped
 
 
+def scan_behemoths(args) -> None:
+    """The Behemoth PDF: ten Behemoths and the one Drone that comes with one.
+
+    Same card template as the faction sets — a Power column and a Groups
+    Equivalent instead of a Squad Size — so it goes through the same parser.
+    The first ten pages are rules text and produce nothing, which is how the
+    parser is meant to handle a page that is not a card.
+
+    FACTION IS NOT ON THESE CARDS. Nine of the eleven never name one, and there
+    is no logo, no colour and no heading to read it off. It is left null and
+    audit_data says so rather than being inferred from weapon names, which
+    would file the Explorator by vibe. Until it is known these are reference
+    profiles: selectable is false, so they read in the Unit Reference and
+    cannot be added to an army against the wrong faction's allowance.
+    """
+    matches = [f for f in os.listdir(args.pdf_dir)
+               if f.startswith("Behemoth_Rules_Stats") and f.endswith(".pdf")]
+    if not matches:
+        print("  !! no Behemoth PDF")
+        return
+    path = os.path.join(args.pdf_dir, max(matches, key=pdf_stamp))
+    doc = fitz.open(path)
+    units: list[Unit] = []
+    skipped: list[tuple[int, str]] = []
+    for page in doc:
+        try:
+            u = parse_page(page, doc, args.art)
+        except Exception as exc:                     # noqa: BLE001
+            skipped.append(((page.number or 0) + 1, f"error: {exc}"))
+            continue
+        if u:
+            u["selectable"] = False
+            units.append(u)
+    ver = re.search(r"_(\d{6})\.pdf$", os.path.basename(path))
+    data: FactionFile = {
+        "faction": "behemoth",
+        "name": "Behemoths",
+        "sourcePdf": os.path.basename(path),
+        "version": ver.group(1) if ver else None,
+        "units": units,
+    }
+    out = os.path.join(args.out, "behemoths.json")
+    with open(out, "w", encoding="utf-8") as fh:
+        json.dump(data, fh, indent=2, ensure_ascii=False)
+    print(f"  Behemoths   {len(units):3d} units -> {out}")
+    for pg, why in skipped:
+        print(f"      skipped p{pg}: {why}")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--pdf-dir", default=".")
     ap.add_argument("--out", default="data")
     ap.add_argument("--art", default=None, help="extract unit photos into this dir")
     ap.add_argument("--faction", default=None, help="limit to one faction")
+    ap.add_argument("--behemoths", action="store_true",
+                    help="scan the Behemoth PDF into behemoths.json instead")
     args = ap.parse_args()
 
     os.makedirs(args.out, exist_ok=True)
+    if args.behemoths:
+        return scan_behemoths(args)
     grand = 0
     for fname, fid in FACTIONS.items():
         if args.faction and args.faction.lower() != fid:

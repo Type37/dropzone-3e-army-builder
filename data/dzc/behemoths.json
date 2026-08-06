@@ -1,0 +1,1937 @@
+{
+  "faction": "behemoth",
+  "name": "Behemoths",
+  "sourcePdf": "Behemoth_Rules_Stats_260805.pdf",
+  "version": "260805",
+  "units": [
+    {
+      "id": "ucm-heavy-battle-mech",
+      "name": "UCM Heavy Battle Mech",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": null,
+      "pointsRaw": "960pts (Japan), 995pts (America)",
+      "rare": false,
+      "unique": false,
+      "type": "Behemoth",
+      "base": null,
+      "stats": {
+        "Mv": "6”",
+        "A": "10",
+        "DP": "6, 12, 22",
+        "Power": "7"
+      },
+      "special": "Walker 3”x9”",
+      "variants": [
+        {
+          "name": "Japan",
+          "points": 960
+        },
+        {
+          "name": "America",
+          "points": 995
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "capacityMode": null,
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "UMH-1 Mass Driver, left",
+          "arc": "F",
+          "ma": "Full",
+          "r": "∞/24\"",
+          "att": "1",
+          "ac": "4+",
+          "e": "10",
+          "special": "AS 2, Devastator D6+2, Demo 2D6, LT 6\", Macro",
+          "box": "variant",
+          "variants": [
+            "America"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "UMH-1 Mass Driver, right",
+          "arc": "F",
+          "ma": "Full",
+          "r": "∞/24\"",
+          "att": "1",
+          "ac": "4+",
+          "e": "10",
+          "special": "AS 2, Devastator D6+2, Demo 2D6, LT 6\", Macro",
+          "box": "variant",
+          "variants": [
+            "America"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "UMH-4A Hailfire System, left",
+          "arc": "F",
+          "ma": "6\"",
+          "r": "∞/18\"",
+          "att": "5",
+          "ac": "3+",
+          "e": "7",
+          "special": "Critical 1, Demo 0, Indirect, Linked 1, LT 9\", Strafe",
+          "box": "variant",
+          "variants": [
+            "America"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "UMH-4A Hailfire System, right",
+          "arc": "F",
+          "ma": "6\"",
+          "r": "∞/18\"",
+          "att": "5",
+          "ac": "3+",
+          "e": "7",
+          "special": "Critical 1, Demo 0, Indirect, Linked 1, LT 9\", Strafe",
+          "box": "variant",
+          "variants": [
+            "America"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "UMH-9 Stormcrow Cannon, left",
+          "arc": "F",
+          "ma": "Full",
+          "r": "∞/18\"",
+          "att": "6",
+          "ac": "5+",
+          "e": "8",
+          "special": "Critical 1, Demo 1, LT 6\", Macro",
+          "box": "variant",
+          "variants": [
+            "Japan"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "UMH-9 Stormcrow Cannon, right",
+          "arc": "F",
+          "ma": "Full",
+          "r": "∞/18\"",
+          "att": "6",
+          "ac": "5+",
+          "e": "8",
+          "special": "Critical 1, Demo 1, LT 6\", Macro",
+          "box": "variant",
+          "variants": [
+            "Japan"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "UMH-4B Hailfire System, left",
+          "arc": "F",
+          "ma": "6\"",
+          "r": "∞/18\"",
+          "att": "1",
+          "ac": "3+",
+          "e": "9",
+          "special": "Blast, Demo D6, Devastator D3, Indirect, L2, Linked 1, LT 9\", Macro",
+          "box": "variant",
+          "variants": [
+            "Japan"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "UMH-4B Hailfire System, right",
+          "arc": "F",
+          "ma": "6\"",
+          "r": "∞/18\"",
+          "att": "1",
+          "ac": "3+",
+          "e": "9",
+          "special": "Blast, Demo D6, Devastator D3, Indirect, L2, Linked 1, LT 9\", Macro",
+          "box": "variant",
+          "variants": [
+            "Japan"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "UMH-39 Gatling Battery, focused",
+          "arc": "F",
+          "ma": "Full",
+          "r": "36/18\"",
+          "att": "6",
+          "ac": "3+",
+          "e": "6",
+          "special": "Alt 1, Focus 1, LT 6\", Secondary, Strafe",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "UMH-39 Gatling Battery, spread 3PT: Redundancy",
+          "arc": "F",
+          "ma": "Full 1PT:",
+          "r": "36/18\" Gear Target",
+          "att": "18 Lock",
+          "ac": "3+",
+          "e": "2",
+          "special": "Alt 1, Ignores Cover, LT 6\", Secondary, Strafe 1PT: Decoys",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        }
+      ],
+      "upgradeNote": null,
+      "swaps": [],
+      "groupEquivalent": 4,
+      "gear": [
+        {
+          "power": "3",
+          "name": "Redundancy"
+        },
+        {
+          "power": "1",
+          "name": "Target Lock"
+        },
+        {
+          "power": "1",
+          "name": "Decoys"
+        }
+      ],
+      "page": 11,
+      "auxiliaryTransport": false,
+      "selectable": false,
+      "art": "assets/units/ucm-heavy-battle-mech.webp"
+    },
+    {
+      "id": "ucm-light-battle-mech",
+      "name": "UCM Light Battle Mech",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": null,
+      "pointsRaw": "380pts (Brazil), 410pts (India)",
+      "rare": false,
+      "unique": false,
+      "type": "Behemoth",
+      "base": null,
+      "stats": {
+        "Mv": "4”",
+        "A": "9",
+        "DP": "6, 12",
+        "Power": "5"
+      },
+      "special": "Walker 2”x2”",
+      "variants": [
+        {
+          "name": "Brazil",
+          "points": 380
+        },
+        {
+          "name": "India",
+          "points": 410
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "capacityMode": null,
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Quad UMH-2 Mass Drivers",
+          "arc": "F/S/R",
+          "ma": "4\"",
+          "r": "∞/24\"",
+          "att": "4",
+          "ac": "4+",
+          "e": "10",
+          "special": "AS 2, Demo 1, Integral, LT 5\", Devastator 1, Macro, T1",
+          "box": "variant",
+          "variants": [
+            "Brazil"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin UMH-19 Cannons",
+          "arc": "F/S/R",
+          "ma": "4\"",
+          "r": "∞/18\"",
+          "att": "8",
+          "ac": "3+",
+          "e": "6",
+          "special": "AA-S, Critical 1, Demo 0, LT 5\", Macro, T2",
+          "box": "variant",
+          "variants": [
+            "India"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin UMH-19 Cannons",
+          "arc": "F/S/R",
+          "ma": "4\"",
+          "r": "∞/18\"",
+          "att": "8",
+          "ac": "3+",
+          "e": "6",
+          "special": "AA-S, Critical 1, Demo 0, LT 5\", Macro, T2",
+          "box": "variant",
+          "variants": [
+            "India"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-88B Chaingun",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "36/18\"",
+          "att": "4",
+          "ac": "2+",
+          "e": "3",
+          "special": "Secondary, Focus 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "UM-88B Chaingun 0PT: Target",
+          "arc": "F/S/R Lock",
+          "ma": "Full",
+          "r": "36/18\" Gear",
+          "att": "4",
+          "ac": "2+",
+          "e": "3 0PT:",
+          "special": "Secondary, Focus 1 Scrambler 2+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        }
+      ],
+      "upgradeNote": null,
+      "swaps": [],
+      "groupEquivalent": 3,
+      "gear": [
+        {
+          "power": "0",
+          "name": "Target Lock"
+        },
+        {
+          "power": "0",
+          "name": "Scrambler 2+"
+        }
+      ],
+      "page": 12,
+      "auxiliaryTransport": false,
+      "selectable": false,
+      "art": "assets/units/ucm-light-battle-mech.webp"
+    },
+    {
+      "id": "death-mech",
+      "name": "Death Mech",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": null,
+      "pointsRaw": "890pts (Dictator), 980pts (Tyrant)",
+      "rare": false,
+      "unique": false,
+      "type": "Behemoth",
+      "base": null,
+      "stats": {
+        "Mv": "8\"",
+        "A": "8",
+        "DP": "10, 16, 24",
+        "Power": "8"
+      },
+      "special": "Lithe, Resilient, Walker 3\"x6\"",
+      "variants": [
+        {
+          "name": "Dictator",
+          "points": 890
+        },
+        {
+          "name": "Tyrant",
+          "points": 980
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "capacityMode": null,
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Hyperbio Cannon, burster",
+          "arc": "F",
+          "ma": "8\"",
+          "r": "36\"",
+          "att": "2",
+          "ac": "3+",
+          "e": "6",
+          "special": "Alt 1, Blast, Demo D3, Devastator D3, LT 4\", Pen 3+",
+          "box": "variant",
+          "variants": [
+            "Tyrant"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Hyperbio Cannon, seep",
+          "arc": "F",
+          "ma": "8\"",
+          "r": "36\"",
+          "att": "2",
+          "ac": "3+",
+          "e": "7",
+          "special": "Alt 1, Demo D6, Incendiary 2D6",
+          "box": "variant",
+          "variants": [
+            "Tyrant"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Dual Heavy Plasma Cannons, left",
+          "arc": "F/SL",
+          "ma": "8\"",
+          "r": "18\"",
+          "att": "2",
+          "ac": "3+",
+          "e": "10",
+          "special": "Critical 1, Demo D3+1, Macro, Capacitors: +3 Devastator",
+          "box": "variant",
+          "variants": [
+            "Tyrant"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Dual Heavy Plasma Cannons, right",
+          "arc": "F/SR",
+          "ma": "8\"",
+          "r": "18\"",
+          "att": "2",
+          "ac": "3+",
+          "e": "10",
+          "special": "Critical 1, Demo D3+1, Macro, Capacitors: +3 Devastator",
+          "box": "variant",
+          "variants": [
+            "Tyrant"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Arc Maw",
+          "arc": "F",
+          "ma": "8\"",
+          "r": "12\"",
+          "att": "2D6+4",
+          "ac": "2+",
+          "e": "10",
+          "special": "Disrupt, Ineffective: Zones, LT 4\", Macro, Capacitors: +8 Att",
+          "box": "variant",
+          "variants": [
+            "Dictator"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Dual Static Accelerators, left",
+          "arc": "F/SL",
+          "ma": "8\"",
+          "r": "36\"",
+          "att": "2",
+          "ac": "2+",
+          "e": "10",
+          "special": "AS 1, Critical 1, Pen 2+, Ineffective: Zones, Macro",
+          "box": "variant",
+          "variants": [
+            "Dictator"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Dual Accelerators, right",
+          "arc": "F/SR",
+          "ma": "8\"",
+          "r": "36\"",
+          "att": "2",
+          "ac": "2+",
+          "e": "10",
+          "special": "AS 1, Critical 1, Pen 2+, Ineffective: Zones, Macro",
+          "box": "variant",
+          "variants": [
+            "Dictator"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Seeker Lashes",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "8\"",
+          "att": "10",
+          "ac": "2+",
+          "e": "S5",
+          "special": "AA-S, Secondary, Seeker",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Seeker Lashes",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "8\"",
+          "att": "10",
+          "ac": "2+",
+          "e": "S5",
+          "special": "AA-S, Secondary, Seeker",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Crushing Tentacles 2PT: Redundancy",
+          "arc": "F 1PT: Target",
+          "ma": "Full Lock",
+          "r": "CC Gear",
+          "att": "2D6+2 1PT:",
+          "ac": "3+ Shroud 2+",
+          "e": "8",
+          "special": "Devastator 2, Macro, Secondary 2PT: Weapon Capacitors",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        }
+      ],
+      "upgradeNote": null,
+      "swaps": [],
+      "groupEquivalent": 4,
+      "gear": [
+        {
+          "power": "2",
+          "name": "Redundancy"
+        },
+        {
+          "power": "1",
+          "name": "Target Lock"
+        },
+        {
+          "power": "1",
+          "name": "Shroud 2+"
+        },
+        {
+          "power": "2",
+          "name": "Weapon Capacitors"
+        }
+      ],
+      "page": 13,
+      "auxiliaryTransport": false,
+      "selectable": false,
+      "art": "assets/units/death-mech.webp"
+    },
+    {
+      "id": "terror-mech",
+      "name": "Terror Mech",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": null,
+      "pointsRaw": "400pts (Persecutor), 435pts (Punisher)",
+      "rare": false,
+      "unique": false,
+      "type": "Behemoth",
+      "base": null,
+      "stats": {
+        "Mv": "6”",
+        "A": "7",
+        "DP": "8, 12",
+        "Power": "6"
+      },
+      "special": "Resilient, Walker 2”x4”",
+      "variants": [
+        {
+          "name": "Persecutor",
+          "points": 400
+        },
+        {
+          "name": "Punisher",
+          "points": 435
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "capacityMode": null,
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Plasma Destructor",
+          "arc": "F",
+          "ma": "6\"",
+          "r": "24\"",
+          "att": "2",
+          "ac": "3+",
+          "e": "10",
+          "special": "AS 2, Critical 2, Demo D3, LT 4\", Macro, Capacitors: +2 Att",
+          "box": "variant",
+          "variants": [
+            "Persecutor"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Sonic Demolisher",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "8\"",
+          "att": "4D6",
+          "ac": "6+",
+          "e": "3",
+          "special": "Demo 1, Capacitors: +2E",
+          "box": "variant",
+          "variants": [
+            "Punisher"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Razor Hives",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "8\"",
+          "att": "6",
+          "ac": "4+",
+          "e": "4",
+          "special": "Razorworm Pod",
+          "box": "variant",
+          "variants": [
+            "Punisher"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Heavy Plasma Bombard, left",
+          "arc": "F",
+          "ma": "3\"",
+          "r": "24\"",
+          "att": "1",
+          "ac": "3+",
+          "e": "8",
+          "special": "Blast, Critical 1, Devastator 1, Demo 1, Linked 1, Indirect, LT 6\"",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Heavy Plasma Bombard, right 1PT: Redundancy",
+          "arc": "F 1PT: Target",
+          "ma": "3\" Lock",
+          "r": "24\" Gear",
+          "att": "1 1PT:",
+          "ac": "3+ Shroud 2+",
+          "e": "8",
+          "special": "Blast, Critical 1, Devastator 1, Demo 1, Linked 1, Indirect, LT 6\" 1PT: Weapon Capacitors",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        }
+      ],
+      "upgradeNote": null,
+      "swaps": [],
+      "groupEquivalent": 3,
+      "gear": [
+        {
+          "power": "1",
+          "name": "Redundancy"
+        },
+        {
+          "power": "1",
+          "name": "Target Lock"
+        },
+        {
+          "power": "1",
+          "name": "Shroud 2+"
+        },
+        {
+          "power": "1",
+          "name": "Weapon Capacitors"
+        }
+      ],
+      "page": 14,
+      "auxiliaryTransport": false,
+      "selectable": false,
+      "art": "assets/units/terror-mech.webp"
+    },
+    {
+      "id": "type-7-grand-walker",
+      "name": "Type 7 Grand Walker",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": null,
+      "pointsRaw": "930pts (Chronus), 985pts (Tethys)",
+      "rare": false,
+      "unique": false,
+      "type": "Behemoth",
+      "base": null,
+      "stats": {
+        "Mv": "5\"",
+        "A": "9",
+        "DP": "12, 18, 24",
+        "Power": "8"
+      },
+      "special": "Walker 3\"x5\"",
+      "variants": [
+        {
+          "name": "Chronus",
+          "points": 930
+        },
+        {
+          "name": "Tethys",
+          "points": 985
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "capacityMode": null,
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "R7X-1 Railgun, left",
+          "arc": "F",
+          "ma": "6\"",
+          "r": "∞/24\"",
+          "att": "1",
+          "ac": "3+",
+          "e": "AS 2, 10",
+          "special": "Devastator D3+1, Demo 2D3, LT 6\", Macro",
+          "box": "variant",
+          "variants": [
+            "Chronus"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "R7X-1 Railgun, right",
+          "arc": "F",
+          "ma": "6\"",
+          "r": "∞/24\"",
+          "att": "1",
+          "ac": "3+",
+          "e": "AS 2, 10",
+          "special": "Devastator D3+1, Demo 2D3, LT 6\", Macro",
+          "box": "variant",
+          "variants": [
+            "Chronus"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "R7M-1 Stealth Missile Cluster, left",
+          "arc": "F",
+          "ma": "Full",
+          "r": "36/12\"",
+          "att": "12",
+          "ac": "3+",
+          "e": "3",
+          "special": "Pen 6+, Secondary, Strafe",
+          "box": "variant",
+          "variants": [
+            "Chronus"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "R7M-1 Stealth Missile Cluster, right",
+          "arc": "F",
+          "ma": "Full",
+          "r": "36/12\"",
+          "att": "12",
+          "ac": "3+",
+          "e": "3",
+          "special": "Pen 6+, Secondary, Strafe",
+          "box": "variant",
+          "variants": [
+            "Chronus"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "R7X-2 Sunglaive, focused, left",
+          "arc": "F",
+          "ma": "6\"",
+          "r": "∞",
+          "att": "1",
+          "ac": "2+",
+          "e": "Alt 1, AS 9 LT6\",",
+          "special": "4, Critical 1, Demo 1, Devastator 1, Macro, Capacitors: gains Pen 2+",
+          "box": "variant",
+          "variants": [
+            "Tethys"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "R7X-2 Sunglaive, wide, left",
+          "arc": "F",
+          "ma": "Full",
+          "r": "∞",
+          "att": "1",
+          "ac": "2+",
+          "e": "Alt 1, Blast, 6",
+          "special": "LT 6\", Macro, Strafe, Capacitors: +1 Att",
+          "box": "variant",
+          "variants": [
+            "Tethys"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "R7X-2 Sunglaive, focused, right",
+          "arc": "F",
+          "ma": "6\"",
+          "r": "∞",
+          "att": "1",
+          "ac": "2+",
+          "e": "Alt 2, AS 9 LT6\",",
+          "special": "4, Critical 1, Demo 1, Devastator 1, Macro, Capacitors: gains Pen 2+",
+          "box": "variant",
+          "variants": [
+            "Tethys"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "R7X-2 Sunglaive, wide, right",
+          "arc": "F",
+          "ma": "Full",
+          "r": "∞",
+          "att": "2",
+          "ac": "2+",
+          "e": "Alt 2, Blast, 6",
+          "special": "LT 6\", Macro, Strafe, Capacitors: +1 Att",
+          "box": "variant",
+          "variants": [
+            "Tethys"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Nanomachine Plague",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "24\"",
+          "att": "30",
+          "ac": "2+",
+          "e": "S6",
+          "special": "Secondary, Strafe, Nanomachines",
+          "box": "variant",
+          "variants": [
+            "Tethys"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Nova Missile",
+          "arc": "F",
+          "ma": "5\"",
+          "r": "∞/18\"",
+          "att": "1",
+          "ac": "2+",
+          "e": "Blast, 8",
+          "special": "Critical D6-2, Devastator D6-2, L3, Macro, Pen 3+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin RX-30 Heavy Miniguns",
+          "arc": "F/Sl",
+          "ma": "Full",
+          "r": "48/18\"",
+          "att": "8",
+          "ac": "2+",
+          "e": "S4",
+          "special": "Secondary",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Dual R7X-5 Rotary Cannons",
+          "arc": "F",
+          "ma": "Full",
+          "r": "36/18\" OR",
+          "att": "10",
+          "ac": "3+",
+          "e": "5",
+          "special": "Secondary, Strafe",
+          "box": "upgrade",
+          "variants": [],
+          "upgradePoints": 0,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Dual R7X-66 Incinerators (+0pts) 3PT: Redundancy",
+          "arc": "F 1PT: Target",
+          "ma": "Full Lock",
+          "r": "9\" Gear",
+          "att": "6 3PT:",
+          "ac": "2+ Weapons",
+          "e": "4 Concussion, Capacitors (Tethys)",
+          "special": "Demo 2, Flame, Strafe, Macro 1PT: Healing System D3 (Tethys)",
+          "box": "upgrade",
+          "variants": [],
+          "upgradePoints": 1,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        }
+      ],
+      "upgradeNote": null,
+      "swaps": [],
+      "groupEquivalent": 5,
+      "gear": [
+        {
+          "power": "3",
+          "name": "Redundancy"
+        },
+        {
+          "power": "1",
+          "name": "Target Lock"
+        },
+        {
+          "power": "3",
+          "name": "Weapons Capacitors"
+        },
+        {
+          "power": "1",
+          "name": "Healing System D3"
+        }
+      ],
+      "page": 15,
+      "auxiliaryTransport": false,
+      "selectable": false,
+      "art": "assets/units/type-7-grand-walker.webp"
+    },
+    {
+      "id": "type-6-grand-walker",
+      "name": "Type 6 Grand Walker",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": null,
+      "pointsRaw": "420pts (Alcyoneus), 435pts (Porphyrion)",
+      "rare": false,
+      "unique": false,
+      "type": "Behemoth",
+      "base": null,
+      "stats": {
+        "Mv": "5”",
+        "A": "8",
+        "DP": "8, 14",
+        "Power": "5"
+      },
+      "special": "Walker 2”x2”",
+      "variants": [
+        {
+          "name": "Alcyoneus",
+          "points": 420
+        },
+        {
+          "name": "Porphyrion",
+          "points": 435
+        }
+      ],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "circle",
+            "n": 8
+          }
+        ],
+        "capacityMode": null,
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Dual R6X-1 Railguns",
+          "arc": "F",
+          "ma": "5\"",
+          "r": "∞/24\"",
+          "att": "2",
+          "ac": "3+",
+          "e": "9",
+          "special": "AS 2, Demo 1, Devastator 1, LT 6\", Macro",
+          "box": "variant",
+          "variants": [
+            "Alcyoneus"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Nova L Missile",
+          "arc": "F",
+          "ma": "5\"",
+          "r": "∞/18\"",
+          "att": "1",
+          "ac": "2+",
+          "e": "8",
+          "special": "Blast, Critical D3-1, Devastator D3-1, L3, Macro, Pen 4+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Triple RX-1 Railguns 3PT: Redundancy",
+          "arc": "F/S 1PT: Target (Alcyoneus)",
+          "ma": "Full Lock",
+          "r": "∞/24\" Gear",
+          "att": "3 1PT:",
+          "ac": "2+ Scrambler (Porphyrion)",
+          "e": "7 +2",
+          "special": "Demo 0 2PT: Director 2: 4 Venus Drones (Porphyrion)",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        }
+      ],
+      "upgradeNote": null,
+      "swaps": [],
+      "groupEquivalent": 3,
+      "gear": [
+        {
+          "power": "3",
+          "name": "Redundancy"
+        },
+        {
+          "power": "1",
+          "name": "Target Lock"
+        },
+        {
+          "power": "1",
+          "name": "Scrambler +2"
+        },
+        {
+          "power": "2",
+          "name": "Director 2: 4 Venus"
+        }
+      ],
+      "page": 16,
+      "auxiliaryTransport": true,
+      "selectable": false,
+      "art": "assets/units/type-6-grand-walker.webp"
+    },
+    {
+      "id": "venus-drone",
+      "name": "Venus Drone",
+      "category": "N/A",
+      "squadMin": null,
+      "squadMax": null,
+      "points": 0,
+      "pointsRaw": "0pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "base": null,
+      "stats": {
+        "Mv": "8”",
+        "A": "5",
+        "DP": "1"
+      },
+      "special": "Directed , Ev1, Skimmer",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "capacityMode": null,
+        "fills": [
+          {
+            "shape": "circle",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Twin RX-1L Short Railguns",
+          "arc": "F",
+          "ma": "4\"",
+          "r": "∞/24\"",
+          "att": "2",
+          "ac": "3+",
+          "e": "6",
+          "special": "Demo 0",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "R6X-13 Fusion Mine",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "CC",
+          "att": "1",
+          "ac": "4+",
+          "e": "6",
+          "special": "L1, Pen 4+",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        }
+      ],
+      "upgradeNote": null,
+      "swaps": [],
+      "groupEquivalent": null,
+      "gear": [],
+      "page": 17,
+      "auxiliaryTransport": false,
+      "selectable": false,
+      "art": "assets/units/venus-drone.webp"
+    },
+    {
+      "id": "dragon",
+      "name": "Dragon",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": null,
+      "pointsRaw": "950pts (Earth), 990pts (Celestial)",
+      "rare": false,
+      "unique": false,
+      "type": "Behemoth",
+      "base": null,
+      "stats": {
+        "Mv": "4”",
+        "A": "7",
+        "DP": "9, 14, 18",
+        "Power": "10"
+      },
+      "special": "Lithe, P5+, Walker 4”x12”",
+      "variants": [
+        {
+          "name": "Earth",
+          "points": 950
+        },
+        {
+          "name": "Celestial",
+          "points": 990
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "capacityMode": null,
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Hyper Particle Triad",
+          "arc": "F/S",
+          "ma": "4\"",
+          "r": "∞\"",
+          "att": "3",
+          "ac": "3+",
+          "e": "10",
+          "special": "Integral, Macro, Particle, Pen 2+, Capacitors: +2 Critical",
+          "box": "variant",
+          "variants": [
+            "Celestial"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Superlaser Fangs",
+          "arc": "F/S",
+          "ma": "4\"",
+          "r": "∞\"",
+          "att": "2",
+          "ac": "2+",
+          "e": "8",
+          "special": "Destroyer 5+, Capacitors: +2 Destroyer Blast, Critical D6,",
+          "box": "variant",
+          "variants": [
+            "Celestial"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Disruption Annihilator",
+          "arc": "F/S",
+          "ma": "4\"",
+          "r": "12\"",
+          "att": "1",
+          "ac": "3+",
+          "e": "8",
+          "special": "Devastator D6, Dissipate 2, Integral, Macro, Capacitors: +2E",
+          "box": "variant",
+          "variants": [
+            "Earth"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Mega Bio Atomiser Fangs, spread",
+          "arc": "F/S",
+          "ma": "8\"",
+          "r": "8\"",
+          "att": "4",
+          "ac": "2+",
+          "e": "5",
+          "special": "Alt 1, Flame, Ineffecive: Zones, Macro, Strafe, Capacitors: +4 Att",
+          "box": "variant",
+          "variants": [
+            "Earth"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Mega Bio Atomiser Fangs, harmonised",
+          "arc": "F/S",
+          "ma": "8\"",
+          "r": "8\"",
+          "att": "1",
+          "ac": "2+",
+          "e": "4",
+          "special": "Alt-1, Critical 2D6, Ineffective:Zones, Macro, Pen 2+, Capacitors: +1 Att",
+          "box": "variant",
+          "variants": [
+            "Earth"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Dual Gauss Destroyers 1",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞/36\"",
+          "att": "2",
+          "ac": "4+",
+          "e": "9",
+          "special": "Devastator 1, Demo 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Dual Gauss Destroyers 2",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞/36\"",
+          "att": "2",
+          "ac": "4+",
+          "e": "9",
+          "special": "Devastator 1, Demo 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Dual Gauss Destroyers 3 1PT: Target Lock",
+          "arc": "F/S 5PT: Jump",
+          "ma": "Full System 18”",
+          "r": "∞/36\" Gear",
+          "att": "2 3PT: Weapon",
+          "ac": "4+ Capacitors",
+          "e": "9",
+          "special": "Devastator 1, Demo 1 1+PT: Shield Booster",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        }
+      ],
+      "upgradeNote": null,
+      "swaps": [],
+      "groupEquivalent": 5,
+      "gear": [
+        {
+          "power": "1",
+          "name": "Target Lock"
+        },
+        {
+          "power": "5",
+          "name": "Jump System 18”"
+        },
+        {
+          "power": "3",
+          "name": "Weapon Capacitors"
+        },
+        {
+          "power": "1+",
+          "name": "Shield Booster"
+        }
+      ],
+      "page": 18,
+      "auxiliaryTransport": false,
+      "selectable": false,
+      "art": "assets/units/dragon.webp"
+    },
+    {
+      "id": "siegestrider",
+      "name": "Siegestrider",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": null,
+      "pointsRaw": "390pts (Lion), 410pts (Tiger)",
+      "rare": false,
+      "unique": false,
+      "type": "Behemoth",
+      "base": null,
+      "stats": {
+        "Mv": "6”",
+        "A": "7",
+        "DP": "5, 9",
+        "Power": "6"
+      },
+      "special": "P5+, Walker 2”x5” (All), Integrated Gate (Lion)",
+      "variants": [
+        {
+          "name": "Lion",
+          "points": 390
+        },
+        {
+          "name": "Tiger",
+          "points": 410
+        }
+      ],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "triangle",
+            "n": 8
+          }
+        ],
+        "capacityMode": null,
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Disintegrator, left",
+          "arc": "F",
+          "ma": "6\"",
+          "r": "36\"",
+          "att": "1",
+          "ac": "3+",
+          "e": "10",
+          "special": "AS 2, Devastator D3, Macro",
+          "box": "variant",
+          "variants": [
+            "Tiger"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Disintegrator, right",
+          "arc": "F",
+          "ma": "6\"",
+          "r": "36\"",
+          "att": "1",
+          "ac": "3+",
+          "e": "10",
+          "special": "AS 2, Devastator D3, Macro",
+          "box": "variant",
+          "variants": [
+            "Tiger"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Transmatter Beam, left",
+          "arc": "F",
+          "ma": "Full",
+          "r": "12\"",
+          "att": "2",
+          "ac": "3+",
+          "e": "5",
+          "special": "Pen 3+, Critical 1, Capacitors: +2 Att",
+          "box": "variant",
+          "variants": [
+            "Lion"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Transmatter Beam, right",
+          "arc": "F",
+          "ma": "Full",
+          "r": "12\"",
+          "att": "2",
+          "ac": "3+",
+          "e": "5",
+          "special": "Pen 3+, Critical 1, Capacitors: +2 Att",
+          "box": "variant",
+          "variants": [
+            "Lion"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Lightning Crown, groundstrike",
+          "arc": "F",
+          "ma": "Full",
+          "r": "6\"",
+          "att": "D3+1",
+          "ac": "2+",
+          "e": "6",
+          "special": "Alt 1, Ineffective: Zones, Secondary, Strafe, Capacitors: +D3 Att",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Lightning Crown, airstrike 1PT: Target Lock",
+          "arc": "F",
+          "ma": "Full 2PT: Weapon",
+          "r": "6\" Gear",
+          "att": "D6+2 Capacitors",
+          "ac": "3+",
+          "e": "3",
+          "special": "AA-S, Alt 1, Ineffective: Zones, Secondary, Strafe, Capacitors: +D6 Att 1+PT: Shield Booster",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        }
+      ],
+      "upgradeNote": null,
+      "swaps": [],
+      "groupEquivalent": 3,
+      "gear": [
+        {
+          "power": "1",
+          "name": "Target Lock"
+        },
+        {
+          "power": "2",
+          "name": "Weapon Capacitors"
+        },
+        {
+          "power": "1+",
+          "name": "Shield Booster"
+        }
+      ],
+      "page": 19,
+      "auxiliaryTransport": true,
+      "selectable": false,
+      "art": "assets/units/siegestrider.webp"
+    },
+    {
+      "id": "explorator",
+      "name": "Explorator",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": null,
+      "pointsRaw": "920pts (Juggernaut), 985pts (Colossus)",
+      "rare": false,
+      "unique": false,
+      "type": "Behemoth",
+      "base": null,
+      "stats": {
+        "Mv": "5”",
+        "A": "9",
+        "DP": "10, 20, 30",
+        "Power": "6"
+      },
+      "special": "Walker 4”x5”",
+      "variants": [
+        {
+          "name": "Juggernaut",
+          "points": 920
+        },
+        {
+          "name": "Colossus",
+          "points": 985
+        }
+      ],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 12
+          },
+          {
+            "shape": "triangle",
+            "n": 6
+          },
+          {
+            "shape": "diamond",
+            "n": 8
+          }
+        ],
+        "capacityMode": "either",
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Golgotha 800mm Naval Defence Gun",
+          "arc": "F",
+          "ma": "5\"",
+          "r": "∞/36\"",
+          "att": "1",
+          "ac": "3+",
+          "e": "9",
+          "special": "Huge Blast, Critical D3+1, Devastator D6+1, Demo 2D6, Integral, LT 10\", Macro",
+          "box": "variant",
+          "variants": [
+            "Juggernaut"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Gilgamesh Missile",
+          "arc": "F/S/R",
+          "ma": "5\"",
+          "r": "∞/24\"",
+          "att": "1",
+          "ac": "3+",
+          "e": "8",
+          "special": "L2, Blast, Devastator 1, Indirect, Needs Spotter, Integral, Linked 1, LT 10\", Macro",
+          "box": "variant",
+          "variants": [
+            "Colossus"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Gilgamesh Missile",
+          "arc": "F/S/R",
+          "ma": "5\"",
+          "r": "∞/24\"",
+          "att": "1",
+          "ac": "3+",
+          "e": "8",
+          "special": "L2, Blast, Devastator 1, Indirect, Needs Spotter, Integral, Linked 1, LT 10\", Macro",
+          "box": "variant",
+          "variants": [
+            "Colossus"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Gilgamesh Missile",
+          "arc": "F/S/R",
+          "ma": "5\"",
+          "r": "∞/24\"",
+          "att": "1",
+          "ac": "3+",
+          "e": "8",
+          "special": "L2, Blast, Devastator 1, Indirect, Needs Spotter, Integral, Linked 1, LT 10\", Macro",
+          "box": "variant",
+          "variants": [
+            "Colossus"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Gilgamesh Missile",
+          "arc": "F/S/R",
+          "ma": "5\"",
+          "r": "∞/24\"",
+          "att": "1",
+          "ac": "3+",
+          "e": "8",
+          "special": "L2, Blast, Devastator 1, Indirect, Needs Spotter, Integral, Linked 1, LT 10\", Macro",
+          "box": "variant",
+          "variants": [
+            "Colossus"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Gilgamesh Missile",
+          "arc": "F/S/R",
+          "ma": "5\"",
+          "r": "∞/24\"",
+          "att": "1",
+          "ac": "3+",
+          "e": "8",
+          "special": "L2, Blast, Devastator 1, Indirect, Needs Spotter, Integral, Linked 1, LT 10\", Macro",
+          "box": "variant",
+          "variants": [
+            "Colossus"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Beowulf AAV Pod, front-left",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "F/S/R",
+          "att": "3",
+          "ac": "3+",
+          "e": "5",
+          "special": "AA-S, Secondary",
+          "box": "variant",
+          "variants": [
+            "Colossus"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Beowulf AAV Pod, rear-left",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "F/S/R",
+          "att": "3",
+          "ac": "3+",
+          "e": "5",
+          "special": "AA-S, Secondary",
+          "box": "variant",
+          "variants": [
+            "Colossus"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Beowulf AAV Pod, front-right",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "F/S/R",
+          "att": "3",
+          "ac": "3+",
+          "e": "5",
+          "special": "AA-S, Secondary",
+          "box": "variant",
+          "variants": [
+            "Colossus"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Beowulf AAV Pod, rear-right",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "F/S/R",
+          "att": "3",
+          "ac": "3+",
+          "e": "5",
+          "special": "AA-S, Secondary",
+          "box": "variant",
+          "variants": [
+            "Colossus"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Quad MC-25 Azrael Chainguns",
+          "arc": "F",
+          "ma": "Full",
+          "r": "48/18\"",
+          "att": "8",
+          "ac": "3+",
+          "e": "5",
+          "special": "Secondary, Strafe, Focus 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Logging Claws 1PT: Target Lock",
+          "arc": "F",
+          "ma": "Full 1PT:",
+          "r": "CC Gear Redundancy",
+          "att": "D6+2",
+          "ac": "2+",
+          "e": "10",
+          "special": "Critical 1, Secondary 0PT: Decoys",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        }
+      ],
+      "upgradeNote": null,
+      "swaps": [],
+      "groupEquivalent": 4,
+      "gear": [
+        {
+          "power": "1",
+          "name": "Target Lock"
+        },
+        {
+          "power": "1",
+          "name": "Redundancy"
+        },
+        {
+          "power": "0",
+          "name": "Decoys"
+        }
+      ],
+      "page": 20,
+      "auxiliaryTransport": true,
+      "selectable": false,
+      "art": "assets/units/explorator.webp"
+    },
+    {
+      "id": "mining-engine",
+      "name": "Mining Engine",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": null,
+      "pointsRaw": "380pts (Avernus), 410pts (Cerberus)",
+      "rare": false,
+      "unique": false,
+      "type": "Behemoth",
+      "base": null,
+      "stats": {
+        "Mv": "5”",
+        "A": "8",
+        "DP": "8, 14",
+        "Power": "4"
+      },
+      "special": "",
+      "variants": [
+        {
+          "name": "Avernus",
+          "points": 380
+        },
+        {
+          "name": "Cerberus",
+          "points": 410
+        }
+      ],
+      "transport": {
+        "capacity": [],
+        "capacityMode": null,
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Mining Laser",
+          "arc": "F",
+          "ma": "5\"",
+          "r": "∞\"",
+          "att": "1",
+          "ac": "2+",
+          "e": "8",
+          "special": "AS 3, Critical D3, Demo 1, Destroyer 3+, Devastator D3, Integral, Macro Critical 1, Demo 2, Integral,",
+          "box": "variant",
+          "variants": [
+            "Avernus"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Vent Repeater",
+          "arc": "F",
+          "ma": "5\"",
+          "r": "24\"",
+          "att": "2",
+          "ac": "3+",
+          "e": "9",
+          "special": "Macro, Capacitors: +D6 Att, this takes D3-1 DP when it attacks",
+          "box": "variant",
+          "variants": [
+            "Cerberus"
+          ],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin MC-37 Autocannons, left",
+          "arc": "F/Sl",
+          "ma": "Full",
+          "r": "36/18\"",
+          "att": "4",
+          "ac": "3+",
+          "e": "3",
+          "special": "Ignores Cover, Secondary",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin MC-37 Autocannons, right 1PT: Target",
+          "arc": "F/Sr Lock",
+          "ma": "Full",
+          "r": "36/18\" Gear",
+          "att": "4",
+          "ac": "3+",
+          "e": "3 0PT:",
+          "special": "Ignores Cover, Secondary Decoys",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        }
+      ],
+      "upgradeNote": null,
+      "swaps": [],
+      "groupEquivalent": 3,
+      "gear": [
+        {
+          "power": "1",
+          "name": "Target Lock"
+        },
+        {
+          "power": "0",
+          "name": "Decoys"
+        }
+      ],
+      "page": 21,
+      "auxiliaryTransport": false,
+      "selectable": false,
+      "art": "assets/units/mining-engine.webp"
+    }
+  ]
+}

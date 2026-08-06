@@ -86,6 +86,37 @@ for path in sorted(glob.glob(os.path.join("data", "dzc", "faction-*.json"))):
         if u["variants"]:
             stats["has variants"] += 1
 
+# --- Behemoths -------------------------------------------------------------
+#
+# Their own file, their own shape: a Power stat and a Groups Equivalent instead
+# of a Squad Size (Behemoth rules 1.1-1.2). Ten of them plus the one Drone that
+# is "included with its Behemoth" and cannot be taken separately (2.1.1).
+BEHEMOTHS = os.path.join("data", "dzc", "behemoths.json")
+if os.path.exists(BEHEMOTHS):
+    with open(BEHEMOTHS, encoding="utf-8") as fh:
+        bh = json.load(fh)
+    beh = [u for u in bh["units"] if u["type"] == "Behemoth"]
+    stats["behemoths"] = len(beh)
+    if len(bh["units"]) != 11:
+        problems.append(f"behemoths: {len(bh['units'])} cards, expected 11 "
+                        f"(ten Behemoths and the Venus Drone)")
+    for u in beh:
+        if u["groupEquivalent"] is None:
+            problems.append(f"behemoth/{u['name']}: no Groups Equivalent -- "
+                            f"it is what the Group allowance is spent against (1.1)")
+        if not u["stats"].get("Power"):
+            problems.append(f"behemoth/{u['name']}: no Power stat (1.2)")
+        if u["selectable"]:
+            problems.append(f"behemoth/{u['name']}: selectable while its faction is unknown")
+    # Not a problem, because it is not in the source to be got wrong: the cards
+    # simply do not say. Nine of the eleven never name a faction and there is no
+    # logo or colour to read one off. Until someone supplies the mapping these
+    # stay reference-only.
+    unfactioned = [u["name"] for u in bh["units"] if not u.get("faction")]
+    if unfactioned:
+        warnings.append(f"{len(unfactioned)} Behemoths carry no faction -- the cards do not "
+                        f"print one, so they are reference-only until it is supplied")
+
 print("=== counts ===")
 for k, v in sorted(stats.items()):
     print(f"  {k:34s} {v}")
