@@ -1,0 +1,116 @@
+name: Watch TTCombat for new PDFs
+
+# Every second Monday at 09:00 UTC, and on demand.
+#
+# Cron has no "fortnightly", so this runs weekly and the job itself skips the
+# odd weeks. A schedule that lies about its interval is worse than one that
+# runs twice as often and says so.
+on:
+  schedule:
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Run even on an off week"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: "sources"
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Is this the fortnight?
+        id: week
+        run: |
+          WEEK=$(date -u +%V)
+          if [ "${{ inputs.force }}" = "true" ] || [ $((10#$WEEK % 2)) -eq 0 ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "ISO week $WEEK is an odd week — skipping."
+          fi
+
+      - name: Node
+        if: steps.week.outputs.run == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install uv
+        if: steps.week.outputs.run == 'true'
+        uses: astral-sh/setup-uv@v9.0.0
+        with:
+          enable-cache: true
+          prune-cache: true
+
+      # Reports what the resources page is serving against what rules/ holds,
+      # and exits 1 when anything has moved. continue-on-error because "there
+      # is a new release" is the interesting outcome, not a failure.
+      - name: What is TTCombat publishing?
+        if: steps.week.outputs.run == 'true'
+        id: check
+        continue-on-error: true
+        run: |
+          uv run python tools/dzc/fetch_sources.py --check | tee check.log
+          echo "changed=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Download, re-scan, and prove it
+        if: steps.week.outputs.run == 'true' && steps.check.outputs.changed != '0'
+        run: |
+          uv run python tools/dzc/fetch_sources.py
+          # The whole pipeline: scan both PDF sets, then all four audits. The
+          # audits are the gate. They are what caught the 260805 release
+          # renaming a Type cell from "Aircraft" to "Aircraft (40mm)", which
+          # silently dropped every Aircraft card in the game — UCM came back
+          # with 20 units instead of 36 and no dropships at all.
+          uv run python tools/dzc/rebuild.py
+          node scripts/test-all.mjs
+
+      # Only reached when the scan AND every audit AND the whole suite passed,
+      # because each step above fails the job. An unattended commit is fine on
+      # that basis and not on any weaker one — this is the file every number in
+      # the app comes out of.
+      - name: Commit the new data
+        if: steps.week.outputs.run == 'true' && steps.check.outputs.changed != '0'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet; then
+            echo "New PDFs, but the scan produced identical data. Nothing to commit."
+            exit 0
+          fi
+          git add -A rules data assets/units
+          git commit -F - <<'MSG'
+          Re-scan against TTCombat's current PDFs
+
+          Automatic. tools/dzc/fetch_sources.py found the resources page serving
+          something newer than rules/ held, downloaded it, and re-ran the whole
+          pipeline. Committed only because every audit and all of
+          scripts/test-all.mjs passed against the result.
+
+          The superseded PDFs are kept: they are the only record of what the
+          previous data was built from.
+          MSG
+          git push
+
+      - name: Say what happened
+        if: steps.week.outputs.run == 'true'
+        run: |
+          if [ "${{ steps.check.outputs.changed }}" = "0" ]; then
+            echo "### rules/ matches the resources page" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### TTCombat published something new" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          cat check.log >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"

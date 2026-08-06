@@ -1,8 +1,8 @@
 {
   "faction": "shaltari",
   "name": "Shaltari",
-  "sourcePdf": "DZC_Shaltari_Stat_Cards_260730.pdf",
-  "version": "260730",
+  "sourcePdf": "DZC_Shaltari_Stat_Cards_260805.pdf",
+  "version": "260805",
   "units": [
     {
       "id": "brave-warsuits",
@@ -15,6 +15,7 @@
       "rare": false,
       "unique": false,
       "type": "Infantry",
+      "base": null,
       "stats": {
         "Mv": "3”",
         "OF": "6",
@@ -84,6 +85,7 @@
       "rare": false,
       "unique": false,
       "type": "Infantry",
+      "base": null,
       "stats": {
         "Mv": "2”",
         "OF": "2",
@@ -138,6 +140,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "6”",
         "A": "5",
@@ -233,6 +236,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "9”",
         "A": "4",
@@ -313,6 +317,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "3”",
         "A": "6",
@@ -455,6 +460,7 @@
       "rare": false,
       "unique": false,
       "type": "Aircraft",
+      "base": "40mm",
       "stats": {
         "Mv": "20”",
         "A": "2",
@@ -537,6 +543,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "N/A",
         "A": "5",
@@ -604,6 +611,7 @@
       "rare": false,
       "unique": false,
       "type": "Aircraft",
+      "base": "30mm",
       "stats": {
         "Mv": "20”",
         "A": "2",
@@ -679,6 +687,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "9”",
         "A": "4",
@@ -776,6 +785,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "3”",
         "A": "6",
@@ -869,6 +879,7 @@
       "rare": true,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "3”",
         "A": "6",
@@ -930,6 +941,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "N/A",
         "A": "5",
@@ -982,6 +994,7 @@
       "rare": false,
       "unique": false,
       "type": "Aircraft",
+      "base": "40mm",
       "stats": {
         "Mv": "20”",
         "A": "1",
@@ -1064,6 +1077,7 @@
       "rare": false,
       "unique": false,
       "type": "Infantry",
+      "base": null,
       "stats": {
         "Mv": "3”",
         "OF": "6",
@@ -1127,6 +1141,7 @@
       "rare": false,
       "unique": false,
       "type": "Aircraft",
+      "base": "40mm",
       "stats": {
         "Mv": "20”",
         "A": "2",
@@ -1219,6 +1234,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "3”",
         "A": "6",
@@ -1341,6 +1357,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "6”",
         "A": "4",
@@ -1531,6 +1548,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "4”",
         "A": "3",
@@ -1632,6 +1650,7 @@
       "rare": true,
       "unique": false,
       "type": "Aircraft",
+      "base": "40mm",
       "stats": {
         "Mv": "20”-48”",
         "A": "2",
@@ -1722,6 +1741,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "12”",
         "A": "2",
@@ -1806,6 +1826,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "6”",
         "A": "4",
@@ -1875,7 +1896,7 @@
           "att": "1",
           "ac": "A",
           "e": "N/A",
-          "special": "Alt 1, Precision 2, Smoke",
+          "special": "Alt 1, Smoke",
           "box": "variant",
           "variants": [
             "Recluse"
@@ -1903,6 +1924,7 @@
       "rare": false,
       "unique": false,
       "type": "Aircraft",
+      "base": "40mm",
       "stats": {
         "Mv": "20”",
         "A": "1",
@@ -1955,6 +1977,7 @@
       "rare": false,
       "unique": false,
       "type": "Aircraft",
+      "base": "40mm",
       "stats": {
         "Mv": "20”",
         "A": "1",
@@ -2007,6 +2030,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "9”",
         "A": "4",
@@ -2064,6 +2088,7 @@
       "rare": false,
       "unique": false,
       "type": "Aircraft",
+      "base": "30mm",
       "stats": {
         "Mv": "30”",
         "A": "1",
@@ -2116,6 +2141,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "N/A",
         "A": "5",

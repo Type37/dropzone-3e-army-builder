@@ -71,7 +71,7 @@
 }
 .dzc-card:hover { border-color: var(--acc); box-shadow: inset 0 0 0 1px var(--acc); }
 .dzc-card:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
-.dzc-card-art { flex: 0 0 72px; height: 72px; display: grid; place-items: center; }
+.dzc-card-art { flex: 0 0 auto; height: 72px; display: grid; place-items: center; }
 .dzc-card-art img { max-width: 100%; max-height: 100%; object-fit: contain; }
 .dzc-card-body { flex: 1 1 auto; min-width: 0; }
 /* Names wrap. A unit name is gameplay text and is never cut off. */
@@ -135,6 +135,16 @@
    block read as six loose chips instead of one table. Only the outer corners
    of the whole block are cut. */
 .dzc-stats { border-radius: 0; }
+/* Art and the capacity/cargo strip, one column down the left of the card.
+   Fixed height on the strip so a Unit that prints no symbol leaves the same
+   gap as one that does — the row is only worth having if it is in the same
+   place on all 178 of them. */
+.dzc-card-side { flex: 0 0 72px; display: flex; flex-direction: column; gap: 3px; }
+.dzc-card-caps {
+  display: flex; align-items: center; justify-content: center;
+  gap: 3px; flex-wrap: wrap; min-height: 26px;
+}
+.dzc-caps-none { font-size: 13px; color: var(--ink-2, #9a9184); }
 .dzc-stats .dzc-stat { border-radius: 0; }
 
 /* Collection keeps panes: the running totals stay put while a 178-row list
@@ -1129,19 +1139,26 @@
    inside a word, so DEFENCE and BRAVERY have a floor they cannot go under.
    Three of those were wider than a reference card, the grid overflowed, and the
    card clipped it: the Legionnaire Weapon Team read "5+ DEFENC". */
-.dzc-stats { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 3px; }
+.dzc-stats { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2px; }
+/* Three columns, not a flex row: icon, value, label.
+
+   As a flex row every cell packed left and the value took whatever width it
+   needed, so 2" and 18" and 5+ each started the label at a different x and no
+   two numbers in the grid lined up with each other. A stat grid you cannot
+   read down a column is a list of six unrelated facts. The value column is
+   fixed, so the digits start on the same line in every cell and the labels do
+   too.
+
+   2.4em holds 18" and 5+ at this size, which are the widest anything prints. */
 .dzc-stat {
-  /* And the label drops under the value rather than out of the cell when even
-     that is not enough. DAMAGE POINTS already wrapped, because it is two
-     words; this is the same escape for the one-word labels. */
-  display: flex; align-items: baseline; gap: 4px; min-width: 0; flex-wrap: wrap;
-  padding: 3px 5px; border-radius: 4px;
+  display: grid; grid-template-columns: 15px 2.4em minmax(0, 1fr);
+  align-items: baseline; gap: 4px; min-width: 0;
+  padding: 2px 4px; border-radius: 4px;
   background: var(--surface-3, #f2ece0);
   border: 1px solid var(--line, #e3dcce);
 }
 .dzc-stat-i { flex: 0 0 auto; align-self: center; display: inline-flex; opacity: .8; }
 .dzc-stat-v {
-  flex: 0 0 auto;
   font-family: var(--font-numeric, 'Outfit', sans-serif);
   /* 600, not 700: heavier closes the counters on 3 / 5 / 8 at this size. The
      Dropfleet stat cell carries the same note. */

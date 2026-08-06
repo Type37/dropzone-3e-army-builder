@@ -52,12 +52,26 @@
       fill="${hollow ? 'none' : s.ink}" stroke="${s.ink}" stroke-width="3" stroke-linejoin="round"/></svg>`;
   }
 
-  /* A transport badge. Hollow = capacity this unit OFFERS, solid = space it
-   * FILLS aboard something else. A unit can print both. */
+  /* A transport badge.
+   *
+   * Two words, and only these two. A HOLLOW badge is this unit's CAPACITY —
+   * room it offers. A SOLID one is its CARGO — the room it takes up aboard
+   * something else. "Carries" and "Takes up" were two more ways of saying the
+   * same pair, and a vocabulary of four words for two ideas is how a symbol
+   * stops being read.
+   *
+   * The solid is drawn SMALLER than the hollow, and that is the whole grammar
+   * in one picture: a green solid looks like it would drop into a green hollow,
+   * because that is exactly what it does. Same path, same ink, same digit —
+   * only the size says which way round it is, so the shape stays free to mean
+   * what the rulebook says it means (3.2.4.2).
+   */
+  const BADGE_PX = { capacity: 22, cargo: 16 };
+
   function badge(shape, n, hollow) {
     const s = SYMBOL[shape];
     if (!s) return '';
-    const label = `${hollow ? 'Carries' : 'Takes up'} ${n} ${shape.replace('-', ' ')}`;
+    const label = `${hollow ? 'Capacity' : 'Cargo'}: ${n} ${shape.replace('-', ' ')}`;
     // A triangle narrows to a point, so its interior at the centroid height
     // (where the digit sits, see .dzc-badge-triangle in dzc.css) is nowhere
     // near as wide as a square or diamond's. A 2-digit count (12/18/24 appear
@@ -65,8 +79,10 @@
     // overhang the sloped edge. Shrink only when both things are true.
     const tight = (shape === 'triangle' || shape === 'triangle-down') && String(n).length > 1;
     const style = `color:${hollow ? s.ink : '#fff'}${tight ? ';font-size:.78em' : ''}`;
-    return `<span class="dzc-badge dzc-badge-${shape}" title="${esc(label)}" aria-label="${esc(label)}">
-      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+    const px = hollow ? BADGE_PX.capacity : BADGE_PX.cargo;
+    return `<span class="dzc-badge dzc-badge-${shape}${hollow ? '' : ' is-cargo'}"
+      style="--badge-px:${px}px" title="${esc(label)}" aria-label="${esc(label)}">
+      <svg viewBox="0 0 24 24" width="${px}" height="${px}" aria-hidden="true">
         <path d="${s.path}" fill="${hollow ? 'none' : s.ink}" stroke="${s.ink}" stroke-width="2.5" stroke-linejoin="round"/>
       </svg><span class="dzc-badge-n" style="${style}">${esc(n)}</span></span>`;
   }
@@ -176,7 +192,16 @@
     ].join('');
     return `<article class="dzc-card" onclick="DZCUnits.openDetail('${esc(u.id)}')" tabindex="0"
       onkeydown="if(event.key==='Enter'){DZCUnits.openDetail('${esc(u.id)}')}">
-      <div class="dzc-card-art">${u.art ? `<img src="${esc(u.art)}" alt="" loading="lazy" onerror="this.remove()">` : ''}</div>
+      <!-- Picture, and directly under it the capacity and cargo symbols — on
+           EVERY card, whether the unit prints one or not. They used to sit at
+           the bottom of the body and only when there was something to show, so
+           the one thing that decides whether a Unit can join a Group was in a
+           different place on every card and missing from a third of them. A
+           fixed slot is a place the eye can go without reading. -->
+      <div class="dzc-card-side">
+        <div class="dzc-card-art">${u.art ? `<img src="${esc(u.art)}" alt="" loading="lazy" onerror="this.remove()">` : ''}</div>
+        <div class="dzc-card-caps">${transportHtml(u) || '<span class="dzc-caps-none">—</span>'}</div>
+      </div>
       <div class="dzc-card-body">
         <h3 class="dzc-card-name">${esc(u.name)}</h3>
         <div class="dzc-card-meta">
@@ -186,7 +211,6 @@
           ${flags}
         </div>
         <div class="dzc-card-stats">${statsHtml(u)}</div>
-        ${transportHtml(u)}
       </div>
     </article>`;
   }

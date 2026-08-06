@@ -1,8 +1,8 @@
 {
   "faction": "phr",
   "name": "PHR",
-  "sourcePdf": "DZC_PHR_Stat_Cards_260730.pdf",
-  "version": "260730",
+  "sourcePdf": "DZC_PHR_Stat_Cards_260804.pdf",
+  "version": "260804",
   "units": [
     {
       "id": "angelos-jetskimmer",
@@ -15,6 +15,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "6”",
         "A": "5",
@@ -100,6 +101,7 @@
       "rare": false,
       "unique": false,
       "type": "Infantry",
+      "base": null,
       "stats": {
         "Mv": "2”",
         "OF": "8",
@@ -169,6 +171,7 @@
       "rare": false,
       "unique": false,
       "type": "Aircraft",
+      "base": "40mm",
       "stats": {
         "Mv": "16”",
         "A": "4",
@@ -216,6 +219,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "3”",
         "A": "6",
@@ -403,6 +407,7 @@
       "rare": true,
       "unique": false,
       "type": "Aircraft",
+      "base": "40mm",
       "stats": {
         "Mv": "16”",
         "A": "4",
@@ -465,6 +470,7 @@
       "rare": false,
       "unique": false,
       "type": "Aircraft",
+      "base": "40mm",
       "stats": {
         "Mv": "16”",
         "A": "4",
@@ -527,6 +533,7 @@
       "rare": true,
       "unique": false,
       "type": "Infantry",
+      "base": null,
       "stats": {
         "Mv": "9”",
         "OF": "8",
@@ -596,6 +603,7 @@
       "rare": true,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "8”",
         "A": "5",
@@ -676,6 +684,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "6”",
         "A": "4",
@@ -773,6 +782,7 @@
       "rare": false,
       "unique": false,
       "type": "Infantry",
+      "base": null,
       "stats": {
         "Mv": "3”",
         "OF": "3",
@@ -811,6 +821,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "6”",
         "A": "5",
@@ -908,6 +919,7 @@
       "rare": true,
       "unique": false,
       "type": "Aircraft",
+      "base": "30mm",
       "stats": {
         "Mv": "24”",
         "A": "3",
@@ -990,6 +1002,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "6”",
         "A": "5",
@@ -1087,6 +1100,7 @@
       "rare": false,
       "unique": false,
       "type": "Aircraft",
+      "base": "40mm",
       "stats": {
         "Mv": "16”",
         "A": "3",
@@ -1154,88 +1168,6 @@
       "art": "assets/units/tiamat-ordnance-ship.webp"
     },
     {
-      "id": "type-11-lokheira-quad-walker",
-      "name": "Type-11 Lokheira Quad Walker",
-      "category": "Heavy",
-      "squadMin": 1,
-      "squadMax": 1,
-      "points": 125,
-      "pointsRaw": "125pts",
-      "rare": false,
-      "unique": false,
-      "type": "Vehicle",
-      "stats": {
-        "Mv": "4”",
-        "A": "6",
-        "DP": "4"
-      },
-      "special": "P5+",
-      "variants": [],
-      "transport": {
-        "capacity": [],
-        "capacityMode": null,
-        "fills": [
-          {
-            "shape": "triangle",
-            "n": 2
-          }
-        ]
-      },
-      "weapons": [
-        {
-          "name": "Twin RX-1L Short Railguns",
-          "arc": "F",
-          "ma": "Full",
-          "r": "∞/24”",
-          "att": "2",
-          "ac": "2+",
-          "e": "6",
-          "special": "Demo 0",
-          "box": "all",
-          "variants": [],
-          "upgradePoints": null,
-          "capacityDelta": [],
-          "boxUnresolved": false
-        },
-        {
-          "name": "Twin RX-1R Rail Repeaters",
-          "arc": "F/S",
-          "ma": "Full",
-          "r": "∞/24”",
-          "att": "6",
-          "ac": "2+",
-          "e": "3",
-          "special": "AA, Strafe",
-          "box": "all",
-          "variants": [],
-          "upgradePoints": null,
-          "capacityDelta": [],
-          "boxUnresolved": false
-        },
-        {
-          "name": "RX-20 Minigun Pair",
-          "arc": "F",
-          "ma": "Full",
-          "r": "36/12”",
-          "att": "8",
-          "ac": "3+",
-          "e": "S3",
-          "special": "Strafe",
-          "box": "all",
-          "variants": [],
-          "upgradePoints": null,
-          "capacityDelta": [],
-          "boxUnresolved": false
-        }
-      ],
-      "upgradeNote": null,
-      "swaps": [],
-      "page": 16,
-      "auxiliaryTransport": false,
-      "selectable": true,
-      "art": "assets/units/type-11-lokheira-quad-walker.webp"
-    },
-    {
       "id": "type-2-heavy-battle-walker",
       "name": "Type-2 Heavy Battle Walker",
       "category": "Heavy",
@@ -1246,6 +1178,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "2”",
         "A": "7",
@@ -1367,7 +1300,7 @@
       ],
       "upgradeNote": null,
       "swaps": [],
-      "page": 17,
+      "page": 16,
       "auxiliaryTransport": false,
       "selectable": true,
       "art": "assets/units/type-2-heavy-battle-walker.webp"
@@ -1383,6 +1316,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "4”",
         "A": "6",
@@ -1524,7 +1458,7 @@
       ],
       "upgradeNote": null,
       "swaps": [],
-      "page": 18,
+      "page": 17,
       "auxiliaryTransport": false,
       "selectable": true,
       "art": "assets/units/type-4-battle-scorpion.webp"
@@ -1540,6 +1474,7 @@
       "rare": true,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "4”",
         "A": "6",
@@ -1634,7 +1569,7 @@
       ],
       "upgradeNote": null,
       "swaps": [],
-      "page": 19,
+      "page": 18,
       "auxiliaryTransport": false,
       "selectable": true,
       "art": "assets/units/type-4-command-scorpion.webp"
@@ -1650,6 +1585,7 @@
       "rare": true,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "5”",
         "A": "5",
@@ -1856,10 +1792,130 @@
       ],
       "upgradeNote": null,
       "swaps": [],
-      "page": 20,
+      "page": 19,
       "auxiliaryTransport": false,
       "selectable": true,
       "art": "assets/units/type-9-frontier-walker.webp"
+    },
+    {
+      "id": "type-11-lokheira-quad-walker",
+      "name": "Type-11 Lokheira Quad Walker",
+      "category": "Heavy",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 125,
+      "pointsRaw": "125pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "base": null,
+      "stats": {
+        "Mv": "4”",
+        "A": "6",
+        "DP": "4"
+      },
+      "special": "P5+",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "capacityMode": null,
+        "fills": [
+          {
+            "shape": "triangle",
+            "n": 2
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Twin RX-1L Short Railguns",
+          "arc": "F",
+          "ma": "Full",
+          "r": "∞/24”",
+          "att": "2",
+          "ac": "2+",
+          "e": "6",
+          "special": "Demo 0",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin RX-1R Rail Repeaters",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "∞/24”",
+          "att": "6",
+          "ac": "2+",
+          "e": "3",
+          "special": "AA, Strafe",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "RX-20 Minigun Pair",
+          "arc": "F",
+          "ma": "Full",
+          "r": "36/12”",
+          "att": "8",
+          "ac": "3+",
+          "e": "S3",
+          "special": "Strafe",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        }
+      ],
+      "upgradeNote": null,
+      "swaps": [],
+      "page": 20,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/type-11-lokheira-quad-walker.webp"
+    },
+    {
+      "id": "mercury-scout-drone",
+      "name": "Mercury Scout Drone",
+      "category": "Vanguard",
+      "squadMin": 2,
+      "squadMax": 4,
+      "points": 20,
+      "pointsRaw": "20pts",
+      "rare": false,
+      "unique": false,
+      "type": "Aircraft",
+      "base": "20mm",
+      "stats": {
+        "Mv": "6”",
+        "A": "1",
+        "DP": "1"
+      },
+      "special": "AWACS 9”, Scout, Surveyor",
+      "variants": [],
+      "transport": {
+        "capacity": [],
+        "capacityMode": null,
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [],
+      "upgradeNote": null,
+      "swaps": [],
+      "page": 21,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/mercury-scout-drone.webp"
     },
     {
       "id": "longreach-snipers",
@@ -1872,6 +1928,7 @@
       "rare": true,
       "unique": false,
       "type": "Infantry",
+      "base": null,
       "stats": {
         "Mv": "2”",
         "OF": "5",
@@ -1910,46 +1967,10 @@
       ],
       "upgradeNote": null,
       "swaps": [],
-      "page": 21,
-      "auxiliaryTransport": false,
-      "selectable": true,
-      "art": "assets/units/longreach-snipers.webp"
-    },
-    {
-      "id": "mercury-scout-drone",
-      "name": "Mercury Scout Drone",
-      "category": "Vanguard",
-      "squadMin": 2,
-      "squadMax": 4,
-      "points": 20,
-      "pointsRaw": "20pts",
-      "rare": false,
-      "unique": false,
-      "type": "Aircraft",
-      "stats": {
-        "Mv": "6”",
-        "A": "1",
-        "DP": "1"
-      },
-      "special": "AWACS 9”, Scout, Surveyor",
-      "variants": [],
-      "transport": {
-        "capacity": [],
-        "capacityMode": null,
-        "fills": [
-          {
-            "shape": "diamond",
-            "n": 1
-          }
-        ]
-      },
-      "weapons": [],
-      "upgradeNote": null,
-      "swaps": [],
       "page": 22,
       "auxiliaryTransport": false,
       "selectable": true,
-      "art": "assets/units/mercury-scout-drone.webp"
+      "art": "assets/units/longreach-snipers.webp"
     },
     {
       "id": "phr-air-superiority-fighter",
@@ -1962,6 +1983,7 @@
       "rare": true,
       "unique": false,
       "type": "Aircraft",
+      "base": "40mm",
       "stats": {
         "Mv": "24-48”",
         "A": "3",
@@ -2067,6 +2089,7 @@
       "rare": true,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "4”",
         "A": "5",
@@ -2172,6 +2195,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "6”",
         "A": "5",
@@ -2290,6 +2314,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "6”",
         "A": "5",
@@ -2385,6 +2410,7 @@
       "rare": false,
       "unique": false,
       "type": "Infantry",
+      "base": null,
       "stats": {
         "Mv": "2”",
         "OF": "5",
@@ -2439,6 +2465,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "6”",
         "A": "5",
@@ -2524,6 +2551,7 @@
       "rare": false,
       "unique": false,
       "type": "Aircraft",
+      "base": "40mm",
       "stats": {
         "Mv": "16”",
         "A": "3",
@@ -2576,6 +2604,7 @@
       "rare": false,
       "unique": false,
       "type": "Aircraft",
+      "base": "40mm",
       "stats": {
         "Mv": "16”",
         "A": "3",
@@ -2658,6 +2687,7 @@
       "rare": false,
       "unique": false,
       "type": "Aircraft",
+      "base": "40mm",
       "stats": {
         "Mv": "16”",
         "A": "3",
@@ -2710,6 +2740,7 @@
       "rare": false,
       "unique": false,
       "type": "Aircraft",
+      "base": "30mm",
       "stats": {
         "Mv": "24”",
         "A": "3",
@@ -2792,6 +2823,7 @@
       "rare": false,
       "unique": false,
       "type": "Aircraft",
+      "base": "30mm",
       "stats": {
         "Mv": "24”",
         "A": "3",
@@ -2874,6 +2906,7 @@
       "rare": false,
       "unique": false,
       "type": "Vehicle",
+      "base": null,
       "stats": {
         "Mv": "4”",
         "A": "6",

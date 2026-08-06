@@ -272,16 +272,19 @@ for (const file of ['index.html', ...readdirSync(path.join(ROOT, 'js'))
   const src = readFileSync(path.join(ROOT, file), 'utf8');
   // Only literal paths. An interpolated src is built at runtime from data and
   // is covered by tools/dzc/audit_art.py instead.
-  // html too: the printable quick references live under assets/, and a landing
-  // tile pointing at a page that is not there is the same 404 as a missing logo.
+  // html is still matched even though nothing links to assets/ref/index.html
+  // any more: a landing tile pointing at a page that is not there is the same
+  // 404 as a missing logo, and the next one should be caught the same way.
   for (const m of src.matchAll(/["'`](assets\/[A-Za-z0-9_\-./]+\.(?:webp|png|svg|jpg|jpeg|ico|html))["'`]/g)) {
     refs.add(m[1]);
   }
 }
-// The two wordmarks, the touch icon, and the quick-reference chooser.
+// The two wordmarks and the touch icon. It was four until the Faction
+// References tile went; the quick-reference chooser it linked to is still on
+// disk but nothing points at it any more.
 // Everything else — faction art, unit art — is interpolated from data and is
 // audited by tools/dzc/audit_art.py.
-ok(refs.size >= 4, 'the asset references were actually found', `found ${refs.size}`);
+ok(refs.size >= 3, 'the asset references were actually found', `found ${refs.size}`);
 const gone = [...refs].filter(p => !existsSync(path.join(ROOT, p)));
 const unexpected = gone.filter(p => !KNOWN_MISSING[p]);
 eq(unexpected.length, 0, 'every asset the page names is in the repo');

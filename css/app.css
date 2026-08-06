@@ -1650,11 +1650,10 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--ink);
 }
 
-.tool-card-desc {
-  font-size: var(--text-sm);
-  color: var(--ink-muted);
-  line-height: 1.6;
-}
+/* .tool-card-desc is gone with the sentences it styled. A landing tile said
+   "Army Builder" and then, underneath, "Build and manage rosters for all six
+   factions" — a caption explaining a control that had already named itself
+   (CLAUDE.md §3). The tiles are the title and the icon now. */
 
 /* Landing — Stats Bar */
 .landing-stats {

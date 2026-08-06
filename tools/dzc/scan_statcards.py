@@ -176,6 +176,7 @@ class Unit(TypedDict):
     rare: bool
     unique: bool
     type: str | None
+    base: str | None
     stats: dict[str, str]
     special: str | None
     variants: list[Variant]
@@ -199,6 +200,12 @@ class FactionFile(TypedDict):
 
 def slug(s):
     return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
+
+
+def pdf_stamp(name):
+    """The YYMMDD TTCombat date-stamp a stat-card file carries, or ''."""
+    m = re.search(r"_(\d{6})\.pdf$", name)
+    return m.group(1) if m else ""
 
 
 # Hyphen-like break glyphs only. A broad [^\w\s] also matches the comma in
@@ -786,10 +793,28 @@ def split_row(line, cols, rules=None):
     return out
 
 
-def parse_stat_table(page, lines) -> tuple[str, dict[str, str], str] | None:
-    """Type, stats and Special, or None. One value rather than a triple of
-    Nones, for the same reason as find_header_row: a caller that tested only
-    the first of three still held two the checker could not vouch for."""
+# The Type cell, which is the word and — since the 260805 release — the model's
+# base size in brackets: "Aircraft (40mm)". Only Aircraft carry one, in 20, 30
+# and 40mm.
+#
+# This is what a bare `row["Type"] in ("Vehicle", "Aircraft", "Infantry")` cost:
+# every Aircraft card in the game stopped parsing the day TTCombat added it, so
+# UCM came back with 20 units instead of 36 and no dropships at all. The audit
+# caught it on the two the rulebook names, which is the only reason it was not
+# shipped. Match the word, keep the bracket.
+TYPE_RE = re.compile(r"^(Vehicle|Aircraft|Infantry)(?:\s*\(([^)]*)\))?$", re.I)
+
+
+def parse_stat_table(page, lines) -> tuple[str, str | None, dict[str, str], str, float] | None:
+    """Type, base size, stats, Special, and the y this table ends at — or None.
+
+    One value rather than a tuple of Nones, for the same reason as
+    find_header_row: a caller that tested only the first still held the rest,
+    which the checker could not vouch for.
+
+    The bottom is returned for the cards with no weapon table at all. The
+    footnote reader needs a floor to start below, and on those cards the stat
+    table is the only thing to measure from."""
     hit = find_header_row(lines, STAT_HEADERS_INFANTRY, need=5)
     infantry = True
     if hit is None:
@@ -821,11 +846,14 @@ def parse_stat_table(page, lines) -> tuple[str, dict[str, str], str] | None:
         rules = sorted(set(rules) | set(doc_rules(page.parent)))
     for ln in lines[i + 1:i + 4]:
         row = split_row(ln, cols, rules)
-        if row.get("Type") in ("Vehicle", "Aircraft", "Infantry"):
+        m = TYPE_RE.match((row.get("Type") or "").strip())
+        if m:
             special = row.pop("Special", "") or ""
-            utype = row.pop("Type")
-            return (utype, {k: v for k, v in row.items() if v},
-                    join_broken_hyphen(special.strip(" -")))
+            row.pop("Type")
+            return (m.group(1), m.group(2) or None,
+                    {k: v for k, v in row.items() if v},
+                    join_broken_hyphen(special.strip(" -")),
+                    float(max(w[3] for w in ln)))
     return None
 
 
@@ -1125,10 +1153,22 @@ def parse_swaps(unit: Unit) -> None:
     ]
 
 
-def parse_weapons(page, lines) -> list[Weapon]:
+def parse_weapons(page, lines) -> tuple[list[Weapon], float]:
+    """The weapon rows, and the y the table ends at.
+
+    The bottom is returned because it is where the FOOTNOTE begins, and
+    upgrade_note had been given a fixed y=200 instead. That held only as
+    long as nothing else on the card reached the left margin: the 260805
+    release widened the Type cell from "Aircraft" to "Aircraft (40mm)",
+    which is centred, so it now starts at x=16.6 -- inside the margin the
+    footnote reader was watching. Fifty units came back with an
+    upgradeNote reading "Aircraft (40mm)"."""
     hit = find_header_row(lines, WEAPON_HEADERS, need=5)
     if hit is None:
-        return []
+        # No weapon table at all, so there is nothing under it either. 200 is
+        # the old fixed floor, kept for this one case: it is below the header
+        # banner and above anything a card without weapons prints.
+        return [], 200.0
     _, hdr = hit
     cols = columns_from_header(hdr, WEAPON_HEADERS)
 
@@ -1149,7 +1189,7 @@ def parse_weapons(page, lines) -> list[Weapon]:
     below = [w for w in words_in(page, tbl) if w[1] > hdr_bottom
              and (lore_y is None or w[3] <= lore_y + 1)]
     if not boxes or not below:
-        return []
+        return [], float(hdr_bottom)
     last_y = max(w[3] for w in below) + 2
     rules = sorted(set(vertical_rules(page, hdr_bottom, last_y)) | set(doc_rules(page.parent)))
 
@@ -1221,7 +1261,7 @@ def parse_weapons(page, lines) -> list[Weapon]:
         # not a parse failure. Record it and fall back to all-variants, which
         # is what a player reading the card would do.
         w["boxUnresolved"] = bool(w["box"] == "variant" and not w["variants"])
-    return weapons
+    return weapons, float(last_y)
 
 
 # ------------------------------------------------------------- variants
@@ -1361,8 +1401,13 @@ def parse_page(page, doc, art_dir) -> Unit | None:
     stat_table = parse_stat_table(page, lines)
     if stat_table is None:
         return None
-    utype, stats, special = stat_table
-    weapons = parse_weapons(page, lines)
+    utype, base, stats, special, stats_bottom = stat_table
+    weapons, weapons_bottom = parse_weapons(page, lines)
+    # Whichever table reaches further down is what the footnote sits below. A
+    # card with no weapon table at all — the PHR Mercury Scout Drone — has only
+    # the stat table, and measuring from a fixed y above it let its own Type
+    # cell be read as the footnote.
+    tables_bottom = max(weapons_bottom, stats_bottom)
 
     transport = parse_transport(page)
     category = header["category"]
@@ -1388,6 +1433,9 @@ def parse_page(page, doc, art_dir) -> Unit | None:
         "rare": header["rare"],
         "unique": header["unique"],
         "type": utype,
+        # The base a model stands on, from the Type cell: "Aircraft (40mm)".
+        # New in the 260805 release, and only Aircraft print one.
+        "base": base,
         "stats": stats,
         "special": special,
         "variants": collect_variants(header, weapons, special),
@@ -1395,7 +1443,9 @@ def parse_page(page, doc, art_dir) -> Unit | None:
         "weapons": weapons,
         # "*Only one of these upgrades may be taken." -- a real construction
         # constraint, so it is kept rather than discarded with the footnote.
-        "upgradeNote": upgrade_note(page, 200, 20),
+        # Below the weapon TABLE, not below a fixed y=200 that the stat table
+        # itself now reaches into.
+        "upgradeNote": upgrade_note(page, tables_bottom, 20),
         "swaps": [],
         "page": (page.number or 0) + 1,
         "auxiliaryTransport": bool(transport["capacity"] and (category or "") != "Transport"),
@@ -1462,7 +1512,12 @@ def main():
         if not matches:
             print(f"  !! no PDF for {fname}")
             continue
-        path = os.path.join(args.pdf_dir, sorted(matches)[-1])
+        # Newest by the DATE TTCombat stamp on it, not by sorting the whole
+        # filename. They renamed the Bioficer file from "Stat_Sheets" to
+        # "Stat_Cards" between July and August, and "Sheets_260730" sorts above
+        # "Cards_260804" on the S -- so a plain sort would have pinned the scan
+        # to the older release for as long as both were on disk, silently.
+        path = os.path.join(args.pdf_dir, max(matches, key=pdf_stamp))
         data, skipped = scan(path, fid, fname, args.art)
         out = os.path.join(args.out, f"faction-{fid}.json")
         with open(out, "w", encoding="utf-8") as fh:
