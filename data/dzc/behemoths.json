@@ -6,6 +6,7 @@
   "units": [
     {
       "id": "ucm-heavy-battle-mech",
+      "faction": "ucm",
       "name": "UCM Heavy Battle Mech",
       "category": "Heavy",
       "squadMin": 1,
@@ -225,11 +226,12 @@
       ],
       "page": 11,
       "auxiliaryTransport": false,
-      "selectable": false,
+      "selectable": true,
       "art": "assets/units/ucm-heavy-battle-mech.webp"
     },
     {
       "id": "ucm-light-battle-mech",
+      "faction": "ucm",
       "name": "UCM Light Battle Mech",
       "category": "Heavy",
       "squadMin": 1,
@@ -360,11 +362,12 @@
       ],
       "page": 12,
       "auxiliaryTransport": false,
-      "selectable": false,
+      "selectable": true,
       "art": "assets/units/ucm-light-battle-mech.webp"
     },
     {
       "id": "death-mech",
+      "faction": "scourge",
       "name": "Death Mech",
       "category": "Heavy",
       "squadMin": 1,
@@ -586,11 +589,12 @@
       ],
       "page": 13,
       "auxiliaryTransport": false,
-      "selectable": false,
+      "selectable": true,
       "art": "assets/units/death-mech.webp"
     },
     {
       "id": "terror-mech",
+      "faction": "scourge",
       "name": "Terror Mech",
       "category": "Heavy",
       "squadMin": 1,
@@ -729,11 +733,12 @@
       ],
       "page": 14,
       "auxiliaryTransport": false,
-      "selectable": false,
+      "selectable": true,
       "art": "assets/units/terror-mech.webp"
     },
     {
       "id": "type-7-grand-walker",
+      "faction": "phr",
       "name": "Type 7 Grand Walker",
       "category": "Heavy",
       "squadMin": 1,
@@ -1004,11 +1009,12 @@
       ],
       "page": 15,
       "auxiliaryTransport": false,
-      "selectable": false,
+      "selectable": true,
       "art": "assets/units/type-7-grand-walker.webp"
     },
     {
       "id": "type-6-grand-walker",
+      "faction": "phr",
       "name": "Type 6 Grand Walker",
       "category": "Heavy",
       "squadMin": 1,
@@ -1118,11 +1124,12 @@
       ],
       "page": 16,
       "auxiliaryTransport": true,
-      "selectable": false,
+      "selectable": true,
       "art": "assets/units/type-6-grand-walker.webp"
     },
     {
       "id": "venus-drone",
+      "faction": "phr",
       "name": "Venus Drone",
       "category": "N/A",
       "squadMin": null,
@@ -1193,6 +1200,7 @@
     },
     {
       "id": "dragon",
+      "faction": "shaltari",
       "name": "Dragon",
       "category": "Heavy",
       "squadMin": 1,
@@ -1380,11 +1388,12 @@
       ],
       "page": 18,
       "auxiliaryTransport": false,
-      "selectable": false,
+      "selectable": true,
       "art": "assets/units/dragon.webp"
     },
     {
       "id": "siegestrider",
+      "faction": "shaltari",
       "name": "Siegestrider",
       "category": "Heavy",
       "squadMin": 1,
@@ -1541,11 +1550,12 @@
       ],
       "page": 19,
       "auxiliaryTransport": true,
-      "selectable": false,
+      "selectable": true,
       "art": "assets/units/siegestrider.webp"
     },
     {
       "id": "explorator",
+      "faction": "resistance",
       "name": "Explorator",
       "category": "Heavy",
       "squadMin": 1,
@@ -1812,11 +1822,12 @@
       ],
       "page": 20,
       "auxiliaryTransport": true,
-      "selectable": false,
+      "selectable": true,
       "art": "assets/units/explorator.webp"
     },
     {
       "id": "mining-engine",
+      "faction": "resistance",
       "name": "Mining Engine",
       "category": "Heavy",
       "squadMin": 1,
@@ -1930,7 +1941,7 @@
       ],
       "page": 21,
       "auxiliaryTransport": false,
-      "selectable": false,
+      "selectable": true,
       "art": "assets/units/mining-engine.webp"
     }
   ]

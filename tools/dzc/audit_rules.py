@@ -69,13 +69,11 @@ KNOWN_CARD_QUIRKS = {
     # every other card in the game supports, so this is the card, not the split.
     "Macro Critical 1":
         "Death Mech: 'Macro' and 'Critical 1' printed with no comma between them",
-    # Faction rules, on cards that never name a faction. Razorworm Pod and
-    # Nanomachines live in the Scourge and PHR front matter and resolve the
-    # moment a Behemoth knows which faction it belongs to; "Particle" is the
-    # Shaltari weapon rule. Nothing to fix here until that mapping exists.
-    "Razorworm Pod": "Terror Mech: a Scourge rule, on a card with no faction on it",
-    "Nanomachines": "Type 7 Grand Walker: a PHR rule, on a card with no faction on it",
-    "Particle": "Dragon: a Shaltari rule, on a card with no faction on it",
+    # Razorworm Pod, Nanomachines and Particle were listed here while the
+    # Behemoths had no faction. They resolve now that each card knows whose it
+    # is, and the audit reports an exemption that no longer fires — which is
+    # how they came out again. A stale exemption is a place the next real
+    # defect can hide.
 }
 
 
@@ -191,8 +189,12 @@ def main():
     for path in [p for p in sources if os.path.exists(p)]:
         with open(path, encoding="utf-8") as fh:
             data = json.load(fh)
-        fac = data["faction"]
         for u in data["units"]:
+            # The unit's OWN faction first. In behemoths.json the file says
+            # "behemoth" while each unit belongs to one of the six, and looking
+            # a keyword up against the file left the Dragon's Shaltari
+            # "Particle" unresolvable when the answer was on its own record.
+            fac = u.get("faction") or data["faction"]
             for src in [u.get("special") or ""] + [
                     w.get("special") or "" for w in u.get("weapons", [])]:
                 for tok in tokenise(src, rules, fac):

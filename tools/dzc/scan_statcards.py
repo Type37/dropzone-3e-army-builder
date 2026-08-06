@@ -22,12 +22,14 @@ Weapon name-box colour is semantic and load-bearing:
 """
 
 import argparse
+import glob
 import io
 import json
+import math
 import os
 import re
 import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
 from typing import TypedDict
 
 from PIL import Image
@@ -183,6 +185,9 @@ class Swap(TypedDict):
 class Unit(TypedDict):
     id: str
     name: str
+    # Only the Behemoths carry this. A faction card's unit takes its faction
+    # from the file it is in.
+    faction: str | None
     category: str | None
     squadMin: int | None
     squadMax: int | None
@@ -1497,6 +1502,7 @@ def parse_page(page, doc, art_dir) -> Unit | None:
 
     unit: Unit = {
         "id": slug(header["name"]),
+        "faction": None,
         "name": header["name"],
         "category": header["category"],
         "squadMin": header["squadMin"],
@@ -1567,6 +1573,65 @@ def scan(pdf_path, faction_id, faction_name,
     return data, skipped
 
 
+def classify_faction(units: list[Unit], data_dir: str) -> dict[str, str]:
+    """Whose Behemoth is whose, worked out from the guns rather than typed in.
+
+    The cards do not print a faction. What they do print is weapon names, and
+    a faction's weapons are written in its own vocabulary — PHR railguns and
+    stealth missiles, Scourge plasma and hives, Shaltari particle and gauss,
+    Resistance autocannons and mining lasers. Every one of those words is
+    already in data/dzc/faction-*.json, so the six scans are the training set
+    and no list of names is kept here to go stale.
+
+    Add-one smoothed log likelihood over the words, best faction wins.
+
+    Then the STRUCTURE is checked, and that is what makes it safe to trust:
+    TTCombat ship exactly two Behemoths per faction for five factions, and the
+    PDF orders them in those pairs. If the classifier ever returns anything but
+    that shape, the scan fails and a person looks at it. A wrong faction files
+    a 400pt model against the wrong army's allowance, so a quiet guess is worse
+    than no answer -- which is what this had until now.
+    """
+    def words(text: str) -> list[str]:
+        return [w.lower() for w in re.findall(r"[A-Za-z][A-Za-z'-]+", text or "")
+                if len(w) > 2]
+
+    corpus: dict[str, Counter[str]] = {}
+    for path in sorted(glob.glob(os.path.join(data_dir, "faction-*.json"))):
+        with open(path, encoding="utf-8") as fh:
+            d = json.load(fh)
+        bag: Counter[str] = Counter()
+        for u in d["units"]:
+            for w in u["weapons"]:
+                bag.update(words(w["name"]))
+            bag.update(words(u.get("special") or ""))
+        corpus[d["faction"]] = bag
+    if len(corpus) != 6:
+        raise SystemExit(f"need all six faction scans to place the Behemoths, "
+                         f"found {sorted(corpus)}")
+
+    vocab = set().union(*(set(b) for b in corpus.values()))
+    totals = {f: sum(b.values()) for f, b in corpus.items()}
+    out: dict[str, str] = {}
+    for u in units:
+        doc = [w for w in
+               [x for wp in u["weapons"] for x in words(wp["name"])]
+               + words(u.get("special") or "")
+               if w in vocab]
+        best = max(corpus, key=lambda f: sum(
+            math.log((corpus[f][w] + 1) / (totals[f] + len(vocab))) for w in doc))
+        out[u["id"]] = best
+
+    pairs = Counter(out[u["id"]] for u in units if u["type"] == "Behemoth")
+    if sorted(pairs.values()) != [2, 2, 2, 2, 2]:
+        raise SystemExit(
+            f"the Behemoths did not come out two per faction: {dict(pairs)}. "
+            f"Either TTCombat have changed the line-up or the classifier is "
+            f"wrong; either way this needs a person, not a guess."
+        )
+    return out
+
+
 def scan_behemoths(args) -> None:
     """The Behemoth PDF: ten Behemoths and the one Drone that comes with one.
 
@@ -1598,8 +1663,15 @@ def scan_behemoths(args) -> None:
             skipped.append(((page.number or 0) + 1, f"error: {exc}"))
             continue
         if u:
-            u["selectable"] = False
             units.append(u)
+    placed = classify_faction(units, args.out)
+    for u in units:
+        u["faction"] = placed[u["id"]]
+        # The Venus Drone is "included with its Behemoth" and never chosen
+        # (2.1.1); everything else is a normal Heavy choice now that it knows
+        # whose army it belongs in.
+        if u["type"] != "Behemoth":
+            u["selectable"] = False
     ver = re.search(r"_(\d{6})\.pdf$", os.path.basename(path))
     data: FactionFile = {
         "faction": "behemoth",

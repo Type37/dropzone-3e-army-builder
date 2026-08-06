@@ -519,7 +519,9 @@
    * one that matters. Weapon rules are in, because a rule on the gun is a rule
    * you are choosing (gap 44). */
   function unitRulesHtml(u, faction) {
-    const fac = faction || state.faction;
+    // The Unit's own faction wins. A Behemoth sits under the Behemoths tab but
+    // belongs to one of the six, and its card prints that faction's rules.
+    const fac = u.faction || faction || state.faction;
     const used = new Map();
     [u.special || ''].concat((u.weapons || []).map(w => w.special || '')).forEach(sp => {
       window.DZC.splitSpecial(sp, fac).forEach(tok => {
@@ -546,7 +548,7 @@
     const f = window.DZC.faction(state.faction);
     const u = f && f.byId[unitId];
     if (!u) return;
-    const weapons = weaponsHtml(u, state.faction);
+    const weapons = weaponsHtml(u, u.faction || state.faction);
     detailOf = { id: unitId, faction: state.faction };
     const variants = variantsHtml(u);
 
@@ -572,12 +574,12 @@
           <div class="dzc-card-stats">${statsHtml(u)}</div>
         </div>
       </div>
-      ${u.special ? `<div class="dzc-detail-rules">${rulesHtml(u.special, state.faction)}</div>` : ''}
+      ${u.special ? `<div class="dzc-detail-rules">${rulesHtml(u.special, u.faction || state.faction)}</div>` : ''}
       ${variants}
       ${variantLensHtml(u)}
       ${weapons}
       ${upgradeNoteHtml(u)}
-      ${unitRulesHtml(u, state.faction)}`;
+      ${unitRulesHtml(u, u.faction || state.faction)}`;
     /* NOT the Unit's name: the body opens with it, at size and beside its
      * capacity symbol, and on a phone both were on screen at once. The header
      * is what stays put when the body scrolls, so it says what the panel is —
@@ -604,7 +606,10 @@
    * which is the one you want mid-game with the rulebook on the table. */
   function ruleSource(r) {
     if (r.faction) return r.faction.toUpperCase() + ' rules';
-    return 'Rulebook ' + r.section + (r.page ? `, p.${r.page}` : '');
+    // Naming the right book. "Rulebook 3.1.8, p.9" for Macro pointed at the
+    // core rulebook's page 9, which is the game-size table.
+    const book = r.source === 'behemoths' ? 'Behemoth rules' : 'Rulebook';
+    return book + ' ' + r.section + (r.page ? `, p.${r.page}` : '');
   }
 
   /* Rule popover. Positioned absolutely against the page so opening one never

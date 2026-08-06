@@ -106,16 +106,20 @@ if os.path.exists(BEHEMOTHS):
                             f"it is what the Group allowance is spent against (1.1)")
         if not u["stats"].get("Power"):
             problems.append(f"behemoth/{u['name']}: no Power stat (1.2)")
-        if u["selectable"]:
-            problems.append(f"behemoth/{u['name']}: selectable while its faction is unknown")
-    # Not a problem, because it is not in the source to be got wrong: the cards
-    # simply do not say. Nine of the eleven never name a faction and there is no
-    # logo or colour to read one off. Until someone supplies the mapping these
-    # stay reference-only.
-    unfactioned = [u["name"] for u in bh["units"] if not u.get("faction")]
-    if unfactioned:
-        warnings.append(f"{len(unfactioned)} Behemoths carry no faction -- the cards do not "
-                        f"print one, so they are reference-only until it is supplied")
+    # Every one placed, and two per faction across five. The cards do not print
+    # a faction; scan_statcards works it out from the weapon vocabulary in the
+    # six faction scans and refuses to write the file unless it comes out in
+    # that shape. This is the second pair of eyes on the result.
+    FACTIONS = {"ucm", "phr", "scourge", "shaltari", "resistance", "bioficer"}
+    placed = Counter()
+    for u in bh["units"]:
+        fac = u.get("faction")
+        if fac not in FACTIONS:
+            problems.append(f"behemoth/{u['name']}: faction {fac!r} is not one of the six")
+        elif u["type"] == "Behemoth":
+            placed[fac] += 1
+    if sorted(placed.values()) != [2, 2, 2, 2, 2]:
+        problems.append(f"Behemoths are not two per faction across five: {dict(placed)}")
 
 print("=== counts ===")
 for k, v in sorted(stats.items()):

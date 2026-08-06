@@ -104,10 +104,14 @@
       alias: r.alias || null,
       text: r.text,
       section: r.section,
-      /* Only a CORE rule's page is worth printing. A faction rule is scanned
-       * from that faction's own stat-card PDF, where the rules block is always
-       * page 1 -- citing "p.1" would point at a different document and read as
-       * a rulebook page it is not. */
+      /* Which DOCUMENT the page is in, because "core" stopped meaning "in the
+       * rulebook" when the Behemoth supplement's rules joined it: Macro and
+       * Huge Blast are how Behemoths work rather than a faction's trick, but
+       * that book's p.4 is not the rulebook's p.4. */
+      source: r.source || null,
+      /* A faction rule's page is not worth printing. It is scanned from that
+       * faction's own stat-card PDF where the rules block is always page 1,
+       * and citing "p.1" would read as a rulebook page it is not. */
       page: r.faction ? null : (r.page || null),
       parameterised: !!r.parameterised,
       re: new RegExp(r.match, 'i')

@@ -525,6 +525,11 @@ def main():
             out.append({
                 "id": rid,
                 "faction": None,
+                # Which document the page number is IN. Core rules used to be
+                # rulebook rules by definition, so the page needed no
+                # qualifier; the Behemoth supplement is core too and its p.4 is
+                # a different book's p.4.
+                "source": "rulebook",
                 "section": r["section"],
                 "chapter": title,
                 "name": head,
@@ -553,6 +558,7 @@ def main():
             out.append({
                 "id": f"{fac}-{slug(head)}",
                 "faction": fac,
+                "source": "faction cards",
                 "section": tidy(section or ""),
                 "chapter": section or f"{fac} special rules",
                 "name": head,
@@ -565,9 +571,19 @@ def main():
             found += 1
         print(f"  {fac:<12} {found:>3} faction rules  ({os.path.basename(pdf)})")
 
-    # Behemoth rules. Namespaced like a faction's, because "Integral" and
-    # "Secondary" are Behemoth words and must not shadow a core rule of the
-    # same name if one ever appears.
+    # Behemoth rules, as CORE rules.
+    #
+    # They were namespaced like a faction's at first, to stop "Integral" and
+    # "Secondary" shadowing a core rule of the same name. That was solving a
+    # problem that does not exist — not one of the 39 collides with a core id —
+    # and it created a real one: once each Behemoth knew its faction, a
+    # faction-scoped lookup searched "shaltari" and core and never "behemoth",
+    # so every Behemoth keyword on every card stopped resolving. Twenty-four of
+    # them.
+    #
+    # They belong in core anyway. Macro and Huge Blast are not Shaltari rules
+    # that happen to appear on a Dragon; they are how Behemoths work, whoever
+    # fields one.
     beh_pdf = args.behemoth_pdf or _newest_behemoth(args.cards_dir)
     beh_count = 0
     if beh_pdf:
@@ -588,8 +604,9 @@ def main():
                 continue
             head, alias = split_alias(name)
             out.append({
-                "id": f"behemoth-{slug(head)}",
-                "faction": "behemoth",
+                "id": slug(head),
+                "faction": None,
+                "source": "behemoths",
                 "section": r["section"],
                 "chapter": "Behemoth rules",
                 "name": head,

@@ -228,11 +228,21 @@ console.log('\npage numbers (gap 39)');
   eq(aegis.page, 44, 'a core rule carries its rulebook page');
   eq(DZC.rule('Nanomachines', 'phr').page, null,
      'a faction rule carries none, because its page 1 is not the rulebook\'s');
+  /* "Core" is no longer the same thing as "in the rulebook". The 39 Behemoth
+   * rules are core — Macro and Huge Blast are how Behemoths work, not a
+   * faction's trick — but they come out of the Behemoth supplement, and its
+   * p.4 is a different book's p.4. Each rule says which document its page is
+   * in, and the range check follows the document rather than assuming one. */
   const core = DZC.rules.core;
   eq(core.filter(r => !r.page).length, 0, 'every core rule has a page');
-  const pages = core.map(r => r.page);
+  eq(core.filter(r => !r.source).length, 0, 'and says which document it is in');
+  const beh = core.filter(r => r.source === 'behemoths');
+  ok(beh.length > 30, 'the Behemoth supplement is in there', `${beh.length} rules`);
+  ok(Math.max(...beh.map(r => r.page)) <= 12,
+     'and its rules are on its own first pages', String(Math.max(...beh.map(r => r.page))));
+  const pages = core.filter(r => r.source === 'rulebook').map(r => r.page);
   ok(Math.min(...pages) >= 44 && Math.max(...pages) <= 50,
-     'and every one of them is in chapters 10-11 (pp.44-50)',
+     'and every rulebook rule is in chapters 10-11 (pp.44-50)',
      `${Math.min(...pages)}-${Math.max(...pages)}`);
 }
 

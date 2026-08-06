@@ -14,6 +14,7 @@
   {
    "id": "aegis-x",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.1",
    "chapter": "10. Unit Special Rules",
    "name": "Aegis X”",
@@ -26,6 +27,7 @@
   {
    "id": "agile-x",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.2",
    "chapter": "10. Unit Special Rules",
    "name": "Agile X",
@@ -38,6 +40,7 @@
   {
    "id": "awacs-x",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.3",
    "chapter": "10. Unit Special Rules",
    "name": "AWACS X”",
@@ -50,6 +53,7 @@
   {
    "id": "bloodthirsty",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.4",
    "chapter": "10. Unit Special Rules",
    "name": "Bloodthirsty",
@@ -62,6 +66,7 @@
   {
    "id": "breachers-x",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.5",
    "chapter": "10. Unit Special Rules",
    "name": "Breachers X",
@@ -74,6 +79,7 @@
   {
    "id": "climber",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.6",
    "chapter": "10. Unit Special Rules",
    "name": "Climber",
@@ -86,6 +92,7 @@
   {
    "id": "command-centre",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.7",
    "chapter": "10. Unit Special Rules",
    "name": "Command Centre",
@@ -98,6 +105,7 @@
   {
    "id": "delayed",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.8",
    "chapter": "10. Unit Special Rules",
    "name": "Delayed",
@@ -110,6 +118,7 @@
   {
    "id": "demo-charges-x",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.9",
    "chapter": "10. Unit Special Rules",
    "name": "Demo Charges X+",
@@ -122,6 +131,7 @@
   {
    "id": "dogs",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.10",
    "chapter": "10. Unit Special Rules",
    "name": "Dogs",
@@ -134,6 +144,7 @@
   {
    "id": "ev-x",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.11",
    "chapter": "10. Unit Special Rules",
    "name": "Ev X",
@@ -146,6 +157,7 @@
   {
    "id": "fast-mover",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.12",
    "chapter": "10. Unit Special Rules",
    "name": "Fast Mover",
@@ -158,6 +170,7 @@
   {
    "id": "flying-high",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.12.1",
    "chapter": "10. Unit Special Rules",
    "name": "Flying High",
@@ -170,6 +183,7 @@
   {
    "id": "flat-out-x",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.13",
    "chapter": "10. Unit Special Rules",
    "name": "Flat Out X”",
@@ -182,6 +196,7 @@
   {
    "id": "fs-x",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.14",
    "chapter": "10. Unit Special Rules",
    "name": "FS X",
@@ -194,6 +209,7 @@
   {
    "id": "hardy-x",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.15",
    "chapter": "10. Unit Special Rules",
    "name": "Hardy X",
@@ -206,6 +222,7 @@
   {
    "id": "infiltrate-x",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.16",
    "chapter": "10. Unit Special Rules",
    "name": "Infiltrate X”",
@@ -218,6 +235,7 @@
   {
    "id": "jump-x",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.17",
    "chapter": "10. Unit Special Rules",
    "name": "Jump X”",
@@ -230,6 +248,7 @@
   {
    "id": "large",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.18",
    "chapter": "10. Unit Special Rules",
    "name": "Large",
@@ -242,6 +261,7 @@
   {
    "id": "lethal",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.19",
    "chapter": "10. Unit Special Rules",
    "name": "Lethal",
@@ -254,6 +274,7 @@
   {
    "id": "living-weapons",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.20",
    "chapter": "10. Unit Special Rules",
    "name": "Living Weapons",
@@ -266,6 +287,7 @@
   {
    "id": "obscurer-x",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.21",
    "chapter": "10. Unit Special Rules",
    "name": "Obscurer X”",
@@ -278,6 +300,7 @@
   {
    "id": "px",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.22",
    "chapter": "10. Unit Special Rules",
    "name": "PX+",
@@ -290,6 +313,7 @@
   {
    "id": "regenerate-x",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.24",
    "chapter": "10. Unit Special Rules",
    "name": "Regenerate X",
@@ -302,6 +326,7 @@
   {
    "id": "resilient",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.25",
    "chapter": "10. Unit Special Rules",
    "name": "Resilient",
@@ -314,6 +339,7 @@
   {
    "id": "scanner",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.26",
    "chapter": "10. Unit Special Rules",
    "name": "Scanner",
@@ -326,6 +352,7 @@
   {
    "id": "scout",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.27",
    "chapter": "10. Unit Special Rules",
    "name": "Scout",
@@ -338,6 +365,7 @@
   {
    "id": "shield-x-y-z",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.28",
    "chapter": "10. Unit Special Rules",
    "name": "Shield: X Y” Z+",
@@ -350,6 +378,7 @@
   {
    "id": "skimmer",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.29",
    "chapter": "10. Unit Special Rules",
    "name": "Skimmer",
@@ -362,6 +391,7 @@
   {
    "id": "rapid-insertion-x",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.23",
    "chapter": "10. Unit Special Rules",
    "name": "Rapid Insertion X”",
@@ -374,6 +404,7 @@
   {
    "id": "stealth",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.30",
    "chapter": "10. Unit Special Rules",
    "name": "Stealth",
@@ -386,6 +417,7 @@
   {
    "id": "strike",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.31",
    "chapter": "10. Unit Special Rules",
    "name": "Strike",
@@ -398,6 +430,7 @@
   {
    "id": "strong",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.32",
    "chapter": "10. Unit Special Rules",
    "name": "Strong",
@@ -410,6 +443,7 @@
   {
    "id": "surveyor",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.33",
    "chapter": "10. Unit Special Rules",
    "name": "Surveyor",
@@ -422,6 +456,7 @@
   {
    "id": "terror",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.34",
    "chapter": "10. Unit Special Rules",
    "name": "Terror",
@@ -434,6 +469,7 @@
   {
    "id": "uc",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.35",
    "chapter": "10. Unit Special Rules",
    "name": "UC",
@@ -446,6 +482,7 @@
   {
    "id": "wide-x",
    "faction": null,
+   "source": "rulebook",
    "section": "10.1.36",
    "chapter": "10. Unit Special Rules",
    "name": "Wide X”",
@@ -458,6 +495,7 @@
   {
    "id": "concussion",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.7",
    "chapter": "11. Weapon Special Rules",
    "name": "Concussion",
@@ -470,6 +508,7 @@
   {
    "id": "critical-x",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.8",
    "chapter": "11. Weapon Special Rules",
    "name": "Critical X",
@@ -482,6 +521,7 @@
   {
    "id": "demo-x",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.9",
    "chapter": "11. Weapon Special Rules",
    "name": "Demo X",
@@ -494,6 +534,7 @@
   {
    "id": "destroyer-x",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.10",
    "chapter": "11. Weapon Special Rules",
    "name": "Destroyer X+",
@@ -506,6 +547,7 @@
   {
    "id": "aa",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.1",
    "chapter": "11. Weapon Special Rules",
    "name": "AA",
@@ -518,6 +560,7 @@
   {
    "id": "aa-r",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.1.1",
    "chapter": "11. Weapon Special Rules",
    "name": "AA-R",
@@ -530,6 +573,7 @@
   {
    "id": "aa-s",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.1.2",
    "chapter": "11. Weapon Special Rules",
    "name": "AA-S",
@@ -542,6 +586,7 @@
   {
    "id": "alt-x",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.2",
    "chapter": "11. Weapon Special Rules",
    "name": "ALT X",
@@ -554,6 +599,7 @@
   {
    "id": "articulated",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.3",
    "chapter": "11. Weapon Special Rules",
    "name": "Articulated",
@@ -566,6 +612,7 @@
   {
    "id": "assault",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.4",
    "chapter": "11. Weapon Special Rules",
    "name": "Assault",
@@ -578,6 +625,7 @@
   {
    "id": "battery-x",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.5",
    "chapter": "11. Weapon Special Rules",
    "name": "Battery X",
@@ -590,6 +638,7 @@
   {
    "id": "blast",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.6",
    "chapter": "11. Weapon Special Rules",
    "name": "Blast",
@@ -602,6 +651,7 @@
   {
    "id": "devastator-x",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.11",
    "chapter": "11. Weapon Special Rules",
    "name": "Devastator X",
@@ -614,6 +664,7 @@
   {
    "id": "dissipate-x",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.12",
    "chapter": "11. Weapon Special Rules",
    "name": "Dissipate -X",
@@ -626,6 +677,7 @@
   {
    "id": "drive-by",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.13",
    "chapter": "11. Weapon Special Rules",
    "name": "Drive-by",
@@ -638,6 +690,7 @@
   {
    "id": "field",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.14",
    "chapter": "11. Weapon Special Rules",
    "name": "Field",
@@ -650,6 +703,7 @@
   {
    "id": "flame",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.15",
    "chapter": "11. Weapon Special Rules",
    "name": "Flame",
@@ -662,6 +716,7 @@
   {
    "id": "focus-x",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.16",
    "chapter": "11. Weapon Special Rules",
    "name": "Focus X",
@@ -674,6 +729,7 @@
   {
    "id": "gb",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.17",
    "chapter": "11. Weapon Special Rules",
    "name": "GB",
@@ -686,6 +742,7 @@
   {
    "id": "ignores-cover",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.18",
    "chapter": "11. Weapon Special Rules",
    "name": "Ignores Cover",
@@ -698,6 +755,7 @@
   {
    "id": "incendiary-x",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.19",
    "chapter": "11. Weapon Special Rules",
    "name": "Incendiary X",
@@ -710,6 +768,7 @@
   {
    "id": "indirect",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.20",
    "chapter": "11. Weapon Special Rules",
    "name": "Indirect",
@@ -722,6 +781,7 @@
   {
    "id": "ineffective-x",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.21",
    "chapter": "11. Weapon Special Rules",
    "name": "Ineffective: X",
@@ -734,6 +794,7 @@
   {
    "id": "jammer",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.22",
    "chapter": "11. Weapon Special Rules",
    "name": "Jammer",
@@ -746,6 +807,7 @@
   {
    "id": "lx",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.23",
    "chapter": "11. Weapon Special Rules",
    "name": "LX",
@@ -758,6 +820,7 @@
   {
    "id": "needs-spotter",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.24",
    "chapter": "11. Weapon Special Rules",
    "name": "Needs Spotter",
@@ -770,6 +833,7 @@
   {
    "id": "overcharge-x",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.25",
    "chapter": "11. Weapon Special Rules",
    "name": "Overcharge X",
@@ -782,6 +846,7 @@
   {
    "id": "overwatch",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.26",
    "chapter": "11. Weapon Special Rules",
    "name": "Overwatch",
@@ -794,6 +859,7 @@
   {
    "id": "pen-x",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.27",
    "chapter": "11. Weapon Special Rules",
    "name": "Pen X+",
@@ -806,6 +872,7 @@
   {
    "id": "precision-x",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.28",
    "chapter": "11. Weapon Special Rules",
    "name": "Precision X",
@@ -818,6 +885,7 @@
   {
    "id": "repair-x-y",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.29",
    "chapter": "11. Weapon Special Rules",
    "name": "Repair X/Y",
@@ -830,6 +898,7 @@
   {
    "id": "seeker",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.30",
    "chapter": "11. Weapon Special Rules",
    "name": "Seeker",
@@ -842,6 +911,7 @@
   {
    "id": "self-destruct",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.31",
    "chapter": "11. Weapon Special Rules",
    "name": "Self-Destruct",
@@ -854,6 +924,7 @@
   {
    "id": "smoke",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.32",
    "chapter": "11. Weapon Special Rules",
    "name": "Smoke",
@@ -866,6 +937,7 @@
   {
    "id": "strafe",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.33",
    "chapter": "11. Weapon Special Rules",
    "name": "Strafe",
@@ -878,6 +950,7 @@
   {
    "id": "suppress",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.34",
    "chapter": "11. Weapon Special Rules",
    "name": "Suppress",
@@ -890,6 +963,7 @@
   {
    "id": "tx",
    "faction": null,
+   "source": "rulebook",
    "section": "11.1.35",
    "chapter": "11. Weapon Special Rules",
    "name": "TX",
@@ -902,6 +976,7 @@
   {
    "id": "bioficer-collector-x",
    "faction": "bioficer",
+   "source": "faction cards",
    "section": "Bioficer Unit Special Rules",
    "chapter": "Bioficer Unit Special Rules",
    "name": "Collector X",
@@ -914,6 +989,7 @@
   {
    "id": "bioficer-genitor-x",
    "faction": "bioficer",
+   "source": "faction cards",
    "section": "Bioficer Unit Special Rules",
    "chapter": "Bioficer Unit Special Rules",
    "name": "Genitor X",
@@ -926,6 +1002,7 @@
   {
    "id": "bioficer-generated-x",
    "faction": "bioficer",
+   "source": "faction cards",
    "section": "Bioficer Unit Special Rules",
    "chapter": "Bioficer Unit Special Rules",
    "name": "Generated X",
@@ -938,6 +1015,7 @@
   {
    "id": "bioficer-advanced-genitor-generated",
    "faction": "bioficer",
+   "source": "faction cards",
    "section": "Bioficer Special Rules",
    "chapter": "Bioficer Special Rules",
    "name": "Advanced Genitor/ Generated",
@@ -950,6 +1028,7 @@
   {
    "id": "bioficer-grubsinger",
    "faction": "bioficer",
+   "source": "faction cards",
    "section": "Bioficer Special Rules",
    "chapter": "Bioficer Special Rules",
    "name": "Grubsinger",
@@ -962,6 +1041,7 @@
   {
    "id": "bioficer-puppet",
    "faction": "bioficer",
+   "source": "faction cards",
    "section": "Bioficer Special Rules",
    "chapter": "Bioficer Special Rules",
    "name": "Puppet",
@@ -974,6 +1054,7 @@
   {
    "id": "bioficer-puppeteer-x",
    "faction": "bioficer",
+   "source": "faction cards",
    "section": "Bioficer Special Rules",
    "chapter": "Bioficer Special Rules",
    "name": "Puppeteer X”",
@@ -986,6 +1067,7 @@
   {
    "id": "bioficer-decon",
    "faction": "bioficer",
+   "source": "faction cards",
    "section": "Bioficer Weapon Special Rules",
    "chapter": "Bioficer Weapon Special Rules",
    "name": "Decon",
@@ -998,6 +1080,7 @@
   {
    "id": "phr-nanomachines",
    "faction": "phr",
+   "source": "faction cards",
    "section": "",
    "chapter": "phr special rules",
    "name": "Nanomachines",
@@ -1010,6 +1093,7 @@
   {
    "id": "phr-supercruise",
    "faction": "phr",
+   "source": "faction cards",
    "section": "",
    "chapter": "phr special rules",
    "name": "Supercruise",
@@ -1022,6 +1106,7 @@
   {
    "id": "resistance-bikes-x",
    "faction": "resistance",
+   "source": "faction cards",
    "section": "Resistance Unit Special Rules",
    "chapter": "Resistance Unit Special Rules",
    "name": "Bikes X",
@@ -1034,6 +1119,7 @@
   {
    "id": "resistance-firing-ports",
    "faction": "resistance",
+   "source": "faction cards",
    "section": "Resistance Unit Special Rules",
    "chapter": "Resistance Unit Special Rules",
    "name": "Firing Ports",
@@ -1046,6 +1132,7 @@
   {
    "id": "resistance-flexible-capacity",
    "faction": "resistance",
+   "source": "faction cards",
    "section": "Resistance Unit Special Rules",
    "chapter": "Resistance Unit Special Rules",
    "name": "Flexible Capacity",
@@ -1058,6 +1145,7 @@
   {
    "id": "resistance-ram",
    "faction": "resistance",
+   "source": "faction cards",
    "section": "Resistance Unit Special Rules",
    "chapter": "Resistance Unit Special Rules",
    "name": "Ram",
@@ -1070,6 +1158,7 @@
   {
    "id": "resistance-subterranean",
    "faction": "resistance",
+   "source": "faction cards",
    "section": "Resistance Special Rules",
    "chapter": "Resistance Special Rules",
    "name": "Subterranean",
@@ -1082,6 +1171,7 @@
   {
    "id": "resistance-subterranean-small",
    "faction": "resistance",
+   "source": "faction cards",
    "section": "Resistance Special Rules",
    "chapter": "Resistance Special Rules",
    "name": "Subterranean Small",
@@ -1094,6 +1184,7 @@
   {
    "id": "resistance-subterranean-medium",
    "faction": "resistance",
+   "source": "faction cards",
    "section": "Resistance Special Rules",
    "chapter": "Resistance Special Rules",
    "name": "Subterranean Medium",
@@ -1106,6 +1197,7 @@
   {
    "id": "scourge-cling",
    "faction": "scourge",
+   "source": "faction cards",
    "section": "",
    "chapter": "scourge special rules",
    "name": "Cling",
@@ -1118,6 +1210,7 @@
   {
    "id": "scourge-plasma-generator-x",
    "faction": "scourge",
+   "source": "faction cards",
    "section": "",
    "chapter": "scourge special rules",
    "name": "Plasma Generator X”",
@@ -1130,6 +1223,7 @@
   {
    "id": "scourge-razorworm-pod",
    "faction": "scourge",
+   "source": "faction cards",
    "section": "",
    "chapter": "scourge special rules",
    "name": "Razorworm Pod",
@@ -1142,6 +1236,7 @@
   {
    "id": "scourge-spark",
    "faction": "scourge",
+   "source": "faction cards",
    "section": "",
    "chapter": "scourge special rules",
    "name": "Spark",
@@ -1154,6 +1249,7 @@
   {
    "id": "shaltari-gate",
    "faction": "shaltari",
+   "source": "faction cards",
    "section": "Shaltari Unit Special Rules",
    "chapter": "Shaltari Unit Special Rules",
    "name": "Gate",
@@ -1166,6 +1262,7 @@
   {
    "id": "shaltari-aux-gate",
    "faction": "shaltari",
+   "source": "faction cards",
    "section": "Shaltari Unit Special Rules",
    "chapter": "Shaltari Unit Special Rules",
    "name": "Aux Gate",
@@ -1178,6 +1275,7 @@
   {
    "id": "shaltari-aircharge",
    "faction": "shaltari",
+   "source": "faction cards",
    "section": "Shaltari Weapon Special Rules",
    "chapter": "Shaltari Weapon Special Rules",
    "name": "Aircharge",
@@ -1190,6 +1288,7 @@
   {
    "id": "shaltari-grav",
    "faction": "shaltari",
+   "source": "faction cards",
    "section": "Shaltari Weapon Special Rules",
    "chapter": "Shaltari Weapon Special Rules",
    "name": "Grav",
@@ -1202,6 +1301,7 @@
   {
    "id": "shaltari-particle",
    "faction": "shaltari",
+   "source": "faction cards",
    "section": "Shaltari Weapon Special Rules",
    "chapter": "Shaltari Weapon Special Rules",
    "name": "Particle",
@@ -1214,6 +1314,7 @@
   {
    "id": "shaltari-skimcharger",
    "faction": "shaltari",
+   "source": "faction cards",
    "section": "Shaltari Weapon Special Rules",
    "chapter": "Shaltari Weapon Special Rules",
    "name": "Skimcharger",
@@ -1226,6 +1327,7 @@
   {
    "id": "shaltari-microgate",
    "faction": "shaltari",
+   "source": "faction cards",
    "section": "Shaltari Weapon Special Rules",
    "chapter": "Shaltari Weapon Special Rules",
    "name": "Microgate",
@@ -1238,6 +1340,7 @@
   {
    "id": "shaltari-subservient",
    "faction": "shaltari",
+   "source": "faction cards",
    "section": "Shaltari Weapon Special Rules",
    "chapter": "Shaltari Weapon Special Rules",
    "name": "Subservient",
@@ -1250,6 +1353,7 @@
   {
    "id": "shaltari-warsuit",
    "faction": "shaltari",
+   "source": "faction cards",
    "section": "Shaltari Weapon Special Rules",
    "chapter": "Shaltari Weapon Special Rules",
    "name": "Warsuit",
@@ -1262,6 +1366,7 @@
   {
    "id": "ucm-drone-base-x-y",
    "faction": "ucm",
+   "source": "faction cards",
    "section": "UCM Unit Special Rules",
    "chapter": "UCM Unit Special Rules",
    "name": "Drone Base X: Y",
@@ -1274,6 +1379,7 @@
   {
    "id": "ucm-guard",
    "faction": "ucm",
+   "source": "faction cards",
    "section": "UCM Unit Special Rules",
    "chapter": "UCM Unit Special Rules",
    "name": "Guard",
@@ -1286,6 +1392,7 @@
   {
    "id": "ucm-remote-drone",
    "faction": "ucm",
+   "source": "faction cards",
    "section": "UCM Unit Special Rules",
    "chapter": "UCM Unit Special Rules",
    "name": "Remote Drone",
@@ -1296,8 +1403,9 @@
    "page": 1
   },
   {
-   "id": "behemoth-casual-games-and-behemoth-scenarios",
-   "faction": "behemoth",
+   "id": "casual-games-and-behemoth-scenarios",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.1.1",
    "chapter": "Behemoth rules",
    "name": "Casual Games and Behemoth Scenarios",
@@ -1308,8 +1416,9 @@
    "page": 1
   },
   {
-   "id": "behemoth-exceptions",
-   "faction": "behemoth",
+   "id": "exceptions",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.2",
    "chapter": "Behemoth rules",
    "name": "Exceptions",
@@ -1320,8 +1429,9 @@
    "page": 1
   },
   {
-   "id": "behemoth-behemoth-entry",
-   "faction": "behemoth",
+   "id": "behemoth-entry",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.4",
    "chapter": "Behemoth rules",
    "name": "Behemoth Entry",
@@ -1332,8 +1442,9 @@
    "page": 2
   },
   {
-   "id": "behemoth-vs-ground",
-   "faction": "behemoth",
+   "id": "vs-ground",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.4.2",
    "chapter": "Behemoth rules",
    "name": "Vs Ground",
@@ -1344,8 +1455,9 @@
    "page": 3
   },
   {
-   "id": "behemoth-vs-areas",
-   "faction": "behemoth",
+   "id": "vs-areas",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.4.3",
    "chapter": "Behemoth rules",
    "name": "Vs Areas",
@@ -1356,8 +1468,9 @@
    "page": 3
   },
   {
-   "id": "behemoth-vs-buildings",
-   "faction": "behemoth",
+   "id": "vs-buildings",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.4.4",
    "chapter": "Behemoth rules",
    "name": "Vs Buildings",
@@ -1368,8 +1481,9 @@
    "page": 3
   },
   {
-   "id": "behemoth-vs-units",
-   "faction": "behemoth",
+   "id": "vs-units",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.4.5",
    "chapter": "Behemoth rules",
    "name": "Vs Units",
@@ -1380,8 +1494,9 @@
    "page": 3
   },
   {
-   "id": "behemoth-concentrate-fire",
-   "faction": "behemoth",
+   "id": "concentrate-fire",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.5.1",
    "chapter": "Behemoth rules",
    "name": "Concentrate Fire",
@@ -1392,8 +1507,9 @@
    "page": 4
   },
   {
-   "id": "behemoth-flanking-fire",
-   "faction": "behemoth",
+   "id": "flanking-fire",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.5.2",
    "chapter": "Behemoth rules",
    "name": "Flanking Fire",
@@ -1404,8 +1520,9 @@
    "page": 4
   },
   {
-   "id": "behemoth-huge-targets",
-   "faction": "behemoth",
+   "id": "huge-targets",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.5.3",
    "chapter": "Behemoth rules",
    "name": "Huge Targets",
@@ -1416,8 +1533,9 @@
    "page": 4
   },
   {
-   "id": "behemoth-weapon-special-rule-modifiers",
-   "faction": "behemoth",
+   "id": "weapon-special-rule-modifiers",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.5.4",
    "chapter": "Behemoth rules",
    "name": "Weapon Special Rule Modifiers",
@@ -1428,8 +1546,9 @@
    "page": 4
   },
   {
-   "id": "behemoth-damage-thresholds",
-   "faction": "behemoth",
+   "id": "damage-thresholds",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.5.5",
    "chapter": "Behemoth rules",
    "name": "Damage Thresholds",
@@ -1440,8 +1559,9 @@
    "page": 4
   },
   {
-   "id": "behemoth-systems-damage",
-   "faction": "behemoth",
+   "id": "systems-damage",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.5.6",
    "chapter": "Behemoth rules",
    "name": "Systems Damage",
@@ -1452,8 +1572,9 @@
    "page": 5
   },
   {
-   "id": "behemoth-mortal-damage",
-   "faction": "behemoth",
+   "id": "mortal-damage",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.5.7",
    "chapter": "Behemoth rules",
    "name": "Mortal Damage",
@@ -1464,8 +1585,9 @@
    "page": 6
   },
   {
-   "id": "behemoth-gear",
-   "faction": "behemoth",
+   "id": "gear",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.7",
    "chapter": "Behemoth rules",
    "name": "Gear",
@@ -1476,8 +1598,9 @@
    "page": 6
   },
   {
-   "id": "behemoth-director-x-y",
-   "faction": "behemoth",
+   "id": "director-x-y",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.7.1",
    "chapter": "Behemoth rules",
    "name": "Director X: Y",
@@ -1488,8 +1611,9 @@
    "page": 6
   },
   {
-   "id": "behemoth-jump-system-x",
-   "faction": "behemoth",
+   "id": "jump-system-x",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.7.2",
    "chapter": "Behemoth rules",
    "name": "Jump System X”",
@@ -1500,8 +1624,9 @@
    "page": 7
   },
   {
-   "id": "behemoth-decoys",
-   "faction": "behemoth",
+   "id": "decoys",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.7.3",
    "chapter": "Behemoth rules",
    "name": "Decoys",
@@ -1512,8 +1637,9 @@
    "page": 7
   },
   {
-   "id": "behemoth-shield-booster",
-   "faction": "behemoth",
+   "id": "shield-booster",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.7.4",
    "chapter": "Behemoth rules",
    "name": "Shield Booster",
@@ -1524,8 +1650,9 @@
    "page": 7
   },
   {
-   "id": "behemoth-redundancy",
-   "faction": "behemoth",
+   "id": "redundancy",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.7.5",
    "chapter": "Behemoth rules",
    "name": "Redundancy",
@@ -1536,8 +1663,9 @@
    "page": 7
   },
   {
-   "id": "behemoth-healing-system-x",
-   "faction": "behemoth",
+   "id": "healing-system-x",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.7.6",
    "chapter": "Behemoth rules",
    "name": "Healing System X",
@@ -1548,8 +1676,9 @@
    "page": 7
   },
   {
-   "id": "behemoth-scrambler-x",
-   "faction": "behemoth",
+   "id": "scrambler-x",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.7.7",
    "chapter": "Behemoth rules",
    "name": "Scrambler +X",
@@ -1560,8 +1689,9 @@
    "page": 7
   },
   {
-   "id": "behemoth-shroud-x",
-   "faction": "behemoth",
+   "id": "shroud-x",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.7.8",
    "chapter": "Behemoth rules",
    "name": "Shroud X+",
@@ -1572,8 +1702,9 @@
    "page": 7
   },
   {
-   "id": "behemoth-target-lock",
-   "faction": "behemoth",
+   "id": "target-lock",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.7.9",
    "chapter": "Behemoth rules",
    "name": "Target Lock",
@@ -1584,8 +1715,9 @@
    "page": 7
   },
   {
-   "id": "behemoth-weapons-capacitors",
-   "faction": "behemoth",
+   "id": "weapons-capacitors",
+   "faction": null,
+   "source": "behemoths",
    "section": "1.7.10",
    "chapter": "Behemoth rules",
    "name": "Weapons Capacitors",
@@ -1596,8 +1728,9 @@
    "page": 7
   },
   {
-   "id": "behemoth-directed",
-   "faction": "behemoth",
+   "id": "directed",
+   "faction": null,
+   "source": "behemoths",
    "section": "2.1.1",
    "chapter": "Behemoth rules",
    "name": "Directed",
@@ -1608,8 +1741,9 @@
    "page": 8
   },
   {
-   "id": "behemoth-integrated-gate",
-   "faction": "behemoth",
+   "id": "integrated-gate",
+   "faction": null,
+   "source": "behemoths",
    "section": "2.1.2",
    "chapter": "Behemoth rules",
    "name": "Integrated Gate",
@@ -1620,8 +1754,9 @@
    "page": 8
   },
   {
-   "id": "behemoth-lithe",
-   "faction": "behemoth",
+   "id": "lithe",
+   "faction": null,
+   "source": "behemoths",
    "section": "2.1.3",
    "chapter": "Behemoth rules",
    "name": "Lithe",
@@ -1632,8 +1767,9 @@
    "page": 8
   },
   {
-   "id": "behemoth-walker-x-x-y",
-   "faction": "behemoth",
+   "id": "walker-x-x-y",
+   "faction": null,
+   "source": "behemoths",
    "section": "2.1.4",
    "chapter": "Behemoth rules",
    "name": "Walker X” x Y”",
@@ -1644,8 +1780,9 @@
    "page": 8
   },
   {
-   "id": "behemoth-capacitors-x",
-   "faction": "behemoth",
+   "id": "capacitors-x",
+   "faction": null,
+   "source": "behemoths",
    "section": "3.1.1",
    "chapter": "Behemoth rules",
    "name": "Capacitors: X",
@@ -1656,8 +1793,9 @@
    "page": 8
   },
   {
-   "id": "behemoth-disrupt",
-   "faction": "behemoth",
+   "id": "disrupt",
+   "faction": null,
+   "source": "behemoths",
    "section": "3.1.2",
    "chapter": "Behemoth rules",
    "name": "Disrupt",
@@ -1668,8 +1806,9 @@
    "page": 8
   },
   {
-   "id": "behemoth-as-x",
-   "faction": "behemoth",
+   "id": "as-x",
+   "faction": null,
+   "source": "behemoths",
    "section": "3.1.3",
    "chapter": "Behemoth rules",
    "name": "AS X",
@@ -1680,8 +1819,9 @@
    "page": 8
   },
   {
-   "id": "behemoth-huge-blast",
-   "faction": "behemoth",
+   "id": "huge-blast",
+   "faction": null,
+   "source": "behemoths",
    "section": "3.1.4",
    "chapter": "Behemoth rules",
    "name": "Huge Blast",
@@ -1692,8 +1832,9 @@
    "page": 9
   },
   {
-   "id": "behemoth-integral",
-   "faction": "behemoth",
+   "id": "integral",
+   "faction": null,
+   "source": "behemoths",
    "section": "3.1.5",
    "chapter": "Behemoth rules",
    "name": "Integral",
@@ -1704,8 +1845,9 @@
    "page": 9
   },
   {
-   "id": "behemoth-lt-x",
-   "faction": "behemoth",
+   "id": "lt-x",
+   "faction": null,
+   "source": "behemoths",
    "section": "3.1.6",
    "chapter": "Behemoth rules",
    "name": "LT X”",
@@ -1716,8 +1858,9 @@
    "page": 9
   },
   {
-   "id": "behemoth-linked-x",
-   "faction": "behemoth",
+   "id": "linked-x",
+   "faction": null,
+   "source": "behemoths",
    "section": "3.1.7",
    "chapter": "Behemoth rules",
    "name": "Linked X",
@@ -1728,8 +1871,9 @@
    "page": 9
   },
   {
-   "id": "behemoth-macro",
-   "faction": "behemoth",
+   "id": "macro",
+   "faction": null,
+   "source": "behemoths",
    "section": "3.1.8",
    "chapter": "Behemoth rules",
    "name": "Macro",
@@ -1740,8 +1884,9 @@
    "page": 9
   },
   {
-   "id": "behemoth-secondary",
-   "faction": "behemoth",
+   "id": "secondary",
+   "faction": null,
+   "source": "behemoths",
    "section": "3.1.9",
    "chapter": "Behemoth rules",
    "name": "Secondary",
@@ -1752,8 +1897,9 @@
    "page": 9
   },
   {
-   "id": "behemoth-vs-shaltari-confound-command-card",
-   "faction": "behemoth",
+   "id": "vs-shaltari-confound-command-card",
+   "faction": null,
+   "source": "behemoths",
    "section": "4.1.1",
    "chapter": "Behemoth rules",
    "name": "Vs Shaltari ‘Confound’ Command Card",
