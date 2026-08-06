@@ -401,18 +401,28 @@ console.log('\nevery screen renders');
   ok(/Bear APC/.test(builder), 'the assigned Transport is on the page');
   ok(/Tachi/.test(second), 'and the second Variant of a mixed Squad, once its Group is open');
 
-  /* Gap 63: the Squad's weapon table is the guns the Squad fires, not every
-   * gun the Unit could ever fire. This Squad is a Sabre and a Tachi, so the
-   * Avenger Railgun and the Laser are in it and the Rapier's Gatlings are not
-   * — nobody in the Squad is a Rapier. The variant blocks above still name
-   * that gun, so it is not hidden, it is just not claimed. Scoped to the table
-   * for exactly that reason. */
-  const wtable = (second.match(/<table class="dzc-wpn">[\s\S]*?<\/table>/) || [''])[0];
-  ok(/UM-702 Laser/.test(wtable), 'the weapon table carries the gun of a Variant in the Squad');
-  ok(!/UM-28 Gatling/.test(wtable), 'and not the gun of one that is not');
-  ok(/UM-28 Gatling/.test(second), 'though the Variant blocks still name it');
-  ok(/UM-28 Gatling/.test(win.DZCUnits.weaponsHtml(DZC.faction('ucm').byId['ucm-main-battle-tank'], 'ucm')),
-     'and the reference view is still the whole card');
+  /* A Squad's weapon table is the whole card, with the guns that Squad fires
+   * marked and the rest left on the page and quiet. This Squad is a Sabre and
+   * a Tachi, so the Avenger Railgun and the Laser are live and the Rapier's
+   * Gatlings are not — nobody in the Squad is a Rapier.
+   *
+   * It used to DROP the Rapier's row, which fixed the right fault with the
+   * wrong tool: the complaint was that nothing said which rows were live, and
+   * the answer taken was deletion. What is asserted now is that the number you
+   * would compare against is still on screen, and still says it is not yours. */
+  const wtable = (second.match(/<table class="dzc-wpn dzc-wpn--marked">[\s\S]*?<\/table>/) || [''])[0];
+  const rowFor = gun => (wtable.match(/<tr[^>]*>[\s\S]*?<\/tr>/g) || [])
+    .find(r => r.includes(gun)) || '';
+  ok(wtable.length > 0, 'a Squad marks its weapon table rather than filtering it');
+  ok(/is-live/.test(rowFor('UM-702 Laser')),
+     'the gun of a Variant in the Squad is marked live');
+  ok(/is-off/.test(rowFor('UM-28 Gatling')),
+     'and the gun of one that is not stays on the page, marked off');
+  ok(/UM-28 Gatling/.test(second), 'the Variant blocks still name it too');
+  const refTable = win.DZCUnits.weaponsHtml(DZC.faction('ucm').byId['ucm-main-battle-tank'], 'ucm');
+  ok(/UM-28 Gatling/.test(refTable), 'and the reference view is still the whole card');
+  ok(!/is-off|is-live|dzc-wpn--marked/.test(refTable),
+     'with nothing marked, because outside a Squad there is no selection to mark against');
   ok(/Level 5/.test(builder), 'and the Commander');
   /* Gap 51: what the Level is worth per Round, in the rail. Off the HIGHEST
    * Level on the table (4.1.1, 4.1.4, 4.1.5), so it is one line about the army

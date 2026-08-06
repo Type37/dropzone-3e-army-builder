@@ -280,40 +280,58 @@
       <td>${rulesHtml(w.special, fac)}</td>`;
   }
 
-  /* By default this IS the card: every weapon printed on it, including guns
-   * that only a variant you did not take carries, and upgrades nobody has
-   * bought. In the reference view that is correct — you are reading the card.
+  /* Does this Squad actually fire this gun? `opts.variants` is what its models
+   * are and `opts.hasUpgrade` says which upgrades it bought; with neither, the
+   * question is not being asked and every gun on the card is live.
    *
-   * In a Squad it was a lie. `opts.variants` is what your models actually are
-   * and `opts.hasUpgrade` says which upgrades you actually bought, and with
-   * both the table becomes the guns this Squad fires rather than the guns this
-   * Unit could ever fire (gap 63). Nothing becomes unreachable: the upgrade
-   * block underneath still offers every upgrade, and the variant blocks above
-   * still name every variant's gun. What stops is the table quietly claiming
-   * six weapons for three models that have four. */
-  function unitWeapons(u, opts) {
+   * The variant test only bites when the Unit HAS variants. A model on a Unit
+   * with none carries variant: null, and testing against a list of nulls would
+   * call every variant-boxed row dead on a Unit with no variants to take. */
+  function weaponLive(u, w, opts) {
     const o = opts || {};
-    let ws = u.weapons || [];
-    // Only when the Unit HAS variants. A model on a Unit with none carries
-    // variant: null, and filtering against a list of nulls would drop every
-    // variant-boxed row on a Unit that has no variants to have taken.
-    if (o.variants && (u.variants || []).length) {
-      ws = ws.filter(w => w.box !== 'variant' || !(w.variants || []).length
-        || w.variants.some(v => o.variants.indexOf(v) !== -1));
-    }
-    if (o.hasUpgrade) ws = ws.filter(w => w.box !== 'upgrade' || o.hasUpgrade(w));
-    return ws;
+    if (o.variants && (u.variants || []).length && w.box === 'variant'
+        && (w.variants || []).length
+        && !w.variants.some(v => o.variants.indexOf(v) !== -1)) return false;
+    if (o.hasUpgrade && w.box === 'upgrade' && !o.hasUpgrade(w)) return false;
+    return true;
   }
 
+  /* The guns a Squad fires, with the rest dropped. This is the PAPER answer:
+   * the printed sheet cannot dim a row, and its rules appendix must not collect
+   * a rule off a gun nobody fires — a paragraph printed for nothing. On screen
+   * use weaponsHtml, which marks instead of drops. */
+  function unitWeapons(u, opts) {
+    const o = opts || {};
+    if (!o.variants && !o.hasUpgrade) return u.weapons || [];
+    return (u.weapons || []).filter(w => weaponLive(u, w, o));
+  }
+
+  /* Every weapon printed on the card, always — including guns that only a
+   * variant you did not take carries, and upgrades nobody has bought.
+   *
+   * A Squad used to get this table filtered down to the guns it fires, which
+   * fixed the right fault with the wrong tool: the problem was that nothing
+   * said which rows were live, and the answer taken was deletion. Marking says
+   * it without hiding, keeps the table the same shape as the card you are
+   * holding, and stops it changing height every time you toggle an upgrade.
+   * Nothing on a row needs explaining that the row does not already say — the
+   * name cell carries "Alexander only" and "+10pts" as it always has. */
   function weaponsHtml(u, faction, opts) {
     const fac = faction || state.faction;
-    const ws = unitWeapons(u, opts);
+    const o = opts || {};
+    const marking = !!(o.variants || o.hasUpgrade);
+    const ws = u.weapons || [];
     if (!ws.length) return '<p class="dzc-none">No weapons.</p>';
+    const rows = ws.map(w => {
+      const cls = [w.box === 'upgrade' ? 'is-upgrade' : w.box === 'variant' ? 'is-variant' : '']
+        .concat(marking ? [weaponLive(u, w, o) ? 'is-live' : 'is-off'] : [])
+        .filter(Boolean).join(' ');
+      return `<tr${cls ? ` class="${cls}"` : ''}>${wpnCells(w, fac)}</tr>`;
+    }).join('');
     return `
-      <table class="dzc-wpn">
+      <table class="dzc-wpn${marking ? ' dzc-wpn--marked' : ''}">
         <thead>${wpnHead()}</thead>
-        <tbody>${ws.map(w => `<tr${w.box === 'upgrade' ? ' class="is-upgrade"' : w.box === 'variant' ? ' class="is-variant"' : ''}
-          >${wpnCells(w, fac)}</tr>`).join('')}</tbody>
+        <tbody>${rows}</tbody>
       </table>`;
   }
 
@@ -495,7 +513,7 @@
     setSearch: v => { state.search = v; render(); },
     openDetail, closeDetail, showRule, hideRule,
     // Shared with the builder's picker so a unit reads the same in both places.
-    statsHtml, rulesHtml, squadHtml, transportHtml, unitWeapons, weaponsHtml, variantsHtml,
+    statsHtml, rulesHtml, squadHtml, transportHtml, unitWeapons, weaponLive, weaponsHtml, variantsHtml,
     unitRulesHtml, wpnHead, wpnCells,
     pointsHtml, shape: shapeSvg,
     SHAPES: Object.keys(SYMBOL),

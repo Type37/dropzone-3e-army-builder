@@ -226,6 +226,18 @@
 .dzc-wpn-only, .dzc-wpn-up { display: block; font-weight: 500; font-size: 11px; color: var(--ink-2, #6b6459); }
 .dzc-none { font-size: 12px; color: var(--ink-2, #6b6459); }
 
+/* A Squad's table prints the whole card and marks the guns that Squad actually
+   fires — the variants its models are, the upgrades it bought. The rest stay
+   on the page and go quiet.
+
+   Quiet, not hidden: --ink-2 is a real colour on paper, and every number on a
+   dead row is still there to be read and compared against the live one above
+   it. That is the whole point of showing it. Opacity is deliberately not used
+   — it would take the row below the contrast floor. */
+.dzc-wpn--marked tr.is-off td { color: var(--ink-2, #6b6459); }
+.dzc-wpn--marked tr.is-off .dzc-wpn-name { font-weight: 500; border-left-color: var(--line, #d8d0c0); }
+.dzc-wpn--marked tr.is-off .dzc-rule { color: var(--ink-2, #6b6459); border-color: var(--line, #d8d0c0); }
+
 @media (max-width: 640px) {
   .dzc-wrap { padding: 10px 12px 56px; }
   .dzc-grid { grid-template-columns: 1fr; }
