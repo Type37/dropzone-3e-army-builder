@@ -328,7 +328,7 @@ const App = (() => {
    * quietly replacing what you have. An import may never cost you an army. */
   function openImport() {
     $('import-body').innerHTML = `
-      <div class="form-group float-field">
+      <div class="form-group float-field float-field--area">
         <textarea class="form-input dzc-import-text" id="dzc-import-text" rows="6"
                   placeholder=" " spellcheck="false"></textarea>
         <label class="float-label" for="dzc-import-text">Backup, army, share link or a pasted list</label>

@@ -4768,12 +4768,18 @@ h1, h2, h3, h4, h5, h6 {
    then shrinks and lifts to the top border on focus or when the field has a value. */
 .float-field { position: relative; }
 .float-field > .form-input { width: 100%; }
+/* The label WRAPS. It used to be nowrap + ellipsis, which on a 320px phone cut
+   Import's "Backup, army, share link or a pasted list" down to "…or a pas" —
+   losing the half that tells you a New Recruit list will do, on the one screen
+   where you have nothing else to go on. Nothing in this app is allowed to
+   truncate content; a label is content. Every other float label is two words
+   and stays on one line by itself. */
 .float-field > .float-label {
   position: absolute; left: var(--sp-md); top: 50%;
   transform: translateY(-50%); transform-origin: left center;
   font-family: var(--font-body); font-size: var(--text-base);
-  line-height: 1.1; min-height: 0; white-space: nowrap;
-  max-width: calc(100% - var(--sp-lg)); overflow: hidden; text-overflow: ellipsis;
+  line-height: 1.1; min-height: 0;
+  max-width: calc(100% - var(--sp-lg));
   color: var(--ink-faint); pointer-events: none;
   background: var(--paper); padding: 0 4px;
   transition: transform var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
@@ -4782,6 +4788,18 @@ h1, h2, h3, h4, h5, h6 {
 .float-field > .form-input:not(:placeholder-shown) + .float-label {
   transform: translateY(-50%) translateY(-19px) scale(0.82);
   color: var(--navy);
+}
+/* A floating label rests where the caret will be. On a single-line input that
+   is the middle of the box; on a six-row textarea it is the FIRST line, and
+   `top: 50%` parked it three rows down in the empty middle of nothing.
+   AFTER the rule above, not before: the two selectors weigh the same, so
+   source order is the whole of the override -- placed above it, the resting
+   position took but the floated one did not, and the label lifted clear off
+   the top of the box. */
+.float-field--area > .float-label { top: 0; transform: translateY(9px); }
+.float-field--area > .form-input:focus + .float-label,
+.float-field--area > .form-input:not(:placeholder-shown) + .float-label {
+  transform: translateY(-9px) scale(0.82);
 }
 .new-fleet-points-row { display: inline-block; margin-top: var(--sp-md); }
 .new-fleet-points-row #new-fleet-points { width: 220px; max-width: 100%; }
