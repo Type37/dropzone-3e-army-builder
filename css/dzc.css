@@ -1478,9 +1478,32 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    three then two. */
 .dzc-stats.n-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .dzc-stats.n-5 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+/* COMPACT — the picker card, where three stats share 237px.
+   
+   The wide cell above is `18px icon | 44px value | label`, and those fixed
+   tracks plus their gaps and padding want 84px before the label gets a single
+   pixel. A compact cell is 78px. So the label track collapsed to 1px against
+   the 15px it needed and rendered as a sliver of its first letter -- "Mv" as a
+   vertical scratch, and the value overflowing its own box on top of it. Every
+   Vehicle in the picker read like that.
+   
+   Stacked instead: icon and value on one line, the code under them across the
+   full width of the cell. The cell now needs the wider of "24”" and "DP",
+   about 46px, in a box of 78. Values still line up card to card because the
+   icon track is still fixed -- the 44px value track only ever existed to line
+   the LABELS up, and at this width there is no label beside them to line up
+   with. Nothing is dropped and nothing shrank: the code is bigger than it
+   was. */
 .dzc-stats.is-compact { gap: 2px; }
-.dzc-stats.is-compact .dzc-stat { padding: 2px 4px; gap: 3px; justify-content: center; }
-.dzc-stats.is-compact .dzc-stat-k { font-size: 9px; letter-spacing: .04em; }
+.dzc-stats.is-compact .dzc-stat {
+  display: grid; grid-template-columns: 16px minmax(0, 1fr);
+  align-items: center; gap: 0 4px; padding: 3px 5px;
+}
+.dzc-stats.is-compact .dzc-stat-i { grid-column: 1; grid-row: 1; }
+.dzc-stats.is-compact .dzc-stat-v { grid-column: 2; grid-row: 1; font-size: 14px; }
+.dzc-stats.is-compact .dzc-stat-k {
+  grid-column: 1 / -1; grid-row: 2; font-size: 9.5px; letter-spacing: .04em;
+}
 
 /* The detail view only (not .is-compact — the picker still needs four cards
    across, spread wide is the point there). A short table going down, icon /

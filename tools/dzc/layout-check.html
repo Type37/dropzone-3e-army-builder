@@ -250,6 +250,47 @@ function audit(doc, win, width, route, overlay) {
     });
   }
 
+  /* TEXT THAT DOES NOT FIT ITS OWN BOX.
+
+     The two checks above catch content running off the page and content cut
+     with an ellipsis. Neither catches the third way to lose a word, which is
+     the one that actually shipped: a grid track collapsing to nothing under a
+     cell's fixed columns. The picker's stat cell is `18px icon | 44px value |
+     label`, and those plus their gaps and padding want 84px in a cell that is
+     78px wide -- so the label track resolved to ONE PIXEL and "Mv" rendered as
+     a vertical scratch of its first letter, on every Vehicle in the picker.
+     No overflow: hidden, no ellipsis, nothing off the page. Clean on both of
+     the other checks.
+
+     So: measure the text itself with a Range and compare it to the box it was
+     given. A wrapping element's range rect is the widest of its line boxes, so
+     ordinary wrapping does not register; only text with nowhere to go does.
+     Leaf elements only, and anything inside a scroller is exempt, because
+     scrolling sideways is what a weapon table is FOR. */
+  const squeezed = [];
+  for (const n of doc.querySelectorAll("body *")) {
+    if (n.children.length) continue;
+    const t = (n.textContent || "").trim();
+    if (!t) continue;
+    if (scrollerOf(n)) continue;
+    const cs = win.getComputedStyle(n);
+    if (cs.overflowX === "auto" || cs.overflowX === "scroll") continue;
+    const b = n.getBoundingClientRect();
+    if (!b.width && !b.height) continue;
+    const range = doc.createRange();
+    range.selectNodeContents(n);
+    const tw = range.getBoundingClientRect().width;
+    // 1.5px of slack: sub-pixel rounding on a spanned grid item is not a bug.
+    if (tw > b.width + 1.5) {
+      squeezed.push({
+        sel: n.tagName.toLowerCase() + (n.id ? "#" + n.id : "") +
+             (n.className && typeof n.className === "string"
+               ? "." + n.className.trim().split(/\s+/).slice(0, 2).join(".") : ""),
+        shown: Math.round(b.width), needs: Math.round(tw), text: t.slice(0, 30),
+      });
+    }
+  }
+
   // de-dupe: report the outermost offender per selector
   const seen = new Set();
   const uniq = bad.filter((b) => !seen.has(b.sel) && seen.add(b.sel));
@@ -268,6 +309,8 @@ function audit(doc, win, width, route, overlay) {
     offenders: uniq.slice(0, 12),
     clippedTotal: clipped.length,
     clipped: clipped.slice(0, 12),
+    squeezedTotal: squeezed.length,
+    squeezed: squeezed.slice(0, 12),
   };
   /* An overlay that never opened leaves the route it was opened from on
    * screen, and that route already passes — so without this the whole overlay
@@ -387,7 +430,7 @@ async function run() {
     results.push(r);
     const clean = !r.error && r.instrumentOk && r.routeOk
       && r.overlayOk !== false && !r.horizontalScroll
-      && r.offendersTotal === 0 && r.clippedTotal === 0;
+      && r.offendersTotal === 0 && r.clippedTotal === 0 && r.squeezedTotal === 0;
     pre.className = clean ? "ok" : "bad";
     pre.textContent = (clean ? "PASS " : "FAIL ") + JSON.stringify(r, null, 1);
   }
