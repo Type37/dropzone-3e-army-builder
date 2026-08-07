@@ -571,9 +571,22 @@
    * repeated one identical grid five times — which is worth it when you are
    * comparing two Units and is pure bulk when you are scanning ten. Compact
    * view is what asks for it. */
+  /* Variants, and their stats ONLY where a variant has any of its own.
+   *
+   * This used to print statsHtml(u) under every variant -- the UNIT's stats,
+   * not the variant's, so it was the same block by construction. A Polecat
+   * Buggy showed Move 9" / Armour 4 / Damage Points 1 four times in one card:
+   * once for itself and once under each of Polecat A, B and C. Across all six
+   * factions there are 218 variants and not one of them changes a stat, so
+   * there was never a case where the copy said anything.
+   *
+   * Kept as a capability rather than deleted: the day a variant does carry its
+   * own profile, this draws it. Today it draws nothing, and a variant is what
+   * it actually is -- a name, its gun and its price. */
   function variantsHtml(u, control, opts) {
     const withStats = !opts || opts.stats !== false;
     if (!(u.variants || []).length) return '';
+    const base = JSON.stringify(u.stats || {});
     return `<div class="dzc-variants">
       ${u.variants.map((v, i) => {
         const own = (u.weapons || []).filter(w =>
@@ -582,9 +595,10 @@
           .concat(own.length ? [own.map(w => esc(w.name)).join(', ')] : [])
           .concat([v.points != null ? v.points + 'pts' : '—'])
           .join(' — ');
+        const differs = v.stats && JSON.stringify(v.stats) !== base;
         return `<div class="dzc-variant">
           <div class="dzc-variant-head"><span>${head}</span>${control ? control(v, i) : ''}</div>
-          ${withStats ? statsHtml(u) : ''}
+          ${withStats && differs ? statsHtml(Object.assign({}, u, { stats: v.stats })) : ''}
         </div>`;
       }).join('')}
     </div>`;
