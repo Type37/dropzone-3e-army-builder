@@ -1037,63 +1037,53 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 }
 .dzc-squad:first-of-type { border-top: 0; padding-top: 4px; }
 
-/* WHAT RIDES IN WHAT, drawn.
+/* WHAT RIDES IN WHAT, DRAWN FROM THE MODEL ITSELF.
    
-   A carried Squad used to differ from an uncarried one by 22px of margin and a
-   2px rule down its left edge -- a difference you have to already be looking
-   for. What rides in what is not decoration on a Group, it IS the Group
-   (3.2.4), and it is the thing you check when you are working out whether the
-   list you have is the list you meant.
+   Jet's sketch, 2026-08-07: the line drops out of the bottom of a unit's
+   IMAGE, runs down, and reaches sideways into the image of the thing it is
+   carrying. Each level steps right.
    
-   So it is a bracket: a spine down the full height of the cargo in the faction
-   accent, an arm reaching into each Squad aboard, and the carrier named at the
-   top of it. The indent lives on this wrapper rather than on each rider, so
-   one level of nesting is one step whatever is inside it. */
-/* ONE LINE, all the way. Jet, 2026-08-07: "now we should have the line
-   actually go all the way."
+   That is a different anchor from what was here. The line used to be the
+   carrier's left border, so it started at the top-left corner of the whole
+   card -- a rule beside the card rather than a line out of the model. Now it
+   hangs off the thumbnail: --mini-x is the thumbnail's left edge inside the
+   row (past the grab handle), the spine drops from there, and each arm runs
+   from the spine into the next model's picture rather than stopping at the
+   edge of its card.
    
-   It was two: a border down the carrier's own card, and a separate spine down
-   the riders block indented under it. Two rules at two different x with a gap
-   between them, which is a broken line, not a bracket. The line is now the
-   carrier's own left border and nothing else — the riders are nested INSIDE
-   the carrier's element, so one border runs the full height of the card and
-   everything riding in it, top to bottom, unbroken. */
-.dzc-riders { position: relative; margin: 6px 0 0; padding-left: var(--sq-indent, 22px); }
+   One variable, because that x is the same measurement in three rules and
+   they must not drift apart. */
+/* Measured, not guessed: the row is grip (22px, pulled 4px left) then a 9px
+   gap, so the thumbnail's left edge is 27px in. Checked against the rendered
+   card -- the spine lands exactly on it. */
+.dzc-squad { --mini-x: 27px; --rider-step: 40px; }
+.dzc-riders {
+  position: relative; margin: 4px 0 0; padding-left: var(--rider-step);
+}
+/* The drop, out of the bottom of the carrier's model. */
+.dzc-riders::before {
+  content: ''; position: absolute; left: var(--mini-x); top: 0; bottom: 0;
+  width: 3px; background: var(--acc, #1b3a5c);
+}
 .dzc-riders > .dzc-squad {
-  position: relative; margin-left: 0; border-top: 0; padding-top: 8px;
+  position: relative; margin-left: 0; border-top: 0; padding-top: 6px;
 }
-/* The arm into each Squad. It lands on the title line rather than the top edge
-   so it points at the name, which is the thing it is joining you to. */
-/* AND IT STOPS AT THE LAST THING IT REACHES. Jet, 2026-08-07: "the line
-   shouldn't extend past if there's nothing it's going to."
-   
-   The line is the carrier's own left border, so it runs the full height of the
-   carrier's element -- past the last rider's arm and on down through whatever
-   follows. The tail below that last arm points at nothing. This paints it out
-   in the card's own colour from just under the arm to the bottom, so the line
-   ends where the last thing it joins begins. In --surface-2 rather than a
-   literal, so it stays invisible in the dark theme too. */
-.dzc-riders > .dzc-squad:last-child::after {
-  content: ''; position: absolute; left: calc((var(--sq-indent, 22px) + 8px) * -1);
-  top: 30px; bottom: -8px; width: 4px; background: var(--surface-2, #fff);
-}
-/* The arm reaches back to the line itself, which is now the carrier's border
-   at the outer edge -- so it starts one indent plus that padding to the left. */
+/* The arm, INTO the next model's picture -- not to the edge of its card. It
+   lands level with the middle of the thumbnail it is pointing at. */
 .dzc-riders > .dzc-squad::before {
-  content: ''; position: absolute; left: calc((var(--sq-indent, 22px) + 8px) * -1);
-  top: 26px; width: calc(var(--sq-indent, 22px) + 8px); height: 4px;
+  content: ''; position: absolute;
+  left: calc(var(--mini-x) - var(--rider-step));
+  top: 36px; height: 3px;
+  width: calc(var(--rider-step) - var(--mini-x) + var(--mini-x) + 22px);
   background: var(--acc, #1b3a5c);
 }
-/* A carrier says so on its own edge as well, so the two ends of the bracket
-   are the same colour and you can find the top of it from the bottom. */
-/* The carrier's own edge, and ROOM for it. Jet, 2026-08-07: "if we moved the
-   move/armour/dp just a tiny bit to the right we could get the line to work."
-   The spine and the arms are drawn at the left edge of the card, and the stat
-   table started at that same x -- so the line and the numbers were fighting
-   for the same eight pixels and neither read. Everything inside a Squad steps
-   right by the width of the line plus a gap, which is all the line ever
-   needed. */
-.dzc-squad.is-carrier { border-left: 4px solid var(--acc, #1b3a5c); padding-left: 8px; }
+/* And it stops at the last model it reaches: the tail below that arm points at
+   nothing, so it is painted out in the card's own colour -- --surface-2, so it
+   stays gone in the dark theme too. */
+.dzc-riders > .dzc-squad:last-child::after {
+  content: ''; position: absolute; left: calc(var(--mini-x) - var(--rider-step));
+  top: 39px; bottom: -6px; width: 3px; background: var(--surface-2, #fff);
+}
 .dzc-squad > .dzc-sq-body, .dzc-squad > .dzc-vblock,
 .dzc-squad > .dzc-variants { padding-left: 12px; }
 /* A Squad reads as the unit does when you open it: art, the capacity symbol at
@@ -1211,12 +1201,26 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 }
 .dzc-sq-alert:not(.is-err) svg { color: #8a6a10; }
 
+/* Upper right, and NOTHING MOVES when you press it. Jet, 2026-08-07: "the
+   +10 points thing shouldn't have anything move... it should be upper-right
+   mounted."
+   
+   It was inline in the card's header, so buying swapped "+10pts" for "Bought",
+   the header re-flowed around the new width and the weapon's name shifted
+   under the cursor. Out of flow entirely now, pinned to the card's top right,
+   with a min-width wide enough for either word so the box itself does not
+   change size either. */
+.dzc-wc { position: relative; }
 .dzc-buy {
-  min-height: 24px; padding: 3px 9px; cursor: pointer; border-radius: 0;
+  position: absolute; top: 3px; right: 3px; z-index: 1;
+  min-width: 58px; min-height: 22px; padding: 3px 8px; cursor: pointer;
+  border-radius: 0; text-align: center;
   border: 1px solid #2e9e4f; background: var(--surface-2, #fff); color: #1f7a3a;
   font: 700 11px/1 var(--font-ui, 'Jost', system-ui, sans-serif);
   font-variant-numeric: tabular-nums;
 }
+/* Room for it, so a long weapon name never runs under the button. */
+.dzc-wc-head { padding-right: 62px; }
 .dzc-buy:hover { background: rgba(46,158,79,.12); }
 .dzc-buy.is-on { background: #2e9e4f; border-color: #2e9e4f; color: #fff; }
 
