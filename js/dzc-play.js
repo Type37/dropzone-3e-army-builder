@@ -160,8 +160,28 @@
     });
   }
 
+  /* What a Group is WORTH, not that there is one. "A Behemoth counts as that
+   * many Groups when building your Army and generating Pass tokens" (Behemoth
+   * rules 1.1) — the builder has counted them that way since they arrived and
+   * Play Mode was still counting cards, so a Dragon worth five Groups was one
+   * Group here and every Pass token in the game came out wrong.
+   *
+   * Dead models do not hold the Group open: the same rule that drops a wiped
+   * Group out of activeGroups drops its weight with it. */
+  function groupWeight(army, g) {
+    const ge = (g.squads || []).filter(s => aliveIn(s) > 0).map(s => {
+      const u = window.DZCArmy.unitOf(army, s);
+      return (u && u.groupEquivalent) || 0;
+    }).filter(Boolean);
+    return ge.length ? Math.max.apply(null, ge) : 1;
+  }
+
+  function groupsOnTable(army) {
+    return activeGroups(army).reduce((n, g) => n + groupWeight(army, g), 0);
+  }
+
   function passTokens(army) {
-    const mine = activeGroups(army).length;
+    const mine = groupsOnTable(army);
     const theirs = state.oppGroups || 0;
     return theirs - mine >= 2 ? theirs - mine - 1 : 0;
   }
@@ -183,7 +203,6 @@
   function render(army) {
     const root = document.getElementById('view-play');
     const lvl = commanderLevel(army);
-    const groups = activeGroups(army);
     const pass = passTokens(army);
 
     root.innerHTML = `<div class="dzc-wrap dzc-play">
@@ -231,8 +250,8 @@
           <div class="dzc-pcard-act">
             <!-- Derived from the army, not typed. Uneditable IS the enforcement,
                  so it has to say why rather than just refuse the caret. -->
-            <label>Yours<input type="number" value="${groups.length}" disabled
-                   title="Counted from your army — Groups of only Transports are ignored (4.1.2)"></label>
+            <label>Yours<input type="number" value="${groupsOnTable(army)}" disabled
+                   title="Counted from your army — Groups of only Transports are ignored (4.1.2), and a Behemoth counts as several (1.1)"></label>
             <label>Theirs
               <input type="number" min="0" max="40" value="${state.oppGroups}"
                      oninput="DZCPlay.oppGroups(this.value)"></label>
@@ -317,6 +336,14 @@
     const u = window.DZCArmy.unitOf(army, s);
     if (!u) return '';
     const models = state.models[s.id] || [];
+    /* "Behemoths cannot receive Status tokens" and "Behemoths cannot be
+     * Obscured, even by special rules" (Behemoth rules 1.2). All four buttons
+     * were live on one, so Play Mode would let you record a state the game
+     * cannot produce — the same fault as putting a Squad's token on every
+     * model, one rule further along. Disabled rather than removed: the reason
+     * has to be somewhere, and a control that vanishes says nothing. */
+    const noTokens = u.type === 'Behemoth';
+    const noWhy = `${u.name} is a Behemoth — Behemoths cannot receive Status tokens or be Obscured (1.2)`;
     return `<div class="dzc-play-squad">
       <div class="dzc-play-sq-head">
         <span class="dzc-play-name">${esc(u.name)}</span>
@@ -328,7 +355,7 @@
         <span class="dzc-statuses">${SQUAD_STATUSES.map(st => {
     const on = ((state.squads[s.id] || {}).st || []).indexOf(st) !== -1;
     return `<button type="button" class="dzc-st${on ? ' is-on' : ''}"
-          title="${st}" aria-label="${st}"
+          ${noTokens ? `disabled title="${esc(noWhy)}"` : `title="${st}"`} aria-label="${st}"
           onclick="DZCPlay.squadStatus('${s.id}','${st}')">${on ? st : st[0]}</button>`;
   }).join('')}</span>
         <span class="dzc-play-alive">${aliveIn(s)}/${models.length}</span>
@@ -350,7 +377,7 @@
           <span class="dzc-statuses">${MODEL_STATUSES.map(st => {
     const on = (m.st || []).indexOf(st) !== -1;
     return `<button type="button" class="dzc-st${on ? ' is-on' : ''}"
-            title="${st}" aria-label="${st}"
+            ${noTokens ? `disabled title="${esc(noWhy)}"` : `title="${st}"`} aria-label="${st}"
             onclick="DZCPlay.status('${s.id}',${i},'${st}')">${on ? st : st[0]}</button>`;
   }).join('')}</span>
         </div>`).join('')}
@@ -363,6 +390,16 @@
 
   const army = () => window.DZCArmy.get(armyId);
   const redraw = () => { save(); render(army()); };
+
+  /* The disabled button is the explanation; this is the enforcement. A
+   * disabled control is a hint to a mouse and nothing at all to anything else
+   * reaching the same handler (1.2). */
+  function isBehemoth(squadId) {
+    const a = army();
+    const s = a && window.DZCArmy.findSquad(a, squadId);
+    const u = s && window.DZCArmy.unitOf(a, s);
+    return !!(u && u.type === 'Behemoth');
+  }
 
   window.DZCPlay = {
     open,
@@ -398,13 +435,14 @@
     },
     status: (sid, i, st) => {
       const m = (state.models[sid] || [])[i];
-      if (!m) return;
+      if (!m || isBehemoth(sid)) return;
       m.st = m.st || [];
       const at = m.st.indexOf(st);
       if (at === -1) m.st.push(st); else m.st.splice(at, 1);
       redraw();
     },
     squadStatus: (sid, st) => {
+      if (isBehemoth(sid)) return;
       const q = (state.squads = state.squads || {})[sid] || (state.squads[sid] = { st: [] });
       q.st = q.st || [];
       const at = q.st.indexOf(st);

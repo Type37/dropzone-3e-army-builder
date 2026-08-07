@@ -876,6 +876,45 @@ console.log('\nevery screen renders');
     A.remove(ma.id);
   }
 
+  /* Behemoths, in Play Mode. Two rules off the same page, both of which the
+   * builder already honours and Play Mode did not:
+   *
+   *   1.1  "A Behemoth counts as that many Groups when building your Army and
+   *        generating Pass tokens"
+   *   1.2  "Behemoths cannot receive Status tokens" / "Behemoths cannot be
+   *        Obscured, even by special rules"
+   */
+  {
+    const P = win.DZCPlay;
+    const ba = A.create('ucm', 'Behemoth at the table', 3000);
+    const bg = A.addGroup(ba);
+    A.addSquad(ba, bg.id, 'ucm-heavy-battle-mech', 1);
+    await P.open(ba.id);
+
+    const view = () => els['view-play'].innerHTML;
+    const passes = () => (view()
+      .match(/Pass Tokens<\/span>[\s\S]*?<span class="dzc-pcard-v">(\d+)<\/span>/) || [])[1];
+    const mine = () => (view().match(/Yours<input type="number" value="(\d+)"/) || [])[1];
+
+    const ge = win.DZC.faction('ucm').byId['ucm-heavy-battle-mech'].groupEquivalent;
+    ok(ge > 1, 'the Heavy Battle Mech is worth more than one Group', String(ge));
+    eq(mine(), String(ge), 'one Behemoth card counts as its Groups Equivalent (1.1)');
+    // Counting cards, a lone Behemoth was 1 Group and six behind an opponent
+    // on 7 — five Pass tokens for fielding the biggest thing on the table.
+    P.oppGroups('7');
+    eq(passes(), String(7 - ge - 1), 'so the Pass tokens are counted off its worth, not off one card');
+
+    const bsid = A.get(ba.id).groups[0].squads[0].id;
+    P.squadStatus(bsid, 'Concussed');
+    P.status(bsid, 0, 'Obscured');
+    ok(!/dzc-st is-on/.test(view()),
+       'and no Status Token, Obscured included, will stick to a Behemoth (1.2)',
+       (view().match(/.{0,60}dzc-st is-on.{0,40}/) || [])[0]);
+    ok(/disabled title="[^"]*Behemoth/.test(view()),
+       'the buttons say why rather than vanishing');
+    A.remove(ba.id);
+  }
+
   /* The Collection's arithmetic, which nothing had asserted either.
    *
    * It counts MODELS, not Squads — "I own four Sabres" is what decides whether
