@@ -14,6 +14,7 @@ a bad glossary would silently leave rule keywords dead on the page.
     scan_statcards   PDFs        -> data/dzc/faction-*.json  + assets/units/*
     ...--behemoths               -> data/dzc/behemoths.json
     scan_rulebook    PDFs        -> data/dzc/rules.json
+    gen-offline-manifest         -> data/offline-manifest.json
     audit_data       shape, categories, weapon boxes
     audit_transport  symbol shapes and the carrier/passenger lineages
     audit_art        every unit has art and every art file has a unit
@@ -42,6 +43,13 @@ SCANS = [
                         "--art", "assets/units",
                         "--behemoths"]),
     ("scan rulebook", ["scan_rulebook.py"]),
+    # The offline download lists every unit photo by name and by byte size, so
+    # a scan that adds or drops one leaves it describing a set that no longer
+    # exists. A path that 404s is not a small loss: Cache.addAll rejects the
+    # WHOLE batch on one bad URL, so a single removed photo takes the entire
+    # offline download down with it -- on the unattended fortnightly re-scan,
+    # for everyone, silently. Regenerated here so it cannot drift.
+    ("offline manifest", ["../../scripts/gen-offline-manifest.py"]),
 ]
 
 AUDITS = [
@@ -55,7 +63,8 @@ AUDITS = [
 def run(label, argv):
     print(f"\n{'=' * 62}\n  {label}\n{'=' * 62}")
     t0 = time.time()
-    rc = subprocess.call([sys.executable, os.path.join(HERE, argv[0]), *argv[1:]])
+    script = os.path.normpath(os.path.join(HERE, argv[0]))
+    rc = subprocess.call([sys.executable, script, *argv[1:]])
     dt = time.time() - t0
     if rc != 0:
         print(f"\n  FAILED: {label} (exit {rc}, {dt:.0f}s)", file=sys.stderr)
