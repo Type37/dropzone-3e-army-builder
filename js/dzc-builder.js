@@ -964,7 +964,7 @@
     const cap = window.DZC.maxGroupCost(a.pointsLimit);
     // Carriers first, then whatever they carry, indented beneath them. The
     // nesting IS the deployment plan, so it is drawn rather than described.
-    const top = g.squads.filter(s => !s.carriedBy);
+    const top = carryOrder(a, g.squads.filter(s => !s.carriedBy));
     const rows = top.map(s => squadHtml(a, g, s, 0)).join('');
     return `<section class="dzc-group-card${cost > cap ? ' is-over' : ''}">
       <header class="dzc-g-head">
@@ -1160,6 +1160,36 @@
     }).join('');
   }
 
+  /* WHAT CARRIES WHAT, TOP TO BOTTOM. Jet, 2026-08-07: "at the top of all
+   * groups are transports... then apcs and shit - stuff that can have guys
+   * inside, but also are transported. Then the guys."
+   *
+   * Three tiers, read straight off the transport symbols (3.2.4.2), which
+   * already say exactly this: a hollow symbol is room offered, a solid one is
+   * room taken.
+   *
+   *   0  hollow only        — a Condor, an Albatross. Carries, is not carried.
+   *   1  hollow AND solid   — a Bear APC. Carries, and rides in something.
+   *   2  solid only, or neither — the guys.
+   *
+   * Order was whatever you happened to add things in, so a Group could open
+   * with its infantry and end with the dropship that brings them, which is
+   * upside down from how it goes on the table. Ties keep the order you built
+   * them in — this sorts the tiers, it does not reshuffle inside one. */
+  function carryTier(a, sq) {
+    const u = window.DZCArmy.unitOf(a, sq);
+    const t = (u && u.transport) || {};
+    const carries = ((t.capacity || []).length > 0);
+    const rides = ((t.fills || []).length > 0);
+    return carries && !rides ? 0 : carries ? 1 : 2;
+  }
+  function carryOrder(a, list) {
+    return list
+      .map((sq, i) => [sq, i])
+      .sort((x, y) => (carryTier(a, x[0]) - carryTier(a, y[0])) || (x[1] - y[1]))
+      .map(pair => pair[0]);
+  }
+
   function variantStepper(a, s, u, idx) {
     const v = (u.variants || [])[idx];
     if (!v) return '';
@@ -1230,7 +1260,7 @@
      * it: renderBuilder threw, so nothing was written to the pane at all. */
     const U = window.DZCUnits;
     const cost = window.DZCArmy.squadCost(a, s);
-    const riders = g.squads.filter(x => x.carriedBy === s.id);
+    const riders = carryOrder(a, g.squads.filter(x => x.carriedBy === s.id));
     const isTransport = u.category === 'Transport';
 
     // A Transport's count is DERIVED from its cargo -- "as many as needed"

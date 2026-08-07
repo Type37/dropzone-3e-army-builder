@@ -993,6 +993,22 @@ console.log('\nevery screen renders');
        'every Squad row carries its id, which is what the drag looks it up by');
     eq(String((html.match(/DZCBuilder\.sqGrip\(/g) || []).length), String(live.length),
        'and every Squad has a grip to drag it by');
+
+    /* And the Group reads top to bottom the way it stacks on the table. Jet,
+     * 2026-08-07: transports first, then the things that carry AND are
+     * carried, then the guys. Built here in the WRONG order on purpose. */
+    const oa = A.create('ucm', 'Order', 3000);
+    const og = A.addGroup(oa);
+    const guys = A.addSquad(oa, og.id, 'legionnaires', 3);
+    A.assignTransport(A.get(oa.id), guys.id, 'bear-apc');
+    const apc = A.get(oa.id).groups[0].squads.find(x => x.unitId === 'bear-apc');
+    A.assignTransport(A.get(oa.id), apc.id, 'condor-dropship');
+    await B.renderBuilder(oa.id);
+    const order = [...els['view-army'].innerHTML
+      .matchAll(/class="dzc-sq-name"[\s\S]*?>([^<]+)</g)].map(m => m[1].trim());
+    eq(order.join(' > '), 'Condor Dropship > Bear APC > Legionnaires',
+       'a Group reads carrier, then carrier-and-cargo, then cargo');
+    A.remove(oa.id);
     A.remove(na.id);
   }
 
