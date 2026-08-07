@@ -1083,7 +1083,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    right by the width of the line plus a gap, which is all the line ever
    needed. */
 .dzc-squad.is-carrier > .dzc-sq-main { border-left: 4px solid var(--acc, #1b3a5c); padding-left: 8px; }
-.dzc-squad > .dzc-sq-body, .dzc-squad > .dzc-sq-opts, .dzc-squad > .dzc-vblock,
+.dzc-squad > .dzc-sq-body, .dzc-squad > .dzc-vblock,
 .dzc-squad > .dzc-variants { padding-left: 12px; }
 /* A Squad reads as the unit does when you open it: art, the capacity symbol at
    size beside the name, the meta line, the stats, the rules, a block per
@@ -1181,6 +1181,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    carry it printed the whole weapon a second time to have somewhere to put a
    price, so it went and the price came here. Big enough to hit with a thumb,
    and it says what it did rather than what it costs once you own it. */
+.dzc-carry-btn { color: var(--acc, #1b3a5c); }
 .dzc-buy {
   min-height: 24px; padding: 3px 9px; cursor: pointer; border-radius: 0;
   border: 1px solid #2e9e4f; background: var(--surface-2, #fff); color: #1f7a3a;
@@ -1230,7 +1231,6 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   font-family: var(--font-numeric, 'Outfit', sans-serif);
   font-variant-numeric: tabular-nums;
 }
-.dzc-sq-opts { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 3px; }
 .dzc-cmdr select { font-size: 11.5px; padding: 3px 6px; border-radius: 4px; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); color: var(--ink, #24201c); max-width: 100%; }
 .dzc-cmdr { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-2, #6b6459); display: inline-flex; align-items: center; gap: 4px; }
 
@@ -1238,24 +1238,6 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    What is chosen is shown outright, with its symbols; the + opens the chooser.
    A collapsed select could name the Transport and nothing else, and the name
    is the least useful thing about it. */
-.dzc-carry {
-  display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
-  margin-top: 5px; padding: 4px 7px; background: var(--surface-3, #f2ece0);
-}
-.dzc-carry-lab {
-  display: inline-flex; align-items: center; gap: 5px;
-  font: 700 10px/1 var(--font-condensed, 'Jost', sans-serif);
-  text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2, #6b6459);
-}
-.dzc-carry-none { font-size: 13px; color: var(--ink-2, #6b6459); }
-.dzc-carry-add {
-  margin-left: auto; display: inline-flex; align-items: center; justify-content: center;
-  width: 34px; height: 34px; cursor: pointer; border: 0; border-radius: 0;
-  background: var(--acc, #1b3a5c); color: #fff;
-  transition: transform 160ms cubic-bezier(.34,1.4,.64,1), box-shadow 160ms ease;
-}
-.dzc-carry-add:hover { transform: rotate(90deg); box-shadow: inset 0 0 0 2px var(--gold, #c9a92c); }
-.dzc-carry-add:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
 
 /* The chooser. Every option says what it offers, how many the cargo needs,
    what that costs, and whether it comes out exactly full (3.2.4). */
@@ -1756,7 +1738,6 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    full (carries 4, needs 6)" made the row 440px wide and the page scrolled
    sideways at 375. Constrain the control and let the row wrap instead; the
    option text stays complete inside the open dropdown, so nothing is lost. */
-.dzc-sq-opts > * { min-width: 0; max-width: 100%; }
 /* Transport and Commander each get their own line. */
 .dzc-carry, .dzc-cmdr { flex: 1 1 100%; min-width: 0; }
 .dzc-carry select, .dzc-cmdr select { flex: 1 1 auto; width: 100%; min-width: 0; max-width: 320px; }

@@ -1329,37 +1329,30 @@
     // A Transport already in the Group may have room even when the faction
     // offers none to buy, so the control has to appear for that case too.
     const board = window.DZCArmy.boardOptions(a, s.id);
-    const transportPicker = (opts.length || board.length) ? `<div class="dzc-carry">
-      ${carrierUnit
-        /* NOT the carrier's name again. Jet, 2026-08-07: "I don't like
-         * doubling the transports. we should have like... the thing holding
-         * you above, the thing you're carrying below. not doubled."
-         *
-         * A carried Squad is DRAWN inside its carrier, under a bracket whose
-         * head already reads "Aboard Condor Dropship", and the carrier is a
-         * full Squad card sitting directly above it with its own name, count
-         * and stats. Printing "Transport — Condor Dropship × 2" a third time
-         * on the rider said nothing the position had not already said, and
-         * made one Transport look like two things in the Group.
-         *
-         * What is left is the two controls, which the position cannot carry:
-         * get out, and ride something else. */
-        /* The word went too. Jet, 2026-08-07: "we don't need a whole element to
-           indicate ABOARD when we have the lines." The lorry says transport,
-           the bracket says which one, and the two buttons say what you can do
-           about it. */
-        ? `<span class="dzc-carry-lab">${window.DZCIcon('local_shipping', { size: 13 })}</span>
-           <button type="button" class="dzc-icon-btn" title="Walks on instead"
-                   onclick="DZCBuilder.assignTransport('${s.id}','')"
-                   aria-label="Take ${esc(u.name)} out of its Transport"
-                   >${window.DZCIcon('close', { size: 14 })}</button>`
-        : `<span class="dzc-carry-lab">${window.DZCIcon('local_shipping', { size: 13 })}Transport</span>
-           <span class="dzc-carry-none">Walks on</span>`}
-      <button type="button" class="dzc-carry-add" onclick="DZCBuilder.openCarry('${s.id}')"
+    /* NO BAR. Jet, 2026-08-07: "sell me on this card. I think we can remove
+     * it." It could not be sold. A full-width strip on every Squad in the army
+     * carrying the word TRANSPORT and, on most of them, "Walks on" -- which is
+     * the default, so it was a label announcing that nothing had happened. The
+     * one thing on it that no other element does is the control, so the
+     * control moved up to the row that already holds this Squad's size, its
+     * cost and its remove button, and the strip went.
+     *
+     * Nothing is lost with the words. Which Transport a Squad is in is the
+     * bracket it sits inside; that a Squad walks on is what the empty space
+     * where a bracket would be says; and the consequence of walking on --
+     * "Squads not aboard an Aircraft begin Reserved" (9.4) -- is already a
+     * warning on the army, where it belongs, because it is a fact about the
+     * list rather than about one Squad. */
+    const transportPicker = (opts.length || board.length) ? `${carrierUnit
+      ? `<button type="button" class="dzc-icon-btn" title="Walks on instead"
+                 onclick="DZCBuilder.assignTransport('${s.id}','')"
+                 aria-label="Take ${esc(u.name)} out of its Transport"
+                 >${window.DZCIcon('close', { size: 14 })}</button>` : ''}
+      <button type="button" class="dzc-icon-btn dzc-carry-btn"
+              onclick="DZCBuilder.openCarry('${s.id}')"
               aria-label="${carrierUnit ? 'Ride something else' : 'Choose a Transport'} for ${esc(u.name)}"
               title="${carrierUnit ? 'Ride something else' : 'Choose a Transport'}"
-              >${window.DZCIcon('add', { size: 18 })}</button>
-    </div>` : '';
+              >${window.DZCIcon('local_shipping', { size: 15 })}</button>` : '';
 
     /* A Squad in your army reads exactly as the unit does when you open it:
      * art, the capacity symbol at size beside the name, the meta line, every
@@ -1419,6 +1412,7 @@
           </h3>
         </div>
         <div class="dzc-sq-ctl">
+          ${transportPicker}
           ${stepper}
           <span class="dzc-sq-cost">${cost}pts</span>
           <button class="dzc-icon-btn" type="button" title="Remove Squad"
@@ -1445,9 +1439,6 @@
            a list of names here and a greyed weapon table there. Compact view
            has no blocks, so it keeps the list. -->
       ${compact ? U.variantsHtml(u, (v, i) => variantStepper(a, s, u, i), { stats: false }) : ''}
-      <div class="dzc-sq-opts">
-        ${transportPicker}
-      </div>
       <!-- What is riding in this thing, drawn as a bracket rather than left to
            an indent. A carried Squad was one 2px rule and 22px of margin from
            an uncarried one, which is a difference you have to already know to

@@ -479,7 +479,9 @@ console.log('\nevery screen renders');
   ok(!/dzc-sq-wpn/.test(dense), 'compact view drops it');
   ok(dense.length < builder.length, 'and the screen gets shorter',
      `${builder.length} to ${dense.length} chars`);
-  ok(/dzc-stepper/.test(dense) && /dzc-carry-add/.test(dense),
+  // dzc-carry-btn, not dzc-carry-add: the Transport bar was removed on
+  // 2026-08-07 and its chooser button moved up beside the size and the cost.
+  ok(/dzc-stepper|dzc-size|dzc-v-pick/.test(dense) && /dzc-carry-btn/.test(dense),
      'and it takes away no control');
   await B.renderBuilder(a.id);
 
