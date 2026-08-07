@@ -89,7 +89,14 @@
     // Transport. Material "local_shipping".
     local_shipping: 'M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9 1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z',
     // Commander. Material "military_tech".
-    military_tech: 'M12 2c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zm0 8-3.5 2.5V22l3.5-2 3.5 2v-9.5L12 10z',
+    /* Commander, supplied by Jet 2026-08-07: a chain of command, not a medal.
+       The medal was a rank badge; this says what a Commander DOES to a Group. */
+    military_tech: 'M20.01 10.99h-7v-2h-2v2H3.47v4h2v-2h5.54v2h2v-2h5.5v2h2v-4zM12.01 2.01a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.47 16.99a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM12.01 16.99a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM19.51 16.99a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z',
+    /* Two grab handles, both Jet's. Six dots in a 2x3 for a Group -- a whole
+       row you pick up -- and the scattered six for a Squad, so the two grips
+       do not read as the same control at two sizes. */
+    drag_rows: 'M3.25 4.75a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5zm8.25 0a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5zm8.25 0a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5zM3.25 12.25a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5zm8.25 0a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5zm8.25 0a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5z',
+    drag_dots: 'M15 19.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm0-6a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm-6 6a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm7.5-13.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zM10.5 12a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zM9 7.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z',
     // Army / roster list.
     list_alt: 'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 11h2v2H7zm0-4h2v2H7zm0 8h2v2H7zm4-8h6v2h-6zm0 4h6v2h-6zm0 4h6v2h-6z',
     grid_view: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z',

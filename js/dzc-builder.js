@@ -427,7 +427,11 @@
              into their army title. Dropfleet makes the same two things
              renameable and marks both (editFleetName, "Click to rename
              fleet"). -->
-        <h1 contenteditable="true" spellcheck="false" class="dzc-b-name"
+        <!-- Small, because the topbar carries this name as the last crumb
+             now. It stays editable here: the crumb is where you READ which
+             army you are in, this is where you rename it, and a contenteditable
+             heading in a navy bar is not a control anyone would find. -->
+        <h1 contenteditable="true" spellcheck="false" class="dzc-b-name is-quiet"
             role="textbox" aria-label="Army name" title="Click to rename"
             data-orig="${esc(a.name)}" onkeydown="DZCBuilder.nameKey(event)"
             onblur="DZCBuilder.rename(this)">${esc(a.name)}</h1>
@@ -849,7 +853,8 @@
       <span class="dzc-bb-grip" role="button" tabindex="-1"
             aria-label="Drag to reorder ${esc(window.DZCArmy.groupName(a, g))}"
             title="Drag to reorder"
-            onpointerdown="DZCBuilder.gripDown(event, '${g.id}')"></span>
+            onpointerdown="DZCBuilder.gripDown(event, '${g.id}')"
+            >${window.DZCIcon('drag_rows', { size: 16 })}</span>
       <span class="dzc-bb-head"><b>${esc(window.DZCArmy.groupName(a, g))}</b>
         <i>${cost}<s>/${cap}</s></i></span>
       <span class="dzc-bb-meta">${g.squads.length} Squad${g.squads.length === 1 ? '' : 's'}${
@@ -1291,7 +1296,8 @@
             <span class="dzc-sq-grip" role="button" tabindex="-1"
                   aria-label="Drag ${esc(u.name)} onto a Transport"
                   title="Drag onto a Transport to put this Squad aboard"
-                  onpointerdown="DZCBuilder.sqGrip(event,'${s.id}')"></span>
+                  onpointerdown="DZCBuilder.sqGrip(event,'${s.id}')"
+                  >${window.DZCIcon('drag_dots', { size: 15 })}</span>
             <button type="button" class="dzc-sq-name" title="Stats, weapons and rules"
                     onclick="DZCUnits.openDetail('${esc(u.id)}','${esc(a.faction)}')">${esc(u.name)}</button>
             ${s.commander ? `<span class="dzc-cmdr-tag" title="Level ${s.commander.level} Commander"

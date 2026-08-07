@@ -1124,8 +1124,10 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    what is left, and `min-width: 0` on the guns is what lets their auto-fill
    columns actually shrink instead of pushing the row wide. */
 .dzc-sq-body { display: flex; align-items: flex-start; gap: 10px; margin-top: 3px; }
-/* Two stat cells wide by preference, and it gives way before the guns do. */
-.dzc-sq-body > .dzc-sq-stats { flex: 0 1 300px; margin-top: 0; }
+/* As wide as the stats need and no wider -- a Vehicle prints three of them
+   and a 300px column beside three short rows is the empty paper this was
+   supposed to remove. */
+.dzc-sq-body > .dzc-sq-stats { flex: 0 1 auto; margin-top: 0; }
 .dzc-sq-body > .dzc-sq-wpn { flex: 1 1 0; min-width: 0; margin-top: 0; }
 /* A phone has no room for two of anything. Stats first, then the guns. */
 @media (max-width: 700px) {
@@ -1133,6 +1135,22 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   .dzc-sq-body > .dzc-sq-stats, .dzc-sq-body > .dzc-sq-wpn { width: 100%; }
 }
 .dzc-sq-stats { margin-top: 5px; }
+/* The army's name, as the last crumb in the topbar. A chevron separates it
+   from the screen behind it, and it is the ONE thing on that bar allowed to
+   give way: the trail must stay readable, the name is already on the card you
+   came from. */
+.dzc-b-name.is-quiet { font-size: 15px; font-weight: 600; margin: 0 0 4px; }
+.topbar-crumb {
+  display: inline-flex; align-items: center; gap: 8px;
+  min-width: 0; font-weight: 600; color: #fff;
+}
+.topbar-crumb::before {
+  content: ""; flex: 0 0 auto; width: 5px; height: 5px;
+  border-top: 1.5px solid rgba(255,255,255,.5); border-right: 1.5px solid rgba(255,255,255,.5);
+  transform: rotate(45deg);
+}
+@media (max-width: 560px) { .topbar-crumb { display: none; } }
+
 /* Take / Taken, for a Squad of one model whose Variant is a radio rather than
    a count. Same square language as the Squad-size tabs. */
 .dzc-v-pick {
@@ -1150,8 +1168,9 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    whole weapon block. Jet, 2026-08-07. */
 .dzc-sq-rules { margin-top: 4px; }
 .dzc-sq-side { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.dzc-sq-body > .dzc-sq-side { flex: 0 1 300px; }
-.dzc-sq-side > .dzc-sq-stats, .dzc-sq-side > .dzc-sq-rules { margin-top: 0; width: 100%; }
+.dzc-sq-body > .dzc-sq-side { flex: 0 1 auto; max-width: 320px; }
+.dzc-sq-side > .dzc-sq-stats, .dzc-sq-side > .dzc-sq-rules { margin-top: 0; }
+.dzc-sq-side .dzc-stats { width: max-content; max-width: 100%; }
 /* The table never shrinks its columns to fit — it scrolls inside its own box,
    so a phone gets every number rather than a squeezed, unreadable version. */
 .dzc-sq-wpn { margin-top: 8px; overflow-x: auto; }
@@ -1603,7 +1622,10 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   grid-template-columns: 16px 34px minmax(0, 1fr); gap: 4px;
   padding: 2px 5px;
 }
-.dzc-stats:not(.is-compact) .dzc-stat-v { text-align: right; }
+/* LEFT, not right. Right-aligning put the digits at three different x: 6" is
+   wider than 3, so its 6 sat further left than the bare numbers under it and
+   the column read as ragged. The digit is the thing being compared. */
+.dzc-stats:not(.is-compact) .dzc-stat-v { text-align: left; }
 .dzc-stats:not(.is-compact) .dzc-stat-k { align-self: center; }
 
 .dzc-pick-wpns { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
@@ -2068,10 +2090,8 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
    the card itself would fight the tap that opens it. */
 .dzc-bb { position: relative; }
 .dzc-bb-grip {
-  position: absolute; top: 5px; right: 5px; width: 16px; height: 18px;
-  cursor: grab; touch-action: none; opacity: .35;
-  background-image: radial-gradient(currentColor 1px, transparent 1.2px);
-  background-size: 5px 5px; background-position: 2px 3px;
+  position: absolute; top: 4px; right: 4px; display: inline-flex;
+  cursor: grab; touch-action: none; opacity: .35; color: var(--ink-2, #6b6459);
   transition: opacity .12s;
 }
 .dzc-bb:hover .dzc-bb-grip, .dzc-bb-grip:hover { opacity: .8; }
@@ -2107,10 +2127,10 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
 /* Dragging a Squad into a Transport. Same dot grip as a Group's, in the title
    line where the Squad's name is, because the name is the thing you are
    moving. touch-action: none or the phone scrolls the pane instead. */
+/* Jet's grab icon, not a background gradient pretending to be one. */
 .dzc-sq-grip {
-  flex: 0 0 auto; width: 14px; height: 18px; cursor: grab; touch-action: none;
-  opacity: .3; background-image: radial-gradient(currentColor 1px, transparent 1.2px);
-  background-size: 5px 5px; background-position: 1px 3px;
+  flex: 0 0 auto; display: inline-flex; align-items: center; cursor: grab;
+  touch-action: none; opacity: .35; color: var(--ink-2, #6b6459);
   transition: opacity .12s;
 }
 .dzc-squad:hover > .dzc-sq-main .dzc-sq-grip, .dzc-sq-grip:hover { opacity: .75; }

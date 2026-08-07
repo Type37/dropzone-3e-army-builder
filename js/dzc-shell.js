@@ -145,11 +145,22 @@ const App = (() => {
         ctx.innerHTML = back('landing', 'Armies');
         if (window.DZCBuilder) DZCBuilder.renderList();
         break;
-      case 'army':
+      case 'army': {
         show('view-army');
-        ctx.innerHTML = back('armies', 'Armies list');
+        /* The army's name goes in the topbar as the last crumb. Jet,
+         * 2026-08-07: "the army title should go in the header. Like a
+         * breadcrumb." It was an h1 at the top of the page, which is a whole
+         * line of chrome saying what you already know you are looking at --
+         * and the topbar was carrying "Armies list" with nothing after it, so
+         * the trail stopped one step short of where you actually were. */
+        const named = window.DZCArmy && (window.DZCArmy.get(param) || {}).name;
+        ctx.innerHTML = back('armies', 'Armies list')
+          + (named ? ` <span class="topbar-crumb" aria-current="page">${
+              String(named).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;',
+                '>': '&gt;', '"': '&quot;' }[c]))}</span>` : '');
         if (window.DZCBuilder) DZCBuilder.renderBuilder(param);
         break;
+      }
       case 'play':
         show('view-play');
         ctx.innerHTML = back('army/' + param, 'Play Mode')
