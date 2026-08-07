@@ -170,6 +170,12 @@ const DZC_STEPS = [
      await new Promise(r => setTimeout(r, 700));
      await DZCBuilder.print();
      await new Promise(r => setTimeout(r, 700))`],
+  /* Ink-saver, which had never been shot. It is a whole second rendering of
+     the sheet -- borders thinned, art dropped, every colour taken to black --
+     and none of it had ever been looked at. Toggled back off afterwards so it
+     does not leak into 17b via localStorage. */
+  ['17a-print-ink', `DZCBuilder.printOpt('ink', true);
+     await new Promise(r => setTimeout(r, 500))`],
   /* Share and Play, which had never been shot at all. Both are driven by the
      render suite, so they are known not to throw — and "it does not throw" is
      the whole of what was ever known about how they look. Play needs a
@@ -177,7 +183,8 @@ const DZC_STEPS = [
      added earlier is assigned first. */
   // closePreview spends the history entry it parked, so it takes the hash back
   // to the army list with it. Re-open the army before sharing it.
-  ['17b-share', `DZCBuilder.closePreview();
+  ['17b-share', `DZCBuilder.printOpt('ink', false);
+     DZCBuilder.closePreview();
      await new Promise(r => setTimeout(r, 500));
      const card = document.querySelector('.dzc-army-card');
      card && card.click();

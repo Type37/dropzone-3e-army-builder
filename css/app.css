@@ -1097,13 +1097,16 @@ h1, h2, h3, h4, h5, h6 {
 .btn-ghost:hover { background: var(--navy-subtle); color: var(--ink); }
 .btn-ghost:active { background: rgba(27, 58, 92, 0.12); transform: scale(0.97); }
 
-/* Ghost variant for dark backgrounds */
+/* Ghost variant for dark backgrounds. Borderless 60%-white text on navy read
+   as a disabled control — and a phone never gets the hover that brightened it,
+   so Reset game looked switched off for the whole of a game. */
 .btn-ghost-light {
   background: transparent;
-  color: rgba(255,255,255,0.6);
-  border: none;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.4);
 }
-.btn-ghost-light:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.btn-ghost-light:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.7); }
+.btn-ghost-light:active { background: rgba(255,255,255,0.2); transform: scale(0.97); }
 
 .btn-danger {
   background: var(--paper);

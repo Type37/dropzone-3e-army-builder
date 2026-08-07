@@ -62,7 +62,12 @@
 :is(#dzc-print, .pp-paper) .pr-sq-name { font-weight: 600; }
 :is(#dzc-print, .pp-paper) .pr-sq-cat { font-size: 7.5pt; text-transform: uppercase; letter-spacing: .05em; border: .5pt solid #666; padding: 0 3pt; border-radius: 2pt; }
 :is(#dzc-print, .pp-paper) .pr-sq-cost { margin-left: auto; font-weight: 700; white-space: nowrap; }
-:is(#dzc-print, .pp-paper) .pr-cap { font-size: 8pt; font-style: italic; color: #333; }
+/* Capacity and cargo, as the symbols themselves. Sized down to sit on an 8.5pt
+   line without pushing the row apart — the glyph has to be small enough to be
+   a note beside the name and big enough to still read its digit. */
+:is(#dzc-print, .pp-paper) .pr-cap { display: flex; align-items: center; gap: 3pt; margin: 1pt 0; }
+:is(#dzc-print, .pp-paper) .pr-cap .dzc-badge { --badge-px: 15pt; --cargo-px: 12pt; }
+:is(#dzc-print, .pp-paper) .pr-cap .dzc-sep { font-size: 8pt; color: #333; }
 :is(#dzc-print, .pp-paper) .pr-variants { font-size: 8.5pt; color: #222; }
 :is(#dzc-print, .pp-paper) .pr-cmdr { font-size: 8.5pt; font-weight: 700; }
 
@@ -131,6 +136,16 @@
 :is(#dzc-print, .pp-paper).is-ink .pr-wpn td { border-bottom: 0; }
 :is(#dzc-print, .pp-paper).is-ink .pr-sq-cat { border-width: .25pt; border-color: #000; }
 :is(#dzc-print, .pp-paper).is-ink :is(.pr-cap, .pr-variants, .pr-foot, .pr-rule .pr-src) { color: #000; }
+/* Ink-saver: the shapes go black-on-white. Shape alone carries the meaning
+   (3.2.4.2) — the colour is 1:1 with it and therefore redundant — and a solid
+   coloured fill is the most expensive thing on the sheet. Cargo stays solid so
+   the "drops into the hollow" grammar survives; the digit inside it flips to
+   white against that black. */
+:is(#dzc-print, .pp-paper).is-ink .pr-cap .dzc-badge path { stroke: #000; }
+:is(#dzc-print, .pp-paper).is-ink .pr-cap .dzc-badge:not(.is-cargo) path { fill: none; }
+:is(#dzc-print, .pp-paper).is-ink .pr-cap .dzc-badge.is-cargo path { fill: #000; }
+:is(#dzc-print, .pp-paper).is-ink .pr-cap .dzc-badge:not(.is-cargo) .dzc-badge-n { color: #000 !important; }
+:is(#dzc-print, .pp-paper).is-ink .pr-cap .dzc-badge.is-cargo .dzc-badge-n { color: #fff !important; }
 :is(#dzc-print, .pp-paper).is-ink .pr-art { display: none; }
 
 /* Art. Off unless asked for: it is what a printer makes the worst mess of, the

@@ -1851,9 +1851,13 @@
             .map(x => `${esc(x.power)}PT ${esc(x.name)}`).join(', ')}</div>`
         : '';
 
-      const cap = (u.transport && (u.transport.capacity || []).length)
-        ? `carries ${(u.transport.capacity).map(c => `${c.n} ${c.shape}`)
-            .join(u.transport.capacityMode === 'both' ? ' + ' : ' / ')}` : '';
+      /* The transport symbols, drawn — not spelled. The shape IS the
+       * vocabulary (3.2.4.2), and the sheet printed the shape's NAME instead:
+       * "carries 2 square", which is both ungrammatical and a second way of
+       * saying what the app says with a glyph. Same renderer as the screen, so
+       * cargo comes with it: what a Transport takes up aboard something else
+       * is half the question at a table and the sheet never printed it. */
+      const cap = window.DZCUnits.transportHtml(u);
 
       // The sheet is the deployment plan, and on paper you cannot expand a row
       // to find out that the gun above it belongs to a Variant you did not
