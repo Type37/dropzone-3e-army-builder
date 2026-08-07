@@ -224,6 +224,22 @@ console.log('\nthe unit renderers survive all 178 units');
   const block = U.unitRulesHtml(legion, 'ucm');
   ok(block.length > 200, 'Legionnaires print their rules in full', `${block.length} chars`);
   ok(!/title="/.test(block), 'and not as a tooltip');
+
+  /* "Behemoths have a Groups Equivalent stat instead of Squad Size" (Behemoth
+   * rules 1.1). Every card that says how many of a Unit you take goes through
+   * sizeHtml, so the two cannot be labelled differently in different places —
+   * which is how all eleven ended up saying "Squad 1", a stat their cards do
+   * not print, while the number that decides how much of a Group allowance one
+   * eats appeared nowhere. */
+  eq(U.sizeHtml(legion), 'Squad 2–3', 'an ordinary Unit still says its Squad size');
+  const shal = await DZC.loadFaction('shaltari');
+  eq(U.sizeHtml(shal.byId.dragon), 'Groups Equivalent 5',
+     'a Behemoth says its Groups Equivalent instead (1.1)');
+  const behs = ['ucm', 'phr', 'scourge', 'shaltari', 'resistance']
+    .flatMap(f => DZC.faction(f).units).filter(u => u.type === 'Behemoth');
+  ok(behs.length >= 10, 'and there are ten of them to get wrong', String(behs.length));
+  eq(behs.filter(u => /Squad/.test(U.sizeHtml(u))).length, 0,
+     'not one of which is labelled with a Squad size');
 }
 
 /* ── 6. The printable quick reference, all six factions ───────────────

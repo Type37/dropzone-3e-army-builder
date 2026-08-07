@@ -137,7 +137,7 @@
           <span class="dzc-coll-body">
             <span class="dzc-coll-name">${esc(u.name)}</span>
             <span class="dzc-coll-meta"><span>${esc(u.category)}</span> <span>${esc(u.type || '')}</span>${
-              u.squadMin != null ? ` <span>Squad ${u.squadMin}${u.squadMax !== u.squadMin ? '–' + u.squadMax : ''}</span>` : ''}</span>
+              window.DZCUnits.sizeHtml(u) ? ` <span>${window.DZCUnits.sizeHtml(u)}</span>` : ''}</span>
           </span>
           <span class="dzc-stepper">
             <button type="button" onclick="DZCCollection.adjust('${esc(u.id)}',-1)" aria-label="One fewer">${window.DZCIcon('remove', { size: 14 })}</button>

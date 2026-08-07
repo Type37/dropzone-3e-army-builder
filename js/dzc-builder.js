@@ -1069,7 +1069,7 @@
     const meta = [
       `<span class="dzc-cat" data-cat="${esc(u.category)}">${esc(u.category)}</span>`,
       `<span>${esc(u.type || '')}</span>`,
-      u.squadMin != null ? `<span>Squad ${U.squadHtml(u)}</span>` : ''
+      U.sizeHtml(u) ? `<span>${U.sizeHtml(u)}</span>` : ''
     ].filter(Boolean).join('');
 
     return `<div class="dzc-squad${isTransport ? ' is-transport' : ''}" style="--depth:${depth}">
@@ -1570,7 +1570,7 @@
     const meta = [
       `<span class="dzc-cat" data-cat="${esc(u.category)}">${esc(u.category)}</span>`,
       `<span>${esc(u.type || '')}</span>`,
-      u.squadMin != null ? `<span>Squad ${U.squadHtml(u)}</span>` : ''
+      U.sizeHtml(u) ? `<span>${U.sizeHtml(u)}</span>` : ''
     ].filter(Boolean).join('');
     return `<div class="dzc-pick${chk.ok ? '' : ' is-blocked'}">
       ${u.rare || u.unique ? `<span class="dzc-pick-flags">${u.rare

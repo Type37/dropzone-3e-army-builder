@@ -125,6 +125,24 @@
     return `${u.squadMin}–${u.squadMax}`;
   }
 
+  /* How many of it you take, in the words its own card uses.
+   *
+   * "Behemoths have a Groups Equivalent stat instead of Squad Size" (Behemoth
+   * rules 1.1) — instead of, not as well as. All eleven of them were labelled
+   * "Squad 1", which is a stat their cards do not print, while the number that
+   * decides how much of your Group allowance one eats appeared nowhere in the
+   * app at all. It is four or five for most of them, out of twelve for a
+   * Clash, so it is the first thing you need to know about taking one.
+   *
+   * The whole phrase, not the number: every caller was writing the word
+   * "Squad" in front of it, which is exactly the assumption that was wrong. */
+  function sizeHtml(u) {
+    if (u.type === 'Behemoth' && u.groupEquivalent != null) {
+      return `Groups Equivalent ${u.groupEquivalent}`;
+    }
+    return u.squadMin != null ? `Squad ${squadHtml(u)}` : '';
+  }
+
   /* Two columns, three rows. Each row pairs stats that mean something
    * together: how it moves and what stops shots, then the fight, then nerve
    * and how much it takes to kill. Copied from the Dropfleet builder's
@@ -218,7 +236,7 @@
           <span class="dzc-cat" data-cat="${esc(u.category)}">${esc(u.category)}</span>
           <span>${esc(u.type || '')}</span>
           <span class="dzc-points">${pointsHtml(u)}</span>
-          <span class="dzc-squad">Squad ${squadHtml(u)}</span>
+          <span class="dzc-squad">${sizeHtml(u)}</span>
           ${flags}
         </div>
         <div class="dzc-card-stats">${statsHtml(u)}</div>
@@ -668,7 +686,7 @@
                reference. Scanned per Unit, so it cannot go stale against a
                re-scan the way a typed number would. -->
           <p class="dzc-detail-meta"><span class="dzc-cat" data-cat="${esc(u.category)}">${esc(u.category)}</span> <span>${esc(u.type || '')}</span>
-            <span>${pointsHtml(u)}</span> <span>Squad ${squadHtml(u)}</span>
+            <span>${pointsHtml(u)}</span> <span>${sizeHtml(u)}</span>
             ${u.page ? `<span>Stat card p.${esc(u.page)}</span>` : ''}
             ${u.rare ? '<span class="dzc-flag dzc-flag--rare">Rare</span>' : ''}${u.unique ? '<span class="dzc-flag dzc-flag--unique">Unique</span>' : ''}</p>
           <div class="dzc-card-stats">${statsHtml(u)}</div>
@@ -748,7 +766,7 @@
     setSearch: v => { state.search = v; render(); },
     openDetail, closeDetail, setLens, showRule, hideRule,
     // Shared with the builder's picker so a unit reads the same in both places.
-    statsHtml, rulesHtml, squadHtml, transportHtml, unitWeapons, weaponLive,
+    statsHtml, rulesHtml, squadHtml, sizeHtml, transportHtml, unitWeapons, weaponLive,
     removedByUpgrades, weaponsHtml, variantsHtml,
     unitRulesHtml, wpnHead, wpnCells, wpnCard, weaponCardsHtml, variantLensHtml,
     pointsHtml, shape: shapeSvg,
