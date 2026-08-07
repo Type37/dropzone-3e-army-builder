@@ -1275,10 +1275,17 @@
                   onclick="DZCBuilder.removeSquad('${s.id}')" aria-label="Remove ${esc(u.name)}">${window.DZCIcon('close', { size: 16 })}</button>
         </div>
       </div>
-      <div class="dzc-sq-stats">${U.statsHtml(u)}</div>
+      <!-- Stats LEFT, guns RIGHT, on one row. The stat table is only as wide
+           as its longest label and the weapon cards were sitting under it, so
+           every Squad in the army spent a band of empty paper beside five
+           short lines before you reached the guns. Below the two-pane
+           breakpoint they stack, stats first. -->
+      <div class="dzc-sq-body">
+        <div class="dzc-sq-stats">${U.statsHtml(u)}</div>
+        ${compact ? '' : `<div class="dzc-sq-wpn">${U.weaponCardsHtml(u, a.faction, squadGuns(s))}</div>`}
+      </div>
       ${u.special ? `<div class="dzc-sq-rules">${U.rulesHtml(u.special, a.faction)}</div>` : ''}
       ${U.variantsHtml(u, (v, i) => variantStepper(a, s, u, i), { stats: !compact })}
-      ${compact ? '' : `<div class="dzc-sq-wpn">${U.weaponCardsHtml(u, a.faction, squadGuns(s))}</div>`}
       ${upgradesHtml(a, s, u)}
       <div class="dzc-sq-opts">
         ${transportPicker}

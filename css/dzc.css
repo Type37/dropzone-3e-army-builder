@@ -404,6 +404,9 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 8px;
 }
 .dzc-wc-stat { display: flex; flex-direction: column; min-width: 0; }
+/* The one icon that keeps its own colours sits INSIDE its label, so it reads
+   as part of the word rather than as a second mark beside it. */
+.dzc-wc-k .dzc-i--ma { vertical-align: -2px; margin-right: 3px; }
 .dzc-wc-k {
   font: 700 10px/1.25 var(--font-condensed, 'Jost', sans-serif);
   text-transform: uppercase; letter-spacing: .02em; color: var(--ink-2, #6b6459);
@@ -1092,6 +1095,25 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   font-size: 11.5px; font-weight: 400; color: var(--ink-2, #6b6459);
 }
 .dzc-sq-ctl { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+/* The stat table and the guns, side by side.
+   
+   .dzc-sq-stats is `width: max-content` -- only as wide as its longest label,
+   which is the whole point of it -- so putting the weapon cards underneath
+   left a band of empty paper beside five short lines on every Squad in the
+   army. The guns take the rest of the row instead.
+   
+   flex, not a fixed grid: the stat table sizes itself and the weapon grid gets
+   what is left, and `min-width: 0` on the guns is what lets their auto-fill
+   columns actually shrink instead of pushing the row wide. */
+.dzc-sq-body { display: flex; align-items: flex-start; gap: 12px; margin-top: 5px; }
+/* Two stat cells wide by preference, and it gives way before the guns do. */
+.dzc-sq-body > .dzc-sq-stats { flex: 0 1 300px; margin-top: 0; }
+.dzc-sq-body > .dzc-sq-wpn { flex: 1 1 0; min-width: 0; margin-top: 0; }
+/* A phone has no room for two of anything. Stats first, then the guns. */
+@media (max-width: 700px) {
+  .dzc-sq-body { flex-direction: column; gap: 8px; }
+  .dzc-sq-body > .dzc-sq-stats, .dzc-sq-body > .dzc-sq-wpn { width: 100%; }
+}
 .dzc-sq-stats { margin-top: 5px; }
 .dzc-sq-rules { margin-top: 6px; }
 /* The table never shrinks its columns to fit — it scrolls inside its own box,
@@ -1515,13 +1537,36 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    `display: contents` box never paints one. Frees the rest of the row for
    whatever sits beside it (weapons, rules) instead of stats owning the
    full width above them. */
+/* A GRID, two cells across.
+   
+   It was one column going down: five stats, five rows, a tall thin strip of
+   numbers. Jet has asked for a grid twice now -- "we need words + icons, and i
+   want it in a 2x3 grid" -- and with the guns beside it rather than under it
+   a column that tall sets the height of the whole Squad row for no reason.
+   Two across turns Infantry's five into three rows and a Vehicle's three into
+   two, and it is the same shape as the Dropfleet stat grid it came from.
+   
+   Each cell keeps its own icon / value / label tracks, so the numbers still
+   line up down each column. `display: contents` is gone with the single
+   column: a cell has to be a box again to be a cell. */
+/* auto-fit, not a hard 2 -- and width: 100%, not max-content.
+   
+   A fixed two columns at max-content width made the reference card wider than
+   a 320px phone: the card sizes to its contents, so a grid that asks for its
+   own natural width takes the card off the screen with it. auto-fit gives two
+   across wherever 140px each will fit and one where it will not, and the box
+   never asks for more than it is given. */
 .dzc-stats:not(.is-compact) {
-  display: grid; grid-template-columns: auto auto 1fr;
-  column-gap: 8px; row-gap: 5px; width: max-content; max-width: 100%;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  column-gap: 6px; row-gap: 4px; width: 100%; max-width: 100%;
 }
-.dzc-stats:not(.is-compact) .dzc-stat { display: contents; }
+.dzc-stats:not(.is-compact) .dzc-stat {
+  grid-template-columns: 18px 38px minmax(0, 1fr); gap: 4px;
+  padding: 3px 6px;
+}
 .dzc-stats:not(.is-compact) .dzc-stat-v { text-align: right; }
 .dzc-stats:not(.is-compact) .dzc-stat-k { align-self: center; }
+
 .dzc-pick-wpns { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
 .dzc-pick-wpn {
   display: inline-flex; align-items: center; gap: 3px; padding: 1px 5px;

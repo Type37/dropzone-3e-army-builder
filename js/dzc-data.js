@@ -538,7 +538,10 @@
     Power: 'Power'
   };
   const WEAPON_LABELS = {
-    Name: 'Weapon', Arc: 'Arc', MA: 'Move & Attack', R: 'Range',
+    // Jet, 2026-08-07: "which we will abbreviate as M&A MAX". The column is a
+    // ceiling -- how far this weapon may move and still shoot -- and "Move &
+    // Attack" spelled out is the widest label on the card by half again.
+    Name: 'Weapon', Arc: 'Arc', MA: 'M&A Max', R: 'Range',
     Att: 'Attacks', Ac: 'Accuracy', E: 'Energy', Special: 'Special'
   };
   /* What each one MEANS, in the rulebook's words rather than anybody's.
