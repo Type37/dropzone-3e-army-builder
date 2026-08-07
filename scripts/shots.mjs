@@ -444,16 +444,36 @@ for (const [name, expr, clipSel] of STEPS) {
    * the text crisper than the user will ever see it. */
   let clip = null;
   if (clipSel) {
+    /* Page coordinates, not viewport ones.
+     *
+     * getBoundingClientRect is relative to the viewport; captureScreenshot's
+     * clip is relative to the DOCUMENT. On an unscrolled page those agree, so
+     * this looked right for as long as every clipped shot happened near the
+     * top. 14b-ref-card-1to1 came after a step that left the page scrolled and
+     * captured a rectangle of empty paper -- a shot whose whole job is "is this
+     * card legible at 1:1", answering it with a blank image, in the repo,
+     * unnoticed.
+     *
+     * captureBeyondViewport goes with it: once the clip can point below the
+     * fold, the capture has to be allowed to go there. */
     const box = await s.send('Runtime.evaluate', {
       expression: `(() => { const e = document.querySelector('${clipSel}'); if (!e) return null;
         const r = e.getBoundingClientRect();
-        return JSON.stringify({ x: r.x - 8, y: r.y - 8, width: r.width + 16, height: r.height + 16, scale: 1 }); })()`,
+        return JSON.stringify({
+          x: Math.max(0, r.x + window.scrollX - 8),
+          y: Math.max(0, r.y + window.scrollY - 8),
+          width: r.width + 16, height: r.height + 16, scale: 1 }); })()`,
       returnByValue: true
     });
     if (box?.result?.value) clip = JSON.parse(box.result.value);
     else console.log(`  ! ${name}: no element matched ${clipSel}`);
+    if (clip && !(clip.width > 0 && clip.height > 0)) {
+      console.log(`  ! ${name}: ${clipSel} has no size — shooting the whole page instead`);
+      clip = null;
+    }
   }
-  const shot = await s.send('Page.captureScreenshot', clip ? { format: 'png', clip } : { format: 'png' });
+  const shot = await s.send('Page.captureScreenshot',
+    clip ? { format: 'png', clip, captureBeyondViewport: true } : { format: 'png' });
   const file = join(OUT, `${name}.png`);
   writeFileSync(file, Buffer.from(shot.data, 'base64'));
   done.push(name);
