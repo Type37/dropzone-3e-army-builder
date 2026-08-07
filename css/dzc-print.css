@@ -212,3 +212,8 @@
 @media (max-width: 700px) {
   .pp-scroll { padding: 8px 0 32px; }
 }
+
+/* A Behemoth's Gear on the printed sheet: what its Power may be spent on and
+   what each costs, which is read every activation. */
+.pr-gear { font-size: 8.5pt; margin-top: 1mm; }
+.pr-gear b { font-weight: 700; }

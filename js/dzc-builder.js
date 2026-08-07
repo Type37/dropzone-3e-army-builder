@@ -1835,6 +1835,16 @@
       const mixStr = Object.keys(mix).length > 1 || (u.variants || []).length
         ? Object.keys(mix).map(k => `${mix[k]}× ${esc(k)}`).join(', ') : '';
 
+      /* A Behemoth's Gear, priced in Power. This is the sheet you take to a
+       * table, and Gear is the one thing on a Behemoth card you consult every
+       * activation and cannot work out from anything else — what it may spend
+       * its Power on and what each costs. On paper it is a price list, so it
+       * prints as one. */
+      const gear = (u.gear || []).length
+        ? `<div class="pr-gear"><b>Gear</b> ${u.gear
+            .map(x => `${esc(x.power)}PT ${esc(x.name)}`).join(', ')}</div>`
+        : '';
+
       const cap = (u.transport && (u.transport.capacity || []).length)
         ? `carries ${(u.transport.capacity).map(c => `${c.n} ${c.shape}`)
             .join(u.transport.capacityMode === 'both' ? ' + ' : ' / ')}` : '';
@@ -1862,6 +1872,7 @@
         <div class="pr-stats">${stats}${u.special ? ` — ${esc(u.special)}` : ''}</div>
         ${cap ? `<div class="pr-cap">${cap}</div>` : ''}
         ${wpns}
+        ${gear}
         ${riders.map(r => squad(g, r, depth + 1)).join('')}
       </div>`;
     }
