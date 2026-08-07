@@ -1153,6 +1153,25 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 
 /* Take / Taken, for a Squad of one model whose Variant is a radio rather than
    a count. Same square language as the Squad-size tabs. */
+/* A Variant and its guns, as one block. The head is the name, the price and
+   the count; the cards under it are what that Variant fires. A Variant you
+   have taken gets an accent edge so the ones in your Squad are findable
+   without reading every count. */
+.dzc-vblock { margin-bottom: 4px; border-left: 3px solid transparent; padding-left: 5px; }
+.dzc-vblock.is-taken { border-left-color: var(--acc, #1b3a5c); }
+.dzc-vblock-head {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; margin-bottom: 2px;
+}
+.dzc-vblock-head b { font: 700 13px/1.2 var(--font-ui, 'Jost', system-ui, sans-serif); }
+.dzc-vblock-head i {
+  font-style: normal; font-size: 11px; color: var(--ink-2, #6b6459);
+  font-family: var(--font-numeric, 'Outfit', sans-serif);
+}
+/* "Nice and big" -- this is the control the whole block exists for. */
+.dzc-vblock-n { margin-left: auto; }
+.dzc-vblock-n .dzc-stepper button { min-width: 32px; min-height: 32px; }
+.dzc-vblock-n .dzc-stepper b { font-size: 16px; min-width: 20px; text-align: center; }
+
 .dzc-v-pick {
   min-height: 24px; padding: 2px 9px; cursor: pointer; border-radius: 0;
   border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff);

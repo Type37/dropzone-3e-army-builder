@@ -1127,6 +1127,39 @@
    * Same disabled-reason wrapper as the Squad stepper, for the same reason —
    * a disabled control does not reliably fire hover, so the title goes on a
    * span that is never disabled. */
+  /* A VARIANT IS A BLOCK: its name, how many of them you have, and the guns
+   * THAT variant fires.
+   *
+   * Jet, 2026-08-07: "on any unit, we show all the variants... Bus: show the
+   * weapon cards for bus, with the option, nice and big, to +/- the number of
+   * units we have in that variant."
+   *
+   * The one shared weapon list it replaces printed every gun on the card with
+   * the ones you do not have greyed, which asks you to work out which loadout
+   * a gun belongs to by reading the "Rocket Bus only" note on each. Here the
+   * question is answered by where the card is: the guns under Rocket Bus are
+   * the guns a Rocket Bus fires. `lens` is the existing filter that does this
+   * — the variant switcher over the reference table already used it.
+   *
+   * A Unit with no Variants keeps the plain list; there is nothing to split. */
+  function variantGuns(a, s, u) {
+    const U = window.DZCUnits;
+    const vs = u.variants || [];
+    if (!vs.length) return U.weaponCardsHtml(u, a.faction, squadGuns(s));
+    return vs.map((v, i) => {
+      const n = s.models.filter(m => m.variant === v.name).length;
+      const opts = Object.assign({}, squadGuns(s), { lens: v.name, key: s.id + '|' + v.name });
+      return `<section class="dzc-vblock${n ? ' is-taken' : ''}">
+        <header class="dzc-vblock-head">
+          <b>${esc(v.name)}</b>
+          ${v.points != null ? `<i>${v.points}pts</i>` : ''}
+          <span class="dzc-vblock-n">${variantStepper(a, s, u, i)}</span>
+        </header>
+        ${U.weaponCardsHtml(u, a.faction, opts)}
+      </section>`;
+    }).join('');
+  }
+
   function variantStepper(a, s, u, idx) {
     const v = (u.variants || [])[idx];
     if (!v) return '';
@@ -1329,9 +1362,13 @@
                whole weapon block. -->
           ${u.special ? `<div class="dzc-sq-rules">${U.rulesHtml(u.special, a.faction)}</div>` : ''}
         </div>
-        ${compact ? '' : `<div class="dzc-sq-wpn">${U.weaponCardsHtml(u, a.faction, squadGuns(s))}</div>`}
+        ${compact ? '' : `<div class="dzc-sq-wpn">${variantGuns(a, s, u)}</div>`}
       </div>
-      ${U.variantsHtml(u, (v, i) => variantStepper(a, s, u, i), { stats: !compact })}
+      <!-- The Variant list that used to sit here is the blocks above now:
+           name, count and the guns that Variant fires, in one place instead of
+           a list of names here and a greyed weapon table there. Compact view
+           has no blocks, so it keeps the list. -->
+      ${compact ? U.variantsHtml(u, (v, i) => variantStepper(a, s, u, i), { stats: false }) : ''}
       ${upgradesHtml(a, s, u)}
       <div class="dzc-sq-opts">
         ${transportPicker}
