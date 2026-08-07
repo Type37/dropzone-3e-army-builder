@@ -207,12 +207,27 @@ console.log('\na Behemoth counts as several Groups (Behemoth rules 1.1)');
 
   /* Skirmish allows 9. One Dragon is 5 and legal; two are 10 on two cards,
    * which the old card count called two. */
+  /* "Commanders cannot be assigned to Behemoths" and "Behemoths ... can only
+   * be taken in 3000+ point games", both from Behemoth rules 1.1. The second
+   * is an error rather than a refusal, because 1.1.1 says players may agree to
+   * waive any Army-building restriction in a casual game. */
+  const dragonSquad = a.groups[0].squads[0];
+  const cr = A.setCommander(a, dragonSquad.id, 5);
+  eq(cr.ok, false, 'a Behemoth refuses a Commander');
+  ok(/Behemoth/.test(cr.reason || '') && /1\.1/.test(cr.reason || ''),
+     'and names the rule that says so', cr.reason);
+  ok(!A.validate(a).errors.some(e => e.rule === '1.1'),
+     'a 3000pt list may field one');
+
   const b = A.create('shaltari', 'Small', 1000);
   A.addSquad(b, A.addGroup(b).id, 'dragon', 1);
   ok(!A.validate(b).errors.some(e => e.rule === '3.1' && /Groups/.test(e.msg)),
      'one Dragon is five of the nine Skirmish allows, and legal');
   A.addSquad(b, A.addGroup(b).id, 'dragon', 1);
   const over = A.validate(b).errors.find(e => e.rule === '3.1' && /Groups/.test(e.msg));
+  ok(A.validate(b).errors.some(e => e.rule === '1.1' && /3000pts or more/.test(e.msg)),
+     'and a 1000pt list is told the Behemoth needs 3000',
+     JSON.stringify(A.validate(b).errors.map(e => e.msg)));
   ok(over && /counting as 10/.test(over.msg),
      "and two say so in the Behemoths' own terms, not as two Groups",
      JSON.stringify(A.validate(b).errors.map(e => e.msg)));

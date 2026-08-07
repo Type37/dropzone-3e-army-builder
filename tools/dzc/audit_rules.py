@@ -39,6 +39,9 @@ KNOWN_TYPOS = {
     "devastor": "Devastator",        # Remote Bomb Bus, UCM Artillery Vehicle
     "precison": "Precision",         # UCM Heavy Tank
     "ineffecive": "Ineffective",     # Scourge Hyperbio Cannon, on the Death Mech
+    # Every Behemoth card prints "Weapon Capacitors"; the rulebook heads the
+    # rule "Weapons Capacitors" (1.7.10). Singular against plural.
+    "weapon capacitors": "Weapons Capacitors",
 }
 TYPO_RE = re.compile(r"\b(" + "|".join(KNOWN_TYPOS) + r")\b", re.I)
 

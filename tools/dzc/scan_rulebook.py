@@ -467,20 +467,29 @@ def parse_behemoth_rules(doc, pages) -> list[Rule]:
     out: list[Rule] = []
     cur: Rule | None = None
     for pno in range(pages[0], pages[1] + 1):
+        # VISUAL order, not the order the spans come out of the PDF. On page 1
+        # every paragraph is emitted before any heading, so walking the raw
+        # order attached the whole of "1.1 Taking Behemoths" to whatever
+        # preceded it and lost the section entirely -- including "Commanders
+        # cannot be assigned to Behemoths" and the 3000-point floor, which are
+        # both army-building rules this app is supposed to enforce.
+        spans = []
         for blk in doc[pno].get_text("dict")["blocks"]:
             for ln in blk.get("lines", []):
                 for sp in ln["spans"]:
-                    txt = sp["text"].strip()
-                    if not txt:
-                        continue
-                    m = BEHEMOTH_HEAD_RE.match(txt)
-                    if m and sp["size"] > body_size + 0.4:
-                        if cur:
-                            out.append(cur)
-                        cur = {"section": m.group(1), "name": m.group(2),
-                               "text": "", "page": pno + 1}
-                    elif cur is not None and not txt.isdigit():
-                        cur["text"] = (cur["text"] + " " + txt) if cur["text"] else txt
+                    if sp["text"].strip():
+                        spans.append(sp)
+        spans.sort(key=lambda sp: (round(sp["bbox"][1], 1), sp["bbox"][0]))
+        for sp in spans:
+            txt = sp["text"].strip()
+            m = BEHEMOTH_HEAD_RE.match(txt)
+            if m and sp["size"] > body_size + 0.4:
+                if cur:
+                    out.append(cur)
+                cur = {"section": m.group(1), "name": m.group(2),
+                       "text": "", "page": pno + 1}
+            elif cur is not None and not txt.isdigit():
+                cur["text"] = (cur["text"] + " " + txt) if cur["text"] else txt
     if cur:
         out.append(cur)
     return out

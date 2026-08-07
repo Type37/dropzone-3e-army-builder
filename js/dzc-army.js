@@ -852,6 +852,12 @@
 
   function commanderBan(unit) {
     if (!unit) return null;
+    // "Commanders cannot be assigned to Behemoths" (Behemoth rules 1.1). By
+    // TYPE rather than by a keyword, because the card does not print one — the
+    // whole of 1.1 is what says it.
+    if (unit.type === 'Behemoth') {
+      return { reason: `${unit.name} is a Behemoth — Commanders cannot be assigned to one (1.1).` };
+    }
     const sp = unit.special || '';
     for (const [re, what, rule] of NO_COMMANDER) {
       if (re.test(sp)) {
@@ -1529,6 +1535,19 @@
         errors.push({ rule: '2', msg: `${u.name}: ${n} models, maximum is ${u.squadMax}.` });
       }
     }));
+
+    /* "Behemoths are so huge that they can only be taken in 3000+ point games"
+     * (Behemoth rules, chapter 1). An error rather than a refusal in the
+     * picker, because 1.1.1 says in as many words that "in casual games,
+     * players may agree to waive any of the Army building restrictions" — so
+     * the app says plainly that the list is not tournament-legal and leaves
+     * the agreement to the two people having it. */
+    const behemoths = army.groups.flatMap(g => g.squads)
+      .map(s => unitOf(army, s)).filter(u => u && u.type === 'Behemoth');
+    if (behemoths.length && limit < 3000) {
+      const names = [...new Set(behemoths.map(u => u.name))].join(', ');
+      errors.push({ rule: '1.1', msg: `${names} may only be taken in games of 3000pts or more — this list is ${limit}.` });
+    }
 
     // Transports: only alongside a Squad they can carry, and taken FULL.
     army.groups.forEach(g => {

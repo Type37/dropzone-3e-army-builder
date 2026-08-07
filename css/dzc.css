@@ -267,6 +267,32 @@
 .dzc-wpn-only, .dzc-wpn-up { display: block; font-weight: 500; font-size: 11px; color: var(--ink-2, #6b6459); }
 .dzc-none { font-size: 12px; color: var(--ink-2, #6b6459); }
 
+/* A Behemoth's Gear. Priced in Power out of the pool it spends to act, so it
+   is a price list to read mid-game rather than anything to buy — no buttons,
+   and it sits with the weapons because that is what it is read against. */
+.dzc-gear { margin-top: 10px; }
+.dzc-gear-head {
+  display: block; font-size: 11px; font-weight: 600;
+  color: var(--ink-2, #6b6459); margin-bottom: 4px;
+}
+/* A column of prices, not a wrapped row of them. Four numbers a player is
+   choosing between should be readable down the left edge; in a flex wrap they
+   landed at four different x and could only be compared by reading. */
+.dzc-gear-list {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 3px 14px;
+}
+.dzc-gear-list li {
+  display: grid; grid-template-columns: 34px minmax(0, 1fr);
+  align-items: baseline; gap: 6px; font-size: 12px;
+}
+.dzc-gear-pt {
+  font: 700 13px/1 var(--font-numeric, 'Outfit', sans-serif);
+  font-variant-numeric: tabular-nums lining-nums;
+  min-width: 2.2em; text-align: right; color: var(--ink, #24201c);
+}
+.dzc-gear-pt small { font-size: 9.5px; font-weight: 600; margin-left: 1px; color: var(--ink-2, #6b6459); }
+
 /* A Squad's table prints the whole card and marks the guns that Squad actually
    fires — the variants its models are, the upgrades it bought. The rest stay
    on the page and go quiet.

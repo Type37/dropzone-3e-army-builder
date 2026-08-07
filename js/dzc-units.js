@@ -452,6 +452,27 @@
       </table>`;
   }
 
+  /* A Behemoth's Gear: equipment priced in POWER, not points.
+   *
+   * It costs nothing to put on a list — it comes out of the same pool the
+   * Behemoth spends to act (Behemoth rules 1.2, 1.7) — so it is not a purchase
+   * and gets no buttons. It is a price list you read during a game, which is
+   * why it sits with the weapons rather than with the upgrades.
+   *
+   * Each name is run through the rule linker, so "Jump System 18”" is the chip
+   * that opens 1.7.2 with its own 18 substituted in.
+   */
+  function gearHtml(u, faction) {
+    const fac = faction || u.faction || state.faction;
+    if (!(u.gear || []).length) return '';
+    return `<div class="dzc-gear">
+      <span class="dzc-gear-head">Gear — paid in Power, not points</span>
+      <ul class="dzc-gear-list">${u.gear.map(g => `<li>
+        <span class="dzc-gear-pt">${esc(g.power)}<small>PT</small></span>
+        ${rulesHtml(g.name, fac) || esc(g.name)}</li>`).join('')}</ul>
+    </div>`;
+  }
+
   /* The sentence on the card that qualifies its upgrades — "Only one of these
    * upgrades may be taken", "May replace both its MC-20 Chainguns with MM-15
    * Sidearm Missiles". The builder has always shown it over the upgrade
@@ -578,6 +599,7 @@
       ${variants}
       ${variantLensHtml(u)}
       ${weapons}
+      ${gearHtml(u, u.faction || state.faction)}
       ${upgradeNoteHtml(u)}
       ${unitRulesHtml(u, u.faction || state.faction)}`;
     /* NOT the Unit's name: the body opens with it, at size and beside its

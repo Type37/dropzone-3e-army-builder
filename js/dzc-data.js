@@ -107,7 +107,11 @@
     devastor: 'Devastator',
     precison: 'Precision',
     // Scourge Hyperbio Cannon, on the Death Mech's card.
-    ineffecive: 'Ineffective'
+    ineffecive: 'Ineffective',
+    // Every Behemoth card prints its Gear as "Weapon Capacitors"; the rulebook
+    // heads the rule "Weapons Capacitors" (1.7.10). Singular against plural,
+    // same equipment.
+    'weapon capacitors': 'Weapons Capacitors'
   };
   const TYPO_RE = new RegExp('\\b(' + Object.keys(KNOWN_TYPOS).join('|') + ')\\b', 'gi');
   const VARIANT_TAIL = /\s*\([^)]*\)\s*$/;
