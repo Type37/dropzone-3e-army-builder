@@ -1142,13 +1142,42 @@
    * — the variant switcher over the reference table already used it.
    *
    * A Unit with no Variants keeps the plain list; there is nothing to split. */
+  /* The price, as the control that buys it. "The upgrade can be represented
+   * by a nice visible button you can tap/click that says +10pts" -- Jet,
+   * 2026-08-07, on a Condor printing its Missile Pod twice: once as a weapon
+   * card and again as a row of the upgrade table underneath, same eight
+   * fields both times.
+   *
+   * Addressed by index into upgradesFor, which is what toggleUpgrade takes,
+   * and looked up by weapon name because that is what the card has. A weapon
+   * this Squad cannot buy at all gets the plain price back rather than a
+   * button that would refuse. */
+  function buyButton(a, s) {
+    const list = window.DZCArmy.upgradesFor(a, s) || [];
+    return w => {
+      const i = list.findIndex(o => o.weapon.name === w.name);
+      if (i === -1) return `<span class="dzc-wpn-up">+${w.upgradePoints}pts</span>`;
+      const on = window.DZCArmy.hasUpgrade(s, list[i].scope, w.name);
+      return `<button type="button" class="dzc-buy${on ? ' is-on' : ''}"
+        aria-pressed="${on}"
+        aria-label="${on ? 'Remove' : 'Buy'} ${esc(w.name)}, ${w.upgradePoints} points"
+        onclick="DZCBuilder.toggleUpgrade('${s.id}',${i})"
+        >${on ? 'Bought' : '+' + w.upgradePoints + 'pts'}</button>`;
+    };
+  }
+
   function variantGuns(a, s, u) {
     const U = window.DZCUnits;
     const vs = u.variants || [];
-    if (!vs.length) return U.weaponCardsHtml(u, a.faction, squadGuns(s));
+    if (!vs.length) {
+      return U.weaponCardsHtml(u, a.faction,
+        Object.assign({}, squadGuns(s), { buy: buyButton(a, s) }));
+    }
     return vs.map((v, i) => {
       const n = s.models.filter(m => m.variant === v.name).length;
-      const opts = Object.assign({}, squadGuns(s), { lens: v.name, key: s.id + '|' + v.name });
+      const opts = Object.assign({}, squadGuns(s), {
+        lens: v.name, key: s.id + '|' + v.name, buy: buyButton(a, s)
+      });
       return `<section class="dzc-vblock${n ? ' is-taken' : ''}">
         <header class="dzc-vblock-head">
           <b>${esc(v.name)}</b>
@@ -1412,7 +1441,6 @@
            a list of names here and a greyed weapon table there. Compact view
            has no blocks, so it keeps the list. -->
       ${compact ? U.variantsHtml(u, (v, i) => variantStepper(a, s, u, i), { stats: false }) : ''}
-      ${upgradesHtml(a, s, u)}
       <div class="dzc-sq-opts">
         ${transportPicker}
       </div>

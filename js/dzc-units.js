@@ -507,7 +507,14 @@
       <header class="dzc-wc-head">
         <h4 class="dzc-wc-name">${esc(w.name)}</h4>
         ${only ? `<span class="dzc-wc-only">${esc(only)} only</span>` : ''}
-        ${w.upgradePoints != null ? `<span class="dzc-wpn-up">+${w.upgradePoints}pts</span>` : ''}
+        ${w.upgradePoints == null ? ''
+          /* The price is the BUTTON when there is somewhere to buy it. The
+             upgrade table under the Squad printed this whole weapon a second
+             time just to hang a price on it -- same eight fields, once as a
+             card and once as a row. The card is the better of the two, so the
+             price moved onto it and the table went. */
+          : o.buy ? o.buy(w)
+          : `<span class="dzc-wpn-up">+${w.upgradePoints}pts</span>`}
       </header>
       <div class="dzc-wc-body">
         <div class="dzc-wc-arc" title="${esc(window.DZCIcon.arcLabel(w.arc) || '')}">
@@ -556,7 +563,7 @@
         }
         const cls = [w.box === 'upgrade' ? 'is-upgrade' : w.box === 'variant' ? 'is-variant' : '']
           .concat(marking ? [mark] : []).filter(Boolean).join(' ') + gained;
-        return wpnCard(w, fac, { cls });
+        return wpnCard(w, fac, { cls: cls, buy: o.buy });
       }).join('');
     return `<div class="dzc-wcards${marking ? ' dzc-wcards--marked' : ''}">${cards}</div>`;
   }

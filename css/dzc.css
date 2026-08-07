@@ -1172,6 +1172,19 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-vblock-n .dzc-stepper button { min-width: 32px; min-height: 32px; }
 .dzc-vblock-n .dzc-stepper b { font-size: 16px; min-width: 20px; text-align: center; }
 
+/* Buy this gun. The price IS the button -- the upgrade table that used to
+   carry it printed the whole weapon a second time to have somewhere to put a
+   price, so it went and the price came here. Big enough to hit with a thumb,
+   and it says what it did rather than what it costs once you own it. */
+.dzc-buy {
+  min-height: 24px; padding: 3px 9px; cursor: pointer; border-radius: 0;
+  border: 1px solid #2e9e4f; background: var(--surface-2, #fff); color: #1f7a3a;
+  font: 700 11px/1 var(--font-ui, 'Jost', system-ui, sans-serif);
+  font-variant-numeric: tabular-nums;
+}
+.dzc-buy:hover { background: rgba(46,158,79,.12); }
+.dzc-buy.is-on { background: #2e9e4f; border-color: #2e9e4f; color: #fff; }
+
 .dzc-v-pick {
   min-height: 24px; padding: 2px 9px; cursor: pointer; border-radius: 0;
   border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff);
