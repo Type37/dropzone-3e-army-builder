@@ -2482,7 +2482,53 @@
 
   // ------------------------------------------------------------------ actions
 
-  const refresh = () => renderBuilder(current.id);
+  /* A REFRESH MUST NOT MOVE THE PAGE.
+   *
+   * Jet, 2026-08-07: "anytime you click a button to add one unit the UI
+   * shouldn't jump around, jumping around is bad."
+   *
+   * Every action here redraws the whole builder by replacing innerHTML. For
+   * one frame the view is empty, the document is a few pixels tall, the
+   * browser clamps the scroll position to fit it — and then the content comes
+   * back underneath a page that is now scrolled somewhere else. Press + on a
+   * Squad four Groups down and you are looking at the top of the army.
+   *
+   * So the scroll is taken before and put back after, and the control you
+   * pressed is found again and re-focused: the button is a different element
+   * after the redraw, so without this the focus ring lands on <body> and the
+   * next keypress goes nowhere. Identified by the Squad it belongs to plus its
+   * accessible name, which is what makes it the same control rather than the
+   * same position. */
+  function refresh() {
+    const y = window.scrollY;
+    /* Hold the page's height across the swap. innerHTML = ... empties the view
+     * for a frame; the document shrinks to a few hundred pixels, the browser
+     * clamps the scroll position to what is left, and the content returns
+     * under a page that has moved. Pinning min-height to what it already was
+     * means there is nothing to clamp to. Released on the next frame, so the
+     * view can then be whatever height it actually needs. */
+    const root = document.getElementById('view-army');
+    if (root) root.style.minHeight = root.getBoundingClientRect().height + 'px';
+    const el = document.activeElement;
+    const mark = el && el !== document.body
+      ? { sid: (el.closest('[data-sid]') || {}).dataset
+            ? (el.closest('[data-sid]') || { dataset: {} }).dataset.sid : null,
+          label: el.getAttribute && el.getAttribute('aria-label') }
+      : null;
+    return Promise.resolve(renderBuilder(current.id)).then(() => {
+      if (window.scrollY !== y) window.scrollTo(0, y);
+      requestAnimationFrame(() => {
+        const r = document.getElementById('view-army');
+        if (r) r.style.minHeight = '';
+      });
+      if (!mark || !mark.label) return;
+      const scope = mark.sid
+        ? document.querySelector(`[data-sid="${mark.sid}"]`) : document.getElementById('view-army');
+      const again = scope && scope.querySelector(`[aria-label="${CSS.escape
+        ? mark.label.replace(/"/g, '\\"') : mark.label}"]`);
+      if (again && !again.disabled) again.focus({ preventScroll: true });
+    });
+  }
 
   /* Why an action was refused. Shown as a transient bar rather than an alert,
    * because a rule explanation should not be a thing you have to dismiss. */
