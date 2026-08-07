@@ -983,7 +983,11 @@ console.log('\nevery screen renders');
     const live = A.get(na.id).groups[0].squads;
 
     ok(/class="dzc-riders"/.test(html), 'a carried Squad is drawn inside its carrier’s bracket');
-    ok(/Aboard Condor Dropship/.test(html), 'and the bracket names the carrier');
+    // Just "Aboard": the carrier's card is the thing the spine comes out of and
+    // it is directly above, so naming it again in the bracket was the doubling
+    // Jet asked to remove.
+    ok(/dzc-riders-lab/.test(html) && !/Aboard Condor Dropship/.test(html),
+       'and the bracket says Aboard without naming the carrier twice');
     ok(/dzc-squad[^"]*is-carrier/.test(html), 'the carrier is marked as one');
     eq(String(live.filter(s => !html.includes(`data-sid="${s.id}"`)).length), '0',
        'every Squad row carries its id, which is what the drag looks it up by');

@@ -1229,9 +1229,6 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   font: 700 10px/1 var(--font-condensed, 'Jost', sans-serif);
   text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2, #6b6459);
 }
-.dzc-carry-now { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; }
-.dzc-carry-now .dzc-badge { --badge-px: 30px; --cargo-px: 24px; }
-.dzc-carry-now i { font-style: normal; font-family: var(--font-numeric, 'Outfit', sans-serif); color: var(--ink-2, #6b6459); }
 .dzc-carry-none { font-size: 13px; color: var(--ink-2, #6b6459); }
 .dzc-carry-add {
   margin-left: auto; display: inline-flex; align-items: center; justify-content: center;

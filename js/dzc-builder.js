@@ -1271,18 +1271,31 @@
     // offers none to buy, so the control has to appear for that case too.
     const board = window.DZCArmy.boardOptions(a, s.id);
     const transportPicker = (opts.length || board.length) ? `<div class="dzc-carry">
-      <span class="dzc-carry-lab">${window.DZCIcon('local_shipping', { size: 14 })}Transport</span>
       ${carrierUnit
-        ? `<span class="dzc-carry-now">${U.transportHtml(carrierUnit)}
-             <b>${esc(carrierUnit.name)}</b>${carrier.models.length > 1
-               ? `<i>× ${carrier.models.length}</i>` : ''}
-             <button type="button" class="dzc-icon-btn" title="Walks on instead"
-                     onclick="DZCBuilder.assignTransport('${s.id}','')"
-                     aria-label="Remove the Transport">${window.DZCIcon('close', { size: 14 })}</button></span>`
-        : '<span class="dzc-carry-none">Walks on</span>'}
+        /* NOT the carrier's name again. Jet, 2026-08-07: "I don't like
+         * doubling the transports. we should have like... the thing holding
+         * you above, the thing you're carrying below. not doubled."
+         *
+         * A carried Squad is DRAWN inside its carrier, under a bracket whose
+         * head already reads "Aboard Condor Dropship", and the carrier is a
+         * full Squad card sitting directly above it with its own name, count
+         * and stats. Printing "Transport — Condor Dropship × 2" a third time
+         * on the rider said nothing the position had not already said, and
+         * made one Transport look like two things in the Group.
+         *
+         * What is left is the two controls, which the position cannot carry:
+         * get out, and ride something else. */
+        ? `<span class="dzc-carry-lab">${window.DZCIcon('local_shipping', { size: 13 })}Aboard</span>
+           <button type="button" class="dzc-icon-btn" title="Walks on instead"
+                   onclick="DZCBuilder.assignTransport('${s.id}','')"
+                   aria-label="Take ${esc(u.name)} out of its Transport"
+                   >${window.DZCIcon('close', { size: 14 })}</button>`
+        : `<span class="dzc-carry-lab">${window.DZCIcon('local_shipping', { size: 13 })}Transport</span>
+           <span class="dzc-carry-none">Walks on</span>`}
       <button type="button" class="dzc-carry-add" onclick="DZCBuilder.openCarry('${s.id}')"
-              aria-label="Choose a Transport for ${esc(u.name)}"
-              title="Choose a Transport">${window.DZCIcon('add', { size: 18 })}</button>
+              aria-label="${carrierUnit ? 'Ride something else' : 'Choose a Transport'} for ${esc(u.name)}"
+              title="${carrierUnit ? 'Ride something else' : 'Choose a Transport'}"
+              >${window.DZCIcon('add', { size: 18 })}</button>
     </div>` : '';
 
     /* A Squad in your army reads exactly as the unit does when you open it:
@@ -1380,8 +1393,10 @@
            runs the height of the cargo and an arm reaches into each Squad, so
            the shape on screen is the shape on the table. -->
       ${riders.length ? `<div class="dzc-riders">
-        <span class="dzc-riders-lab">${window.DZCIcon('local_shipping', { size: 13 })
-          }Aboard ${esc(u.name)}</span>
+        <!-- Just "Aboard". The card the spine comes out of is directly above
+             and already says which Transport this is; naming it again here is
+             the doubling. -->
+        <span class="dzc-riders-lab">${window.DZCIcon('local_shipping', { size: 13 })}Aboard</span>
         ${riders.map(r => squadHtml(a, g, r, depth + 1)).join('')}
       </div>` : ''}
     </div>`;
