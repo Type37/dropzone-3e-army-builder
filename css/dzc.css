@@ -1963,6 +1963,30 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
 .dzc-bb.is-before { box-shadow: inset 0 3px 0 0 var(--acc); }
 .dzc-bb.is-after { box-shadow: inset 0 -3px 0 0 var(--acc); }
 
+/* How big a Squad is, as tabs.
+   
+   A stepper makes you press twice to get from 2 to 4 and never says what the
+   top is until you hit it; the tabs say the whole range at once and any of
+   them is one press away. Square, like every other control that is a choice
+   rather than a nudge, and 44px tall on a phone the way the rest of them are. */
+.dzc-sizes { display: inline-flex; gap: 2px; }
+.dzc-size {
+  min-width: 26px; min-height: 26px; padding: 0 6px; cursor: pointer;
+  border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff);
+  color: var(--ink-2, #6b6459); border-radius: 0;
+  font: 600 13px/1 var(--font-numeric, 'Outfit', sans-serif);
+  transition: background .12s, color .12s, border-color .12s;
+}
+.dzc-size:hover:not([disabled]) { border-color: var(--acc, #1b3a5c); color: var(--ink, #24201c); }
+.dzc-size.is-on {
+  background: var(--acc, #1b3a5c); border-color: var(--acc, #1b3a5c); color: #fff;
+}
+.dzc-size[disabled] { opacity: .35; cursor: not-allowed; }
+/* A Squad with one legal size is a multiplier, not a control. */
+.dzc-sq-fixed {
+  font: 600 13px/1 var(--font-numeric, 'Outfit', sans-serif); color: var(--ink-2, #6b6459);
+}
+
 /* Dragging a Squad into a Transport. Same dot grip as a Group's, in the title
    line where the Squad's name is, because the name is the thing you are
    moving. touch-action: none or the phone scrolls the pane instead. */

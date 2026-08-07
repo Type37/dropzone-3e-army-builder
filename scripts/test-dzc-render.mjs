@@ -992,6 +992,39 @@ console.log('\nevery screen renders');
     A.remove(na.id);
   }
 
+  /* How big a Squad is. Jet, 2026-08-07: a Squad of exactly one shows NOTHING
+   * -- "don't bother showing ANYTHING like 1x or 1 or squad size 1" -- one
+   * with a single legal size shows "x3" and no other word, and a range small
+   * enough to read becomes a tab switcher rather than a stepper. */
+  {
+    const U = win.DZCUnits;
+    const f = DZC.faction('ucm');
+    const one = f.units.find(u => u.squadMin === 1 && u.squadMax === 1 && u.type !== 'Behemoth');
+    const fixed = f.units.find(u => u.squadMin === u.squadMax && u.squadMin > 1);
+    const ranged = f.units.find(u => u.squadMin === 2 && u.squadMax === 3);
+    ok(one, 'there is a one-model Unit to check', one && one.name);
+    eq(U.sizeHtml(one), '', 'a Squad of exactly one says nothing at all');
+    if (fixed) eq(U.sizeHtml(fixed), `×${fixed.squadMax}`, 'a fixed size is a multiplier and no more');
+
+    const sa = A.create('ucm', 'Sizes', 2000);
+    const sg = A.addGroup(sa);
+    const rs = A.addSquad(sa, sg.id, ranged.id, 2);
+    A.addSquad(A.get(sa.id), sg.id, one.id, 1);
+    await B.renderBuilder(sa.id);
+    const h = els['view-army'].innerHTML;
+    // Not /dzc-size[^"]*/ -- that also matches the wrapper's own dzc-sizes.
+    const tabs = (h.match(/class="dzc-size(?![a-z])/g) || []).length;
+    eq(String(tabs), String(ranged.squadMax - ranged.squadMin + 1),
+       'a range gets one tab per legal size, not a stepper');
+    ok(/dzc-size is-on/.test(h), 'and the size it is now is the one selected');
+    B.setCount(rs.id, 3);
+    eq(String(A.findSquad(A.get(sa.id), rs.id).models.length), '3',
+       'pressing a tab sets the Squad to that size');
+    // The one-model Squad next to it must not have grown a control or a label.
+    ok(!/×1/.test(h), 'and nothing anywhere prints a Squad of one as ×1');
+    A.remove(sa.id);
+  }
+
   /* The Collection's arithmetic, which nothing had asserted either.
    *
    * It counts MODELS, not Squads — "I own four Sabres" is what decides whether

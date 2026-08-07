@@ -140,7 +140,15 @@
     if (u.type === 'Behemoth' && u.groupEquivalent != null) {
       return `Groups Equivalent ${u.groupEquivalent}`;
     }
-    return u.squadMin != null ? `Squad ${squadHtml(u)}` : '';
+    if (u.squadMin == null) return '';
+    /* A Squad of one is not a fact about the Squad, it is the absence of one.
+     * "Squad 1" was printed on every single-model Unit in the game and told
+     * you nothing you could act on -- Jet, 2026-08-07: "don't bother showing
+     * ANYTHING like 1x or 1 or squad size 1". */
+    if (u.squadMin === 1 && u.squadMax === 1) return '';
+    // A size with no choice in it is a multiplier and nothing else.
+    if (u.squadMin === u.squadMax) return `×${u.squadMax}`;
+    return `Squad ${squadHtml(u)}`;
   }
 
   /* Two columns, three rows. Each row pairs stats that mean something

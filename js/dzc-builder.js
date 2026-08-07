@@ -1064,6 +1064,40 @@
     </span>`;
   }
 
+  /* How big the Squad is, as the thing it actually is: a choice between a
+   * handful of legal numbers.
+   *
+   * Jet, 2026-08-07 — a Squad of exactly one shows NOTHING ("don't bother
+   * showing ANYTHING like 1x or 1 or squad size 1"), a Squad with one legal
+   * size shows "×3" and no other word, and a range becomes a tab switcher.
+   *
+   * A stepper is the wrong control for a choice of three or four numbers: it
+   * makes you press twice to go from 2 to 4 and it never tells you what the
+   * top is until you hit it. The tabs say the whole range at a glance and any
+   * of them is one press away.
+   *
+   * 2–9, 3–6, 3–9, 4–8 and 6–12 keep the stepper. Jet has not decided what
+   * the big Squads should be, and eleven tabs is not a tab switcher. The line
+   * is drawn where Jet drew it: every range named for tabs starts at 1 or 2
+   * and offers at most six numbers, and every range left open fails one of
+   * those. It is not a guess at how wide is too wide. */
+  function sizeControl(army, sq, u) {
+    const lo = u.squadMin, hi = u.squadMax;
+    if (lo == null || hi == null) return stepperHtml(army, sq);
+    if (lo === hi) return hi === 1 ? '' : `<span class="dzc-sq-fixed">×${hi}</span>`;
+    if (lo > 2 || hi - lo > 5) return stepperHtml(army, sq);
+    const n = sq.models.length;
+    const tabs = [];
+    for (let i = lo; i <= hi; i++) {
+      const r = i === n ? { ok: true } : window.DZCArmy.canSetCount(army, sq.id, i);
+      tabs.push(`<button type="button" class="dzc-size${i === n ? ' is-on' : ''}"
+        ${r.ok ? '' : `disabled title="${esc(r.reason || '')}"`}
+        aria-pressed="${i === n}" aria-label="${esc(u.name)}, ${i} model${i === 1 ? '' : 's'}"
+        onclick="DZCBuilder.setCount('${sq.id}',${i})">${i}</button>`);
+    }
+    return `<span class="dzc-sizes" role="group" aria-label="Squad size">${tabs.join('')}</span>`;
+  }
+
   /* How many models in this Squad are this variant.
    *
    * It replaces one <select> per model. The dropdowns hid the choice twice
@@ -1133,10 +1167,14 @@
     // A Transport's count is DERIVED from its cargo -- "as many as needed"
     // (3.2.4) -- so it gets no stepper at all. Making it uneditable is the
     // enforcement; a stepper you then argue with is not.
+    /* A Transport's count is derived and a count of one says nothing, so one
+     * Transport gets no chip at all rather than a padlock over a 1. */
     const stepper = isTransport
-      ? `<span class="dzc-stepper is-derived" title="A Transport’s count follows its cargo (3.2.4)">
-           ${window.DZCIcon('lock', { size: 12 })}<b>${s.models.length}</b></span>`
-      : stepperHtml(a, s);
+      ? (s.models.length > 1
+        ? `<span class="dzc-stepper is-derived" title="A Transport’s count follows its cargo (3.2.4)">
+             ${window.DZCIcon('lock', { size: 12 })}<b>${s.models.length}</b></span>`
+        : '')
+      : sizeControl(a, s, u);
 
 
     /* Transport assignment. A select could show a name and a number and
@@ -1167,7 +1205,8 @@
       <span class="dzc-carry-lab">${window.DZCIcon('local_shipping', { size: 14 })}Transport</span>
       ${carrierUnit
         ? `<span class="dzc-carry-now">${U.transportHtml(carrierUnit)}
-             <b>${esc(carrierUnit.name)}</b><i>× ${carrier.models.length}</i>
+             <b>${esc(carrierUnit.name)}</b>${carrier.models.length > 1
+               ? `<i>× ${carrier.models.length}</i>` : ''}
              <button type="button" class="dzc-icon-btn" title="Walks on instead"
                      onclick="DZCBuilder.assignTransport('${s.id}','')"
                      aria-label="Remove the Transport">${window.DZCIcon('close', { size: 14 })}</button></span>`
@@ -1895,7 +1934,7 @@
                      : '<span class="dzc-carry-noart"></span>'}
         <span class="dzc-carry-name">${esc(o.unit.name)}</span>
         <span class="dzc-carry-caps">${U.transportHtml(o.unit)}</span>
-        <span class="dzc-carry-sum"><b>× ${o.need}</b>${
+        <span class="dzc-carry-sum"><b>${o.need > 1 ? `× ${o.need}` : ''}</b>${
           total ? `<i>${total}pts</i>` : ''}</span>
         <span class="dzc-carry-fit">${o.exact
           ? `${window.DZCIcon('check_circle', { size: 14 })}Exactly full`
@@ -2029,7 +2068,7 @@
       return `<div class="pr-squad${depth ? ' pr-squad--nested' : ''}" style="--depth:${depth}">
         ${printOpts.art && u.art ? `<img class="pr-art" src="${esc(u.art)}" alt="" onerror="this.remove()">` : ''}
         <div class="pr-sq-line">
-          <span class="pr-sq-n">${s.models.length}×</span>
+          ${s.models.length > 1 ? `<span class="pr-sq-n">${s.models.length}×</span>` : ''}
           <span class="pr-sq-name">${esc(u.name)}</span>
           <span class="pr-sq-cat" data-cat="${esc(u.category)}">${esc(u.category)}</span>
           ${s.commander ? `<span class="pr-cmdr">${esc(commanderTagName(a, s))}</span>` : ''}
@@ -2448,6 +2487,11 @@
       say('Group duplicated.', 'add');
     },
     removeSquad: id => { window.DZCArmy.removeSquad(current, id); refresh(); },
+    setCount: (id, n) => {
+      const r = window.DZCArmy.setModelCount(current, id, n);
+      if (r && !r.ok) return say(r.reason);
+      refresh();
+    },
     count: (id, d) => {
       const s = window.DZCArmy.findSquad(current, id);
       if (!s) return;
