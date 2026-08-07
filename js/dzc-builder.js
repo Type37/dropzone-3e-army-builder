@@ -1086,7 +1086,8 @@
       U.sizeHtml(u) ? `<span>${U.sizeHtml(u)}</span>` : ''
     ].filter(Boolean).join('');
 
-    return `<div class="dzc-squad${isTransport ? ' is-transport' : ''}" style="--depth:${depth}">
+    return `<div class="dzc-squad${isTransport ? ' is-transport' : ''}${
+      riders.length ? ' is-carrier' : ''}" style="--depth:${depth}">
       <div class="dzc-sq-main">
         ${u.art ? `<img class="dzc-sq-art" src="${esc(u.art)}" alt="" loading="lazy" onerror="this.remove()">` : ''}
         <div class="dzc-sq-id">
@@ -1114,7 +1115,17 @@
       <div class="dzc-sq-opts">
         ${transportPicker}
       </div>
-      ${riders.map(r => squadHtml(a, g, r, depth + 1)).join('')}
+      <!-- What is riding in this thing, drawn as a bracket rather than left to
+           an indent. A carried Squad was one 2px rule and 22px of margin from
+           an uncarried one, which is a difference you have to already know to
+           look for -- and what rides in what IS the Group (3.2.4). The spine
+           runs the height of the cargo and an arm reaches into each Squad, so
+           the shape on screen is the shape on the table. -->
+      ${riders.length ? `<div class="dzc-riders">
+        <span class="dzc-riders-lab">${window.DZCIcon('local_shipping', { size: 13 })
+          }Aboard ${esc(u.name)}</span>
+        ${riders.map(r => squadHtml(a, g, r, depth + 1)).join('')}
+      </div>` : ''}
     </div>`;
   }
 

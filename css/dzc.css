@@ -1021,7 +1021,42 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   padding: 6px 0; border-top: 1px solid var(--line, #eee5d6);
 }
 .dzc-squad:first-of-type { border-top: 0; padding-top: 4px; }
-.dzc-squad .dzc-squad { border-left: 2px solid var(--acc); padding-left: 12px; }
+
+/* WHAT RIDES IN WHAT, drawn.
+   
+   A carried Squad used to differ from an uncarried one by 22px of margin and a
+   2px rule down its left edge -- a difference you have to already be looking
+   for. What rides in what is not decoration on a Group, it IS the Group
+   (3.2.4), and it is the thing you check when you are working out whether the
+   list you have is the list you meant.
+   
+   So it is a bracket: a spine down the full height of the cargo in the faction
+   accent, an arm reaching into each Squad aboard, and the carrier named at the
+   top of it. The indent lives on this wrapper rather than on each rider, so
+   one level of nesting is one step whatever is inside it. */
+.dzc-riders { position: relative; margin: 8px 0 2px; padding-left: var(--sq-indent, 22px); }
+.dzc-riders::before {
+  content: ''; position: absolute; left: 0; top: 3px; bottom: 8px;
+  width: 4px; background: var(--acc, #1b3a5c);
+}
+.dzc-riders > .dzc-squad {
+  position: relative; margin-left: 0; border-top: 0; padding-top: 8px;
+}
+/* The arm into each Squad. It lands on the title line rather than the top edge
+   so it points at the name, which is the thing it is joining you to. */
+.dzc-riders > .dzc-squad::before {
+  content: ''; position: absolute; left: calc(var(--sq-indent, 22px) * -1);
+  top: 26px; width: var(--sq-indent, 22px); height: 4px; background: var(--acc, #1b3a5c);
+}
+.dzc-riders-lab {
+  display: inline-flex; align-items: center; gap: 4px; margin-bottom: 2px;
+  font: 700 10.5px/1 var(--font-condensed, 'Jost', sans-serif);
+  text-transform: uppercase; letter-spacing: .05em; color: var(--acc, #1b3a5c);
+}
+.dzc-riders-lab svg { flex: 0 0 auto; }
+/* A carrier says so on its own edge as well, so the two ends of the bracket
+   are the same colour and you can find the top of it from the bottom. */
+.dzc-squad.is-carrier > .dzc-sq-main { border-left: 4px solid var(--acc, #1b3a5c); padding-left: 8px; }
 /* A Squad reads as the unit does when you open it: art, the capacity symbol at
    size beside the name, the meta line, the stats, the rules, a block per
    variant and the whole weapon table. Laid out with flex and wrapping rather
