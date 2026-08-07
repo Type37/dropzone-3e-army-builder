@@ -336,6 +336,16 @@
     const spend = window.DZCArmy.categorySpend(a);
     const std = spend.standard || 0;
     const playable = a.groups.some(g => g.squads.some(s => s.commander));
+    /* The meter has to be in the same unit as the cap it is measured against.
+     * maxGroups is an allowance of GROUPS and a Behemoth spends several of
+     * them (Behemoth rules 1.1), so counting the cards on screen meant the one
+     * number you watch to decide whether there is room for another Group read
+     * 3 of 16 on a list already using 15. validate has counted it correctly
+     * the whole time, which made the rail and the error disagree. */
+    const gUsed = window.DZCArmy.groupsUsed(a);
+    const gCards = a.groups.length;
+    const gTitle = gUsed === gCards ? ''
+      : ` title="${esc(`${gCards} Group card${gCards === 1 ? '' : 's'} — a Behemoth counts as several (1.1)`)}"`;
 
     /* The ratio rule, drawn.
      *
@@ -436,7 +446,7 @@
           <button type="button" class="dzc-rail-peek" aria-expanded="${railOpen}"
                   aria-controls="dzc-rail-body" onclick="DZCBuilder.toggleRail()">
             <b>${left}</b><span>pts left</span>
-            <i>${a.groups.length} of ${maxG || '—'} Groups</i>
+            <i${gTitle}>${gUsed} of ${maxG || '—'} Groups</i>
             ${v.errors.length ? `<em class="is-err">${v.errors.length} to fix</em>`
               : v.warnings.length ? `<em>${v.warnings.length} note${v.warnings.length === 1 ? '' : 's'}</em>`
               : '<em class="is-ok">legal</em>'}
@@ -457,7 +467,7 @@
             </div>
             <div class="dzc-rail-track"><i style="width:${pct}%"></i></div>
             <p class="dzc-rail-line">${cost} of ${a.pointsLimit}pts spent</p>
-            <p class="dzc-rail-line">${a.groups.length} of ${maxG || '—'} Groups</p>
+            <p class="dzc-rail-line"${gTitle}>${gUsed} of ${maxG || '—'} Groups</p>
           </div>
 
           <div class="dzc-rail-card">
@@ -1804,6 +1814,17 @@
   /* The printed sheet is the deployment plan, so it keeps the nesting tree and
    * states capacity at each level. Everything else -- chrome, art, colour --
    * is dropped, because none of it helps at a table. */
+  /* The sheet's Group line, in the unit the allowance is in. A Behemoth is
+   * several Groups (1.1), so a sheet reading "2 Groups" for a list spending
+   * six of a Clash's twelve was telling the table the wrong number. Both are
+   * printed when they differ, because the cards in front of you are two. */
+  function sheetGroups(a) {
+    const used = window.DZCArmy.groupsUsed(a);
+    const cards = a.groups.length;
+    const g = n => `${n} Group${n === 1 ? '' : 's'}`;
+    return used === cards ? g(used) : `${g(used)} on ${cards} cards`;
+  }
+
   function sheetHtml() {
     const a = current;
     if (!a) return '';
@@ -1947,7 +1968,7 @@
         <h1 class="pr-title">${esc(a.name)}</h1>
         <p class="pr-sub"><span>${esc((FACTIONS.find(f => f.id === a.faction) || {}).name || a.faction)}</span>
           <span>${size ? esc(size.label) : ''}</span>
-          <span>${a.groups.length} Group${a.groups.length === 1 ? '' : 's'}</span>
+          <span>${sheetGroups(a)}</span>
           <span><b>${window.DZCArmy.armyCost(a)}</b> / ${a.pointsLimit}pts</span></p>
       </div>
       ${commanderBlock}

@@ -931,6 +931,26 @@ console.log('\nevery screen renders');
     A.remove(ba.id);
   }
 
+  /* And the builder's own Group meter, which is measured against an allowance
+   * counted in Groups — so it has to be counted in Groups too. It was counting
+   * cards, which put the rail and validate's own error on different numbers
+   * for the same army. */
+  {
+    const ga = A.create('shaltari', 'Groups meter', 3000);
+    A.addSquad(ga, A.addGroup(ga).id, 'dragon', 1);
+    A.addSquad(ga, A.addGroup(ga).id, 'warstrider', 1);
+    await B.renderBuilder(ga.id);
+    const rail = els['view-army'].innerHTML;
+    const meter = (rail.match(/(\d+) of (\d+|—) Groups/) || []);
+    eq(meter[1], String(A.groupsUsed(A.get(ga.id))),
+       'the rail counts what the Groups are worth, not the cards (1.1)');
+    ok(A.groupsUsed(A.get(ga.id)) > 2, 'and this army is worth more than its two cards',
+       String(A.groupsUsed(A.get(ga.id))));
+    ok(/Group cards? — a Behemoth counts as several/.test(rail),
+       'saying how many cards that is, so the two numbers are not a mystery');
+    A.remove(ga.id);
+  }
+
   /* The Collection's arithmetic, which nothing had asserted either.
    *
    * It counts MODELS, not Squads — "I own four Sabres" is what decides whether
