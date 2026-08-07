@@ -1344,7 +1344,11 @@
          *
          * What is left is the two controls, which the position cannot carry:
          * get out, and ride something else. */
-        ? `<span class="dzc-carry-lab">${window.DZCIcon('local_shipping', { size: 13 })}Aboard</span>
+        /* The word went too. Jet, 2026-08-07: "we don't need a whole element to
+           indicate ABOARD when we have the lines." The lorry says transport,
+           the bracket says which one, and the two buttons say what you can do
+           about it. */
+        ? `<span class="dzc-carry-lab">${window.DZCIcon('local_shipping', { size: 13 })}</span>
            <button type="button" class="dzc-icon-btn" title="Walks on instead"
                    onclick="DZCBuilder.assignTransport('${s.id}','')"
                    aria-label="Take ${esc(u.name)} out of its Transport"
@@ -1451,10 +1455,10 @@
            runs the height of the cargo and an arm reaches into each Squad, so
            the shape on screen is the shape on the table. -->
       ${riders.length ? `<div class="dzc-riders">
-        <!-- Just "Aboard". The card the spine comes out of is directly above
-             and already says which Transport this is; naming it again here is
-             the doubling. -->
-        <span class="dzc-riders-lab">${window.DZCIcon('local_shipping', { size: 13 })}Aboard</span>
+        <!-- No label at all. Jet, 2026-08-07: "we don't need a whole element
+             to indicate ABOARD when we have the lines." The spine comes out of
+             the carrier and reaches into each rider; a word saying so is the
+             picture explained back to you. -->
         ${riders.map(r => squadHtml(a, g, r, depth + 1)).join('')}
       </div>` : ''}
     </div>`;

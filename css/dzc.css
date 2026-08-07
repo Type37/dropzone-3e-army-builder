@@ -416,6 +416,8 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   text-transform: uppercase; letter-spacing: .02em; color: var(--ink-2, #6b6459);
   overflow-wrap: normal; word-break: keep-all;
 }
+/* The die sits with the number, not beside it: "5" and the cube are one value. */
+.dzc-wc-v svg { vertical-align: -2px; margin-left: 2px; opacity: .75; }
 .dzc-wc-v {
   font: 600 14px/1.15 var(--font-numeric, 'Outfit', sans-serif);
   font-variant-numeric: tabular-nums lining-nums; color: var(--ink, #24201c);
@@ -1071,15 +1073,18 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   content: ''; position: absolute; left: calc(var(--sq-indent, 22px) * -1);
   top: 26px; width: var(--sq-indent, 22px); height: 4px; background: var(--acc, #1b3a5c);
 }
-.dzc-riders-lab {
-  display: inline-flex; align-items: center; gap: 4px; margin-bottom: 2px;
-  font: 700 10.5px/1 var(--font-condensed, 'Jost', sans-serif);
-  text-transform: uppercase; letter-spacing: .05em; color: var(--acc, #1b3a5c);
-}
-.dzc-riders-lab svg { flex: 0 0 auto; }
 /* A carrier says so on its own edge as well, so the two ends of the bracket
    are the same colour and you can find the top of it from the bottom. */
+/* The carrier's own edge, and ROOM for it. Jet, 2026-08-07: "if we moved the
+   move/armour/dp just a tiny bit to the right we could get the line to work."
+   The spine and the arms are drawn at the left edge of the card, and the stat
+   table started at that same x -- so the line and the numbers were fighting
+   for the same eight pixels and neither read. Everything inside a Squad steps
+   right by the width of the line plus a gap, which is all the line ever
+   needed. */
 .dzc-squad.is-carrier > .dzc-sq-main { border-left: 4px solid var(--acc, #1b3a5c); padding-left: 8px; }
+.dzc-squad > .dzc-sq-body, .dzc-squad > .dzc-sq-opts, .dzc-squad > .dzc-vblock,
+.dzc-squad > .dzc-variants { padding-left: 12px; }
 /* A Squad reads as the unit does when you open it: art, the capacity symbol at
    size beside the name, the meta line, the stats, the rules, a block per
    variant and the whole weapon table. Laid out with flex and wrapping rather
@@ -1328,13 +1333,11 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   background: rgba(255,255,255,.14);
   transition: transform 260ms cubic-bezier(.34,1.4,.64,1), background 200ms ease;
 }
-/* The sweep, behind the label. Same gold band as the Create button. */
-.dzc-add-squad::before {
-  content: ''; position: absolute; inset: 0; z-index: -1;
-  background: linear-gradient(105deg, transparent 30%, var(--gold, #c9a92c) 50%, transparent 70%);
-  opacity: .55; transform: translateX(-130%);
-  transition: transform 560ms cubic-bezier(.33,0,.67,1);
-}
+/* NO SWEEP. Jet, 2026-08-07: "remove the long slash in the add squad. the
+   spin is fun but the flash is distracting." A gold band travelling across the
+   button pulls the eye to the movement rather than to the thing you are about
+   to press. The spin on the + stays, and so does the hairline: one draws
+   itself along an edge, the other flew across the label. */
 /* A hairline that draws itself along the bottom edge. */
 .dzc-add-squad::after {
   content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px;
@@ -1344,7 +1347,6 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-add-squad:hover, .dzc-add-squad:focus-visible {
   box-shadow: inset 0 0 0 2px var(--gold, #c9a92c);
 }
-.dzc-add-squad:hover::before, .dzc-add-squad:focus-visible::before { transform: translateX(130%); }
 .dzc-add-squad:hover::after, .dzc-add-squad:focus-visible::after { transform: scaleX(1); }
 .dzc-add-squad:hover .dzc-add-squad-i,
 .dzc-add-squad:focus-visible .dzc-add-squad-i {

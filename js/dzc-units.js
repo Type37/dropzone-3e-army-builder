@@ -501,7 +501,10 @@
       `<div class="dzc-wc-stat" title="${esc(window.DZC.weaponColHelp(k))}">
          <span class="dzc-wc-k">${k === 'MA' ? window.DZCIcon.moveAttack({ size: 13 }) : ''
            }${esc(window.DZC.weaponColLabel(k))}</span>
-         <span class="dzc-wc-v">${esc(v)}</span></div>`;
+         <span class="dzc-wc-v">${esc(v)}${k === 'Att'
+           /* "5d6". Attacks IS a number of dice, so it prints as one --
+              Jet, 2026-08-07. */
+           ? window.DZCIcon('dice', { size: 13 }) : ''}</span></div>`;
     const only = (w.variants || []).length ? w.variants.join(', ') : '';
     return `<article class="dzc-wc${o.cls ? ' ' + o.cls : ''}">
       <header class="dzc-wc-head">
