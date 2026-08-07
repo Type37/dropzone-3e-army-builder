@@ -1127,6 +1127,28 @@
     if (!v) return '';
     const A = window.DZCArmy;
     const have = s.models.filter(m => m.variant === v.name).length;
+
+    /* A one-model Squad SWITCHES, it does not count.
+     *
+     * Jet, 2026-08-07: "there's no way to change a unit's guns/variants." On a
+     * Battle Bus -- squadMin and squadMax both 1 -- the steppers were a
+     * deadlock by construction. Taking Rocket Bus from 0 to 1 asks for a
+     * second model and canSetCount refuses it; taking Bus from 1 to 0 asks for
+     * an empty Squad and is refused too. So the only Units in the game whose
+     * Variant is their whole identity were the ones whose Variant could never
+     * be changed, and every gun on the card sat greyed out for a Variant you
+     * could not select.
+     *
+     * "A Squad may contain any mixture of Variants" (3.2.2) is about a Squad
+     * with more than one model in it. With one, the mixture is the choice, so
+     * it is a radio rather than a pair of steppers. */
+    if (s.models.length === 1 && (u.squadMax === 1 || (u.variants || []).length > 1)
+        && u.squadMin === u.squadMax) {
+      const on = s.models[0].variant === v.name;
+      return `<button type="button" class="dzc-v-pick${on ? ' is-on' : ''}"
+        aria-pressed="${on}" aria-label="${esc(u.name)}: ${esc(v.name)}"
+        onclick="DZCBuilder.pickVariant('${s.id}',${idx})">${on ? 'Taken' : 'Take'}</button>`;
+    }
     const step = (to, icon, label) => {
       const chk = A.canSetVariantCount(a, s.id, v.name, to);
       const b = `<button type="button" ${chk.ok ? '' : 'disabled'}
@@ -1250,7 +1272,16 @@
     return `<div class="dzc-squad${isTransport ? ' is-transport' : ''}${
       riders.length ? ' is-carrier' : ''}" style="--depth:${depth}" data-sid="${s.id}">
       <div class="dzc-sq-main">
-        ${u.art ? `<img class="dzc-sq-art" src="${esc(u.art)}" alt="" loading="lazy" onerror="this.remove()">` : ''}
+        <!-- ONE THUMBNAIL PER MODEL. Jet, 2026-08-07: "we should show the
+             models in the group. IE if you have 2 minis of Legionaires that
+             is visually displayed." A Squad is a number of models on a table,
+             and a single photo said "Legionnaires" where three of them say
+             what you are actually putting down. -->
+        ${u.art ? `<span class="dzc-sq-minis${s.models.length > 1 ? ' is-many' : ''}"
+          aria-label="${esc(u.name)} × ${s.models.length}">${
+          s.models.map(() => `<img class="dzc-sq-art" src="${esc(u.art)}" alt=""
+            loading="lazy" onerror="this.closest('.dzc-sq-minis').remove()">`).join('')
+        }</span>` : ''}
         <div class="dzc-sq-id">
           <h3 class="dzc-sq-title">
             <!-- Drag this Squad onto a Transport in the same Group to put it
@@ -1285,10 +1316,15 @@
            short lines before you reached the guns. Below the two-pane
            breakpoint they stack, stats first. -->
       <div class="dzc-sq-body">
-        <div class="dzc-sq-stats">${U.statsHtml(u)}</div>
+        <div class="dzc-sq-side">
+          <div class="dzc-sq-stats">${U.statsHtml(u)}</div>
+          <!-- The keywords go UNDER the stats, in the same column: they are
+               what the Unit is, read beside its numbers rather than after the
+               whole weapon block. -->
+          ${u.special ? `<div class="dzc-sq-rules">${U.rulesHtml(u.special, a.faction)}</div>` : ''}
+        </div>
         ${compact ? '' : `<div class="dzc-sq-wpn">${U.weaponCardsHtml(u, a.faction, squadGuns(s))}</div>`}
       </div>
-      ${u.special ? `<div class="dzc-sq-rules">${U.rulesHtml(u.special, a.faction)}</div>` : ''}
       ${U.variantsHtml(u, (v, i) => variantStepper(a, s, u, i), { stats: !compact })}
       ${upgradesHtml(a, s, u)}
       <div class="dzc-sq-opts">
@@ -2522,6 +2558,17 @@
      * inline handler. The refusal is spoken because the button is disabled
      * only while the reason is on its wrapper — a keyboard reaching it another
      * way should still hear why. */
+    /* The one-model case: set the model's Variant outright rather than trying
+     * to add one of a kind and remove one of another, which cannot be done in
+     * either order without passing through an illegal Squad size. */
+    pickVariant: (id, idx) => {
+      const s = window.DZCArmy.findSquad(current, id);
+      const u = s && window.DZCArmy.unitOf(current, s);
+      const v = u && (u.variants || [])[idx];
+      if (!v || !s.models.length) return;
+      window.DZCArmy.setModelVariant(current, id, 0, v.name);
+      refresh();
+    },
     variantCount: (id, idx, n) => {
       const s = window.DZCArmy.findSquad(current, id);
       const u = s && window.DZCArmy.unitOf(current, s);

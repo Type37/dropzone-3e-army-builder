@@ -432,13 +432,22 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    to carry across a table. Faded, desaturated and on a dashed edge, so the
    whole card reads as inactive before you read a word of it. Still fully
    legible: it is what you are deciding whether to buy. */
+/* Greyed, not ERASED. Jet, 2026-08-07: "undo what you just did with the guns.
+   they're GONE now."
+   
+   A Battle Bus is a one-model Squad whose every gun belongs to a Variant, so
+   on the default Bus every weapon on the card is `is-off` at once. At .58
+   opacity, desaturated, on a transparent background, with the gaps between
+   cards just removed and the padding halved, the whole block dissolved into
+   the paper -- the guns had not moved, they had stopped being visible. The
+   background stays, the filter goes, and the fade is much lighter: still
+   plainly not yours, still plainly there. */
 .dzc-wcards--marked .dzc-wc.is-off {
-  opacity: .58; filter: saturate(.35); border-style: dashed;
-  background: transparent;
+  opacity: .82; border-style: dashed;
 }
 .dzc-wcards--marked .dzc-wc.is-off .dzc-wc-name,
 .dzc-wcards--marked .dzc-wc.is-off .dzc-wc-v { color: var(--ink-2, #6b6459); font-weight: 500; }
-.dzc-wcards--marked .dzc-wc.is-swapped { opacity: .58; filter: saturate(.35); }
+.dzc-wcards--marked .dzc-wc.is-swapped { opacity: .7; }
 .dzc-wcards--marked .dzc-wc.is-swapped .dzc-wc-name,
 .dzc-wcards--marked .dzc-wc.is-swapped .dzc-wc-v { text-decoration: line-through; color: var(--ink-2, #6b6459); }
 
@@ -1077,6 +1086,12 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    than a fixed grid, so the same markup collapses down a phone without a
    second build. */
 .dzc-sq-main { display: flex; align-items: flex-start; gap: 9px; flex-wrap: wrap; }
+/* A Squad is a number of models, so it is drawn as a number of models: one
+   thumbnail per model, wrapping inside a fixed column so a Squad of six does
+   not push the name off the row. One model keeps the full-size photo. */
+.dzc-sq-minis { flex: 0 0 auto; display: flex; flex-wrap: wrap; gap: 2px; width: 84px; }
+.dzc-sq-minis.is-many { width: 86px; }
+.dzc-sq-minis.is-many .dzc-sq-art { width: 41px; height: 29px; }
 .dzc-sq-art {
   flex: 0 0 auto; width: 84px; height: 60px; object-fit: contain;
   background: var(--surface-3, #f2ece0);
@@ -1118,7 +1133,25 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   .dzc-sq-body > .dzc-sq-stats, .dzc-sq-body > .dzc-sq-wpn { width: 100%; }
 }
 .dzc-sq-stats { margin-top: 5px; }
+/* Take / Taken, for a Squad of one model whose Variant is a radio rather than
+   a count. Same square language as the Squad-size tabs. */
+.dzc-v-pick {
+  min-height: 24px; padding: 2px 9px; cursor: pointer; border-radius: 0;
+  border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff);
+  color: var(--ink-2, #6b6459);
+  font: 600 11px/1 var(--font-ui, 'Jost', system-ui, sans-serif);
+}
+.dzc-v-pick:hover { border-color: var(--acc, #1b3a5c); color: var(--ink, #24201c); }
+.dzc-v-pick.is-on {
+  background: var(--acc, #1b3a5c); border-color: var(--acc, #1b3a5c); color: #fff;
+}
+/* Keyword abilities sit under the core stats, in the left column with them --
+   they are what the Unit IS, read alongside its numbers rather than after the
+   whole weapon block. Jet, 2026-08-07. */
 .dzc-sq-rules { margin-top: 4px; }
+.dzc-sq-side { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.dzc-sq-body > .dzc-sq-side { flex: 0 1 300px; }
+.dzc-sq-side > .dzc-sq-stats, .dzc-sq-side > .dzc-sq-rules { margin-top: 0; width: 100%; }
 /* The table never shrinks its columns to fit — it scrolls inside its own box,
    so a phone gets every number rather than a squeezed, unreadable version. */
 .dzc-sq-wpn { margin-top: 8px; overflow-x: auto; }
