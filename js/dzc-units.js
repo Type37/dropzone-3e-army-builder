@@ -502,7 +502,7 @@
       </header>
       <div class="dzc-wc-body">
         <div class="dzc-wc-arc" title="${esc(window.DZCIcon.arcLabel(w.arc) || '')}">
-          ${window.DZCIcon.arc(w.arc, { size: 46 })}
+          ${window.DZCIcon.arc(w.arc, { size: 38 })}
           <span>${esc(w.arc || '')}</span>
         </div>
         <div class="dzc-wc-stats">
@@ -514,6 +514,16 @@
       ${w.special ? `<div class="dzc-wc-rules">${rulesHtml(w.special, fac)}</div>` : ''}
     </article>`;
   }
+
+  /* Which guns were this Squad's last time we drew it, keyed by Squad and
+   * weapon name. Buying an upgrade or taking a Variant rebuilds the whole
+   * builder, so without a memory across renders there is no way to tell "this
+   * gun is yours" from "this gun just became yours" — and the moment you paid
+   * for it is the moment worth marking.
+   *
+   * A name the map has never seen is not an unlock: the first draw of a Squad
+   * would otherwise light up every gun it owns. */
+  const wasLive = new Map();
 
   /* The same list of weapons, as cards. Same filtering and the same marks. */
   function weaponCardsHtml(u, faction, opts) {
@@ -528,8 +538,15 @@
       .filter(([w]) => !lens || w.box !== 'variant' || (w.variants || []).indexOf(lens) !== -1)
       .map(([w, i]) => {
         const mark = gone[i] ? 'is-swapped' : weaponLive(u, w, o) ? 'is-live' : 'is-off';
+        let gained = '';
+        if (marking && o.key) {
+          const id = o.key + '|' + w.name;
+          const live = mark === 'is-live';
+          if (live && wasLive.get(id) === false) gained = ' is-gained';
+          wasLive.set(id, live);
+        }
         const cls = [w.box === 'upgrade' ? 'is-upgrade' : w.box === 'variant' ? 'is-variant' : '']
-          .concat(marking ? [mark] : []).filter(Boolean).join(' ');
+          .concat(marking ? [mark] : []).filter(Boolean).join(' ') + gained;
         return wpnCard(w, fac, { cls });
       }).join('');
     return `<div class="dzc-wcards${marking ? ' dzc-wcards--marked' : ''}">${cards}</div>`;

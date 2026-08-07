@@ -15,6 +15,13 @@
 
 /* ── 1. Theme Tokens ─────────────────────────────────────────── */
 :root {
+  /* Light unless the switch in Settings says otherwise, and SAID so — the dark
+     block declares `color-scheme: dark` and nothing declared the other half,
+     so a machine whose OS is dark got dark scrollbars, dark select popups and
+     dark number steppers on a paper-white page. The app was in light mode and
+     every control the browser draws was not. */
+  color-scheme: light;
+
   /* Typography */
   --font-wordmark: "Terminal Grotesque Open", "Roboto Slab", serif;
   --font-body: "Jost", "Segoe UI", -apple-system, sans-serif;

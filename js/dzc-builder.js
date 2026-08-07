@@ -885,7 +885,11 @@
    * every variant the weapon is printed for. */
   // Moved to DZCArmy.squadGuns — Play Mode needs the same answer, and two
   // copies of "what is in this Squad" is how they come to disagree.
-  const squadGuns = s => window.DZCArmy.squadGuns(s);
+  /* `key` is the Squad's id, and it is only for the unlock flash: every render
+   * rebuilds this markup from scratch, so a gun that just became yours is
+   * indistinguishable from one that always was unless something remembers the
+   * last answer per Squad. */
+  const squadGuns = s => Object.assign(window.DZCArmy.squadGuns(s), { key: s.id });
 
   function upgradesHtml(a, s, u) {
     const opts = window.DZCArmy.upgradesFor(a, s);

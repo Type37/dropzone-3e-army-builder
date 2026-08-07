@@ -407,7 +407,17 @@ await s.send('Runtime.evaluate', { expression: `localStorage.setItem('dfc_force_
    Light/Dark switch in Settings the entire time and not one shot of the dark
    side had ever been taken, so every DZC screen was only ever judged on
    paper. */
+/* And it PUTS IT BACK. The walk runs against localhost, which is the same
+   origin Jet has the app open on, so writing theme:'dark' into dfc_settings
+   and walking away left the real app in dark mode -- switched by a test, with
+   nothing on screen to say why or what had done it. A harness may not leave
+   the thing it measured in a different state than it found it. */
+let priorSettings = null;
 if (process.env.SHOT_THEME === 'dark') {
+  const was = await s.send('Runtime.evaluate', {
+    expression: `localStorage.getItem('dfc_settings')`, returnByValue: true
+  }).catch(() => null);
+  priorSettings = was?.result?.value ?? null;
   await s.send('Runtime.evaluate', {
     expression: `localStorage.setItem('dfc_settings', JSON.stringify(
       Object.assign(JSON.parse(localStorage.getItem('dfc_settings') || '{}'), { theme: 'dark' })))`
@@ -478,6 +488,15 @@ for (const [name, expr, clipSel] of STEPS) {
   writeFileSync(file, Buffer.from(shot.data, 'base64'));
   done.push(name);
   console.log(`  ${file}`);
+}
+
+// Put the theme back before the socket goes, whatever happened above.
+if (process.env.SHOT_THEME === 'dark') {
+  await s.send('Runtime.evaluate', {
+    expression: priorSettings == null
+      ? `localStorage.removeItem('dfc_settings')`
+      : `localStorage.setItem('dfc_settings', ${JSON.stringify(priorSettings)})`
+  }).catch(() => {});
 }
 
 ws.close();
