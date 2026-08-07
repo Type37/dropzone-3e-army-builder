@@ -928,6 +928,21 @@ console.log('\nevery screen renders');
        (view().match(/.{0,60}dzc-st is-on.{0,40}/) || [])[0]);
     ok(/disabled title="[^"]*Behemoth/.test(view()),
        'the buttons say why rather than vanishing');
+
+    /* 1.3: "Behemoths begin each Round with a number of Power tokens (PT)
+     * equal to their Power. When you may activate a normal Group, you may
+     * instead activate a Behemoth with PT remaining." Play Mode gave its
+     * Group the same one-shot activation box as everything else, which said a
+     * Behemoth with seven PT was finished for the Round after one Action. */
+    const pt = () => (view().match(/<b>(\d+)<\/b><i>of (\d+) PT/) || []).slice(1);
+    const pw = parseInt(win.DZC.faction('ucm').byId['ucm-heavy-battle-mech'].stats.Power, 10);
+    eq(pt().join('/'), `${pw}/${pw}`, 'a Behemoth starts the Round on a full Power track (1.3)');
+    P.pt(bsid, -1); P.pt(bsid, -1);
+    eq(pt().join('/'), `${pw - 2}/${pw}`, 'and spends one per Action');
+    P.round(1);
+    eq(pt().join('/'), `${pw}/${pw}`, 'refilled every Round, spent or not');
+    ok(/A Behemoth activates once per Power token/.test(view()),
+       'and its Group cannot be ticked off after one activation');
     A.remove(ba.id);
   }
 
