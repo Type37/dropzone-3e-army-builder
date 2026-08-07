@@ -46,11 +46,41 @@
   let armyId = null;
   let state = null;
 
+  /* A Behemoth prints several DP values — "6, 12, 22" — and "the final value
+   * is its actual DP" (Behemoth rules 1.5.5). The ones before it are the
+   * thresholds where it becomes Degraded and then Crippled.
+   *
+   * parseInt on the whole string takes the FIRST number, so a Dragon came into
+   * Play Mode with 6 damage points instead of 22 and would have been called
+   * dead at a quarter of the damage it takes to kill. */
+  function dpValues(u) {
+    return String((u && u.stats && u.stats.DP) || '')
+      .split(',').map(x => parseInt(x, 10)).filter(n => !isNaN(n));
+  }
+
+  function maxDp(u) {
+    const v = dpValues(u);
+    return v.length ? v[v.length - 1] : 1;
+  }
+
+  /* Intact, Degraded or Crippled, off the thresholds it has passed (1.5.5).
+   * Only a Behemoth has any: everything else is alive or it is not. */
+  function threshold(u, dp) {
+    const v = dpValues(u);
+    if (v.length < 2) return null;
+    const lost = v[v.length - 1] - dp;
+    // Two values means Intact or Crippled; three adds Degraded between them.
+    if (v.length >= 3 && lost >= v[1]) return 'Crippled';
+    if (v.length === 2 && lost >= v[0]) return 'Crippled';
+    if (lost >= v[0]) return 'Degraded';
+    return 'Intact';
+  }
+
   function blank(army) {
     const models = {}, squads = {};
     army.groups.forEach(g => g.squads.forEach(s => {
       const u = window.DZCArmy.unitOf(army, s);
-      const dp = u ? parseInt(u.stats && u.stats.DP, 10) || 1 : 1;
+      const dp = maxDp(u);
       models[s.id] = s.models.map(() => ({ dp: dp, max: dp, st: [] }));
       squads[s.id] = { st: [] };
     }));
@@ -305,6 +335,15 @@
   }).join('')}</span>
         <span class="dzc-play-alive">${aliveIn(s)}/${models.length}</span>
       </div>
+      ${(() => {
+        // A Behemoth's condition, from the damage it has taken (1.5.5).
+        // Degraded cannot Advance; Crippled cannot Advance or Charge and is
+        // worth half its points — which is worth knowing without counting.
+        const t = models.length === 1 ? threshold(u, models[0].dp) : null;
+        return t ? `<p class="dzc-play-cond is-${t.toLowerCase()}">${esc(t)}${
+          t === 'Degraded' ? ' — cannot Advance'
+            : t === 'Crippled' ? ' — cannot Advance or Charge, worth half points' : ''}</p>` : '';
+      })()}
       <div class="dzc-play-models">
         ${models.map((m, i) => `<div class="dzc-model${m.dp > 0 ? '' : ' is-dead'}">
           <button type="button" onclick="DZCPlay.dp('${s.id}',${i},-1)" aria-label="Damage">−</button>

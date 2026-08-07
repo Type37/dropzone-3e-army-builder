@@ -1571,6 +1571,14 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
    of the page instead of scrolling inside its card. min-width: 0 on the chain
    above it, because a flex item's default min-width is its content and that is
    what stops a scroller from ever being narrower than its table. */
+/* A Behemoth's condition. Degraded and Crippled change what it may do that
+   activation, so they read as a state rather than as a number to work out. */
+.dzc-play-cond {
+  margin: 4px 0 0; font-size: 11.5px; font-weight: 600;
+  color: var(--ink-2, #6b6459);
+}
+.dzc-play-cond.is-degraded { color: #a86a12; }
+.dzc-play-cond.is-crippled { color: #a3231a; }
 .dzc-play-wpn { margin-top: 6px; min-width: 0; }
 .dzc-play-wpn .dzc-wpn { font-size: 11.5px; }
 .dzc-play-squad, .dzc-play-models { min-width: 0; }
