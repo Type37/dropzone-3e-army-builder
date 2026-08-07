@@ -25,7 +25,7 @@ const SUITES = [
   ['fleet sync', 'test-fleet-sync.mjs'],
   ['house rules', 'test-house-rules.mjs'],
   ['render', 'test-dzc-render.mjs'],
-  ['css tokens', 'test-css-tokens.mjs']
+  ['shell', 'test-shell.mjs']
 ];
 
 let failed = 0;

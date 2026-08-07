@@ -6,12 +6,14 @@ The manifest is what makes the download honest: it carries the real byte size of
 every file, so the UI can tell the user "26.4 MB" before they commit to it rather
 than discovering it mid-download on tournament wifi.
 
-Re-run after adding ship art, a faction JSON, or any core asset:
+Re-run after adding unit art, a faction JSON, or any core asset:
     python scripts/gen-offline-manifest.py
 
 Groups:
   core  — app shell (html/css/js) + rules & stats data. Small, always synced.
-  art   — every ship/station/feature thumbnail. The bulk of the download.
+          The shell is read out of sw.js's CORE array, so the download and the
+          service worker's precache cannot disagree.
+  art   — every unit thumbnail. The bulk of the download.
 
 Full-resolution art (assets/art/*.webp) is deliberately NOT included: every
 on-screen view uses thumbUrl(), so full-res is only ever needed for printing,
@@ -19,23 +21,37 @@ which is not an offline-at-the-table activity.
 """
 import json
 import os
+import re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Files the app shell needs to boot with no network. Kept in sync with CORE in sw.js.
-CORE_FILES = [
-    'index.html',
-    'css/app.css',
-    'css/mobile-fixes.css',
-    'js/rank-insignia.js',
-    'js/calc-engine.js',
-    'js/calc-data.js',
-    'js/calc-ui.js',
-    'js/app.js',
-    'js/offline-sync.js',
-    'js/fleet-sync.js',
-    'manifest.webmanifest',
-]
+
+def core_files() -> list[str]:
+    """The app shell, read out of sw.js.
+
+    This used to be a hand-kept list with a comment saying it was "kept in sync
+    with CORE in sw.js". It was not. It still named js/app.js and the three
+    calc-* files, which belong to Dropfleet and are not in this repo, and it
+    named none of the twelve DZC modules or either DZC stylesheet -- so the
+    download the app offers as "Rules, stats & app" contained 26 MB of art and
+    no app. The four missing files printed a warning line each and nobody read
+    them.
+
+    Two lists that must agree is one list too many, so there is now one: sw.js
+    precaches CORE on install, and this reads the same array.
+    """
+    src = open(os.path.join(ROOT, 'sw.js'), encoding='utf-8').read()
+    body = re.search(r'const CORE\s*=\s*\[(.*?)\];', src, re.S)
+    if not body:
+        raise SystemExit('sw.js has no CORE array — nothing to build a manifest from')
+    out = []
+    for raw in re.findall(r"'([^']+)'", body.group(1)):
+        path = raw.lstrip('./')
+        # './' is the navigation entry; index.html is the file behind it.
+        if not path:
+            continue
+        out.append(path)
+    return out
 
 # Directories swept wholesale, with the group they belong to.
 DIR_GROUPS = [
@@ -71,7 +87,7 @@ def entry(path):
 def main():
     groups = {'core': [], 'art': []}
 
-    for path in CORE_FILES:
+    for path in core_files():
         full = os.path.join(ROOT, path)
         if os.path.exists(full):
             groups['core'].append(entry(path))
@@ -83,7 +99,7 @@ def main():
         groups[group].extend(entry(p) for p in found)
         print(f'  {group:5s} {subdir:22s} {len(found):4d} files')
 
-    # Dedupe (a file listed in CORE_FILES may also be swept from a directory),
+    # Dedupe (a file in sw.js CORE may also be swept from a directory),
     # keeping the first occurrence so group assignment stays stable.
     seen = set()
     for name in groups:
@@ -100,7 +116,7 @@ def main():
         'groups': [
             {'id': 'core', 'label': 'Rules, stats & app',
              'bytes': sum(e['b'] for e in groups['core']), 'files': groups['core']},
-            {'id': 'art', 'label': 'Ship artwork',
+            {'id': 'art', 'label': 'Unit artwork',
              'bytes': sum(e['b'] for e in groups['art']), 'files': groups['art']},
         ],
     }

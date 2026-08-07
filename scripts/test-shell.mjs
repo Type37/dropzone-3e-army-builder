@@ -1,6 +1,14 @@
-/* Every custom property this app READS must be one it also SETS.
+/* The shipped shell, checked against itself.
  *
- * This suite exists because the dark theme was white text on white cards
+ * Two rules, both of the same kind: something the app declares in one place
+ * has to match what it does in another, and nothing at runtime ever says so.
+ *
+ *   1. every custom property read is one that is also set
+ *   2. every file index.html loads is in the offline cache and the manifest
+ *
+ * ── 1 ─────────────────────────────────────────────────────────────────────
+ *
+ * The first rule exists because the dark theme was white text on white cards
  * across the entire builder, the picker, the reference and Play Mode, and the
  * cause was six lines that look completely fine:
  *
@@ -20,9 +28,19 @@
  * JS, or setProperty -- and fail on the difference. A fallback does not count
  * as a definition, which is the whole point.
  *
- *   node scripts/test-css-tokens.mjs
+ * ── 2 ─────────────────────────────────────────────────────────────────────
+ *
+ * The second is the same shape one level out. sw.js precaches a CORE list and
+ * data/offline-manifest.json describes the download the app offers as "Rules,
+ * stats & app". Both are lists of what index.html loads, written by hand,
+ * beside a page that changes. The manifest's list had drifted so far it named
+ * four files from the Dropfleet build that are not in this repo and none of
+ * the twelve DZC modules -- so "download for offline use" fetched 26 MB of art
+ * and no app, and reported a size to match.
+ *
+ *   node scripts/test-shell.mjs
  */
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -138,6 +156,37 @@ for (const [name, file] of [...lightTokens].sort()) {
   if (THEME_FREE.has(name)) { pass++; continue; }
   ok(darkTokens.has(name), `${name} has a dark value`,
      `defined light-only in ${file} -- it will keep its paper colour on a dark page`);
+}
+
+/* ── 2. what the page loads is what goes offline ────────────────────────── */
+console.log('\nevery file index.html loads is cached offline');
+
+const page = html[0][1];
+const loads = [...page.matchAll(/(?:src|href)="((?!https?:|#|mailto:)[^"]+)"/g)]
+  .map(m => m[1])
+  .filter(u => /\.(js|css)$/.test(u));
+
+const sw = readFileSync(path.join(ROOT, 'sw.js'), 'utf8');
+const core = new Set([...(sw.match(/const CORE\s*=\s*\[([\s\S]*?)\];/) || [, ''])[1]
+  .matchAll(/'([^']+)'/g)].map(m => m[1].replace(/^\.\//, '')));
+
+const manifest = JSON.parse(readFileSync(path.join(ROOT, 'data/offline-manifest.json'), 'utf8'));
+const shipped = new Set(manifest.groups.flatMap(g => g.files).map(f => f.u.replace(/^\.\//, '')));
+
+for (const u of loads) {
+  ok(core.has(u), `sw.js precaches ${u}`,
+     'index.html loads it, so an install that has not fetched it yet goes offline without it.');
+  ok(shipped.has(u), `the offline manifest carries ${u}`,
+     'Download for offline use would report a size that does not include it, and not fetch it.');
+}
+
+/* Both lists must also be real files -- a stale entry is a 404 on install,
+ * and Cache.addAll rejects the WHOLE batch on one bad URL, so a single dead
+ * path takes the entire precache down with it. */
+for (const u of [...core, ...shipped]) {
+  if (u === '' || u === '/') continue;
+  ok(existsSync(path.join(ROOT, u)), `${u} is a file that exists`,
+     'Listed for offline use but not in the repo. Cache.addAll rejects the whole batch on one 404.');
 }
 
 console.log(`\n${pass} passed, ${fail} failed\n`);
