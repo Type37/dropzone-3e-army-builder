@@ -27,6 +27,12 @@
   --ink-2: #6b6459;
   --danger: #b3261e;
   --acc-ink: #1b3a5c;        /* the ink numbers are set in */
+  /* An issue panel, the pair to app.css's --warn-bg / --warn-ink. Those two
+     exist for both themes; the red ones were hardcoded, so a note went dark
+     olive on a dark page while an issue stayed a glaring block of pale pink
+     and the two severities stopped looking like two severities. */
+  --err-bg: #fde8e6;
+  --err-ink: #7a1c15;
   --font-ui: 'Jost', system-ui, sans-serif;
   --ease-deco: cubic-bezier(.33, 0, .67, 1);
 }
@@ -40,6 +46,8 @@ html[data-theme="dark"] {
   --ink-2: #9aa0a8;
   --danger: #e2685a;
   --acc-ink: #74a7e0;
+  --err-bg: #3a1f1c;
+  --err-ink: #e2685a;
 }
 /* The one place --acc-ink is a background rather than ink. A light navy under
    white text is unreadable, so it takes the saturated navy app.css already
@@ -586,7 +594,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    the thing you see and the shorter ones below it mean something. */
 .dzc-ratio.is-std .dzc-ratio-track { background: rgba(255,255,255,.3); }
 .dzc-ratio.is-std .dzc-ratio-track i { background: #fff; }
-.dzc-ratio.is-over { background: #fde8e6; color: #7a1c15; }
+.dzc-ratio.is-over { background: var(--err-bg, #fde8e6); color: var(--err-ink, #7a1c15); }
 
 /* ── Create: the one button that should feel like something ──
    Deco corners, a gold sweep that crosses on hover, and brackets that close
@@ -910,7 +918,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 }
 .dzc-issues ul { list-style: none; margin: 0; padding: 0; }
 .dzc-issues li { padding: 2px 0; }
-.dzc-issues--err { background: #fde8e6; color: #7a1c15; }
+.dzc-issues--err { background: var(--err-bg, #fde8e6); color: var(--err-ink, #7a1c15); }
 .dzc-issues--warn { background: var(--warn-bg, #fdf3d8); color: var(--warn-ink, #6b4e00); }
 /* The rule reference belongs at the end of the sentence, quiet, not worn as a
    badge on the front where it reads as a label for the whole line. */
@@ -1251,7 +1259,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-pick-list.is-list .dzc-pick-blocked { margin: 0; flex: 0 0 auto; max-width: 46%; }
 
 .dzc-icon-btn { flex: 0 0 auto; width: 24px; height: 24px; border: 0; border-radius: 4px; cursor: pointer; background: transparent; color: var(--ink-2, #6b6459); font-size: 18px; line-height: 1; }
-.dzc-icon-btn:hover { background: #fde8e6; color: #b3261e; }
+.dzc-icon-btn:hover { background: var(--err-bg, #fde8e6); color: var(--danger, #b3261e); }
 
 /* ── new-army dialog ── */
 .dzc-field { display: block; margin-bottom: 12px; }
