@@ -1275,6 +1275,30 @@
       : `Level ${(squad.commander || {}).level}`;
   }
 
+  /* THE PROBLEM, ON THE THING WITH THE PROBLEM. Jet, 2026-08-07: "this should
+   * live on the unit causing the issue."
+   *
+   * "Bear APC is not full — Transports must be taken full (3.2.4)" was in the
+   * rail and only there, which means reading a sentence at the top of the
+   * screen, finding the Bear it names somewhere in the army, and holding the
+   * two together. The rail keeps the count, because how many problems the list
+   * has is a fact about the list. WHICH problem is a fact about a Squad, and
+   * it belongs on it.
+   *
+   * Matched by the Unit's name, which is how every one of these messages
+   * already opens — validate writes them as "<name> ...". A message naming a
+   * Unit you have two of appears on both, which is right: both are that Unit
+   * and the rule is about the Unit. */
+  function squadAlerts(v, u) {
+    const mine = m => m.msg.indexOf(u.name) === 0;
+    return [].concat(
+      (v.errors || []).filter(mine).map(m => ['is-err', m]),
+      (v.warnings || []).filter(mine).map(m => ['', m])
+    ).map(([cls, m]) => `<p class="dzc-sq-alert ${cls}">${
+      window.DZCIcon(cls ? 'error' : 'warning', { size: 13 })
+    }<span>${esc(m.msg)}</span></p>`).join('');
+  }
+
   function squadHtml(a, g, s, depth) {
     const u = window.DZCArmy.unitOf(a, s);
     if (!u) return '';
@@ -1445,6 +1469,7 @@
            look for -- and what rides in what IS the Group (3.2.4). The spine
            runs the height of the cargo and an arm reaches into each Squad, so
            the shape on screen is the shape on the table. -->
+      ${squadAlerts(window.DZCArmy.validate(a), u)}
       ${riders.length ? `<div class="dzc-riders">
         <!-- No label at all. Jet, 2026-08-07: "we don't need a whole element
              to indicate ABOARD when we have the lines." The spine comes out of

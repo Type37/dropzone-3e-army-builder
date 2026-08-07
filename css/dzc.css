@@ -83,7 +83,6 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   font: 500 12px/1 var(--font-ui, 'Jost', system-ui, sans-serif); padding: 7px 12px;
   border-radius: 0; cursor: pointer; border: 1px solid var(--line, #d8d0c0);
   background: transparent; color: var(--ink-2, #5b544a);
-  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
   transition: background .12s, color .12s, border-color .12s;
 }
 .dzc-chip:hover { border-color: var(--acc); color: var(--ink, #24201c); }
@@ -233,12 +232,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-shape-chip,
 .dzc-view-toggle {
   border-radius: 0;
-  clip-path: polygon(var(--cut, 5px) 0, 100% 0, 100% calc(100% - var(--cut, 5px)),
-                     calc(100% - var(--cut, 5px)) 100%, 0 100%, 0 var(--cut, 5px));
 }
-.dzc-flag, .dzc-wpn-up { --cut: 4px; }
-.dzc-army-fac { --cut: 7px; }
-.dzc-shape-chip, .dzc-view-toggle { --cut: 6px; }
 /* Stat cells are a grid, not a row of pills: cutting each one would make the
    block read as six loose chips instead of one table. Only the outer corners
    of the whole block are cut. */
@@ -665,7 +659,6 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-create {
   position: relative; overflow: hidden; isolation: isolate;
   border-radius: 0;
-  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
   letter-spacing: .06em; text-transform: uppercase;
   transition: box-shadow 150ms cubic-bezier(.33,0,.67,1);
 }
@@ -681,9 +674,6 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-create::after {
   content: ''; position: absolute; inset: 5px; pointer-events: none;
   border: 1px solid var(--gold, #c9a92c); opacity: 0;
-  clip-path: polygon(0 0, 34% 0, 34% 1.5px, 1.5px 1.5px, 1.5px 34%, 0 34%,
-                     100% 100%, 66% 100%, 66% calc(100% - 1.5px),
-                     calc(100% - 1.5px) calc(100% - 1.5px), calc(100% - 1.5px) 66%, 100% 66%);
   transition: opacity 200ms cubic-bezier(.33,0,.67,1), inset 200ms cubic-bezier(.33,0,.67,1);
 }
 .dzc-create:hover::after, .dzc-create:focus-visible::after { opacity: .9; inset: 3px; }
@@ -1059,19 +1049,40 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    accent, an arm reaching into each Squad aboard, and the carrier named at the
    top of it. The indent lives on this wrapper rather than on each rider, so
    one level of nesting is one step whatever is inside it. */
-.dzc-riders { position: relative; margin: 8px 0 2px; padding-left: var(--sq-indent, 22px); }
-.dzc-riders::before {
-  content: ''; position: absolute; left: 0; top: 3px; bottom: 8px;
-  width: 4px; background: var(--acc, #1b3a5c);
-}
+/* ONE LINE, all the way. Jet, 2026-08-07: "now we should have the line
+   actually go all the way."
+   
+   It was two: a border down the carrier's own card, and a separate spine down
+   the riders block indented under it. Two rules at two different x with a gap
+   between them, which is a broken line, not a bracket. The line is now the
+   carrier's own left border and nothing else — the riders are nested INSIDE
+   the carrier's element, so one border runs the full height of the card and
+   everything riding in it, top to bottom, unbroken. */
+.dzc-riders { position: relative; margin: 6px 0 0; padding-left: var(--sq-indent, 22px); }
 .dzc-riders > .dzc-squad {
   position: relative; margin-left: 0; border-top: 0; padding-top: 8px;
 }
 /* The arm into each Squad. It lands on the title line rather than the top edge
    so it points at the name, which is the thing it is joining you to. */
+/* AND IT STOPS AT THE LAST THING IT REACHES. Jet, 2026-08-07: "the line
+   shouldn't extend past if there's nothing it's going to."
+   
+   The line is the carrier's own left border, so it runs the full height of the
+   carrier's element -- past the last rider's arm and on down through whatever
+   follows. The tail below that last arm points at nothing. This paints it out
+   in the card's own colour from just under the arm to the bottom, so the line
+   ends where the last thing it joins begins. In --surface-2 rather than a
+   literal, so it stays invisible in the dark theme too. */
+.dzc-riders > .dzc-squad:last-child::after {
+  content: ''; position: absolute; left: calc((var(--sq-indent, 22px) + 8px) * -1);
+  top: 30px; bottom: -8px; width: 4px; background: var(--surface-2, #fff);
+}
+/* The arm reaches back to the line itself, which is now the carrier's border
+   at the outer edge -- so it starts one indent plus that padding to the left. */
 .dzc-riders > .dzc-squad::before {
-  content: ''; position: absolute; left: calc(var(--sq-indent, 22px) * -1);
-  top: 26px; width: var(--sq-indent, 22px); height: 4px; background: var(--acc, #1b3a5c);
+  content: ''; position: absolute; left: calc((var(--sq-indent, 22px) + 8px) * -1);
+  top: 26px; width: calc(var(--sq-indent, 22px) + 8px); height: 4px;
+  background: var(--acc, #1b3a5c);
 }
 /* A carrier says so on its own edge as well, so the two ends of the bracket
    are the same colour and you can find the top of it from the bottom. */
@@ -1082,7 +1093,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    for the same eight pixels and neither read. Everything inside a Squad steps
    right by the width of the line plus a gap, which is all the line ever
    needed. */
-.dzc-squad.is-carrier > .dzc-sq-main { border-left: 4px solid var(--acc, #1b3a5c); padding-left: 8px; }
+.dzc-squad.is-carrier { border-left: 4px solid var(--acc, #1b3a5c); padding-left: 8px; }
 .dzc-squad > .dzc-sq-body, .dzc-squad > .dzc-vblock,
 .dzc-squad > .dzc-variants { padding-left: 12px; }
 /* A Squad reads as the unit does when you open it: art, the capacity symbol at
@@ -1182,6 +1193,20 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    price, so it went and the price came here. Big enough to hit with a thumb,
    and it says what it did rather than what it costs once you own it. */
 .dzc-carry-btn { color: var(--acc, #1b3a5c); }
+/* The rule this Squad is breaking, on this Squad. The rail still counts them;
+   this says which one, where you can act on it. */
+.dzc-sq-alert {
+  display: flex; align-items: flex-start; gap: 5px; margin: 4px 0 0;
+  padding: 4px 7px; font-size: 11.5px; line-height: 1.35;
+  background: rgba(179,38,30,.08); color: var(--ink, #24201c);
+  border-left: 3px solid var(--danger, #b3261e);
+}
+.dzc-sq-alert svg { flex: 0 0 auto; margin-top: 1px; color: var(--danger, #b3261e); }
+.dzc-sq-alert:not(.is-err) {
+  background: rgba(201,169,44,.12); border-left-color: #b58a12;
+}
+.dzc-sq-alert:not(.is-err) svg { color: #8a6a10; }
+
 .dzc-buy {
   min-height: 24px; padding: 3px 9px; cursor: pointer; border-radius: 0;
   border: 1px solid #2e9e4f; background: var(--surface-2, #fff); color: #1f7a3a;
@@ -1302,7 +1327,6 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   display: flex; align-items: center; gap: 10px; width: 100%;
   margin-top: 10px; padding: 12px 16px; cursor: pointer;
   border: 0; border-radius: 0;
-  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
   background: var(--acc, #1b3a5c); color: #fff;
   font: 700 15px/1 var(--font-ui, 'Jost', sans-serif);
   letter-spacing: .06em; text-transform: uppercase;
@@ -1667,7 +1691,6 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   background: var(--acc-ink, #1b3a5c); color: #fff;
   font: 700 14px/1 var(--font-ui, 'Jost', sans-serif);
   letter-spacing: .04em; text-transform: uppercase;
-  clip-path: polygon(9px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%, 0 9px);
   transition: background .14s var(--ease-deco, cubic-bezier(.33,0,.67,1)), color .14s;
 }
 .dzc-pick-add::before,
@@ -2154,7 +2177,6 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
   transform: translate(12px, 10px);
   padding: 4px 9px; font: 600 12px/1 var(--font-ui, 'Jost', system-ui, sans-serif);
   background: var(--acc, #1b3a5c); color: #fff;
-  clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
 }
 /* Every Transport in this Group that could legally take it, lit at once, so
    the answer to "where can this go" is on screen before you have moved. Asked
