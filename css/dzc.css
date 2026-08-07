@@ -7,6 +7,45 @@
  *      position:absolute at body level, so nothing behind it reflows.
  */
 
+/* ── the tokens this file actually runs on ──────────────────────────────────
+ *
+ * Every one of these was written as `var(--surface-2, #fff)` and NEVER
+ * DEFINED. A var() with a fallback and no definition is not a token, it is a
+ * literal with extra steps — so the whole DZC surface was hardcoded light
+ * while `--ink` (which app.css does define) dutifully flipped to near-white in
+ * the dark theme. The result was white text on white cards across the builder,
+ * the picker, the reference and Play Mode: a Light/Dark switch that had sat in
+ * Settings the whole time and made the app unusable when you used it.
+ *
+ * Light values are the fallbacks that were already in force, so nothing about
+ * the paper theme moves. Dark values map onto app.css's own dark ramp.
+ */
+:root {
+  --surface-2: #fff;         /* a raised card */
+  --surface-3: #f2ece0;      /* a tinted band inside one */
+  --line: #d8d0c0;
+  --ink-2: #6b6459;
+  --danger: #b3261e;
+  --acc-ink: #1b3a5c;        /* the ink numbers are set in */
+  --font-ui: 'Jost', system-ui, sans-serif;
+  --ease-deco: cubic-bezier(.33, 0, .67, 1);
+}
+html[data-theme="dark"] {
+  /* Inverted: on paper the band is DARKER than the card, on dark it is
+     lighter, because a band reads as a band by differing from the card it
+     sits on and not by being any particular colour. */
+  --surface-2: #232a33;
+  --surface-3: #2c333d;
+  --line: #353c45;
+  --ink-2: #9aa0a8;
+  --danger: #e2685a;
+  --acc-ink: #74a7e0;
+}
+/* The one place --acc-ink is a background rather than ink. A light navy under
+   white text is unreadable, so it takes the saturated navy app.css already
+   uses for a primary button on dark. */
+html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
+
 .dzc-wrap { max-width: 1440px; margin: 0 auto; padding: 8px 10px 48px; }
 
 /* ── faction tabs ── */

@@ -398,6 +398,16 @@ await s.send('Emulation.setDeviceMetricsOverride', { ...VIEW, deviceScaleFactor:
 
 // The desktop build bounces phone-width viewports to /mobile/; force desktop.
 await s.send('Runtime.evaluate', { expression: `localStorage.setItem('dfc_force_desktop','1')` });
+/* SHOT_THEME=dark shoots the whole walk in the dark theme. The app has had a
+   Light/Dark switch in Settings the entire time and not one shot of the dark
+   side had ever been taken, so every DZC screen was only ever judged on
+   paper. */
+if (process.env.SHOT_THEME === 'dark') {
+  await s.send('Runtime.evaluate', {
+    expression: `localStorage.setItem('dfc_settings', JSON.stringify(
+      Object.assign(JSON.parse(localStorage.getItem('dfc_settings') || '{}'), { theme: 'dark' })))`
+  });
+}
 await s.send('Page.navigate', { url: BASE });
 await sleep(2500);
 
