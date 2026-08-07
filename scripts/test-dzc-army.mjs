@@ -356,6 +356,22 @@ console.log('\ntransports and their cargo form one Group (3.2.4)');
   // A lone Transport is UNFINISHED, not illegal — you may be about to fill it —
   // so it is reported when the list is done rather than blocked as you build.
   ok(hasErr(A.validate(a), 'carries nothing'), 'a Transport carrying nothing is reported');
+
+  /* And it SURVIVES you working on the rest of the Group.
+   *
+   * refitTransports ran on every model-count change anywhere in the Army and
+   * deleted any Transport Squad with nothing aboard, so buying the Condor
+   * first and then setting the size of the Squad you meant to put in it lost
+   * the Condor -- silently, with nothing on screen to say what had gone.
+   * Reported by Jet 2026-08-07: a Squad taken from 2 to 3 and "a bunch of
+   * other units in that group got deleted". */
+  {
+    const rider = A.addSquad(a, g.id, 'legionnaires', 2);
+    eq(A.setModelCount(a, rider.id, 3).ok, true, 'a Squad in that Group grows');
+    ok(g.squads.some(x => x.id === solo.id),
+       'and the Transport bought first is still there afterwards');
+    A.removeSquad(a, rider.id);
+  }
   A.removeSquad(a, solo.id);
 
   // 6 Legionnaires fill 6 squares. A Bear APC carries 3, so 2 are needed and

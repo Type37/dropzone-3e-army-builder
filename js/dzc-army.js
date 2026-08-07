@@ -1246,7 +1246,24 @@
         const tu = carrierOf(army, t);
         if (!tu || tu.category !== 'Transport') return;
         const riders = g.squads.filter(x => x.carriedBy === t.id);
-        if (!riders.length) { g.squads = g.squads.filter(x => x.id !== t.id); return; }
+        /* Nothing aboard means there is nothing to size it against — it does
+         * NOT mean delete it.
+         *
+         * This used to drop the Transport Squad here, and refitTransports runs
+         * on every single model-count change anywhere in the Army. So buying a
+         * Condor first and then adding the Squad to put in it — which the
+         * picker offers in as many words — lost the Condor the moment you set
+         * the Squad's size, silently, with nothing on screen to say what had
+         * gone or why. Reported by Jet 2026-08-07: a Squad taken from 2 to 3
+         * and "a bunch of other units in that group got deleted".
+         *
+         * The two operations that genuinely orphan a Transport — clearing a
+         * Squad's Transport, and moving it to a different one — already delete
+         * it themselves, at the point where the user did the thing that
+         * orphaned it. removeSquad deliberately does not, and says so. A
+         * Transport carrying nothing is an illegal Army (3.2.4) and validate
+         * reports it; it is not the builder's to take away. */
+        if (!riders.length) return;
         const shape = (window.DZC.fillsOf(unitOf(army, riders[0]) || {})
           .find(x => window.DZC.capacityFor(tu, x.shape) > 0) || {}).shape;
         const per = window.DZC.capacityFor(tu, shape);

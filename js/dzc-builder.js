@@ -919,12 +919,25 @@
     const cap = window.DZC.maxGroupCost(a.pointsLimit);
     const models = g.squads.reduce((t, s) => t + s.models.length, 0);
     const squads = g.squads.length;
-    const U = window.DZCUnits;
 
-    /* Capacity is the loudest thing here. It is what decides whether the next
-     * thing you pick can even join this Group (3.2.4.2), so the shape is drawn
-     * at a size you read across the room and the count is set in the numeral
-     * face -- not folded into the row of small facts beside it. */
+    /* On the Group's own title line, small and unemphasised. These are facts
+     * you glance at, not the heading -- set at 11px with no bold, they sit
+     * beside the name instead of taking a band of their own under it. */
+    return `<span class="dzc-g-meters">
+      <span class="dzc-meter${cost > cap ? ' is-over' : ''}">
+        ${window.DZCIcon('calculate', { size: 12 })}<b>${cost}</b><i>of ${cap}pts</i></span>
+      <span class="dzc-meter">
+        ${window.DZCIcon('groups', { size: 12 })}<b>${squads}</b><i>Squad${squads === 1 ? '' : 's'}</i></span>
+      <span class="dzc-meter">
+        ${window.DZCIcon('deployed_code', { size: 12 })}<b>${models}</b><i>model${models === 1 ? '' : 's'}</i></span>
+    </span>`;
+  }
+
+  /* Capacity stays where it was, under the header and drawn large: it is the
+   * rule that decides whether the next thing you pick can join this Group at
+   * all (3.2.4.2), which is a different job from the three facts above. */
+  function groupSpace(a, g) {
+    const U = window.DZCUnits;
     const space = window.DZCArmy.groupSpace(a, g).map(sp => {
       const free = sp.total - sp.used;
       const name = U.shapeName(sp.shape);
@@ -934,16 +947,7 @@
         ${U.shape(sp.shape, 30, true)}
         <span class="dzc-space-n"><b>${sp.used}</b><s>/</s><em>${sp.total}</em></span></span>`;
     }).join('');
-
-    return `<div class="dzc-g-meters">
-      <span class="dzc-meter${cost > cap ? ' is-over' : ''}">
-        ${window.DZCIcon('calculate', { size: 14 })}<b>${cost}</b><i>of ${cap}pts</i></span>
-      <span class="dzc-meter">
-        ${window.DZCIcon('groups', { size: 14 })}<b>${squads}</b><i>Squad${squads === 1 ? '' : 's'}</i></span>
-      <span class="dzc-meter">
-        ${window.DZCIcon('deployed_code', { size: 14 })}<b>${models}</b><i>model${models === 1 ? '' : 's'}</i></span>
-    </div>
-    ${space ? `<div class="dzc-g-space">${space}</div>` : ''}`;
+    return space ? `<div class="dzc-g-space">${space}</div>` : '';
   }
 
   function groupHtml(a, g) {
@@ -961,6 +965,7 @@
             data-orig="${esc(window.DZCArmy.groupName(a, g))}"
             onkeydown="DZCBuilder.nameKey(event)"
             onblur="DZCBuilder.renameGroup('${g.id}', this.textContent)">${esc(window.DZCArmy.groupName(a, g))}</h2>
+        ${groupMeters(a, g)}
         <!-- Two Groups of the same thing is a normal army, not an edge case:
              three Legionnaire Squads each in their own Bear is six clicks and
              a Transport chooser, repeated. -->
@@ -971,7 +976,7 @@
         <button class="dzc-icon-btn" type="button" title="Remove Group"
                 onclick="DZCBuilder.removeGroup('${g.id}')" aria-label="Remove ${esc(window.DZCArmy.groupName(a, g))}">&times;</button>
       </header>
-      ${groupMeters(a, g)}
+      ${groupSpace(a, g)}
       ${rows || '<p class="dzc-g-empty">No Squads yet.</p>'}
       <button class="dzc-add-squad" type="button" onclick="DZCBuilder.openPicker('${g.id}')">
         <span class="dzc-add-squad-i">${window.DZCIcon('add', { size: 20 })}</span>
@@ -1257,8 +1262,11 @@
             ${s.commander ? `<span class="dzc-cmdr-tag" title="Level ${s.commander.level} Commander"
               >${window.DZCIcon('military_tech', { size: 13 })}${esc(commanderTagName(a, s))}</span>` : ''}
             <span class="dzc-sq-cap">${U.transportHtml(window.DZCArmy.carrierOf(a, s) || u)}</span>
+            <!-- Category, type and Squad size ON the name's line. They are what
+                 the name is, not a second heading under it, and a line of their
+                 own cost a row of vertical space on every Squad in the army. -->
+            <span class="dzc-sq-meta">${meta}</span>
           </h3>
-          <p class="dzc-sq-meta">${meta}</p>
         </div>
         <div class="dzc-sq-ctl">
           ${stepper}
