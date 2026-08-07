@@ -1371,7 +1371,7 @@
       ? `<button type="button" class="dzc-icon-btn" title="Walks on instead"
                  onclick="DZCBuilder.assignTransport('${s.id}','')"
                  aria-label="Take ${esc(u.name)} out of its Transport"
-                 >${window.DZCIcon('close', { size: 14 })}</button>` : ''}
+                 >${window.DZCIcon('stat_mv_infantry', { size: 15 })}</button>` : ''}
       <button type="button" class="dzc-icon-btn dzc-carry-btn"
               onclick="DZCBuilder.openCarry('${s.id}')"
               aria-label="${carrierUnit ? 'Ride something else' : 'Choose a Transport'} for ${esc(u.name)}"
@@ -1397,12 +1397,26 @@
     const meta = [
       `<span class="dzc-cat" data-cat="${esc(u.category)}">${esc(u.category)}</span>`,
       `<span>${esc(u.type || '')}</span>`,
-      U.sizeHtml(u) ? `<span>${U.sizeHtml(u)}</span>` : ''
+      U.sizeHtml(u) ? `<span>${U.sizeHtml(u)}</span>` : '',
+      squadAlerts(window.DZCArmy.validate(a), u)
     ].filter(Boolean).join('');
 
     return `<div class="dzc-squad${isTransport ? ' is-transport' : ''}${
       riders.length ? ' is-carrier' : ''}" style="--depth:${depth}" data-sid="${s.id}">
       <div class="dzc-sq-main">
+        <!-- The handle comes FIRST. It sat between the thumbnail and the
+             name, which is the one place a handle should never be: neither the
+             start of the row nor the end of it, interrupting the middle of the
+             thing it moves. Material, Notion, Jira and Figma all put it at the
+             leading edge, because it grabs the WHOLE row and a row is read
+             from where reading starts. (iOS puts it right, but only inside an
+             edit mode where reordering is all the list does; here it is one
+             action among six.) -->
+        <span class="dzc-sq-grip" role="button" tabindex="-1"
+              aria-label="Drag ${esc(u.name)} onto a Transport"
+              title="Drag onto a Transport to put this Squad aboard"
+              onpointerdown="DZCBuilder.sqGrip(event,'${s.id}')"
+              >${window.DZCIcon('drag_dots', { size: 15 })}</span>
         <!-- ONE THUMBNAIL PER MODEL. Jet, 2026-08-07: "we should show the
              models in the group. IE if you have 2 minis of Legionaires that
              is visually displayed." A Squad is a number of models on a table,
@@ -1415,15 +1429,6 @@
         }</span>` : ''}
         <div class="dzc-sq-id">
           <h3 class="dzc-sq-title">
-            <!-- Drag this Squad onto a Transport in the same Group to put it
-                 aboard, or onto the Group's own background to walk it on. The
-                 Transport chooser is still there and is still the keyboard
-                 way in; this is the one that matches what you are picturing. -->
-            <span class="dzc-sq-grip" role="button" tabindex="-1"
-                  aria-label="Drag ${esc(u.name)} onto a Transport"
-                  title="Drag onto a Transport to put this Squad aboard"
-                  onpointerdown="DZCBuilder.sqGrip(event,'${s.id}')"
-                  >${window.DZCIcon('drag_dots', { size: 15 })}</span>
             <button type="button" class="dzc-sq-name" title="Stats, weapons and rules"
                     onclick="DZCUnits.openDetail('${esc(u.id)}','${esc(a.faction)}')">${esc(u.name)}</button>
             ${s.commander ? `<span class="dzc-cmdr-tag" title="Level ${s.commander.level} Commander"

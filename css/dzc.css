@@ -1195,9 +1195,13 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-carry-btn { color: var(--acc, #1b3a5c); }
 /* The rule this Squad is breaking, on this Squad. The rail still counts them;
    this says which one, where you can act on it. */
+/* ON the meta line, beside Vehicle -- Jet, 2026-08-07: "put that alert for
+   3.2.4 on the unit's rule. like to the right of VEHICLE on that line." A
+   block of its own under the card was a second place to look; inline, it is
+   read with the Unit it is about. */
 .dzc-sq-alert {
-  display: flex; align-items: flex-start; gap: 5px; margin: 4px 0 0;
-  padding: 4px 7px; font-size: 11.5px; line-height: 1.35;
+  display: inline-flex; align-items: baseline; gap: 4px; margin: 0;
+  padding: 1px 6px; font-size: 11px; line-height: 1.35;
   background: rgba(179,38,30,.08); color: var(--ink, #24201c);
   border-left: 3px solid var(--danger, #b3261e);
 }
@@ -1736,7 +1740,11 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 #dzc-picker .modal-body { padding-top: 8px; }
 .dzc-stepper button:disabled { opacity: .35; cursor: not-allowed; }
 .dzc-stepper.is-derived { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 4px; background: var(--surface-3, #f2ece0); color: var(--ink-2, #6b6459); }
-.dzc-squad.is-transport > .dzc-sq-main .dzc-sq-name { font-style: italic; }
+/* NOT italic. It marked a Transport Squad back when a Transport was a chip on
+   somebody else's row and needed telling apart from it. It is a card of its
+   own now, at the top of the Group, with the line coming out of it -- the
+   position says Transport, and a slanted serif said nothing except that this
+   name was different from the others in a way you could not name. */
 /* A Squad in the army shows the same facts as its picker card, so a unit does
    not become anonymous the moment you take it. */
 .dzc-facts { margin: 2px 0 4px; }
@@ -2163,12 +2171,22 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
    line where the Squad's name is, because the name is the thing you are
    moving. touch-action: none or the phone scrolls the pane instead. */
 /* Jet's grab icon, not a background gradient pretending to be one. */
+/* THE LEADING EDGE, before everything. It sat between the thumbnail and the
+   name, which is the one place a handle should never be: neither the start of
+   the row nor the end of it, just interrupting the middle of the thing it
+   moves. Every list that does this well -- Material, Notion, Jira, Figma --
+   puts the handle first, because it grabs the WHOLE row and a row is read
+   left to right, so its handle belongs where reading starts. (iOS puts it on
+   the right, but only in an edit mode where reordering is the sole thing the
+   list does; here it is one action among six.) 44px of target, faint until
+   you are near it. */
 .dzc-sq-grip {
-  flex: 0 0 auto; display: inline-flex; align-items: center; cursor: grab;
-  touch-action: none; opacity: .35; color: var(--ink-2, #6b6459);
+  flex: 0 0 auto; align-self: stretch; display: inline-flex; align-items: center;
+  justify-content: center; min-width: 22px; min-height: 44px; margin-left: -4px;
+  cursor: grab; touch-action: none; opacity: .28; color: var(--ink-2, #6b6459);
   transition: opacity .12s;
 }
-.dzc-squad:hover > .dzc-sq-main .dzc-sq-grip, .dzc-sq-grip:hover { opacity: .75; }
+.dzc-squad:hover > .dzc-sq-main > .dzc-sq-grip, .dzc-sq-grip:hover { opacity: .8; }
 /* Nothing moves. The card stays exactly where it is and a chip follows the
    finger instead, which is the only thing on screen that travels. */
 .dzc-squad.is-sq-dragging { opacity: .45; cursor: grabbing; }
