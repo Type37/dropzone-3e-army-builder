@@ -176,7 +176,7 @@
           <input class="form-input" id="dzc-new-desc" type="text" placeholder=" " maxlength="120"
                  value="${esc(picked.description || '')}"
                  oninput="DZCBuilder.descTyped(this.value)">
-          <label class="float-label" for="dzc-new-desc">What it is for</label>
+          <label class="float-label" for="dzc-new-desc">Notes</label>
         </div>
 
         <div class="form-group">
@@ -421,14 +421,6 @@
             role="textbox" aria-label="Army name" title="Click to rename"
             data-orig="${esc(a.name)}" onkeydown="DZCBuilder.nameKey(event)"
             onblur="DZCBuilder.rename(this)">${esc(a.name)}</h1>
-        <!-- Free text about the list, editable where it is read, on its own row
-             under the name. Empty until you write something: an empty box with
-             "notes" over it on every army is the caption-under-a-control
-             pattern, and this one says nothing until it has something to say. -->
-        <p class="dzc-b-desc" contenteditable="true" spellcheck="true"
-           role="textbox" aria-label="What this army is for"
-           data-empty="What is this army for?"
-           onblur="DZCBuilder.setDescription(this.textContent)">${esc(a.description || '')}</p>
       </header>
 
       <div class="dzc-b-body${drilled && sel ? ' is-drilled' : ''}">
@@ -505,6 +497,16 @@
             a.groups.length ? 'Pick a Group to work on it.' : 'Add a Group to start.'}</p>`}
         </div>
       </div>
+
+      <!-- Notes, at the bottom. It sat under the army name, which is where you
+           look while you are building and not where you write about what you
+           built. Empty until you type something: an empty box labelled "notes"
+           on every army is the caption-under-a-control pattern, and this one
+           says nothing until it has something to say. -->
+      <p class="dzc-b-desc" contenteditable="true" spellcheck="true"
+         role="textbox" aria-label="Notes" title="Click to write notes"
+         data-empty="Notes"
+         onblur="DZCBuilder.setDescription(this.textContent)">${esc(a.description || '')}</p>
     </div>`;
   }
 
@@ -1093,7 +1095,7 @@
       <div class="dzc-sq-stats">${U.statsHtml(u)}</div>
       ${u.special ? `<div class="dzc-sq-rules">${U.rulesHtml(u.special, a.faction)}</div>` : ''}
       ${U.variantsHtml(u, (v, i) => variantStepper(a, s, u, i), { stats: !compact })}
-      ${compact ? '' : `<div class="dzc-sq-wpn">${U.weaponsHtml(u, a.faction, squadGuns(s))}</div>`}
+      ${compact ? '' : `<div class="dzc-sq-wpn">${U.weaponCardsHtml(u, a.faction, squadGuns(s))}</div>`}
       ${upgradesHtml(a, s, u)}
       <div class="dzc-sq-opts">
         ${transportPicker}

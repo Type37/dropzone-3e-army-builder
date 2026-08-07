@@ -309,10 +309,8 @@
     const U = window.DZCUnits;
     const ws = U.unitWeapons(u, window.DZCArmy.squadGuns(s));
     if (!ws.length) return '';
-    return `<div class="dzc-play-wpn">
-      <table class="dzc-wpn"><thead>${U.wpnHead()}</thead>
-        <tbody>${ws.map(w => `<tr>${U.wpnCells(w, army.faction, { price: false })}</tr>`).join('')}</tbody>
-      </table></div>`;
+    return `<div class="dzc-play-wpn">${
+      ws.map(w => U.wpnCard(w, army.faction)).join('')}</div>`;
   }
 
   function squadHtml(army, s) {

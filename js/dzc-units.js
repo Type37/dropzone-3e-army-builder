@@ -166,7 +166,7 @@
       // which the cell prints directly underneath — a tooltip repeating what
       // is already on the screen.
       return `<div class="dzc-stat" title="${esc(window.DZC.statHelp(k))}">
-        <span class="dzc-stat-i">${window.DZCIcon.stat(k, { size: 14, type: u.type })}</span>
+        <span class="dzc-stat-i">${window.DZCIcon.stat(k, { size: 17, type: u.type })}</span>
         <span class="dzc-stat-v">${esc(stats[k])}</span>
         <span class="dzc-stat-k">${esc(compact ? k : label)}</span>
       </div>`;
@@ -453,6 +453,70 @@
       </table>`;
   }
 
+  /* A weapon as a CARD rather than a row of a wide table.
+   *
+   * The table wants ~620px and got it by scrolling sideways inside its own box,
+   * which on a phone means the Special column — the one carrying the rules — is
+   * the one you never see without dragging. And eight columns of 10px headings
+   * repeated above every Unit is a lot of chrome for six numbers.
+   *
+   * The card is Jet's layout: the name, the arc drawn once at a size you can
+   * actually read, then the six values in two columns of label-and-number, then
+   * the rules underneath at full width. Nothing is dropped — this is the same
+   * eight fields, laid out to be read rather than to line up.
+   *
+   * The numbers still line up: each pair is a grid with a fixed label column, so
+   * every value in a card starts at the same x whatever its label says.
+   */
+  function wpnCard(w, faction, opts) {
+    const fac = faction || state.faction;
+    const o = opts || {};
+    const cell = (k, v) => v == null || v === '' ? '' :
+      `<div class="dzc-wc-stat" title="${esc(window.DZC.weaponColHelp(k))}">
+         <span class="dzc-wc-k">${esc(window.DZC.weaponColLabel(k))}</span>
+         <span class="dzc-wc-v">${esc(v)}</span></div>`;
+    const only = (w.variants || []).length ? w.variants.join(', ') : '';
+    return `<article class="dzc-wc${o.cls ? ' ' + o.cls : ''}">
+      <header class="dzc-wc-head">
+        <h4 class="dzc-wc-name">${esc(w.name)}</h4>
+        ${only ? `<span class="dzc-wc-only">${esc(only)} only</span>` : ''}
+        ${w.upgradePoints != null ? `<span class="dzc-wpn-up">+${w.upgradePoints}pts</span>` : ''}
+      </header>
+      <div class="dzc-wc-body">
+        <div class="dzc-wc-arc" title="${esc(window.DZCIcon.arcLabel(w.arc) || '')}">
+          ${window.DZCIcon.arc(w.arc, { size: 46 })}
+          <span>${esc(w.arc || '')}</span>
+        </div>
+        <div class="dzc-wc-stats">
+          ${cell('MA', w.ma)}${cell('Att', w.att)}
+          ${cell('R', w.r)}${cell('Ac', w.ac)}
+          ${cell('E', w.e)}
+        </div>
+      </div>
+      ${w.special ? `<div class="dzc-wc-rules">${rulesHtml(w.special, fac)}</div>` : ''}
+    </article>`;
+  }
+
+  /* The same list of weapons, as cards. Same filtering and the same marks. */
+  function weaponCardsHtml(u, faction, opts) {
+    const fac = faction || u.faction || state.faction;
+    const o = opts || {};
+    const marking = !!(o.variants || o.hasUpgrade);
+    const all = u.weapons || [];
+    if (!all.length) return '<p class="dzc-none">No weapons.</p>';
+    const lens = o.lens === undefined ? state.lens[u.id] : o.lens;
+    const gone = marking ? removedByUpgrades(u, o) : {};
+    const cards = all.map((w, i) => [w, i])
+      .filter(([w]) => !lens || w.box !== 'variant' || (w.variants || []).indexOf(lens) !== -1)
+      .map(([w, i]) => {
+        const mark = gone[i] ? 'is-swapped' : weaponLive(u, w, o) ? 'is-live' : 'is-off';
+        const cls = [w.box === 'upgrade' ? 'is-upgrade' : w.box === 'variant' ? 'is-variant' : '']
+          .concat(marking ? [mark] : []).filter(Boolean).join(' ');
+        return wpnCard(w, fac, { cls });
+      }).join('');
+    return `<div class="dzc-wcards${marking ? ' dzc-wcards--marked' : ''}">${cards}</div>`;
+  }
+
   /* A Behemoth's Gear: equipment priced in POWER, not points.
    *
    * It costs nothing to put on a list — it comes out of the same pool the
@@ -570,7 +634,7 @@
     const f = window.DZC.faction(state.faction);
     const u = f && f.byId[unitId];
     if (!u) return;
-    const weapons = weaponsHtml(u, u.faction || state.faction);
+    const weapons = weaponCardsHtml(u, u.faction || state.faction);
     detailOf = { id: unitId, faction: state.faction };
     const variants = variantsHtml(u);
 
@@ -672,7 +736,7 @@
     // Shared with the builder's picker so a unit reads the same in both places.
     statsHtml, rulesHtml, squadHtml, transportHtml, unitWeapons, weaponLive,
     removedByUpgrades, weaponsHtml, variantsHtml,
-    unitRulesHtml, wpnHead, wpnCells, variantLensHtml,
+    unitRulesHtml, wpnHead, wpnCells, wpnCard, weaponCardsHtml, variantLensHtml,
     pointsHtml, shape: shapeSvg,
     SHAPES: Object.keys(SYMBOL),
     shapeInk: s => (SYMBOL[s] || {}).ink || 'currentColor',

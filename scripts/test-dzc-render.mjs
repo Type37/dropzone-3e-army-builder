@@ -410,18 +410,22 @@ console.log('\nevery screen renders');
    * wrong tool: the complaint was that nothing said which rows were live, and
    * the answer taken was deletion. What is asserted now is that the number you
    * would compare against is still on screen, and still says it is not yours. */
-  const wtable = (second.match(/<table class="dzc-wpn dzc-wpn--marked">[\s\S]*?<\/table>/) || [''])[0];
-  const rowFor = gun => (wtable.match(/<tr[^>]*>[\s\S]*?<\/tr>/g) || [])
-    .find(r => r.includes(gun)) || '';
-  ok(wtable.length > 0, 'a Squad marks its weapon table rather than filtering it');
-  ok(/is-live/.test(rowFor('UM-702 Laser')),
+  /* Cards now, not table rows — same eight fields, laid out to be read rather
+   * than to line up in a 620px table that scrolled sideways on a phone. What
+   * is asserted is unchanged: every gun on the card is on the page, and the
+   * ones this Squad actually fires are the ones marked. */
+  const wcards = (second.match(/<div class="dzc-wcards dzc-wcards--marked">[\s\S]*/) || [''])[0];
+  const cardFor = gun => (wcards.match(/<article class="dzc-wc[^"]*"[\s\S]*?<\/article>/g) || [])
+    .find(c => c.includes(gun)) || '';
+  ok(wcards.length > 0, 'a Squad marks its weapon cards rather than filtering them');
+  ok(/is-live/.test(cardFor('UM-702 Laser')),
      'the gun of a Variant in the Squad is marked live');
-  ok(/is-off/.test(rowFor('UM-28 Gatling')),
+  ok(/is-off/.test(cardFor('UM-28 Gatling')),
      'and the gun of one that is not stays on the page, marked off');
   ok(/UM-28 Gatling/.test(second), 'the Variant blocks still name it too');
-  const refTable = win.DZCUnits.weaponsHtml(DZC.faction('ucm').byId['ucm-main-battle-tank'], 'ucm');
+  const refTable = win.DZCUnits.weaponCardsHtml(DZC.faction('ucm').byId['ucm-main-battle-tank'], 'ucm');
   ok(/UM-28 Gatling/.test(refTable), 'and the reference view is still the whole card');
-  ok(!/is-off|is-live|dzc-wpn--marked/.test(refTable),
+  ok(!/is-off|is-live|--marked/.test(refTable),
      'with nothing marked, because outside a Squad there is no selection to mark against');
   ok(/Level 5/.test(builder), 'and the Commander');
   /* Gap 51: what the Level is worth per Round, in the rail. Off the HIGHEST
