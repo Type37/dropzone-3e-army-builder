@@ -1963,6 +1963,41 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
 .dzc-bb.is-before { box-shadow: inset 0 3px 0 0 var(--acc); }
 .dzc-bb.is-after { box-shadow: inset 0 -3px 0 0 var(--acc); }
 
+/* Dragging a Squad into a Transport. Same dot grip as a Group's, in the title
+   line where the Squad's name is, because the name is the thing you are
+   moving. touch-action: none or the phone scrolls the pane instead. */
+.dzc-sq-grip {
+  flex: 0 0 auto; width: 14px; height: 18px; cursor: grab; touch-action: none;
+  opacity: .3; background-image: radial-gradient(currentColor 1px, transparent 1.2px);
+  background-size: 5px 5px; background-position: 1px 3px;
+  transition: opacity .12s;
+}
+.dzc-squad:hover > .dzc-sq-main .dzc-sq-grip, .dzc-sq-grip:hover { opacity: .75; }
+/* Nothing moves. The card stays exactly where it is and a chip follows the
+   finger instead, which is the only thing on screen that travels. */
+.dzc-squad.is-sq-dragging { opacity: .45; cursor: grabbing; }
+.dzc-drag-ghost {
+  position: fixed; z-index: 900; pointer-events: none;
+  transform: translate(12px, 10px);
+  padding: 4px 9px; font: 600 12px/1 var(--font-ui, 'Jost', system-ui, sans-serif);
+  background: var(--acc, #1b3a5c); color: #fff;
+  clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+}
+/* Every Transport in this Group that could legally take it, lit at once, so
+   the answer to "where can this go" is on screen before you have moved. Asked
+   for once at pointerdown from the same boardOptions the chooser lists — a
+   drop can never land somewhere the rules refuse. */
+.dzc-squad.is-drop > .dzc-sq-main { outline: 2px dashed var(--acc, #1b3a5c); outline-offset: 3px; }
+.dzc-squad.is-drop-on > .dzc-sq-main {
+  outline: 3px solid var(--acc, #1b3a5c); outline-offset: 3px;
+  background: color-mix(in srgb, var(--acc, #1b3a5c) 12%, transparent);
+}
+/* And the Group itself is the target that takes a Squad back OFF its
+   Transport — the other half of the gesture, and the only way to undo it
+   without opening the chooser. */
+.dzc-group-card.is-dropping.can-walk { outline: 2px dashed var(--line, #d8d0c0); outline-offset: 2px; }
+.dzc-group-card.is-walk-on { outline: 3px solid var(--acc, #1b3a5c); outline-offset: 2px; }
+
 /* ── What an army is for ──
    On the card it is one quiet line under the name. In the builder it is
    editable where it is read, like the name above it — and when it is empty it

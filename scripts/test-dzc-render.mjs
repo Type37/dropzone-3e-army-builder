@@ -966,6 +966,32 @@ console.log('\nevery screen renders');
     A.remove(ga.id);
   }
 
+  /* What rides in what, drawn rather than indented — and draggable.
+   *
+   * "Units with the category Transport may only be chosen along with a Squad
+   * they may transport... Those two Squads form one Group" (3.2.4), so the
+   * nesting IS the Group. The bracket needs the markup to hang off, and the
+   * drag needs every row to be findable by Squad id; both are easy to lose in
+   * a refactor and neither shows up as an error. */
+  {
+    const na = A.create('ucm', 'Nesting', 2000);
+    const ng = A.addGroup(na);
+    const tanks = A.addSquad(na, ng.id, 'ucm-main-battle-tank', 3);
+    A.assignTransport(na, tanks.id, 'condor-dropship');
+    await B.renderBuilder(na.id);
+    const html = els['view-army'].innerHTML;
+    const live = A.get(na.id).groups[0].squads;
+
+    ok(/class="dzc-riders"/.test(html), 'a carried Squad is drawn inside its carrier’s bracket');
+    ok(/Aboard Condor Dropship/.test(html), 'and the bracket names the carrier');
+    ok(/dzc-squad[^"]*is-carrier/.test(html), 'the carrier is marked as one');
+    eq(String(live.filter(s => !html.includes(`data-sid="${s.id}"`)).length), '0',
+       'every Squad row carries its id, which is what the drag looks it up by');
+    eq(String((html.match(/DZCBuilder\.sqGrip\(/g) || []).length), String(live.length),
+       'and every Squad has a grip to drag it by');
+    A.remove(na.id);
+  }
+
   /* The Collection's arithmetic, which nothing had asserted either.
    *
    * It counts MODELS, not Squads — "I own four Sabres" is what decides whether

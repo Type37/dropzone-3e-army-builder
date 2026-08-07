@@ -605,6 +605,119 @@
   function gripUp(ev) { endGrip(ev.currentTarget, true); }
   function gripCancel(ev) { endGrip(ev.currentTarget, false); }
 
+  /* Dragging a Squad into a Transport.
+   *
+   * "Units with the category Transport may only be chosen along with a Squad
+   * they may transport... Those two Squads form one Group" (3.2.4) — so what
+   * rides in what is the shape of the Group, and the only way to set it was a
+   * modal that asks the question in words. This is the same decision made by
+   * moving the thing, which is what everyone is picturing when they think
+   * about it.
+   *
+   * The chooser stays. It is the keyboard route and it is where a Transport
+   * you do not own yet gets bought; this only rearranges what is already in
+   * the Group. Pointer events, not HTML5 drag-and-drop, because the case that
+   * has to work is a finger on a phone.
+   *
+   * The legal targets are asked for ONCE, at the start, from boardOptions —
+   * the same function the chooser lists. Nothing legal is computed while the
+   * finger is moving, so a drop can never land somewhere the rules refuse. */
+  let sqDrag = null;
+
+  function sqGrip(ev, sid) {
+    if (!current || ev.button === 2) return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    const grip = ev.currentTarget;
+    const row = grip.closest('.dzc-squad');
+    const card = grip.closest('.dzc-group-card');
+    if (!row || !card) return;
+    const squad = window.DZCArmy.findSquad(current, sid);
+    const unit = squad && window.DZCArmy.unitOf(current, squad);
+    if (!unit) return;
+
+    const targets = (window.DZCArmy.boardOptions(current, sid) || []).map(o => {
+      const el = card.querySelector(`.dzc-squad[data-sid="${o.squad.id}"]`);
+      return el ? { sid: o.squad.id, el: el } : null;
+    }).filter(Boolean);
+    // Dropping on the Group's own background takes a Squad back off its
+    // Transport, which is the other half of the gesture and the only way to
+    // undo it without going through the chooser.
+    const canWalk = !!squad.carriedBy;
+    if (!targets.length && !canWalk) return;
+
+    sqDrag = { sid: sid, row: row, card: card, targets: targets, canWalk: canWalk, on: null };
+    row.classList.add('is-sq-dragging');
+    card.classList.add('is-dropping');
+    targets.forEach(t => t.el.classList.add('is-drop'));
+    if (canWalk) card.classList.add('can-walk');
+
+    const ghost = document.createElement('div');
+    ghost.className = 'dzc-drag-ghost';
+    ghost.textContent = unit.name;
+    document.body.appendChild(ghost);
+    sqDrag.ghost = ghost;
+    moveGhost(ev);
+
+    try { grip.setPointerCapture(ev.pointerId); } catch (e) { /* still works */ }
+    grip.addEventListener('pointermove', sqMove);
+    grip.addEventListener('pointerup', sqUp);
+    grip.addEventListener('pointercancel', sqCancel);
+  }
+
+  function moveGhost(ev) {
+    if (!sqDrag || !sqDrag.ghost) return;
+    sqDrag.ghost.style.left = ev.clientX + 'px';
+    sqDrag.ghost.style.top = ev.clientY + 'px';
+  }
+
+  function sqMove(ev) {
+    if (!sqDrag) return;
+    ev.preventDefault();
+    moveGhost(ev);
+    /* Which target the finger is over, measured now rather than cached: the
+     * pane scrolls under a drag, and a rectangle read at pointerdown is the
+     * wrong rectangle by the time you get there. */
+    let hit = null;
+    sqDrag.targets.forEach(t => {
+      const r = t.el.getBoundingClientRect();
+      if (ev.clientX >= r.left && ev.clientX <= r.right
+        && ev.clientY >= r.top && ev.clientY <= r.bottom) hit = t;
+    });
+    sqDrag.targets.forEach(t => t.el.classList.toggle('is-drop-on', t === hit));
+    let walk = false;
+    if (!hit && sqDrag.canWalk) {
+      const r = sqDrag.card.getBoundingClientRect();
+      walk = ev.clientX >= r.left && ev.clientX <= r.right
+        && ev.clientY >= r.top && ev.clientY <= r.bottom;
+    }
+    sqDrag.card.classList.toggle('is-walk-on', walk);
+    sqDrag.on = hit ? { kind: 'board', sid: hit.sid } : walk ? { kind: 'walk' } : null;
+  }
+
+  function endSqDrag(grip, commit) {
+    grip.removeEventListener('pointermove', sqMove);
+    grip.removeEventListener('pointerup', sqUp);
+    grip.removeEventListener('pointercancel', sqCancel);
+    if (!sqDrag) return;
+    const d = sqDrag;
+    sqDrag = null;
+    if (d.ghost) d.ghost.remove();
+    d.row.classList.remove('is-sq-dragging');
+    d.card.classList.remove('is-dropping', 'can-walk', 'is-walk-on');
+    d.targets.forEach(t => t.el.classList.remove('is-drop', 'is-drop-on'));
+    if (!commit || !d.on) return;
+    const r = d.on.kind === 'board'
+      ? window.DZCArmy.boardTransport(current, d.sid, d.on.sid)
+      : window.DZCArmy.assignTransport(current, d.sid, null);
+    if (!r.ok) return say(r.reason);
+    if (r.warn) say(r.warn, 'warning');
+    refresh();
+  }
+
+  function sqUp(ev) { endSqDrag(ev.currentTarget, true); }
+  function sqCancel(ev) { endSqDrag(ev.currentTarget, false); }
+
   /* The per-army menu.
    *
    * At <body> level and position:fixed, for the reason the size popover is:
@@ -1087,11 +1200,19 @@
     ].filter(Boolean).join('');
 
     return `<div class="dzc-squad${isTransport ? ' is-transport' : ''}${
-      riders.length ? ' is-carrier' : ''}" style="--depth:${depth}">
+      riders.length ? ' is-carrier' : ''}" style="--depth:${depth}" data-sid="${s.id}">
       <div class="dzc-sq-main">
         ${u.art ? `<img class="dzc-sq-art" src="${esc(u.art)}" alt="" loading="lazy" onerror="this.remove()">` : ''}
         <div class="dzc-sq-id">
           <h3 class="dzc-sq-title">
+            <!-- Drag this Squad onto a Transport in the same Group to put it
+                 aboard, or onto the Group's own background to walk it on. The
+                 Transport chooser is still there and is still the keyboard
+                 way in; this is the one that matches what you are picturing. -->
+            <span class="dzc-sq-grip" role="button" tabindex="-1"
+                  aria-label="Drag ${esc(u.name)} onto a Transport"
+                  title="Drag onto a Transport to put this Squad aboard"
+                  onpointerdown="DZCBuilder.sqGrip(event,'${s.id}')"></span>
             <button type="button" class="dzc-sq-name" title="Stats, weapons and rules"
                     onclick="DZCUnits.openDetail('${esc(u.id)}','${esc(a.faction)}')">${esc(u.name)}</button>
             ${s.commander ? `<span class="dzc-cmdr-tag" title="Level ${s.commander.level} Commander"
@@ -2367,7 +2488,7 @@
       if (now !== was) refresh();
     },
     renameCommander: (id, t) => { window.DZCArmy.renameCommander(current, id, t); refresh(); },
-    gripDown,
+    gripDown, sqGrip,
     toggleRail: () => { railOpen = !railOpen; refresh(); },
     selectGroup: id => { selectedGroup = id; drilled = true; refresh(); },
     backToGroups: () => { drilled = false; refresh(); },
