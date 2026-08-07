@@ -137,7 +137,12 @@ const DZC_STEPS = [
      .find(x => x.textContent.trim() === 'Add'); b && b.click()`],
   ['12-settings', `App.openSettings()`],
   ['12b-whats-new', `App.openChangelog()`],
-  ['13-unit-detail', `App.closeModal('modal-changelog');
+  /* Sync, never shot. Its code box and its join input are bordered with
+     var(--border), a token nothing defined, so both had no border at all and
+     nobody had a picture to notice it in. */
+  ['12c-sync', `App.closeModal('modal-changelog'); App.openSyncModal()`],
+  ['13-unit-detail', `App.closeModal('modal-sync');
+     App.closeModal('modal-changelog');
      App.closeModal('modal-settings');
      const btn = document.querySelector('.dzc-sq-name');
      btn && btn.click()`],

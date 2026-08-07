@@ -122,6 +122,32 @@
   --stroke-strong: #b8b2a8;
   --stroke-accent: rgba(27, 58, 92, 0.25);
 
+  /* ── names this stylesheet reads but never set ─────────────────────────
+   *
+   * Inherited from Dropfleet, where they are also undefined. Most are read
+   * with NO fallback -- `border: 1px solid var(--border)` -- and a var() that
+   * resolves to nothing makes the whole declaration invalid at computed-value
+   * time, so the property silently falls back to its initial value. That is
+   * why the Sync modal's code box and text input had no border at all, the
+   * offline progress track was invisible, and What's New rendered its
+   * disclaimer on no background.
+   *
+   * They are aliases, so the ramp above stays the single source of the
+   * colours; scripts/test-css-tokens.mjs fails the build if another one
+   * appears. */
+  --border: #d8d4cc;          /* = --stroke */
+  --stroke-medium: #d8d4cc;   /* = --stroke */
+  --warm: #faf8f5;            /* = --paper-warm */
+  --navy-deep: #142d47;
+  --bg2: #f3f1ec;             /* = --paper-alt */
+  --fg2: #3a3834;             /* = --ink-soft */
+  --fg3: #66615a;             /* = --ink-faint */
+  --font-header: "Roboto Slab", Georgia, serif;
+  --font-heading: "Roboto Slab", Georgia, serif;
+  --font-stat: "Outfit", "Jost", system-ui, sans-serif;
+  --radius-pill: 999px;
+  --weight-normal: 400;
+
   /* Elevation — a strict ladder (Fluent: ambient ring + directional key shadow),
      warm-tinted to the theme. Each tier is unambiguously deeper than the last:
      sm resting cards · md raised · lg dropdowns/bars · xl popovers/hover ·
@@ -201,6 +227,15 @@ html[data-theme="dark"] {
   --stroke-light: #2a313a;
   --stroke-strong: #49515b;
   --stroke-accent: rgba(111, 166, 220, 0.30);
+
+  /* The aliases above, on the dark ramp. */
+  --border: #353c45;
+  --stroke-medium: #353c45;
+  --warm: #1c212a;
+  --navy-deep: #22364d;
+  --bg2: #232a33;
+  --fg2: #c6c2ba;
+  --fg3: #8b919a;
 
   /* Shadows read as near-black ambient + a hairline light ring for elevation. */
   --shadow-sm: 0 0 0 1px rgba(255,255,255,0.03), 0 1px 2px rgba(0,0,0,0.40);

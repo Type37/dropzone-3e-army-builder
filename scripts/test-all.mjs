@@ -24,7 +24,8 @@ const SUITES = [
   ['share links', 'test-dzc-share.mjs'],
   ['fleet sync', 'test-fleet-sync.mjs'],
   ['house rules', 'test-house-rules.mjs'],
-  ['render', 'test-dzc-render.mjs']
+  ['render', 'test-dzc-render.mjs'],
+  ['css tokens', 'test-css-tokens.mjs']
 ];
 
 let failed = 0;

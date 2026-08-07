@@ -277,7 +277,7 @@ const App = (() => {
                   title="Download every army as one JSON file">Export a backup</button>
           <button class="btn btn-ghost btn-sm" type="button" onclick="App.openImport()"
                   title="Read a backup, an army or a share link back in">Import</button>
-          <button class="btn btn-ghost btn-sm" type="button" onclick="App.openChangelog()">What's New</button>
+          <button class="btn btn-ghost btn-sm" type="button" onclick="App.openChangelog()">What's new</button>
           <a class="btn btn-ghost btn-sm" href="${FEEDBACK_HREF}">Send feedback</a>
         </div>
         <p class="dzc-set-note">A WarLore project. Game data and art belong to TTCombat.
@@ -470,23 +470,36 @@ const App = (() => {
       openModal('modal-sync');
       return;
     }
+    /* Copy, twice over.
+     *
+     * Off: nothing. The Settings row that opens this already says what it is
+     * for -- "Keep the same armies on your phone and your computer" -- and
+     * three sentences explaining that a token is a credential is the explainer
+     * pattern in its purest form, on a screen where the two controls are
+     * "Turn on sync" and a box marked "Or enter an existing token".
+     *
+     * On: the state, and the one warning that earns its place. The token IS
+     * the credential, it is on screen, and what someone else can do with it is
+     * not deducible from looking at six words. */
     const on = FleetSync.enabled();
+    const last = FleetSync.lastSync();
+    const n = (window.DZCArmy && DZCArmy.all() || []).length;
     body.innerHTML = on
-      ? `<p>Syncing is on. Your Sync Token is the whole credential — anyone with it
-           can read and edit your armies, so share it only with your own devices.</p>
+      ? `<p><b>Syncing is on for this device.</b>
+           ${n} arm${n === 1 ? 'y' : 'ies'}, last synced ${
+             last ? esc(new Date(last).toLocaleString()) : 'not yet'}.</p>
          <p class="dzc-token">${esc(FleetSync.token())}</p>
+         <p class="dzc-set-note">Anyone with this phrase can read and change your armies.</p>
          <div class="dzc-set-actions">
            <button class="btn btn-outline btn-sm" type="button" onclick="App.syncNow()">Sync now</button>
            <button class="btn btn-ghost btn-sm" type="button" onclick="App.syncStop()">Turn off</button>
          </div>`
-      : `<p>Opting in mints a six-word Sync Token. Enter it on another device to
-           combine both army lists. There is no account and no password: the token
-           IS the credential.</p>
-         <div class="dzc-set-actions">
+      : `<div class="dzc-set-actions">
            <button class="btn btn-primary btn-sm" type="button" onclick="App.syncStart()">Turn on sync</button>
          </div>
          <label class="dzc-field" style="margin-top:14px"><span>Or enter an existing token</span>
-           <input id="sync-token-input" type="text" placeholder="six words"></label>
+           <input id="sync-token-input" type="text" placeholder="six words"
+                  autocapitalize="none" autocorrect="off" spellcheck="false"></label>
          <button class="btn btn-outline btn-sm" type="button" onclick="App.syncJoin()">Join</button>`;
     openModal('modal-sync');
   }
