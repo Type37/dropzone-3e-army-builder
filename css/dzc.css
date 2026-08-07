@@ -48,6 +48,42 @@
 }
 /* One line of text had 22px of margin around it. */
 .dzc-count { font-size: 12px; color: var(--ink-2, #6b6459); margin: 4px 0 10px; }
+
+/* Force-organisation category, colour-coded.
+   The four are what the whole of 3.2 turns on — Vanguard, Heavy and Support
+   may not outspend Standard — and they were the same grey word on every card,
+   every picker tile, every Squad row and the printed sheet. One ink each, set
+   once here off data-cat, so the builder, the picker, the reference and the
+   sheet cannot drift apart the way a JS map per file would.
+
+   A tinted chip rather than coloured text: the category is a label, and
+   colouring the word alone would make it look like a link. */
+/* Two inks per category, and the split is the point. --cat is the swatch: the
+   vivid colour, on a 7px square, which is what carries at a glance. --cat-ink
+   is the WORD, darkened until it clears 4.5:1 on paper.
+
+   Straight off the swatch colour the text came out at 2.7 to 3.6 — Heavy,
+   Vanguard and Standard all below AA. This app exists partly because
+   TTCombat's own low-contrast printing is hard to read; shipping a category
+   label nobody with tired eyes can read would be doing the same thing in a
+   nicer typeface. Measured against the card, not guessed. */
+[data-cat] { --cat: var(--ink-2, #6b6459); --cat-ink: var(--ink-2, #6b6459); }
+[data-cat="Standard"]  { --cat: #3e9945; --cat-ink: #34813a; }
+[data-cat="Vanguard"]  { --cat: #5b9bd5; --cat-ink: #4576a2; }
+[data-cat="Heavy"]     { --cat: #d98c1f; --cat-ink: #a16817; }
+[data-cat="Support"]   { --cat: #6a4c9c; --cat-ink: #6a4c9c; }
+[data-cat="Transport"] { --cat: #c43c2f; --cat-ink: #c43c2f; }
+.dzc-cat {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-weight: 600; color: var(--cat-ink);
+}
+.dzc-cat::before {
+  content: ""; width: 7px; height: 7px; flex: 0 0 auto;
+  background: var(--cat);
+}
+/* Dark theme: the darkened text inks go the wrong way on ink-coloured paper,
+   so the word takes the vivid colour there and the swatch carries it too. */
+[data-theme="dark"] [data-cat] { --cat-ink: var(--cat); }
 .dzc-empty { padding: 32px 0; text-align: center; color: var(--ink-2, #6b6459); }
 
 /* ── category groups ── */

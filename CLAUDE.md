@@ -28,9 +28,14 @@ What is left:
 - **Read the backlog when it is worth reading** — picking up work with no
   instruction to hand, or checking whether something has been asked for
   before. Filter on `#dropzone3` in *Generators & Web Apps*.
-- **Claude does not close tasks.** Only Jet's satisfaction closes one.
+- **Close a task when it is genuinely done** (Jet, 2026-08-06). Done means
+  shipped and checked, not "I think that covers it". If the work landed
+  differently from what the task describes, say so when reporting rather than
+  closing it quietly — a task closed against work that does not match it is
+  worse than one left open.
 - **Claude never deletes a task.** Not duplicates, not superseded ones, not
-  ones that look obsolete. Read only — deleting is Jet's alone.
+  ones that look obsolete. Closing is now allowed; deleting is still Jet's
+  alone.
 
 The open work is whatever Jet just said, then the backlog. Not this file, and
 not `HANDOFF.md`.

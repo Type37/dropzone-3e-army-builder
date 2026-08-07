@@ -217,3 +217,17 @@
    what each costs, which is read every activation. */
 .pr-gear { font-size: 8.5pt; margin-top: 1mm; }
 .pr-gear b { font-weight: 700; }
+
+/* Category on the printed sheet. Colour survives a colour printer and the
+   square still reads as a distinct mark in greyscale, which is what most of
+   these are actually printed on. */
+.pr-sq-cat[data-cat]::before {
+  content: ""; display: inline-block;
+  width: 1.6mm; height: 1.6mm; margin-right: 1mm;
+  background: var(--cat, #666); vertical-align: baseline;
+}
+.pr-sq-cat[data-cat="Standard"]  { --cat: #3e9945; }
+.pr-sq-cat[data-cat="Vanguard"]  { --cat: #5b9bd5; }
+.pr-sq-cat[data-cat="Heavy"]     { --cat: #d98c1f; }
+.pr-sq-cat[data-cat="Support"]   { --cat: #6a4c9c; }
+.pr-sq-cat[data-cat="Transport"] { --cat: #c43c2f; }

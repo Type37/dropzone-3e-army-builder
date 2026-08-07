@@ -215,6 +215,7 @@
       <div class="dzc-card-body">
         <h3 class="dzc-card-name">${esc(u.name)}</h3>
         <div class="dzc-card-meta">
+          <span class="dzc-cat" data-cat="${esc(u.category)}">${esc(u.category)}</span>
           <span>${esc(u.type || '')}</span>
           <span class="dzc-points">${pointsHtml(u)}</span>
           <span class="dzc-squad">Squad ${squadHtml(u)}</span>
@@ -588,7 +589,7 @@
                with the art and the wording -- was the one thing with no
                reference. Scanned per Unit, so it cannot go stale against a
                re-scan the way a typed number would. -->
-          <p class="dzc-detail-meta"><span>${esc(u.category)}</span> <span>${esc(u.type || '')}</span>
+          <p class="dzc-detail-meta"><span class="dzc-cat" data-cat="${esc(u.category)}">${esc(u.category)}</span> <span>${esc(u.type || '')}</span>
             <span>${pointsHtml(u)}</span> <span>Squad ${squadHtml(u)}</span>
             ${u.page ? `<span>Stat card p.${esc(u.page)}</span>` : ''}
             ${u.rare ? '<span class="dzc-flag dzc-flag--rare">Rare</span>' : ''}${u.unique ? '<span class="dzc-flag dzc-flag--unique">Unique</span>' : ''}</p>

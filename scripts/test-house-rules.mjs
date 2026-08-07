@@ -597,6 +597,37 @@ console.log('\nevery route lands on a view that exists');
   ok(/default:/.test(body), 'with a default, so an unknown hash lands on the landing screen');
 }
 
+// ------------------------------------------- a category label can be read
+/* The four force-organisation categories are colour-coded, and a colour that
+ * cannot be read is decoration. Jet built the Dropfleet builder partly because
+ * TTCombat's own printing is low-contrast and hard on tired eyes; a category
+ * label at 2.7:1 would be the same failure in a nicer typeface.
+ *
+ * Checked off the stylesheet rather than the rendered page, because this is
+ * where the value is decided and the suite has no browser. --cat is the
+ * swatch and may be as vivid as it likes; --cat-ink is the WORD and has to
+ * clear 4.5:1 on the card. */
+console.log('\na category label clears AA on paper');
+{
+  const css = readFileSync(path.join(ROOT, 'css/dzc.css'), 'utf8');
+  const CARD = [255, 253, 248];
+  const lum = ([r, g, b]) => {
+    const f = n => (n /= 255) <= 0.03928 ? n / 12.92 : Math.pow((n + 0.055) / 1.055, 2.4);
+    return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+  };
+  const ratio = (a, b) => {
+    const [A, B] = [lum(a), lum(b)];
+    return (Math.max(A, B) + 0.05) / (Math.min(A, B) + 0.05);
+  };
+  const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  const inks = [...css.matchAll(/\[data-cat="(\w+)"\][^{]*\{[^}]*--cat-ink:\s*(#[0-9a-f]{6})/gi)]
+    .map(m => [m[1], m[2]]);
+  eq(inks.length, 5, 'all five categories name a text ink', inks.map(i => i[0]).join(', '));
+  const dim = inks.filter(([, h]) => ratio(hex(h), CARD) < 4.5)
+    .map(([n, h]) => `${n} ${h} ${ratio(hex(h), CARD).toFixed(2)}:1`);
+  eq(dim.length, 0, 'and every one of them clears 4.5:1 on a card', dim.join(', '));
+}
+
 // ---------------------------------------------------- a phone can hit the control
 /* Measured at 390x844 before this was written: the way back 18x18, the card
  * menu 24x24, the model stepper 24x24 with 2px between plus and minus,

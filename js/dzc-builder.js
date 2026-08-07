@@ -1064,9 +1064,11 @@
      * that also refuses you a purchase is a different feature. */
     const compact = !!(window.App && App.compactView && App.compactView());
 
-    const meta = [esc(u.category), esc(u.type || ''),
-      u.squadMin != null ? `Squad ${U.squadHtml(u)}` : '']
-      .filter(Boolean).map(t => `<span>${t}</span>`).join('');
+    const meta = [
+      `<span class="dzc-cat" data-cat="${esc(u.category)}">${esc(u.category)}</span>`,
+      `<span>${esc(u.type || '')}</span>`,
+      u.squadMin != null ? `<span>Squad ${U.squadHtml(u)}</span>` : ''
+    ].filter(Boolean).join('');
 
     return `<div class="dzc-squad${isTransport ? ' is-transport' : ''}" style="--depth:${depth}">
       <div class="dzc-sq-main">
@@ -1563,9 +1565,11 @@
     const each = sp && sp.n > 1 ? `${sp.n} × ${span(sp.perLo, sp.perHi)}` : '';
     if (!chk) chk = window.DZCArmy.canAddUnit(a, picker.groupId, u.id);
     const U = window.DZCUnits;
-    const meta = [esc(u.category), esc(u.type || ''),
-      u.squadMin != null ? `Squad ${U.squadHtml(u)}` : '']
-      .filter(Boolean).map(t => `<span>${t}</span>`).join('');
+    const meta = [
+      `<span class="dzc-cat" data-cat="${esc(u.category)}">${esc(u.category)}</span>`,
+      `<span>${esc(u.type || '')}</span>`,
+      u.squadMin != null ? `<span>Squad ${U.squadHtml(u)}</span>` : ''
+    ].filter(Boolean).join('');
     return `<div class="dzc-pick${chk.ok ? '' : ' is-blocked'}">
       ${u.rare || u.unique ? `<span class="dzc-pick-flags">${u.rare
         ? '<span class="dzc-flag dzc-flag--rare">Rare</span>' : ''}${u.unique
@@ -1864,7 +1868,7 @@
         <div class="pr-sq-line">
           <span class="pr-sq-n">${s.models.length}×</span>
           <span class="pr-sq-name">${esc(u.name)}</span>
-          <span class="pr-sq-cat">${esc(u.category)}</span>
+          <span class="pr-sq-cat" data-cat="${esc(u.category)}">${esc(u.category)}</span>
           ${s.commander ? `<span class="pr-cmdr">${esc(commanderTagName(a, s))}</span>` : ''}
           <span class="pr-sq-cost">${cost}pts</span>
         </div>
