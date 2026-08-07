@@ -620,12 +620,22 @@ console.log('\na category label clears AA on paper');
     return (Math.max(A, B) + 0.05) / (Math.min(A, B) + 0.05);
   };
   const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  /* The five per-category colours were removed on 2026-08-07 -- Jet: "they
+   * conflict with the other colors", and they did: the six transport symbols
+   * carry meaning in their hue (3.2.4.2) and the faction accent carries the
+   * army, so a third scheme on the category word competed with both. So the
+   * assertion flipped. There must be NO per-category ink, and the one
+   * remaining fallback still has to be readable -- dropping the colour is not
+   * licence to set a category in something nobody can read. */
   const inks = [...css.matchAll(/\[data-cat="(\w+)"\][^{]*\{[^}]*--cat-ink:\s*(#[0-9a-f]{6})/gi)]
     .map(m => [m[1], m[2]]);
-  eq(inks.length, 5, 'all five categories name a text ink', inks.map(i => i[0]).join(', '));
-  const dim = inks.filter(([, h]) => ratio(hex(h), CARD) < 4.5)
-    .map(([n, h]) => `${n} ${h} ${ratio(hex(h), CARD).toFixed(2)}:1`);
-  eq(dim.length, 0, 'and every one of them clears 4.5:1 on a card', dim.join(', '));
+  eq(inks.length, 0, 'no category names a colour of its own any more',
+     inks.map(i => i[0]).join(', '));
+  const fallback = (css.match(/\[data-cat\]\s*\{[^}]*--cat-ink:[^;]*?(#[0-9a-f]{6})/i) || [])[1];
+  ok(fallback, 'and the one that is left names an ink', fallback);
+  ok(fallback && ratio(hex(fallback), CARD) >= 4.5,
+     'which clears 4.5:1 on a card',
+     fallback && `${fallback} ${ratio(hex(fallback), CARD).toFixed(2)}:1`);
 }
 
 // ---------------------------------------------------- a phone can hit the control

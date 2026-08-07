@@ -863,9 +863,13 @@
    * category colour — Dropfleet's renderFleetCardComp (app.js:1809). It is the
    * fastest way to tell two lists apart at a glance, which is the whole job of
    * a card in a grid. */
+  /* One neutral ink. The per-category colours were removed on 2026-08-07 --
+   * they competed with the transport symbols, whose hue is their meaning, and
+   * with the faction accent. The map stays as one value so the thumbnails and
+   * the ratio bars keep a border rather than losing one. */
   const CAT_INK = {
-    Standard: '#3e9945', Vanguard: '#5b9bd5', Heavy: '#d98c1f',
-    Support: '#6a4c9c', Transport: '#c43c2f'
+    Standard: '#9a9184', Vanguard: '#9a9184', Heavy: '#9a9184',
+    Support: '#9a9184', Transport: '#9a9184'
   };
   function armyStrip(a) {
     const seen = {}, out = [];

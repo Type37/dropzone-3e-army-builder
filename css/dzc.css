@@ -114,20 +114,17 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    TTCombat's own low-contrast printing is hard to read; shipping a category
    label nobody with tired eyes can read would be doing the same thing in a
    nicer typeface. Measured against the card, not guessed. */
+/* THE COLOURS ARE GONE. Jet, 2026-08-07: "remove the colors for standard/
+   vanguard/heavy/support bc they conflict with the other colors."
+   
+   They did. The app already spends colour on two things that are not
+   negotiable — the six transport symbols, whose hue IS their meaning
+   (3.2.4.2), and the faction accent — and a third scheme on the category word
+   put five more hues on the same card competing with both. A category is a
+   word; it can be a word. The tokens stay so the ratio bars and the army
+   thumbnails still resolve, all on the neutral ink. */
 [data-cat] { --cat: var(--ink-2, #6b6459); --cat-ink: var(--ink-2, #6b6459); }
-[data-cat="Standard"]  { --cat: #3e9945; --cat-ink: #34813a; }
-[data-cat="Vanguard"]  { --cat: #5b9bd5; --cat-ink: #4576a2; }
-[data-cat="Heavy"]     { --cat: #d98c1f; --cat-ink: #a16817; }
-[data-cat="Support"]   { --cat: #6a4c9c; --cat-ink: #6a4c9c; }
-[data-cat="Transport"] { --cat: #c43c2f; --cat-ink: #c43c2f; }
-.dzc-cat {
-  display: inline-flex; align-items: center; gap: 4px;
-  font-weight: 600; color: var(--cat-ink);
-}
-.dzc-cat::before {
-  content: ""; width: 7px; height: 7px; flex: 0 0 auto;
-  background: var(--cat);
-}
+.dzc-cat { display: inline-flex; align-items: center; font-weight: 600; color: var(--cat-ink); }
 /* Dark theme: the darkened text inks go the wrong way on ink-coloured paper,
    so the word takes the vivid colour there and the swatch carries it too. */
 [data-theme="dark"] [data-cat] { --cat-ink: var(--cat); }
@@ -296,8 +293,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    tooltip is fine for reminding; it is no good for deciding, and on a phone
    there is no hover at all. Sharp, because a panel is square. */
 .dzc-ruledefs {
-  margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line, #d8d0c0);
-  display: grid; gap: 8px;
+  margin-top: 8px; display: grid; gap: 6px;
 }
 @media (min-width: 720px) { .dzc-ruledefs { grid-template-columns: 1fr 1fr; } }
 .dzc-ruledef {
@@ -341,7 +337,9 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-detail-rules { margin-bottom: 14px; }
 /* The <h4> eyebrows these styled are gone; nothing in the app renders one. */
 .dzc-variants ul { list-style: none; margin: 0 0 14px; padding: 0; }
-.dzc-variants li { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; border-bottom: 1px solid var(--line, #eee5d6); }
+/* No rule between variants: they are already separated by the space and by
+   their own names. Half the divider bars in the app came out on 2026-08-07. */
+.dzc-variants li { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; }
 
 /* Wide tables scroll inside their own container; the page never scrolls sideways. */
 .dzc-wpn { width: 100%; border-collapse: collapse; font-size: 12px; display: block; overflow-x: auto; }
@@ -366,21 +364,27 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    gaps are a couple of pixels tighter, and the value column is 2.7em instead
    of 3.4. Nothing is dropped — the card carries the same eight fields it did
    at three across. */
+/* A TABLE, not a row of cards. Jet, 2026-08-07: "those weapons shouldn't be
+   cards, they should be a table. a vertical table. as in no space between."
+   
+   So: no gap, and every weapon after the first drops its top border onto the
+   one above. They butt together into a continuous block the way table rows do,
+   and the grid still gives more than one column where there is room for it. */
 .dzc-wcards {
-  display: grid; gap: 5px;
+  display: grid; gap: 0;
   grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
 }
 .dzc-wc {
   border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff);
-  padding: 7px 8px; min-width: 0;
+  padding: 4px 6px; min-width: 0; margin: -1px 0 0 -1px;
 }
-.dzc-wc-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
+.dzc-wc-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 6px; }
 .dzc-wc-name {
   margin: 0; font: 700 14px/1.25 var(--font-ui, 'Jost', system-ui, sans-serif);
   overflow-wrap: anywhere; color: var(--ink, #24201c);
 }
 .dzc-wc-only { font-size: 11.5px; font-weight: 500; color: var(--ink-2, #6b6459); }
-.dzc-wc-body { display: flex; align-items: flex-start; gap: 8px; margin-top: 5px; }
+.dzc-wc-body { display: flex; align-items: flex-start; gap: 6px; margin-top: 3px; }
 /* The arc, drawn once at a size that reads, with its own code under it. */
 .dzc-wc-arc {
   flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 2px;
@@ -401,7 +405,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    the same box, so the second stat starts at the same x on every one. */
 .dzc-wc-stats {
   flex: 1 1 auto; min-width: 0;
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 8px;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px 8px;
 }
 .dzc-wc-stat { display: flex; flex-direction: column; min-width: 0; }
 /* The one icon that keeps its own colours sits INSIDE its label, so it reads
@@ -416,7 +420,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   font: 600 14px/1.15 var(--font-numeric, 'Outfit', sans-serif);
   font-variant-numeric: tabular-nums lining-nums; color: var(--ink, #24201c);
 }
-.dzc-wc-rules { margin-top: 5px; }
+.dzc-wc-rules { margin-top: 3px; }
 /* The same three marks the table carries: an upgrade, a variant-only gun, and
    in a Squad whether this one is actually yours. */
 .dzc-wc.is-upgrade { border-left: 3px solid #2e9e4f; }
@@ -975,9 +979,9 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   color: var(--success-ink, #2f7a37);
 }
 
-.dzc-group-card { border: 1px solid var(--line, #d8d0c0); padding: 7px 9px; margin-bottom: 6px; background: var(--surface-2, #fff); }
+.dzc-group-card { border: 1px solid var(--line, #d8d0c0); padding: 5px 7px; margin-bottom: 5px; background: var(--surface-2, #fff); }
 .dzc-group-card.is-over { border-color: #b3261e; }
-.dzc-g-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; margin-bottom: 8px; }
+.dzc-g-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 10px; margin-bottom: 5px; }
 .dzc-g-head h2 { margin: 0; font: 700 15px/1.2 var(--font-ui, 'Jost', sans-serif); overflow-wrap: anywhere; }
 /* The two buttons stay at the end of the line whatever the name does. */
 .dzc-g-head .dzc-icon-btn { margin-left: 0; }
@@ -1012,8 +1016,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    more small grey pill in a row of small grey pills. */
 .dzc-g-space {
   display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: center;
-  margin: 0 0 10px; padding: 9px 0;
-  border-top: 1px solid var(--line, #eee5d6); border-bottom: 1px solid var(--line, #eee5d6);
+  margin: 0 0 6px; padding: 5px 0;
 }
 .dzc-space { display: inline-flex; align-items: center; gap: 9px; }
 .dzc-space svg { flex: 0 0 auto; }
@@ -1029,7 +1032,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    at the narrow breakpoint rather than the tree being flattened away. */
 .dzc-squad {
   margin-left: calc(var(--depth) * var(--sq-indent, 22px));
-  padding: 6px 0; border-top: 1px solid var(--line, #eee5d6);
+  padding: 4px 0; border-top: 1px solid var(--line, #eee5d6);
 }
 .dzc-squad:first-of-type { border-top: 0; padding-top: 4px; }
 
@@ -1105,7 +1108,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    flex, not a fixed grid: the stat table sizes itself and the weapon grid gets
    what is left, and `min-width: 0` on the guns is what lets their auto-fill
    columns actually shrink instead of pushing the row wide. */
-.dzc-sq-body { display: flex; align-items: flex-start; gap: 12px; margin-top: 5px; }
+.dzc-sq-body { display: flex; align-items: flex-start; gap: 10px; margin-top: 3px; }
 /* Two stat cells wide by preference, and it gives way before the guns do. */
 .dzc-sq-body > .dzc-sq-stats { flex: 0 1 300px; margin-top: 0; }
 .dzc-sq-body > .dzc-sq-wpn { flex: 1 1 0; min-width: 0; margin-top: 0; }
@@ -1115,12 +1118,12 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   .dzc-sq-body > .dzc-sq-stats, .dzc-sq-body > .dzc-sq-wpn { width: 100%; }
 }
 .dzc-sq-stats { margin-top: 5px; }
-.dzc-sq-rules { margin-top: 6px; }
+.dzc-sq-rules { margin-top: 4px; }
 /* The table never shrinks its columns to fit — it scrolls inside its own box,
    so a phone gets every number rather than a squeezed, unreadable version. */
 .dzc-sq-wpn { margin-top: 8px; overflow-x: auto; }
 .dzc-sq-wpn .dzc-wpn { min-width: 620px; }
-.dzc-squad .dzc-variants { margin-top: 5px; }
+.dzc-squad .dzc-variants { margin-top: 3px; }
 .dzc-sq-cost {
   font-family: var(--font-numeric, 'Outfit', sans-serif);
   font-weight: 600; font-size: 14px; white-space: nowrap;
@@ -1138,7 +1141,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   font-family: var(--font-numeric, 'Outfit', sans-serif);
   font-variant-numeric: tabular-nums;
 }
-.dzc-sq-opts { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 5px; }
+.dzc-sq-opts { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 3px; }
 .dzc-cmdr select { font-size: 11.5px; padding: 3px 6px; border-radius: 4px; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); color: var(--ink, #24201c); max-width: 100%; }
 .dzc-cmdr { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-2, #6b6459); display: inline-flex; align-items: center; gap: 4px; }
 
@@ -1148,7 +1151,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    is the least useful thing about it. */
 .dzc-carry {
   display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
-  margin-top: 8px; padding: 7px 9px; background: var(--surface-3, #f2ece0);
+  margin-top: 5px; padding: 4px 7px; background: var(--surface-3, #f2ece0);
 }
 .dzc-carry-lab {
   display: inline-flex; align-items: center; gap: 5px;
@@ -1557,12 +1560,15 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    across wherever 140px each will fit and one where it will not, and the box
    never asks for more than it is given. */
 .dzc-stats:not(.is-compact) {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  column-gap: 6px; row-gap: 4px; width: 100%; max-width: 100%;
+  /* ONE COLUMN, ALWAYS. Jet, 2026-08-07: "except the core unit stats. that i
+     still want stacked, Vertically, ALWAYs vertically." Two across was read as
+     a grid to scan; a unit's stats are a block to read down. */
+  display: grid; grid-template-columns: minmax(0, 1fr);
+  row-gap: 2px; width: 100%; max-width: 100%;
 }
 .dzc-stats:not(.is-compact) .dzc-stat {
-  grid-template-columns: 18px 38px minmax(0, 1fr); gap: 4px;
-  padding: 3px 6px;
+  grid-template-columns: 16px 34px minmax(0, 1fr); gap: 4px;
+  padding: 2px 5px;
 }
 .dzc-stats:not(.is-compact) .dzc-stat-v { text-align: right; }
 .dzc-stats:not(.is-compact) .dzc-stat-k { align-self: center; }
@@ -2114,8 +2120,7 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
    the name that identified it and needs to read as its own thing rather than
    as a stray line after the last Group. */
 .dzc-b-desc {
-  margin: 14px 0 0; padding: 8px 0 0;
-  border-top: 1px solid var(--line, #e3dcce);
+  margin: 10px 0 0; padding: 4px 0 0;
   font-size: 13px; line-height: 1.45; color: var(--ink-2, #6b6459);
   overflow-wrap: anywhere; cursor: text; min-height: 1.45em;
 }
