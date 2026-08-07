@@ -30,6 +30,14 @@
   nothing on it. A route the app does not know falls through to the landing
   view, so the list below is checked against the router.
 </p>
+<p>
+  And every MODAL, opened. The picker, a Unit's stats and weapons, the print
+  preview, Choose a Transport, Choose a Commander, Share, Import, Sync,
+  What's new and Settings are where the widest content in the app lives, and
+  no URL opens any of them. They are <code>visibility: hidden</code> rather
+  than <code>display: none</code>, so their empty panels were being measured
+  and passing — coverage of nine screens with their contents left out.
+</p>
 <div id="out"></div>
 
 <script>
@@ -47,6 +55,52 @@ const TARGET = q.get("url") || "../index.html";
 const ROUTES = (q.get("routes") || "landing,armies,units,collection,army,play").split(",");
 const out = document.getElementById("out");
 const results = [];
+
+/* Every name above is a ROUTE, and a route is not where this app keeps its
+   widest content. The picker, a Unit's stats and weapons, the print preview,
+   Choose a Transport, Choose a Commander, Share, Import and Settings are all
+   MODALS, and nothing about loading a URL opens one — so for as long as this
+   harness has existed it has measured the app with all nine of them shut.
+   That is the same failure the note at the top of this file describes, one
+   layer in: the screens it measured were the screens with nothing on them.
+
+   `.modal-overlay` is `visibility: hidden`, not `display: none`, so the empty
+   panels WERE being measured and passing — which is worse than not measuring
+   them, because it looked like coverage.
+
+   `sel` is not decoration. An opener that silently does nothing (a missing
+   army, a renamed export) would leave the underlying route on screen and it
+   would pass, so the overlay has to be found open before anything is
+   believed. */
+const OVERLAYS = [
+  { key: "settings",  route: "landing", sel: "#modal-settings.active",
+    open: (w) => w.App.openSettings() },
+  { key: "changelog", route: "landing", sel: "#modal-changelog.active",
+    open: (w) => w.App.openChangelog() },
+  { key: "sync",      route: "landing", sel: "#modal-sync.active",
+    open: (w) => w.App.openSyncModal() },
+  { key: "new",       route: "armies",  sel: "#dzc-new.active",
+    open: (w) => w.DZCBuilder.openNew() },
+  { key: "import",    route: "armies",  sel: "#modal-import.active",
+    open: (w) => w.App.openImport() },
+  // The Unit's own screen: stat grid, every weapon table, variants and the
+  // rules in full. The widest single thing the app draws.
+  { key: "detail",    route: "units",   sel: "#dzc-detail.active",
+    open: (w, ctx) => w.DZCUnits.openDetail(ctx.unitId, "ucm") },
+  { key: "picker",    route: "army",    sel: "#dzc-picker.active",
+    open: (w, ctx) => w.DZCBuilder.openPicker(ctx.groupId) },
+  { key: "commander", route: "army",    sel: "#dzc-cmdr.active",
+    open: (w) => w.DZCBuilder.openCommander() },
+  { key: "carry",     route: "army",    sel: "#dzc-carry.active",
+    open: (w, ctx) => w.DZCBuilder.openCarry(ctx.squadId) },
+  { key: "share",     route: "army",    sel: "#dzc-share.active",
+    open: (w) => w.DZCBuilder.share() },
+  // Not a .modal-overlay at all — the preview builds its own full-screen
+  // element, which is exactly why it needs its own selector rather than a
+  // sweep for open modals.
+  { key: "preview",   route: "army",    sel: "#dzc-pp",
+    open: (w) => w.DZCBuilder.print() },
+].filter((o) => !q.get("overlays") || q.get("overlays").split(",").indexOf(o.key) !== -1);
 
 /* The builder is the screen the app IS, and until now the harness could not
  * reach it: #army needs an army id, so a bare URL always fell through to the
@@ -100,14 +154,21 @@ function seedArmy() {
         A.all().slice().filter((a) => a.name === SEED_NAME).forEach((a) => A.remove(a.id));
 
         const army = A.create("ucm", SEED_NAME, 1500);
-        const tanks = A.addSquad(army, A.addGroup(army).id, "ucm-main-battle-tank", 3);
+        const group = A.addGroup(army);
+        const tanks = A.addSquad(army, group.id, "ucm-main-battle-tank", 3);
         A.assignTransport(army, tanks.id, "condor-dropship");
         const legion = A.addSquad(army, A.addGroup(army).id, "legionnaires", 3);
         A.assignTransport(army, legion.id, "bear-apc");
         const arch = A.addSquad(army, A.addGroup(army).id, "archangel", 1);
         A.toggleUpgrade(army, arch.id, "*", "UM-115 Missile Spread");
         A.save();
-        resolve(army.id);
+        /* The overlays need somewhere to be opened FROM: a Group for the
+         * picker, a Squad for Choose a Transport, a Unit for the stats. Taken
+         * off the army that was just built rather than typed in as ids, so a
+         * renamed Unit breaks the seed loudly instead of leaving an opener
+         * that quietly does nothing. */
+        resolve({ armyId: army.id, groupId: group.id, squadId: tanks.id,
+                  unitId: tanks.unitId });
       } catch (e) {
         // Surfaced, not swallowed: a seed that fails quietly turns the two
         // screens worth measuring into eight PASS lines about nothing.
@@ -118,7 +179,7 @@ function seedArmy() {
   });
 }
 
-function audit(doc, win, width, route) {
+function audit(doc, win, width, route, overlay) {
   const de = doc.documentElement;
   const bad = [];
   // The failure that actually happens: content running off the right edge.
@@ -164,10 +225,35 @@ function audit(doc, win, width, route) {
       });
     }
   }
+  /* Running off the edge is one way to lose content. Cutting it off with an
+     ellipsis is the other, and CLAUDE.md forbids it outright — but until now
+     nothing measured it, and Import's label was ellipsised down to "…or a pas"
+     on every phone while this harness reported the screen clean.
+
+     The check is `text-overflow: ellipsis` AND text actually wider than the
+     box, so a defensive `ellipsis` on something that happens to fit is not
+     reported. That pairing is what makes it a finding rather than a lint: the
+     old clipping sweep looked for `overflow: hidden` + a wide scrollWidth and
+     returned 0 by construction, because the bug it was hunting had no
+     `overflow: hidden` anywhere. */
+  const clipped = [];
+  for (const n of doc.querySelectorAll("body *")) {
+    const cs = win.getComputedStyle(n);
+    if (cs.textOverflow !== "ellipsis") continue;
+    if (n.scrollWidth <= n.clientWidth + 1) continue;
+    clipped.push({
+      sel: n.tagName.toLowerCase() + (n.id ? "#" + n.id : "") +
+           (n.className && typeof n.className === "string"
+             ? "." + n.className.trim().split(/\s+/).slice(0, 2).join(".") : ""),
+      shown: n.clientWidth, needs: n.scrollWidth,
+      text: (n.textContent || "").trim().slice(0, 44),
+    });
+  }
+
   // de-dupe: report the outermost offender per selector
   const seen = new Set();
   const uniq = bad.filter((b) => !seen.has(b.sel) && seen.add(b.sel));
-  return {
+  const r = {
     route,
     width,
     innerWidth: win.innerWidth,
@@ -180,7 +266,17 @@ function audit(doc, win, width, route) {
     horizontalScroll: de.scrollWidth > width + 1,
     offendersTotal: bad.length,
     offenders: uniq.slice(0, 12),
+    clippedTotal: clipped.length,
+    clipped: clipped.slice(0, 12),
   };
+  /* An overlay that never opened leaves the route it was opened from on
+   * screen, and that route already passes — so without this the whole overlay
+   * pass would report clean by construction. Same rule as routeOk. */
+  if (overlay) {
+    r.overlay = overlay.key;
+    r.overlayOk = !!doc.querySelector(overlay.sel);
+  }
+  return r;
 }
 
 // Routes that need an army id appended. Play Mode is in because it is the
@@ -188,55 +284,128 @@ function audit(doc, win, width, route) {
 // work.
 const NEEDS_ARMY = new Set(["army", "play"]);
 
-async function run() {
-  const armyId = ROUTES.some((r) => NEEDS_ARMY.has(r)) ? await seedArmy() : null;
-  let pending = WIDTHS.length * ROUTES.length;
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
-  for (const route of ROUTES) {
+/* Opening is RETRIED, not fired once on a timer.
+ *
+ * With 119 frames loading the whole app at once, a fixed 700ms settle is a bet
+ * on how loaded the machine is. Choose a Transport lost that bet at all seven
+ * widths in one run and passed all seven in the next: openCarry looks up the
+ * Squad on the builder's current army, and if the route has not finished
+ * rendering there is no current army, so it returns having done nothing and
+ * leaves the builder on screen — which passes. A flaky check that fails open
+ * is worse than no check.
+ *
+ * So the opener is called until its overlay is actually there, or until a
+ * deadline. Calling it twice on an already-open modal is harmless; giving up
+ * leaves overlayOk false, which is a FAIL. */
+async function openWhenReady(overlay, frame, ctx) {
+  const deadline = Date.now() + 8000;
+  for (;;) {
+    try {
+      await Promise.resolve(overlay.open(frame.contentWindow, ctx));
+    } catch (e) {
+      if (Date.now() > deadline) throw e;
+    }
+    await wait(200);
+    if (frame.contentDocument.querySelector(overlay.sel)) return;
+    if (Date.now() > deadline) return;
+  }
+}
+
+async function run() {
+  // The overlays need the same seeded army the builder route does, so the
+  // decision to build one is taken across both lists rather than over ROUTES
+  // alone — checking only ROUTES left every #army overlay measuring the
+  // builder's empty state.
+  const needsSeed = ROUTES.some((r) => NEEDS_ARMY.has(r))
+    || OVERLAYS.some((o) => NEEDS_ARMY.has(o.route));
+  const ctx = needsSeed ? await seedArmy() : null;
+  const armyId = ctx && ctx.armyId;
+
+  /* Routes, then every overlay opened on the route it belongs to. One flat
+     list, so the pending count, the cleanup and the final sort do not have to
+     know which kind of case they are looking at. */
+  const cases = ROUTES.map((route) => ({ route, label: "#" + route }))
+    .concat(OVERLAYS.map((o) => ({
+      route: o.route, overlay: o, label: "#" + o.route + " → " + o.key,
+    })));
+  cases.forEach((c, i) => { c.idx = i; });
+
+  /* The rows are laid out first and loaded later, a few at a time.
+   *
+   * Every frame used to be given its `src` in this loop, so the whole matrix
+   * loaded the entire app at once. At six routes that was 42 copies and it
+   * held; at seventeen cases it is 119, and on a cold cache the machine
+   * simply could not render them inside the settle — the widths came back
+   * measuring a page with no stylesheet applied (a 1600px-wide logo on a
+   * 414px frame) and nearly every overlay reported as never opened. A harness
+   * whose answer depends on how busy the machine is is not an instrument. */
+  const queue = [];
+  for (const c of cases) {
     const h = document.createElement("h2");
-    h.textContent = "#" + route;
+    h.textContent = c.label;
     out.append(h);
     for (const w of WIDTHS) {
       const row = document.createElement("div");
       row.className = "row";
       const f = document.createElement("iframe");
       f.width = w;
-      f.src = TARGET + "#" + route + (NEEDS_ARMY.has(route) && armyId ? "/" + armyId : "");
       const pre = document.createElement("pre");
-      pre.textContent = "loading " + route + " at " + w + "px…";
+      pre.textContent = "queued: " + c.label + " at " + w + "px";
       row.append(f, pre);
       out.append(row);
-
-      f.addEventListener("load", () => {
-        setTimeout(() => {                     // let fonts + data settle
-          let r;
-          try {
-            r = audit(f.contentDocument, f.contentWindow, w, route);
-            // A seed that failed leaves #army with no id, which routes to the
-            // builder's empty state and measures nothing. Say so rather than
-            // pass.
-            if (NEEDS_ARMY.has(route) && !armyId) r.error = "could not seed an army";
-          } catch (e) {
-            r = { route, width: w, error: String(e) };
-          }
-          results.push(r);
-          const clean = !r.error && r.instrumentOk && r.routeOk
-            && !r.horizontalScroll && r.offendersTotal === 0;
-          pre.className = clean ? "ok" : "bad";
-          pre.textContent = (clean ? "PASS " : "FAIL ") + JSON.stringify(r, null, 1);
-          if (--pending === 0) {
-            window.LAYOUT_RESULTS = results.sort((a, b) =>
-              ROUTES.indexOf(a.route) - ROUTES.indexOf(b.route) || a.width - b.width);
-            // Put the store back. This shares an origin with the app, so a
-            // demo army left behind is one that turns up in your army list the
-            // next time you open localhost.
-            if (armyId) dropSeed();
-            window.LAYOUT_DONE = true;
-          }
-        }, 700);
-      });
+      queue.push({ c, w, f, pre });
     }
   }
+
+  async function measure(job) {
+    const { c, w, f, pre } = job;
+    pre.textContent = "loading " + c.label + " at " + w + "px…";
+    await new Promise((done) => {
+      f.addEventListener("load", done, { once: true });
+      f.src = TARGET + "#" + c.route + (NEEDS_ARMY.has(c.route) && armyId ? "/" + armyId : "");
+    });
+    await wait(700);                           // let fonts + data settle
+    let r;
+    try {
+      /* A settle after opening too, because the body the opener fills carries
+       * art and a stat grid that both land after it returns. */
+      if (c.overlay) {
+        await openWhenReady(c.overlay, f, ctx);
+        await wait(500);
+      }
+      r = audit(f.contentDocument, f.contentWindow, w, c.route, c.overlay);
+      // A seed that failed leaves #army with no id, which routes to the
+      // builder's empty state and measures nothing. Say so rather than pass.
+      if (NEEDS_ARMY.has(c.route) && !armyId) r.error = "could not seed an army";
+    } catch (e) {
+      r = { route: c.route, overlay: c.overlay && c.overlay.key, width: w,
+            error: String((e && e.stack) || e) };
+    }
+    r.idx = c.idx;
+    results.push(r);
+    const clean = !r.error && r.instrumentOk && r.routeOk
+      && r.overlayOk !== false && !r.horizontalScroll
+      && r.offendersTotal === 0 && r.clippedTotal === 0;
+    pre.className = clean ? "ok" : "bad";
+    pre.textContent = (clean ? "PASS " : "FAIL ") + JSON.stringify(r, null, 1);
+  }
+
+  // Four at a time. Enough to keep the run to a couple of minutes, few enough
+  // that a frame is never measured while three others are still parsing.
+  const LANES = 4;
+  let next = 0;
+  await Promise.all(Array.from({ length: LANES }, async () => {
+    while (next < queue.length) await measure(queue[next++]);
+  }));
+
+  window.LAYOUT_RESULTS = results.sort((a, b) => a.idx - b.idx || a.width - b.width);
+  // Put the store back. This shares an origin with the app, so a demo army
+  // left behind is one that turns up in your army list the next time you open
+  // localhost.
+  if (armyId) dropSeed();
+  window.LAYOUT_DONE = true;
 }
 
 run();
