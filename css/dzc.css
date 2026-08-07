@@ -816,6 +816,11 @@
 
 @media (max-width: 900px) {
   .dzc-b-body { grid-template-columns: 1fr; }
+  /* One column means column 1. The 1400px rule above parks both of these in
+     column 2, and dropping to a single track does not undo it — grid invents
+     an implicit second column instead, so the phone got a dead empty gutter on
+     the left and the whole army pushed off it. */
+  .dzc-b-list, .dzc-b-detail { grid-column: 1; }
   /* The list IS the screen until you pick a Group, and then the Group is. */
   .dzc-b-body .dzc-b-detail { display: none; }
   .dzc-b-body.is-drilled .dzc-b-list { display: none; }
@@ -829,8 +834,12 @@
   .dzc-rail { position: static; }
   .dzc-rail .dzc-ratios { flex-direction: row; flex-wrap: wrap; }
   /* The peek line, phone only. Above 900px the rail is a column beside the
-     list and there is nothing to collapse. */
-  .dzc-rail-peek { display: flex; }
+     list and there is nothing to collapse.
+     Two classes deep on purpose: the default that hides it is a single class
+     LATER in the file, so a single-class rule here lost at every width and the
+     phone got no rail at all — no points left, no Group count, no issue count,
+     the three numbers the peek exists to keep on screen. */
+  .dzc-rail .dzc-rail-peek { display: flex; }
   .dzc-rail-body { display: none; }
   .dzc-rail-body.is-open { display: block; }
   .dzc-rail-body > * + * { margin-top: 8px; }
@@ -838,8 +847,8 @@
 
 /* Hidden by default so the desktop rail is untouched: the phone rule above
    turns it on. */
-.dzc-rail-peek { display: none; }
 .dzc-rail-peek {
+  display: none;
   align-items: baseline; gap: 7px; width: 100%; padding: 9px 11px; cursor: pointer;
   border: 1px solid var(--line, #d8d0c0); border-left: 3px solid var(--acc);
   background: var(--surface-2, #fff); color: var(--ink, #24201c); text-align: left;
