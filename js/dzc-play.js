@@ -367,10 +367,22 @@
   window.DZCPlay = {
     open,
     round: d => {
+      const was = state.round;
       state.round = Math.max(1, state.round + d);
-      // A new Round replenishes CP and clears who has activated (4.1, 4.2).
       state.activated = {};
-      state.cp = Math.min(state.cp, commanderLevel(army()));
+      /* 4.1.1 is two halves and only the second was here: "Players generate/
+       * replenish their Command Points (CP) up to a number equal to their
+       * highest Commander Level on the Table. Players lose CP here if they
+       * have more than that." Advancing a Round capped CP and never generated
+       * it, so a Level 3 Commander started Round 2 on nothing and you had to
+       * find the Refill button to be given what the rules already gave you.
+       *
+       * Only when advancing. Stepping back is a mis-tap, not an Initiation
+       * Phase, and handing back a Round's spent CP for it would be worse than
+       * the bug. The cap still applies either way — you may never hold more
+       * than your Commander Level. */
+      const lvl = commanderLevel(army());
+      state.cp = state.round > was ? lvl : Math.min(state.cp, lvl);
       redraw();
     },
     replenish: () => { state.cp = commanderLevel(army()); redraw(); },
@@ -404,9 +416,12 @@
       const lvl = commanderLevel(army());
       const el = document.getElementById('dzc-roll');
       if (el) {
-        el.textContent = d6 === 6
-          ? `${d6} — wins outright`
-          : `${d6} + ${lvl} = ${d6 + lvl}`;
+        /* The total is printed on a 6 as well. 4.1.5: "A roll of 6 wins
+         * automatically, but if both players roll 6s, add their Commander
+         * Level as normal" — so the one roll that hid its total was the one
+         * roll with a case that needs it. */
+        el.textContent = `${d6} + ${lvl} = ${d6 + lvl}${
+          d6 === 6 ? ' — wins unless they rolled a 6 too' : ''}`;
       }
     },
     reset: () => {

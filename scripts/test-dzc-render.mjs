@@ -812,9 +812,24 @@ console.log('\nevery screen renders');
     const passes = () => (els['view-play'].innerHTML
       .match(/Pass Tokens<\/span>[\s\S]*?<span class="dzc-pcard-v">(\d+)<\/span>/) || [])[1];
 
+    const held = () => (els['view-play'].innerHTML
+      .match(/Command Points<\/span>[\s\S]*?<span class="dzc-pcard-v">(\d+)<i>/) || [])[1];
+
     eq(cap(), '0', 'Round 1 caps CP at nothing — every Commander counts as Level 0 (4.1.1)');
     P.round(1);
     eq(cap(), '5', 'and from Round 2 the cap is the highest Commander Level');
+
+    /* 4.1.1 is "generate/replenish ... up to", and advancing a Round used to
+     * do only the losing half of it: the cap moved to 5 and you were left
+     * holding 0 until you found the Refill button. */
+    eq(held(), '5', 'advancing a Round GENERATES the CP, it does not only cap it');
+    P.cp(-1); P.cp(-1);
+    eq(held(), '3', 'and spending it takes it away');
+    P.round(-1);
+    eq(held(), '0', 'stepping back a Round is a mis-tap, not an Initiation Phase');
+    P.round(1);
+    eq(held(), '5', 'and the next Round hands it back in full');
+
 
     P.oppGroups('3');
     eq(passes(), '0', 'level on Groups earns no Pass token');
