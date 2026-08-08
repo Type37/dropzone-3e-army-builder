@@ -1142,33 +1142,71 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-riders > .dzc-squad {
   position: relative; margin-left: 0; border-top: 0; padding-top: 6px;
 }
-/* HUNG OFF .is-carrier, which the builder puts on any Squad with something
-   riding it -- not off :has(> .dzc-riders).
+/* JET'S SKETCH, AND NOTHING ELSE. Down out of the picture, then RIGHT, INTO
+   the picture of the thing it is carrying -- not to the edge of that card, and
+   not onward past it. Jet, 2026-08-07, on a Vulture over a Howitzer: "why does
+   the line keep going? It should go into the howitzer."
 
-   The selector was :has() for one commit and Jet saw no lines at all. Whatever
-   the cause, a rail that draws only where a CSS feature is supported is a rail
-   that can silently not exist, and there is no way to test for it from here.
-   The class is emitted by squadHtml, so the render suite can assert it and the
-   markup says what it is.
+   It kept going because the last version had no arms at all. I had replaced
+   them with one long rail down the side of the cargo, on the argument that an
+   arm has to aim and aiming kept missing. That was me substituting my idea for
+   the one I was given: the rail runs past the thing it is meant to point at
+   and carries on to the bottom of the card, which is exactly what Jet is
+   looking at.
 
-   ::after, not ::before: a carrier can itself be cargo, and
-   .dzc-riders > .dzc-squad::before was spoken for. */
+   The arms are back. What was actually wrong all along was the arithmetic, and
+   it is now measured rather than guessed:
+
+     --mini-x   37px, the picture's left edge inside the row. It was 27, so the
+                whole thing hung in the drag-handle gutter, 10px left of the
+                photograph it claims to come out of.
+     top 65px   5px of row padding + the 60px picture box = the bottom of the
+                photograph. The old drop started at the top of the cargo block
+                instead, 222px below the picture, with the carrier's whole stat
+                card in between.
+     top 36px   6px of rider row padding + half the 60px picture = the middle
+                of the picture the arm points at.
+     +22px      how far INTO that picture the arm finishes. Jet: "into the
+                model, not to the edge of that card."
+
+   Three shapes, and the third is a lie told carefully: the drop runs to the
+   bottom of the carrier's row because CSS cannot know where the last arm is,
+   so the last rider paints the tail below its own arm out in the card's own
+   colour. --surface-2, so it stays painted out on a dark page, and it sits in
+   the empty channel left of every rider's content, never over anything.
+
+   Hung off .is-carrier, which squadHtml emits, rather than off :has() -- a
+   line that draws only where a selector is supported is a line that can
+   silently not exist, and no test here can see that. */
 .dzc-squad.is-carrier { position: relative; }
+/* The drop, out of the bottom of the carrier's photograph. */
 .dzc-squad.is-carrier::after {
   content: ''; position: absolute; left: var(--mini-x);
-  /* 5px of row padding plus the 84x60 picture box = the bottom of the
-     photograph, which is where the line leaves the model. It was 55 while the
-     box held a grid whose single tile was 50 tall; one picture fills the box,
-     so the number moved with it. Measured, both times. */
-  top: 65px; bottom: 4px; width: 3px;
+  top: 65px; bottom: 0; width: 3px;
   background: var(--acc, #1b3a5c);
 }
-/* AND A CHANNEL FOR IT TO RUN DOWN. A line out of the bottom of the picture
-   has the carrier's OWN stat table directly beneath it -- the first version of
-   this painted a green stroke straight through Move, Armour and Damage Points.
-   So a Squad carrying something indents its body past the rail. Only a carrier
-   does; everything else keeps the tighter indent, and the extra step reads as
-   what it is -- this block owns the one below it. */
+/* The arm, into the middle of the picture of what is aboard. */
+.dzc-riders > .dzc-squad::before {
+  content: ''; position: absolute;
+  left: calc(var(--mini-x) - var(--rider-step));
+  top: 36px; height: 3px;
+  width: calc(var(--rider-step) + 22px);
+  background: var(--acc, #1b3a5c);
+}
+/* And it STOPS at the last thing it reaches. */
+.dzc-riders > .dzc-squad:last-child::after {
+  content: ''; position: absolute;
+  left: calc(var(--mini-x) - var(--rider-step));
+  top: 39px; bottom: -4px; width: 3px;
+  background: var(--surface-2, #fff);
+  /* ABOVE the drop, and it has to be said out loud. ::after is generated as
+     the carrier's LAST child, so the drop is later in tree order than the
+     riders inside it -- and two positioned boxes at z-index auto paint in tree
+     order. The paint-out was landing UNDERNEATH the line it exists to end, and
+     the line ran on to the bottom of the card exactly as before. Every number
+     was right; the paint order was not. */
+  z-index: 1;
+}
 .dzc-squad.is-carrier > .dzc-sq-body,
 .dzc-squad.is-carrier > .dzc-vblock,
 .dzc-squad.is-carrier > .dzc-variants {
