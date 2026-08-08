@@ -1211,6 +1211,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   border-left: 3px solid var(--danger, #b3261e);
 }
 .dzc-sq-alert svg { flex: 0 0 auto; margin-top: 1px; color: var(--danger, #b3261e); }
+.dzc-sq-alert i { font-style: normal; }
 .dzc-sq-alert:not(.is-err) {
   background: rgba(201,169,44,.12); border-left-color: #b58a12;
 }
@@ -1474,7 +1475,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-pick-list.is-list .dzc-pick { flex-direction: row; align-items: center; gap: 10px; padding: 6px 8px; }
 .dzc-pick-list.is-list .dzc-pick-open { display: flex; align-items: center; gap: 10px; flex: 1 1 auto; }
 .dzc-pick-list.is-list .dzc-pick-art,
-.dzc-pick-list.is-list .dzc-pick-noart { width: 46px; height: 34px; margin: 0; flex: 0 0 auto; }
+.dzc-pick-list.is-list .dzc-pick-noart { width: 76px; height: 56px; margin: 0; flex: 0 0 auto; }
 .dzc-pick-list.is-list .dzc-pick-head { flex: 1 1 auto; min-width: 0; }
 .dzc-pick-list.is-list .dzc-stats,
 .dzc-pick-list.is-list .dzc-pick-wpns,
@@ -1516,8 +1517,13 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   display: flex; flex-wrap: wrap; gap: 3px;
 }
 .dzc-pick-open { display: block; flex: 1 1 auto; min-width: 0; cursor: pointer; }
+/* BIGGER. Jet, 2026-08-07: "when you're in the ADD SQUAD searcher... we must
+   make the images bigger." 52px of a model on a 253px card is a thumbnail of a
+   thumbnail — you are choosing between models you cannot see. 96, which is
+   most of the card's width and still leaves the stats and the guns above the
+   fold. */
 .dzc-pick-art, .dzc-pick-noart {
-  display: block; width: 100%; height: 52px; object-fit: contain; margin-bottom: 3px;
+  display: block; width: 100%; height: 96px; object-fit: contain; margin-bottom: 3px;
 }
 .dzc-pick-head { display: flex; align-items: flex-start; gap: 6px; }
 .dzc-pick-name {

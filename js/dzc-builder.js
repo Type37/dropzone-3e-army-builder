@@ -1289,14 +1289,20 @@
    * already opens — validate writes them as "<name> ...". A message naming a
    * Unit you have two of appears on both, which is right: both are that Unit
    * and the rule is about the Unit. */
+  /* A SPAN, not a <p>, and it matters: this goes inside the meta line, which
+   * lives inside the Squad's <h3>. A <p> is block-level and may not sit in a
+   * heading, so the parser broke the <h3> open, re-parented what followed and
+   * emitted the alert FOUR TIMES in three different places -- Jet, 2026-08-07:
+   * "why is it on there 4x and they're aLL IN THE WRONG SPOT". The rule was
+   * generated once; the markup was invalid and the browser repaired it. */
   function squadAlerts(v, u) {
     const mine = m => m.msg.indexOf(u.name) === 0;
     return [].concat(
       (v.errors || []).filter(mine).map(m => ['is-err', m]),
       (v.warnings || []).filter(mine).map(m => ['', m])
-    ).map(([cls, m]) => `<p class="dzc-sq-alert ${cls}">${
+    ).map(([cls, m]) => `<span class="dzc-sq-alert ${cls}">${
       window.DZCIcon(cls ? 'error' : 'warning', { size: 13 })
-    }<span>${esc(m.msg)}</span></p>`).join('');
+    }<i>${esc(m.msg)}</i></span>`).join('');
   }
 
   function squadHtml(a, g, s, depth) {
@@ -1474,7 +1480,6 @@
            look for -- and what rides in what IS the Group (3.2.4). The spine
            runs the height of the cargo and an arm reaches into each Squad, so
            the shape on screen is the shape on the table. -->
-      ${squadAlerts(window.DZCArmy.validate(a), u)}
       ${riders.length ? `<div class="dzc-riders">
         <!-- No label at all. Jet, 2026-08-07: "we don't need a whole element
              to indicate ABOARD when we have the lines." The spine comes out of
