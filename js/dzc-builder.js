@@ -1155,55 +1155,10 @@
     return `<div class="dzc-add-row">${btn('unit', 'Add Units')}${btn('transport', 'Add Transports')}</div>`;
   }
 
-  /* Weapon upgrades (3.2.3). Chosen per VARIANT, because "All Units of the
-   * same Variant within a Squad must be upgraded equally" -- so the price shown
-   * is for every model of that variant, not for one. */
-  /* An upgrade is a WEAPON, so it is read as one: the same eight columns as
-   * the table above it — arc, move and attack, range, attacks, accuracy,
-   * energy, every special — with the price as the button on the end. Picking a
-   * name off a checkbox list and hoping is what this replaces; the whole
-   * question is whether the new gun is better than the one you have, and that
-   * cannot be answered by a name.
-   *
-   * Addressed by index into upgradesFor, not by scope and weapon name: two
-   * strings in an inline handler is two chances for an apostrophe to break it.
-   *
-   * One row per variant the Squad actually fields, because "all Units of the
-   * same Variant must be upgraded equally" (3.2.3) makes the upgrade a
-   * per-variant purchase — so the row names its variant instead of listing
-   * every variant the weapon is printed for. */
-  // Moved to DZCArmy.squadGuns — Play Mode needs the same answer, and two
-  // copies of "what is in this Squad" is how they come to disagree.
-  /* `key` is the Squad's id, and it is only for the unlock flash: every render
-   * rebuilds this markup from scratch, so a gun that just became yours is
-   * indistinguishable from one that always was unless something remembers the
-   * last answer per Squad. */
+  /* Weapon upgrades are bought on the gun itself -- the price IS the button
+   * (f7b3d47). The table that used to live here printed every weapon a second
+   * time just to have somewhere to put a price, and went with it. */
   const squadGuns = s => Object.assign(window.DZCArmy.squadGuns(s), { key: s.id });
-
-  function upgradesHtml(a, s, u) {
-    const opts = window.DZCArmy.upgradesFor(a, s);
-    if (!opts.length) return '';
-    const U = window.DZCUnits;
-    const rows = opts.map((o, i) => {
-      const on = window.DZCArmy.hasUpgrade(s, o.scope, o.weapon.name);
-      const total = o.points * o.count;
-      return `<tr class="dzc-upg${on ? ' is-on' : ''}">
-        ${U.wpnCells(o.weapon, a.faction, { price: false, only: o.scope === '*' ? '' : o.scope })}
-        <td class="dzc-upg-take">
-          <button type="button" class="dzc-upg-btn${on ? ' is-on' : ''}" aria-pressed="${on}"
-                  onclick="DZCBuilder.toggleUpgrade('${s.id}',${i})"
-                  aria-label="${on ? 'Drop' : 'Take'} ${esc(o.weapon.name)}">
-            ${on ? window.DZCIcon('check_circle', { size: 13 }) : ''}+${total}<small>pts</small>${
-              o.count > 1 ? `<i>${o.points} × ${o.count}</i>` : ''}</button></td>
-      </tr>`;
-    }).join('');
-    return `<div class="dzc-upgrades">
-      <span class="dzc-upg-head">Upgrades${u.upgradeNote ? ` — <i>${esc(u.upgradeNote)}</i>` : ''}</span>
-      <table class="dzc-wpn dzc-upg-table">
-        <thead>${U.wpnHead('<th></th>')}</thead>
-        <tbody>${rows}</tbody></table>
-    </div>`;
-  }
 
   /* A stepper that stops working says why it stopped.
    *

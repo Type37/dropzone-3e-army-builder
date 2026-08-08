@@ -1047,27 +1047,6 @@
   }
 
   /* May this unit be added to this Group right now? */
-  /* Does any Transport in this Group have space left for one more of `unit`?
-   *
-   * Shape alone is not enough — a Bear APC carries 3 squares, and once three
-   * Legionnaires are aboard a fourth still "matches" but does not fit. So the
-   * real load is rebuilt with the candidate added and checked. A Transport
-   * that is itself being carried is skipped: its cargo is ignored, because it
-   * is already aboard something else (3.2.4.2). */
-  function roomSomewhere(army, group, unit) {
-    if (!group) return false;
-    return group.squads.some(t => {
-      const tu = carrierOf(army, t);
-      if (!tu || t.carriedBy) return false;
-      if (!(tu.category === 'Transport' || tu.auxiliaryTransport)) return false;
-      if (!window.DZC.canCarry(tu, unit)) return false;
-      const aboard = group.squads.filter(x => x.carriedBy === t.id)
-        .map(x => ({ unit: unitOf(army, x), count: x.models.length }))
-        .filter(x => x.unit);
-      aboard.push({ unit: unit, count: 1 });
-      return window.DZC.loadCheck(tu, aboard, t.models.length).ok;
-    });
-  }
 
   /* What every Transport in a Group offers, and what is already aboard, per
    * shape. The Group header draws it, so "is there room, and for what shape"
