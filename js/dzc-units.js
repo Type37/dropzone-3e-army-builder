@@ -204,9 +204,52 @@
   /* Every rule carries its text on hover, so you can read it without
    * committing to a click. Clicking still opens the fuller popup with the
    * rule's name and where it comes from. */
-  function rulesHtml(special, faction) {
+  /* WHICH RULES BELONG TO WHICH LOADOUT. Jet, 2026-08-07: "sort special
+   * abilities that are only on one loadout, into that loadout. IE Scanner
+   * (Greave) means this goes only on the greave variant."
+   *
+   * 3.2.2 says the same: "Special rules which only apply to certain Variants
+   * will be indicated in brackets after the rule."
+   *
+   * The bracket is parsed by the SCANNER, not here -- u.specialVariants is
+   * [{rule, variants}], the same shape a weapon's variant restriction already
+   * takes. 3f7b541 recorded reading English at render time as the wrong answer
+   * and this is the same trap one field over.
+   *
+   * `lens` names a Variant: pass one and you get only that Variant's rules,
+   * pass nothing and you get the card's unrestricted ones. Matching is on
+   * "ends with", because a rule that spans a comma -- "Ineffective:
+   * Friendlies, Zones" -- is stored by its tail, and a tail is unique within
+   * one card either way.
+   *
+   * A card with no specialVariants behaves exactly as it always did, which is
+   * every card in five of the six factions and most of the sixth. */
+  /* The token splitSpecial hands back still carries its bracket -- "Scanner
+   * (Greave)" -- so the comparison has to drop it. Same regex dzc-data.js uses
+   * to resolve a keyword, for the same reason. */
+  const VARIANT_TAIL = /\s*\([^)]*\)\s*$/;
+
+  function variantRuleFilter(u, lens) {
+    const list = (u && u.specialVariants) || [];
+    if (!list.length) return null;
+    return tok => {
+      const bare = String(tok).replace(VARIANT_TAIL, '').trim();
+      const hit = list.find(x => bare === x.rule || bare.endsWith(x.rule));
+      if (!hit) return !lens;              // unrestricted: the card's own
+      return !!lens && hit.variants.indexOf(lens) !== -1;
+    };
+  }
+
+  /* `bare` drops the "(Greave)" from the chip. Inside the Greave's own block
+   * the bracket is the block's heading said twice, which CLAUDE.md §3 forbids
+   * outright -- and it is the whole reason the rule moved there. */
+  function rulesHtml(special, faction, filter, bare) {
     if (!special) return '';
-    return window.DZC.splitSpecial(special, faction).map(tok => {
+    let toks = window.DZC.splitSpecial(special, faction);
+    if (filter) toks = toks.filter(filter);
+    if (bare) toks = toks.map(t => String(t).replace(VARIANT_TAIL, '').trim());
+    if (!toks.length) return '';
+    return toks.map(tok => {
       const r = window.DZC.rule(tok, faction);
       // The page goes on the hover too, not only in the popover: someone
       // reading the tooltip with the rulebook open wants to turn to it without
@@ -685,8 +728,13 @@
           .concat([v.points != null ? v.points + 'pts' : '—'])
           .join(' — ');
         const differs = v.stats && JSON.stringify(v.stats) !== base;
+        // The rules the card gives this Variant and no other (3.2.2). On the
+        // Variant, the same as its own weapons are -- the whole point of the
+        // list is that a line says what one loadout IS.
+        const vr = rulesHtml(u.special, u.faction, variantRuleFilter(u, v.name), true);
         return `<div class="dzc-variant">
           <div class="dzc-variant-head"><span>${head}</span>${control ? control(v, i) : ''}</div>
+          ${vr ? `<div class="dzc-variant-rules">${vr}</div>` : ''}
           ${withStats && differs ? statsHtml(Object.assign({}, u, { stats: v.stats })) : ''}
         </div>`;
       }).join('')}
@@ -767,7 +815,8 @@
           <div class="dzc-card-stats">${statsHtml(u)}</div>
         </div>
       </div>
-      ${u.special ? `<div class="dzc-detail-rules">${rulesHtml(u.special, u.faction || state.faction)}</div>` : ''}
+      ${u.special ? (r => r ? `<div class="dzc-detail-rules">${r}</div>` : '')(
+        rulesHtml(u.special, u.faction || state.faction, variantRuleFilter(u, null))) : ''}
       ${variants}
       ${variantLensHtml(u)}
       ${weapons}
@@ -899,7 +948,7 @@
     setSearch: v => { state.search = v; render(); },
     openDetail, closeDetail, setLens, showRule, showDamage, hideRule,
     // Shared with the builder's picker so a unit reads the same in both places.
-    statsHtml, rulesHtml, squadHtml, sizeHtml, transportHtml, unitWeapons, weaponLive,
+    statsHtml, rulesHtml, variantRuleFilter, squadHtml, sizeHtml, transportHtml, unitWeapons, weaponLive,
     removedByUpgrades, weaponsHtml, variantsHtml,
     unitRulesHtml, wpnHead, wpnCells, wpnCard, weaponCardsHtml, variantLensHtml,
     pointsHtml, shape: shapeSvg,

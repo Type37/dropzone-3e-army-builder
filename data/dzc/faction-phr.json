@@ -33,6 +33,7 @@
           "points": 30
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -115,6 +116,7 @@
       },
       "special": "",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -186,6 +188,7 @@
       },
       "special": "Command Centre, Obscurer 6”",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -254,6 +257,7 @@
           "points": 60
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -428,6 +432,7 @@
       },
       "special": "Scanner, Surveyor, Scout",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -494,6 +499,7 @@
       },
       "special": "",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -562,6 +568,7 @@
       },
       "special": "Ev4, Hardy 4+, Jump 9”, Lethal, Skimmer",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -640,6 +647,14 @@
         {
           "name": "Aurora",
           "points": 35
+        }
+      ],
+      "specialVariants": [
+        {
+          "rule": "Shield friendly Vehicles 3” 5+",
+          "variants": [
+            "Aurora"
+          ]
         }
       ],
       "transport": {
@@ -726,6 +741,7 @@
           "points": 50
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -820,6 +836,7 @@
       },
       "special": "",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -869,6 +886,7 @@
           "points": 55
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -961,6 +979,7 @@
       },
       "special": "Ev1",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -1056,6 +1075,7 @@
           "points": 40
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1148,6 +1168,7 @@
       },
       "special": "",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1244,6 +1265,14 @@
         {
           "name": "Zeus",
           "points": 70
+        }
+      ],
+      "specialVariants": [
+        {
+          "rule": "AWACS 12”",
+          "variants": [
+            "Zeus"
+          ]
         }
       ],
       "transport": {
@@ -1379,6 +1408,7 @@
           "points": 180
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1540,6 +1570,7 @@
           "points": 165
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1660,6 +1691,14 @@
         {
           "name": "Mithra",
           "points": 95
+        }
+      ],
+      "specialVariants": [
+        {
+          "rule": "P3+",
+          "variants": [
+            "Rashnu"
+          ]
         }
       ],
       "transport": {
@@ -1871,6 +1910,7 @@
       },
       "special": "P5+",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1957,6 +1997,7 @@
       },
       "special": "AWACS 9”, Scout, Surveyor",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1999,6 +2040,7 @@
       },
       "special": "Ev2, Infiltrate 12”, Scout",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -2064,6 +2106,7 @@
           "points": 110
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -2173,6 +2216,7 @@
           "points": 75
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -2286,6 +2330,7 @@
           "points": 65
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -2404,6 +2449,7 @@
           "points": 25
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -2496,6 +2542,7 @@
       },
       "special": "Agile 1, Ev2, FS2, Jump 9”, Rapid Insertion 6”",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -2561,6 +2608,7 @@
           "points": 20
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -2641,6 +2689,7 @@
       },
       "special": "",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -2697,6 +2746,7 @@
       },
       "special": "Large",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -2783,6 +2833,7 @@
       },
       "special": "Large",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -2839,6 +2890,7 @@
       },
       "special": "",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -2925,6 +2977,7 @@
       },
       "special": "",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -3011,6 +3064,7 @@
       },
       "special": "P5+, Surveyor",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {

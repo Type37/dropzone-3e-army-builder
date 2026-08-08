@@ -1398,12 +1398,22 @@
       const had = tookVariant.get(key);
       const drawn = n > 0 && had === false ? ' is-drawn' : '';
       tookVariant.set(key, n > 0);
+      /* AND THE RULES THIS VARIANT ALONE HAS. Jet: "sort special abilities
+       * that are only on one loadout, into that loadout. IE Scanner (Greave)
+       * means this goes only on the greave variant."
+       *
+       * Under the block's own header, above its guns -- the same place the
+       * Squad prints its rules relative to its stats, so the block reads as a
+       * small card of its own rather than as a list of weapons with a stray
+       * chip on top. */
+      const vRules = U.rulesHtml(u.special, a.faction, U.variantRuleFilter(u, v.name), true);
       return `<section class="dzc-vblock${n ? ' is-taken' : ''}${drawn}">
         <header class="dzc-vblock-head">
           <b>${esc(v.name)}</b>
           ${v.points != null ? `<i>${v.points}pts</i>` : ''}
           <span class="dzc-vblock-n">${variantStepper(a, s, u, i)}</span>
         </header>
+        ${vRules ? `<div class="dzc-vblock-rules">${vRules}</div>` : ''}
         ${U.weaponCardsHtml(u, a.faction, opts)}
       </section>`;
     }).join('');
@@ -1707,7 +1717,12 @@
           <!-- The keywords go UNDER the stats, in the same column: they are
                what the Unit is, read beside its numbers rather than after the
                whole weapon block. -->
-          ${u.special ? `<div class="dzc-sq-rules">${U.rulesHtml(u.special, u.faction || a.faction)}</div>` : ''}
+          <!-- The card's OWN rules. A rule the card restricts to one Variant
+               (3.2.2) is that Variant's, so it is drawn on its block below
+               rather than here, where it read as something every model in the
+               Squad had. -->
+          ${u.special ? (r => r ? `<div class="dzc-sq-rules">${r}</div>` : '')(
+            U.rulesHtml(u.special, u.faction || a.faction, U.variantRuleFilter(u, null))) : ''}
         </div>
         ${compact ? '' : `<div class="dzc-sq-wpn">${variantGuns(a, s, u)}</div>`}
       </div>

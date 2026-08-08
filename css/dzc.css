@@ -790,6 +790,9 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   margin-bottom: 6px; font-weight: 600; font-size: 13.5px;
 }
 .dzc-variant-head > span { min-width: 0; }
+/* The rules this Variant alone has (3.2.2), on the Variant rather than on the
+   card -- the same move the builder's blocks make, in the reference. */
+.dzc-variant-rules { display: flex; flex-wrap: wrap; gap: 3px; margin: 0 0 6px; }
 /* A variant you have taken is marked on the block, not only in its number —
    the mix of a Squad should be readable without reading the digits. */
 .dzc-v-step { flex: none; }
@@ -1525,6 +1528,10 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   font-style: normal; font-size: 11px; color: var(--ink-2, #6b6459);
   font-family: var(--font-numeric, 'Outfit', sans-serif);
 }
+/* The rules this Variant alone has (3.2.2). Same chips as the Squad's own
+   rules, in the block that owns them -- "Scanner (Greave)" is the Greave's,
+   and printing it on the Squad said every model in it had a Scanner. */
+.dzc-vblock-rules { display: flex; flex-wrap: wrap; gap: 3px; margin: 0 0 3px; }
 /* "Nice and big" -- this is the control the whole block exists for. */
 .dzc-vblock-n { margin-left: auto; }
 .dzc-vblock-n .dzc-stepper button { min-width: 40px; min-height: 40px; }

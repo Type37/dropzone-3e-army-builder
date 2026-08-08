@@ -26,6 +26,7 @@
       },
       "special": "Hardy 3+, Warsuit",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -99,6 +100,7 @@
       },
       "special": "Subservient",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -164,6 +166,7 @@
           "points": 50
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -263,6 +266,7 @@
           "points": 40
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -353,6 +357,14 @@
         {
           "name": "Lynx",
           "points": 115
+        }
+      ],
+      "specialVariants": [
+        {
+          "rule": "AWACS 12”",
+          "variants": [
+            "Lynx"
+          ]
         }
       ],
       "transport": {
@@ -484,6 +496,7 @@
       },
       "special": "Aux Gate, Ev1, P5+",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -570,6 +583,7 @@
       },
       "special": "P5+",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -650,6 +664,7 @@
           "points": 30
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -729,6 +744,7 @@
           "points": 30
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -830,6 +846,14 @@
           "points": 85
         }
       ],
+      "specialVariants": [
+        {
+          "rule": "Shield: Friendly Vehicles 6” 4+",
+          "variants": [
+            "Dreamsnare"
+          ]
+        }
+      ],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -918,6 +942,7 @@
       },
       "special": "Aux Gate, Delayed, P5+",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -983,6 +1008,7 @@
       },
       "special": "Shield: Zones, Friendly Vehicles and Aircraft 6” 5+, P5+",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1039,6 +1065,7 @@
       },
       "special": "Aux Gate, P5+",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -1136,6 +1163,7 @@
           "points": 70
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1192,6 +1220,7 @@
       },
       "special": "Command Centre, Ev1, P5+",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1305,6 +1334,7 @@
           "points": 110
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1431,6 +1461,7 @@
           "points": 115
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1617,6 +1648,7 @@
           "points": 20
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1722,6 +1754,7 @@
           "points": 70
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1820,6 +1853,7 @@
           "points": 20
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1902,6 +1936,14 @@
         {
           "name": "Recluse",
           "points": 55
+        }
+      ],
+      "specialVariants": [
+        {
+          "rule": "Stealth",
+          "variants": [
+            "Recluse"
+          ]
         }
       ],
       "transport": {
@@ -1996,6 +2038,7 @@
       },
       "special": "Gate, P5+",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -2052,6 +2095,7 @@
       },
       "special": "Gate, P5+",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -2108,6 +2152,7 @@
       },
       "special": "Ev2, Gate, P5+, Skimmer, Surveyor",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -2169,6 +2214,7 @@
       },
       "special": "Gate, P5+",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -2225,6 +2271,7 @@
       },
       "special": "Delayed, Gate, Obscurer 4”, P5+, Strike",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {

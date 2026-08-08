@@ -142,6 +142,12 @@ class Variant(TypedDict):
     points: int | None
 
 
+class SpecialVariant(TypedDict):
+    """One special rule and the Variants it is restricted to (3.2.2)."""
+    rule: str
+    variants: list[str]
+
+
 class Header(TypedDict):
     """The top banner: what the card calls this unit and what it costs."""
 
@@ -200,6 +206,8 @@ class Unit(TypedDict):
     stats: dict[str, str]
     special: str | None
     variants: list[Variant]
+    # Rules the card restricts to named Variants (3.2.2): "Scanner (Greave)".
+    specialVariants: list[SpecialVariant]
     transport: Transport
     weapons: list[Weapon]
     upgradeNote: str | None
@@ -285,6 +293,48 @@ def split_variant_list(raw):
 def norm_variant(n):
     """'Osprey-A' and 'Osprey A' are the same variant; compare on this."""
     return re.sub(r"s$", "", re.sub(r"[^a-z0-9]+", "", n.lower()))
+
+
+def special_variant_map(special, variants):
+    """
+    Which special rules belong to only some Variants.
+
+    Rulebook 3.2.2: "Special rules which only apply to certain Variants will be
+    indicated in brackets after the rule." So "Scanner (Greave)" is the Greave's
+    rule and nobody else's, and a Sabre printing it is the card being read
+    wrongly.
+
+    The bracket alone does not decide it. A Special column is full of brackets
+    that are not variants -- "Infiltrate 10" (All)" is a qualifier, "(+10pts)"
+    is a cost, and a rule may simply carry a parenthetical. The test is whether
+    EVERY name inside resolves to a Variant this unit actually has, which is
+    the same test collect_variants applies when building the roster.
+
+    Returns [{"rule": <text as printed, without the bracket>,
+              "variants": [<canonical names>]}].
+    """
+    out = []
+    if not special or not variants:
+        return out
+    canon = {norm_variant(v["name"]): v["name"] for v in variants}
+    for m in re.finditer(r"\(([^)]+)\)", special):
+        names = split_variant_list(m.group(1))
+        if not names or not all(norm_variant(n) in canon for n in names):
+            continue
+        # The rule is everything back to the previous comma. Rules that span a
+        # comma -- "Ineffective: Friendlies, Zones" -- keep only their tail
+        # here, which is why the renderer matches on "ends with" rather than on
+        # equality: the tail is unique within one card either way.
+        head = special[: m.start()]
+        cut = head.rfind(",")
+        text = head[cut + 1:].strip()
+        if not text:
+            continue
+        out.append({
+            "rule": text,
+            "variants": [canon[norm_variant(n)] for n in names],
+        })
+    return out
 
 
 def colour_name(rgb):
@@ -1568,6 +1618,8 @@ def parse_page(page, doc, art_dir) -> Unit | None:
         or re.search(r"\bRemote Drone\b", special or "", re.I)
     )
 
+    variants = collect_variants(header, weapons, special)
+
     unit: Unit = {
         "id": slug(header["name"]),
         "faction": None,
@@ -1585,7 +1637,11 @@ def parse_page(page, doc, art_dir) -> Unit | None:
         "base": base,
         "stats": stats,
         "special": special,
-        "variants": collect_variants(header, weapons, special),
+        "variants": variants,
+        # Which of those rules are one Variant's and not the whole card's
+        # (3.2.2). Parsed HERE rather than in the browser: 3f7b541 already
+        # recorded that reading English at render time is the wrong answer.
+        "specialVariants": special_variant_map(special, variants),
         "transport": transport,
         "weapons": weapons,
         # "*Only one of these upgrades may be taken." -- a real construction

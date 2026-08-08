@@ -24,6 +24,7 @@
       },
       "special": "AWACS 18”, Command Centre",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -94,6 +95,7 @@
           "points": 75
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -183,6 +185,7 @@
       },
       "special": "",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -273,6 +276,14 @@
         {
           "name": "Zhukov",
           "points": 60
+        }
+      ],
+      "specialVariants": [
+        {
+          "rule": "Scanner",
+          "variants": [
+            "Constantine"
+          ]
         }
       ],
       "transport": {
@@ -423,6 +434,7 @@
           "points": 10
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -507,6 +519,7 @@
           "points": 20
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -606,6 +619,7 @@
           "points": 20
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -707,6 +721,14 @@
         {
           "name": "Hurricane",
           "points": 65
+        }
+      ],
+      "specialVariants": [
+        {
+          "rule": "Aegis 3”",
+          "variants": [
+            "Hurricane"
+          ]
         }
       ],
       "transport": {
@@ -830,6 +852,7 @@
       },
       "special": "Bloodthirsty, Lethal, Terror",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -895,6 +918,7 @@
           "points": 85
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1025,6 +1049,7 @@
       },
       "special": "UC",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1100,6 +1125,7 @@
       },
       "special": "UC, Wide 6”",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1156,6 +1182,7 @@
       },
       "special": "UC, Ev1",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1221,6 +1248,7 @@
           "points": 15
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1296,6 +1324,7 @@
       },
       "special": "",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -1432,6 +1461,7 @@
           "points": 35
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1526,6 +1556,7 @@
       },
       "special": "",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -1653,6 +1684,7 @@
       },
       "special": "Ev1, Fast Mover",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1751,6 +1783,7 @@
       },
       "special": "Agile 1, FS2",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1831,6 +1864,7 @@
           "points": 35
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1972,6 +2006,7 @@
           "points": 130
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -2159,6 +2194,7 @@
       },
       "special": "Command Centre, Large, Skimmer, Strike",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -2260,6 +2296,7 @@
       },
       "special": "Subterranean Small",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -2300,6 +2337,7 @@
       },
       "special": "Subterranean Medium",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -2351,6 +2389,7 @@
           "points": 30
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -2445,6 +2484,7 @@
       },
       "special": "Bikes 0, Ev2, Infiltrate 3”, Scout, UC",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -2518,6 +2558,7 @@
       },
       "special": "Agile 1, Dogs, FS2, Living Weapons",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -2587,6 +2628,7 @@
           "points": 75
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -2689,6 +2731,7 @@
       },
       "special": "Breachers D3+3, Demo Charges 2+, Infiltrate 18”",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -2745,6 +2788,7 @@
       },
       "special": "Ev1, Fast Mover",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -2805,6 +2849,7 @@
           "points": 95
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -2908,6 +2953,7 @@
           "points": 35
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -3003,6 +3049,7 @@
       },
       "special": "Surveyor",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -3079,6 +3126,7 @@
       },
       "special": "Ev1, UC",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -3140,6 +3188,7 @@
       },
       "special": "Ev1, Skimmer, Strike",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -3205,6 +3254,7 @@
           "points": 120
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -3331,6 +3381,7 @@
       },
       "special": "",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -3417,6 +3468,7 @@
       },
       "special": "",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -3575,6 +3627,7 @@
           "points": 25
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -3670,6 +3723,7 @@
       },
       "special": "",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {

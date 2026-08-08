@@ -33,6 +33,7 @@
           "points": 40
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -126,6 +127,7 @@
           "points": 25
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -248,6 +250,7 @@
           "points": 50
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -357,6 +360,7 @@
           "points": 60
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -506,6 +510,7 @@
           "points": 45
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -615,6 +620,7 @@
           "points": 90
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -756,6 +762,7 @@
       },
       "special": "Puppeteer 4”",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -812,6 +819,7 @@
       },
       "special": "Collector 6",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -868,6 +876,7 @@
       },
       "special": "Collector 12",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -924,6 +933,7 @@
       },
       "special": "",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -982,6 +992,7 @@
       },
       "special": "Puppet",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1040,6 +1051,7 @@
       },
       "special": "Hardy 4+, Puppet, Strong",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,

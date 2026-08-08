@@ -35,6 +35,7 @@
           "points": 25
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -112,6 +113,7 @@
       },
       "special": "",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -196,6 +198,7 @@
           "points": 25
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -303,6 +306,14 @@
         {
           "name": "Fox",
           "points": 40
+        }
+      ],
+      "specialVariants": [
+        {
+          "rule": "Surveyor",
+          "variants": [
+            "Fox"
+          ]
         }
       ],
       "transport": {
@@ -444,6 +455,7 @@
           "points": 35
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -585,6 +597,14 @@
           "points": 40
         }
       ],
+      "specialVariants": [
+        {
+          "rule": "Scanner",
+          "variants": [
+            "Greave"
+          ]
+        }
+      ],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -718,6 +738,7 @@
           "points": 40
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -837,6 +858,7 @@
       },
       "special": "Command Centre, Drone Base 4: Starsprites",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -923,6 +945,7 @@
       },
       "special": "",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1013,6 +1036,14 @@
           "points": 80
         }
       ],
+      "specialVariants": [
+        {
+          "rule": "Obscurer 4”",
+          "variants": [
+            "Panda"
+          ]
+        }
+      ],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1101,6 +1132,7 @@
           "points": 40
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1216,6 +1248,14 @@
         {
           "name": "Scutum",
           "points": 25
+        }
+      ],
+      "specialVariants": [
+        {
+          "rule": "AWACS 6”",
+          "variants": [
+            "Scutum"
+          ]
         }
       ],
       "transport": {
@@ -1378,6 +1418,7 @@
       },
       "special": "Fast Mover",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1485,6 +1526,14 @@
         {
           "name": "Eagle C",
           "points": 100
+        }
+      ],
+      "specialVariants": [
+        {
+          "rule": "Scanner",
+          "variants": [
+            "Eagle C"
+          ]
         }
       ],
       "transport": {
@@ -1604,6 +1653,7 @@
       },
       "special": "Wide 5”",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1677,6 +1727,7 @@
       },
       "special": "Hardy 2+, Strong",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1742,6 +1793,7 @@
           "points": 80
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1855,6 +1907,7 @@
           "points": 60
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1969,6 +2022,14 @@
         {
           "name": "Roc",
           "points": 200
+        }
+      ],
+      "specialVariants": [
+        {
+          "rule": "Scanner",
+          "variants": [
+            "Phoenix"
+          ]
         }
       ],
       "transport": {
@@ -2165,6 +2226,7 @@
           "points": 90
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -2301,6 +2363,7 @@
           "points": 45
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -2412,6 +2475,7 @@
           "points": 80
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -2568,6 +2632,7 @@
       },
       "special": "Ev2, FS1, Infiltrate 18”, Scout",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -2626,6 +2691,7 @@
       },
       "special": "Breachers D3, FS3, Rapid Insertion 4”",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -2682,6 +2748,7 @@
       },
       "special": "Remote Drone, Scout",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -2742,6 +2809,7 @@
           "points": 75
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -2855,6 +2923,14 @@
           "points": 15
         }
       ],
+      "specialVariants": [
+        {
+          "rule": "Scout",
+          "variants": [
+            "Ferret"
+          ]
+        }
+      ],
       "transport": {
         "capacity": [
           {
@@ -2952,6 +3028,7 @@
           "points": 15
         }
       ],
+      "specialVariants": [],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -3078,6 +3155,7 @@
       },
       "special": "",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -3164,6 +3242,7 @@
       },
       "special": "Surveyor",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -3225,6 +3304,7 @@
       },
       "special": "",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -3296,6 +3376,7 @@
       },
       "special": "Strike",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -3367,6 +3448,7 @@
       },
       "special": "",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -3423,6 +3505,7 @@
       },
       "special": "",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -3479,6 +3562,7 @@
       },
       "special": "Flat Out 6”",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
@@ -3550,6 +3634,7 @@
       },
       "special": "Flat Out 6”, Surveyor",
       "variants": [],
+      "specialVariants": [],
       "transport": {
         "capacity": [
           {
