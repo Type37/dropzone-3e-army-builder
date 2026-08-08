@@ -2539,8 +2539,27 @@
       // Variants are per model, so a mixed Squad is listed by its actual mix.
       const mix = {};
       s.models.forEach(m => { const k = m.variant || u.name; mix[k] = (mix[k] || 0) + 1; });
+      /* AND THE RULES THAT BELONG TO A VARIANT GO ON THAT VARIANT (3.2.2).
+       * On paper this matters more than on screen: the sheet is what you argue
+       * from, and "Scanner" printed once against the whole Squad reads as
+       * every tank in it having one when only the Greave does. Each Variant on
+       * the mix line names its own, and the stat line below prints only what
+       * the card gives every model. */
+      const vRule = name => ((u.specialVariants || [])
+        .filter(x => x.variants.indexOf(name) !== -1)
+        .map(x => x.rule));
       const mixStr = Object.keys(mix).length > 1 || (u.variants || []).length
-        ? Object.keys(mix).map(k => `${mix[k]}× ${esc(k)}`).join(', ') : '';
+        ? Object.keys(mix).map(k => {
+          const rs = vRule(k);
+          return `${mix[k]}× ${esc(k)}${rs.length ? ` <i>(${esc(rs.join(', '))})</i>` : ''}`;
+        }).join(', ') : '';
+      // Everything the card restricts, so the stat line can print the rest.
+      const ownSpecial = (u.specialVariants || []).length
+        ? window.DZC.splitSpecial(u.special || '', a.faction)
+          .filter(tok => !(u.specialVariants || []).some(x =>
+            String(tok).replace(/\s*\([^)]*\)\s*$/, '').trim().endsWith(x.rule)))
+          .join(', ')
+        : (u.special || '');
 
       /* A Behemoth's Gear, priced in Power. This is the sheet you take to a
        * table, and Gear is the one thing on a Behemoth card you consult every
@@ -2580,7 +2599,7 @@
           <span class="pr-sq-cost">${cost}pts</span>
         </div>
         ${mixStr ? `<div class="pr-variants">${mixStr}</div>` : ''}
-        <div class="pr-stats">${stats}${u.special ? ` — ${esc(u.special)}` : ''}</div>
+        <div class="pr-stats">${stats}${ownSpecial ? ` — ${esc(ownSpecial)}` : ''}</div>
         <!-- RM aboard. This is the sheet you deploy from, and RM tokens are
              physically placed on the Genitor before the first Round — a
              number folded into the Squad's points is not something you can
