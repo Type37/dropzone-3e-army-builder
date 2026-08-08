@@ -1253,9 +1253,28 @@
    * happened to be, is the thing that made it worth removing. */
   function sizeControl(army, sq, u) {
     const lo = u.squadMin, hi = u.squadMax;
-    if (lo == null || hi == null) return stepperHtml(army, sq);
+    /* A Unit whose Variants are blocks gets NO stepper on the row. Jet,
+     * 2026-08-08, circling the -- 2 + on a Troop Buggy sitting above Badger A
+     * 1, Badger B 1 and Ferret 0: "remove that +/- stepper."
+     *
+     * It was the sum of the three controls underneath it, and pressing + had
+     * to guess which Variant you meant. The block is where the count belongs
+     * -- that is what a Variant being a block is FOR ("nice and big, to +/-
+     * the number of units we have in that variant", d4cb126) -- and this is
+     * the same duplicate the upgrade table was (f7b3d47).
+     *
+     * It stays on a Unit with no Variants: 93 of the 178 have none, and
+     * Berserkers 2-4 or a Mech Loader 1-6 have no block to carry the control,
+     * so removing it there would leave a Squad whose size cannot be changed at
+     * all. Compact view passes the same test -- it drops the blocks but keeps
+     * the Variant list, and variantsHtml puts the same stepper on every row.
+     *
+     * The ×3 chip is not a stepper and is not what was circled, so a
+     * fixed-size Squad still states its size. */
+    const noStepper = !!(u.variants || []).length;
+    if (lo == null || hi == null) return noStepper ? '' : stepperHtml(army, sq);
     if (lo === hi) return hi === 1 ? '' : `<span class="dzc-sq-fixed">×${hi}</span>`;
-    return stepperHtml(army, sq);
+    return noStepper ? '' : stepperHtml(army, sq);
   }
 
   /* How many models in this Squad are this variant.
@@ -1495,6 +1514,21 @@
     // enforcement; a stepper you then argue with is not.
     /* A Transport's count is derived and a count of one says nothing, so one
      * Transport gets no chip at all rather than a padlock over a 1. */
+    /* AND A UNIT WITH VARIANTS GETS NO ROW STEPPER EITHER. Jet, 2026-08-08,
+     * circling the -- 2 + on a Troop Buggy sitting above Badger A 1, Badger B
+     * 1 and Ferret 0: "remove that +/- stepper."
+     *
+     * It was the sum of the three controls underneath it, and pressing it had
+     * to guess which variant you meant. The blocks are where the count belongs
+     * -- that is the whole point of a Variant being a block ("nice and big, to
+     * +/- the number of units we have in that variant", d4cb126) -- and this
+     * is the same duplicate the upgrade table was (f7b3d47).
+     *
+     * It STAYS on a Unit with no variants. 93 of the 178 have none, and
+     * Berserkers 2-4 or a Mech Loader 1-6 have no block to carry the control;
+     * removing it there would leave a Squad whose size cannot be changed at
+     * all. Compact view is the same test -- it drops the blocks but keeps the
+     * variant list, and variantsHtml puts the same stepper on each row. */
     const stepper = isTransport
       ? (s.models.length > 1
         ? `<span class="dzc-stepper is-derived" title="A Transport’s count follows its cargo (3.2.4)">
