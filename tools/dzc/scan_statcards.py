@@ -1227,6 +1227,36 @@ def parse_gear(page) -> list[Gear]:
     return out
 
 
+# A Special line that is WRONG ON THE CARD, keyed by Unit name, with what it
+# should have said.
+#
+# Not a typo table -- fix_typos already handles a misspelt word. This is for a
+# line TTCombat printed in an order that does not parse, where no amount of
+# geometry helps because the geometry is faithfully reproducing a mistake.
+#
+# The bar for an entry: every token the card prints survives, nothing is
+# invented, and the result is one legal reading. Anything short of that stays
+# broken and stays visible, because a card defect quietly patched into
+# something plausible is worse than one a player can see and argue about.
+KNOWN_PRINTED_SPECIAL = {
+    # Shaltari Totem Shieldspire, p.14, prints:
+    #     "Friendly Vehicles and Aircraft 6” 5+, P5+, Shield: Zones"
+    # The Shield rule is "Shield: X Y” Z+" (10.1.28) -- a target list, a radius
+    # and a save. Every one of those is on the card; the "Shield:" prefix and
+    # its target list have simply been split off the numbers and moved to the
+    # end. The Support Warstrider two cards earlier prints the same rule whole:
+    #     "Shield: Friendly Vehicles 6” 4+ (Dreamsnare)"
+    # Reassembled, so X is "Zones, Friendly Vehicles and Aircraft", Y is 6 and
+    # Z is 5. Nothing added, nothing dropped, one rule instead of two orphans.
+    "Totem Shieldspire":
+        "Shield: Zones, Friendly Vehicles and Aircraft 6” 5+, P5+",
+}
+
+
+def fix_printed_special(unit_name, special):
+    return KNOWN_PRINTED_SPECIAL.get((unit_name or "").strip(), special)
+
+
 def parse_weapons(page, lines) -> tuple[list[Weapon], float]:
     """The weapon rows, and the y the table ends at.
 
@@ -1253,6 +1283,25 @@ def parse_weapons(page, lines) -> tuple[list[Weapon], float]:
     # spans two lines while its stats sit on only one, so line-walking
     # mis-pairs names with the wrong stats.
     boxes.sort(key=lambda b: b[0].y0)
+    # ONE BOX PER ROW. The same swatch image is placed several times across a
+    # row -- the UCM Main Battle Tank's card returns seventeen rects for five
+    # weapons, four of them stacked at each of four y positions. Nothing
+    # downstream wants the copies: a row is a y, and the extras only ever made
+    # the row list disagree with the weapon list.
+    #
+    # They used to be neutralised by accident. The old band ran from one box's
+    # top to the NEXT box's top, so two boxes at the same y produced an empty
+    # band that was skipped -- which held exactly as long as the band was
+    # anchored on that edge, and the moment it was not, every duplicate became
+    # a weapon with no name. Deduped here, where it is a fact about the source
+    # rather than a side effect of arithmetic somewhere else.
+    merged = []
+    for rect, kind in boxes:
+        if merged and abs(rect.y0 - merged[-1][0].y0) < 1.0:
+            merged[-1][0].y1 = max(merged[-1][0].y1, rect.y1)
+            continue
+        merged.append([fitz.Rect(rect), kind])
+    boxes = [(fitz.Rect(r), k) for r, k in merged]
     hdr_bottom = max(w[3] for w in hdr)
     xs = [c[1] for c in cols]
     tbl = fitz.Rect(min(xs) - 40, hdr_bottom, max(xs) + 60, page.rect.height)
@@ -1272,9 +1321,27 @@ def parse_weapons(page, lines) -> tuple[list[Weapon], float]:
     rules = sorted(set(vertical_rules(page, hdr_bottom, last_y)) | set(doc_rules(page.parent)))
 
     weapons = []
+    # Where one row ENDS and the next begins: the middle of the empty band
+    # between two name swatches, not the next swatch's top edge.
+    #
+    # The name swatch is vertically CENTRED in its row, so its top edge is not
+    # the row's top -- and the taller the Special cell, the further the two
+    # drift apart. The old boundary was `next_swatch.y0 - 5`, which held while
+    # every Special was about as tall as its name and broke the moment one was
+    # not: the Behemoth Mining Engine prints a three-line Special against a
+    # one-line name, and the Vent Repeater below it four. Measured on that
+    # page, the boundary landed at y=325.6 with the Vent Repeater's first
+    # Special line centred at y=324.2 -- so "Critical 1, Demo 2, Integral,"
+    # was read onto the Mining Laser, which does not have any of them, and
+    # taken off the Vent Repeater, which does.
+    #
+    # Between swatch N's BOTTOM and swatch N+1's TOP there is nothing but the
+    # gap, whatever either cell's height. Its midpoint is the boundary. The
+    # first row starts at the header rather than at its own swatch, for the
+    # same reason: its Special can begin above it.
     for idx, (rect, kind) in enumerate(boxes):
-        top = rect.y0 - 5
-        bot = boxes[idx + 1][0].y0 - 5 if idx + 1 < len(boxes) else last_y
+        top = float(hdr_bottom) if idx == 0 else (boxes[idx - 1][0].y1 + rect.y0) / 2
+        bot = (rect.y1 + boxes[idx + 1][0].y0) / 2 if idx + 1 < len(boxes) else last_y
         band = [w for w in below if top <= (w[1] + w[3]) / 2 < bot]
         if not band:
             continue
@@ -1480,6 +1547,7 @@ def parse_page(page, doc, art_dir) -> Unit | None:
     if stat_table is None:
         return None
     utype, base, stats, special, stats_bottom = stat_table
+    special = fix_printed_special(header["name"], special)
     weapons, weapons_bottom = parse_weapons(page, lines)
     # Whichever table reaches further down is what the footnote sits below. A
     # card with no weapon table at all — the PHR Mercury Scout Drone — has only

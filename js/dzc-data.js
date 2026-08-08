@@ -263,6 +263,108 @@
     });
   }
 
+  /* What a keyword is CALLED on screen.
+   *
+   * Jet, 2026-08-07: "They're idiots. T1? That's so bad for user schema.
+   * Let's write it all out as stuff like Tracking-1 instead on the chips."
+   *
+   * TTCombat print the compressed form on the card because a stat card is
+   * 60mm wide -- "T1", "Pen 6+", "UC", "P5+", "AS 2", "L3". A chip in an app
+   * has no such excuse, and a two-letter chip is unreadable to anyone who has
+   * not memorised the glossary, which is everyone the first ten games.
+   *
+   * The glossary already carries the long form as the alias; this is the
+   * alias with the card's own value put back on it. Hyphenated, Jet's format,
+   * which keeps a chip reading as ONE token rather than two words that could
+   * be two rules. A rule whose printed name is already the word ("Articulated",
+   * "Aegis 3”", "Overcharge 2") has no alias and is left exactly as printed --
+   * there is nothing to expand.
+   *
+   * The printed token is still what looks the rule UP. This changes the label
+   * and nothing else, so a card that starts printing something new does not
+   * quietly stop resolving. */
+  function ruleLabel(keyword, faction) {
+    const printed = String(keyword == null ? '' : keyword).trim();
+    const hit = resolve(printed, faction);
+    if (!hit || !hit.rule.alias) return printed;
+    const r = hit.rule;
+    if (!r.parameterised) return r.alias;
+    // A trailing "(Lynx)" names the variant the rule is restricted to. It is
+    // not the value, and it belongs after the whole label, not inside it.
+    const tail = (printed.match(VARIANT_TAIL) || [''])[0].trim();
+    const bare = printed.replace(VARIANT_TAIL, '');
+    const m = r.re.exec(bare);
+    const v = m && m[1] != null ? String(m[1]).trim() : '';
+    // "Pen X+" and "PX+" capture the number without the plus that made it a
+    // roll -- it is in the NAME, not the capture, so it is put back here.
+    const plus = /\+\s*$/.test(r.name) && v && !/\+$/.test(v) ? '+' : '';
+    return (v ? `${r.alias}-${v}${plus}` : r.alias) + (tail ? ' ' + tail : '');
+  }
+
+  // ------------------------------------------------------- damage and Criticals
+
+  /* WHAT YOU ROLL TO HURT IT, AND WHAT YOU ROLL TO CRIT. Rulebook 6.2.4.
+   *
+   * Jet, 2026-08-07: "Criticals! We should have the critical value... the
+   * critical value is what, 2 higher than the roll on accuracy? sometimes
+   * modified? I think?"
+   *
+   * Two higher, but not than Accuracy — than the roll to INFLICT DAMAGE, which
+   * is a second roll after the hit and comes off the Energy vs Armour table,
+   * not off the Weapon's Ac. Ac decides whether you hit; this decides whether
+   * the hit does anything. 6.2.4: "If the result is at least 2 higher than the
+   * required roll, that result is a Critical—another 1 damage is inflicted."
+   *
+   * The published table is 10 x 11 and it is one line of arithmetic:
+   *
+   *     required = A - E + 4, never better than 2+, impossible over 6+
+   *
+   * Checked against every printed cell (see test-dzc-data). Transcribing 110
+   * numbers by hand to store a formula would be 110 chances to mistype one.
+   *
+   * "at least 2 higher" is 2 higher than the PRINTED requirement, so a 2+ that
+   * was really a 1+ before the clamp still Crits on 4+, not on 3+.
+   *
+   * Three things are not a roll at all:
+   *   E0            cannot damage anything, including Infantry (6.2.4)
+   *   S-something   Small Arms: 1DP per hit on Infantry with no roll, so no
+   *                 Critical either, and nothing at all against a Vehicle
+   *                 until five of them are combined (6.4.2)
+   *   Infantry      each hit is 1DP with no roll, "so they cannot receive
+   *                 Criticals" — a property of the TARGET, so it is said on
+   *                 the table rather than encoded per weapon */
+  const MAX_ARMOUR = 10;
+
+  function energyKind(e) {
+    const s = String(e == null ? '' : e).trim();
+    if (!s || /^n\/?a$/i.test(s)) return { kind: 'none' };
+    if (/^s\d+$/i.test(s)) return { kind: 'small', e: parseInt(s.slice(1), 10) };
+    if (/^\d+$/.test(s)) return parseInt(s, 10) === 0 ? { kind: 'zero', e: 0 }
+      : { kind: 'energy', e: parseInt(s, 10) };
+    return { kind: 'none' };
+  }
+
+  /* One cell of 6.2.4: what a hit of Energy `e` needs against Armour `a`, and
+   * what it needs to Crit. Both null where the roll cannot be made. */
+  function damageRoll(e, a) {
+    const need = Math.max(2, a - e + 4);
+    if (need > 6) return { need: null, crit: null };
+    const crit = need + 2;
+    return { need: need, crit: crit > 6 ? null : crit };
+  }
+
+  /* The whole row for one Weapon: every Armour it can meet, in order. */
+  function damageTable(energy) {
+    const k = energyKind(energy);
+    const rows = [];
+    if (k.kind === 'energy') {
+      for (let a = 0; a <= MAX_ARMOUR; a++) {
+        rows.push(Object.assign({ a: a }, damageRoll(k.e, a)));
+      }
+    }
+    return { kind: k.kind, e: k.e == null ? null : k.e, rows: rows };
+  }
+
   /* Split a card's Special line into keywords.
    *
    * A comma is the usual separator, but some rule names CONTAIN one --
@@ -585,7 +687,8 @@
     get rules() { return state.rules; },
     faction: id => state.factions[id],
     unit: (fid, uid) => (state.factions[fid] || { byId: {} }).byId[uid],
-    rule, ruleText, linkKeywords, splitSpecial, matches, squadPrice,
+    rule, ruleText, ruleLabel, linkKeywords, splitSpecial, matches, squadPrice,
+    damageRoll, damageTable, energyKind,
     capacityFor, fillsOf, canCarry, carrierWithUpgrades, loadCheck, isFull,
     gameSizeFor, maxGroups, maxGroupCost, rareLimit, commanderLevels,
     _state: state, _compileRules: compileRules

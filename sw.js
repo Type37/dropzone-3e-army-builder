@@ -30,6 +30,7 @@ const CORE = [
   './js/fleet-sync.js',
   './js/dzc-data.js',
   './js/dzc-share.js',
+  './js/dzc-starters.js',
   './js/dzc-builder.js',
   './js/dzc-army.js',
   './js/dzc-icons.js',

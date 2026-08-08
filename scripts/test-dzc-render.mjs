@@ -451,10 +451,15 @@ console.log('\nevery screen renders');
    * The test is the pair, because dropping the label everywhere would take it
    * off the reference card too — where the guns are one undivided list and
    * nothing else says which Variant carries which. */
-  ok(!/dzc-wc-only/.test(second) && !/dzc-wc is-variant/.test(second),
+  ok(!/dzc-wc-only/.test(second),
      'a Variant block does not repeat its own name on every card inside it');
-  ok(/Sabre only/.test(refTable) && /dzc-wc is-variant/.test(refTable),
-     'and the ungrouped reference card still says it, because nothing else there does');
+  /* And the ungrouped reference card still says it, because nothing else
+   * there does — as the arrow chip, not as an orange rule down the card's
+   * edge. Jet, 2026-08-07: "just make it the tiny arrow-ish chip instead." */
+  ok(/dzc-wc-only/.test(refTable) && /Sabre/.test(refTable),
+     'the ungrouped reference card names the Variant on the card itself');
+  ok(!/is-variant/.test(refTable),
+     'and marks it with the chip alone, not with an edge saying the same thing');
 
   /* One line per Variant block, always drawn — the edge used to exist only on
    * a Variant you had taken, so a Squad with every count at zero had nothing
@@ -1050,14 +1055,14 @@ console.log('\nevery screen renders');
     A.addSquad(A.get(sa.id), sg.id, one.id, 1);
     await B.renderBuilder(sa.id);
     const h = els['view-army'].innerHTML;
-    // Not /dzc-size[^"]*/ -- that also matches the wrapper's own dzc-sizes.
-    const tabs = (h.match(/class="dzc-size(?![a-z])/g) || []).length;
-    eq(String(tabs), String(ranged.squadMax - ranged.squadMin + 1),
-       'a range gets one tab per legal size, not a stepper');
-    ok(/dzc-size is-on/.test(h), 'and the size it is now is the one selected');
+    /* The tab switcher is gone -- Jet, 2026-08-07: "remove the switcher for
+     * 1/2/3 we'll worry about it later." A range is the stepper now, which is
+     * the one control every other Squad already used. */
+    ok(!/class="dzc-size(?![a-z])/.test(h), 'a range does not draw a tab switcher');
+    ok(/dzc-stepper/.test(h), 'it gets the stepper, like every other Squad');
     B.setCount(rs.id, 3);
     eq(String(A.findSquad(A.get(sa.id), rs.id).models.length), '3',
-       'pressing a tab sets the Squad to that size');
+       'and setting a size still sets it');
     // The one-model Squad next to it must not have grown a control or a label.
     ok(!/×1/.test(h), 'and nothing anywhere prints a Squad of one as ×1');
     A.remove(sa.id);

@@ -33,6 +33,11 @@
      and the two severities stopped looking like two severities. */
   --err-bg: #fde8e6;
   --err-ink: #7a1c15;
+  /* "This gun belongs to one model, not the Squad." Jet's colour, given as
+     f15d38 on 2026-08-07. A token because it is one idea in two places -- the
+     variant chip on a weapon card and the variant edge in the weapon table --
+     and they must not drift. */
+  --variant: #f15d38;
   --font-ui: 'Jost', system-ui, sans-serif;
   --ease-deco: cubic-bezier(.33, 0, .67, 1);
 }
@@ -48,6 +53,9 @@ html[data-theme="dark"] {
   --acc-ink: #74a7e0;
   --err-bg: #3a1f1c;
   --err-ink: #e2685a;
+  /* Lifted off f15d38: the paper orange is a mid tone that goes muddy against
+     a dark card, and this is the same hue with the value it needs there. */
+  --variant: #ff8362;
 }
 /* The one place --acc-ink is a background rather than ink. A light navy under
    white text is unreadable, so it takes the saturated navy app.css already
@@ -341,7 +349,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-wpn td { padding: 6px 8px 6px 0; border-bottom: 1px solid var(--line, #eee5d6); vertical-align: top; }
 .dzc-wpn-name { font-weight: 600; min-width: 180px; overflow-wrap: anywhere; }
 .dzc-wpn tr.is-upgrade .dzc-wpn-name { border-left: 3px solid #2e9e4f; padding-left: 6px; }
-.dzc-wpn tr.is-variant .dzc-wpn-name { border-left: 3px solid #e0761c; padding-left: 6px; }
+.dzc-wpn tr.is-variant .dzc-wpn-name { border-left: 2px solid var(--variant, #f15d38); padding-left: 6px; }
 .dzc-wpn-only, .dzc-wpn-up { display: block; font-weight: 500; font-size: 11px; color: var(--ink-2, #6b6459); }
 .dzc-none { font-size: 12px; color: var(--ink-2, #6b6459); }
 
@@ -377,7 +385,55 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   margin: 0; font: 700 14px/1.25 var(--font-ui, 'Jost', system-ui, sans-serif);
   overflow-wrap: anywhere; color: var(--ink, #24201c);
 }
-.dzc-wc-only { font-size: 11.5px; font-weight: 500; color: var(--ink-2, #6b6459); }
+/* WHICH MODEL CARRIES THIS GUN — a chip with an arrow, not a rule down the
+   edge of the card. Jet, 2026-08-07: "the orange dashed line thing is too
+   distracting. Thinner. This color. f15d38. actually just make it the tiny
+   arrow-ish chip instead."
+
+   The bar it replaces was 3px of orange down the whole left edge of every
+   variant-restricted card, which is a lot of ink to say one word, and it said
+   it in a place with no words in it -- you still had to find "Sabre only" in
+   the header to learn WHICH model. The chip is both at once, where the name
+   is, at the size of the thing it is: a footnote on a heading. */
+.dzc-wc-only {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 0 5px 0 4px; border: 1px solid var(--variant, #f15d38);
+  color: var(--variant, #f15d38);
+  font: 600 10px/16px var(--font-ui, 'Jost', system-ui, sans-serif);
+}
+.dzc-wc-only-i { flex: none; }
+
+/* Energy is the one stat you can press, so it has to look pressable without
+   becoming a button in a row of numbers: same type, same place, an underline
+   that says there is something under it. */
+.dzc-wc-e {
+  padding: 0; border: 0; background: none; cursor: pointer; text-align: left;
+  /* The same type as every other value on the card -- it reads as a number
+     that happens to be pressable, not as a control that happens to be here. */
+  font: 600 14px/1.15 var(--font-numeric, 'Outfit', sans-serif);
+  font-variant-numeric: tabular-nums lining-nums; color: var(--ink, #24201c);
+  text-decoration: underline; text-decoration-style: dotted;
+  text-underline-offset: 2px; text-decoration-color: var(--line, #d8d0c0);
+}
+.dzc-wcards--marked .dzc-wc.is-off .dzc-wc-e { color: var(--ink-2, #6b6459); font-weight: 500; }
+.dzc-wcards--marked .dzc-wc.is-swapped .dzc-wc-e { text-decoration: line-through; color: var(--ink-2, #6b6459); }
+.dzc-wc-e:hover, .dzc-wc-e:focus-visible { text-decoration-color: var(--acc, #1b3a5c); }
+
+/* The Energy vs Armour table, in the popover (6.2.4). Eleven columns of two
+   characters, so it fits a phone without scrolling sideways. */
+.dzc-pop--dmg { max-width: min(94vw, 420px); }
+.dzc-dmg { border-collapse: collapse; margin: 4px 0 6px; width: 100%; }
+.dzc-dmg th, .dzc-dmg td {
+  padding: 2px 3px; text-align: center; font-weight: 600;
+  font-family: var(--font-numeric, 'Outfit', sans-serif); font-size: 11px;
+  border: 1px solid var(--line, #d8d0c0);
+}
+.dzc-dmg-k {
+  text-align: left; white-space: nowrap; font-size: 10px;
+  font-family: var(--font-ui, 'Jost', sans-serif); color: var(--ink-2, #6b6459);
+}
+.dzc-dmg tr:first-child th { background: var(--surface-3, #f2ece0); }
+.dzc-dmg-crit td { color: var(--variant, #f15d38); }
 .dzc-wc-body { display: flex; align-items: flex-start; gap: 6px; margin-top: 3px; }
 /* The arc, drawn once at a size that reads, with its own code under it. */
 .dzc-wc-arc {
@@ -420,7 +476,10 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 /* The same three marks the table carries: an upgrade, a variant-only gun, and
    in a Squad whether this one is actually yours. */
 .dzc-wc.is-upgrade { border-left: 3px solid #2e9e4f; }
-.dzc-wc.is-variant { border-left: 3px solid #e0761c; }
+/* The weapon CARD says it with the chip beside the name instead -- see
+   .dzc-wc-only. Nothing is left on the card's edge but the upgrade mark, which
+   is a different question ("can I buy this") and the only one left needing an
+   edge. */
 .dzc-wcards--marked .dzc-wc.is-live { background: var(--surface-3, #f2ece0); }
 /* A gun this Squad does NOT have. It used to differ from one it does by a
    slightly lighter ink on two lines, which at a glance was no difference at
@@ -974,6 +1033,10 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 /* The rule reference belongs at the end of the sentence, quiet, not worn as a
    badge on the front where it reads as a label for the whole line. */
 .dzc-rulecite { opacity: .6; font-size: 11.5px; white-space: nowrap; }
+/* How many Squads hit the same rule, in front of the sentence -- because the
+   sentence names the model, not the Squad, so the second copy of it was the
+   same words twice. */
+.dzc-issue-n { font-family: var(--font-numeric, 'Outfit', sans-serif); font-weight: 700; }
 .dzc-legal {
   display: flex; align-items: center; gap: 5px;
   margin: 0 0 8px; font-size: 13px; font-weight: 600;
@@ -1294,6 +1357,35 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-buy:hover { background: rgba(46,158,79,.12); }
 .dzc-buy.is-on { background: #2e9e4f; border-color: #2e9e4f; color: #fff; }
 
+/* ── TURNING ON AND OFF ──
+
+   Jet, 2026-08-07: "I want ANIMATIONS FOR THINGS TURNING ON OR OFF across da
+   board. shit needs to STOP MOVING AND JUMPING AROUND WHEN I CLICK ON OR OFF."
+
+   Both halves of that are one rule: the change is reported in COLOUR and
+   NOTHING ELSE MOVES. No scale, no slide, no lift, no height change -- the
+   control stays exactly where it was and the page around it does not reflow,
+   because a control that jumps when you press it is a control you have to aim
+   at twice.
+
+   Keyframes rather than transitions: the builder redraws the whole army on
+   every press, so the element you pressed is replaced by a fresh one and there
+   is no "before" for a transition to run from. js/dzc-builder.js flip() is
+   what decides which of these two an element gets. */
+@keyframes dzc-turn-on {
+  0%   { box-shadow: inset 0 0 0 2px currentColor; filter: brightness(1.25); }
+  100% { box-shadow: inset 0 0 0 0 transparent; filter: none; }
+}
+@keyframes dzc-turn-off {
+  0%   { box-shadow: inset 0 0 0 2px var(--ink-2, #6b6459); opacity: .55; }
+  100% { box-shadow: inset 0 0 0 0 transparent; opacity: 1; }
+}
+.is-turn-on  { animation: dzc-turn-on .3s var(--ease-out, cubic-bezier(0,0,0,1)) 1; }
+.is-turn-off { animation: dzc-turn-off .3s var(--ease-out, cubic-bezier(0,0,0,1)) 1; }
+@media (prefers-reduced-motion: reduce) {
+  .is-turn-on, .is-turn-off { animation: none; }
+}
+
 .dzc-v-pick {
   min-height: 24px; padding: 2px 9px; cursor: pointer; border-radius: 0;
   border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff);
@@ -1390,6 +1482,22 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 /* Sticky, so it stays reachable down a long army instead of living at the
    bottom of the list. Smaller than it was, because it no longer has to shout
    from off-screen. */
+/* Two adders side by side, equal width, wrapping to one per line on a phone
+   where a 50/50 split makes both too narrow to read. The count on the right of
+   each is what is actually addable right now, so a disabled button is never a
+   mystery. */
+.dzc-add-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.dzc-add-row > .dzc-add-squad { flex: 1 1 190px; }
+.dzc-add-squad-n {
+  font-style: normal; font-family: var(--font-numeric, 'Outfit', sans-serif);
+  font-size: 12px; opacity: .75; margin-left: auto;
+}
+.dzc-add-squad.is-empty {
+  background: transparent; color: var(--ink-2, #6b6459);
+  border: 1px dashed var(--line, #d8d0c0); cursor: not-allowed; box-shadow: none;
+}
+.dzc-add-squad.is-empty:hover { background: transparent; }
+
 /* ── Add Squad ──
    The main action in the builder, and it was a ghost button in the smallest
    size the app has. Now it is the widest solid thing in the Group card, in the
@@ -2222,25 +2330,6 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
 .dzc-bb.is-before { box-shadow: inset 0 3px 0 0 var(--acc); }
 .dzc-bb.is-after { box-shadow: inset 0 -3px 0 0 var(--acc); }
 
-/* How big a Squad is, as tabs.
-   
-   A stepper makes you press twice to get from 2 to 4 and never says what the
-   top is until you hit it; the tabs say the whole range at once and any of
-   them is one press away. Square, like every other control that is a choice
-   rather than a nudge, and 44px tall on a phone the way the rest of them are. */
-.dzc-sizes { display: inline-flex; gap: 2px; }
-.dzc-size {
-  min-width: 38px; min-height: 38px; padding: 0 8px; cursor: pointer;
-  border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff);
-  color: var(--ink-2, #6b6459); border-radius: 0;
-  font: 600 13px/1 var(--font-numeric, 'Outfit', sans-serif);
-  transition: background .12s, color .12s, border-color .12s;
-}
-.dzc-size:hover:not([disabled]) { border-color: var(--acc, #1b3a5c); color: var(--ink, #24201c); }
-.dzc-size.is-on {
-  background: var(--acc, #1b3a5c); border-color: var(--acc, #1b3a5c); color: #fff;
-}
-.dzc-size[disabled] { opacity: .35; cursor: not-allowed; }
 /* A Squad with one legal size is a multiplier, not a control. */
 .dzc-sq-fixed {
   font: 600 13px/1 var(--font-numeric, 'Outfit', sans-serif); color: var(--ink-2, #6b6459);
@@ -2293,6 +2382,14 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
    without opening the chooser. */
 .dzc-group-card.is-dropping.can-walk { outline: 2px dashed var(--line, #d8d0c0); outline-offset: 2px; }
 .dzc-group-card.is-walk-on { outline: 3px solid var(--acc, #1b3a5c); outline-offset: 2px; }
+/* And every OTHER Group in the list beside it, which is where a Squad goes
+   when it is leaving this one. Same two states as a Transport target, because
+   it is the same gesture landing on a different kind of thing. */
+.dzc-bb.is-drop { outline: 2px dashed var(--acc, #1b3a5c); outline-offset: 2px; }
+.dzc-bb.is-drop-on {
+  outline: 3px solid var(--acc, #1b3a5c); outline-offset: 2px;
+  background: color-mix(in srgb, var(--acc, #1b3a5c) 12%, transparent);
+}
 
 /* ── What an army is for ──
    On the card it is one quiet line under the name. In the builder it is

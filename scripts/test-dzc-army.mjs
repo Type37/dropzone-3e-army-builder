@@ -1025,5 +1025,78 @@ console.log('\nreordering Groups');
   A.remove(a.id);
 }
 
+/* Dragging a Squad from one Group to another. Jet, 2026-08-07: "you should be
+ * able to drag units between groups." */
+console.log('\na Squad moves between Groups, and its cargo goes with it');
+{
+  const a = A.create('ucm', 'Moving', 2000);
+  const g1 = A.addGroup(a, 'One');
+  const g2 = A.addGroup(a, 'Two');
+  const legs = A.addSquad(a, g1.id, 'legionnaires', 2);
+  const bear = A.addSquad(a, g1.id, 'bear-apc', 1);
+  A.setCarrier(a, legs.id, bear.id);
+  const where = id => (A.groupOf(A.get(a.id), id) || {}).name;
+
+  A.moveSquad(a, bear.id, g2.id);
+  eq(where(bear.id), 'Two', 'the Transport moved');
+  eq(where(legs.id), 'Two', 'and what it was carrying came with it');
+  eq(A.findSquad(A.get(a.id), legs.id).carriedBy, bear.id,
+     'still aboard, because the carrier came too');
+
+  // Back the other way, this time moving only the passengers.
+  A.moveSquad(a, legs.id, g1.id);
+  eq(where(legs.id), 'One', 'a carried Squad can be moved out on its own');
+  eq(where(bear.id), 'Two', 'leaving its Transport where it was');
+  eq(String(A.findSquad(A.get(a.id), legs.id).carriedBy), 'null',
+     'and it has got out, because the Transport is not in that Group any more');
+
+  eq(String(A.moveSquad(a, legs.id, g1.id).ok), 'true',
+     'moving a Squad to its own Group is a no-op');
+  eq(String(A.moveSquad(a, legs.id, 'nosuchgroup').ok), 'false',
+     'and an unknown Group is refused');
+  A.remove(a.id);
+}
+
+/* The two starter armies, against TTCombat's own Group composition cards.
+ *
+ * The point of the test is not that they build — it is that they build the
+ * army on the card AND come out legal. A starter list that opens with three
+ * errors teaches a new player the wrong thing about the app and about 3.2.4,
+ * and the only thing standing between here and that is this. */
+console.log('\nthe starter armies are the ones on the box');
+{
+  vm.runInContext(readFileSync(path.join(ROOT, 'js', 'dzc-starters.js'), 'utf8'), sandbox);
+  const S = win.DZCStarters;
+  const built = await S.seed();
+  eq(String(built.length), '2', 'both starters are seeded');
+
+  const ucm = built.find(x => x.faction === 'ucm');
+  const bio = built.find(x => x.faction === 'bioficer');
+  eq(String(ucm.groups.length), '9', 'the UCM card prints nine Groups');
+  eq(String(bio.groups.length), '6', 'and the Bioficer card six');
+
+  for (const a of built) {
+    const v = A.validate(a);
+    eq(v.errors.length + ' errors in ' + a.name, '0 errors in ' + a.name,
+       `${a.name} is a legal list`,
+       v.errors.map(e => e.msg).join(' | '));
+  }
+
+  // Spot-checks on the two things a from-scratch guess got wrong.
+  const praet = ucm.groups.flatMap(g => g.squads).map(s => A.unitOf(ucm, s))
+    .filter(Boolean).map(u => u.name);
+  ok(praet.indexOf('Praetorian Spec-Ops') !== -1, 'the UCM box has Spec-Ops, not Snipers');
+  ok(praet.indexOf('Praetorian Snipers') === -1, 'and not both');
+  eq(String((ucm.commanders || [])[0].level), '4', 'its Commander is the Level 4 the card names');
+  eq(String((bio.commanders || [])[0].level), '5', 'and the Bioficers\' is Level 5');
+  const arkGroups = bio.groups.filter(g =>
+    g.squads.some(s => (A.unitOf(bio, s) || {}).name === 'Grievance Genitor Ark'));
+  eq(String(arkGroups.length), '2', 'the two Genitor Arks are in two Groups, as printed');
+
+  // Seeded once, ever. Deleting one has to stick.
+  eq(String((await S.seed()).length), '0', 'and they are never seeded twice');
+  built.forEach(a => A.remove(a.id));
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

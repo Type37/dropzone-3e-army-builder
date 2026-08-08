@@ -795,6 +795,51 @@
     touch(army);
   }
 
+  /* MOVE A SQUAD TO ANOTHER GROUP. Jet, 2026-08-07: "you should be able to
+   * drag units between groups."
+   *
+   * Everything it is CARRYING comes with it, all the way down. A Bear APC full
+   * of Legionnaires that moved on its own would leave the Legionnaires in the
+   * old Group riding a Transport that is no longer there -- a state no rule
+   * describes and nothing else in the app can produce.
+   *
+   * What does NOT come with it is whatever was carrying IT. That link is cut,
+   * because the carrier is staying: a Squad dragged out of a Transport and
+   * into another Group has got out of the Transport, which is exactly what the
+   * gesture looks like.
+   *
+   * Deliberately does not refuse. Group legality (3.2.4) is validate()'s to
+   * report, and it reports it on the Group card now -- blocking the drag would
+   * mean you could not rearrange an army except through states the rules
+   * already allow, and rearranging is the whole point of picking one up. */
+  function moveSquad(army, squadId, toGroupId) {
+    const to = army.groups.find(g => g.id === toGroupId);
+    const from = groupOf(army, squadId);
+    if (!to || !from) return { ok: false, reason: 'Unknown Group.' };
+    if (from.id === to.id) return { ok: true, reason: null };
+
+    // The Squad and everything riding on it, transitively.
+    const moving = [];
+    const take = id => {
+      const s = from.squads.find(x => x.id === id);
+      if (!s || moving.indexOf(s) !== -1) return;
+      moving.push(s);
+      from.squads.filter(x => x.carriedBy === id).forEach(x => take(x.id));
+    };
+    take(squadId);
+    if (!moving.length) return { ok: false, reason: 'Unknown Squad.' };
+
+    const ids = moving.map(s => s.id);
+    // It has got out of whatever was carrying it, unless that came too.
+    moving.forEach(s => { if (s.carriedBy && ids.indexOf(s.carriedBy) === -1) s.carriedBy = null; });
+    from.squads = from.squads.filter(s => ids.indexOf(s.id) === -1);
+    // And anything left behind that was riding one of these is on foot.
+    from.squads.forEach(s => { if (s.carriedBy && ids.indexOf(s.carriedBy) !== -1) s.carriedBy = null; });
+    to.squads = to.squads.concat(moving);
+    touch(army);
+    return { ok: true, reason: null, moved: moving.length };
+  }
+
   function setCarrier(army, squadId, carrierSquadId) {
     const s = findSquad(army, squadId);
     if (s) { s.carriedBy = carrierSquadId || null; touch(army); }
@@ -1507,7 +1552,7 @@
       army.groups.forEach(g => {
         const c = groupCost(army, g);
         if (c > cap) {
-          errors.push({ rule: '3.2', msg: `“${groupName(army, g)}” costs ${c}pts — no Group may exceed a quarter of the limit (${cap}pts).` });
+          errors.push({ rule: '3.2', group: g.id, msg: `“${groupName(army, g)}” costs ${c}pts — no Group may exceed a quarter of the limit (${cap}pts).` });
         }
       });
     }
@@ -1546,10 +1591,10 @@
       if (!u) return;
       const n = s.models.length;
       if (u.squadMin != null && n < u.squadMin) {
-        errors.push({ rule: '2', msg: `${u.name}: ${n} model${n === 1 ? '' : 's'}, minimum is ${u.squadMin}.` });
+        errors.push({ rule: '2', group: g.id, msg: `${u.name}: ${n} model${n === 1 ? '' : 's'}, minimum is ${u.squadMin}.` });
       }
       if (u.squadMax != null && n > u.squadMax) {
-        errors.push({ rule: '2', msg: `${u.name}: ${n} models, maximum is ${u.squadMax}.` });
+        errors.push({ rule: '2', group: g.id, msg: `${u.name}: ${n} models, maximum is ${u.squadMax}.` });
       }
     }));
 
@@ -1566,6 +1611,14 @@
       errors.push({ rule: '1.1', msg: `${names} may only be taken in games of 3000pts or more — this list is ${limit}.` });
     }
 
+    /* WHICH GROUP AN ISSUE BELONGS TO. Jet, 2026-08-07: "new rule: alerts live
+     * on the group card."
+     *
+     * Every message raised inside a `army.groups.forEach` carries `group: g.id`
+     * from here down, so the builder can put it where the thing that is wrong
+     * actually is. The ones with no group — the points limit, the Commander,
+     * the category ratio — are facts about the ARMY and have nowhere else to
+     * go, so they stay in the rail. */
     // Transports: only alongside a Squad they can carry, and taken FULL.
     army.groups.forEach(g => {
       g.squads.forEach(s => {
@@ -1575,16 +1628,16 @@
           .map(x => ({ unit: unitOf(army, x), count: x.models.length }))
           .filter(x => x.unit);
         if (!cargo.length) {
-          errors.push({ rule: '3.2.4', msg: `${u.name} carries nothing — a Transport may only be taken alongside a Squad it can carry.` });
+          errors.push({ rule: '3.2.4', group: g.id, msg: `${u.name} carries nothing — a Transport may only be taken alongside a Squad it can carry.` });
           return;
         }
         // s.models.length is how many of that Transport the Squad holds, and
         // "as many identical Transports as needed" (3.2.4) means their capacity
         // adds up. Without it, every Group needing two reported as illegal.
         const chk = window.DZC.loadCheck(u, cargo, s.models.length);
-        if (!chk.ok) errors.push({ rule: '3.2.4.2', msg: chk.reason });
+        if (!chk.ok) errors.push({ rule: '3.2.4.2', group: g.id, msg: chk.reason });
         else if (!window.DZC.isFull(u, cargo, s.models.length)) {
-          errors.push({ rule: '3.2.4', msg: `${u.name} is not full — Transports must be taken full.` });
+          errors.push({ rule: '3.2.4', group: g.id, msg: `${u.name} is not full — Transports must be taken full.` });
         }
       });
 
@@ -1598,7 +1651,7 @@
           .filter(x => x.unit);
         if (cargo.length) {
           const chk = window.DZC.loadCheck(u, cargo, s.models.length);
-          if (!chk.ok) errors.push({ rule: '3.2.4.3', msg: chk.reason });
+          if (!chk.ok) errors.push({ rule: '3.2.4.3', group: g.id, msg: chk.reason });
         }
       });
 
@@ -1614,6 +1667,7 @@
       if (loose.length > 1) {
         errors.push({
           rule: '3.2.4',
+          group: g.id,
           msg: `“${groupName(army, g)}” has ${loose.length} Squads with nothing carrying them — a Group is one Squad and its Transports, `
             + 'or up to 4 Squads sharing one larger Transport.'
         });
@@ -1624,7 +1678,7 @@
         const riders = g.squads.filter(x => x.carriedBy === s.id).length;
         if (riders > 4) {
           const u = unitOf(army, s);
-          errors.push({ rule: '3.2.4.1', msg: `${u ? u.name : 'Transport'} carries ${riders} Squads — at most 4 may share one Transport.` });
+          errors.push({ rule: '3.2.4.1', group: g.id, msg: `${u ? u.name : 'Transport'} carries ${riders} Squads — at most 4 may share one Transport.` });
         }
       });
     });
@@ -1714,7 +1768,7 @@
     addGroup, removeGroup, duplicateGroup, moveGroup, groupName, renameGroup,
     commanderName, renameCommander, addSquad, removeSquad, setModelCount, setModelVariant,
     canSetVariantCount, setVariantCount,
-    setCarrier, setCommander, findSquad, groupOf, unitOf, carrierOf, squadGuns,
+    setCarrier, moveSquad, setCommander, findSquad, groupOf, unitOf, carrierOf, squadGuns,
     commanders, commanderFor, commanderTargets,
     addCommander, removeCommander, assignCommander, syncCommanders, levelCost,
     modelCost, squadCost, groupCost, armyCost, categorySpend, validate,

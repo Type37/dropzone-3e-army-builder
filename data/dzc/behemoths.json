@@ -959,7 +959,7 @@
           "name": "Dual R7X-5 Rotary Cannons",
           "arc": "F",
           "ma": "Full",
-          "r": "36/18\" OR",
+          "r": "36/18\"",
           "att": "10",
           "ac": "3+",
           "e": "5",
@@ -974,7 +974,7 @@
           "name": "Dual R7X-66 Incinerators",
           "arc": "F",
           "ma": "Full",
-          "r": "9\"",
+          "r": "OR 9\"",
           "att": "6",
           "ac": "2+",
           "e": "4",
@@ -1242,7 +1242,7 @@
           "att": "3",
           "ac": "3+",
           "e": "10",
-          "special": "Integral, Macro, Particle, Pen 2+, Capacitors: +2 Critical",
+          "special": "Demo 1, Devastator 1, Integral, Macro, Particle, Pen 2+, Capacitors: +2 Critical",
           "box": "variant",
           "variants": [
             "Celestial"
@@ -1259,7 +1259,7 @@
           "att": "2",
           "ac": "2+",
           "e": "8",
-          "special": "Destroyer 5+, Capacitors: +2 Destroyer Blast, Critical D6,",
+          "special": "Destroyer 5+, Capacitors: +2 Destroyer",
           "box": "variant",
           "variants": [
             "Celestial"
@@ -1276,7 +1276,7 @@
           "att": "1",
           "ac": "3+",
           "e": "8",
-          "special": "Devastator D6, Dissipate 2, Integral, Macro, Capacitors: +2E",
+          "special": "Blast, Critical D6, Devastator D6, Dissipate 2, Integral, Macro, Capacitors: +2E",
           "box": "variant",
           "variants": [
             "Earth"
@@ -1869,7 +1869,7 @@
           "att": "1",
           "ac": "2+",
           "e": "8",
-          "special": "AS 3, Critical D3, Demo 1, Destroyer 3+, Devastator D3, Integral, Macro Critical 1, Demo 2, Integral,",
+          "special": "AS 3, Critical D3, Demo 1, Destroyer 3+, Devastator D3, Integral, Macro",
           "box": "variant",
           "variants": [
             "Avernus"
@@ -1886,7 +1886,7 @@
           "att": "2",
           "ac": "3+",
           "e": "9",
-          "special": "Macro, Capacitors: +D6 Att, this takes D3-1 DP when it attacks",
+          "special": "Critical 1, Demo 2, Integral, Macro, Capacitors: +D6 Att, this takes D3-1 DP when it attacks",
           "box": "variant",
           "variants": [
             "Cerberus"

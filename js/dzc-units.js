@@ -213,9 +213,11 @@
       // a second click to find out where.
       const tip = (window.DZC.ruleText(tok, faction) || 'No glossary entry — read it from the stat card.')
         + (r && r.page ? ` (p.${r.page})` : '');
+      // Written out — "Tracking-1", not "T1". The printed token is still what
+      // looks it up and still what the popover is opened with.
       return `<button type="button" class="dzc-rule${r ? '' : ' dzc-rule--unknown'}"
         onclick="DZCUnits.showRule(this,'${esc(tok).replace(/'/g, '&#39;')}')"
-        title="${esc(tip)}">${esc(tok)}</button>`;
+        title="${esc(tip)}">${esc(window.DZC.ruleLabel(tok, faction))}</button>`;
     }).join('');
   }
 
@@ -449,7 +451,13 @@
   }
 
   function weaponsHtml(u, faction, opts) {
-    const fac = faction || state.faction;
+    /* THE UNIT'S OWN FACTION FIRST. A Behemoth belongs to one of the six and
+     * prints that faction's rules, but it is browsed from a tab whose id is
+     * "behemoth" -- so a Type 7 Grand Walker's "Nanomachines" was looked up in
+     * a faction glossary that has no such rule and came back as "No glossary
+     * entry for this keyword", which is the one thing a rule chip must never
+     * say. The caller's faction is the fallback, not the answer. */
+    const fac = u.faction || faction || state.faction;
     const o = opts || {};
     const marking = !!(o.variants || o.hasUpgrade);
     const all = u.weapons || [];
@@ -479,6 +487,11 @@
       </table>`;
   }
 
+  /* The arrow on the variant chip. Drawn rather than typed: "▸" is a glyph
+   * some systems do not have, and a missing glyph in a 10px chip is a box. */
+  const ARROW = '<svg class="dzc-wc-only-i" width="6" height="7" viewBox="0 0 6 7" '
+    + 'aria-hidden="true" focusable="false"><path d="M0 0l6 3.5L0 7z" fill="currentColor"/></svg>';
+
   /* A weapon as a CARD rather than a row of a wide table.
    *
    * The table wants ~620px and got it by scrolling sideways inside its own box,
@@ -501,10 +514,18 @@
       `<div class="dzc-wc-stat" title="${esc(window.DZC.weaponColHelp(k))}">
          <span class="dzc-wc-k">${k === 'MA' ? window.DZCIcon.moveAttack({ size: 13 }) : ''
            }${esc(window.DZC.weaponColLabel(k))}</span>
-         <span class="dzc-wc-v">${esc(v)}${k === 'Att'
+         ${k === 'E'
+           /* Energy is the one stat that is a QUESTION rather than a number:
+              on its own it says nothing, and paired with the Armour in front
+              of you it says what you roll to hurt it and what you roll to
+              Crit (6.2.4). So it is the one stat you can press. */
+           ? `<button type="button" class="dzc-wc-e"
+                onclick="DZCUnits.showDamage(this,'${esc(String(v)).replace(/'/g, '&#39;')}')"
+                aria-label="Damage and Critical rolls for Energy ${esc(v)}">${esc(v)}</button>`
+           : `<span class="dzc-wc-v">${esc(v)}${k === 'Att'
            /* "5d6". Attacks IS a number of dice, so it prints as one --
               Jet, 2026-08-07. */
-           ? window.DZCIcon('dice', { size: 13 }) : ''}</span></div>`;
+           ? window.DZCIcon('dice', { size: 13 }) : ''}</span>`}</div>`;
     /* "Sabre only" — and NOT under a heading that already says Sabre.
      *
      * Jet, 2026-08-07: "remove this line shit: Sabre only... it's obvious what
@@ -517,7 +538,7 @@
     return `<article class="dzc-wc${o.cls ? ' ' + o.cls : ''}">
       <header class="dzc-wc-head">
         <h4 class="dzc-wc-name">${esc(w.name)}</h4>
-        ${only ? `<span class="dzc-wc-only">${esc(only)} only</span>` : ''}
+        ${only ? `<span class="dzc-wc-only">${ARROW}${esc(only)}</span>` : ''}
         ${w.upgradePoints == null ? ''
           /* The price is the BUTTON when there is somewhere to buy it. The
              upgrade table under the Squad printed this whole weapon a second
@@ -554,7 +575,8 @@
 
   /* The same list of weapons, as cards. Same filtering and the same marks. */
   function weaponCardsHtml(u, faction, opts) {
-    const fac = faction || u.faction || state.faction;
+    // The unit's own faction first -- see weaponsHtml.
+    const fac = u.faction || faction || state.faction;
     const o = opts || {};
     const marking = !!(o.variants || o.hasUpgrade);
     const all = u.weapons || [];
@@ -572,12 +594,12 @@
           if (live && wasLive.get(id) === false) gained = ' is-gained';
           wasLive.set(id, live);
         }
-        /* The orange variant edge goes with the label, and for the same
-         * reason: a lensed list is ALREADY one variant's guns, so marking each
-         * card "this one belongs to a variant" marked every card in the block.
-         * Five bars saying what the block heading says once. */
-        const cls = [w.box === 'upgrade' ? 'is-upgrade'
-            : w.box === 'variant' && !lens ? 'is-variant' : '']
+        /* No variant EDGE on a card. It said what the chip beside the name
+         * says (see .dzc-wc-only), and in a lensed list -- one variant's guns
+         * under that variant's heading -- it said what the heading says, on
+         * every card in the block. The upgrade edge stays: "can I buy this"
+         * is a different question and the only one still needing an edge. */
+        const cls = [w.box === 'upgrade' ? 'is-upgrade' : '']
           .concat(marking ? [mark] : []).filter(Boolean).join(' ') + gained;
         return wpnCard(w, fac, { cls: cls, buy: o.buy, grouped: !!lens });
       }).join('');
@@ -595,7 +617,7 @@
    * that opens 1.7.2 with its own 18 substituted in.
    */
   function gearHtml(u, faction) {
-    const fac = faction || u.faction || state.faction;
+    const fac = u.faction || faction || state.faction;
     if (!(u.gear || []).length) return '';
     return `<div class="dzc-gear">
       <span class="dzc-gear-head">Gear — paid in Power, not points</span>
@@ -698,11 +720,15 @@
       });
     });
     if (!used.size) return '';
-    const rows = [...used.keys()].sort((a, b) => a.localeCompare(b)).map(tok => {
+    const rows = [...used.keys()].map(tok => [tok, window.DZC.ruleLabel(tok, fac)])
+      // Sorted on what it is CALLED, because that is what is printed and what
+      // you are scanning for. Sorting on "TX" put Tracking between Terror and
+      // UC.
+      .sort((a, b) => a[1].localeCompare(b[1])).map(([tok, label]) => {
       const r = used.get(tok);
       return `<div class="dzc-ruledef">
-        <h5>${esc(tok)}${r.alias && r.alias.toLowerCase() !== tok.toLowerCase()
-          ? ` <i>(${esc(r.alias)})</i>` : ''}</h5>
+        <h5>${esc(label)}${label.toLowerCase() !== tok.toLowerCase()
+          ? ` <i>(${esc(tok)})</i>` : ''}</h5>
         <p>${window.DZC.linkKeywords(window.DZC.ruleText(tok, fac), fac, r.name)}</p>
         <span class="dzc-ruledef-src">${esc(ruleSource(r))}</span>
       </div>`;
@@ -788,18 +814,76 @@
     const pop = document.createElement('div');
     pop.className = 'dzc-pop';
     pop.id = 'dzc-pop';
+    // Headed with the written-out name and footnoted with what the card
+    // prints, which is the way round you need it: you came here from the chip,
+    // and the thing you cannot look up is which two letters on the stat card
+    // this is.
+    const label = window.DZC.ruleLabel(token, state.faction);
     pop.innerHTML = r
-      ? `<h5>${esc(r.name)}${r.alias ? ` <span class="dzc-pop-alias">(${esc(r.alias)})</span>` : ''}</h5>
+      ? `<h5>${esc(label)}${label.toLowerCase() !== String(token).trim().toLowerCase()
+          ? ` <span class="dzc-pop-alias">(${esc(token)})</span>` : ''}</h5>
          <p>${window.DZC.linkKeywords(window.DZC.ruleText(token, state.faction), state.faction, r.name)}</p>
          <span class="dzc-pop-src">${esc(ruleSource(r))}</span>`
       : `<h5>${esc(token)}</h5><p>No glossary entry for this keyword — read it from the stat card.</p>`;
     document.body.appendChild(pop);
+    placePop(pop, el);
+    setTimeout(() => document.addEventListener('click', onDocClick), 0);
+  }
+  /* What this Weapon rolls to damage, and what it rolls to Crit, against every
+   * Armour in the game (6.2.4). In the same popover the rules use, for the
+   * same reason: it opens over the page rather than inside it, so pressing a
+   * stat never moves the card you pressed.
+   *
+   * The Critical row is the whole point. It is TWO HIGHER THAN THE DAMAGE
+   * ROLL, not two higher than the Weapon's Ac -- Ac decides whether you hit at
+   * all, and this is the second roll after that. Against a 5+ or a 6+ there is
+   * no Critical to be had, and the row says so rather than leaving a gap you
+   * have to interpret. */
+  function showDamage(el, energy) {
+    hideRule();
+    const t = window.DZC.damageTable(energy);
+    const pop = document.createElement('div');
+    pop.className = 'dzc-pop dzc-pop--dmg';
+    pop.id = 'dzc-pop';
+    if (t.kind !== 'energy') {
+      pop.innerHTML = `<h5>${esc(String(energy))}</h5><p>${
+        t.kind === 'small'
+          ? `Small Arms. Each hit destroys 1DP of Infantry with no roll, so no Critical.
+             Against a Vehicle or Aircraft it does nothing until five Small Arms attacks
+             are combined into one attack at Energy ${t.e} (6.4.2).`
+          : t.kind === 'zero'
+            ? 'E0 cannot inflict damage on anything, Infantry included (6.2.4).'
+            : 'This Weapon has no Energy value.'}</p>
+        <span class="dzc-pop-src">6.2.4, p.21</span>`;
+    } else {
+      const head = t.rows.map(r => `<th>${r.a}</th>`).join('');
+      const need = t.rows.map(r => `<td>${r.need ? r.need + '+' : '—'}</td>`).join('');
+      const crit = t.rows.map(r => `<td>${r.crit ? r.crit + '+' : '—'}</td>`).join('');
+      pop.innerHTML = `<h5>Energy ${esc(String(t.e))}</h5>
+        <table class="dzc-dmg">
+          <tr><th class="dzc-dmg-k">Armour</th>${head}</tr>
+          <tr><th class="dzc-dmg-k">Damage</th>${need}</tr>
+          <tr class="dzc-dmg-crit"><th class="dzc-dmg-k">Critical</th>${crit}</tr>
+        </table>
+        <p>A Critical is two higher than the damage roll, not the Weapon's Accuracy,
+           and inflicts another 1DP. Infantry take 1DP per hit without rolling, so they
+           never take Criticals.</p>
+        <span class="dzc-pop-src">6.2.4, p.21</span>`;
+    }
+    document.body.appendChild(pop);
+    placePop(pop, el);
+    setTimeout(() => document.addEventListener('click', onDocClick), 0);
+  }
+
+  /* Under the control, and never off the right edge. Shared so the rule
+   * popover and the damage table cannot drift apart. */
+  function placePop(pop, el) {
     const b = el.getBoundingClientRect();
     pop.style.top = (window.scrollY + b.bottom + 6) + 'px';
     pop.style.left = Math.max(8, Math.min(window.scrollX + b.left,
       window.scrollX + document.documentElement.clientWidth - pop.offsetWidth - 8)) + 'px';
-    setTimeout(() => document.addEventListener('click', onDocClick), 0);
   }
+
   function onDocClick(e) { if (!e.target.closest('#dzc-pop')) hideRule(); }
   function hideRule() {
     const p = document.getElementById('dzc-pop');
@@ -813,7 +897,7 @@
     setFaction: id => { state.faction = id; state.search = ''; render(); },
     setCategory: c => { state.category = c; render(); },
     setSearch: v => { state.search = v; render(); },
-    openDetail, closeDetail, setLens, showRule, hideRule,
+    openDetail, closeDetail, setLens, showRule, showDamage, hideRule,
     // Shared with the builder's picker so a unit reads the same in both places.
     statsHtml, rulesHtml, squadHtml, sizeHtml, transportHtml, unitWeapons, weaponLive,
     removedByUpgrades, weaponsHtml, variantsHtml,

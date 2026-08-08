@@ -24,8 +24,35 @@
   const accentOf = f => (FACTIONS.find(x => x.id === f) || {}).accent || '#1b3a5c';
 
   let current = null;                 // the army being edited
-  let picker = { groupId: null, category: 'All', search: '', sort: 'points', dir: 1,
+  let picker = { groupId: null, kind: 'unit', category: 'All', search: '', sort: 'points', dir: 1,
                  view: 'grid', filters: [], shapes: [] };
+  /* THINGS TURNING ON AND OFF, SAID ONCE, EVERYWHERE. Jet, 2026-08-07: "I want
+   * ANIMATIONS FOR THINGS TURNING ON OR OFF across da board."
+   *
+   * The builder redraws the WHOLE army on every press, so the control you just
+   * pressed is not the control that comes back -- it is a fresh element that
+   * happens to be in the on state, and a CSS transition on an element that has
+   * only ever had one state never runs. Every toggle therefore has to be TOLD
+   * that it changed, and the only thing that knows is the previous draw.
+   *
+   * One map, one call. flip(key, on) returns the class to put on the element
+   * and remembers the state for next time; a key it has never seen returns
+   * nothing, because opening an army you built yesterday must not light up
+   * every upgrade in it. See .is-turn-on / .is-turn-off in dzc.css.
+   *
+   * The two earlier versions of this idea -- the weapon cards' `wasLive` and
+   * the Variant blocks' `tookVariant` -- stay where they are: each keys on
+   * something this does not have, and one map keyed three ways is worse than
+   * three maps keyed once. */
+  const turned = new Map();
+
+  function flip(key, on) {
+    const was = turned.get(key);
+    turned.set(key, !!on);
+    if (was === undefined || was === !!on) return '';
+    return on ? ' is-turn-on' : ' is-turn-off';
+  }
+
   // Which Group the detail pane is showing. Null falls back to the first, so
   // opening an army always lands on something rather than an empty pane.
   let selectedGroup = null;
@@ -47,6 +74,11 @@
     const root = document.getElementById('view-armies');
     if (!root) return;
     await window.DZC.loadIndex();
+    /* The two starter armies, the first time this screen is ever opened.
+     * Seeded here rather than at boot because this is the screen they appear
+     * on, and a first-run write that happens on the landing page is a write
+     * nobody asked for. It runs once ever -- see dzc-starters.js. */
+    if (window.DZCStarters) await window.DZCStarters.seed().catch(() => []);
     /* Sorted, and only offered once there is something to sort. Dropfleet
      * hides its sort bar below two fleets (app.js:1627) and that is right: a
      * control that cannot change anything is noise on the screen you see
@@ -324,6 +356,8 @@
     const a = window.DZCArmy.get(id);
     if (!a) { location.hash = '#armies'; return; }
     current = a;
+    // Fresh every draw -- see groupAlerts.
+    groupIssues = null;
     await window.DZC.loadFaction(a.faction);
 
     const cost = window.DZCArmy.armyCost(a);
@@ -451,9 +485,14 @@
                   aria-controls="dzc-rail-body" onclick="DZCBuilder.toggleRail()">
             <b>${left}</b><span>pts left</span>
             <i${gTitle}>${gUsed} of ${maxG || '—'} Groups</i>
-            ${v.errors.length ? `<em class="is-err">${v.errors.length} to fix</em>`
-              : v.warnings.length ? `<em>${v.warnings.length} note${v.warnings.length === 1 ? '' : 's'}</em>`
-              : '<em class="is-ok">legal</em>'}
+            ${(() => {
+              // The SAME count the list under it prints. A peek line saying
+              // "4 to fix" over a list of two is the peek line lying.
+              const e = dedupeAlerts(v.errors).length, w = dedupeAlerts(v.warnings).length;
+              return e ? `<em class="is-err">${e} to fix</em>`
+                : w ? `<em>${w} note${w === 1 ? '' : 's'}</em>`
+                : '<em class="is-ok">legal</em>';
+            })()}
             ${window.DZCIcon(railOpen ? 'remove' : 'add', { size: 16 })}
           </button>
           <div class="dzc-rail-body${railOpen ? ' is-open' : ''}" id="dzc-rail-body">
@@ -483,8 +522,14 @@
           </div>
 
           ${commanderRail(a)}
-          ${alertList(v.errors, 'err', 'issue to fix', 'issues to fix')}
-          ${alertList(v.warnings, 'warn', 'note', 'notes')}
+          <!-- ARMY-WIDE ONLY. Jet, 2026-08-07: "new rule: alerts live on the
+               group card." Anything validate() could pin to a Group is drawn
+               on that Group instead, where the thing that is wrong is; what is
+               left here is the points limit, the Commander, the category
+               ratio and the Group count -- facts about the army, with no
+               Group to sit on. -->
+          ${alertList(v.errors.filter(e => !e.group), 'err', 'issue to fix', 'issues to fix')}
+          ${alertList(v.warnings.filter(e => !e.group), 'warn', 'note', 'notes')}
           ${v.ok && a.groups.length ? `<p class="dzc-legal">${window.DZCIcon('check_circle', { size: 15 })}This army is legal.</p>` : ''}
           ${shortfallHtml(a)}
           </div>
@@ -648,12 +693,26 @@
     // Transport, which is the other half of the gesture and the only way to
     // undo it without going through the chooser.
     const canWalk = !!squad.carriedBy;
-    if (!targets.length && !canWalk) return;
+    /* AND EVERY OTHER GROUP. Jet, 2026-08-07: "you should be able to drag
+     * units between groups."
+     *
+     * The Group briefs in the list beside the card are the targets, which is
+     * the only place every Group is on screen at once -- the detail pane shows
+     * one. Dropping on one moves the Squad and everything riding on it
+     * (DZCArmy.moveSquad); its own Group is excluded, because dropping a Squad
+     * where it already is should do nothing rather than look like a move. */
+    const home = window.DZCArmy.groupOf(current, sid);
+    const groups = [...document.querySelectorAll('.dzc-bb[data-gid]')]
+      .filter(el => !home || el.dataset.gid !== home.id)
+      .map(el => ({ gid: el.dataset.gid, el: el }));
+    if (!targets.length && !canWalk && !groups.length) return;
 
-    sqDrag = { sid: sid, row: row, card: card, targets: targets, canWalk: canWalk, on: null };
+    sqDrag = { sid: sid, row: row, card: card, targets: targets, groups: groups,
+               canWalk: canWalk, on: null };
     row.classList.add('is-sq-dragging');
     card.classList.add('is-dropping');
     targets.forEach(t => t.el.classList.add('is-drop'));
+    groups.forEach(t => t.el.classList.add('is-drop'));
     if (canWalk) card.classList.add('can-walk');
 
     const ghost = document.createElement('div');
@@ -689,14 +748,28 @@
         && ev.clientY >= r.top && ev.clientY <= r.bottom) hit = t;
     });
     sqDrag.targets.forEach(t => t.el.classList.toggle('is-drop-on', t === hit));
+    /* A Group brief beats the Group card behind it: the briefs sit in their
+     * own pane, so a finger over one is over a Group, not over the background
+     * of the card it came from. */
+    let onGroup = null;
+    if (!hit) {
+      sqDrag.groups.forEach(t => {
+        const r = t.el.getBoundingClientRect();
+        if (ev.clientX >= r.left && ev.clientX <= r.right
+          && ev.clientY >= r.top && ev.clientY <= r.bottom) onGroup = t;
+      });
+    }
+    sqDrag.groups.forEach(t => t.el.classList.toggle('is-drop-on', t === onGroup));
     let walk = false;
-    if (!hit && sqDrag.canWalk) {
+    if (!hit && !onGroup && sqDrag.canWalk) {
       const r = sqDrag.card.getBoundingClientRect();
       walk = ev.clientX >= r.left && ev.clientX <= r.right
         && ev.clientY >= r.top && ev.clientY <= r.bottom;
     }
     sqDrag.card.classList.toggle('is-walk-on', walk);
-    sqDrag.on = hit ? { kind: 'board', sid: hit.sid } : walk ? { kind: 'walk' } : null;
+    sqDrag.on = hit ? { kind: 'board', sid: hit.sid }
+      : onGroup ? { kind: 'group', gid: onGroup.gid }
+      : walk ? { kind: 'walk' } : null;
   }
 
   function endSqDrag(grip, commit) {
@@ -710,10 +783,13 @@
     d.row.classList.remove('is-sq-dragging');
     d.card.classList.remove('is-dropping', 'can-walk', 'is-walk-on');
     d.targets.forEach(t => t.el.classList.remove('is-drop', 'is-drop-on'));
+    (d.groups || []).forEach(t => t.el.classList.remove('is-drop', 'is-drop-on'));
     if (!commit || !d.on) return;
     const r = d.on.kind === 'board'
       ? window.DZCArmy.boardTransport(current, d.sid, d.on.sid)
-      : window.DZCArmy.assignTransport(current, d.sid, null);
+      : d.on.kind === 'group'
+        ? window.DZCArmy.moveSquad(current, d.sid, d.on.gid)
+        : window.DZCArmy.assignTransport(current, d.sid, null);
     if (!r.ok) return say(r.reason);
     if (r.warn) say(r.warn, 'warning');
     refresh();
@@ -959,6 +1035,39 @@
     return space ? `<div class="dzc-g-space">${space}</div>` : '';
   }
 
+  /* WHAT IS WRONG WITH THIS GROUP, ON THIS GROUP. Jet, 2026-08-07: "new rule:
+   * alerts live on the group card."
+   *
+   * They were all in the rail, which is the wrong end of the screen from the
+   * Condor that is not full -- you read "Condor Dropship is not full", then
+   * went looking for which of your nine Groups had a Condor in it. Every
+   * message validate() can pin to a Group is drawn here instead, above the
+   * Squads it is about. The rail keeps what is genuinely about the army.
+   *
+   * Cached per render: validate() walks the whole army, and calling it once
+   * per Group card would walk it once per Group. */
+  let groupIssues = null;
+
+  function groupAlerts(a, g) {
+    if (!groupIssues) {
+      const v = window.DZCArmy.validate(a);
+      groupIssues = { err: {}, warn: {} };
+      v.errors.forEach(e => { if (e.group) (groupIssues.err[e.group] = groupIssues.err[e.group] || []).push(e); });
+      v.warnings.forEach(e => { if (e.group) (groupIssues.warn[e.group] = groupIssues.warn[e.group] || []).push(e); });
+    }
+    /* NOT THE ONES A SQUAD IS ALREADY WEARING. squadAlerts puts a message on
+     * the Unit it names, and this would put the same sentence at the top of
+     * the same card -- which is the repetition that started all this. So the
+     * two split the work rather than sharing it: a message that opens with the
+     * name of a Unit in this Group belongs to that Unit and is drawn on it;
+     * what is left is about the GROUP -- its cost, its Squads not being one
+     * Group -- and that is what this draws. */
+    const names = g.squads.map(s => (window.DZCArmy.unitOf(a, s) || {}).name).filter(Boolean);
+    const onGroup = list => (list || []).filter(m => !names.some(n => m.msg.indexOf(n) === 0));
+    return alertList(onGroup(groupIssues.err[g.id]), 'err', 'issue to fix', 'issues to fix')
+      + alertList(onGroup(groupIssues.warn[g.id]), 'warn', 'note', 'notes');
+  }
+
   function groupHtml(a, g) {
     const cost = window.DZCArmy.groupCost(a, g);
     const cap = window.DZC.maxGroupCost(a.pointsLimit);
@@ -986,11 +1095,55 @@
                 onclick="DZCBuilder.removeGroup('${g.id}')" aria-label="Remove ${esc(window.DZCArmy.groupName(a, g))}">&times;</button>
       </header>
       ${groupSpace(a, g)}
+      ${groupAlerts(a, g)}
       ${rows || '<p class="dzc-g-empty">No Squads yet.</p>'}
-      <button class="dzc-add-squad" type="button" onclick="DZCBuilder.openPicker('${g.id}')">
-        <span class="dzc-add-squad-i">${window.DZCIcon('add', { size: 20 })}</span>
-        <span class="dzc-add-squad-t">Add Squad</span></button>
+      ${addButtons(a, g)}
     </section>`;
+  }
+
+  /* TWO BUTTONS, NOT ONE. Jet, 2026-08-07: "instead of just 'add squad' it's
+   * gonna be 2 instead. Add Units... not including the generic transports.
+   * Add Transports... add just the transports."
+   *
+   * The split is exactly `category === 'Transport'`, and it is clean: across
+   * all 178 Units plus the Behemoths, every Unit with capacity is either
+   * category Transport (39 of them) or carries auxiliaryTransport (20). Not
+   * one is both, and not one Transport lacks capacity. So the two lists are a
+   * partition with no unit falling between them.
+   *
+   * The twenty auxiliaries are under Add Units, which is the right side of the
+   * line: a Harrier Gunship, a Grievance Genitor Ark, a Splitting Drill are
+   * Units you take to fight with that happen to have room in the back. You do
+   * not go looking for one under "Transports" -- 3.2.4 does not even treat
+   * them as Transports, which is why they need not be full (3.2.4.3).
+   *
+   * WHAT BREAKS, and it is the same thing on both buttons: 3.2.4 decides what
+   * a Group may hold, not the button. An empty Group takes a fighting Unit and
+   * nothing else, so Add Transports has nothing to offer until something is in
+   * there to carry. A Group that already holds a Squad takes only a Transport
+   * for it, or a Squad that fits in a Transport already present -- so on a
+   * Group of tanks with a full Condor, Add Units has nothing to offer either.
+   * Both cases are counted here and the button says so on its face rather than
+   * opening a picker where everything is greyed out. */
+  function addButtons(a, g) {
+    const f = window.DZC.faction(a.faction);
+    const pool = ((f && f.units) || []).filter(u => u.selectable !== false);
+    const open = kind => pool.filter(u =>
+      (kind === 'transport') === (u.category === 'Transport')
+      && window.DZCArmy.canAddUnit(a, g.id, u.id).ok).length;
+    const btn = (kind, label) => {
+      const n = open(kind);
+      return `<button class="dzc-add-squad${n ? '' : ' is-empty'}" type="button"
+        ${n ? `onclick="DZCBuilder.openPicker('${g.id}','${kind}')"` : 'disabled'}
+        title="${esc(n ? `${n} to choose from`
+          : kind === 'transport'
+            ? 'A Transport may only be taken alongside a Squad it can carry (3.2.4).'
+            : 'This Group is full — a Squad may only join it if a Transport already here can carry it (3.2.4).')}">
+        <span class="dzc-add-squad-i">${window.DZCIcon('add', { size: 20 })}</span>
+        <span class="dzc-add-squad-t">${esc(label)}</span>
+        <i class="dzc-add-squad-n">${n}</i></button>`;
+    };
+    return `<div class="dzc-add-row">${btn('unit', 'Add Units')}${btn('transport', 'Add Transports')}</div>`;
   }
 
   /* Weapon upgrades (3.2.3). Chosen per VARIANT, because "All Units of the
@@ -1078,38 +1231,22 @@
     </span>`;
   }
 
-  /* How big the Squad is, as the thing it actually is: a choice between a
-   * handful of legal numbers.
+  /* How big the Squad is.
    *
-   * Jet, 2026-08-07 — a Squad of exactly one shows NOTHING ("don't bother
-   * showing ANYTHING like 1x or 1 or squad size 1"), a Squad with one legal
-   * size shows "×3" and no other word, and a range becomes a tab switcher.
+   * A Squad of exactly one shows NOTHING (Jet: "don't bother showing ANYTHING
+   * like 1x or 1 or squad size 1") and a Squad with one legal size shows "×3"
+   * and no other word. Everything else is the stepper.
    *
-   * A stepper is the wrong control for a choice of three or four numbers: it
-   * makes you press twice to go from 2 to 4 and it never tells you what the
-   * top is until you hit it. The tabs say the whole range at a glance and any
-   * of them is one press away.
-   *
-   * 2–9, 3–6, 3–9, 4–8 and 6–12 keep the stepper. Jet has not decided what
-   * the big Squads should be, and eleven tabs is not a tab switcher. The line
-   * is drawn where Jet drew it: every range named for tabs starts at 1 or 2
-   * and offers at most six numbers, and every range left open fails one of
-   * those. It is not a guess at how wide is too wide. */
+   * A small range used to become a row of tab buttons — 1 2 3, the size you
+   * had lit up. Jet, 2026-08-07: "remove the switcher for 1/2/3 we'll worry
+   * about it later." It is gone rather than hidden behind a condition: two
+   * controls doing the same job, chosen between by how wide the range
+   * happened to be, is the thing that made it worth removing. */
   function sizeControl(army, sq, u) {
     const lo = u.squadMin, hi = u.squadMax;
     if (lo == null || hi == null) return stepperHtml(army, sq);
     if (lo === hi) return hi === 1 ? '' : `<span class="dzc-sq-fixed">×${hi}</span>`;
-    if (lo > 2 || hi - lo > 5) return stepperHtml(army, sq);
-    const n = sq.models.length;
-    const tabs = [];
-    for (let i = lo; i <= hi; i++) {
-      const r = i === n ? { ok: true } : window.DZCArmy.canSetCount(army, sq.id, i);
-      tabs.push(`<button type="button" class="dzc-size${i === n ? ' is-on' : ''}"
-        ${r.ok ? '' : `disabled title="${esc(r.reason || '')}"`}
-        aria-pressed="${i === n}" aria-label="${esc(u.name)}, ${i} model${i === 1 ? '' : 's'}"
-        onclick="DZCBuilder.setCount('${sq.id}',${i})">${i}</button>`);
-    }
-    return `<span class="dzc-sizes" role="group" aria-label="Squad size">${tabs.join('')}</span>`;
+    return stepperHtml(army, sq);
   }
 
   /* How many models in this Squad are this variant.
@@ -1158,7 +1295,8 @@
       const i = list.findIndex(o => o.weapon.name === w.name);
       if (i === -1) return `<span class="dzc-wpn-up">+${w.upgradePoints}pts</span>`;
       const on = window.DZCArmy.hasUpgrade(s, list[i].scope, w.name);
-      return `<button type="button" class="dzc-buy${on ? ' is-on' : ''}"
+      return `<button type="button" class="dzc-buy${on ? ' is-on' : ''}${
+        flip('buy|' + s.id + '|' + list[i].scope + '|' + w.name, on)}"
         aria-pressed="${on}"
         aria-label="${on ? 'Remove' : 'Buy'} ${esc(w.name)}, ${w.upgradePoints} points"
         onclick="DZCBuilder.toggleUpgrade('${s.id}',${i})"
@@ -1482,7 +1620,7 @@
           <!-- The keywords go UNDER the stats, in the same column: they are
                what the Unit is, read beside its numbers rather than after the
                whole weapon block. -->
-          ${u.special ? `<div class="dzc-sq-rules">${U.rulesHtml(u.special, a.faction)}</div>` : ''}
+          ${u.special ? `<div class="dzc-sq-rules">${U.rulesHtml(u.special, u.faction || a.faction)}</div>` : ''}
         </div>
         ${compact ? '' : `<div class="dzc-sq-wpn">${variantGuns(a, s, u)}</div>`}
       </div>
@@ -1680,12 +1818,38 @@
    * a list that is otherwise fine. Each is headed with its own count so you can
    * see at a glance how much is left, and each cites its rule at the END of the
    * sentence rather than wearing a rule number as a badge on the front. */
+  /* SAID ONCE, WITH A COUNT. Jet, 2026-08-07: "SHUT THE FUCK UP WHY IS IT
+   * SAYING IT SO MANY TIMES".
+   *
+   * validate() walks Squads, and its Transport messages name the UNIT rather
+   * than the Squad -- so a Group with two Condor Squads, neither of them full,
+   * produced the identical sentence twice, and three produced it three times.
+   * There is nothing in the repeat to read: the second copy is the same words
+   * about the same model.
+   *
+   * Collapsed on rule + message, and the count goes in front where it says
+   * something -- "2 x Condor Dropship is not full" is a different fact from
+   * one, and it is the fact you need to fix two of them. */
+  function dedupeAlerts(items) {
+    const out = [];
+    const at = new Map();
+    items.forEach(e => {
+      const k = e.rule + '|' + e.msg;
+      if (at.has(k)) { out[at.get(k)].n++; return; }
+      at.set(k, out.length);
+      out.push(Object.assign({}, e, { n: 1 }));
+    });
+    return out;
+  }
+
   function alertList(items, kind, one, many) {
-    if (!items.length) return '';
+    const list = dedupeAlerts(items);
+    if (!list.length) return '';
     return `<div class="dzc-issues dzc-issues--${kind}">
-      <p class="dzc-issues-head">${items.length} ${items.length === 1 ? one : many}</p>
-      <ul>${items.map(e =>
-        `<li>${esc(e.msg)} <span class="dzc-rulecite">(rule ${esc(e.rule)})</span></li>`).join('')}</ul>
+      <p class="dzc-issues-head">${list.length} ${list.length === 1 ? one : many}</p>
+      <ul>${list.map(e =>
+        `<li>${e.n > 1 ? `<b class="dzc-issue-n">${e.n} ×</b> ` : ''}${esc(e.msg)
+          } <span class="dzc-rulecite">(rule ${esc(e.rule)})</span></li>`).join('')}</ul>
     </div>`;
   }
 
@@ -1700,16 +1864,25 @@
     return `<div class="dzc-facts">
       <div class="dzc-pick-stats">${U.statsHtml(u, opts)}</div>
       ${weapons ? `<div class="dzc-pick-wpns">${weapons}</div>` : ''}
-      ${u.special ? `<div class="dzc-pick-rules">${U.rulesHtml(u.special, faction)}</div>` : ''}
+      ${u.special ? `<div class="dzc-pick-rules">${U.rulesHtml(u.special, u.faction || faction)}</div>` : ''}
     </div>`;
   }
 
   // ------------------------------------------------------------- unit picker
 
-  async function openPicker(groupId) {
+  async function openPicker(groupId, kind) {
     picker.groupId = groupId;
     picker.search = '';
+    // 'unit' | 'transport'. Which button opened it, and the only thing the two
+    // lists differ by.
+    picker.kind = kind === 'transport' ? 'transport' : 'unit';
+    // The category tabs are the wrong control for a list that is already one
+    // category, so a fresh open always starts on All within its own side.
+    picker.category = 'All';
     await renderPicker();
+    // The panel says which of the two you opened, in the button's own words.
+    const t = document.querySelector('#dzc-picker .modal-title');
+    if (t) t.textContent = picker.kind === 'transport' ? 'Add Transports' : 'Add Units';
     document.getElementById('dzc-picker').classList.add('active');
   }
 
@@ -1745,11 +1918,17 @@
      * search. It is fixed at open, which is what lets the bar be built once and
      * never rebuilt — the thing that stopped the modal jumping under your
      * finger every time you touched a sort. */
-    const pickable = f.units.filter(u => u.selectable !== false);
+    /* One side of the split or the other -- never both. Which side is the
+     * button you pressed, and it is the only difference between the two
+     * lists: same search, same sorts, same filters, same cards. */
+    const pickable = f.units.filter(u => u.selectable !== false
+      && (picker.kind === 'transport') === (u.category === 'Transport'));
     const catCounts = CATEGORY_ORDER
       .map(c => ({ name: c, n: pickable.filter(u => u.category === c).length }))
       .filter(c => c.n > 0);
-    const cats = [{ name: 'All', n: pickable.length }].concat(catCounts);
+    // Transports are one category, so tabs over them say nothing.
+    const cats = catCounts.length > 1
+      ? [{ name: 'All', n: pickable.length }].concat(catCounts) : [];
 
     /* Same rule for the filters: a chip that cannot match anything is a
      * control that does nothing, and this faction is the only scope that
@@ -1897,7 +2076,8 @@
     if (!f) return;
     const q = picker.search.trim().toLowerCase();
 
-    let units = f.units.filter(u => u.selectable !== false);
+    let units = f.units.filter(u => u.selectable !== false
+      && (picker.kind === 'transport') === (u.category === 'Transport'));
     if (picker.category !== 'All') units = units.filter(u => u.category === picker.category);
     picker.filters.forEach(k => {
       const fl = FILTERS.find(x => x.key === k);
@@ -2350,8 +2530,15 @@
       ${g.squads.filter(s => !s.carriedBy).map(s => squad(g, s, 0)).join('')}
     </section>`).join('');
 
-    const rules = [...used.values()].sort((x, y) => x.token.localeCompare(y.token))
-      .map(e => `<div class="pr-rule"><h3>${esc(e.token)}${e.rule.alias ? ` (${esc(e.rule.alias)})` : ''}</h3>
+    // Headed and sorted on the written-out name, the same as the screen. The
+    // printed abbreviation follows in brackets, because the sheet is read
+    // beside the stat cards and that is what they say.
+    const rules = [...used.values()]
+      .map(e => Object.assign({}, e, { label: window.DZC.ruleLabel(e.token, a.faction) }))
+      .sort((x, y) => x.label.localeCompare(y.label))
+      .map(e => `<div class="pr-rule"><h3>${esc(e.label)}${
+        e.label.toLowerCase() !== String(e.token).trim().toLowerCase()
+          ? ` (${esc(e.token)})` : ''}</h3>
         <p>${esc(e.text)} <span class="pr-src">${esc(e.rule.faction
           ? e.rule.faction.toUpperCase()
           : e.rule.section + (e.rule.page ? `, p.${e.rule.page}` : ''))}</span></p></div>`).join('');
@@ -2365,11 +2552,11 @@
           <span><b>${window.DZCArmy.armyCost(a)}</b> / ${a.pointsLimit}pts</span></p>
       </div>
       ${commanderBlock}
-      ${v.errors.length ? `<p class="pr-warn"><b>Not legal:</b> ${v.errors.map(e => esc(e.msg)).join(' ')}</p>` : ''}
-      ${v.warnings.map(w => `<p class="pr-warn">${esc(w.msg)}</p>`).join('')}
+      ${v.errors.length ? `<p class="pr-warn"><b>Not legal:</b> ${
+        dedupeAlerts(v.errors).map(e => (e.n > 1 ? e.n + ' × ' : '') + esc(e.msg)).join(' ')}</p>` : ''}
+      ${dedupeAlerts(v.warnings).map(w =>
+        `<p class="pr-warn">${w.n > 1 ? w.n + ' × ' : ''}${esc(w.msg)}</p>`).join('')}
       ${groups}
-      <p class="pr-foot">Indentation shows what is carried aboard what. Transports are taken full (3.2.4);
-        Squads not aboard an Aircraft begin Reserved (9.4).</p>
       ${rules ? `<section class="pr-rules"><h2>Rules used</h2>${rules}</section>` : ''}`;
   }
 
@@ -2629,6 +2816,19 @@
      * view can then be whatever height it actually needs. */
     const root = document.getElementById('view-army');
     if (root) root.style.minHeight = root.getBoundingClientRect().height + 'px';
+    /* AND THE PANES. Jet, 2026-08-07: "shit needs to STOP MOVING AND JUMPING
+     * AROUND WHEN I CLICK ON OR OFF."
+     *
+     * The window's scroll has been held across a refresh for a while, but on a
+     * desktop the builder is three panes that scroll on their OWN -- the rail,
+     * the Group list and the detail. innerHTML replaces all three, every one of
+     * them comes back at scrollTop 0, and pressing + on the fourth Variant of a
+     * Squad threw you to the top of the pane you were reading. Keyed by class,
+     * because that is what survives the swap; the elements themselves do not. */
+    const panes = ['.dzc-rail-body', '.dzc-b-list', '.dzc-b-detail'].map(sel => {
+      const p = root && root.querySelector(sel);
+      return p ? { sel: sel, top: p.scrollTop, left: p.scrollLeft } : null;
+    }).filter(Boolean);
     const el = document.activeElement;
     const mark = el && el !== document.body
       ? { sid: (el.closest('[data-sid]') || {}).dataset
@@ -2637,6 +2837,11 @@
       : null;
     return Promise.resolve(renderBuilder(current.id)).then(() => {
       if (window.scrollY !== y) window.scrollTo(0, y);
+      const r2 = document.getElementById('view-army');
+      if (r2) panes.forEach(p => {
+        const el2 = r2.querySelector(p.sel);
+        if (el2) { el2.scrollTop = p.top; el2.scrollLeft = p.left; }
+      });
       requestAnimationFrame(() => {
         const r = document.getElementById('view-army');
         if (r) r.style.minHeight = '';

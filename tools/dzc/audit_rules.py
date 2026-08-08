@@ -58,25 +58,27 @@ def fix_typos(s):
 #
 # Anything NOT listed here still fails the build. The distinction is the point:
 # a known source defect is a decision, an unknown one is a bug.
-KNOWN_CARD_QUIRKS = {
-    # The Shaltari Support Warstrider prints "Shield: Friendly Vehicles 6" 4+"
-    # with its prefix. The Totem Shieldspire prints the same kind of rule as
-    # "Friendly Vehicles and Aircraft 6" 5+" -- no "Shield:" at all -- and then
-    # a second "Shield: Zones" with no radius or save. Both halves are
-    # incomplete as printed.
-    "Friendly Vehicles and Aircraft 6” 5+":
-        "Totem Shieldspire: a Shield rule printed without its 'Shield:' prefix",
-    "Shield: Zones":
-        "Totem Shieldspire: a Shield rule printed without its radius and save",
-    # Two keywords with no comma between them. Splitting on the comma is what
-    # every other card in the game supports, so this is the card, not the split.
-    "Macro Critical 1":
-        "Death Mech: 'Macro' and 'Critical 1' printed with no comma between them",
-    # Razorworm Pod, Nanomachines and Particle were listed here while the
-    # Behemoths had no faction. They resolve now that each card knows whose it
-    # is, and the audit reports an exemption that no longer fires — which is
-    # how they came out again. A stale exemption is a place the next real
-    # defect can hide.
+KNOWN_CARD_QUIRKS: dict[str, str] = {
+    # EMPTY, and that is the point. Everything that used to be excused here has
+    # been fixed at the source it was actually broken at:
+    #
+    #   "Macro Critical 1"  was not a card defect at all -- the row bands in
+    #       scan_statcards were anchored on the name swatch's top edge, which
+    #       is not the row's top when the Special cell is taller than the name.
+    #       The Mining Engine's Vent Repeater rules were being read onto the
+    #       Mining Laser above it. Fixed in parse_weapons.
+    #
+    #   "Friendly Vehicles and Aircraft 6” 5+" and "Shield: Zones" ARE a card
+    #       defect -- the Totem Shieldspire's Shield rule is printed with its
+    #       prefix and target list split off the numbers. Repaired by name in
+    #       KNOWN_PRINTED_SPECIAL, where every token the card prints survives.
+    #
+    #   Razorworm Pod, Nanomachines and Particle were listed while the
+    #       Behemoths had no faction. They resolve now that each card knows
+    #       whose it is.
+    #
+    # A new entry is a decision, and it needs the same bar: what the card
+    # prints, what it should have printed, and why nothing else can fix it.
 }
 
 

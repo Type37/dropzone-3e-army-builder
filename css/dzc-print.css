@@ -110,7 +110,6 @@
 :is(#dzc-print, .pp-paper).is-ink .pr-cmdrs { border-width: .25pt; }
 :is(#dzc-print, .pp-paper).is-ink .pr-cmdrs-head { border-bottom-color: #000; border-bottom-width: .25pt; }
 
-:is(#dzc-print, .pp-paper) .pr-foot { margin-top: 8pt; padding-top: 4pt; border-top: .5pt solid #999; font-size: 7.5pt; color: #444; }
 :is(#dzc-print, .pp-paper) .pr-warn { font-size: 8.5pt; margin: 0 0 6pt; padding: 3pt 5pt; border-left: 2pt solid #666; }
 
 /* -------------------------------------------------------- how it is printed
@@ -141,7 +140,7 @@
 :is(#dzc-print, .pp-paper).is-ink .pr-wpn th { border-bottom-width: .25pt; border-bottom-color: #000; }
 :is(#dzc-print, .pp-paper).is-ink .pr-wpn td { border-bottom: 0; }
 :is(#dzc-print, .pp-paper).is-ink .pr-sq-cat { border-width: .25pt; border-color: #000; }
-:is(#dzc-print, .pp-paper).is-ink :is(.pr-cap, .pr-variants, .pr-foot, .pr-rule .pr-src) { color: #000; }
+:is(#dzc-print, .pp-paper).is-ink :is(.pr-cap, .pr-variants, .pr-rule .pr-src) { color: #000; }
 /* Ink-saver: the shapes go black-on-white. Shape alone carries the meaning
    (3.2.4.2) — the colour is 1:1 with it and therefore redundant — and a solid
    coloured fill is the most expensive thing on the sheet. Cargo stays solid so

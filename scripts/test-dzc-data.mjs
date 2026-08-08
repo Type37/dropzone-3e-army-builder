@@ -251,11 +251,7 @@ console.log('\nno dead chips (gap 38)');
   /* Kept in step with KNOWN_CARD_QUIRKS in tools/dzc/audit_rules.py. Both
    * lists exist because the CARD is wrong, not the parser, and each entry is a
    * decision someone made; anything not listed still fails. */
-  const KNOWN_CARD_DEFECTS = [
-    'Friendly Vehicles and Aircraft 6” 5+',   // Shield, missing its prefix
-    'Shield: Zones',                          // Shield, missing radius and save
-    'Macro Critical 1'                        // Death Mech, two keywords with no comma
-  ];
+  const KNOWN_CARD_DEFECTS = [];
   const factions = ['ucm', 'phr', 'scourge', 'shaltari', 'resistance', 'bioficer'];
   const dead = new Set();
   let seen = 0;
@@ -279,6 +275,81 @@ console.log('\nno dead chips (gap 38)');
   const stale = KNOWN_CARD_DEFECTS.filter(t => !dead.has(t));
   eq(stale.length, 0, 'and no card defect is still excused after being fixed',
      stale.join(', '));
+}
+
+/* 6.2.4, every printed cell of it.
+ *
+ * damageTable derives the Energy vs Armour table from one line of arithmetic
+ * rather than storing 110 numbers, so the arithmetic is checked against the
+ * numbers -- transcribed here off p.21 exactly as printed, blanks and all. A
+ * dash is a roll that cannot be made. */
+console.log('\nthe Energy vs Armour table (6.2.4)');
+{
+  //            E1   E2   E3   E4   E5   E6   E7   E8   E9   E10
+  const PRINTED = {
+    0:  ['3+', '2+', '2+', '2+', '2+', '2+', '2+', '2+', '2+', '2+'],
+    1:  ['4+', '3+', '2+', '2+', '2+', '2+', '2+', '2+', '2+', '2+'],
+    2:  ['5+', '4+', '3+', '2+', '2+', '2+', '2+', '2+', '2+', '2+'],
+    3:  ['6+', '5+', '4+', '3+', '2+', '2+', '2+', '2+', '2+', '2+'],
+    4:  ['—',  '6+', '5+', '4+', '3+', '2+', '2+', '2+', '2+', '2+'],
+    5:  ['—',  '—',  '6+', '5+', '4+', '3+', '2+', '2+', '2+', '2+'],
+    6:  ['—',  '—',  '—',  '6+', '5+', '4+', '3+', '2+', '2+', '2+'],
+    7:  ['—',  '—',  '—',  '—',  '6+', '5+', '4+', '3+', '2+', '2+'],
+    8:  ['—',  '—',  '—',  '—',  '—',  '6+', '5+', '4+', '3+', '2+'],
+    9:  ['—',  '—',  '—',  '—',  '—',  '—',  '6+', '5+', '4+', '3+'],
+    10: ['—',  '—',  '—',  '—',  '—',  '—',  '—',  '6+', '5+', '4+']
+  };
+  let wrong = [];
+  for (const a of Object.keys(PRINTED)) {
+    PRINTED[a].forEach((want, i) => {
+      const got = DZC.damageRoll(i + 1, Number(a));
+      const s = got.need ? got.need + '+' : '—';
+      if (s !== want) wrong.push(`E${i + 1} vs A${a}: printed ${want}, got ${s}`);
+    });
+  }
+  eq(wrong.length, 0, 'every cell of the printed table comes out of the formula',
+     wrong.slice(0, 4).join('; '));
+
+  /* "If the result is at least 2 higher than the required roll, that result is
+   * a Critical" -- two higher than the PRINTED requirement, and impossible
+   * once that requirement is 5+ or worse. */
+  eq(String(DZC.damageRoll(4, 2).crit), '4', 'a 2+ to damage Crits on 4+');
+  eq(String(DZC.damageRoll(3, 2).crit), '5', 'a 3+ Crits on 5+');
+  eq(String(DZC.damageRoll(2, 2).crit), '6', 'a 4+ Crits on 6');
+  eq(String(DZC.damageRoll(1, 2).crit), 'null', 'a 5+ cannot Crit at all');
+  eq(String(DZC.damageRoll(1, 3).crit), 'null', 'and neither can a 6+');
+  // A 1+ before the clamp is a 2+ on the card, so it Crits on 4+ and not on 3+.
+  eq(String(DZC.damageRoll(9, 0).need), '2', 'a roll better than 2+ prints as 2+');
+  eq(String(DZC.damageRoll(9, 0).crit), '4', 'and Crits off the printed 2+, not off the raw number');
+
+  eq(DZC.damageTable('S3').kind, 'small', 'an S value is Small Arms, not an Energy');
+  eq(DZC.damageTable('S3').rows.length, 0, 'and rolls nothing to inflict damage (6.4.2)');
+  eq(DZC.damageTable('0').kind, 'zero', 'E0 is its own case (6.2.4)');
+  eq(DZC.damageTable('').kind, 'none', 'and a Weapon with no E value has no table');
+  eq(String(DZC.damageTable('5').rows.length), '11', 'a real Energy gets Armour 0 to 10');
+}
+
+/* Written out, not abbreviated. Jet, 2026-08-07: "T1? That's so bad for user
+ * schema. Let's write it all out as stuff like Tracking-1 instead." */
+console.log('\nkeywords are written out on the chips');
+{
+  const L = (t, f) => DZC.ruleLabel(t, f);
+  eq(L('T1'), 'Tracking-1', 'T1 is Tracking-1');
+  eq(L('T2'), 'Tracking-2', 'and T2 is Tracking-2');
+  eq(L('Pen 6+'), 'Penetrative-6+', 'Pen 6+ keeps the plus that made it a roll');
+  eq(L('P5+'), 'Passive Countermeasures-5+', 'and so does P5+');
+  eq(L('Ev 1'), 'Evasion-1', 'Ev 1 is Evasion-1');
+  eq(L('L3'), 'Limited-3', 'L3 is Limited-3');
+  eq(L('AS 2'), 'Anti-Systems-2', 'AS 2 is Anti-Systems-2');
+  eq(L('AA'), 'Anti-Aircraft', 'a keyword with no value is just the word');
+  eq(L('UC'), 'Un-countered', 'and so is UC');
+  // Nothing to expand: the card already prints the word.
+  eq(L('Articulated'), 'Articulated', 'a rule printed as a word is left alone');
+  eq(L('Overcharge 2'), 'Overcharge 2', 'and so is one printed as a word and a number');
+  eq(L('Demo 0'), 'Demo 0', 'including Demo, which has no alias');
+  // Not a rule at all: the label must never invent one.
+  eq(L('Nonsense 4'), 'Nonsense 4', 'and an unknown keyword comes back exactly as printed');
+  eq(L('AWACS 12” (Lynx)'), 'AWACS 12” (Lynx)', 'a variant bracket survives');
 }
 
 /* Gap 30: one search, and it reaches further than the name.
