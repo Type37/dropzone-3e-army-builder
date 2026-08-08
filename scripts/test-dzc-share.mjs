@@ -233,6 +233,26 @@ console.log('\nraw materials survive the trip');
   eq(A.rmOf(jArk), 12, 'and a JSON backup restores them too');
 
   ok(S.text(bio).includes('+ 12 RM'), 'the plain-text sheet names them on the Unit line');
+
+  /* AND OUR OWN PARSER READS IT BACK. The first version wrote the RM past the
+   * loadouts, where LIST_ENTRY anchors on $ — so the line matched nothing and
+   * re-importing an exported list dropped the whole Genitor, not just its
+   * tokens. A round trip through our own format has to be lossless. */
+  const txt2 = S.text(bio);
+  const back3 = A.parseList(txt2);
+  const arkLine = back3.find(e => /Genitor Ark/.test(e.name));
+  ok(!!arkLine, 'a Genitor line still parses with RM on it', txt2);
+  eq(arkLine && arkLine.rm, 12, 'and the count comes back off it');
+  const imp = A.importList(txt2);
+  const iArk = imp.ok && imp.army.groups.flatMap(g => g.squads)
+    .find(s => s.unitId === 'grievance-genitor-ark');
+  eq(iArk && A.rmOf(iArk), 12, 'so a pasted list arrives with its RM aboard');
+  // A build that shipped for one afternoon wrote it after the loadouts.
+  const oldStyle = A.parseList('1 x Grievance Genitor Ark [155pts]: Grievance 1 + 7 RM');
+  eq(oldStyle[0] && oldStyle[0].rm, 7, 'and the shape that shipped by mistake still reads');
+  eq(JSON.stringify(oldStyle[0] && oldStyle[0].loadouts), '["Grievance 1"]',
+     'without leaving RM inside the loadout name');
+
   A.setRm(bio, ark.id, 0);
   ok(!/RM/.test(S.text(bio).split('\n').find(l => /Genitor Ark/.test(l)) || ''),
      'and says nothing at all about an empty Genitor');

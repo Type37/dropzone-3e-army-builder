@@ -228,7 +228,18 @@
    * the report, because the one thing worse than a partial import is a partial
    * import that looked complete. */
   const LIST_SECTION = /^#{0,2}\s*(Standard|Vanguard|Heavy|Support|Transport|Commander|Configuration|Reference)s?\b/i;
-  const LIST_ENTRY = /^(?:[•\-*]\s*)?(?:(\d+)\s*[x×]\s*)?(.+?)\s*\[\s*(\d+)\s*pts?\s*\]\s*(?::\s*(.*))?$/i;
+  /* "+ 12 RM" after the cost, and it is not decoration in this regex.
+   *
+   * DZCShare.text writes the RM aboard a Genitor onto its line, and the first
+   * version of that put it at the very end -- after the loadouts -- where this
+   * pattern anchors on $. The line then matched NOTHING, so importing a list
+   * this app had just exported dropped the whole Squad rather than dropping
+   * the tokens. A round trip through our own format has to be lossless, and
+   * the failure mode of getting it wrong is silent.
+   *
+   * So it has its own capture, between the cost and the loadouts, and the
+   * writer puts it there. A line without it matches exactly as before. */
+  const LIST_ENTRY = /^(?:[•\-*]\s*)?(?:(\d+)\s*[x×]\s*)?(.+?)\s*\[\s*(\d+)\s*pts?\s*\](?:\s*\+\s*(\d+)\s*RM\b)?\s*(?::\s*(.*))?$/i;
 
   /* New Recruit shares a list collapsed onto one line often enough that
    * Dropfleet grew this; the same normalisation puts the breaks back. A no-op
@@ -276,12 +287,18 @@
       if (!line || /^[#+]/.test(line) || LIST_SECTION.test(line)) return;
       const m = line.match(LIST_ENTRY);
       if (!m) return;
+      // A trailing "+ N RM" is also stripped off the loadouts, because one
+      // build shipped writing it there and those exports are already out.
+      const tail = String(m[5] || '');
+      const late = tail.match(/\+\s*(\d+)\s*RM\b\s*$/i);
       entries.push({
         line: line,
         count: m[1] ? parseInt(m[1], 10) : 1,
         name: m[2].replace(/^#+\s*/, '').trim(),
         points: parseInt(m[3], 10),
-        loadouts: (m[4] || '').split(',').map(s => s.trim()).filter(Boolean)
+        rm: parseInt(m[4], 10) || (late ? parseInt(late[1], 10) : 0),
+        loadouts: (late ? tail.slice(0, late.index) : tail)
+          .split(',').map(s => s.trim()).filter(Boolean)
       });
     });
     return entries;
@@ -339,7 +356,11 @@
       g.squads.push({
         id: uid(), unitId: u.id,
         models: Array.from({ length: Math.max(1, e.count) }, () => ({ variant: named })),
-        carriedBy: null, commander: null
+        carriedBy: null, commander: null,
+        // Only where the Unit can actually hold any. A pasted list is somebody
+        // else's file and may say anything; validate reports what survives.
+        rm: e.rm > 0 && window.DZC.capacityFor(u, 'square') > 0 && faction === 'bioficer'
+          ? e.rm : undefined
       });
       army.groups.push(g);
       matched.push({ name: u.name, count: e.count });

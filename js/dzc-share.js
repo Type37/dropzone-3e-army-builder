@@ -239,9 +239,15 @@
        * carries them, so a Genitor with 8 RM just reads 40pts dearer than the
        * same Ark without -- and the one thing an opponent reading your list
        * wants to know about a Genitor is how much it can Spawn on turn one. */
+      /* AFTER THE COST, BEFORE THE LOADOUTS, and that ordering is the whole
+       * bug this line used to have. It was written at the very end, past the
+       * "* : Sabre, Greave" tail, where LIST_ENTRY anchors on $ -- so the line
+       * matched nothing at all and importing a list this app had just exported
+       * dropped the entire Squad. Losing the tokens would have been bad; losing
+       * the Genitor silently was worse. */
       const rm = A.rmOf(s);
-      out.push(`${pad}${s.models.length} x ${u.name} [${A.squadCost(army, s)}pts]${tail}`
-        + (rm ? ` + ${rm} RM` : ''));
+      out.push(`${pad}${s.models.length} x ${u.name} [${A.squadCost(army, s)}pts]`
+        + (rm ? ` + ${rm} RM` : '') + tail);
       g.squads.filter(x => x.carriedBy === s.id).forEach(r => squad(g, r, depth + 1));
     }
 
