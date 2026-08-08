@@ -1095,11 +1095,26 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 /* A Squad is a number of models, so it is drawn as a number of models: one
    thumbnail per model, wrapping inside a fixed column so a Squad of six does
    not push the name off the row. One model keeps the full-size photo. */
-.dzc-sq-minis { flex: 0 0 auto; display: flex; flex-wrap: wrap; gap: 2px; width: 84px; }
-.dzc-sq-minis.is-many { width: 86px; }
-.dzc-sq-minis.is-many .dzc-sq-art { width: 41px; height: 29px; }
+/* THE SAME BOX WHATEVER IS IN IT. Jet, 2026-08-07: "if you add a unit, the
+   image addition doesn't fuck things up."
+   
+   The strip was a wrapping flex row of fixed-size tiles, so going from one
+   model to two swapped an 84x60 photo for two 41x29 ones, and three to four
+   wrapped onto a second line -- the row changed height and everything below it
+   moved. It is a fixed 84x60 grid now and the TILES resize to fill it: one
+   model is one big picture, twelve are twelve small ones, and the space the
+   strip takes is identical either way. Nothing below a Squad can be shoved by
+   a model being added to it.
+   
+   --cols is ceil(sqrt(n)), set on the element, so the tiles stay roughly
+   square rather than becoming slivers. */
+.dzc-sq-minis {
+  flex: 0 0 auto; display: grid; gap: 2px; width: 84px; height: 60px;
+  grid-template-columns: repeat(var(--cols, 1), minmax(0, 1fr));
+  grid-auto-rows: 1fr; align-content: start;
+}
 .dzc-sq-art {
-  flex: 0 0 auto; width: 84px; height: 60px; object-fit: contain;
+  flex: 0 0 auto; width: 100%; height: 100%; min-width: 0; object-fit: contain;
   background: var(--surface-3, #f2ece0);
 }
 .dzc-sq-id { flex: 1 1 220px; min-width: 0; }
@@ -1175,7 +1190,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 }
 /* "Nice and big" -- this is the control the whole block exists for. */
 .dzc-vblock-n { margin-left: auto; }
-.dzc-vblock-n .dzc-stepper button { min-width: 32px; min-height: 32px; }
+.dzc-vblock-n .dzc-stepper button { min-width: 40px; min-height: 40px; }
 .dzc-vblock-n .dzc-stepper b { font-size: 16px; min-width: 20px; text-align: center; }
 
 /* Buy this gun. The price IS the button -- the upgrade table that used to
@@ -1212,15 +1227,15 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    change size either. */
 .dzc-wc { position: relative; }
 .dzc-buy {
-  position: absolute; top: 3px; right: 3px; z-index: 1;
-  min-width: 58px; min-height: 22px; padding: 3px 8px; cursor: pointer;
+  position: absolute; top: 2px; right: 2px; z-index: 1;
+  min-width: 62px; min-height: 32px; padding: 3px 8px; cursor: pointer;
   border-radius: 0; text-align: center;
   border: 1px solid #2e9e4f; background: var(--surface-2, #fff); color: #1f7a3a;
   font: 700 11px/1 var(--font-ui, 'Jost', system-ui, sans-serif);
   font-variant-numeric: tabular-nums;
 }
 /* Room for it, so a long weapon name never runs under the button. */
-.dzc-wc-head { padding-right: 62px; }
+.dzc-wc-head { padding-right: 66px; }
 .dzc-buy:hover { background: rgba(46,158,79,.12); }
 .dzc-buy.is-on { background: #2e9e4f; border-color: #2e9e4f; color: #fff; }
 
@@ -2155,7 +2170,7 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
    rather than a nudge, and 44px tall on a phone the way the rest of them are. */
 .dzc-sizes { display: inline-flex; gap: 2px; }
 .dzc-size {
-  min-width: 26px; min-height: 26px; padding: 0 6px; cursor: pointer;
+  min-width: 38px; min-height: 38px; padding: 0 8px; cursor: pointer;
   border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff);
   color: var(--ink-2, #6b6459); border-radius: 0;
   font: 600 13px/1 var(--font-numeric, 'Outfit', sans-serif);
@@ -2184,9 +2199,13 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
    the right, but only in an edit mode where reordering is the sole thing the
    list does; here it is one action among six.) 44px of target, faint until
    you are near it. */
+/* BIGGER. Jet, 2026-08-07: "grip and touch targets must be bigger." 22px
+   wide is a 22px target however tall it is -- a finger pad is about 45px
+   across, and the misses are sideways as often as vertical. It is 34 wide and
+   the full height of the row now, which on a Squad with a photo is 60px. */
 .dzc-sq-grip {
   flex: 0 0 auto; align-self: stretch; display: inline-flex; align-items: center;
-  justify-content: center; min-width: 22px; min-height: 44px; margin-left: -4px;
+  justify-content: center; min-width: 34px; min-height: 44px; margin-left: -6px;
   cursor: grab; touch-action: none; opacity: .28; color: var(--ink-2, #6b6459);
   transition: opacity .12s;
 }

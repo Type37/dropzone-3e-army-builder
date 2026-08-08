@@ -1422,7 +1422,7 @@
              is visually displayed." A Squad is a number of models on a table,
              and a single photo said "Legionnaires" where three of them say
              what you are actually putting down. -->
-        ${u.art ? `<span class="dzc-sq-minis${s.models.length > 1 ? ' is-many' : ''}"
+        ${u.art ? `<span class="dzc-sq-minis" style="--cols:${Math.ceil(Math.sqrt(s.models.length))}"
           aria-label="${esc(u.name)} × ${s.models.length}">${
           s.models.map(() => `<img class="dzc-sq-art" src="${esc(u.art)}" alt=""
             loading="lazy" onerror="this.closest('.dzc-sq-minis').remove()">`).join('')
