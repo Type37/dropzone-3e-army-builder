@@ -1529,14 +1529,32 @@
    * emitted the alert FOUR TIMES in three different places -- Jet, 2026-08-07:
    * "why is it on there 4x and they're aLL IN THE WRONG SPOT". The rule was
    * generated once; the markup was invalid and the browser repaired it. */
+  /* An alert ON a Squad does not name the Squad.
+   *
+   * These messages lead with the Unit's name because validate writes them for
+   * the rail too, where nothing else says which Squad is meant. Here the name
+   * is the heading directly above -- "UCM Troop Buggy", then twenty pixels
+   * lower "UCM Troop Buggy: 1 model, minimum is 2." CLAUDE.md §3: no phrase
+   * appears more than twice on one screen, and on a Group of five Squads that
+   * was five names printed twice each.
+   *
+   * Only the "Name: sentence" form is trimmed, and only because what is left
+   * is a whole sentence. A predicate cannot be: cut the name off "Raven Light
+   * Dropship is not full" and "is not full" hangs on its own, which is worse
+   * than the repeat. So the two that were written that way are written the
+   * other way now -- "Raven Light Dropship: not full" -- which reads on the
+   * rail, where the name is the only thing saying which Squad is meant, AND
+   * reads here with it gone. */
   function squadAlerts(v, u) {
     const mine = m => m.msg.indexOf(u.name) === 0;
+    const trim = msg => msg.startsWith(u.name + ': ')
+      ? msg.slice(u.name.length + 2) : msg;
     return [].concat(
       (v.errors || []).filter(mine).map(m => ['is-err', m]),
       (v.warnings || []).filter(mine).map(m => ['', m])
     ).map(([cls, m]) => `<span class="dzc-sq-alert ${cls}">${
       window.DZCIcon(cls ? 'error' : 'warning', { size: 13 })
-    }<i>${esc(m.msg)}</i></span>`).join('');
+    }<i>${esc(trim(m.msg))}</i></span>`).join('');
   }
 
   function squadHtml(a, g, s, depth) {

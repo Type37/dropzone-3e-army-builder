@@ -1775,7 +1775,7 @@
           .map(x => ({ unit: unitOf(army, x), count: x.models.length }))
           .filter(x => x.unit);
         if (!cargo.length) {
-          errors.push({ rule: '3.2.4', group: g.id, msg: `${u.name} carries nothing — a Transport may only be taken alongside a Squad it can carry.` });
+          errors.push({ rule: '3.2.4', group: g.id, msg: `${u.name}: carries nothing — a Transport may only be taken alongside a Squad it can carry.` });
           return;
         }
         // s.models.length is how many of that Transport the Squad holds, and
@@ -1784,7 +1784,7 @@
         const chk = window.DZC.loadCheck(u, cargo, s.models.length);
         if (!chk.ok) errors.push({ rule: '3.2.4.2', group: g.id, msg: chk.reason });
         else if (!window.DZC.isFull(u, cargo, s.models.length)) {
-          errors.push({ rule: '3.2.4', group: g.id, msg: `${u.name} is not full — Transports must be taken full.` });
+          errors.push({ rule: '3.2.4', group: g.id, msg: `${u.name}: not full — Transports must be taken full.` });
         }
       });
 
