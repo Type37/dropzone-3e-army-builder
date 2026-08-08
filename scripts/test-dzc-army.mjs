@@ -1098,5 +1098,45 @@ console.log('\nthe starter armies are the ones on the box');
   built.forEach(a => A.remove(a.id));
 }
 
+/* AND SEEDING NEVER EATS AN ARMY YOU ALREADY HAD.
+ *
+ * DZCArmy keeps the list in a module array that only load() fills, so an army
+ * created against an unloaded one and saved writes over everything in the
+ * store. The first version of the seeding call sat one line above load() in
+ * renderList and did exactly that -- every army the user had, replaced by two
+ * starters, silently. It was invisible in testing because testing always
+ * started from a cleared store; the layout harness caught it by seeding an
+ * army in one frame and finding it gone in another.
+ *
+ * Simulated here the only way it can be: fill the store, throw away the
+ * in-memory copy the way a fresh page load does, and seed. */
+console.log('\nseeding the starters does not eat the armies already there');
+{
+  store.clear();
+  A.load();                       // and the module's copy of it, too
+  const mine = A.create('ucm', 'Mine, from before', 2000);
+  A.addSquad(A.get(mine.id), A.addGroup(A.get(mine.id), 'G').id, 'legionnaires', 3);
+  A.save();
+  const saved = store.get('dzc_armies');
+
+  /* A FRESH PAGE, and getting this right is the whole test: the module's array
+   * must be EMPTY while the store is full, which is the state every page load
+   * starts in. Clearing the store and putting the armies back without emptying
+   * the array first leaves the module still holding them, and then seeding
+   * passes whether it calls load() or not. */
+  store.clear();
+  A.load();                       // armies = [] — the module knows nothing
+  store.set('dzc_armies', saved); // and the store knows about the user's army
+  const S2 = win.DZCStarters;
+  await S2.seed();
+
+  const names = A.load().map(a => a.name);
+  ok(names.indexOf('Mine, from before') !== -1,
+     'the army that was already in the store is still in it', names.join(', '));
+  eq(String(names.length), '3', 'and the two starters joined it rather than replacing it');
+  A.load().slice().forEach(a => A.remove(a.id));
+  store.clear();
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

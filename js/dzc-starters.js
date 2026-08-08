@@ -171,6 +171,13 @@
   async function seed() {
     const A = window.DZCArmy;
     if (!A) return [];
+    /* The store, before anything is added to it. DZCArmy keeps the army list in
+     * a module array that only load() fills, so creating an army against an
+     * unloaded one and saving writes these two over EVERYTHING already there.
+     * That is exactly what shipped for one commit: the call in renderList sat
+     * one line above its load() and wiped the user's armies. Belt and braces,
+     * so the ordering can never be got wrong from a new caller. */
+    A.load();
     let done = null;
     try { done = localStorage.getItem(SEEDED_KEY); } catch (e) { return []; }
     if (done) return [];

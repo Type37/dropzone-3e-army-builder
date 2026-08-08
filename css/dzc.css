@@ -1100,52 +1100,66 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 }
 .dzc-squad:first-of-type { border-top: 0; padding-top: 4px; }
 
-/* WHAT RIDES IN WHAT, DRAWN FROM THE MODEL ITSELF.
-   
-   Jet's sketch, 2026-08-07: the line drops out of the bottom of a unit's
-   IMAGE, runs down, and reaches sideways into the image of the thing it is
-   carrying. Each level steps right.
-   
-   That is a different anchor from what was here. The line used to be the
-   carrier's left border, so it started at the top-left corner of the whole
-   card -- a rule beside the card rather than a line out of the model. Now it
-   hangs off the thumbnail: --mini-x is the thumbnail's left edge inside the
-   row (past the grab handle), the spine drops from there, and each arm runs
-   from the spine into the next model's picture rather than stopping at the
-   edge of its card.
-   
-   One variable, because that x is the same measurement in three rules and
-   they must not drift apart. */
-/* Measured, not guessed: the row is grip (22px, pulled 4px left) then a 9px
-   gap, so the thumbnail's left edge is 27px in. Checked against the rendered
-   card -- the spine lands exactly on it. */
-.dzc-squad { --mini-x: 27px; --rider-step: 40px; }
-.dzc-riders {
-  position: relative; margin: 4px 0 0; padding-left: var(--rider-step);
-}
-/* The drop, out of the bottom of the carrier's model. */
-.dzc-riders::before {
-  content: ''; position: absolute; left: var(--mini-x); top: 0; bottom: 0;
-  width: 3px; background: var(--acc, #1b3a5c);
-}
+/* WHAT RIDES IN WHAT: ONE RAIL, OUT OF THE MODEL, DOWN THE SIDE OF ITS CARGO.
+
+   Jet's sketch was right and three attempts at it were wrong. This is the
+   fourth, and it is the sketch with the geometry measured instead of guessed.
+
+   WHY THE LAST ONE DID NOT WORK, in numbers off the rendered card:
+
+     the spine sat at x=40; the carrier's picture spans x=50-118
+       -- 10px out, in the drag-handle gutter, missing the model entirely
+     the carrier's picture ends at y=143; the line began at y=365
+       -- a 222px gap, with the whole stat table and a weapon card in it
+
+   So what was drawn was a 20px elbow floating in a margin, starting nowhere
+   and pointing at nothing. Jet, looking at it: "it feels to me like the lines
+   still don't go."
+
+   Two fixes, and the second is the one that matters:
+
+   1. --mini-x is 37px, not 27px. Measured against the rendered card: the
+      thumbnail's left edge is 37px into the row, not 27. The old number was
+      right for a row that no longer exists.
+
+   2. THE RAIL IS ONE STROKE AND IT BELONGS TO THE CARRIER, not to the cargo
+      block underneath it. It starts at the BOTTOM OF THE CARRIER'S PICTURE
+      and runs to the bottom of the last thing aboard. That is the only way it
+      can leave the model: the cargo block begins after the carrier's stats
+      and weapons, so anything anchored there starts 222px too low no matter
+      how the arithmetic is arranged. 55px is the constant it needs -- 5px of
+      row padding plus the 50px thumbnail, and the strip is 50 tall whether it
+      holds one model or twelve.
+
+   THE ARMS ARE GONE, and so is the painted-out tail that existed to hide the
+   end of them. An arm is a line that has to AIM, and every fault above was an
+   aiming fault. A rail does not aim: everything to the right of it is inside
+   the thing above it, which is the whole sentence. It also gives the app one
+   line and not two -- the same vertical stroke a Variant block already uses,
+   meaning the same thing. */
+.dzc-squad { --mini-x: 37px; --rider-step: 52px; }
+.dzc-riders { position: relative; margin: 4px 0 0; padding-left: var(--rider-step); }
 .dzc-riders > .dzc-squad {
   position: relative; margin-left: 0; border-top: 0; padding-top: 6px;
 }
-/* The arm, INTO the next model's picture -- not to the edge of its card. It
-   lands level with the middle of the thumbnail it is pointing at. */
-.dzc-riders > .dzc-squad::before {
-  content: ''; position: absolute;
-  left: calc(var(--mini-x) - var(--rider-step));
-  top: 36px; height: 3px;
-  width: calc(var(--rider-step) - var(--mini-x) + var(--mini-x) + 22px);
+/* ::after, not ::before: a carrier can itself be cargo, and .dzc-squad::before
+   is spoken for further up. */
+.dzc-squad:has(> .dzc-riders) { position: relative; }
+.dzc-squad:has(> .dzc-riders)::after {
+  content: ''; position: absolute; left: var(--mini-x);
+  top: 55px; bottom: 4px; width: 3px;
   background: var(--acc, #1b3a5c);
 }
-/* And it stops at the last model it reaches: the tail below that arm points at
-   nothing, so it is painted out in the card's own colour -- --surface-2, so it
-   stays gone in the dark theme too. */
-.dzc-riders > .dzc-squad:last-child::after {
-  content: ''; position: absolute; left: calc(var(--mini-x) - var(--rider-step));
-  top: 39px; bottom: -6px; width: 3px; background: var(--surface-2, #fff);
+/* AND A CHANNEL FOR IT TO RUN DOWN. A line out of the bottom of the picture
+   has the carrier's OWN stat table directly beneath it -- the first version of
+   this painted a green stroke straight through Move, Armour and Damage Points.
+   So a Squad carrying something indents its body past the rail. Only a carrier
+   does; everything else keeps the tighter indent, and the extra step reads as
+   what it is -- this block owns the one below it. */
+.dzc-squad:has(> .dzc-riders) > .dzc-sq-body,
+.dzc-squad:has(> .dzc-riders) > .dzc-vblock,
+.dzc-squad:has(> .dzc-riders) > .dzc-variants {
+  padding-left: calc(var(--mini-x) + 12px);
 }
 .dzc-squad > .dzc-sq-body, .dzc-squad > .dzc-vblock,
 .dzc-squad > .dzc-variants { padding-left: 12px; }

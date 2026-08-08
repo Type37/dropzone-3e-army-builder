@@ -77,7 +77,16 @@
     /* The two starter armies, the first time this screen is ever opened.
      * Seeded here rather than at boot because this is the screen they appear
      * on, and a first-run write that happens on the landing page is a write
-     * nobody asked for. It runs once ever -- see dzc-starters.js. */
+     * nobody asked for. It runs once ever -- see dzc-starters.js.
+     *
+     * AFTER load(). This call sat one line above it and that was data loss:
+     * DZCArmy keeps the list in a module array that only load() fills, so
+     * create() pushed onto an empty one and save() wrote the two starters over
+     * everything the user had. Invisible in testing, which always started from
+     * a cleared store; the layout harness found it by seeding an army in one
+     * frame and opening it in another, where it was gone. seed() calls load()
+     * itself as well, so the order can never be got wrong again. */
+    window.DZCArmy.load();
     if (window.DZCStarters) await window.DZCStarters.seed().catch(() => []);
     /* Sorted, and only offered once there is something to sort. Dropfleet
      * hides its sort bar below two fleets (app.js:1627) and that is right: a
