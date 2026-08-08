@@ -87,6 +87,16 @@ const OVERLAYS = [
   // rules in full. The widest single thing the app draws.
   { key: "detail",    route: "units",   sel: "#dzc-detail.active",
     open: (w, ctx) => w.DZCUnits.openDetail(ctx.unitId, "ucm") },
+  /* THE GROUP, DRILLED INTO. Not a modal, and that is the point: on a phone a
+   * Group is a SCREEN you open, and this harness had never opened one. Every
+   * Squad row, every stat table, every weapon card and the whole carry line
+   * live only here -- so the one screen used at a table was the one screen
+   * never measured, and a horizontal overflow at 320px survived in it while
+   * this tool reported 119/119.
+   *
+   * .dzc-squad is the marker because it exists only once a Group is open. */
+  { key: "group",     route: "army",    sel: ".dzc-squad",
+    open: (w, ctx) => w.DZCBuilder.selectGroup(ctx.groupId) },
   { key: "picker",    route: "army",    sel: "#dzc-picker.active",
     open: (w, ctx) => w.DZCBuilder.openPicker(ctx.groupId) },
   { key: "commander", route: "army",    sel: "#dzc-cmdr.active",
@@ -159,6 +169,16 @@ function seedArmy() {
         A.assignTransport(army, tanks.id, "condor-dropship");
         const legion = A.addSquad(army, A.addGroup(army).id, "legionnaires", 3);
         A.assignTransport(army, legion.id, "bear-apc");
+        /* A THIRD LEVEL. Two was all this ever built, and the cost of carrying
+         * something is paid once per level -- the row indents by --rider-step
+         * AND the rider's own body indents again to clear the line above it.
+         * At two levels that fits on a phone; at three it did not, and the
+         * builder scrolled sideways at 320px for as long as this seed stopped
+         * at two. Read off the model rather than named, so a capacity change
+         * cannot leave a chain that silently stops being one. */
+        const bear = A.findSquad(army, legion.carriedBy);
+        const lift = bear && (A.transportOptions(army, bear.id) || [])[0];
+        if (lift) A.assignTransport(army, bear.id, lift.unit.id);
         const arch = A.addSquad(army, A.addGroup(army).id, "archangel", 1);
         A.toggleUpgrade(army, arch.id, "*", "UM-115 Missile Spread");
         A.save();

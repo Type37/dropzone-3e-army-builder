@@ -153,7 +153,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 /* ── unit cards ── */
 /* 300px, not 268: the stat grid inside each card needs two columns wide enough
    for "DAMAGE POINTS" without the label wrapping to shreds. */
-.dzc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 8px; }
+.dzc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 8px; }
 .dzc-card {
   display: flex; gap: 8px; padding: 7px; cursor: pointer;
   border: 1px solid var(--line, #d8d0c0); border-radius: 8px;
@@ -372,9 +372,25 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    So: no gap, and every weapon after the first drops its top border onto the
    one above. They butt together into a continuous block the way table rows do,
    and the grid still gives more than one column where there is room for it. */
+/* minmax(MIN(232px, 100%), 1fr) -- and the min() is the whole of a real bug.
+
+   A bare minmax(232px, 1fr) is a FLOOR, not a preference: in a container
+   narrower than 232px the track is still laid out at 232 and the difference
+   runs off the side. Measured on the mobile Group detail at a 320px viewport,
+   where a carrier's weapon block gets 170px: the page scrolled sideways by 62,
+   which is 232 - 170 exactly.
+
+   The layout harness could not see it, because it never drills into a Group --
+   the one screen used at a table. NOTES.md records a horizontal-overflow bug
+   reaching a real phone once already.
+
+   min(232px, 100%) makes the floor "232, or the whole container if that is
+   less". Above 232 nothing changes at all; below it the track fits instead of
+   overflowing. Applied to every auto-fill grid in this file for the same
+   reason -- each one is a floor somebody will eventually be narrower than. */
 .dzc-wcards {
   display: grid; gap: 0;
-  grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(232px, 100%), 1fr));
 }
 .dzc-wc {
   border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff);
@@ -545,7 +561,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    landed at four different x and could only be compared by reading. */
 .dzc-gear-list {
   list-style: none; margin: 0; padding: 0;
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 3px 14px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr)); gap: 3px 14px;
 }
 .dzc-gear-list li {
   display: grid; grid-template-columns: 34px minmax(0, 1fr);
@@ -611,7 +627,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-list-sort .dzc-chip.is-active {
   background: var(--navy, #1b3a5c); border-color: var(--navy, #1b3a5c); color: #fff;
 }
-.dzc-army-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 8px; }
+.dzc-army-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(270px, 100%), 1fr)); gap: 8px; }
 .dzc-army-card { padding: 8px 9px; cursor: pointer; border: 1px solid var(--line, #d8d0c0); border-left: 4px solid var(--acc); border-radius: 8px; background: var(--surface-2, #fff); }
 .dzc-army-card:hover { border-color: var(--acc); }
 /* The empty list IS the grid, with one tile in it. Dashed rather than solid so
@@ -1209,12 +1225,13 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 /* The drop, out of the bottom of the carrier's photograph. */
 .dzc-squad.is-carrier::after {
   content: ''; position: absolute; left: var(--carry-x);
-  top: 80px; bottom: 0; width: 3px;
+  /* 5px of row padding + the picture box = the bottom of the photograph. */
+  top: calc(5px + var(--mini-h, 75px)); bottom: 0; width: 3px;
   background: var(--acc, #1b3a5c);
 }
 /* A rider row carries 2px more padding than a top-level one, so a carrier that
    is itself cargo leaves its picture one pixel lower. */
-.dzc-riders > .dzc-squad.is-carrier::after { top: 81px; }
+.dzc-riders > .dzc-squad.is-carrier::after { top: calc(6px + var(--mini-h, 75px)); }
 /* The arm, into the middle of the picture of what is aboard.
 
    ON .dzc-sq-main, not on the row, and that is the whole of the last bug. A
@@ -1236,9 +1253,9 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   content: ''; position: absolute;
   /* The parent's drop, in this row's coordinates. */
   left: calc(var(--mini-x) - var(--carry-gap));
-  /* Half the 75px picture, less half the 3px bar, and measured against
+  /* Half the picture, less half the 3px bar, and measured against
      .dzc-sq-main whose top IS the picture's top. */
-  top: 36px; height: 3px;
+  top: calc(var(--mini-h, 75px) / 2 - 1.5px); height: 3px;
   /* A SHORT TICK, not a traverse. The drop now stands 5px off this picture's
      left edge, so the arm crosses that gap and finishes 22px inside the
      photograph -- 27px in total, where it used to be 74. Jet's drawing shows
@@ -1256,8 +1273,10 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-riders > .dzc-squad:last-child::before {
   content: ''; position: absolute;
   left: calc(var(--mini-x) - var(--carry-gap));
-  /* 6px of rider-row padding + the arm's 36 + its 3 = just under the arm. */
-  top: 45px; bottom: -4px; width: 3px;
+  /* 6px of rider-row padding + the arm's top + its 3 = just under the arm.
+     Derived, so it follows the picture down when the box shrinks -- left as a
+     literal it painted out from 45px on a phone whose arm was at 26. */
+  top: calc(6px + var(--mini-h, 75px) / 2 - 1.5px + 3px); bottom: -4px; width: 3px;
   background: var(--surface-2, #fff);
   /* ABOVE the drop, and it has to be said out loud. ::after is generated as
      the carrier's LAST child, so the drop is later in tree order than the
@@ -1352,7 +1371,18 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    84x60 -> 105x75. Still one fixed box, so a Squad's row height is still
    independent of how many models are in it -- and the three numbers the
    carry line is built from move with it, below. */
-.dzc-sq-minis { flex: 0 0 auto; width: 105px; height: 75px; }
+/* THE BOX IS A VARIABLE, and it has to be, because the carry line is measured
+   off it: the drop leaves the picture's BOTTOM and the arm lands at its
+   MIDDLE. Those were the literals 80 and 36 -- 5px of row padding plus 75, and
+   half of 75 -- so shrinking the picture anywhere silently aimed the line at a
+   height the photograph no longer had.
+
+   Which is exactly what was happening on every phone. A rule left over from
+   the 84x60 days shrank .dzc-sq-art to 68x50 below 860px while .dzc-sq-minis
+   stayed 105x75, so the picture sat in the top-left of a box a third bigger
+   than itself, the arm pointed at 37px into a 50px-tall image, and 37px of
+   dead paper rode along on every Squad on the device this app is for. */
+.dzc-sq-minis { flex: 0 0 auto; width: var(--mini-w, 105px); height: var(--mini-h, 75px); }
 .dzc-sq-art {
   display: block; width: 100%; height: 100%; object-fit: contain;
   background: var(--surface-3, #f2ece0);
@@ -1373,7 +1403,20 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; margin: 0;
   font-size: 11.5px; font-weight: 400; color: var(--ink-2, #6b6459);
 }
-.dzc-sq-ctl { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+/* AND IT WRAPS. flex: 1 1 100% below 640px put this on its own line, which
+   was the right idea and not enough: a line of its own is 100% of a row that
+   is already indented once per level of carry, and this row does not shrink.
+   Its children are a Transport button, a stepper, a price and a remove --
+   312px of min-content, in a 194px row on the third level of a chain at 320px.
+   The basis said 100% and the content said 312, and 312 won by running off the
+   side of the page.
+
+   Wrapping is the only honest answer, because nothing here may be hidden or
+   clipped: the controls take a second line when there is no room for one. */
+.dzc-sq-ctl {
+  display: flex; align-items: center; gap: 8px; margin-left: auto;
+  flex-wrap: wrap; min-width: 0;
+}
 /* The stat table and the guns, side by side.
    
    .dzc-sq-stats is `width: max-content` -- only as wide as its longest label,
@@ -1622,7 +1665,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2, #6b6459);
 }
 .dzc-carry-head:first-of-type { margin-top: 0; }
-.dzc-carry-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(184px, 1fr)); gap: 8px; }
+.dzc-carry-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(184px, 100%), 1fr)); gap: 8px; }
 /* A Transport already in the Group costs nothing to use, so it reads as the
    cheaper move it is (3.2.4.1). */
 .dzc-carry-here { border-left: 3px solid var(--acc); }
@@ -1839,7 +1882,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    row sits on the same line. The card body takes the slack so the button stays
    pinned to the bottom. */
 .dzc-pick-list {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(228px, 1fr));
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(min(228px, 100%), 1fr));
   gap: 6px; margin-top: 6px;
 }
 .dzc-pick {
@@ -2147,10 +2190,27 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    One responsive app, not two builds. The same markup gets less indent, less
    padding and smaller art as the screen narrows; nothing is removed, and the
    weapon table scrolls inside its own box rather than being squeezed. */
+/* NESTING COSTS TWICE, and on a phone it is the whole budget.
+ *
+ * Every level of carry spends --rider-step indenting the row, and then the
+ * rider's own body starts another 44px in to clear the line its carrier sent
+ * down. At 52px that is 96px per level before a single stat is drawn, and a
+ * Raven carrying a Buggy carrying Legionnaires is two of them: 192 of a 320px
+ * phone gone. Measured there, the page scrolled sideways to 455.
+ *
+ * --rider-step is the lever, because everything in the carry line derives from
+ * it and the two things that must not move do not depend on it: the arm still
+ * starts at --mini-x - --carry-gap in the rider's own coordinates, and it is
+ * still --carry-gap + 22 long. Shrinking it pulls --carry-x in with it, which
+ * takes the carrier's own body indent down by the same amount again.
+ *
+ * The picture goes with it. It has to: --mini-h is what the drop and the arm
+ * are measured against, so a smaller box moves the line rather than leaving it
+ * pointing at paper. */
 @media (max-width: 860px) {
   .dzc-builder { --sq-indent: 14px; }
   .dzc-group-card { padding: 12px; }
-  .dzc-sq-art { width: 68px; height: 50px; }
+  .dzc-squad { --mini-w: 84px; --mini-h: 60px; --rider-step: 44px; }
   button.dzc-sq-name { font-size: 16px; }
   .dzc-sq-cap .dzc-badge { --badge-px: 38px; --cargo-px: 30px; }
 }
@@ -2159,6 +2219,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   .dzc-b-head { gap: 8px; }
   .dzc-builder { --sq-indent: 8px; }
   .dzc-group-card { padding: 10px; }
+  .dzc-squad { --mini-w: 74px; --mini-h: 53px; --rider-step: 36px; }
   .dzc-squad .dzc-squad { padding-left: 8px; }
   .dzc-sq-main { gap: 8px; }
   /* The controls drop to their own full-width row and spread out: at this
@@ -2197,6 +2258,10 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 
 @media (max-width: 420px) {
   .dzc-builder { --sq-indent: 4px; }
+  /* The narrowest case in the harness, and the one a three-level chain has to
+     survive: 28px of step leaves the carrier's own body starting at 72 rather
+     than 96, and a rider's at 44 either way. */
+  .dzc-squad { --mini-w: 64px; --mini-h: 46px; --rider-step: 28px; }
   .dzc-sq-art { width: 100%; height: 96px; }
   .dzc-sq-cap .dzc-badge { --badge-px: 34px; --cargo-px: 27px; }
   .dzc-pick .dzc-badge { --badge-px: 36px; --cargo-px: 29px; }
@@ -2376,7 +2441,7 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 .dzc-pt-dot.is-on { background: var(--acc, #1b3a5c); border-color: var(--acc, #1b3a5c); }
 .dzc-play-wpn {
   margin-top: 6px; min-width: 0;
-  display: grid; gap: 5px; grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
+  display: grid; gap: 5px; grid-template-columns: repeat(auto-fill, minmax(min(232px, 100%), 1fr));
 }
 .dzc-play-squad, .dzc-play-models { min-width: 0; }
 .dzc-model { display: flex; align-items: center; gap: 4px; padding: 4px 7px; border-radius: 6px; background: var(--surface-3, #f2ece0); }
