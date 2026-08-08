@@ -68,16 +68,47 @@ carrier's image span of 37..142.
 **Where the horizontal sits.** At the vertical middle of the cargo's image,
 entering about 12–22px. The drawing shows a short tick, not a long arm.
 
+## Built 2026-08-08 — the geometry above, measured in a real browser
+
+Jet chose the connector over the bar. `--carry-x` is `--mini-x + --rider-step
+- --carry-gap` = 84px, and `--carry-gap` (5px) is the single number both
+halves are built from: the drop stands that far left of the cargo's picture,
+and the arm crosses exactly that gap plus 22px INTO the photograph — 27px
+total, where the old arm was 74.
+
+Measured on the two chains this file asks for, at 1280px:
+
+| carrier | drop x | picture bottom | arm centre | cargo picture | arm ends |
+|---|---|---|---|---|---|
+| Raven → Howitzer | 84 (row) | exact | exact | left 89 | 22px inside |
+| Raven → Buggy | 84 (row) | exact | exact | left 89 | 22px inside |
+| Buggy → Legionnaires | 84 (row) | exact | exact | left 89 | 22px inside |
+
+Every assertion in "How to verify" passes, and a sweep for content boxes
+crossing the line's band returns nothing at any level.
+
 ## The problem nobody has solved yet — do not paper over it
 
 Between the carrier's image and the cargo's image sits **the carrier's own
-stat table and weapon cards**. On a Raven that is 78px. On a Squad with six
-Variant blocks it is about 900px.
+stat table and weapon cards**.
 
 In Jet's drawing there is nothing between one image and the next except two or
 three thin stat bars. That is why his line is short and reads as a connector.
-In the app the same line is 130px to 900px long, and a 900px vertical is a bar
-no matter what you call it.
+
+**The measured lengths, which are not the 900px this file guessed at.** The
+visible drop runs from the carrier's picture bottom to the last rider's arm,
+where the paint-out ends it:
+
+- a Transport carrying anything — **141px**. That is a connector.
+- a mid-chain carrier, Buggy → Legionnaires — **382px**.
+- the worst case in the whole dataset, a Bioficer Silence Heavy Gunship
+  (4 Variant blocks) carrying a Thorn — **718px**.
+
+So the typical case is short and reads as intended, and the tail is 718 rather
+than 900. **718px is still a rail, and nobody should pretend otherwise.** If
+Jet judges the Silence case wrong, the lever is the carrier's own height —
+collapsing untaken Variant blocks to their header, which NEXT.md §4 already
+lists as the obvious next move — not the line.
 
 **Do not solve this by:**
 
@@ -146,3 +177,18 @@ arithmetic makes it right.
 `sw.js` carries `const CACHE = 'dzc-cache-vNNN'` and says at the top to bump it
 on every deploy. Two commits shipped without it and Jet saw no change at all,
 which cost a round of "the lines still don't work" that was not about lines.
+
+## What the 2026-08-08 build did NOT check
+
+**Nobody has looked at it.** The Browser pane would not composite a frame in
+that session, so every number above is a measurement and none of it is a
+screenshot. The one question this file says has ever mattered — does it read as
+one line joining two pictures — is unanswered. Ask it.
+
+The carrier's own stats and guns are indented to clear the line: 96px now,
+where the old x needed 49. On a 320px phone that leaves the weapon block 170px
+instead of 217, so its own horizontal scroller starts sooner. Page-level
+scrollWidth on the mobile Group detail is 455px against a 320 viewport — but
+that is **not** from this change: it measures 455 at 96px, 49px and 12px of
+indent alike. It comes from the weapon card's three columns refusing to shrink,
+and the layout harness never sees it because it does not drill into a Group.

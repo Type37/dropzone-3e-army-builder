@@ -1143,7 +1143,27 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    the thing above it, which is the whole sentence. It also gives the app one
    line and not two -- the same vertical stroke a Variant block already uses,
    meaning the same thing. */
-.dzc-squad { --mini-x: 37px; --rider-step: 52px; }
+/* WHERE THE VERTICAL SITS, and this is the sixth attempt's whole subject.
+   docs/CARRY-LINE.md is the spec; read it before changing any number here.
+
+   It was at --mini-x, the CARRIER's own picture-left, so it ran down that
+   unit's side and read as its left bar -- which Jet has now rejected in those
+   words twice. Measured off his drawing: carrier picture left 40, cargo
+   picture left 57, vertical at 52. Five pixels left of the CARGO, thirteen
+   right of the carrier.
+
+   In this app's numbers that is x = 37 + 52 - 5 = 84: still inside the
+   carrier's picture span of 37..142, so it leaves the photograph, but sitting
+   in the CARGO's own indent so it reads as something hanging off the carrier
+   down to what it holds. Same two endpoints as before, different object.
+
+   --carry-gap is the one number both halves are built from. The drop sits that
+   far left of the cargo's picture; the arm crosses exactly that gap and then
+   22px more, INTO the picture. Written once so the two can never drift. */
+.dzc-squad { --mini-x: 37px; --rider-step: 52px; --carry-gap: 5px; }
+/* In the CARRIER row's coordinates. Inside a rider row the same stroke is
+   --rider-step further left, which is `--mini-x - --carry-gap`. */
+.dzc-squad { --carry-x: calc(var(--mini-x) + var(--rider-step) - var(--carry-gap)); }
 .dzc-riders { position: relative; margin: 4px 0 0; padding-left: var(--rider-step); }
 .dzc-riders > .dzc-squad {
   position: relative; margin-left: 0; border-top: 0; padding-top: 6px;
@@ -1163,9 +1183,10 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    The arms are back. What was actually wrong all along was the arithmetic, and
    it is now measured rather than guessed:
 
-     --mini-x   37px, the picture's left edge inside the row. It was 27, so the
-                whole thing hung in the drag-handle gutter, 10px left of the
-                photograph it claims to come out of.
+     --carry-x  84px, five left of the CARGO's picture and inside the span of
+                the carrier's. It was --mini-x, 37 -- the carrier's own picture
+                left, which is what made it read as that unit's left bar. See
+                the block above; that move is the whole of the sixth attempt.
      top 80px   5px of row padding + the 75px picture box = the bottom of the
                 photograph. The old drop started at the top of the cargo block
                 instead, 222px below the picture, with the carrier's whole stat
@@ -1187,7 +1208,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-squad.is-carrier { position: relative; }
 /* The drop, out of the bottom of the carrier's photograph. */
 .dzc-squad.is-carrier::after {
-  content: ''; position: absolute; left: var(--mini-x);
+  content: ''; position: absolute; left: var(--carry-x);
   top: 80px; bottom: 0; width: 3px;
   background: var(--acc, #1b3a5c);
 }
@@ -1213,11 +1234,18 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-riders > .dzc-squad > .dzc-sq-main { position: relative; }
 .dzc-riders > .dzc-squad > .dzc-sq-main::after {
   content: ''; position: absolute;
-  left: calc(var(--mini-x) - var(--rider-step));
+  /* The parent's drop, in this row's coordinates. */
+  left: calc(var(--mini-x) - var(--carry-gap));
   /* Half the 75px picture, less half the 3px bar, and measured against
      .dzc-sq-main whose top IS the picture's top. */
   top: 36px; height: 3px;
-  width: calc(var(--rider-step) + 22px);
+  /* A SHORT TICK, not a traverse. The drop now stands 5px off this picture's
+     left edge, so the arm crosses that gap and finishes 22px inside the
+     photograph -- 27px in total, where it used to be 74. Jet's drawing shows
+     the two pictures very nearly sharing a column, and this is the reason:
+     move the vertical into the cargo's indent and the horizontal has almost
+     nothing left to cross. */
+  width: calc(var(--carry-gap) + 22px);
   background: var(--acc, #1b3a5c);
 }
 /* And the PARENT's drop stops at the last thing it reaches.
@@ -1227,7 +1255,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    it is itself sending down to what IT carries. */
 .dzc-riders > .dzc-squad:last-child::before {
   content: ''; position: absolute;
-  left: calc(var(--mini-x) - var(--rider-step));
+  left: calc(var(--mini-x) - var(--carry-gap));
   /* 6px of rider-row padding + the arm's 36 + its 3 = just under the arm. */
   top: 45px; bottom: -4px; width: 3px;
   background: var(--surface-2, #fff);
@@ -1239,10 +1267,14 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
      was right; the paint order was not. */
   z-index: 1;
 }
+/* AND THE CARRIER'S OWN CONTENT CLEARS IT. The drop falls through the band
+   the carrier's stat table and weapon cards occupy, so they start to the right
+   of it -- 9px clear of the 3px stroke, the same clearance this rule has
+   always given, just measured off the new x. Indented, never clipped. */
 .dzc-squad.is-carrier > .dzc-sq-body,
 .dzc-squad.is-carrier > .dzc-vblock,
 .dzc-squad.is-carrier > .dzc-variants {
-  padding-left: calc(var(--mini-x) + 12px);
+  padding-left: calc(var(--carry-x) + 12px);
 }
 .dzc-squad > .dzc-sq-body, .dzc-squad > .dzc-vblock,
 .dzc-squad > .dzc-variants { padding-left: 12px; }
