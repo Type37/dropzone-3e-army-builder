@@ -443,6 +443,24 @@ console.log('\nevery screen renders');
   ok(/UM-28 Gatling/.test(refTable), 'and the reference view is still the whole card');
   ok(!/is-off|is-live|--marked/.test(refTable),
      'with nothing marked, because outside a Squad there is no selection to mark against');
+
+  /* "Sabre only", and the orange edge that said the same thing, under a
+   * heading that already says Sabre. Jet, 2026-08-07: "remove this line shit
+   * ... it's obvious what the source is."
+   *
+   * The test is the pair, because dropping the label everywhere would take it
+   * off the reference card too — where the guns are one undivided list and
+   * nothing else says which Variant carries which. */
+  ok(!/dzc-wc-only/.test(second) && !/dzc-wc is-variant/.test(second),
+     'a Variant block does not repeat its own name on every card inside it');
+  ok(/Sabre only/.test(refTable) && /dzc-wc is-variant/.test(refTable),
+     'and the ungrouped reference card still says it, because nothing else there does');
+
+  /* One line per Variant block, always drawn — the edge used to exist only on
+   * a Variant you had taken, so a Squad with every count at zero had nothing
+   * bounding a block at all. */
+  ok(/class="dzc-vblock"/.test(second) && /class="dzc-vblock is-taken/.test(second),
+     'a Variant is a block whether it is taken or not');
   ok(/Level 5/.test(builder), 'and the Commander');
   /* Gap 51: what the Level is worth per Round, in the rail. Off the HIGHEST
    * Level on the table (4.1.1, 4.1.4, 4.1.5), so it is one line about the army

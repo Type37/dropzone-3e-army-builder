@@ -1166,6 +1166,10 @@
     };
   }
 
+  /* Which variants this Squad had last time we drew it, keyed by Squad and
+   * variant name. Read and written in variantGuns. */
+  const tookVariant = new Map();
+
   function variantGuns(a, s, u) {
     const U = window.DZCUnits;
     const vs = u.variants || [];
@@ -1178,7 +1182,20 @@
       const opts = Object.assign({}, squadGuns(s), {
         lens: v.name, key: s.id + '|' + v.name, buy: buyButton(a, s)
       });
-      return `<section class="dzc-vblock${n ? ' is-taken' : ''}">
+      /* The line draws on the moment the variant becomes yours. Jet,
+       * 2026-08-07: "when you click on, the line should like, draw on."
+       *
+       * Pressing + rebuilds the whole Squad, so the block you were looking at
+       * is replaced by an identical one that happens to be taken -- the same
+       * problem the weapon cards' `is-gained` solves, and solved the same way:
+       * remember whether this variant was taken last draw, and mark the flip.
+       * A key it has never seen is not a flip, or opening an army you built
+       * yesterday would draw every line it already has. */
+      const key = s.id + '|' + v.name;
+      const had = tookVariant.get(key);
+      const drawn = n > 0 && had === false ? ' is-drawn' : '';
+      tookVariant.set(key, n > 0);
+      return `<section class="dzc-vblock${n ? ' is-taken' : ''}${drawn}">
         <header class="dzc-vblock-head">
           <b>${esc(v.name)}</b>
           ${v.points != null ? `<i>${v.points}pts</i>` : ''}

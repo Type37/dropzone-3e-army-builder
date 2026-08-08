@@ -1151,9 +1151,21 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-sq-body > .dzc-sq-stats { flex: 0 1 auto; margin-top: 0; }
 .dzc-sq-body > .dzc-sq-wpn { flex: 1 1 0; min-width: 0; margin-top: 0; }
 /* A phone has no room for two of anything. Stats first, then the guns. */
+/* AND THE GUNS MUST STILL BE THERE. `flex: 1 1 0` above sets the basis on the
+   MAIN axis, and the main axis is the HEIGHT the moment this row turns into a
+   column -- so on every screen 700px and under, the weapon block was laid out
+   at zero height, and `overflow-x: auto` (which computes overflow-y to auto
+   alongside it) clipped every card inside it. Measured on a 390px viewport:
+   the block reported height 0 with a scrollHeight of 1274. A Squad's entire
+   weapon list, invisible, on the one device this app is used on at a table.
+
+   flex: 0 0 auto -- take the height the cards need, do not absorb free space.
+   The width rule above is what makes it full-bleed; the basis has no business
+   being 0 once the direction has turned. */
 @media (max-width: 700px) {
   .dzc-sq-body { flex-direction: column; gap: 8px; }
   .dzc-sq-body > .dzc-sq-stats, .dzc-sq-body > .dzc-sq-wpn { width: 100%; }
+  .dzc-sq-body > .dzc-sq-wpn { flex: 0 0 auto; }
 }
 .dzc-sq-stats { margin-top: 5px; }
 /* The army's name, as the last crumb in the topbar. A chevron separates it
@@ -1175,11 +1187,53 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 /* Take / Taken, for a Squad of one model whose Variant is a radio rather than
    a count. Same square language as the Squad-size tabs. */
 /* A Variant and its guns, as one block. The head is the name, the price and
-   the count; the cards under it are what that Variant fires. A Variant you
-   have taken gets an accent edge so the ones in your Squad are findable
-   without reading every count. */
-.dzc-vblock { margin-bottom: 4px; border-left: 3px solid transparent; padding-left: 5px; }
-.dzc-vblock.is-taken { border-left-color: var(--acc, #1b3a5c); }
+   the count; the cards under it are what that Variant fires.
+
+   ONE LINE PER BLOCK, AND IT IS ALWAYS THERE. Jet, 2026-08-07: "the way you
+   have the lines? in this pic it's not working. too many lines while also too
+   few. mostly too many. also too hard to use."
+
+   Too many, and he was right: a UCM Main Battle Tank drew an accent edge on
+   the Variant you had taken, an orange edge on every variant-restricted
+   weapon card inside it, and "Sabre only" printed on each of those cards --
+   three marks for one fact, five times over on one Squad. The orange edges and
+   the labels are gone (dzc-units.js), and this is what is left.
+
+   Too few, and he was right about that as well: the edge only existed on a
+   Variant you had taken, so on a fresh Squad -- every count at zero, which is
+   every Squad you have just added -- nothing bounded a block at all. Four
+   headings and eleven cards ran together and you worked out where Rapier
+   stopped from the whitespace. The line is on every block now: a hairline in
+   the rule colour when the Variant is not yours, the faction accent at full
+   weight when it is. Present either way, so it is structure; different enough
+   that a taken Variant is still findable down a column of four.
+
+   The line is drawn as a child, not a border, because a border cannot be
+   animated on from nothing without moving the text beside it. */
+.dzc-vblock { position: relative; margin-bottom: 6px; padding-left: 9px; }
+.dzc-vblock::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+  background: var(--line, #e0d8c8);
+  transform-origin: 50% 0;
+}
+.dzc-vblock.is-taken::before { width: 3px; background: var(--acc, #1b3a5c); }
+
+/* And it DRAWS ON. Jet, 2026-08-07: "when you click on, the line should like,
+   draw on."
+
+   Out of the heading and down past the cards it just claimed, in one stroke.
+   Nothing else moves -- the line is out of flow, so the block it belongs to
+   does not reflow while it runs. */
+@keyframes dzc-vline {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+.dzc-vblock.is-drawn::before {
+  animation: dzc-vline .32s var(--ease-out, cubic-bezier(0, 0, 0, 1)) 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dzc-vblock.is-drawn::before { animation: none; }
+}
 .dzc-vblock-head {
   display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; margin-bottom: 2px;
 }

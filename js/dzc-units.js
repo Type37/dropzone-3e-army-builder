@@ -505,7 +505,15 @@
            /* "5d6". Attacks IS a number of dice, so it prints as one --
               Jet, 2026-08-07. */
            ? window.DZCIcon('dice', { size: 13 }) : ''}</span></div>`;
-    const only = (w.variants || []).length ? w.variants.join(', ') : '';
+    /* "Sabre only" — and NOT under a heading that already says Sabre.
+     *
+     * Jet, 2026-08-07: "remove this line shit: Sabre only... it's obvious what
+     * the source is." In a Squad the cards are dealt out into a block per
+     * variant, so the gun under the Sabre heading is the Sabre's gun and the
+     * label repeated the heading four rows running. `grouped` is that case.
+     * Ungrouped — the reference card, which prints every gun in one list —
+     * nothing else says it, so it stays. */
+    const only = o.grouped || !(w.variants || []).length ? '' : w.variants.join(', ');
     return `<article class="dzc-wc${o.cls ? ' ' + o.cls : ''}">
       <header class="dzc-wc-head">
         <h4 class="dzc-wc-name">${esc(w.name)}</h4>
@@ -564,9 +572,14 @@
           if (live && wasLive.get(id) === false) gained = ' is-gained';
           wasLive.set(id, live);
         }
-        const cls = [w.box === 'upgrade' ? 'is-upgrade' : w.box === 'variant' ? 'is-variant' : '']
+        /* The orange variant edge goes with the label, and for the same
+         * reason: a lensed list is ALREADY one variant's guns, so marking each
+         * card "this one belongs to a variant" marked every card in the block.
+         * Five bars saying what the block heading says once. */
+        const cls = [w.box === 'upgrade' ? 'is-upgrade'
+            : w.box === 'variant' && !lens ? 'is-variant' : '']
           .concat(marking ? [mark] : []).filter(Boolean).join(' ') + gained;
-        return wpnCard(w, fac, { cls: cls, buy: o.buy });
+        return wpnCard(w, fac, { cls: cls, buy: o.buy, grouped: !!lens });
       }).join('');
     return `<div class="dzc-wcards${marking ? ' dzc-wcards--marked' : ''}">${cards}</div>`;
   }
