@@ -1267,6 +1267,27 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
      was right; the paint order was not. */
   z-index: 1;
 }
+/* AND SO DOES EVERY RIDER'S, which is the bug the first picture of this
+   geometry caught.
+
+   The parent's stroke lands at THIS row's x=32. It used to land at -15, out in
+   the drag-handle gutter belonging to the row above, which is why the comment
+   on the paint-out could say it "sits in the empty channel left of every
+   rider's content, never over anything". That is no longer true of either
+   line: the parent's drop runs through a non-last rider's stat table, and on
+   the last one the paint-out -- a 3px stripe of --surface-2, white -- draws a
+   scratch straight through the cargo's stats and its rule chips. In the OG
+   shot it went through "Command Centre" and all three stat rows.
+
+   Same fix as the carrier's own, one stroke further left: 32 + 3 + 9 of
+   clearance. The .is-carrier rule below must stay AFTER this one -- equal
+   specificity, later wins -- because a rider that is itself a carrier has to
+   clear its OWN drop at 84 as well, and 96 covers both. */
+.dzc-riders > .dzc-squad > .dzc-sq-body,
+.dzc-riders > .dzc-squad > .dzc-vblock,
+.dzc-riders > .dzc-squad > .dzc-variants {
+  padding-left: calc(var(--mini-x) - var(--carry-gap) + 12px);
+}
 /* AND THE CARRIER'S OWN CONTENT CLEARS IT. The drop falls through the band
    the carrier's stat table and weapon cards occupy, so they start to the right
    of it -- 9px clear of the 3px stroke, the same clearance this rule has

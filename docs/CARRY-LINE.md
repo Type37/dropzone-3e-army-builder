@@ -178,12 +178,35 @@ arithmetic makes it right.
 on every deploy. Two commits shipped without it and Jet saw no change at all,
 which cost a round of "the lines still don't work" that was not about lines.
 
-## What the 2026-08-08 build did NOT check
+## Then somebody looked at it, and it was wrong
 
-**Nobody has looked at it.** The Browser pane would not composite a frame in
-that session, so every number above is a measurement and none of it is a
-screenshot. The one question this file says has ever mattered — does it read as
-one line joining two pictures — is unanswered. Ask it.
+The Browser pane would not composite a frame, so the first build shipped on
+measurement alone. `scripts/shots.mjs ... og` drives Chrome over CDP and writes
+a PNG, which does not need the pane — and the first picture of the new geometry
+had **a white scratch through the cargo's stat table and its rule chips**,
+straight through the words "Command Centre".
+
+The paint-out that ends the parent's line. Its comment said it "sits in the
+empty channel left of every rider's content, never over anything", and that was
+true when it sat at the rider row's x = −15, out in the drag-handle gutter
+belonging to the row above. Moving the stroke put it at +32, **inside** the
+rider's own content — and it is painted in `--surface-2`, so on a beige stat
+row it is a white stripe.
+
+The measurement missed it because the sweep ran from the carrier's image bottom
+**to the elbow**, and the paint-out is the part below the elbow. A band check
+that stops where the visible line stops cannot see the invisible half of it.
+The sweep now runs the whole stroke, image bottom to the bottom of the row.
+
+Fix: every `.dzc-riders > .dzc-squad` indents its own body past the parent's
+stroke, exactly as `.is-carrier` already did for its own — 32 + 3 + 9. Order
+matters: the `.is-carrier` rule must stay after it, because a rider that is
+itself a carrier has to clear both and 96 covers both.
+
+**And the answer to the only question that matters: yes.** At a Transport's
+141px it leaves the Condor's photograph, drops, elbows, and lands inside the
+tank's. It reads as one line joining two pictures. The 718px Silence case is
+still unjudged — nobody has built one and looked.
 
 The carrier's own stats and guns are indented to clear the line: 96px now,
 where the old x needed 49. On a 320px phone that leaves the weapon block 170px
