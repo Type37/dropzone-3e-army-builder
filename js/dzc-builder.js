@@ -1410,17 +1410,21 @@
         aria-pressed="${on}" aria-label="${esc(u.name)}: ${esc(v.name)}"
         onclick="DZCBuilder.pickVariant('${s.id}',${idx})">${on ? 'Taken' : 'Take'}</button>`;
     }
-    const step = (to, icon, label) => {
-      const chk = A.canSetVariantCount(a, s.id, v.name, to);
+    /* A DELTA, NOT A TARGET COUNT. The stepper moves one model between this
+     * Variant and the largest other one; it never changes how many miniatures
+     * the Squad has. Jet, 2026-08-07: "click shouldn't increase the
+     * miniatures." That is the Squad stepper's job and only its job. */
+    const step = (delta, icon, label) => {
+      const chk = A.canShiftVariant(a, s.id, v.name, delta);
       const b = `<button type="button" ${chk.ok ? '' : 'disabled'}
-              onclick="DZCBuilder.variantCount('${s.id}',${idx},${to})"
+              onclick="DZCBuilder.variantShift('${s.id}',${idx},${delta})"
               aria-label="${esc(label)} ${esc(v.name)}">${window.DZCIcon(icon, { size: 14 })}</button>`;
       return chk.ok || !chk.reason ? b : `<span class="dzc-step-why" title="${esc(chk.reason)}">${b}</span>`;
     };
     return `<span class="dzc-stepper dzc-v-step${have ? ' is-on' : ''}">
-      ${step(have - 1, 'remove', 'One fewer')}
+      ${step(-1, 'remove', 'One fewer')}
       <b>${have}</b>
-      ${step(have + 1, 'add', 'One more')}
+      ${step(1, 'add', 'One more')}
     </span>`;
   }
 
@@ -2992,16 +2996,16 @@
       window.DZCArmy.setModelVariant(current, id, 0, v.name);
       refresh();
     },
-    variantCount: (id, idx, n) => {
+    variantShift: (id, idx, delta) => {
       const s = window.DZCArmy.findSquad(current, id);
       const u = s && window.DZCArmy.unitOf(current, s);
       const v = u && (u.variants || [])[idx];
       if (!v) return;
-      const r = window.DZCArmy.setVariantCount(current, id, v.name, n);
+      const r = window.DZCArmy.shiftVariant(current, id, v.name, delta);
       if (!r.ok && r.reason) say(r.reason);
       refresh();
     },
-    // By index into upgradesFor, for the same reason as variantCount: a scope
+    // By index into upgradesFor, for the same reason as variantShift: a scope
     // and a weapon name are two more strings to get through an inline handler.
     toggleUpgrade: (id, idx) => {
       const s = window.DZCArmy.findSquad(current, id);

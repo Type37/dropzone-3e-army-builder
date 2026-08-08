@@ -1142,10 +1142,19 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-riders > .dzc-squad {
   position: relative; margin-left: 0; border-top: 0; padding-top: 6px;
 }
-/* ::after, not ::before: a carrier can itself be cargo, and .dzc-squad::before
-   is spoken for further up. */
-.dzc-squad:has(> .dzc-riders) { position: relative; }
-.dzc-squad:has(> .dzc-riders)::after {
+/* HUNG OFF .is-carrier, which the builder puts on any Squad with something
+   riding it -- not off :has(> .dzc-riders).
+
+   The selector was :has() for one commit and Jet saw no lines at all. Whatever
+   the cause, a rail that draws only where a CSS feature is supported is a rail
+   that can silently not exist, and there is no way to test for it from here.
+   The class is emitted by squadHtml, so the render suite can assert it and the
+   markup says what it is.
+
+   ::after, not ::before: a carrier can itself be cargo, and
+   .dzc-riders > .dzc-squad::before was spoken for. */
+.dzc-squad.is-carrier { position: relative; }
+.dzc-squad.is-carrier::after {
   content: ''; position: absolute; left: var(--mini-x);
   top: 55px; bottom: 4px; width: 3px;
   background: var(--acc, #1b3a5c);
@@ -1156,9 +1165,9 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    So a Squad carrying something indents its body past the rail. Only a carrier
    does; everything else keeps the tighter indent, and the extra step reads as
    what it is -- this block owns the one below it. */
-.dzc-squad:has(> .dzc-riders) > .dzc-sq-body,
-.dzc-squad:has(> .dzc-riders) > .dzc-vblock,
-.dzc-squad:has(> .dzc-riders) > .dzc-variants {
+.dzc-squad.is-carrier > .dzc-sq-body,
+.dzc-squad.is-carrier > .dzc-vblock,
+.dzc-squad.is-carrier > .dzc-variants {
   padding-left: calc(var(--mini-x) + 12px);
 }
 .dzc-squad > .dzc-sq-body, .dzc-squad > .dzc-vblock,

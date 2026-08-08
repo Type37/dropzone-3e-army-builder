@@ -833,31 +833,96 @@ console.log('\nduplicating a Group (gap 124)');
   A.remove(a.id);
 }
 
+/* A VARIANT STEPPER MOVES A MODEL. IT NEVER BUYS ONE. Jet, 2026-08-07: "click
+ * shouldn't increase the miniatures. that's dumb... it's fiddly to like
+ * 'increase another physical model'."
+ *
+ * The old control took a target COUNT and let the Squad's size follow, so
+ * asking three Sabres for one Rapier gave you four tanks -- and because
+ * required transport capacity is per model, that fourth tank broke the Condor
+ * carrying them without saying so. */
+console.log('\nthe Variant stepper redistributes, it does not buy models');
 {
-  // Variants are per MODEL (3.2.2), so a Squad is "how many of each", and the
-  // count is the control. Squad min/max are still the only limits.
   const a = army(2000);
   const g = A.addGroup(a);
-  const s = A.addSquad(a, g.id, 'ucm-main-battle-tank', 2);   // Sabre 35, Tachi 40
+  const s = A.addSquad(a, g.id, 'ucm-main-battle-tank', 3);   // Sabre 35, Rapier 40
   const mix = () => s.models.map(m => m.variant).sort().join(',');
-  eq(mix(), 'Sabre,Sabre', 'a new Squad is all of the first variant');
-  ok(A.setVariantCount(a, s.id, 'Tachi', 1).ok, 'a Tachi can be added');
-  eq(s.models.length, 3, 'and the Squad grew by one — the size follows the mix');
-  eq(A.squadCost(a, s), 110, 'two Sabres and a Tachi cost 70 + 40');
-  const min = A.canSetVariantCount(a, s.id, 'Sabre', 0);
-  eq(min.ok, false, 'dropping both Sabres would leave one model, under the Squad minimum');
-  ok(/minimum/i.test(min.reason || ''), 'and says so in the stepper’s own sentence', min.reason);
-  A.setVariantCount(a, s.id, 'Tachi', 2);
-  ok(A.setVariantCount(a, s.id, 'Sabre', 0).ok, 'with two Tachi the Sabres can go');
-  eq(mix(), 'Tachi,Tachi', 'leaving a Squad of Tachi');
-  eq(A.canSetVariantCount(a, s.id, 'Tachi', 0).ok, false,
-     'but a Squad is never emptied this way — that is what Remove Squad is');
-  // 2-9, so ten is over the maximum.
-  A.setVariantCount(a, s.id, 'Sabre', 7);
-  eq(s.models.length, 9, 'the Squad fills to nine');
-  const over = A.canSetVariantCount(a, s.id, 'Greave', 1);
-  eq(over.ok, false, 'and the Squad maximum refuses one more');
-  ok(/maximum/i.test(over.reason || ''), 'in the same sentence the stepper uses', over.reason);
+  eq(mix(), 'Sabre,Sabre,Sabre', 'a new Squad is all of the first Variant');
+
+  ok(A.shiftVariant(a, s.id, 'Rapier', 1).ok, 'one of them can become a Rapier');
+  eq(String(s.models.length), '3', 'and the Squad is still three miniatures');
+  eq(mix(), 'Rapier,Sabre,Sabre', 'one Rapier, two Sabres');
+  eq(A.squadCost(a, s), 110, 'costed as the mix it now is — 40 + 35 + 35');
+
+  ok(A.shiftVariant(a, s.id, 'Rapier', 1).ok, 'and another');
+  eq(mix(), 'Rapier,Rapier,Sabre', 'two Rapiers');
+  eq(String(s.models.length), '3', 'still three');
+
+  ok(A.shiftVariant(a, s.id, 'Rapier', -1).ok, 'and back the other way');
+  eq(mix(), 'Rapier,Sabre,Sabre', 'one Rapier again');
+  eq(String(s.models.length), '3', 'and still three');
+
+  // Every model is already this Variant: there is nothing left to convert.
+  A.shiftVariant(a, s.id, 'Sabre', 1);
+  eq(mix(), 'Sabre,Sabre,Sabre', 'all three back to Sabre');
+  const full = A.canShiftVariant(a, s.id, 'Sabre', 1);
+  eq(full.ok, false, 'asking for a fourth Sabre in a Squad of three is refused');
+  ok(/already a Sabre/.test(full.reason || '') && /Add a model/.test(full.reason || ''),
+     'and it says the Squad stepper is where a fourth model comes from', full.reason);
+  eq(A.canShiftVariant(a, s.id, 'Rapier', -1).ok, false,
+     'and one fewer of a Variant you have none of does nothing');
+
+  /* The point of the whole change: the Squad's size, and so the room it needs
+   * in a Transport, is untouched by anything the Variant steppers do. */
+  const before = s.models.length;
+  ['Rapier', 'Tachi', 'Greave', 'Sabre'].forEach(n => {
+    A.shiftVariant(a, s.id, n, 1); A.shiftVariant(a, s.id, n, -1);
+  });
+  eq(String(s.models.length), String(before), 'eight presses later it is the same three models');
+  A.remove(a.id);
+}
+
+/* And the thing that made it matter: ROOM NEEDED IS PER MODEL. loadCheck
+ * multiplies a Unit's fills by how many models are in the Squad, so a Squad
+ * that grows behind your back needs more room than it did -- which is why a
+ * Variant stepper must never grow one.
+ *
+ * What happens when you grow one ON PURPOSE is different and worth pinning
+ * too: setModelCount calls refitTransports, so the Transport Squad resizes to
+ * cover the new load rather than overflowing. It costs points you were not
+ * asked about, and it can leave the Transports not full, which 3.2.4 refuses.
+ */
+console.log('\nrequired carrying capacity follows the model count');
+{
+  const f = DZC.faction('ucm');
+  const mbt = f.byId['ucm-main-battle-tank'];     // fills 2 triangles per model
+  const condor = f.byId['condor-dropship'];       // 6 triangles of room
+  eq(JSON.stringify(DZC.loadCheck(condor, [{ unit: mbt, count: 3 }], 1).byShape),
+     '{"triangle":6}', 'three tanks need six triangles');
+  eq(JSON.stringify(DZC.loadCheck(condor, [{ unit: mbt, count: 4 }], 1).byShape),
+     '{"triangle":8}', 'and four need eight -- the requirement is per model');
+  eq(DZC.loadCheck(condor, [{ unit: mbt, count: 4 }], 1).ok, false,
+     'which one Condor cannot hold');
+  ok(/6 triangle capacity, needs 8/.test(
+       DZC.loadCheck(condor, [{ unit: mbt, count: 4 }], 1).reason || ''),
+     'and it says so in those terms');
+
+  const a = army(2000);
+  const g = A.addGroup(a);
+  const tanks = A.addSquad(a, g.id, 'ucm-main-battle-tank', 3);
+  const lift = A.addSquad(a, g.id, 'condor-dropship', 1);
+  A.setCarrier(a, tanks.id, lift.id);
+  ok(!A.validate(a).errors.some(e => /capacity|not full/.test(e.msg)),
+     'three tanks fill one Condor exactly');
+
+  /* Growing the Squad on purpose: the Transport Squad refits rather than
+   * overflowing, so the fault reported is that the Condors are now half empty
+   * -- not that the tanks do not fit. */
+  A.setModelCount(a, tanks.id, 4);
+  eq(String(A.findSquad(A.get(a.id), lift.id).models.length), '2',
+     'a fourth tank buys a second Condor rather than overloading the first');
+  ok(A.validate(a).errors.some(e => /not full/.test(e.msg)),
+     'and eight triangles in twelve is not full, which 3.2.4 refuses');
   A.remove(a.id);
 }
 

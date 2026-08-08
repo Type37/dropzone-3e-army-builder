@@ -744,43 +744,71 @@
   }
 
   /* Variants are per MODEL (3.2.2), so what a Squad actually is is HOW MANY OF
-   * EACH — not "which one". Asking each model in turn which variant it is, one
-   * dropdown per model, describes the same fact from the wrong end: it makes
-   * the count the fixed thing and the mix the fiddly thing, when the mix is
-   * the decision and the count falls out of it.
+   * EACH -- not "which one". Asking each model in turn which variant it is,
+   * one dropdown per model, describes the same fact from the wrong end: it
+   * makes the count the fixed thing and the mix the fiddly thing, when the mix
+   * is the decision.
    *
-   * So the count is per variant, and the Squad's size is whatever they add up
-   * to. Squad min and max are still the only limits, and they are still
-   * canSetCount's to state, so the same sentence refuses this as refuses the
-   * Squad stepper. */
-  function canSetVariantCount(army, squadId, variantName, n) {
-    const s = findSquad(army, squadId);
-    if (!s) return { ok: false, reason: 'Unknown Squad.' };
-    const want = Math.round(n);
-    if (want < 0) return { ok: false, reason: null };
-    const have = s.models.filter(m => m.variant === variantName).length;
-    const total = s.models.length + (want - have);
-    if (total < 1) {
-      return { ok: false, reason: 'The last model in a Squad goes by removing the Squad.' };
-    }
-    return canSetCount(army, squadId, total);
+   * THE MIX MOVES MODELS AROUND. IT DOES NOT BUY THEM. Jet, 2026-08-07: "click
+   * shouldn't increase the miniatures. that's dumb... it's fiddly to like
+   * 'increase another physical model'."
+   *
+   * It used to. Pressing + on a Variant took its count up by one and the
+   * Squad's size followed, so asking a Squad of three Sabres for one Rapier
+   * gave you FOUR tanks -- a model you had not asked for, did not own, and
+   * were now paying for. And because required transport capacity is per model
+   * (loadCheck multiplies fills by the count), that fourth tank silently broke
+   * the Condor carrying them: 6 triangles of room, 8 needed.
+   *
+   * So the two controls do two different jobs and neither does the other's:
+   *
+   *   the Squad stepper   changes how many miniatures are in the Squad
+   *   a Variant stepper   changes what the miniatures you already have ARE
+   *
+   * A shift takes from, or gives to, the LARGEST other Variant -- ties broken
+   * by the order the card prints them. Deterministic, and it matches what you
+   * mean: with three Sabres, one Rapier comes out of the Sabres because there
+   * is nowhere else it could come from. */
+  function variantNames(army, s) {
+    const u = unitOf(army, s);
+    return ((u && u.variants) || []).map(v => v.name);
   }
 
-  function setVariantCount(army, squadId, variantName, n) {
-    const chk = canSetVariantCount(army, squadId, variantName, n);
+  /* The Variant that gives up a model to this one, or receives one from it. */
+  function counterpart(army, s, variantName) {
+    const others = variantNames(army, s).filter(n => n !== variantName);
+    if (!others.length) return null;
+    const n = name => s.models.filter(m => m.variant === name).length;
+    return others.reduce((best, name) => (n(name) > n(best) ? name : best), others[0]);
+  }
+
+  function canShiftVariant(army, squadId, variantName, delta) {
+    const s = findSquad(army, squadId);
+    if (!s) return { ok: false, reason: 'Unknown Squad.' };
+    const other = counterpart(army, s, variantName);
+    if (!other) return { ok: false, reason: 'This Unit has only one Variant.' };
+    const have = name => s.models.filter(m => m.variant === name).length;
+    if (delta > 0) {
+      if (!have(other)) {
+        return { ok: false,
+                 reason: `Every model in this Squad is already a ${variantName}. Add a model to the Squad to take another.` };
+      }
+      return { ok: true, reason: null, from: other };
+    }
+    if (!have(variantName)) return { ok: false, reason: null };
+    return { ok: true, reason: null, to: other };
+  }
+
+  /* One model changes what it is. The Squad's size is untouched, always. */
+  function shiftVariant(army, squadId, variantName, delta) {
+    const chk = canShiftVariant(army, squadId, variantName, delta);
     if (!chk.ok) return chk;
     const s = findSquad(army, squadId);
-    const have = s.models.filter(m => m.variant === variantName).length;
-    const want = Math.round(n);
-    if (want === have) return chk;
-    if (want > have) {
-      for (let i = have; i < want; i++) s.models.push({ variant: variantName });
-    } else {
-      // Drop from the end, so the models you already had keep their order.
-      let drop = have - want;
-      for (let i = s.models.length - 1; i >= 0 && drop > 0; i--) {
-        if (s.models[i].variant === variantName) { s.models.splice(i, 1); drop--; }
-      }
+    const from = delta > 0 ? chk.from : variantName;
+    const to = delta > 0 ? variantName : chk.to;
+    // From the END, so the models you already had keep their order.
+    for (let i = s.models.length - 1; i >= 0; i--) {
+      if (s.models[i].variant === from) { s.models[i].variant = to; break; }
     }
     touch(army);
     return chk;
@@ -1767,7 +1795,7 @@
     importArmies, importList, parseList, generate,
     addGroup, removeGroup, duplicateGroup, moveGroup, groupName, renameGroup,
     commanderName, renameCommander, addSquad, removeSquad, setModelCount, setModelVariant,
-    canSetVariantCount, setVariantCount,
+    canShiftVariant, shiftVariant,
     setCarrier, moveSquad, setCommander, findSquad, groupOf, unitOf, carrierOf, squadGuns,
     commanders, commanderFor, commanderTargets,
     addCommander, removeCommander, assignCommander, syncCommanders, levelCost,
