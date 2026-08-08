@@ -449,6 +449,20 @@ for (const [name, expr, clipSel] of STEPS) {
   const r = await s.send('Runtime.evaluate', { expression: `(async()=>{ ${expr} })()`, awaitPromise: true })
     .catch(e => ({ error: e.message }));
   if (r?.error) { console.log(`  ! ${name}: ${r.error}`); }
+  /* SHOT_REPORT: read a value back out of the page.
+   *
+   * A screenshot answers "does it look right". It cannot answer "did the page
+   * move when I pressed +", which is a number, and the browser pane in a
+   * Claude session does not always composite a frame to look at either. This
+   * is a real window with a real scrollbar, so it can measure the things an
+   * iframe cannot -- the no-jump fix was recorded as unverifiable for exactly
+   * that reason (NEXT.md), and it was only unverifiable with an iframe. */
+  if (process.env.SHOT_REPORT) {
+    const rep = await s.send('Runtime.evaluate', {
+      expression: `JSON.stringify(${process.env.SHOT_REPORT})`, returnByValue: true, awaitPromise: true
+    }).catch(e => ({ error: e.message }));
+    console.log(`  report ${name}: ${rep?.error || rep?.result?.value}`);
+  }
   await sleep(900);
   /* Finish every running animation before the shot.
    *
