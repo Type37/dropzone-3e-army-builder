@@ -378,11 +378,11 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 }
 .dzc-wc {
   border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff);
-  padding: 4px 6px; min-width: 0; margin: -1px 0 0 -1px;
+  padding: 3px 6px; min-width: 0; margin: -1px 0 0 -1px;
 }
 .dzc-wc-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 6px; }
 .dzc-wc-name {
-  margin: 0; font: 700 14px/1.25 var(--font-ui, 'Jost', system-ui, sans-serif);
+  margin: 0; font: 700 13px/1.2 var(--font-ui, 'Jost', system-ui, sans-serif);
   overflow-wrap: anywhere; color: var(--ink, #24201c);
 }
 /* WHICH MODEL CARRIES THIS GUN — a chip with an arrow, not a rule down the
@@ -410,7 +410,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   padding: 0; border: 0; background: none; cursor: pointer; text-align: left;
   /* The same type as every other value on the card -- it reads as a number
      that happens to be pressable, not as a control that happens to be here. */
-  font: 600 14px/1.15 var(--font-numeric, 'Outfit', sans-serif);
+  font: 600 13px/1.1 var(--font-numeric, 'Outfit', sans-serif);
   font-variant-numeric: tabular-nums lining-nums; color: var(--ink, #24201c);
   text-decoration: underline; text-decoration-style: dotted;
   text-underline-offset: 2px; text-decoration-color: var(--line, #d8d0c0);
@@ -434,7 +434,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 }
 .dzc-dmg tr:first-child th { background: var(--surface-3, #f2ece0); }
 .dzc-dmg-crit td { color: var(--variant, #f15d38); }
-.dzc-wc-body { display: flex; align-items: flex-start; gap: 6px; margin-top: 3px; }
+.dzc-wc-body { display: flex; align-items: flex-start; gap: 6px; margin-top: 2px; }
 /* The arc, drawn once at a size that reads, with its own code under it. */
 .dzc-wc-arc {
   flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 2px;
@@ -453,26 +453,32 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    
    The values still line up card to card: the columns are equal fractions of
    the same box, so the second stat starts at the same x on every one. */
+/* THREE COLUMNS, NOT TWO. Jet, 2026-08-07: "cut down on the vertical height
+   for all the gun shit? Maybe by making it 3 columns and font shit?"
+   Five stats in two columns is three rows; in three columns it is two. That is
+   a whole row of label-plus-value off every weapon card in the app, and there
+   are eight of them on a Howitzer. The type comes down with it -- see below --
+   so the columns still hold their numbers without wrapping. */
 .dzc-wc-stats {
   flex: 1 1 auto; min-width: 0;
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px 8px;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 6px;
 }
 .dzc-wc-stat { display: flex; flex-direction: column; min-width: 0; }
 /* The one icon that keeps its own colours sits INSIDE its label, so it reads
    as part of the word rather than as a second mark beside it. */
 .dzc-wc-k .dzc-i--ma { vertical-align: -2px; margin-right: 3px; }
 .dzc-wc-k {
-  font: 700 10px/1.25 var(--font-condensed, 'Jost', sans-serif);
+  font: 700 9px/1.2 var(--font-condensed, 'Jost', sans-serif);
   text-transform: uppercase; letter-spacing: .02em; color: var(--ink-2, #6b6459);
   overflow-wrap: normal; word-break: keep-all;
 }
 /* The die sits with the number, not beside it: "5" and the cube are one value. */
 .dzc-wc-v svg { vertical-align: -2px; margin-left: 2px; opacity: .75; }
 .dzc-wc-v {
-  font: 600 14px/1.15 var(--font-numeric, 'Outfit', sans-serif);
+  font: 600 13px/1.1 var(--font-numeric, 'Outfit', sans-serif);
   font-variant-numeric: tabular-nums lining-nums; color: var(--ink, #24201c);
 }
-.dzc-wc-rules { margin-top: 3px; }
+.dzc-wc-rules { margin-top: 2px; }
 /* The same three marks the table carries: an upgrade, a variant-only gun, and
    in a Squad whether this one is actually yours. */
 .dzc-wc.is-upgrade { border-left: 3px solid #2e9e4f; }
@@ -1160,11 +1166,11 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
      --mini-x   37px, the picture's left edge inside the row. It was 27, so the
                 whole thing hung in the drag-handle gutter, 10px left of the
                 photograph it claims to come out of.
-     top 65px   5px of row padding + the 60px picture box = the bottom of the
+     top 80px   5px of row padding + the 75px picture box = the bottom of the
                 photograph. The old drop started at the top of the cargo block
                 instead, 222px below the picture, with the carrier's whole stat
                 card in between.
-     top 36px   6px of rider row padding + half the 60px picture = the middle
+     top 44px   6px of rider row padding + half the 75px picture = the middle
                 of the picture the arm points at.
      +22px      how far INTO that picture the arm finishes. Jet: "into the
                 model, not to the edge of that card."
@@ -1182,22 +1188,48 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 /* The drop, out of the bottom of the carrier's photograph. */
 .dzc-squad.is-carrier::after {
   content: ''; position: absolute; left: var(--mini-x);
-  top: 65px; bottom: 0; width: 3px;
+  top: 80px; bottom: 0; width: 3px;
   background: var(--acc, #1b3a5c);
 }
-/* The arm, into the middle of the picture of what is aboard. */
-.dzc-riders > .dzc-squad::before {
+/* A rider row carries 2px more padding than a top-level one, so a carrier that
+   is itself cargo leaves its picture one pixel lower. */
+.dzc-riders > .dzc-squad.is-carrier::after { top: 81px; }
+/* The arm, into the middle of the picture of what is aboard.
+
+   ON .dzc-sq-main, not on the row, and that is the whole of the last bug. A
+   Squad in the middle of a chain -- a Buggy inside a Raven with Legionnaires
+   inside IT -- plays three parts at once: it is cargo (it needs an arm), it is
+   a carrier (it needs a drop), and it is the last thing in its block (it needs
+   the paint-out). Three jobs, two pseudo-elements. The drop and the paint-out
+   were both written to ::after, the paint-out rule came later in the file and
+   won, and the Buggy's drop simply never drew -- which is why the Legionnaires
+   ended up with an arm hanging in mid-air, pointing into their picture from
+   nothing.
+
+   The arm moves down onto the row's own header, where it is measured against
+   the picture it points at rather than against the row: 5px of header padding
+   plus half the 75px picture. That frees ::after for the drop and ::before for
+   the paint-out, and the three stop fighting. */
+.dzc-riders > .dzc-squad > .dzc-sq-main { position: relative; }
+.dzc-riders > .dzc-squad > .dzc-sq-main::after {
   content: ''; position: absolute;
   left: calc(var(--mini-x) - var(--rider-step));
+  /* Half the 75px picture, less half the 3px bar, and measured against
+     .dzc-sq-main whose top IS the picture's top. */
   top: 36px; height: 3px;
   width: calc(var(--rider-step) + 22px);
   background: var(--acc, #1b3a5c);
 }
-/* And it STOPS at the last thing it reaches. */
-.dzc-riders > .dzc-squad:last-child::after {
+/* And the PARENT's drop stops at the last thing it reaches.
+
+   At the parent's x, which is 52px left of this row's own drop -- so a Squad
+   that is both cargo and a carrier paints this out without touching the line
+   it is itself sending down to what IT carries. */
+.dzc-riders > .dzc-squad:last-child::before {
   content: ''; position: absolute;
   left: calc(var(--mini-x) - var(--rider-step));
-  top: 39px; bottom: -4px; width: 3px;
+  /* 6px of rider-row padding + the arm's 36 + its 3 = just under the arm. */
+  top: 45px; bottom: -4px; width: 3px;
   background: var(--surface-2, #fff);
   /* ABOVE the drop, and it has to be said out loud. ::after is generated as
      the carrier's LAST child, so the drop is later in tree order than the
@@ -1233,7 +1265,11 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    height -- that was the other half of the original problem ("if you add a
    unit, the image addition doesn't fuck things up"), and it is now true by
    construction rather than by arithmetic. */
-.dzc-sq-minis { flex: 0 0 auto; width: 84px; height: 60px; }
+/* A QUARTER BIGGER. Jet, 2026-08-07: "blow up the pics by like 25%?"
+   84x60 -> 105x75. Still one fixed box, so a Squad's row height is still
+   independent of how many models are in it -- and the three numbers the
+   carry line is built from move with it, below. */
+.dzc-sq-minis { flex: 0 0 auto; width: 105px; height: 75px; }
 .dzc-sq-art {
   display: block; width: 100%; height: 100%; object-fit: contain;
   background: var(--surface-3, #f2ece0);

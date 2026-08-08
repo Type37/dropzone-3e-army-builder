@@ -550,7 +550,7 @@
       </header>
       <div class="dzc-wc-body">
         <div class="dzc-wc-arc" title="${esc(window.DZCIcon.arcLabel(w.arc) || '')}">
-          ${window.DZCIcon.arc(w.arc, { size: 38 })}
+          ${window.DZCIcon.arc(w.arc, { size: 32 })}
           <span>${esc(w.arc || '')}</span>
         </div>
         <div class="dzc-wc-stats">
