@@ -91,7 +91,9 @@
       const u = window.DZCArmy.unitOf(army, s);
       const dp = maxDp(u);
       models[s.id] = s.models.map(() => ({ dp: dp, max: dp, st: [] }));
-      squads[s.id] = { st: [], pt: power(u) };
+      // RM starts at what you BOUGHT, because that is what is aboard when the
+      // game begins (Genitor X). From there it only moves in play.
+      squads[s.id] = { st: [], pt: power(u), rm: window.DZCArmy.rmOf(s) };
     }));
     return { round: 1, cp: 0, myVP: 0, oppVP: 0, oppGroups: 0, activated: {},
       models: models, squads: squads };
@@ -120,6 +122,9 @@
       if (!state.squads[id]) state.squads[id] = fresh.squads[id];
       // A game saved before Power tokens existed has no pt on its Squads.
       if (state.squads[id].pt == null) state.squads[id].pt = fresh.squads[id].pt;
+      // Nor RM. Seeded from the army rather than zeroed: a game in progress
+      // when this shipped still has whatever it paid for aboard.
+      if (state.squads[id].rm == null) state.squads[id].rm = fresh.squads[id].rm;
       (state.models[id] || []).forEach(m => {
         m.st = (m.st || []).filter(st => {
           if (MODEL_STATUSES.indexOf(st) !== -1) return true;
@@ -381,6 +386,28 @@
     </div>`;
   }
 
+  /* RM ABOARD, which is the one number on a Genitor that changes every turn.
+   *
+   * You buy them before the game and then spend them: 4 for Drones, 6 for
+   * Hulks, never more than the cap in one activation. You also GAIN them --
+   * every Decon kill places 2 or 4, and a Collector may pass its own up -- so
+   * this counts both ways rather than only down.
+   *
+   * The cap is the ceiling and it is enforced, because "Genitor Units may
+   * never have more than X RM tokens aboard -- any above X are discarded".
+   * Same shape as the Power track above it, without the dots: Power is 5 at
+   * most and reads as pips, RM goes to 12 and would be a row of confetti. */
+  function rmHtml(army, s) {
+    const cap = window.DZCArmy.genitorCap(army, s);
+    if (!cap) return '';
+    const have = Math.max(0, Math.min(cap, (state.squads[s.id] || {}).rm || 0));
+    return `<div class="dzc-play-rm">
+      <button type="button" onclick="DZCPlay.rm('${s.id}',-1)" aria-label="Spend an RM token">−</button>
+      ${window.DZCIcon('rm', { size: 14 })}<b>${have}</b><i>of ${cap} RM</i>
+      <button type="button" onclick="DZCPlay.rm('${s.id}',1)" aria-label="Gain an RM token">+</button>
+    </div>`;
+  }
+
   function squadHtml(army, s) {
     const u = window.DZCArmy.unitOf(army, s);
     if (!u) return '';
@@ -410,6 +437,7 @@
         <span class="dzc-play-alive">${aliveIn(s)}/${models.length}</span>
       </div>
       ${ptHtml(s, u)}
+      ${rmHtml(army, s)}
       ${(() => {
         // A Behemoth's condition, from the damage it has taken (1.5.5).
         // Degraded cannot Advance; Crippled cannot Advance or Charge and is
@@ -498,6 +526,16 @@
       m.st = m.st || [];
       const at = m.st.indexOf(st);
       if (at === -1) m.st.push(st); else m.st.splice(at, 1);
+      redraw();
+    },
+    rm: (sid, d) => {
+      const a = army();
+      const s = a && window.DZCArmy.findSquad(a, sid);
+      const q = s && state.squads[sid];
+      if (!q) return;
+      // Clamped at the cap, not refused: "any above X are discarded" is the
+      // rule, so the token simply does not go aboard.
+      q.rm = Math.max(0, Math.min(window.DZCArmy.genitorCap(a, s), (q.rm || 0) + d));
       redraw();
     },
     pt: (sid, d) => {

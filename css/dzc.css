@@ -2404,14 +2404,17 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 /* Power tokens. Only a Behemoth has any, and what you look at mid-Round is
    "can it go again" — so the dots carry it and the number confirms it. Same
    controls as the damage stepper beside it, because it is the same gesture. */
-.dzc-play-pt { display: flex; align-items: center; gap: 6px; margin-top: 5px; flex-wrap: wrap; }
-.dzc-play-pt button {
+/* RM aboard a Genitor, in the same row shape as Power. No dot track: Power
+   tops out at 10 and reads as pips, RM goes to 12 and would be confetti. */
+.dzc-play-rm svg { flex: 0 0 auto; color: var(--acc, #1b3a5c); }
+.dzc-play-pt, .dzc-play-rm { display: flex; align-items: center; gap: 6px; margin-top: 5px; flex-wrap: wrap; }
+.dzc-play-pt button, .dzc-play-rm button {
   min-width: 26px; min-height: 26px; border-radius: 5px; cursor: pointer;
   border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff);
   font-size: 15px; line-height: 1;
 }
-.dzc-play-pt b { font-family: var(--font-numeric, inherit); font-size: 13px; }
-.dzc-play-pt i { font-style: normal; font-size: 11px; color: var(--ink-2, #6b6459); }
+.dzc-play-pt b, .dzc-play-rm b { font-family: var(--font-numeric, inherit); font-size: 13px; }
+.dzc-play-pt i, .dzc-play-rm i { font-style: normal; font-size: 11px; color: var(--ink-2, #6b6459); }
 .dzc-pt-track { display: flex; gap: 3px; align-items: center; }
 .dzc-pt-dot {
   width: 9px; height: 9px; border-radius: 50%;
