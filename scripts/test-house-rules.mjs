@@ -408,7 +408,7 @@ console.log('\nsharp cards');
   const SURFACES = [
     'dzc-pick', 'dzc-card', 'dzc-army-card', 'dzc-army-new', 'dzc-rail-card',
     'dzc-group-card', 'dzc-issues', 'dzc-cmdr-opt', 'dzc-cmdr-add', 'dzc-pcard',
-    'dzc-play-group', 'dzc-pop', 'dzc-toast', 'dzc-upgrades', 'dzc-coll-row',
+    'dzc-play-group', 'dzc-pop', 'dzc-toast', 'dzc-coll-row',
     'dzc-short', 'dzc-ratio', 'dzc-faction-btn', 'tool-card', 'game-size-option',
     'modal-panel'
   ];
