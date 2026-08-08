@@ -1202,13 +1202,45 @@
    * 4, so buying a Vulture per Squad leaves it permanently "not full" and the
    * model stepper refuses to grow past squadMax. The way out is the one the
    * rules already give you: put a second Squad in the one you have. */
+  /* Is `maybe` somewhere inside `squadId` -- riding it, or riding something
+   * riding it, at any depth? The one thing a Squad may never be put into. */
+  function carriesTransitively(army, squadId, maybe) {
+    const g = groupOf(army, squadId);
+    if (!g) return false;
+    const seen = {};
+    const walk = id => {
+      if (seen[id]) return false;
+      seen[id] = true;
+      return g.squads.filter(x => x.carriedBy === id)
+        .some(x => x.id === maybe || walk(x.id));
+    };
+    return walk(squadId);
+  }
+
   function boardOptions(army, squadId) {
     const s = findSquad(army, squadId);
     const g = groupOf(army, squadId);
     const u = s && unitOf(army, s);
     if (!u || !g) return [];
     return g.squads.filter(t => {
-      if (t.id === s.id || t.carriedBy) return false;
+      /* A CARRIER THAT IS ITSELF ABOARD SOMETHING IS STILL A CARRIER. Jet,
+       * 2026-08-07, looking at Legionnaires beside a Troop Buggy already
+       * inside a Raven: "SHOULDN'T i be able to click and drag the
+       * legionnaires into the buggy?"
+       *
+       * Yes -- and it is not an edge case, it is the commonest Group in the
+       * game: infantry in an APC, APC in a dropship. 3.2.4.1 says it in as
+       * many words, "up to 4 Squads, PLUS THEIR OWN TRANSPORT SQUADS, may
+       * share one larger Transport". This line used to read `t.carriedBy`
+       * and refuse, which quietly made that Group unbuildable by drag and
+       * left the Buggy's own capacity -- one square each, exactly what a
+       * Legionnaire fills -- unreachable.
+       *
+       * What is genuinely forbidden is a loop: putting a Squad into something
+       * it is already carrying. That is the test now, and it walks all the way
+       * down rather than one level. */
+      if (t.id === s.id) return false;
+      if (carriesTransitively(army, s.id, t.id)) return false;
       const tu = carrierOf(army, t);
       if (!tu || !(tu.category === 'Transport' || tu.auxiliaryTransport)) return false;
       if (!window.DZC.canCarry(tu, u)) return false;

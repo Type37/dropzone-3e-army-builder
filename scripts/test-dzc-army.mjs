@@ -1128,6 +1128,41 @@ console.log('\na Squad moves between Groups, and its cargo goes with it');
  * army on the card AND come out legal. A starter list that opens with three
  * errors teaches a new player the wrong thing about the app and about 3.2.4,
  * and the only thing standing between here and that is this. */
+/* INFANTRY IN AN APC, APC IN A DROPSHIP -- the commonest Group in the game,
+ * and 3.2.4.1 says it outright: "up to 4 Squads, PLUS THEIR OWN TRANSPORT
+ * SQUADS, may share one larger Transport."
+ *
+ * boardOptions used to refuse any carrier that was itself aboard something,
+ * which made that Group unbuildable by drag and left the Buggy's own capacity
+ * unreachable. Jet, 2026-08-07, looking at exactly that: "SHOULDN'T i be able
+ * to click and drag the legionnaires into the buggy?" */
+console.log('\na Transport that is itself aboard something can still be loaded');
+{
+  const a = army(750);
+  const g = A.addGroup(a, 'Group 3');
+  const raven = A.addSquad(a, g.id, 'raven-light-dropship', 1);   // 2 diamonds
+  const buggy = A.addSquad(a, g.id, 'ucm-troop-buggy', 2);        // 1 square each, fills 1 diamond
+  const legs = A.addSquad(a, g.id, 'legionnaires', 2);            // fills 1 square each
+  A.setCarrier(a, buggy.id, raven.id);
+
+  const offered = A.boardOptions(a, legs.id).map(o => o.unit.name);
+  ok(offered.indexOf('UCM Troop Buggy') !== -1,
+     'the Buggy is offered even though it is inside the Raven', offered.join(', '));
+  ok(A.boardTransport(a, legs.id, buggy.id).ok, 'and the Legionnaires can be put in it');
+  eq(A.findSquad(A.get(a.id), legs.id).carriedBy, buggy.id, 'three levels deep');
+  eq(A.findSquad(A.get(a.id), buggy.id).carriedBy, raven.id, 'and the middle one still aboard');
+  ok(!A.validate(a).errors.some(e => /capacity|not full|carries nothing/.test(e.msg)),
+     'with nothing wrong about any of it',
+     A.validate(a).errors.map(e => e.msg).join(' | '));
+
+  /* The one thing that IS forbidden, and it has to be checked all the way
+   * down: putting a Squad inside something it is already carrying. */
+  eq(A.boardOptions(a, raven.id).length, 0,
+     'the Raven cannot be loaded into anything it is carrying, at any depth');
+  eq(A.boardTransport(a, raven.id, buggy.id).ok, false, 'and boarding it is refused');
+  A.remove(a.id);
+}
+
 console.log('\nthe starter armies are the ones on the box');
 {
   vm.runInContext(readFileSync(path.join(ROOT, 'js', 'dzc-starters.js'), 'utf8'), sandbox);
