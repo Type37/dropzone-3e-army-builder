@@ -1591,15 +1591,18 @@
               title="Drag onto a Transport to put this Squad aboard"
               onpointerdown="DZCBuilder.sqGrip(event,'${s.id}')"
               >${window.DZCIcon('drag_dots', { size: 15 })}</span>
-        <!-- ONE THUMBNAIL PER MODEL. Jet, 2026-08-07: "we should show the
-             models in the group. IE if you have 2 minis of Legionaires that
-             is visually displayed." A Squad is a number of models on a table,
-             and a single photo said "Legionnaires" where three of them say
-             what you are actually putting down. -->
-        ${u.art ? `<span class="dzc-sq-minis" style="--cols:${Math.ceil(Math.sqrt(s.models.length))}"
-          aria-label="${esc(u.name)} × ${s.models.length}">${
-          s.models.map(() => `<img class="dzc-sq-art" src="${esc(u.art)}" alt=""
-            loading="lazy" onerror="this.closest('.dzc-sq-minis').remove()">`).join('')
+        <!-- ONE PICTURE. Jet, 2026-08-07: "I no longer wish for like, adding
+             more units to actually increase the # of minis visible. That's a
+             bit silly."
+             It used to draw one thumbnail per model, in a ceil(sqrt(n)) grid,
+             so a Squad of nine was nine postage stamps of the same photograph
+             at a third of the size. It never said anything the number beside
+             it did not say better, and it made the one thing you are meant to
+             recognise -- what the model looks like -- smaller the more of them
+             you took. The count is a number; this is the picture. -->
+        ${u.art ? `<span class="dzc-sq-minis" aria-label="${esc(u.name)}">${
+          `<img class="dzc-sq-art" src="${esc(u.art)}" alt=""
+            loading="lazy" onerror="this.closest('.dzc-sq-minis').remove()">`
         }</span>` : ''}
         <div class="dzc-sq-id">
           <h3 class="dzc-sq-title">
