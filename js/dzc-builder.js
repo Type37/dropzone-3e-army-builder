@@ -1292,6 +1292,43 @@
    * Same disabled-reason wrapper as the Squad stepper, for the same reason —
    * a disabled control does not reliably fire hover, so the title goes on a
    * span that is never disabled. */
+  /* RAW MATERIALS, on the only Squads that may hold any.
+   *
+   * "RM tokens cost 5pts each and are assigned to those Genitor Units"
+   * (Genitor X). It is a purchase, so it reads like the other purchase in this
+   * app: press the price. What it costs is on the control, and the cap is the
+   * number the symbol beside the Unit's name already shows.
+   *
+   * Its own block rather than a chip on the header row. The header carries how
+   * many MODELS are in the Squad and what they cost, and RM is neither -- it
+   * is cargo, bought by the token, capped by the Transport Symbol. Putting a
+   * second stepper up there next to the model count is the confusion Jet had
+   * just removed from Variant Units.
+   *
+   * Nothing is drawn on a Unit that cannot hold RM, which is every Unit in
+   * five factions and all but two in Bioficer. genitorCap answers that. */
+  function rmControl(a, s) {
+    const cap = window.DZCArmy.genitorCap(a, s);
+    if (!cap) return '';
+    const n = window.DZCArmy.rmOf(s);
+    const A = window.DZCArmy;
+    const btn = (dir, ok, why, label, icon) => {
+      const b = `<button type="button" ${ok ? '' : 'disabled'}
+                 onclick="DZCBuilder.rm('${s.id}',${dir})"
+                 aria-label="${label}">${window.DZCIcon(icon, { size: 14 })}</button>`;
+      return ok || !why ? b : `<span class="dzc-step-why" title="${esc(why)}">${b}</span>`;
+    };
+    return `<div class="dzc-rm">
+      <span class="dzc-rm-head">${window.DZCIcon('rm', { size: 15 })}<b>Raw materials</b></span>
+      <span class="dzc-stepper">
+        ${btn(-1, n > 0, 'A Genitor may begin empty, but not below zero.', 'One fewer RM token', 'remove')}
+        <b>${n}</b><i>of ${cap}</i>
+        ${btn(1, n < cap, `It may never have more than ${cap} RM tokens aboard.`, 'One more RM token', 'add')}
+      </span>
+      <span class="dzc-rm-pts">${n * A.RM_POINTS}<small>pts</small></span>
+    </div>`;
+  }
+
   /* A VARIANT IS A BLOCK: its name, how many of them you have, and the guns
    * THAT variant fires.
    *
@@ -1679,6 +1716,11 @@
            a list of names here and a greyed weapon table there. Compact view
            has no blocks, so it keeps the list. -->
       ${compact ? U.variantsHtml(u, (v, i) => variantStepper(a, s, u, i), { stats: false }) : ''}
+      <!-- Above the riders, because RM tokens ARE cargo: they sit aboard the
+           Genitor exactly as a Squad does, and they are what the Squads below
+           get Spawned from. Compact view keeps it -- it takes away the stat
+           grid and the weapon table, never a control. -->
+      ${rmControl(a, s)}
       <!-- What is riding in this thing, drawn as a bracket rather than left to
            an indent. A carried Squad was one 2px rule and 22px of margin from
            an uncarried one, which is a difference you have to already know to
@@ -2524,6 +2566,14 @@
         </div>
         ${mixStr ? `<div class="pr-variants">${mixStr}</div>` : ''}
         <div class="pr-stats">${stats}${u.special ? ` — ${esc(u.special)}` : ''}</div>
+        <!-- RM aboard. This is the sheet you deploy from, and RM tokens are
+             physically placed on the Genitor before the first Round — a
+             number folded into the Squad's points is not something you can
+             set a model up from. It prints as tokens, not as the 35pts they
+             cost, because pts are what you paid and tokens are what you put
+             on the table. -->
+        ${window.DZCArmy.rmOf(s) ? `<div class="pr-rm">${
+          window.DZCArmy.rmOf(s)} RM aboard</div>` : ''}
         ${cap ? `<div class="pr-cap">${cap}</div>` : ''}
         ${wpns}
         ${gear}
@@ -3015,6 +3065,16 @@
       const s = window.DZCArmy.findSquad(current, id);
       if (!s) return;
       const r = window.DZCArmy.setModelCount(current, id, s.models.length + d);
+      if (r && !r.ok) return say(r.reason);
+      refresh();
+    },
+    /* Raw Materials. Same shape as count: setRm owns the rule, this speaks
+     * whatever it refuses -- the button is disabled only while the reason sits
+     * on its wrapper, and a keyboard reaching it another way still hears why. */
+    rm: (id, d) => {
+      const s = window.DZCArmy.findSquad(current, id);
+      if (!s) return;
+      const r = window.DZCArmy.setRm(current, id, window.DZCArmy.rmOf(s) + d);
       if (r && !r.ok) return say(r.reason);
       refresh();
     },

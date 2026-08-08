@@ -336,7 +336,25 @@ const OG_STEPS = [
   `],
 ];
 
-const STEPS = APP === 'og' ? OG_STEPS : APP === 'dzc' ? DZC_STEPS : DFC_STEPS;
+/* ONE SHOT OF WHATEVER YOU ASK FOR.
+ *
+ * The walks above are fixed lists, so looking at a state none of them sets up
+ * -- a Bioficer Genitor with RM aboard, say -- meant either bloating a walk
+ * with a step nobody else needs or hand-rolling a second CDP driver in a
+ * scratchpad. This is the third option, and it is why it exists: the browser
+ * pane in a Claude session does not always composite a frame, and when it
+ * does not, this file is the only way to actually LOOK at what shipped.
+ *
+ *   SHOT_STEP='<js run in the page>' node scripts/shots.mjs <base> <out> custom
+ *
+ * SHOT_CLIP='.selector' crops to one element, the same as a walk step's third
+ * field. SHOT_NAME renames the file.
+ */
+const CUSTOM_STEPS = [[process.env.SHOT_NAME || 'custom', process.env.SHOT_STEP || 'void 0',
+  process.env.SHOT_CLIP || undefined]];
+
+const STEPS = APP === 'og' ? OG_STEPS : APP === 'custom' ? CUSTOM_STEPS
+  : APP === 'dzc' ? DZC_STEPS : DFC_STEPS;
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 

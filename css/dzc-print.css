@@ -71,6 +71,9 @@
 /* Capacity and cargo, as the symbols themselves. Sized down to sit on an 8.5pt
    line without pushing the row apart — the glyph has to be small enough to be
    a note beside the name and big enough to still read its digit. */
+/* RM aboard a Genitor. Bold because it is a setup instruction rather than a
+   stat: this many tokens go on the model before Round 1. */
+:is(#dzc-print, .pp-paper) .pr-rm { margin: 1pt 0; font-size: 8pt; font-weight: 700; }
 :is(#dzc-print, .pp-paper) .pr-cap { display: flex; align-items: center; gap: 3pt; margin: 1pt 0; }
 :is(#dzc-print, .pp-paper) .pr-cap .dzc-badge { --badge-px: 15pt; --cargo-px: 12pt; }
 :is(#dzc-print, .pp-paper) .pr-cap .dzc-sep { font-size: 8pt; color: #333; }

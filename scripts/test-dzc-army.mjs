@@ -1238,5 +1238,68 @@ console.log('\nseeding the starters does not eat the armies already there');
   store.clear();
 }
 
+/* RAW MATERIALS — Genitor X, Bioficer Unit Special Rules.
+ *
+ * "Genitor Units may begin the game with up to X Raw Materials (RM) tokens
+ * aboard them, and they may begin empty... RM tokens cost 5pts each and are
+ * assigned to those Genitor Units. Their points contribute to their Group's
+ * total cost but do not contribute towards any category."
+ *
+ * The last clause is the one worth a test: it is the only place in this app
+ * where points count toward a total and toward no category, and getting it
+ * wrong buys you free Vanguard against an inflated Standard. */
+console.log('\nraw materials on Genitor Units (Genitor X)');
+{
+  store.clear();
+  A.load();
+  await DZC.loadFaction('bioficer');
+  await DZC.loadFaction('ucm');
+
+  const a = A.create('bioficer', 'RM', 2000);
+  const g = A.addGroup(a, 'G');
+  const ark = A.addSquad(a, g.id, 'grievance-genitor-ark', 1);
+  const gyro = A.addSquad(a, g.id, 'gyro-aero-genitor', 1);
+  const thorn = A.addSquad(a, g.id, 'thorn-light-skimmer', 1);
+
+  eq(String(A.genitorCap(a, ark)), '12', 'a Grievance Genitor Ark caps at the 12 in its hollow square');
+  eq(String(A.genitorCap(a, gyro)), '8', 'a Gyro Aero-Genitor caps at 8');
+  eq(String(A.genitorCap(a, thorn)), '0', 'a Thorn is not a Genitor — it has no hollow square');
+
+  ok(A.setRm(a, thorn.id, 1).ok === false, 'RM cannot be assigned to a Unit that is not a Genitor');
+  ok(A.setRm(a, ark.id, 13).ok === false, 'and never more than the number in the symbol');
+  ok(A.setRm(a, ark.id, -1).ok === false, 'nor below zero');
+
+  const bare = A.squadCost(a, ark);
+  ok(A.setRm(a, ark.id, 12).ok, 'a Genitor may be filled to its cap');
+  eq(String(A.squadCost(a, ark) - bare), '60', '12 RM cost 60pts — 5pts each');
+  eq(String(A.rmOf(ark)), '12', 'and the Squad remembers how many it holds');
+
+  ok(A.setRm(a, ark.id, 0).ok, 'a Genitor may begin empty');
+  eq(String(A.squadCost(a, ark)), String(bare), 'and an empty one costs what it always did');
+  eq(A.rmOf(ark) === 0 && ark.rm === undefined, true, 'zero leaves no field behind to save or share');
+
+  /* THE CATEGORY CLAUSE. The Ark is Standard, so if RM leaked into
+   * categorySpend it would raise the very ceiling the other three are
+   * measured against — 60pts of free headroom for Vanguard. */
+  A.setRm(a, ark.id, 12);
+  const spend = A.categorySpend(a);
+  const total = A.armyCost(a);
+  const summed = Object.keys(spend).reduce((t, k) => t + spend[k], 0);
+  eq(String(total - summed), '60', 'RM points are in the army total and in no category');
+  eq(String(A.groupCost(a, a.groups[0]) - summed), '60', 'and in their Group’s cost, which is what 3.2 meters');
+
+  // Over the cap is unreachable by pressing anything, so validate is the
+  // backstop for a share link or a backup that carries one.
+  ark.rm = 99;
+  ok(hasErr(A.validate(a), 'never have more than 12'), 'an over-capacity Genitor is reported (Genitor X)');
+  thorn.rm = 3;
+  ark.rm = 0;
+  ok(hasErr(A.validate(a), 'is not a Genitor'), 'and so is RM sitting on a Unit that cannot hold any');
+  delete thorn.rm;
+
+  A.load().slice().forEach(x => A.remove(x.id));
+  store.clear();
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

@@ -155,7 +155,11 @@
           })),
           carriedBy: sq.carriedBy || null,
           commander: sq.commander ? { id: null, level: Number(sq.commander.level) || 0 } : null,
-          upgrades: sq.upgrades && typeof sq.upgrades === 'object' ? sq.upgrades : undefined
+          upgrades: sq.upgrades && typeof sq.upgrades === 'object' ? sq.upgrades : undefined,
+          // Restored as saved, not clamped. A backup may be illegal and
+          // validate reports it -- the same contract every other field here
+          // has, and silently binning somebody's 12 RM would be worse.
+          rm: Number(sq.rm) > 0 ? Math.floor(Number(sq.rm)) : undefined
         });
       });
       army.groups.push(group);
@@ -1547,11 +1551,71 @@
       .filter(c => !c.squadId).reduce((t, c) => t + levelCost(c.level), 0);
   }
 
+  /* RAW MATERIALS, the Bioficer resource you may buy before the game.
+   *
+   * "Genitor Units may begin the game with up to X Raw Materials (RM) tokens
+   * aboard them, and they may begin empty -- X is shown within their Transport
+   * Symbol. When building your Army, RM tokens cost 5pts each and are assigned
+   * to those Genitor Units. Their points contribute to their Group's total
+   * cost but do not contribute towards any category." (Genitor X, Bioficer
+   * Unit Special Rules.)
+   *
+   * WHAT MAKES A GENITOR. The rule identifies them by the symbol and nothing
+   * else: a Bioficer Unit with a HOLLOW GREEN SQUARE, and the number in it is
+   * the cap. There is no "Genitor" entry in a Unit's special rules to read --
+   * the Ark's say "Puppeteer 6", Skimmer, Surveyor" -- so the symbol is the
+   * only place this fact lives. A square capacity alone will not do: a UCM
+   * Raven Light Troopship has square 2 and is not a Genitor, because the
+   * colour is what the rule is naming and the colour is the faction.
+   *
+   * Two Units qualify today: Grievance Genitor Ark 12, Gyro Aero-Genitor 8.
+   * Read off the data rather than listed here, so a new card needs no code. */
+  const RM_POINTS = 5;
+
+  function genitorCap(army, squad) {
+    if (!army || army.faction !== 'bioficer') return 0;
+    const u = unitOf(army, squad);
+    return u ? window.DZC.capacityFor(u, 'square') : 0;
+  }
+
+  function rmOf(squad) {
+    const n = Number(squad && squad.rm) || 0;
+    return n > 0 ? Math.floor(n) : 0;
+  }
+
+  function rmCost(squad) {
+    return rmOf(squad) * RM_POINTS;
+  }
+
+  /* Refused with the rule, not clamped. Everywhere else in this builder that
+   * cannot do what you asked says why (3.2), and a stepper that silently
+   * stops at 12 is the dead control canSetCount was fixed for. */
+  function setRm(army, squadId, n) {
+    const s = findSquad(army, squadId);
+    if (!s) return { ok: false, reason: 'Unknown Squad.' };
+    const cap = genitorCap(army, s);
+    const u = unitOf(army, s);
+    if (!cap) {
+      return { ok: false,
+        reason: `${u ? u.name : 'This Unit'} is not a Genitor — RM tokens are assigned to Units with a hollow green square.` };
+    }
+    const want = Math.floor(Number(n) || 0);
+    if (want < 0) return { ok: false, reason: 'A Genitor may begin empty, but not below zero.' };
+    if (want > cap) {
+      return { ok: false,
+        reason: `${u.name} may never have more than ${cap} RM tokens aboard.` };
+    }
+    s.rm = want;
+    if (!want) delete s.rm;
+    touch(army);
+    return { ok: true, reason: null };
+  }
+
   function squadCost(army, squad) {
     const u = unitOf(army, squad);
     const c = commanderFor(army, squad.id);
     return squad.models.reduce((t, m) => t + modelCost(u, m), 0)
-      + upgradeCost(army, squad) + (c ? levelCost(c.level) : 0);
+      + upgradeCost(army, squad) + rmCost(squad) + (c ? levelCost(c.level) : 0);
   }
 
   function groupCost(army, group) {
@@ -1571,6 +1635,11 @@
       const u = unitOf(army, s);
       if (!u) return;
       const c = (u.category || '').toLowerCase();
+      /* RM is deliberately absent. "Their points contribute to their Group's
+       * total cost but do not contribute towards any category" (Genitor X),
+       * so buying 12 RM onto a Standard Ark must not move Standard up and
+       * quietly buy you 60pts of Vanguard against it. squadCost adds them;
+       * this does not, and the difference is the rule. */
       out[c] = (out[c] || 0) + s.models.reduce((t, m) => t + modelCost(u, m), 0)
         + upgradeCost(army, s);
     }));
@@ -1625,6 +1694,24 @@
         errors.push({ rule: '3.2', msg: `${cap1(c)} spend (${spend[c]}pts) exceeds Standard (${std}pts).` });
       }
     });
+
+    /* More RM aboard than the symbol allows. Reachable by a share link, an
+     * imported backup, or a card whose capacity has been reduced between
+     * releases -- setRm refuses it, so nothing you can press gets here. */
+    army.groups.forEach(g => g.squads.forEach(s => {
+      const held = rmOf(s);
+      if (!held) return;
+      const cap = genitorCap(army, s);
+      const u = unitOf(army, s);
+      if (!u) return;
+      if (!cap) {
+        errors.push({ rule: 'Genitor X', group: g.id,
+          msg: `${u.name} holds ${held} RM but is not a Genitor.` });
+      } else if (held > cap) {
+        errors.push({ rule: 'Genitor X', group: g.id,
+          msg: `${u.name} holds ${held} RM — it may never have more than ${cap} aboard.` });
+      }
+    }));
 
     // Rare / Unique, counted by NAME across the whole army.
     const byName = {};
@@ -1832,6 +1919,8 @@
     commanders, commanderFor, commanderTargets,
     addCommander, removeCommander, assignCommander, syncCommanders, levelCost,
     modelCost, squadCost, groupCost, armyCost, categorySpend, validate,
+    // Raw Materials (Genitor X)
+    genitorCap, rmOf, rmCost, setRm, RM_POINTS,
     // enforcement
     canAddUnit, canSetCount, squadsNamed, squadFill,
     upgradesFor, hasUpgrade, toggleUpgrade, upgradeCost,

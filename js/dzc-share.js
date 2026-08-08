@@ -56,6 +56,11 @@
             const i = gr.squads.findIndex(x => x.id === sq.carriedBy);
             if (i >= 0) o.c = i;
           }
+          // Raw Materials aboard a Genitor. Only when bought, because a Genitor
+          // may legally begin empty and a 0 in every Squad is bytes in a URL
+          // with a real length limit. `r`, since `g` is already this Squad's
+          // upgrades and `c` its carrier.
+          if (sq.rm > 0) o.r = sq.rm;
           if (sq.commander) {
             o.k = sq.commander.level;
             // The name is on the army's Commander, not on the Squad's copy of
@@ -99,6 +104,7 @@
           // The name rides on the Squad's copy only as far as the rebuild
           // below; syncCommanders writes the copy back as a bare level.
           commander: sq.k ? { level: sq.k, name: sq.j || null } : null,
+          rm: Number(sq.r) > 0 ? Math.floor(Number(sq.r)) : undefined,
           upgrades: sq.g ? Object.keys(sq.g).reduce((acc, scope) => {
             acc[scope] = {};
             sq.g[scope].forEach(n => { acc[scope][n] = true; });
@@ -229,7 +235,13 @@
       // loadout name against, so one of each survives the trip back.
       const tail = kinds.length && !(kinds.length === 1 && kinds[0] === u.name)
         ? `: ${kinds.map(k => (mix[k] > 1 ? `${mix[k]}x ${k}` : k)).join(', ')}` : '';
-      out.push(`${pad}${s.models.length} x ${u.name} [${A.squadCost(army, s)}pts]${tail}`);
+      /* Named on the line, not left inside the points. The cost already
+       * carries them, so a Genitor with 8 RM just reads 40pts dearer than the
+       * same Ark without -- and the one thing an opponent reading your list
+       * wants to know about a Genitor is how much it can Spawn on turn one. */
+      const rm = A.rmOf(s);
+      out.push(`${pad}${s.models.length} x ${u.name} [${A.squadCost(army, s)}pts]${tail}`
+        + (rm ? ` + ${rm} RM` : ''));
       g.squads.filter(x => x.carriedBy === s.id).forEach(r => squad(g, r, depth + 1));
     }
 

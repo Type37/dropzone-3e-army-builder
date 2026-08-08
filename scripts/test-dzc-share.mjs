@@ -203,5 +203,40 @@ console.log('\nJSON');
   ok(copy.id !== army.id, 'and a fresh id');
 }
 
+/* Raw Materials across a link and a backup. RM is 5pts a token and the only
+ * thing you can buy that leaves no trace in the models, the variants or the
+ * upgrades — so a link that drops it hands your opponent an Ark that costs
+ * 60pts less than the one you built and can Spawn nothing on turn one. */
+console.log('\nraw materials survive the trip');
+{
+  await DZC.loadFaction('bioficer');
+  const bio = A.create('bioficer', 'Genitors', 2000);
+  const bg2 = A.addGroup(bio, 'Arks');
+  const ark = A.addSquad(bio, bg2.id, 'grievance-genitor-ark', 1);
+  const gyro = A.addSquad(bio, bg2.id, 'gyro-aero-genitor', 1);
+  A.setRm(bio, ark.id, 12);
+  A.setRm(bio, gyro.id, 3);
+  const cost = A.armyCost(bio);
+
+  const u2 = await S.link(bio);
+  const back2 = S.unpack(JSON.parse(await S.inflate(u2.split('#share/')[1])));
+  A.all().unshift(back2);
+  const bArk = back2.groups.flatMap(g => g.squads).find(s => s.unitId === 'grievance-genitor-ark');
+  const bGyro = back2.groups.flatMap(g => g.squads).find(s => s.unitId === 'gyro-aero-genitor');
+  eq(A.rmOf(bArk), 12, 'a filled Genitor arrives with all 12 RM aboard');
+  eq(A.rmOf(bGyro), 3, 'and a part-filled one with exactly what it had');
+  eq(A.armyCost(back2), cost, 'so the shared army costs what the built one did');
+
+  const r2 = A.importArmies(S.json(bio));
+  const jArk = A.get(r2.added[0].id).groups.flatMap(g => g.squads)
+    .find(s => s.unitId === 'grievance-genitor-ark');
+  eq(A.rmOf(jArk), 12, 'and a JSON backup restores them too');
+
+  ok(S.text(bio).includes('+ 12 RM'), 'the plain-text sheet names them on the Unit line');
+  A.setRm(bio, ark.id, 0);
+  ok(!/RM/.test(S.text(bio).split('\n').find(l => /Genitor Ark/.test(l)) || ''),
+     'and says nothing at all about an empty Genitor');
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

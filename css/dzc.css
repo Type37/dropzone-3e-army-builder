@@ -1285,7 +1285,8 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    clear its OWN drop at 84 as well, and 96 covers both. */
 .dzc-riders > .dzc-squad > .dzc-sq-body,
 .dzc-riders > .dzc-squad > .dzc-vblock,
-.dzc-riders > .dzc-squad > .dzc-variants {
+.dzc-riders > .dzc-squad > .dzc-variants,
+.dzc-riders > .dzc-squad > .dzc-rm {
   padding-left: calc(var(--mini-x) - var(--carry-gap) + 12px);
 }
 /* AND THE CARRIER'S OWN CONTENT CLEARS IT. The drop falls through the band
@@ -1294,11 +1295,40 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    always given, just measured off the new x. Indented, never clipped. */
 .dzc-squad.is-carrier > .dzc-sq-body,
 .dzc-squad.is-carrier > .dzc-vblock,
-.dzc-squad.is-carrier > .dzc-variants {
+.dzc-squad.is-carrier > .dzc-variants,
+.dzc-squad.is-carrier > .dzc-rm {
   padding-left: calc(var(--carry-x) + 12px);
 }
 .dzc-squad > .dzc-sq-body, .dzc-squad > .dzc-vblock,
-.dzc-squad > .dzc-variants { padding-left: 12px; }
+.dzc-squad > .dzc-variants, .dzc-squad > .dzc-rm { padding-left: 12px; }
+
+/* RAW MATERIALS, and a Genitor is ALWAYS a carrier -- the hollow square that
+   makes it one is the same symbol that sets the RM cap -- so this block is on
+   the carry line's path every single time it draws. Both clearance lists
+   above name it for that reason. Miss one and the line scratches through it,
+   which is the bug the first OG shot of the new geometry caught.
+
+   Square, like every other panel (CLAUDE.md §4). The stepper keeps its own
+   radius; a control may be soft, a panel may not. */
+.dzc-rm {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin-top: 4px; padding-top: 4px;
+  border-top: 1px solid var(--line, #eee5d6);
+}
+.dzc-rm-head {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11.5px; color: var(--ink-2, #6b6459);
+}
+.dzc-rm-head b { font-weight: 600; color: var(--ink, #2c2a26); }
+.dzc-rm-head svg { flex: 0 0 auto; color: var(--acc, #1b3a5c); }
+/* "3 of 12" -- the cap is the number on the Unit's own Transport Symbol, so
+   printing it here is not a second fact, it is the one you are spending
+   against. Same shape the category ratios use. */
+.dzc-rm .dzc-stepper i {
+  font-style: normal; font-size: 11px; color: var(--ink-2, #6b6459); padding-left: 2px;
+}
+.dzc-rm-pts { margin-left: auto; font-weight: 600; font-size: 13px; }
+.dzc-rm-pts small { font-size: 10px; font-weight: 400; color: var(--ink-2, #6b6459); }
 /* A Squad reads as the unit does when you open it: art, the capacity symbol at
    size beside the name, the meta line, the stats, the rules, a block per
    variant and the whole weapon table. Laid out with flex and wrapping rather
