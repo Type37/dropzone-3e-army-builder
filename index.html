@@ -20,7 +20,14 @@
 <meta name="theme-color" content="#1b3a5c">
 <meta property="og:title" content="Dropzone Commander 3E Army Builder">
 <meta property="og:description" content="Dropzone Commander 3rd Edition by TTCombat. This is an army builder made by WarLore.">
-<meta property="og:image" content="https://type37.github.io/dropzone-3e-army-builder/assets/logos/og-preview.png">
+<!-- ?v= BUMPS WITH THE PICTURE, and it is not decoration. Discord, Slack,
+     iMessage and Twitter all re-host an og:image on their own proxy and key
+     that cache on the image URL, so replacing the file on disk changes nothing
+     anyone sees — the old shot keeps being served for days. A new query string
+     is a new URL, which is the only reliable way to evict it. Bump this every
+     time scripts/shots.mjs regenerates og-preview.png, the same way sw.js
+     bumps its CACHE, and keep the twitter:image below identical to it. -->
+<meta property="og:image" content="https://type37.github.io/dropzone-3e-army-builder/assets/logos/og-preview.png?v=2">
 <meta property="og:image:width" content="1600">
 <meta property="og:image:height" content="840">
 <meta property="og:image:type" content="image/png">
@@ -30,7 +37,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Dropzone Commander 3E Army Builder">
 <meta name="twitter:description" content="Dropzone Commander 3rd Edition by TTCombat. This is an army builder made by WarLore.">
-<meta name="twitter:image" content="https://type37.github.io/dropzone-3e-army-builder/assets/logos/og-preview.png">
+<meta name="twitter:image" content="https://type37.github.io/dropzone-3e-army-builder/assets/logos/og-preview.png?v=2">
 <title>Dropzone Commander 3E Army Builder</title>
 <link rel="icon" href="favicon.ico" sizes="32x32">
 <link rel="icon" href="assets/logos/favicon-192.png" sizes="192x192" type="image/png">
