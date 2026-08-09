@@ -113,18 +113,6 @@
         </div>
         <h2 class="tool-card-title">Unit Reference</h2>
       </div>
-      <!-- The printable sheets in assets/ref/. They were built, they are in
-           sw.js's precache so they work at a table with no signal — and
-           nothing in the app linked to them, so the only way to reach one was
-           to know the URL. Dropfleet puts the same link on its landing page
-           (index.html:111) and words it "Faction References"; both are taken
-           as they stand. A new tab, because it is a separate document. -->
-      <div class="tool-card tool-card--ref card-deco" onclick="window.open('assets/ref/index.html','_blank','noopener')">
-        <div class="tool-card-icon">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="7" rx="1"/><path d="M6 16h12v5H6z"/></svg>
-        </div>
-        <h2 class="tool-card-title">Faction References</h2>
-      </div>
     </div>
     <div class="landing-objectives" id="landing-objectives"></div>
   </section>
@@ -311,6 +299,17 @@
          watches. -->
     <span>by <a href="https://ttcombat.com/pages/dropzone-commander-resources" target="_blank" rel="noopener">TTCombat</a></span>
     <span class="gif-builder">Army builder by <a class="warlore-mark warlore-mark-inline" href="https://linktr.ee/warlore" target="_blank" rel="noopener" title="WarLore">War<span class="wl-lore">Lore</span></a></span>
+    <!-- The other WarLore builder. It sits in the WarLore cluster rather than
+         beside TTCombat, because whose tool it is is the thing it has in
+         common with the mark next to it. The Dropfleet footer carries the
+         mirror of this line. No interpunct: the two are already one cluster
+         and the app's whole budget for the glyph is the two above.
+
+         One word, not "Dropfleet builder": the bar says "Army Builder" and
+         the mark beside this says "Army builder by WarLore", so a third
+         "builder" on the landing screen breaks the rule about a word twice
+         (CLAUDE.md 3). The house-rules suite caught it. -->
+    <a href="https://type37.github.io/dropfleet-builder/" target="_blank" rel="noopener">Dropfleet</a>
     <a id="footer-feedback" href="mailto:warlore1@outlook.com">Send Feedback</a>
     <span class="gif-sep">·</span>
     <a href="https://github.com/Type37/dropzone-3e-army-builder" target="_blank" rel="noopener">Source on GitHub</a>
