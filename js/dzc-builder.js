@@ -1205,12 +1205,13 @@
    * else in this builder already says it. */
   function stepperHtml(army, sq) {
     const n = sq.models.length;
+    // canSetCount no longer refuses below squadMin (Jet, 2026-08-09: "let
+    // squads drop to 0") -- a Squad under minimum is unfinished, not
+    // forbidden, and validate() is what says so now. Only the maximum still
+    // stops the down button, and only a Transport ever can (it has no down
+    // button of its own to press).
     const down = window.DZCArmy.canSetCount(army, sq.id, n - 1);
     const up = window.DZCArmy.canSetCount(army, sq.id, n + 1);
-    // Going to zero removes the Squad, which is always allowed — the minimum
-    // is about a Squad that exists, not about being unable to change your
-    // mind.
-    const downOk = down.ok || n === 1;
     /* The reason goes on a WRAPPER, not on the button.
      *
      * A disabled form control does not reliably fire hover, and browsers
@@ -1225,7 +1226,7 @@
       return ok || !why ? b : `<span class="dzc-step-why" title="${esc(why)}">${b}</span>`;
     };
     return `<span class="dzc-stepper">
-      ${btn(-1, downOk, down.reason, 'Remove one model', 'remove')}
+      ${btn(-1, down.ok, down.reason, 'Remove one model', 'remove')}
       <b>${n}</b>
       ${btn(1, up.ok, up.reason, 'Add one model', 'add')}
     </span>`;

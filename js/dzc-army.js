@@ -1224,7 +1224,22 @@
   }
 
   /* Squad size limits (the card's own min/max). Transports are exempt: they
-   * have no squad size, and their count is derived from their cargo. */
+   * have no squad size, and their count is derived from their cargo.
+   *
+   * The MAXIMUM is a hard ceiling -- there is no such thing as "six Battle
+   * Buses, temporarily" -- so it still refuses outright.
+   *
+   * The MINIMUM used to refuse the same way, and that is what forced the
+   * odd behaviour Baxter flagged 2026-08-09: with nowhere legal to land
+   * between "at minimum" and "gone", a Squad you were shrinking toward zero
+   * would sit stuck at minimum, or a Variant control would flip which model
+   * you had rather than let the count move. Jet, 2026-08-09: "let squads
+   * drop to 0."
+   *
+   * So it no longer blocks. A Squad under its minimum is not a state this
+   * function forbids you from reaching -- it is a state validate() reports
+   * (rule 2), the same way an over-capacity Genitor or a half-full Transport
+   * already are: buildable, and named as unfinished rather than refused. */
   function canSetCount(army, squadId, n) {
     const s = findSquad(army, squadId);
     if (!s) return { ok: false, reason: 'Unknown Squad.' };
@@ -1235,9 +1250,6 @@
     }
     if (u.squadMax != null && n > u.squadMax) {
       return { ok: false, reason: `${u.name} has a maximum Squad size of ${u.squadMax}.` };
-    }
-    if (u.squadMin != null && n < u.squadMin && n > 0) {
-      return { ok: false, reason: `${u.name} has a minimum Squad size of ${u.squadMin}.` };
     }
     return { ok: true, reason: null };
   }

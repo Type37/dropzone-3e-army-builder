@@ -558,6 +558,28 @@ console.log('\nsquad size is enforced at the stepper');
   A.remove(a.id);
 }
 
+/* Jet, 2026-08-09: "let squads drop to 0." canSetCount used to refuse
+ * n < squadMin outright, which left a Squad you were shrinking with nowhere
+ * legal to land between "at minimum" and "gone" -- the maximum is still a
+ * hard ceiling (there is no such thing as six of a Unit "temporarily"), but
+ * the minimum is now something validate() reports rather than something the
+ * stepper blocks. */
+console.log('\nbut the minimum is not -- a Squad may sit below it and say so');
+{
+  const a = army();
+  const g = A.addGroup(a);
+  const s = A.addSquad(a, g.id, 'legionnaires', 3);   // squadMin 2
+  eq(String(A.unitOf(a, s).squadMin), '2', 'Legionnaires have a minimum of two');
+
+  ok(A.setModelCount(a, s.id, 1).ok, 'dropping to one is allowed, not refused');
+  eq(s.models.length, 1, 'the Squad actually shrank');
+  ok(hasErr(A.validate(a), 'minimum is 2'), 'and validate reports it as unfinished (rule 2)');
+
+  ok(A.setModelCount(a, s.id, 0).ok, 'and it can go all the way to zero');
+  eq(A.findSquad(a, s.id), null, 'which removes the Squad -- the same as it always did at one');
+  A.remove(a.id);
+}
+
 console.log('\nCommander levels are gated by game size (3.2.5)');
 {
   const a = army(1000);                       // Skirmish: L4 and L5 only
@@ -945,24 +967,27 @@ console.log('\nthe ranged Variant stepper adds and removes models (not just trad
   ok(A.adjustVariantCount(a, s.id, u.variants[1].name, -1).ok, 'shrinking back toward the minimum is allowed');
   eq(String(s.models.length), '1', 'down to one');
 
-  // Squad of one, same "changing your mind" exception the top stepper has
-  // (stepperHtml: downOk = down.ok || n === 1): the last model may still come
-  // out, same as pressing the Squad stepper down to zero would.
+  // Squad of one: the last model may still come out, same as pressing the
+  // Squad stepper down to zero would (canSetCount no longer refuses below
+  // squadMin at all -- Jet, 2026-08-09: "let squads drop to 0").
   ok(A.canAdjustVariantCount(a, s.id, u.variants[0].name, -1).ok,
      'and the last model can still come out, same as the Squad stepper going to zero');
   ok(A.adjustVariantCount(a, s.id, u.variants[0].name, -1).ok, 'which removes the Squad entirely');
   eq(A.findSquad(a, s.id), null, 'nothing left to find');
   A.remove(a.id);
 
-  // A Unit whose squadMin is actually above one -- Thorn, 2-8 -- can show the
-  // floor refusing a real drop rather than the always-allowed last model.
+  // A Unit whose squadMin is actually above one -- Thorn, 2-8. Dropping below
+  // it used to be refused outright; now it is allowed and the SQUAD reports
+  // itself unfinished instead (Jet, 2026-08-09: "let squads drop to 0").
   const b = A.create('bioficer', 'T2', 2000);
   const g2 = A.addGroup(b);
   const thornSq = A.addSquad(b, g2.id, 'thorn-light-skimmer');   // starts at squadMin, 2
   const tu = A.unitOf(b, thornSq);
   eq(String(thornSq.models.length), '2', 'a fresh Thorn Squad is already at its minimum of two');
-  ok(A.canAdjustVariantCount(b, thornSq.id, tu.variants[0].name, -1).ok === false,
-     'so taking one away is refused -- squadMin is 2, and the Squad still has a second model');
+  ok(A.setModelCount(b, thornSq.id, 1).ok, 'dropping it to one is no longer refused');
+  ok(hasErr(A.validate(b), 'minimum is 2'), 'validate reports it as unfinished instead (rule 2)');
+  ok(A.setModelCount(b, thornSq.id, 0).ok, 'and it can still go all the way to zero, removing the Squad');
+  eq(A.findSquad(b, thornSq.id), null, 'nothing left to find');
   A.remove(b.id);
 }
 
