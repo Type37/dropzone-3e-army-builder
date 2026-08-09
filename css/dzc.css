@@ -483,10 +483,15 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 /* The one icon that keeps its own colours sits INSIDE its label, so it reads
    as part of the word rather than as a second mark beside it. */
 .dzc-wc-k .dzc-i--ma { vertical-align: -2px; margin-right: 3px; }
+/* ONE LINE, ALWAYS. In a 57px column "M&A MAX", "ATTACKS" and "RANGE" wrapped
+   and their cells came out 39px tall against 25 for the two that fitted -- so
+   the grid was 64px where 50 would do, on every weapon card in the app. The
+   label is the one thing here that can afford to be smaller: it is a fixed
+   word you learn once, sitting directly above the number you actually read. */
 .dzc-wc-k {
-  font: 700 9px/1.2 var(--font-condensed, 'Jost', sans-serif);
-  text-transform: uppercase; letter-spacing: .02em; color: var(--ink-2, #6b6459);
-  overflow-wrap: normal; word-break: keep-all;
+  font: 700 8.5px/1.15 var(--font-condensed, 'Jost', sans-serif);
+  text-transform: uppercase; letter-spacing: 0; color: var(--ink-2, #6b6459);
+  white-space: nowrap; overflow-wrap: normal; word-break: keep-all;
 }
 /* The die sits with the number, not beside it: "5" and the cube are one value. */
 .dzc-wc-v svg { vertical-align: -2px; margin-left: 2px; opacity: .75; }
@@ -497,7 +502,8 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-wc-rules { margin-top: 2px; }
 /* The same three marks the table carries: an upgrade, a variant-only gun, and
    in a Squad whether this one is actually yours. */
-.dzc-wc.is-upgrade { border-left: 3px solid #2e9e4f; }
+/* No edge on an upgrade card either. The price button in its corner says
+   "+10pts" or "Bought" in the same green, an inch away. */
 /* The weapon CARD says it with the chip beside the name instead -- see
    .dzc-wc-only. Nothing is left on the card's edge but the upgrade mark, which
    is a different question ("can I buy this") and the only one left needing an
@@ -1497,12 +1503,16 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    The line is drawn as a child, not a border, because a border cannot be
    animated on from nothing without moving the text beside it. */
 .dzc-vblock { position: relative; margin-bottom: 6px; padding-left: 9px; }
-.dzc-vblock::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
-  background: var(--line, #e0d8c8);
-  transform-origin: 50% 0;
+/* NO RAIL. Jet, 2026-08-08: "TOO MANY BARS. EXCEPT THIS LINE. this line is
+   good." The carry line is the one vertical stroke in a Group card that means
+   something, and it was competing with six of these on a single Howitzer --
+   same direction, same weight, same accent colour, saying something else
+   entirely. A Variant you have taken says so with a tint and its own name in
+   the accent; the count beside it says how many. */
+.dzc-vblock.is-taken > .dzc-vblock-head {
+  background: color-mix(in srgb, var(--acc, #1b3a5c) 9%, transparent);
 }
-.dzc-vblock.is-taken::before { width: 3px; background: var(--acc, #1b3a5c); }
+.dzc-vblock.is-taken > .dzc-vblock-head b { color: var(--acc, #1b3a5c); }
 
 /* And it DRAWS ON. Jet, 2026-08-07: "when you click on, the line should like,
    draw on."
@@ -1511,14 +1521,14 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    Nothing else moves -- the line is out of flow, so the block it belongs to
    does not reflow while it runs. */
 @keyframes dzc-vline {
-  from { transform: scaleY(0); }
-  to   { transform: scaleY(1); }
+  from { background: color-mix(in srgb, var(--acc, #1b3a5c) 34%, transparent); }
+  to   { background: color-mix(in srgb, var(--acc, #1b3a5c) 9%, transparent); }
 }
-.dzc-vblock.is-drawn::before {
+.dzc-vblock.is-drawn > .dzc-vblock-head {
   animation: dzc-vline .32s var(--ease-out, cubic-bezier(0, 0, 0, 1)) 1;
 }
 @media (prefers-reduced-motion: reduce) {
-  .dzc-vblock.is-drawn::before { animation: none; }
+  .dzc-vblock.is-drawn > .dzc-vblock-head { animation: none; }
 }
 .dzc-vblock-head {
   display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; margin-bottom: 2px;
@@ -1534,7 +1544,10 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-vblock-rules { display: flex; flex-wrap: wrap; gap: 3px; margin: 0 0 3px; }
 /* "Nice and big" -- this is the control the whole block exists for. */
 .dzc-vblock-n { margin-left: auto; }
-.dzc-vblock-n .dzc-stepper button { min-width: 40px; min-height: 40px; }
+/* 40px square was "nice and big" when a Variant block was the only control on
+   the row. Six of them set six 40px headers down one Squad, and 32 is still
+   well past the 24px anyone can hit. */
+.dzc-vblock-n .dzc-stepper button { min-width: 34px; min-height: 32px; }
 .dzc-vblock-n .dzc-stepper b { font-size: 16px; min-width: 20px; text-align: center; }
 
 /* Buy this gun. The price IS the button -- the upgrade table that used to
@@ -1613,15 +1626,32 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   .is-turn-on, .is-turn-off { animation: none; }
 }
 
+/* A DOT, not a word. Jet, 2026-08-08: "simpler dot picker instead of
+   take/taken."
+
+   This is the one-model Squad's Variant control -- a Battle Bus is a Bus or a
+   Rocket Bus and never both, so it is a radio. It read "Take" / "Taken",
+   which is two different words for one control and the wider of the two set
+   the width, so the row shifted every time you pressed it. A filled dot is
+   the same fact with nothing to read and nothing to reflow.
+
+   The hit area stays 24px; only the ink is small. */
 .dzc-v-pick {
-  min-height: 24px; padding: 2px 9px; cursor: pointer; border-radius: 0;
-  border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff);
-  color: var(--ink-2, #6b6459);
-  font: 600 11px/1 var(--font-ui, 'Jost', system-ui, sans-serif);
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; padding: 0; cursor: pointer;
+  border: 0; background: none; border-radius: 50%;
 }
-.dzc-v-pick:hover { border-color: var(--acc, #1b3a5c); color: var(--ink, #24201c); }
-.dzc-v-pick.is-on {
-  background: var(--acc, #1b3a5c); border-color: var(--acc, #1b3a5c); color: #fff;
+.dzc-v-pick::before {
+  content: ''; width: 13px; height: 13px; border-radius: 50%;
+  border: 2px solid var(--line, #d8d0c0); background: var(--surface-2, #fff);
+  transition: border-color .12s, background .12s;
+}
+.dzc-v-pick:hover::before { border-color: var(--acc, #1b3a5c); }
+.dzc-v-pick:focus-visible { outline: 2px solid var(--acc, #1b3a5c); outline-offset: 1px; }
+.dzc-v-pick.is-on::before {
+  border-color: var(--acc, #1b3a5c);
+  background: var(--acc, #1b3a5c);
+  box-shadow: inset 0 0 0 2px var(--surface-2, #fff);
 }
 /* Keyword abilities sit under the core stats, in the left column with them --
    they are what the Unit IS, read alongside its numbers rather than after the

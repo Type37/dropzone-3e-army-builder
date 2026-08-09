@@ -1427,9 +1427,13 @@
     if (s.models.length === 1 && (u.squadMax === 1 || (u.variants || []).length > 1)
         && u.squadMin === u.squadMax) {
       const on = s.models[0].variant === v.name;
+      // A dot. The Variant's name is beside it and the aria-label carries the
+      // whole sentence; the word inside the button was the third place it said
+      // the same thing, and "Take"/"Taken" changed the control's width.
       return `<button type="button" class="dzc-v-pick${on ? ' is-on' : ''}"
         aria-pressed="${on}" aria-label="${esc(u.name)}: ${esc(v.name)}"
-        onclick="DZCBuilder.pickVariant('${s.id}',${idx})">${on ? 'Taken' : 'Take'}</button>`;
+        title="${esc(v.name)}"
+        onclick="DZCBuilder.pickVariant('${s.id}',${idx})"></button>`;
     }
     /* A DELTA, NOT A TARGET COUNT. The stepper moves one model between this
      * Variant and the largest other one; it never changes how many miniatures
