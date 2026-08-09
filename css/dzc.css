@@ -912,10 +912,18 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-b-detail { min-width: 0; }
 .dzc-b-none { margin: 0; padding: 14px 2px; font-size: 13px; color: var(--ink-2, #9a9184); }
 
-/* An overview entry: what you need to choose between Groups, nothing to read. */
+/* An overview entry: what you need to choose between Groups, nothing to read.
+ *
+ * Used to be one <button> for the whole card. Baxter, 2026-08-09: "Cannot
+ * duplicate or delete from the full list of groups" -- those two actions only
+ * ever lived in the drilled-in Group header, so a button nested inside this
+ * button was the only place to put them, and a button cannot contain another
+ * one. The card is a plain div now; .dzc-bb-select is the button that opens
+ * the Group, .dzc-bb-actions the two that duplicate or remove it without
+ * opening anything. */
 .dzc-bb {
   display: flex; flex-direction: column; gap: 4px; width: 100%;
-  padding: 8px 9px; cursor: pointer; text-align: left;
+  padding: 8px 9px; text-align: left;
   border: 1px solid var(--line, #d8d0c0); border-left: 3px solid transparent;
   border-radius: 0; background: var(--surface-2, #fff); color: inherit;
   transition: border-color .12s, background .12s;
@@ -923,7 +931,16 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-bb:hover { border-color: var(--acc); }
 .dzc-bb.is-on { border-left-color: var(--acc); background: var(--surface-3, #f2ece0); }
 .dzc-bb.is-over { border-color: var(--danger, #b3261e); }
-.dzc-bb:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+.dzc-bb-select {
+  display: flex; flex-direction: column; gap: 4px; width: 100%;
+  padding: 0; border: 0; background: none; color: inherit; font: inherit;
+  text-align: left; cursor: pointer;
+}
+.dzc-bb-select:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+/* Bottom-right, same as the drilled header's own pair -- one glance says
+   these two act on the whole Group, not on whatever Squad the card happens
+   to be showing art for. */
+.dzc-bb-actions { display: flex; justify-content: flex-end; gap: 2px; margin-top: -2px; }
 /* The grip is absolutely positioned in this card's top-right corner, and this
    is the row that runs under it — so the row gives up that much of its width
    rather than letting the dots sit on top of the cost. They did: every Group
@@ -2648,12 +2665,24 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
 .dzc-squad.is-sq-dragging { opacity: .45; cursor: grabbing; }
 /* A Squad taken down to zero models stays -- it is not deleted, only empty
    (Jet, 2026-08-09: "make the entire card greyed out with 0 models but not
-   deleted"). Dimmed and desaturated so it reads as "not really here yet"
-   at a glance, same as the rest of the army; everything on it stays fully
-   clickable -- adding a model back, or Remove, both still work at full
-   opacity under the hood, this is paint only. */
-.dzc-squad.is-empty { opacity: .5; }
-.dzc-squad.is-empty .dzc-sq-art { filter: grayscale(1); }
+   deleted"). First cut dimmed the WHOLE card, opacity being an easy switch --
+   but opacity multiplies through everything under it, stepper and Variant
+   dots included, so the one control you actually need to press dimmed along
+   with the art. Jet, same day: "obviously leave the option to add
+   selections back... not prevent them from picking something... that goes
+   double for any of those units that are max size 1" -- exactly the dots.
+   So only the parts that are ABOUT a model you do not have dim: the art, the
+   name, the meta line, the stat grid, the cost. .dzc-sq-ctl (stepper,
+   Transport picker, Remove) and .dzc-vblock-n (the Variant dots/stepper) are
+   never touched -- full contrast, because they are the way out. */
+.dzc-squad.is-empty .dzc-sq-art { filter: grayscale(1) opacity(.6); }
+.dzc-squad.is-empty .dzc-sq-name,
+.dzc-squad.is-empty .dzc-sq-meta,
+.dzc-squad.is-empty .dzc-sq-cap,
+.dzc-squad.is-empty .dzc-sq-stats,
+.dzc-squad.is-empty .dzc-sq-cost,
+.dzc-squad.is-empty .dzc-vblock-head > b,
+.dzc-squad.is-empty .dzc-vblock-head > i { opacity: .55; }
 .dzc-drag-ghost {
   position: fixed; z-index: 900; pointer-events: none;
   transform: translate(12px, 10px);

@@ -971,23 +971,40 @@
     const art = g.squads.map(s => window.DZCArmy.unitOf(a, s)).filter(u => u && u.art)
       .slice(0, 4).map(u => `<img src="${esc(u.art)}" alt="" loading="lazy" title="${esc(u.name)}"
         onerror="this.remove()">`).join('');
-    return `<button type="button" class="dzc-bb${g.id === selectedGroup ? ' is-on' : ''}${
-      cost > cap ? ' is-over' : ''}" data-gid="${g.id}" onclick="DZCBuilder.selectGroup('${g.id}')">
+    const name = esc(window.DZCArmy.groupName(a, g));
+    return `<div class="dzc-bb${g.id === selectedGroup ? ' is-on' : ''}${
+      cost > cap ? ' is-over' : ''}" data-gid="${g.id}">
       <!-- The grip, and it has to be a separate target: dragging anywhere on
            the card would fight the tap that opens it, which is the commonest
            thing you do to one. -->
       <span class="dzc-bb-grip" role="button" tabindex="-1"
-            aria-label="Drag to reorder ${esc(window.DZCArmy.groupName(a, g))}"
+            aria-label="Drag to reorder ${name}"
             title="Drag to reorder"
             onpointerdown="DZCBuilder.gripDown(event, '${g.id}')"
             >${window.DZCIcon('drag_rows', { size: 16 })}</span>
-      <span class="dzc-bb-head"><b>${esc(window.DZCArmy.groupName(a, g))}</b>
-        <i>${cost}<s>/${cap}</s></i></span>
-      <span class="dzc-bb-meta">${g.squads.length} Squad${g.squads.length === 1 ? '' : 's'}${
-        models ? `, ${models} model${models === 1 ? '' : 's'}` : ''}</span>
-      ${space ? `<span class="dzc-bb-spaces">${space}</span>` : ''}
-      ${art ? `<span class="dzc-bb-art">${art}</span>` : ''}
-    </button>`;
+      <button type="button" class="dzc-bb-select" onclick="DZCBuilder.selectGroup('${g.id}')">
+        <span class="dzc-bb-head"><b>${name}</b>
+          <i>${cost}<s>/${cap}</s></i></span>
+        <span class="dzc-bb-meta">${g.squads.length} Squad${g.squads.length === 1 ? '' : 's'}${
+          models ? `, ${models} model${models === 1 ? '' : 's'}` : ''}</span>
+        ${space ? `<span class="dzc-bb-spaces">${space}</span>` : ''}
+        ${art ? `<span class="dzc-bb-art">${art}</span>` : ''}
+      </button>
+      <!-- Baxter, 2026-08-09: "Cannot duplicate or delete from the full list
+           of groups" -- both only ever lived in the drilled-in header, so
+           doing either meant opening the Group first. Same two actions, same
+           icons, on the card itself. stopPropagation because these sit
+           beside a button whose own click opens the Group -- without it,
+           duplicating would open the ORIGINAL Group right after. -->
+      <span class="dzc-bb-actions">
+        <button type="button" class="dzc-icon-btn" title="Duplicate Group"
+                onclick="event.stopPropagation();DZCBuilder.duplicateGroup('${g.id}')"
+                aria-label="Duplicate ${name}">${window.DZCIcon('content_copy', { size: 14 })}</button>
+        <button type="button" class="dzc-icon-btn" title="Remove Group"
+                onclick="event.stopPropagation();DZCBuilder.removeGroup('${g.id}')"
+                aria-label="Remove ${name}">${window.DZCIcon('delete', { size: 14 })}</button>
+      </span>
+    </div>`;
   }
 
   /* One thumbnail per distinct Unit, first from each Group, bordered in its
@@ -3132,10 +3149,28 @@
       drilled = true;
       await renderBuilder(current.id);
     },
-    removeGroup: id => { window.DZCArmy.removeGroup(current, id); refresh(); },
+    // Baxter, 2026-08-09: "Deleting a group takes me to group 1 not all
+    // groups." Nothing here used to touch selectedGroup or drilled, so
+    // removing the Group you had open fell through to renderBuilder's own
+    // fallback -- "no Group selected? show the first one" -- and left you
+    // drilled into whatever Group happened to land in that slot. Back to the
+    // list is the actual right answer: you just removed one, look at what's
+    // left, not at an arbitrary survivor.
+    removeGroup: id => {
+      window.DZCArmy.removeGroup(current, id);
+      selectedGroup = null;
+      drilled = false;
+      refresh();
+    },
+    // Baxter: "Duplicating a group does not take me to the duplicated group
+    // instead leaving me on the original." Same shape as addGroup -- a new
+    // Group is worth looking at, not confirming from a toast over the one you
+    // already had open.
     duplicateGroup: id => {
       const r = window.DZCArmy.duplicateGroup(current, id);
       if (!r.ok) return say(r.reason);
+      selectedGroup = r.group.id;
+      drilled = true;
       refresh();
       say('Group duplicated.', 'add');
     },
