@@ -1377,5 +1377,77 @@ console.log('\nsharing a Transport (3.2.4.1) and an Auxiliary Transport (3.2.4.3
   store.clear();
 }
 
+/* SHALTARI GATES — Gate, Shaltari Unit Special Rules.
+ *
+ * Jet, 2026-08-08, after demoing them: "what if Gates were their own category
+ * since they aren't directly attached to groups and don't count towards the
+ * group limit? ... I had them in specific groups in the builder but they're
+ * more dynamic/fluid in gameplay."
+ *
+ * Three sentences of the rule say so outright, and the builder was breaking
+ * all three. The trap is "Aux Gate", which contains the word and is a
+ * different unit: a Firedrake, a Tegu and an Adamah are Auxiliary Transports
+ * "taken as non-Gate Squads", so they DO join a Group and DO count. */
+console.log('\nShaltari Gates are not part of the Group structure');
+{
+  store.clear();
+  A.load();
+  await DZC.loadFaction('shaltari');
+  const f = DZC.faction('shaltari');
+
+  const gates = f.units.filter(u => A.isGate(u)).map(u => u.name);
+  eq(String(gates.length), '5', 'five Units print the Gate rule', gates.join(', '));
+  const aux = f.units.filter(u => /Aux Gate/.test(u.special || ''));
+  eq(String(aux.filter(u => A.isGate(u)).length), '0',
+     'and an Aux Gate is not one of them — Firedrake, Tegu, Adamah are ordinary Squads',
+     aux.map(u => u.name).join(', '));
+
+  const a = A.create('shaltari', 'Gates', 2000);
+  const g = A.addGroup(a, 'Fighting');
+  const braves = A.addSquad(a, g.id, 'brave-warsuits', 2);
+
+  // "Gates are always Transports but are not taken with any Units aboard."
+  eq(String(A.transportOptions(a, braves.id).filter(o => A.isGate(o.unit)).length), '0',
+     'a Gate is never offered as a Squad’s Transport');
+
+  // "A Gate is never part of another Group." Both directions.
+  ok(!A.canAddUnit(a, g.id, 'spirit-light-gate').ok,
+     'a Gate may not join a Group that has Squads in it');
+  const g2 = A.addGroup(a, 'Gates');
+  A.addSquad(a, g2.id, 'spirit-light-gate', 1);
+  A.addSquad(a, g2.id, 'eden-medium-gate', 1);
+  ok(!A.canAddUnit(a, g2.id, 'brave-warsuits').ok,
+     'and a Squad may not join a Group of Gates');
+
+  // "Gates do not count against your number of allowed Groups."
+  eq(String(a.groups.length), '2', 'the army has two Groups on the card');
+  eq(String(A.groupsUsed(a)), '1', 'but only the fighting one spends the allowance');
+
+  // The error that used to print on every correctly built Shaltari list.
+  const v = A.validate(a);
+  ok(!hasErr(v, 'carries nothing'), 'an empty Gate is correct, not an error');
+  ok(v.warnings.some(w => /Holding/.test(w.msg)),
+     'and a Squad with no Transport starts in Holding rather than Reserved');
+  ok(!v.warnings.some(w => /begin Reserved/.test(w.msg)),
+     'so the Reserved warning does not also fire');
+
+  /* Reachable only from a link or a backup — canAddUnit refuses to build it,
+   * which is why the Squad is pushed straight onto the Group here rather than
+   * added. That refusal is itself the point: nothing you can press makes one. */
+  const g3 = A.addGroup(a, 'Smuggled');
+  const gate = A.addSquad(a, g3.id, 'gaia-heavy-gate', 1);
+  ok(A.addSquad(a, g3.id, 'brave-warsuits', 2) === null,
+     'addSquad will not put a Squad in a Group of Gates at all');
+  const rider = { id: 'smuggled', unitId: 'brave-warsuits',
+    models: [{ variant: null }, { variant: null }], carriedBy: gate.id, commander: null };
+  g3.squads.push(rider);
+  const v2 = A.validate(a);
+  ok(hasErr(v2, 'never part of another Group'), 'a Gate sharing a Group is reported');
+  ok(hasErr(v2, 'not taken with any Units aboard'), 'and so is a Squad put inside one');
+
+  A.load().slice().forEach(x => A.remove(x.id));
+  store.clear();
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

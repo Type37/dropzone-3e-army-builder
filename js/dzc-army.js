@@ -648,9 +648,30 @@
     return { ok: true, reason: null, group: copy };
   }
 
+  /* A Group of Gates is not "Group 3", and calling it that is the whole of
+   * what Jet noticed at a table: "I had them in specific groups in the builder
+   * but they're more dynamic/fluid in gameplay. Friend had to really focus on
+   * not just always grouping them as listed every turn."
+   *
+   * It is called Gates, and it is numbered separately, because the numbers ARE
+   * the Group allowance -- printing "Group 4" over something that spends none
+   * of it is the sheet telling you the wrong thing to plan around.
+   *
+   * A name you typed still wins. This only replaces the automatic one. */
   function groupName(army, g) {
     if (g.name) return g.name;
-    return `Group ${army.groups.indexOf(g) + 1}`;
+    const squads = g.squads || [];
+    if (squads.length && squads.every(s => gateSquad(army, s))) {
+      const gateGroups = (army.groups || []).filter(x =>
+        (x.squads || []).length && x.squads.every(s => gateSquad(army, s)));
+      return gateGroups.length > 1 ? `Gates ${gateGroups.indexOf(g) + 1}` : 'Gates';
+    }
+    // Numbered among the Groups that actually spend the allowance, so the
+    // numbers on screen are the ones the cap is counted in.
+    const real = (army.groups || []).filter(x =>
+      !((x.squads || []).length && x.squads.every(s => gateSquad(army, s))));
+    const i = real.indexOf(g);
+    return `Group ${(i === -1 ? army.groups.indexOf(g) : i) + 1}`;
   }
 
   /* Typing the auto name back in, or clearing the field, hands the Group
@@ -1128,6 +1149,21 @@
       return { ok: false, reason: 'At most 4 Squads may share one Transport (3.2.4.1).' };
     }
 
+    /* "A Gate is never part of another Group." Refused rather than reported,
+     * because unlike a lone Transport this can never come good by adding
+     * something: no arrangement of a Gate and a Squad in one Group is legal.
+     * It cuts both ways -- a Gate may not join a Group with Squads in it, and
+     * a Squad may not join a Group of Gates. */
+    if (occupied) {
+      const allGates = squads.every(s => gateSquad(army, s));
+      if (isGate(u) && !allGates) {
+        return { ok: false, reason: `${u.name} is a Gate — a Gate is never part of another Group.` };
+      }
+      if (!isGate(u) && allGates) {
+        return { ok: false, reason: 'That Group is Gates, and a Gate is never part of another Group.' };
+      }
+    }
+
     const taken = squadsNamed(army, u.name);
     if (u.unique && taken >= 1) {
       return { ok: false, reason: `${u.name} is Unique — one per Army (3.2.1).` };
@@ -1180,7 +1216,13 @@
     const u = s && unitOf(army, s);
     const f = window.DZC.faction(army.faction);
     if (!u || !f) return [];
-    return f.units.filter(t => t.category === 'Transport' && window.DZC.canCarry(t, u))
+    /* NEVER A GATE. "Gates are always Transports but are not taken with any
+     * Units aboard" -- so a Gate is not a Transport you buy for a Squad, and
+     * offering one here put a Shaltari Squad inside a Gate on the list when
+     * the rules start it in Holding instead. Two of the five were being
+     * offered to Brave Warsuits and both were accepted. */
+    return f.units.filter(t => t.category === 'Transport' && !isGate(t)
+        && window.DZC.canCarry(t, u))
       .map(t => {
         const shape = (window.DZC.fillsOf(u).find(x => window.DZC.capacityFor(t, x.shape) > 0) || {}).shape;
         const per = window.DZC.capacityFor(t, shape);
@@ -1279,6 +1321,10 @@
       if (carriesTransitively(army, s.id, t.id)) return false;
       const tu = carrierOf(army, t);
       if (!tu || !(tu.category === 'Transport' || tu.auxiliaryTransport)) return false;
+      // A Gate is never boarded when the list is built, and it is never part
+      // of another Group either -- so it can never be a carrier in here. An
+      // Aux Gate is, and deliberately: it is "taken as a non-Gate Squad".
+      if (isGate(tu)) return false;
       if (!window.DZC.canCarry(tu, u)) return false;
       // 3.2.4.1 caps the sharing at 4 Squads.
       const aboard = g.squads.filter(x => x.carriedBy === t.id && x.id !== s.id);
@@ -1450,9 +1496,41 @@
    *
    * A Group containing a Behemoth costs its Groups Equivalent INSTEAD of one,
    * not as well — the Behemoth is what the Group is. */
+  /* A GATE IS NOT PART OF YOUR ARMY'S GROUP STRUCTURE.
+   *
+   * Jet, 2026-08-08, after demoing Shaltari: "what if Gates were their own
+   * category since they aren't directly attached to groups and don't count
+   * towards the group limit? ... I had them in specific groups in the builder
+   * but they're more dynamic/fluid in gameplay."
+   *
+   * The rulebook agrees in three separate sentences (Gate, Shaltari Unit
+   * Special Rules):
+   *
+   *   "Gates are always Transports but are not taken with any Units aboard."
+   *   "Gates do not count against your number of allowed Groups."
+   *   "A Gate is never part of another Group."
+   *
+   * Read off the printed rule, not off a list of ids, so a new Gate needs no
+   * code. The token has to match EXACTLY: "Aux Gate" contains "Gate" and is a
+   * different unit entirely -- a Firedrake, a Tegu, an Adamah are Auxiliary
+   * Transports "taken as non-Gate Squads", which do join a Group and do count.
+   * A substring test would have quietly taken all three out of the Group
+   * count, which is the opposite of what their own rule says. */
+  function isGate(unit) {
+    return !!unit && String(unit.special || '').split(',')
+      .some(t => t.trim() === 'Gate');
+  }
+
+  function gateSquad(army, squad) { return isGate(unitOf(army, squad)); }
+
   function groupsUsed(army) {
     return (army.groups || []).reduce((n, g) => {
-      const ge = (g.squads || []).map(s => {
+      // "Gates do not count against your number of allowed Groups." A Group
+      // that is nothing but Gates spends none of the allowance; a Group that
+      // mixes them is illegal and is reported rather than discounted here.
+      const squads = g.squads || [];
+      if (squads.length && squads.every(s => gateSquad(army, s))) return n;
+      const ge = squads.map(s => {
         const u = unitOf(army, s);
         return (u && u.groupEquivalent) || 0;
       }).filter(Boolean);
@@ -1743,6 +1821,31 @@
       }
     });
 
+    /* "A Gate is never part of another Group." Its own sentence in its own
+     * rule, and the reason Jet noticed: a Gate sitting in a Group reads as
+     * belonging to those Squads, and at the table it belongs to nobody --
+     * "any number of them which have not yet been activated that Round may be
+     * activated together with any non-Gate Group."
+     *
+     * Two ways to break it, and both are reported rather than fixed: a Gate
+     * beside other Squads, and a Squad put inside one. */
+    army.groups.forEach(g => {
+      const gates = g.squads.filter(s => gateSquad(army, s));
+      const rest = g.squads.filter(s => !gateSquad(army, s));
+      if (gates.length && rest.length) {
+        errors.push({ rule: 'Gate', group: g.id,
+          msg: `${unitOf(army, gates[0]).name}: a Gate is never part of another Group.` });
+      }
+      gates.forEach(t => {
+        const aboard = g.squads.filter(x => x.carriedBy === t.id);
+        const u = unitOf(army, t);
+        if (aboard.length && u) {
+          errors.push({ rule: 'Gate', group: g.id,
+            msg: `${u.name}: Gates are not taken with any Units aboard — a Squad starts in Holding instead.` });
+        }
+      });
+    });
+
     /* Two Squads split across a Transport SQUAD. 3.2.4.1 shares ONE Transport
      * and 3.2.4.3 exempts Auxiliary Transports, so this is only ever a Squad
      * of two or more Transport-category models with more than one Squad
@@ -1837,6 +1940,11 @@
       g.squads.forEach(s => {
         const u = carrierOf(army, s);
         if (!u || u.category !== 'Transport') return;
+        /* A Gate is EXEMPT from both of these. "Gates are always Transports
+         * but are not taken with any Units aboard" -- so an empty one is the
+         * correct and only way to take it, and "carries nothing" was a
+         * permanent error printed on every properly built Shaltari list. */
+        if (isGate(u)) return;
         const cargo = g.squads.filter(x => x.carriedBy === s.id)
           .map(x => ({ unit: unitOf(army, x), count: x.models.length }))
           .filter(x => x.unit);
@@ -1958,7 +2066,14 @@
       if (!flying(s)) grounded++;
     }));
     if (grounded) {
-      warnings.push({ rule: '9.4', msg: `${grounded} Squad${grounded === 1 ? '' : 's'} will begin Reserved — only Units aboard an Aircraft start on the table.` });
+      /* Unless you brought Gates. "If your Army contains Gates, any of your
+       * Squads may start the game in Holding" -- so on a Shaltari list the
+       * Reserved warning is not only wrong, it is advice against the way the
+       * faction works. A Squad with no Transport is how Shaltari is built. */
+      const hasGate = (army.groups || []).some(g => g.squads.some(s => gateSquad(army, s)));
+      warnings.push(hasGate
+        ? { rule: 'Gate', msg: `${grounded} Squad${grounded === 1 ? '' : 's'} may start in Holding — your Gates let any Squad do that.` }
+        : { rule: '9.4', msg: `${grounded} Squad${grounded === 1 ? '' : 's'} will begin Reserved — only Units aboard an Aircraft start on the table.` });
     }
 
     // Group count is not activation count (4.1.2 / 4.2.1).
@@ -1967,7 +2082,11 @@
       return u && u.category === 'Transport';
     })).length;
     if (transportOnly) {
-      warnings.push({ rule: '4.2.2', msg: `${transportOnly} Group${transportOnly === 1 ? '' : 's'} contain only Transports — they cannot be activated normally and are ignored for Pass tokens.` });
+      // "1 Group contain only Transports" — the verb has to agree with the
+      // count as well as the noun.
+      warnings.push({ rule: '4.2.2', msg: transportOnly === 1
+        ? '1 Group contains only Transports — it cannot be activated normally and is ignored for Pass tokens.'
+        : `${transportOnly} Groups contain only Transports — they cannot be activated normally and are ignored for Pass tokens.` });
     }
 
     return { errors, warnings, ok: !errors.length };
@@ -1987,6 +2106,8 @@
     modelCost, squadCost, groupCost, armyCost, categorySpend, validate,
     // Raw Materials (Genitor X)
     genitorCap, rmOf, rmCost, setRm, RM_POINTS,
+    // Shaltari Gates (Gate, Shaltari Unit Special Rules)
+    isGate, gateSquad,
     // enforcement
     canAddUnit, canSetCount, squadsNamed, squadFill,
     upgradesFor, hasUpgrade, toggleUpgrade, upgradeCost,
