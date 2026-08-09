@@ -563,7 +563,15 @@ console.log('\nsquad size is enforced at the stepper');
  * legal to land between "at minimum" and "gone" -- the maximum is still a
  * hard ceiling (there is no such thing as six of a Unit "temporarily"), but
  * the minimum is now something validate() reports rather than something the
- * stepper blocks. */
+ * stepper blocks.
+ *
+ * And zero itself stopped deleting the Squad the same day it stopped being
+ * refused. Jet, later the same day: "leave it at 0 units if it's selected...
+ * make the entire card greyed out with 0 models but not deleted... rather
+ * than code it in specifically for some units, going from 0 to x in each
+ * squad would cover every squad." Emptying a Squad used to call removeSquad;
+ * now the only thing that removes one is removeSquad itself, called on
+ * purpose. */
 console.log('\nbut the minimum is not -- a Squad may sit below it and say so');
 {
   const a = army();
@@ -576,7 +584,15 @@ console.log('\nbut the minimum is not -- a Squad may sit below it and say so');
   ok(hasErr(A.validate(a), 'minimum is 2'), 'and validate reports it as unfinished (rule 2)');
 
   ok(A.setModelCount(a, s.id, 0).ok, 'and it can go all the way to zero');
-  eq(A.findSquad(a, s.id), null, 'which removes the Squad -- the same as it always did at one');
+  ok(!!A.findSquad(a, s.id), 'without removing the Squad -- it is empty, not gone');
+  eq(A.findSquad(a, s.id).models.length, 0, 'zero models');
+  ok(hasErr(A.validate(a), 'minimum is 2'), 'and validate still reports it, the same as at one');
+
+  ok(A.setModelCount(a, s.id, 1).ok, 'it can be filled back in from zero');
+  eq(A.findSquad(a, s.id).models.length, 1, 'without ever having needed re-adding');
+
+  A.removeSquad(a, s.id);
+  eq(A.findSquad(a, s.id), null, 'only removeSquad, called on purpose, actually removes it');
   A.remove(a.id);
 }
 
@@ -969,11 +985,13 @@ console.log('\nthe ranged Variant stepper adds and removes models (not just trad
 
   // Squad of one: the last model may still come out, same as pressing the
   // Squad stepper down to zero would (canSetCount no longer refuses below
-  // squadMin at all -- Jet, 2026-08-09: "let squads drop to 0").
+  // squadMin at all -- Jet, 2026-08-09: "let squads drop to 0"). And it
+  // stays -- empty, not removed (Jet, later: "leave it at 0 units... not
+  // deleted"; adjustVariantCount matches setModelCount's own note on this).
   ok(A.canAdjustVariantCount(a, s.id, u.variants[0].name, -1).ok,
      'and the last model can still come out, same as the Squad stepper going to zero');
-  ok(A.adjustVariantCount(a, s.id, u.variants[0].name, -1).ok, 'which removes the Squad entirely');
-  eq(A.findSquad(a, s.id), null, 'nothing left to find');
+  ok(A.adjustVariantCount(a, s.id, u.variants[0].name, -1).ok, 'taking it out');
+  eq(String(A.findSquad(a, s.id).models.length), '0', 'leaves the Squad at zero, not removed');
   A.remove(a.id);
 
   // A Unit whose squadMin is actually above one -- Thorn, 2-8. Dropping below
@@ -982,13 +1000,43 @@ console.log('\nthe ranged Variant stepper adds and removes models (not just trad
   const b = A.create('bioficer', 'T2', 2000);
   const g2 = A.addGroup(b);
   const thornSq = A.addSquad(b, g2.id, 'thorn-light-skimmer');   // starts at squadMin, 2
-  const tu = A.unitOf(b, thornSq);
   eq(String(thornSq.models.length), '2', 'a fresh Thorn Squad is already at its minimum of two');
   ok(A.setModelCount(b, thornSq.id, 1).ok, 'dropping it to one is no longer refused');
   ok(hasErr(A.validate(b), 'minimum is 2'), 'validate reports it as unfinished instead (rule 2)');
-  ok(A.setModelCount(b, thornSq.id, 0).ok, 'and it can still go all the way to zero, removing the Squad');
-  eq(A.findSquad(b, thornSq.id), null, 'nothing left to find');
+  ok(A.setModelCount(b, thornSq.id, 0).ok, 'and it can still go all the way to zero');
+  ok(!!A.findSquad(b, thornSq.id), 'without being removed');
+  eq(String(A.findSquad(b, thornSq.id).models.length), '0', 'just empty');
   A.remove(b.id);
+}
+
+/* THE RADIO CASE: squadMin === squadMax === 1 with more than one Variant
+ * (Resistance Super Heavy Tank, four hull names, always exactly one model).
+ * The builder's dot picker used to only run when the Squad already had its
+ * one model -- there was no way to reach zero at all, since pickVariant
+ * refused outright on an empty Squad. Jet, 2026-08-09: "you probably should
+ * just set them all to the ability to be reduced to zero... that lets the
+ * user then pick a different variant if they wish." adjustVariantCount is
+ * what the dot now calls either way: -1 on the Variant already showing takes
+ * it to zero, +1 on any Variant from zero takes it. */
+console.log('\na fixed one-model Squad can reach zero too, and be filled back in as a different Variant');
+{
+  await DZC.loadFaction('resistance');
+  const a = A.create('resistance', 'T3', 2000);
+  const g = A.addGroup(a);
+  const s = A.addSquad(a, g.id, 'resistance-super-heavy-tank');
+  const u = A.unitOf(a, s);
+  eq(String(u.squadMin), '1', 'squadMin 1');
+  eq(String(u.squadMax), '1', 'squadMax 1 -- always exactly one model');
+  eq(s.models[0].variant, u.variants[0].name, 'a fresh Squad is the first hull, Alexander');
+
+  ok(A.adjustVariantCount(a, s.id, u.variants[0].name, -1).ok, 'the dot already showing can take it to zero');
+  eq(String(s.models.length), '0', 'empty, not removed');
+
+  ok(A.canAdjustVariantCount(a, s.id, u.variants[2].name, 1).ok, 'from zero, a different hull can be pressed');
+  ok(A.adjustVariantCount(a, s.id, u.variants[2].name, 1).ok, 'Belisarius, say');
+  eq(String(s.models.length), '1', 'back to one model');
+  eq(s.models[0].variant, u.variants[2].name, 'and it is the hull that was pressed, not the first one again');
+  A.remove(a.id);
 }
 
 /* And the thing that made it matter: ROOM NEEDED IS PER MODEL. loadCheck

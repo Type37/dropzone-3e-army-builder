@@ -444,11 +444,10 @@
       const pct = std ? Math.min(100, Math.round((val / std) * 100)) : (val ? 100 : 0);
       return `<div class="dzc-ratio${over ? ' is-over' : ''}" style="--cat:${CAT_INK[c[0].toUpperCase() + c.slice(1)]}">
         <span>${c[0].toUpperCase() + c.slice(1)}</span>
-        <b>${val}</b><i>of ${std}</i>
+        <span class="dzc-ratio-n"><b>${val}</b><i>of ${std}</i></span>
         <span class="dzc-ratio-track"><i style="width:${pct}%"></i></span></div>`;
     }).join('');
 
-    const left = Math.max(0, a.pointsLimit - cost);
     const pct = a.pointsLimit ? Math.min(100, Math.round((cost / a.pointsLimit) * 100)) : 0;
 
     /* Desktop gets a rail and a column; the rail carries everything you need
@@ -553,21 +552,21 @@
             <!-- Jet, 2026-08-09: "there's a bar that shows how much you've
                  spent, and then a smaller number showing how much remains
                  somewhere. but it's a more obvious like 900/2000 or
-                 something." Spent-over-limit is the number everyone reads a
-                 budget as; "left" led before, so what you had actually
-                 spent was the thing buried in small text under the bar. -->
+                 something." Then: "remove the points left." Spent-over-limit
+                 plus the bar is the whole picture; a second number saying the
+                 same fact the other way was the redundant one. -->
             <div class="dzc-rail-pts ${cost > a.pointsLimit ? 'is-over' : ''}">
               <b>${cost}</b><span>/ ${a.pointsLimit}pts</span>
             </div>
             <div class="dzc-rail-track"><i style="width:${pct}%"></i></div>
-            <p class="dzc-rail-line">${left}pts left</p>
             <p class="dzc-rail-line"${gTitle}>${gUsed} of ${maxG || '—'} Groups</p>
           </div>
 
           <div class="dzc-rail-card">
             <div class="dzc-rail-title">Category spend</div>
             <div class="dzc-ratios" title="Vanguard, Heavy and Support may each not exceed Standard spend (3.2)">
-              <div class="dzc-ratio is-std" style="--cat:${CAT_INK.Standard}"><span>Standard</span><b>${std}</b>
+              <div class="dzc-ratio is-std" style="--cat:${CAT_INK.Standard}"><span>Standard</span>
+                <span class="dzc-ratio-n"><b>${std}</b></span>
                 <span class="dzc-ratio-track"><i style="width:100%"></i></span></div>${ratio}
             </div>
           </div>
@@ -1466,10 +1465,21 @@
      *
      * "A Squad may contain any mixture of Variants" (3.2.2) is about a Squad
      * with more than one model in it. With one, the mixture is the choice, so
-     * it is a radio rather than a pair of steppers. */
-    if (s.models.length === 1 && (u.squadMax === 1 || (u.variants || []).length > 1)
+     * it is a radio rather than a pair of steppers.
+     *
+     * AND ZERO IS A DOT WITH NOTHING LIT. Squads no longer delete themselves
+     * at zero (Jet, 2026-08-09: "leave it at 0 units if it's selected... make
+     * the entire card greyed out with 0 models but not deleted"), so a
+     * one-of-these Unit can sit empty the same as any other -- and the same
+     * dots that switch a taken model to a different Variant are how you take
+     * one at all: pickVariant adds when the Squad is empty, same as it always
+     * switched when it wasn't (Jet: "you probably should just set them all to
+     * the ability to be reduced to zero... that lets the user then pick a
+     * different variant if they wish"). */
+    if ((s.models.length === 1 || s.models.length === 0)
+        && (u.squadMax === 1 || (u.variants || []).length > 1)
         && u.squadMin === u.squadMax) {
-      const on = s.models[0].variant === v.name;
+      const on = !!s.models[0] && s.models[0].variant === v.name;
       // A dot. The Variant's name is beside it and the aria-label carries the
       // whole sentence; the word inside the button was the third place it said
       // the same thing, and "Take"/"Taken" changed the control's width.
@@ -1690,7 +1700,7 @@
       squadAlerts(window.DZCArmy.validate(a), u)
     ].filter(Boolean).join('');
 
-    return `<div class="dzc-squad${isTransport ? ' is-transport' : ''}${
+    return `<div class="dzc-squad${isTransport ? ' is-transport' : ''}${s.models.length ? '' : ' is-empty'}${
       riders.length ? ' is-carrier' : ''}" style="--depth:${depth}" data-sid="${s.id}">
       <div class="dzc-sq-main">
         <!-- The handle comes FIRST. It sat between the thumbnail and the
@@ -1736,8 +1746,14 @@
           ${transportPicker}
           ${stepper}
           <span class="dzc-sq-cost">${cost}pts</span>
+          <!-- The only control that actually deletes the Squad -- a trash
+               icon rather than the × the stepper's neighbours use, so it
+               reads as the one destructive action here and not one more
+               close button (Jet, 2026-08-09: "maybe trash icon for
+               consistency" -- 'delete' is what the army list's own Delete
+               already uses). Reducing to zero no longer does this itself. -->
           <button class="dzc-icon-btn" type="button" title="Remove Squad"
-                  onclick="DZCBuilder.removeSquad('${s.id}')" aria-label="Remove ${esc(u.name)}">${window.DZCIcon('close', { size: 16 })}</button>
+                  onclick="DZCBuilder.removeSquad('${s.id}')" aria-label="Remove ${esc(u.name)}">${window.DZCIcon('delete', { size: 16 })}</button>
         </div>
       </div>
       <!-- Stats LEFT, guns RIGHT, on one row. The stat table is only as wide
@@ -3152,13 +3168,26 @@
      * way should still hear why. */
     /* The one-model case: set the model's Variant outright rather than trying
      * to add one of a kind and remove one of another, which cannot be done in
-     * either order without passing through an illegal Squad size. */
+     * either order without passing through an illegal Squad size.
+     *
+     * Empty and taken are the other two presses this dot has to make sense
+     * of. Empty: there is nothing to switch, so pressing any dot ADDS the
+     * model as that Variant -- adjustVariantCount, same call the ranged
+     * Squads use to grow. Taken, pressed on the dot that is already on: there
+     * is nowhere left to switch TO, so it reads as "take this one away"
+     * instead, back to empty. */
     pickVariant: (id, idx) => {
       const s = window.DZCArmy.findSquad(current, id);
       const u = s && window.DZCArmy.unitOf(current, s);
       const v = u && (u.variants || [])[idx];
-      if (!v || !s.models.length) return;
-      window.DZCArmy.setModelVariant(current, id, 0, v.name);
+      if (!v) return;
+      if (!s.models.length) {
+        window.DZCArmy.adjustVariantCount(current, id, v.name, 1);
+      } else if (s.models[0].variant === v.name) {
+        window.DZCArmy.adjustVariantCount(current, id, v.name, -1);
+      } else {
+        window.DZCArmy.setModelVariant(current, id, 0, v.name);
+      }
       refresh();
     },
     variantShift: (id, idx, delta) => {

@@ -767,12 +767,19 @@
     return v ? v.name : null;
   }
 
+  /* Zero is a Squad with nothing in it, not a removed Squad. Jet, 2026-08-09:
+   * "leave it at 0 units if it's selected. And leave it at 0... make the
+   * entire card greyed out with 0 models but not deleted... rather than code
+   * it in specifically for some units, going from 0 to x in each squad would
+   * cover every squad." Emptying it used to call removeSquad outright, which
+   * left no legal way to reach "I want this at zero for now" without also
+   * losing the Squad's Transport, Commander and place in the Group. The only
+   * thing that removes a Squad now is pressing Remove, on purpose. */
   function setModelCount(army, squadId, n) {
     const s = findSquad(army, squadId);
     if (!s) return { ok: false, reason: 'Unknown Squad.' };
     const u = unitOf(army, s);
     n = Math.max(0, n);
-    if (n === 0) { removeSquad(army, squadId); return { ok: true, reason: null }; }
     const chk = canSetCount(army, squadId, n);
     if (!chk.ok) return chk;
     while (s.models.length < n) s.models.push({ variant: defaultVariant(u) });
@@ -898,7 +905,9 @@
       const i = s.models.map(m => m.variant).lastIndexOf(variantName);
       s.models.splice(i, 1);
     }
-    if (s.models.length === 0) { removeSquad(army, squadId); return { ok: true, reason: null }; }
+    // Zero is a Squad with nothing in it, not a removed Squad -- see
+    // setModelCount's note. The last model of a Variant coming out is no
+    // different from the Squad stepper reaching zero the same way.
     // A Transport carrying this Squad must still be full afterwards.
     refitTransports(army);
     touch(army);

@@ -711,7 +711,10 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .game-size-popover { border-radius: 0; }
 
 .dzc-ratios { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-.dzc-ratio { padding: 6px 12px; border-radius: 6px; background: var(--surface-3, #f2ece0); font-size: 12px; }
+/* border-left is reserved on every row, transparent except is-std's --
+   only there does it carry a colour -- so that row's content is not shifted
+   3px out of column from the other three's numbers. */
+.dzc-ratio { padding: 6px 12px; border-left: 3px solid transparent; border-radius: 6px; background: var(--surface-3, #f2ece0); font-size: 12px; }
 /* Standard is the track; the other three are measured against it, so full
    means level with Standard and past full is the breach (3.2). */
 .dzc-ratio-track {
@@ -727,15 +730,16 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   font-variant-numeric: tabular-nums;
 }
 .dzc-ratio i { font-style: normal; color: var(--ink-2, #6b6459); margin-left: 4px; }
-.dzc-ratio.is-std { background: var(--acc); color: #fff; }
-.dzc-ratio.is-std span, .dzc-ratio.is-std i { color: rgba(255,255,255,.85); }
-/* Standard's track is always full — it is the line the other three are
-   measured against, not a value of its own. It was being drawn in the category
-   green ON the faction-green card, which made the one row that explains the
-   other three read as a smudge next to the number. White, so the full line is
-   the thing you see and the shorter ones below it mean something. */
-.dzc-ratio.is-std .dzc-ratio-track { background: rgba(255,255,255,.3); }
-.dzc-ratio.is-std .dzc-ratio-track i { background: #fff; }
+.dzc-ratio-n { display: inline-flex; align-items: baseline; }
+/* Standard used to be a solid block of the faction accent with white text --
+   the one loud thing on a card of otherwise quiet rows, and worse on a
+   red-accent faction (Bioficer's #9c1818), where "this is fine, it's just
+   the reference row" read as an alarm. Jet, 2026-08-09: "make the category
+   spend less visually intense... idk i don't like that."
+   Same chip as Vanguard/Heavy/Support now; a left rule in the category
+   colour is the only thing that still marks it as the one the other three
+   are measured against, not a value of its own (3.2). */
+.dzc-ratio.is-std { border-left-color: var(--cat, var(--acc)); }
 .dzc-ratio.is-over { background: var(--err-bg, #fde8e6); color: var(--err-ink, #7a1c15); }
 
 /* ── Create: the one button that should feel like something ──
@@ -972,8 +976,18 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   font-variant-numeric: tabular-nums;
 }
 .dzc-rail .dzc-ratios { flex-direction: column; gap: 4px; margin: 0; }
-.dzc-rail .dzc-ratio { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 4px 8px; }
+/* Grid, not flex-with-space-between: space-between only spaces out ONE row's
+   own items, so "Standard" (one word) and "Vanguard" (also one word, but
+   sat beside "0 of 60" where Standard sits beside just "60") pushed their
+   numbers to different x positions every row. Fixed columns line the four
+   numbers up under each other instead — Jet, 2026-08-09: "align numbers in
+   category spend." */
+.dzc-rail .dzc-ratio {
+  display: grid; grid-template-columns: 60px 50px 1fr;
+  align-items: baseline; column-gap: 8px; padding: 4px 8px;
+}
 .dzc-rail .dzc-ratio span { display: inline; font-size: 10.5px; }
+.dzc-rail .dzc-ratio-n { display: flex; align-items: baseline; gap: 3px; white-space: nowrap; }
 
 /* Three panes need real width. The weapon table alone wants ~620px, so below
    1400 the overview folds up into a row and the detail pane takes the width
@@ -2632,6 +2646,14 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
 /* Nothing moves. The card stays exactly where it is and a chip follows the
    finger instead, which is the only thing on screen that travels. */
 .dzc-squad.is-sq-dragging { opacity: .45; cursor: grabbing; }
+/* A Squad taken down to zero models stays -- it is not deleted, only empty
+   (Jet, 2026-08-09: "make the entire card greyed out with 0 models but not
+   deleted"). Dimmed and desaturated so it reads as "not really here yet"
+   at a glance, same as the rest of the army; everything on it stays fully
+   clickable -- adding a model back, or Remove, both still work at full
+   opacity under the hood, this is paint only. */
+.dzc-squad.is-empty { opacity: .5; }
+.dzc-squad.is-empty .dzc-sq-art { filter: grayscale(1); }
 .dzc-drag-ghost {
   position: fixed; z-index: 900; pointer-events: none;
   transform: translate(12px, 10px);
