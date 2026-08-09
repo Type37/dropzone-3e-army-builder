@@ -1301,5 +1301,81 @@ console.log('\nraw materials on Genitor Units (Genitor X)');
   store.clear();
 }
 
+/* SHARING ONE TRANSPORT vs SHARING A TRANSPORT SQUAD — 3.2.4.1 and 3.2.4.3.
+ *
+ * Jet, 2026-08-08: "Squad of Hazards and squad of legionnaires in a group with
+ * Ferrets: okay. ...in a group with Ravens: not okay."
+ *
+ * Both are the rulebook's own worked examples on page 10, so both are asserted
+ * against it: Group 4 is four Ferrets carrying two Legionnaires AND two Hazard
+ * Suits, and Group 5 is ONE Albatross holding two Bear APC Squads with their
+ * Legionnaires. The line between them is "ONE Transport" against "a Squad of
+ * Transports", and it was invisible until a Squad of two Ravens had a seat
+ * going spare. */
+console.log('\nsharing a Transport (3.2.4.1) and an Auxiliary Transport (3.2.4.3)');
+{
+  store.clear();
+  A.load();
+  await DZC.loadFaction('ucm');
+  const mk = () => { const a = A.create('ucm', 'Share', 3000); return [a, A.addGroup(a, 'G')]; };
+
+  // Group 4 — an Auxiliary Transport Squad may carry Squad/S, at any size.
+  const [a, g] = mk();
+  const ferrets = A.addSquad(a, g.id, 'ucm-troop-buggy', 4);
+  ferrets.models.forEach(m => { m.variant = 'Ferret'; });
+  const legs = A.addSquad(a, g.id, 'legionnaires', 2);
+  A.boardTransport(a, legs.id, ferrets.id);
+  const haz = A.addSquad(a, g.id, 'hazard-suits', 2);
+  ok(A.boardTransport(a, haz.id, ferrets.id).ok,
+     'four Ferrets carry Legionnaires AND Hazard Suits — the book’s Group 4 (3.2.4.3)');
+
+  // The case Jet named. Three Legionnaires need two Troopships, two Troopships
+  // hold four, and that spare square is what let a second Squad in.
+  const [b, g2] = mk();
+  const l2 = A.addSquad(b, g2.id, 'legionnaires', 3);
+  A.assignTransport(b, l2.id, 'raven-light-troopship');
+  const ravens = A.findSquad(b, l2.carriedBy);
+  eq(String(ravens.models.length), '2', 'three Legionnaires take two Raven Troopships');
+  const haz2 = A.addSquad(b, g2.id, 'hazard-suits', 1);
+  const refused = A.boardTransport(b, haz2.id, ravens.id);
+  ok(!refused.ok, 'a second Squad may NOT split a Squad of two Ravens (3.2.4.1)');
+  ok(/ONE Transport/.test(refused.reason || ''),
+     'and the refusal names the rule rather than blaming capacity', refused.reason);
+  ok(A.boardOptions(b, haz2.id).length === 0, 'so the chooser never offers it either');
+
+  // Group 5 — ONE larger Transport, shared by up to 4 Squads and their own.
+  const [c, g3] = mk();
+  const c1 = A.addSquad(c, g3.id, 'legionnaires', 3);
+  A.assignTransport(c, c1.id, 'bear-apc');
+  const bear1 = A.findSquad(c, c1.carriedBy);
+  const c2 = A.addSquad(c, g3.id, 'legionnaires', 3);
+  A.assignTransport(c, c2.id, 'bear-apc');
+  const bear2 = A.findSquad(c, c2.carriedBy);
+  A.assignTransport(c, bear1.id, 'albatross-heavy-dropship');
+  const alb = A.findSquad(c, bear1.carriedBy);
+  eq(String(alb.models.length), '1', 'one Albatross carries a Bear APC and its Legionnaires');
+  ok(A.boardTransport(c, bear2.id, alb.id).ok,
+     'and a second Bear APC Squad shares that ONE Albatross — the book’s Group 5');
+
+  // Group 3 — one Squad may still fill several identical Transports alone.
+  const [d, g4] = mk();
+  const tanks = A.addSquad(d, g4.id, 'ucm-main-battle-tank', 6);
+  ok(A.assignTransport(d, tanks.id, 'condor-dropship').ok,
+     'six tanks still fill two Condors on their own — the book’s Group 3');
+
+  // Nothing you can press builds an illegal share, so validate is for a link.
+  const [e, g5] = mk();
+  const l5 = A.addSquad(e, g5.id, 'legionnaires', 3);
+  A.assignTransport(e, l5.id, 'raven-light-troopship');
+  const rv = A.findSquad(e, l5.carriedBy);
+  const h5 = A.addSquad(e, g5.id, 'hazard-suits', 1);
+  h5.carriedBy = rv.id;                      // exactly what a share link can do
+  ok(hasErr(A.validate(e), 'share ONE Transport'),
+     'an illegal share arriving from elsewhere is reported (3.2.4.1)');
+
+  A.load().slice().forEach(x => A.remove(x.id));
+  store.clear();
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

@@ -1221,6 +1221,38 @@
     return walk(squadId);
   }
 
+  /* SHARING IS ONE TRANSPORT, NOT A TRANSPORT SQUAD.
+   *
+   * Jet, 2026-08-08: "Squad of Hazards and squad of legionnaires in a group
+   * with Ferrets: okay. ...in a group with Ravens: not okay."
+   *
+   * Two rules, and the difference between them is the whole of it.
+   *
+   * 3.2.4.1: "Up to 4 Squads, plus their Transport Squads if they have any,
+   * may all share ONE Transport." One Transport -- one model. The book's own
+   * Group 5 is a single Albatross holding two Bear APC Squads and their two
+   * Legionnaire Squads. A Squad may still fill SEVERAL identical Transports
+   * on its own (Group 3, six Sabres in two Condors); what it may not do is
+   * share them with somebody else's Squad.
+   *
+   * 3.2.4.3: "Auxiliary Transports do not have to be full. Any Squad/s which
+   * the Auxiliary Transports do carry join the Auxiliary Transports' Group."
+   * Squad/s, plural, across the whole Squad of them -- which is Group 4 in the
+   * book: four Ferrets carrying two Legionnaires AND two Hazard Suits.
+   *
+   * So an Auxiliary Transport Squad may be shared at any size, and a Transport
+   * Squad may be shared only while it is one model.
+   *
+   * What made this reachable was the spare seat. Three Legionnaires need two
+   * Raven Troopships and two Troopships hold four, so a square went begging
+   * and a Hazard Suit was allowed into it -- two Squads split across two
+   * aircraft, which is the case Jet named. */
+  function canShare(carrierUnit, carrierSquad, aboard) {
+    if (!aboard.length) return true;                 // nobody to share with yet
+    if (carrierUnit.auxiliaryTransport) return true;  // 3.2.4.3
+    return carrierSquad.models.length <= 1;           // 3.2.4.1: ONE Transport
+  }
+
   function boardOptions(army, squadId) {
     const s = findSquad(army, squadId);
     const g = groupOf(army, squadId);
@@ -1251,6 +1283,7 @@
       // 3.2.4.1 caps the sharing at 4 Squads.
       const aboard = g.squads.filter(x => x.carriedBy === t.id && x.id !== s.id);
       if (aboard.length >= 4) return false;
+      if (!canShare(tu, t, aboard)) return false;
       const load = aboard.map(x => ({ unit: unitOf(army, x), count: x.models.length }))
         .filter(x => x.unit);
       load.push({ unit: u, count: s.models.length });
@@ -1281,7 +1314,22 @@
     const s = findSquad(army, squadId);
     if (!s) return { ok: false, reason: 'Unknown Squad.' };
     const opt = boardOptions(army, squadId).find(o => o.squad.id === carrierSquadId);
-    if (!opt) return { ok: false, reason: 'That Transport has no room for this Squad (3.2.4.2).' };
+    if (!opt) {
+      /* Which rule refused it. "No room" was the only sentence here and it is
+       * the wrong one for a Squad kept out by the sharing rule rather than by
+       * capacity -- a Squad of 2 Ravens with a square going spare has room,
+       * and is still not something two Squads may split (3.2.4.1). A refusal
+       * has to name the rule it is enforcing. */
+      const t = findSquad(army, carrierSquadId);
+      const tu = t && carrierOf(army, t);
+      const g = groupOf(army, squadId);
+      const aboard = t && g ? g.squads.filter(x => x.carriedBy === t.id && x.id !== s.id) : [];
+      if (tu && !canShare(tu, t, aboard)) {
+        return { ok: false,
+          reason: `${aboard.length + 1} Squads may only share ONE Transport, and this is a Squad of ${t.models.length} (3.2.4.1).` };
+      }
+      return { ok: false, reason: 'That Transport has no room for this Squad (3.2.4.2).' };
+    }
 
     // Drop whatever it was riding first, so a Transport bought only for this
     // Squad does not linger empty.
@@ -1693,6 +1741,24 @@
       if ((spend[c] || 0) > std) {
         errors.push({ rule: '3.2', msg: `${cap1(c)} spend (${spend[c]}pts) exceeds Standard (${std}pts).` });
       }
+    });
+
+    /* Two Squads split across a Transport SQUAD. 3.2.4.1 shares ONE Transport
+     * and 3.2.4.3 exempts Auxiliary Transports, so this is only ever a Squad
+     * of two or more Transport-category models with more than one Squad
+     * riding it. boardOptions refuses it now, so nothing you can press builds
+     * one -- this is for a link, a backup, or a list built before the check. */
+    army.groups.forEach(g => {
+      const riders = {};
+      g.squads.forEach(s => { if (s.carriedBy) (riders[s.carriedBy] = riders[s.carriedBy] || []).push(s); });
+      Object.keys(riders).forEach(id => {
+        if (riders[id].length < 2) return;
+        const t = g.squads.find(x => x.id === id);
+        const tu = t && carrierOf(army, t);
+        if (!tu || canShare(tu, t, riders[id].slice(1))) return;
+        errors.push({ rule: '3.2.4.1', group: g.id,
+          msg: `${tu.name}: ${riders[id].length} Squads aboard a Squad of ${t.models.length} — up to 4 Squads may share ONE Transport.` });
+      });
     });
 
     /* More RM aboard than the symbol allows. Reachable by a share link, an
