@@ -1513,6 +1513,19 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   background: color-mix(in srgb, var(--acc, #1b3a5c) 9%, transparent);
 }
 .dzc-vblock.is-taken > .dzc-vblock-head b { color: var(--acc, #1b3a5c); }
+/* Bioficer's accent is #9c1818 -- a dark red that reads fine as a hairline or
+   a 9% tint but fails as TEXT on the dark theme's own dark surfaces (Baxter,
+   2026-08-09: "the red text of the names is a bit hard to read"). --acc is
+   set per faction and inline, so there is no single hex to swap in for one
+   faction; lightening whatever it is toward white keeps every faction's own
+   hue while pulling it clear of the card behind it. Checked against every
+   faction accent at 1.4.3's 4.5:1: Bioficer's raw #9c1818 measured 1.76:1 on
+   --surface-2 dark, the worst of the seven but not the only one under 4.5 --
+   UCM, Scourge, Resistance and Behemoths all failed too. 50% white clears
+   every one of them (Bioficer lowest at 5.35:1). */
+[data-theme="dark"] .dzc-vblock.is-taken > .dzc-vblock-head b {
+  color: color-mix(in srgb, var(--acc, #1b3a5c) 50%, white);
+}
 
 /* And it DRAWS ON. Jet, 2026-08-07: "when you click on, the line should like,
    draw on."

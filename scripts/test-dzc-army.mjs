@@ -882,6 +882,90 @@ console.log('\nthe Variant stepper redistributes, it does not buy models');
   A.remove(a.id);
 }
 
+/* THE OTHER HALF: a Variant Unit whose Squad size is a RANGE, not a fixed
+ * number. shiftVariant only ever trades one model for another -- there is
+ * nothing to trade with on a fresh Squad of one, and sizeControl hides the
+ * top stepper for every Variant Unit (2026-08-08, "remove that +/- stepper"
+ * on the Troop Buggy). Between the two, a Grievance Genitor Ark (1-2, two
+ * Variants) had no way to become two models at all -- reported 2026-08-09,
+ * and not just for Bioficer: Resistance Main Battle Tank, Thorn, Tusk,
+ * Tangent and the Scourge Interceptor are all squadMin !== squadMax with
+ * Variants. adjustVariantCount is the fix: it adds or removes a model of ONE
+ * Variant outright, bounded by squadMin/squadMax the way the missing top
+ * stepper would be. */
+console.log('\nthe ranged Variant stepper adds and removes models (not just trades)');
+{
+  await DZC.loadFaction('bioficer');
+  const a = A.create('bioficer', 'T', 2000);
+  const g = A.addGroup(a);
+  const s = A.addSquad(a, g.id, 'grievance-genitor-ark');   // squadMin 1, squadMax 2
+  const u = A.unitOf(a, s);
+  eq(String(u.squadMin), '1', 'a Grievance starts at one');
+  eq(String(u.squadMax), '2', 'and caps at two');
+  eq(String(s.models.length), '1', 'a fresh Squad is the minimum, one model');
+
+  // The OLD control on a Squad of one, tried on its OWN Squad so it cannot
+  // touch the one the rest of this test grows: shiftVariant CAN convert the
+  // sole model (it is a trade, not a purchase, and one model can always
+  // become a different one) -- but repeating it can never grow the Squad,
+  // because there is never a second model for it to pull from. That is the
+  // actual bug: not that the Squad stayed the wrong Variant, but that it
+  // never stopped being one model at all.
+  {
+    const lone = A.addSquad(a, g.id, 'grievance-genitor-ark');
+    ok(A.canShiftVariant(a, lone.id, u.variants[1].name, 1).ok,
+       'shiftVariant CAN turn the one model into the other Variant...');
+    ok(A.shiftVariant(a, lone.id, u.variants[1].name, 1).ok, 'so the shift itself succeeds');
+    eq(String(lone.models.length), '1', '...but it is still one model afterward, never two');
+    // And it stays reversible-but-stuck: shifting it straight back works too
+    // (there is always exactly one model for the OTHER direction to pull),
+    // so nothing about shiftVariant ever refuses outright here -- it just
+    // never has a second model to offer, which is the actual bug.
+    ok(A.canShiftVariant(a, lone.id, u.variants[0].name, 1).ok,
+       'the reverse shift is just as legal -- shiftVariant never refuses...');
+    ok(A.shiftVariant(a, lone.id, u.variants[0].name, 1).ok, '...it just trades the same one model back and forth');
+    eq(String(lone.models.length), '1', 'forever one model, never two, no matter which way you press it');
+    A.removeSquad(a, lone.id);
+  }
+
+  ok(A.canAdjustVariantCount(a, s.id, u.variants[0].name, 1).ok,
+     'the ranged control can still grow the Squad');
+
+  ok(A.adjustVariantCount(a, s.id, u.variants[0].name, 1).ok, 'a second model is added outright');
+  eq(String(s.models.length), '2', 'the Squad is now two');
+  ok(A.canAdjustVariantCount(a, s.id, u.variants[0].name, 1).ok === false,
+     'a third is refused -- squadMax is 2');
+
+  // Two clicks, not a shift: remove the first Variant, add the second.
+  ok(A.adjustVariantCount(a, s.id, u.variants[0].name, -1).ok, 'one model can be removed');
+  ok(A.adjustVariantCount(a, s.id, u.variants[1].name, 1).ok, 'and the other Variant added in its place');
+  eq(s.models.map(m => m.variant).sort().join(','), [u.variants[0].name, u.variants[1].name].sort().join(','),
+     'landing on one of each without ever leaving squadMin..squadMax');
+
+  ok(A.adjustVariantCount(a, s.id, u.variants[1].name, -1).ok, 'shrinking back toward the minimum is allowed');
+  eq(String(s.models.length), '1', 'down to one');
+
+  // Squad of one, same "changing your mind" exception the top stepper has
+  // (stepperHtml: downOk = down.ok || n === 1): the last model may still come
+  // out, same as pressing the Squad stepper down to zero would.
+  ok(A.canAdjustVariantCount(a, s.id, u.variants[0].name, -1).ok,
+     'and the last model can still come out, same as the Squad stepper going to zero');
+  ok(A.adjustVariantCount(a, s.id, u.variants[0].name, -1).ok, 'which removes the Squad entirely');
+  eq(A.findSquad(a, s.id), null, 'nothing left to find');
+  A.remove(a.id);
+
+  // A Unit whose squadMin is actually above one -- Thorn, 2-8 -- can show the
+  // floor refusing a real drop rather than the always-allowed last model.
+  const b = A.create('bioficer', 'T2', 2000);
+  const g2 = A.addGroup(b);
+  const thornSq = A.addSquad(b, g2.id, 'thorn-light-skimmer');   // starts at squadMin, 2
+  const tu = A.unitOf(b, thornSq);
+  eq(String(thornSq.models.length), '2', 'a fresh Thorn Squad is already at its minimum of two');
+  ok(A.canAdjustVariantCount(b, thornSq.id, tu.variants[0].name, -1).ok === false,
+     'so taking one away is refused -- squadMin is 2, and the Squad still has a second model');
+  A.remove(b.id);
+}
+
 /* And the thing that made it matter: ROOM NEEDED IS PER MODEL. loadCheck
  * multiplies a Unit's fills by how many models are in the Squad, so a Squad
  * that grows behind your back needs more room than it did -- which is why a
@@ -1269,6 +1353,17 @@ console.log('\nraw materials on Genitor Units (Genitor X)');
   ok(A.setRm(a, ark.id, 12).ok, 'a Genitor may be filled to its cap');
   eq(String(A.squadCost(a, ark) - bare), '60', '12 RM cost 60pts — 5pts each');
   eq(String(A.rmOf(ark)), '12', 'and the Squad remembers how many it holds');
+
+  /* genitorCap used to be capacityFor alone -- the ONE Gyro's own hollow
+   * square, never multiplied by how many Gyros are actually in the Squad.
+   * Reported 2026-08-09: a second Gyro left the cap sitting at 8 while the
+   * Squad's RM total read 16. */
+  A.setModelCount(a, gyro.id, 2);
+  eq(String(A.genitorCap(a, gyro)), '16', 'a second Gyro doubles the cap -- 8 per model, not 8 flat');
+  ok(A.setRm(a, gyro.id, 16).ok, 'and the Squad can actually hold that much');
+  ok(A.setRm(a, gyro.id, 17).ok === false, 'but not a token more');
+  A.setRm(a, gyro.id, 0);
+  A.setModelCount(a, gyro.id, 1);
 
   ok(A.setRm(a, ark.id, 0).ok, 'a Genitor may begin empty');
   eq(String(A.squadCost(a, ark)), String(bare), 'and an empty one costs what it always did');

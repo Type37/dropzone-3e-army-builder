@@ -860,6 +860,51 @@
     return chk;
   }
 
+  /* shiftVariant MOVES a model between Variants -- it cannot change how many
+   * are in the Squad, because a fixed-size Squad (squadMin === squadMax) has
+   * no room to grow into. That is wrong for the other case: a Squad whose
+   * size is a RANGE (2026-08-09 bug reports -- Resistance Main Battle Tank,
+   * Bioficer Grievance/Thorn/Tusk/Tangent, Scourge Interceptor) has no top
+   * stepper (sizeControl hides it whenever a Unit has Variant blocks, on
+   * Jet's own call, 2026-08-08: "remove that +/- stepper" on the Troop
+   * Buggy row, because pressing + up there had to GUESS which Variant you
+   * meant). With the top stepper gone and shiftVariant only ever moving a
+   * model that already exists, every Variant Unit with a size range was left
+   * with no way to add a second model at all -- stuck at whatever the Squad
+   * started with.
+   *
+   * So a range-sized Squad gets its own pair, ADDING and REMOVING a model of
+   * this Variant outright rather than trading with a sibling -- which is
+   * what "+/- the number of units we have in that variant" (Jet, on the Bus)
+   * asked for in the first place. A fixed-size Squad keeps shiftVariant; a
+   * ranged one uses this instead. */
+  function canAdjustVariantCount(army, squadId, variantName, delta) {
+    const s = findSquad(army, squadId);
+    if (!s) return { ok: false, reason: 'Unknown Squad.' };
+    if (delta < 0 && !s.models.some(m => m.variant === variantName)) {
+      return { ok: false, reason: null };
+    }
+    return canSetCount(army, squadId, s.models.length + delta);
+  }
+
+  function adjustVariantCount(army, squadId, variantName, delta) {
+    const chk = canAdjustVariantCount(army, squadId, variantName, delta);
+    if (!chk.ok) return chk;
+    const s = findSquad(army, squadId);
+    if (delta > 0) {
+      s.models.push({ variant: variantName });
+    } else {
+      // From the END, so the models you already had keep their order.
+      const i = s.models.map(m => m.variant).lastIndexOf(variantName);
+      s.models.splice(i, 1);
+    }
+    if (s.models.length === 0) { removeSquad(army, squadId); return { ok: true, reason: null }; }
+    // A Transport carrying this Squad must still be full afterwards.
+    refitTransports(army);
+    touch(army);
+    return { ok: true, reason: null };
+  }
+
   function removeSquad(army, squadId) {
     army.groups.forEach(g => {
       // Anything this Squad was carrying is orphaned, not deleted.
@@ -1701,7 +1746,12 @@
   function genitorCap(army, squad) {
     if (!army || army.faction !== 'bioficer') return 0;
     const u = unitOf(army, squad);
-    return u ? window.DZC.capacityFor(u, 'square') : 0;
+    if (!u) return 0;
+    /* capacityFor is PER MODEL -- the hollow green square on one Gyro's own
+     * card. Reported 2026-08-09: a second Gyro added to the Squad left the
+     * cap sitting at 8 while the Squad's RM total read 16, because nothing
+     * here was multiplying by how many Genitors are actually in the Squad. */
+    return window.DZC.capacityFor(u, 'square') * squad.models.length;
   }
 
   function rmOf(squad) {
@@ -2099,7 +2149,7 @@
     importArmies, importList, parseList, generate,
     addGroup, removeGroup, duplicateGroup, moveGroup, groupName, renameGroup,
     commanderName, renameCommander, addSquad, removeSquad, setModelCount, setModelVariant,
-    canShiftVariant, shiftVariant,
+    canShiftVariant, shiftVariant, canAdjustVariantCount, adjustVariantCount,
     setCarrier, moveSquad, setCommander, findSquad, groupOf, unitOf, carrierOf, squadGuns,
     commanders, commanderFor, commanderTargets,
     addCommander, removeCommander, assignCommander, syncCommanders, levelCost,

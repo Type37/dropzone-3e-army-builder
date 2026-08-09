@@ -1471,14 +1471,28 @@
         title="${esc(v.name)}"
         onclick="DZCBuilder.pickVariant('${s.id}',${idx})"></button>`;
     }
-    /* A DELTA, NOT A TARGET COUNT. The stepper moves one model between this
-     * Variant and the largest other one; it never changes how many miniatures
-     * the Squad has. Jet, 2026-08-07: "click shouldn't increase the
-     * miniatures." That is the Squad stepper's job and only its job. */
+    /* A Squad with a fixed size (squadMin === squadMax, more than one model)
+     * has no room to grow into, so its Variant control is A DELTA, NOT A
+     * TARGET COUNT: it moves one model between this Variant and the largest
+     * other one, never changing how many miniatures the Squad has. Jet,
+     * 2026-08-07: "click shouldn't increase the miniatures." That is the
+     * Squad stepper's job and only its job -- on a Unit that HAS a Squad
+     * stepper.
+     *
+     * A ranged Squad (squadMin !== squadMax -- Resistance Main Battle Tank,
+     * Bioficer Grievance/Thorn/Tusk/Tangent, Scourge Interceptor) has no
+     * Squad stepper at all (sizeControl hides it for every Variant Unit), so
+     * a delta with nothing to shift from left it stuck at whatever size the
+     * Squad started with -- reported 2026-08-09 across four factions. There
+     * the Variant control has to be the Squad stepper, scoped to one
+     * Variant: it adds or removes an actual model, bounded by squadMin and
+     * squadMax the same way the (absent) top stepper would be. */
+    const ranged = u.squadMin !== u.squadMax;
     const step = (delta, icon, label) => {
-      const chk = A.canShiftVariant(a, s.id, v.name, delta);
+      const chk = ranged ? A.canAdjustVariantCount(a, s.id, v.name, delta)
+                          : A.canShiftVariant(a, s.id, v.name, delta);
       const b = `<button type="button" ${chk.ok ? '' : 'disabled'}
-              onclick="DZCBuilder.variantShift('${s.id}',${idx},${delta})"
+              onclick="DZCBuilder.${ranged ? 'variantAdjust' : 'variantShift'}('${s.id}',${idx},${delta})"
               aria-label="${esc(label)} ${esc(v.name)}">${window.DZCIcon(icon, { size: 14 })}</button>`;
       return chk.ok || !chk.reason ? b : `<span class="dzc-step-why" title="${esc(chk.reason)}">${b}</span>`;
     };
@@ -3146,6 +3160,16 @@
       const v = u && (u.variants || [])[idx];
       if (!v) return;
       const r = window.DZCArmy.shiftVariant(current, id, v.name, delta);
+      if (!r.ok && r.reason) say(r.reason);
+      refresh();
+    },
+    // The ranged-Squad counterpart to variantShift -- see canAdjustVariantCount.
+    variantAdjust: (id, idx, delta) => {
+      const s = window.DZCArmy.findSquad(current, id);
+      const u = s && window.DZCArmy.unitOf(current, s);
+      const v = u && (u.variants || [])[idx];
+      if (!v) return;
+      const r = window.DZCArmy.adjustVariantCount(current, id, v.name, delta);
       if (!r.ok && r.reason) say(r.reason);
       refresh();
     },
