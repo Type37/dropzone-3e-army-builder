@@ -1167,8 +1167,9 @@ console.log('\nthe starter armies are the ones on the box');
 {
   vm.runInContext(readFileSync(path.join(ROOT, 'js', 'dzc-starters.js'), 'utf8'), sandbox);
   const S = win.DZCStarters;
-  const built = await S.seed();
-  eq(String(built.length), '2', 'both starters are seeded');
+  for (const spec of S.STARTERS) await DZC.loadFaction(spec.faction);
+  const built = S.STARTERS.map((_, i) => S.quickPlay(i));
+  eq(String(built.length), '2', 'both starter lists build');
 
   const ucm = built.find(x => x.faction === 'ucm');
   const bio = built.find(x => x.faction === 'bioficer');
@@ -1193,24 +1194,30 @@ console.log('\nthe starter armies are the ones on the box');
     g.squads.some(s => (A.unitOf(bio, s) || {}).name === 'Grievance Genitor Ark'));
   eq(String(arkGroups.length), '2', 'the two Genitor Arks are in two Groups, as printed');
 
-  // Seeded once, ever. Deleting one has to stick.
-  eq(String((await S.seed()).length), '0', 'and they are never seeded twice');
+  /* The chooser describes what the builder makes, off the same spec -- so it
+   * cannot advertise a Group count or a model count that is not there. */
+  const shown = S.list();
+  eq(String(shown.length), '2', 'the chooser offers both');
+  eq(String(shown[0].groups), String(ucm.groups.length), 'and counts the UCM Groups right');
+  eq(String(shown[0].models),
+     String(ucm.groups.reduce((n, g) => n + g.squads.reduce((m, q) => m + q.models.length, 0), 0)),
+     'and its models');
+  eq(String(shown[1].groups), String(bio.groups.length), 'and the Bioficer Groups');
   built.forEach(a => A.remove(a.id));
 }
 
-/* AND SEEDING NEVER EATS AN ARMY YOU ALREADY HAD.
+/* AND QUICK PLAY NEVER EATS AN ARMY YOU ALREADY HAD.
  *
  * DZCArmy keeps the list in a module array that only load() fills, so an army
  * created against an unloaded one and saved writes over everything in the
- * store. The first version of the seeding call sat one line above load() in
- * renderList and did exactly that -- every army the user had, replaced by two
- * starters, silently. It was invisible in testing because testing always
- * started from a cleared store; the layout harness caught it by seeding an
- * army in one frame and finding it gone in another.
+ * store. That shipped once, from a caller that ran one line above its load(),
+ * and it replaced every army the user had. It was invisible in testing because
+ * testing always started from a cleared store; the layout harness caught it by
+ * seeding an army in one frame and finding it gone in another.
  *
  * Simulated here the only way it can be: fill the store, throw away the
- * in-memory copy the way a fresh page load does, and seed. */
-console.log('\nseeding the starters does not eat the armies already there');
+ * in-memory copy the way a fresh page load does, then build one. */
+console.log('\nquick play does not eat the armies already there');
 {
   store.clear();
   A.load();                       // and the module's copy of it, too
@@ -1222,32 +1229,21 @@ console.log('\nseeding the starters does not eat the armies already there');
   /* A FRESH PAGE, and getting this right is the whole test: the module's array
    * must be EMPTY while the store is full, which is the state every page load
    * starts in. Clearing the store and putting the armies back without emptying
-   * the array first leaves the module still holding them, and then seeding
-   * passes whether it calls load() or not. */
+   * the array first leaves the module still holding them, and then it passes
+   * whether quickPlay calls load() or not. */
   store.clear();
   A.load();                       // armies = [] — the module knows nothing
   store.set('dzc_armies', saved); // and the store knows about the user's army
-  const S2 = win.DZCStarters;
-  await S2.seed();
+  win.DZCStarters.quickPlay(0);
 
   const names = A.load().map(a => a.name);
   ok(names.indexOf('Mine, from before') !== -1,
      'the army that was already in the store is still in it', names.join(', '));
-  eq(String(names.length), '3', 'and the two starters joined it rather than replacing it');
+  eq(String(names.length), '2', 'and the starter joined it rather than replacing it');
   A.load().slice().forEach(a => A.remove(a.id));
   store.clear();
 }
 
-/* RAW MATERIALS — Genitor X, Bioficer Unit Special Rules.
- *
- * "Genitor Units may begin the game with up to X Raw Materials (RM) tokens
- * aboard them, and they may begin empty... RM tokens cost 5pts each and are
- * assigned to those Genitor Units. Their points contribute to their Group's
- * total cost but do not contribute towards any category."
- *
- * The last clause is the one worth a test: it is the only place in this app
- * where points count toward a total and toward no category, and getting it
- * wrong buys you free Vanguard against an inflated Standard. */
 console.log('\nraw materials on Genitor Units (Genitor X)');
 {
   store.clear();

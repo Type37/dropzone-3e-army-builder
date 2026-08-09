@@ -1,7 +1,9 @@
-/* The two starter armies, seeded into Your Armies for every user.
+/* Quick play — the two starter armies, built on demand.
  *
- * Jet, 2026-08-07: "let's wire up starter lists that show up pre-built in your
- * armies."
+ * Jet, 2026-08-08: "let's have the quickplays instead of the pre-loaded
+ * actually." They used to be seeded into Your Armies the first time that
+ * screen was opened. Now you pick one, and what you get is an ordinary army
+ * you could have built by hand.
  *
  * Both lists are TRANSCRIBED, not designed. Jet photographed the two "Starter
  * Army Group Composition" cards from the DZC 3.0 two-player box on 2026-08-07
@@ -18,14 +20,13 @@
  * Both validate with no errors (see test-dzc-army). The UCM's one note is the
  * Scimitars starting Reserved, which TTCombat's card prints too.
  *
- * Seeded ONCE. A user who deletes one has deleted it: the marker below says
- * they have been offered, not that they are present, so they never come back
- * uninvited.
+ * Nothing here writes until you ask it to. Anyone who was given the seeded
+ * pair before this change keeps them -- they are armies now, indistinguishable
+ * from any other, and deleting someone's list to tidy up a feature would be a
+ * far worse thing than the clutter it removes.
  */
 (function () {
   'use strict';
-
-  const SEEDED_KEY = 'dzc.starters.v1';
 
   /* A Group is squads[] in the order the card prints them -- the Transport
    * first, then what it carries, which is how the app stacks a Group anyway.
@@ -165,31 +166,38 @@
     return a;
   }
 
-  /* Seed on first run and never again. The marker records the OFFER, not the
-   * armies: deleting one has to stick, and a marker keyed on "is it present"
-   * would put it back on the next load. */
-  async function seed() {
+  /* ONE, ON DEMAND. Jet, 2026-08-08: "let's have the quickplays instead of the
+   * pre-loaded actually."
+   *
+   * These used to be seeded into Your Armies the first time that screen was
+   * opened -- two armies in your list that you never asked for, on a screen
+   * whose whole job is to show what you made. Now they are a thing you pick,
+   * and picking one makes it exactly as if you had built it yourself: an
+   * ordinary army, in your list, yours to edit or delete.
+   *
+   * `A.load()` first, and it is not belt and braces. DZCArmy keeps the army
+   * list in a module array that only load() fills, so creating an army against
+   * an unloaded one and saving writes these over EVERYTHING already there.
+   * That shipped once, from a caller that ran one line too early, and it wiped
+   * the user's armies. */
+  function quickPlay(index) {
     const A = window.DZCArmy;
-    if (!A) return [];
-    /* The store, before anything is added to it. DZCArmy keeps the army list in
-     * a module array that only load() fills, so creating an army against an
-     * unloaded one and saving writes these two over EVERYTHING already there.
-     * That is exactly what shipped for one commit: the call in renderList sat
-     * one line above its load() and wiped the user's armies. Belt and braces,
-     * so the ordering can never be got wrong from a new caller. */
+    const spec = STARTERS[index];
+    if (!A || !spec) return null;
     A.load();
-    let done = null;
-    try { done = localStorage.getItem(SEEDED_KEY); } catch (e) { return []; }
-    if (done) return [];
-    const out = [];
-    for (const spec of STARTERS) {
-      // Needs the faction's units loaded before a Squad can be added.
-      try { await window.DZC.loadFaction(spec.faction); } catch (e) { continue; }
-      out.push(build(spec));
-    }
-    try { localStorage.setItem(SEEDED_KEY, '1'); } catch (e) { /* private mode */ }
-    return out;
+    return build(spec);
   }
 
-  window.DZCStarters = { seed, build, STARTERS, SEEDED_KEY };
+  /* What the chooser draws: enough to tell them apart, and nothing that has to
+   * be kept in step with the specs above by hand. */
+  function list() {
+    return STARTERS.map((s, i) => ({
+      i: i, name: s.name, faction: s.faction,
+      pointsLimit: s.pointsLimit, description: s.description,
+      groups: s.groups.length,
+      models: s.groups.reduce((n, g) => n + g.squads.reduce((m, q) => m + q.n, 0), 0)
+    }));
+  }
+
+  window.DZCStarters = { quickPlay, list, build, STARTERS };
 })();

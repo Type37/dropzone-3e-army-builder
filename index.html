@@ -147,6 +147,19 @@
 </div>
 
 <!-- Add a Squad -->
+<!-- Quick play. Two starter-box lists, built on the spot into an ordinary
+     army. They used to be seeded into Your Armies whether you wanted them or
+     not; this is the same two lists, asked for. -->
+<div class="modal-overlay" id="dzc-quick" onclick="if(event.target===this)DZCBuilder.closeQuick()">
+  <div class="modal-panel">
+    <div class="modal-header">
+      <h2 class="modal-title">Quick play</h2>
+      <button class="modal-close" type="button" onclick="DZCBuilder.closeQuick()" aria-label="Close"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+    </div>
+    <div class="modal-body" id="dzc-quick-body"></div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="dzc-picker" onclick="if(event.target===this)DZCBuilder.closePicker()">
   <div class="modal-panel modal-panel--xl">
     <div class="modal-header">

@@ -74,20 +74,7 @@
     const root = document.getElementById('view-armies');
     if (!root) return;
     await window.DZC.loadIndex();
-    /* The two starter armies, the first time this screen is ever opened.
-     * Seeded here rather than at boot because this is the screen they appear
-     * on, and a first-run write that happens on the landing page is a write
-     * nobody asked for. It runs once ever -- see dzc-starters.js.
-     *
-     * AFTER load(). This call sat one line above it and that was data loss:
-     * DZCArmy keeps the list in a module array that only load() fills, so
-     * create() pushed onto an empty one and save() wrote the two starters over
-     * everything the user had. Invisible in testing, which always started from
-     * a cleared store; the layout harness found it by seeding an army in one
-     * frame and opening it in another, where it was gone. seed() calls load()
-     * itself as well, so the order can never be got wrong again. */
     window.DZCArmy.load();
-    if (window.DZCStarters) await window.DZCStarters.seed().catch(() => []);
     /* Sorted, and only offered once there is something to sort. Dropfleet
      * hides its sort bar below two fleets (app.js:1627) and that is right: a
      * control that cannot change anything is noise on the screen you see
@@ -145,6 +132,10 @@
       <div class="dzc-list-head">
         <h1>Your Armies</h1>
         <span class="dzc-list-btns">
+          <!-- Quick play: a starter box list, built on the spot. It sits with
+               the other two ways an army arrives -- typed out, imported, or
+               taken ready-made -- because that is the choice being made here. -->
+          <button class="btn btn-ghost" type="button" onclick="DZCBuilder.openQuick()">Quick play</button>
           <button class="btn btn-ghost" type="button" onclick="DZCBuilder.importLink()">Import a link</button>
           <button class="btn btn-primary" type="button" onclick="DZCBuilder.openNew()">New Army</button>
         </span>
@@ -163,6 +154,51 @@
         <button type="button" class="dzc-army-new" onclick="DZCBuilder.openNew()">
           ${window.DZCIcon('add', { size: 26 })}<b>New Army</b></button>`}</div>
     </div>`;
+  }
+
+  /* QUICK PLAY. Jet, 2026-08-08: "let's have the quickplays instead of the
+   * pre-loaded actually."
+   *
+   * A card per starter-box list, drawn from the same spec that builds it --
+   * name, faction, what it costs and what is in it -- so the chooser cannot
+   * describe something the builder does not make. Pressing one builds it and
+   * opens it, because there is nothing to confirm: you asked for that list. */
+  async function openQuick() {
+    const S = window.DZCStarters;
+    const body = document.getElementById('dzc-quick-body');
+    if (!S || !body) return;
+    body.innerHTML = `<div class="dzc-quick-grid">${S.list().map(q => {
+      const fac = FACTIONS.find(f => f.id === q.faction) || {};
+      return `<button type="button" class="dzc-quick-card" style="--acc:${accentOf(q.faction)}"
+        onclick="DZCBuilder.startQuick(${q.i})">
+        <span class="dzc-quick-fac">
+          <img src="assets/factions/${esc(q.faction)}.webp" alt="" loading="lazy" onerror="this.remove()">
+          <b>${esc(fac.full || fac.name || q.faction)}</b>
+        </span>
+        <span class="dzc-quick-name">${esc(q.name)}</span>
+        <!-- Commas, not interpuncts: the app's whole budget for that glyph is
+             two and the footer spends both (CLAUDE.md 3). The army card beside
+             this one already reads "Clash, 9 groups, 30 models". -->
+        <span class="dzc-quick-meta">${q.pointsLimit}pts, ${q.groups} groups, ${q.models} models</span>
+      </button>`;
+    }).join('')}</div>`;
+    document.getElementById('dzc-quick').classList.add('active');
+  }
+
+  function closeQuick() {
+    const el = document.getElementById('dzc-quick');
+    if (el) el.classList.remove('active');
+  }
+
+  async function startQuick(i) {
+    const S = window.DZCStarters;
+    const spec = S && S.STARTERS[i];
+    if (!spec) return;
+    // The faction's units have to be loaded before a Squad can be added.
+    await window.DZC.loadFaction(spec.faction);
+    const a = S.quickPlay(i);
+    closeQuick();
+    if (a) location.hash = '#army/' + a.id;
   }
 
   /* New Army, built the way the Dropfleet New Fleet dialog was: pick a game
@@ -3157,7 +3193,8 @@
       if (r && !r.ok) return say(r.reason);
       refresh();
     },
-    openPicker, pick, print: printSheet, closePreview, printNow, printOpt,
+    openPicker, pick, openQuick, closeQuick, startQuick,
+    print: printSheet, closePreview, printNow, printOpt,
     openCommander, closeCommander,
     addCommander: level => {
       const r = window.DZCArmy.addCommander(current, level);
