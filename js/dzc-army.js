@@ -87,7 +87,7 @@
       faction: faction,
       // The agreed limit is an INPUT, not the top of the band: the per-Group
       // cap is a quarter of the number the players agreed (3.2).
-      pointsLimit: pointsLimit || 1500,
+      pointsLimit: pointsLimit || 2000,
       groups: [],
       created: Date.now(),
       updatedAt: Date.now()
@@ -127,7 +127,7 @@
       name: typeof raw.name === 'string' && raw.name.trim() ? raw.name.trim() : 'Imported Army',
       description: typeof raw.description === 'string' ? raw.description.trim() : '',
       faction: raw.faction,
-      pointsLimit: Number(raw.pointsLimit) > 0 ? Math.round(Number(raw.pointsLimit)) : 1500,
+      pointsLimit: Number(raw.pointsLimit) > 0 ? Math.round(Number(raw.pointsLimit)) : 2000,
       groups: [],
       created: Number(raw.created) || Date.now(),
       updatedAt: Date.now(),
@@ -339,7 +339,7 @@
       name: title.replace(/\[\s*\d+\s*pts?\s*\][\s\S]*$/i, '').replace(/^#+\s*/, '')
         .replace(/\+\+/g, '').replace(/[\s\-–]+$/, '').trim() || 'Imported list',
       faction: faction,
-      pointsLimit: Math.max(headline, total) || 1500,
+      pointsLimit: Math.max(headline, total) || 2000,
       groups: [], commanders: [], created: Date.now(), updatedAt: Date.now()
     };
     const matched = [], unmatched = [];

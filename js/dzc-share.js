@@ -87,7 +87,7 @@
     const uid = () => 'a' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
     const army = {
       id: uid(), name: data.n || 'Shared Army', description: data.d || '', faction: data.f,
-      pointsLimit: data.p || 1500, groups: [],
+      pointsLimit: data.p || 2000, groups: [],
       created: Date.now(), updatedAt: Date.now()
     };
     (data.g || []).forEach(gr => {

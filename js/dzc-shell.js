@@ -13,6 +13,15 @@ const App = (() => {
   'use strict';
 
   const SETTINGS_KEY = 'dfc_settings';   // kept: renaming it would lose themes
+  /* Dropzone's OWN toggles live under their own key, never the shared one.
+   * Dropfleet keeps a field called showCollection in dfc_settings too — a
+   * different setting entirely, its own ships against its own Collection tab
+   * — and merging the whole shared object (Object.assign(settings, s), as
+   * this used to) pulled Dropfleet's value straight into Dropzone's builder.
+   * Turning Collection on in one app silently turned it on in the other.
+   * Jet, 2026-08-09: "the collection should be off by default" -- it was, in
+   * Dropzone's own code; it was Dropfleet's flag showing through. */
+  const DZC_KEY = 'dzc_builder_settings';
   let settings = { theme: 'light' };
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
@@ -93,14 +102,19 @@ const App = (() => {
   }
   function setTheme(theme) {
     settings.theme = theme;
-    try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch (e) { /* quota */ }
+    // Theme alone goes in the shared key -- that sharing is the point of it.
+    try { localStorage.setItem(SETTINGS_KEY, JSON.stringify({ theme })); } catch (e) { /* quota */ }
     applyTheme(theme);
     if ($('modal-settings').classList.contains('active')) openSettings();
   }
   function loadSettings() {
     try {
-      const s = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
-      if (s && typeof s === 'object') settings = Object.assign(settings, s);
+      const shared = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
+      if (shared && typeof shared === 'object' && shared.theme) settings.theme = shared.theme;
+    } catch (e) { /* defaults */ }
+    try {
+      const own = JSON.parse(localStorage.getItem(DZC_KEY) || '{}');
+      if (own && typeof own === 'object') settings = Object.assign(settings, own);
     } catch (e) { /* defaults */ }
   }
 
@@ -225,7 +239,11 @@ const App = (() => {
 
   function toggleSetting(key, on) {
     settings[key] = !!on;
-    try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch (e) { /* quota */ }
+    // Every toggle in this panel is Dropzone's own (theme is the only field
+    // Dropfleet shares, and it goes through setTheme instead) -- so this
+    // writes DZC_KEY only, never the key Dropfleet also reads.
+    const { theme, ...own } = settings;
+    try { localStorage.setItem(DZC_KEY, JSON.stringify(own)); } catch (e) { /* quota */ }
     applyCollectionSetting();
     // Collection changes what the builder shows, so redraw it if it is open.
     if (window.DZCBuilder && DZCBuilder.refresh) DZCBuilder.refresh();

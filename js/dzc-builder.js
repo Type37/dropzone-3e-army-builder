@@ -528,7 +528,7 @@
                same outcome without a gesture. -->
           <button type="button" class="dzc-rail-peek" aria-expanded="${railOpen}"
                   aria-controls="dzc-rail-body" onclick="DZCBuilder.toggleRail()">
-            <b>${left}</b><span>pts left</span>
+            <b>${cost}</b><span>/ ${a.pointsLimit}pts</span>
             <i${gTitle}>${gUsed} of ${maxG || '—'} Groups</i>
             ${(() => {
               // The SAME count the list under it prints. A peek line saying
@@ -550,11 +550,17 @@
               <button type="button" class="dzc-b-size" title="Change the agreed points limit"
                       onclick="DZCBuilder.sizeChanger(event)"
                 >${size ? esc(size.label) : 'Below the 501pt minimum'}</button></p>
+            <!-- Jet, 2026-08-09: "there's a bar that shows how much you've
+                 spent, and then a smaller number showing how much remains
+                 somewhere. but it's a more obvious like 900/2000 or
+                 something." Spent-over-limit is the number everyone reads a
+                 budget as; "left" led before, so what you had actually
+                 spent was the thing buried in small text under the bar. -->
             <div class="dzc-rail-pts ${cost > a.pointsLimit ? 'is-over' : ''}">
-              <b>${left}</b><span>pts left</span>
+              <b>${cost}</b><span>/ ${a.pointsLimit}pts</span>
             </div>
             <div class="dzc-rail-track"><i style="width:${pct}%"></i></div>
-            <p class="dzc-rail-line">${cost} of ${a.pointsLimit}pts spent</p>
+            <p class="dzc-rail-line">${left}pts left</p>
             <p class="dzc-rail-line"${gTitle}>${gUsed} of ${maxG || '—'} Groups</p>
           </div>
 
