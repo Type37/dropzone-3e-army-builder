@@ -704,6 +704,42 @@
   function gripUp(ev) { endGrip(ev.currentTarget, true); }
   function gripCancel(ev) { endGrip(ev.currentTarget, false); }
 
+  /* THE SAME MOVE WITHOUT A DRAG.
+   *
+   * Reordering Groups was a pointer gesture and nothing else, which is a
+   * dead end for anyone on a keyboard, and it was the second thing the
+   * 2026-08-09 thread asked for: "I would like the ability to move Groups
+   * around." It existed; it was reachable one way only.
+   *
+   * The grip is a focusable button now and the arrows move the Group one
+   * place. Left and Right as well as Up and Down, because the Group cards
+   * lay out in a horizontal grid on a wide screen and a vertical list on a
+   * narrow one -- the arrow that matches what you are looking at should be
+   * the one that works, and guessing which is which from JS would be a
+   * media query written twice.
+   *
+   * Focus follows the GROUP, by id, and refresh()'s own restore cannot do it.
+   * That one matches on aria-label, and an unnamed Group's name is its
+   * position -- so "Move Group 4" after the move names whatever card landed in
+   * slot 4, which is the card you just displaced. Holding ArrowLeft then
+   * swapped the same pair back and forth forever. Measured, not guessed: the
+   * first press moved the Group and the second put it back. */
+  function gripKey(ev, gid) {
+    const back = ev.key === 'ArrowUp' || ev.key === 'ArrowLeft';
+    const fwd = ev.key === 'ArrowDown' || ev.key === 'ArrowRight';
+    if (!current || (!back && !fwd)) return;
+    ev.preventDefault();
+    const gs = current.groups;
+    const i = gs.findIndex(g => g.id === gid);
+    const j = back ? i - 1 : i + 1;
+    if (i === -1 || j < 0 || j >= gs.length) return;
+    if (!window.DZCArmy.moveGroup(current, gid, gs[j].id, fwd)) return;
+    Promise.resolve(refresh()).then(() => {
+      const el = document.querySelector(`.dzc-bb[data-gid="${gid}"] .dzc-bb-grip`);
+      if (el) el.focus({ preventScroll: true });
+    });
+  }
+
   /* Dragging a Squad into a Transport.
    *
    * "Units with the category Transport may only be chosen along with a Squad
@@ -848,6 +884,42 @@
   function sqUp(ev) { endSqDrag(ev.currentTarget, true); }
   function sqCancel(ev) { endSqDrag(ev.currentTarget, false); }
 
+  /* The Squad grip, from a keyboard.
+   *
+   * This drag does two things: it puts a Squad aboard a Transport, and it
+   * moves a Squad to another Group. The first now has a button with a word on
+   * it, so the arrows are given to the second, which has no other route at
+   * all -- one Group earlier, one Group later.
+   *
+   * Refusals go through say() exactly as the drop does, because moveSquad has
+   * rules of its own and a keypress that silently does nothing is worse than
+   * one that tells you why.
+   *
+   * The view follows the Squad. Only one Group is open at a time, so leaving
+   * the selection where it was would move the Squad out from under you and
+   * leave focus on nothing -- which for a keyboard is the end of the road, not
+   * a small annoyance. Dragging has the same gap, but a finger at least ends
+   * up pointing at the Group it dropped into. */
+  function sqGripKey(ev, sid) {
+    const back = ev.key === 'ArrowUp' || ev.key === 'ArrowLeft';
+    const fwd = ev.key === 'ArrowDown' || ev.key === 'ArrowRight';
+    if (!current || (!back && !fwd)) return;
+    ev.preventDefault();
+    const home = window.DZCArmy.groupOf(current, sid);
+    if (!home) return;
+    const gs = current.groups;
+    const j = gs.findIndex(g => g.id === home.id) + (back ? -1 : 1);
+    if (j < 0 || j >= gs.length) return;
+    const r = window.DZCArmy.moveSquad(current, sid, gs[j].id);
+    if (!r.ok) return say(r.reason);
+    if (r.warn) say(r.warn, 'warning');
+    selectedGroup = gs[j].id;
+    Promise.resolve(refresh()).then(() => {
+      const el = document.querySelector(`[data-sid="${sid}"] .dzc-sq-grip`);
+      if (el) el.focus({ preventScroll: true });
+    });
+  }
+
   /* The per-army menu.
    *
    * At <body> level and position:fixed, for the reason the size popover is:
@@ -986,9 +1058,10 @@
            there they are.... at 200% zoom I can see them." At 200% they were
            one pixel. drag_dots is radius 1.5 in a 2x3 portrait grid, which is
            three times the ink and the right shape for a vertical handle. -->
-      <span class="dzc-bb-grip" role="button" tabindex="-1"
-            aria-label="Drag to reorder ${name}"
-            title="Drag to reorder"
+      <span class="dzc-bb-grip" role="button" tabindex="0"
+            aria-label="Move ${name}"
+            title="Drag to reorder, or focus it and use the arrow keys"
+            onkeydown="DZCBuilder.gripKey(event, '${g.id}')"
             onpointerdown="DZCBuilder.gripDown(event, '${g.id}')"
             >${window.DZCIcon('drag_dots', { size: 18 })}</span>
       <button type="button" class="dzc-bb-select" onclick="DZCBuilder.selectGroup('${g.id}')">
@@ -1751,9 +1824,10 @@
              from where reading starts. (iOS puts it right, but only inside an
              edit mode where reordering is all the list does; here it is one
              action among six.) -->
-        <span class="dzc-sq-grip" role="button" tabindex="-1"
-              aria-label="Drag ${esc(u.name)} onto a Transport"
-              title="Drag onto a Transport to put this Squad aboard"
+        <span class="dzc-sq-grip" role="button" tabindex="0"
+              aria-label="Move ${esc(u.name)}"
+              title="Drag onto a Transport to put this Squad aboard, or focus it and use the arrow keys to move it to another Group"
+              onkeydown="DZCBuilder.sqGripKey(event,'${s.id}')"
               onpointerdown="DZCBuilder.sqGrip(event,'${s.id}')"
               >${window.DZCIcon('drag_dots', { size: 20 })}</span>
         <!-- ONE PICTURE. Jet, 2026-08-07: "I no longer wish for like, adding
@@ -3287,7 +3361,7 @@
       if (now !== was) refresh();
     },
     renameCommander: (id, t) => { window.DZCArmy.renameCommander(current, id, t); refresh(); },
-    gripDown, sqGrip,
+    gripDown, sqGrip, gripKey, sqGripKey,
     toggleRail: () => { railOpen = !railOpen; refresh(); },
     selectGroup: id => { selectedGroup = id; drilled = true; refresh(); },
     backToGroups: () => { drilled = false; refresh(); },

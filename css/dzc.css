@@ -2676,6 +2676,13 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
   transition: opacity .12s, background .12s;
 }
 .dzc-bb:hover .dzc-bb-grip, .dzc-bb-grip:hover { opacity: 1; background: var(--surface-3, #f2ece0); }
+/* Both grips take focus now — the arrows do the move without a pointer — so
+   both need to show they have it. Inset, because a grip sits hard against the
+   edge of the thing it moves and an outset ring would be clipped by the
+   neighbour or hang off the card. */
+.dzc-bb-grip:focus-visible, .dzc-sq-grip:focus-visible {
+  opacity: 1; outline: 2px solid var(--acc); outline-offset: -2px;
+}
 /* No shadow and no lift: the card must not move except with the finger. */
 .dzc-bb.is-dragging { opacity: .9; position: relative; z-index: 50; cursor: grabbing; }
 .dzc-bb.is-before { box-shadow: inset 0 3px 0 0 var(--acc); }
