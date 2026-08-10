@@ -1711,7 +1711,7 @@
   /* THE PROBLEM, ON THE THING WITH THE PROBLEM. Jet, 2026-08-07: "this should
    * live on the unit causing the issue."
    *
-   * "Bear APC is not full. Transports must be taken full (3.2.4)" was in the
+   * "Bear APC: not full. Transports must be taken full (3.2.4)" was in the
    * rail and only there, which means reading a sentence at the top of the
    * screen, finding the Bear it names somewhere in the army, and holding the
    * two together. The rail keeps the count, because how many problems the list
@@ -2009,7 +2009,7 @@
   }
 
   /* Commanders live in the rail, as a card each with a button under them.
-   * Not as a ", none, " select stapled to the bottom of every Squad, where
+   * Not as a "— none —" select stapled to the bottom of every Squad, where
    * five Squads meant five empty slots for a thing you take one of.
    *
    * DZC ranks run 4-7; the insignia helper draws 1-5 pips, so the level is

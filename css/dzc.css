@@ -809,7 +809,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-wpn-ma { white-space: nowrap; }
 
 /* ── Commanders in the rail ──
-   One card per Commander with a button beneath, instead of a ", none, " select
+   One card per Commander with a button beneath, instead of a "— none —" select
    on the bottom of every Squad. You take one or two of these; five Squads
    should not mean five empty slots. */
 .dzc-cmdr-card { border-left: 3px solid var(--gold, #c9a92c); }
@@ -2342,7 +2342,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 }
 .dzc-toast.is-on { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
 
-/* A <select> sizes itself to its widest OPTION, so "Bear APC × 1. Cannot be
+/* A <select> sizes itself to its widest OPTION, so "Bear APC × 1 — cannot be
    full (carries 4, needs 6)" made the row 440px wide and the page scrolled
    sideways at 375. Constrain the control and let the row wrap instead; the
    option text stays complete inside the open dropdown, so nothing is lost. */

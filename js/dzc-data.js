@@ -313,7 +313,8 @@
    * is a second roll after the hit and comes off the Energy vs Armour table,
    * not off the Weapon's Ac. Ac decides whether you hit; this decides whether
    * the hit does anything. 6.2.4: "If the result is at least 2 higher than the
-   * required roll, that result is a Critical, another 1 damage is inflicted."
+   * required roll, that result is a Critical—another 1 damage is inflicted."
+   * (That em-dash is TTCombat's, inside a verbatim quote, and stays.)
    *
    * The published table is 10 x 11 and it is one line of arithmetic:
    *
