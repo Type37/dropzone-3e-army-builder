@@ -1,4 +1,4 @@
-/* Play Mode — run a game from a built army.
+/* Play Mode, run a game from a built army.
  *
  * Tracks the things a Round actually needs and that are easy to get wrong at a
  * table, all of which come out of rulebook chapter 4:
@@ -6,7 +6,7 @@
  *   4.1.1  CP is replenished UP TO your highest Commander Level on the table,
  *          and you LOSE CP if you hold more than that. Commanders count as
  *          Level 0 throughout Round 1, so Round 1 gives you nothing.
- *   4.1.2  Pass tokens come from having FEWER Groups than your opponent — two
+ *   4.1.2  Pass tokens come from having FEWER Groups than your opponent. Two
  *          fewer earns one, and each further Group earns another. Groups of
  *          only non-auxiliary Transports do not count toward either side.
  *   4.1.4  Command Card hand size is also the highest Commander Level.
@@ -27,15 +27,15 @@
   const KEY = 'dzc_play';
   /* Status Tokens are placed on a SQUAD, and the rulebook says so three times:
    *
-   *   11.1.7  Concussion — "place a Concussed Status Token on its Squad.
+   *   11.1.7  Concussion. "place a Concussed Status Token on its Squad.
    *           Concussed Squads suffer -2Ac."
-   *   11.1.22 Jammer     — "place a Jammed Status Token on its Squad."
-   *   11.1.34 Suppress   — "place a Suppressed Status Token on its Squad.
+   *   11.1.22 Jammer    , "place a Jammed Status Token on its Squad."
+   *   11.1.34 Suppress  , "place a Suppressed Status Token on its Squad.
    *           Suppressed Squads may only move 0” if any Unit within it attacks."
    *
-   * Obscured is not one of them and does not move. 10.1.21 Obscurer X” — "All
+   * Obscured is not one of them and does not move. 10.1.21 Obscurer X”. "All
    * friendly Vehicle and Infantry UNITS within X” of this Unit are Obscured to
-   * enemies" — so it is a state a model is in because of where it is standing,
+   * enemies". So it is a state a model is in because of where it is standing,
    * and two models of one Squad can genuinely differ. */
   const SQUAD_STATUSES = ['Concussed', 'Suppressed', 'Jammed'];
   const MODEL_STATUSES = ['Obscured'];
@@ -46,7 +46,7 @@
   let armyId = null;
   let state = null;
 
-  /* A Behemoth prints several DP values — "6, 12, 22" — and "the final value
+  /* A Behemoth prints several DP values, "6, 12, 22", and "the final value
    * is its actual DP" (Behemoth rules 1.5.5). The ones before it are the
    * thresholds where it becomes Degraded and then Crippled.
    *
@@ -78,7 +78,7 @@
 
   /* Power, as a number. "Behemoths begin each Round with a number of Power
    * tokens (PT) equal to their Power" (Behemoth rules 1.3), and every Behemoth
-   * in the game prints one — 4 to 10 of them. Nothing else does, so a missing
+   * in the game prints one, 4 to 10 of them. Nothing else does, so a missing
    * or unreadable Power means no track rather than a track of zero. */
   function power(u) {
     const n = parseInt((u && u.stats && u.stats.Power) || '', 10);
@@ -178,7 +178,7 @@
 
   /* What a Group is WORTH, not that there is one. "A Behemoth counts as that
    * many Groups when building your Army and generating Pass tokens" (Behemoth
-   * rules 1.1) — the builder has counted them that way since they arrived and
+   * rules 1.1). The builder has counted them that way since they arrived and
    * Play Mode was still counting cards, so a Dragon worth five Groups was one
    * Group here and every Pass token in the game came out wrong.
    *
@@ -259,7 +259,7 @@
         </div>
 
         <!-- Your own Group count is the other half of the Pass arithmetic, so
-             it stays — as a number beside theirs, not as a sentence about it. -->
+             it stays, as a number beside theirs, not as a sentence about it. -->
         <div class="dzc-pcard" title="A Group of only non-auxiliary Transports cannot be activated and is ignored here (4.1.2)">
           <span class="dzc-pcard-k">Pass Tokens</span>
           <span class="dzc-pcard-v">${pass}</span>
@@ -267,7 +267,7 @@
             <!-- Derived from the army, not typed. Uneditable IS the enforcement,
                  so it has to say why rather than just refuse the caret. -->
             <label>Yours<input type="number" value="${groupsOnTable(army)}" disabled
-                   title="Counted from your army — Groups of only Transports are ignored (4.1.2), and a Behemoth counts as several (1.1)"></label>
+                   title="Counted from your army. Groups of only Transports are ignored (4.1.2), and a Behemoth counts as several (1.1)"></label>
             <label>Theirs
               <input type="number" min="0" max="40" value="${state.oppGroups}"
                      oninput="DZCPlay.oppGroups(this.value)"></label>
@@ -311,7 +311,7 @@
     const orphaned = !canAct && live.length > 0;
     /* A Behemoth does not have one activation to tick off. "When you may
      * activate a normal Group, you may instead activate a Behemoth with PT
-     * remaining" (1.3) — it goes as many times as it has Power tokens, so a
+     * remaining" (1.3). It goes as many times as it has Power tokens, so a
      * box that says "done" after the first Action says the wrong thing. Its
      * Power track is the tracker; the box is disabled and points at it. */
     const behemoth = g.squads.some(s => {
@@ -319,7 +319,7 @@
       return u && u.type === 'Behemoth' && aliveIn(s) > 0;
     });
     const why = behemoth
-      ? 'A Behemoth activates once per Power token, not once per Round (1.3) — the Power track below is the count'
+      ? 'A Behemoth activates once per Power token, not once per Round (1.3). The Power track below is the count'
       : orphaned
         ? 'Cannot be picked for a normal activation (4.2.1); activates in the Orphaned Transport step (4.2.2)'
         : g.squads.length ? 'Nothing left in this Group' : 'No Squads in this Group';
@@ -344,14 +344,14 @@
   /* The guns this Squad fires, and only those.
    *
    * Play Mode had no weapons on it at all, which made it a damage tracker
-   * rather than something you could play off — the numbers you argue over
+   * rather than something you could play off. The numbers you argue over
    * across a table are in this table, and the alternative was leaving the game
    * to go and open the card.
    *
    * FILTERED, not marked, which is the opposite of the builder and deliberate:
    * while you are building, a gun you did not take is a comparison, and while
    * you are playing it is a distraction. Same definition of what is in the
-   * Squad either way — DZCArmy.squadGuns — so the two cannot drift. */
+   * Squad either way, DZCArmy.squadGuns, so the two cannot drift. */
   function weaponsHtml(army, s, u) {
     const U = window.DZCUnits;
     const ws = U.unitWeapons(u, window.DZCArmy.squadGuns(s));
@@ -365,7 +365,7 @@
    * "Behemoths begin each Round with a number of Power tokens (PT) equal to
    * their Power. When you may activate a normal Group, you may instead
    * activate a Behemoth with PT remaining. It must then complete one Action
-   * from the Power Table" (1.3) — so a Behemoth goes several times a Round and
+   * from the Power Table" (1.3). So a Behemoth goes several times a Round and
    * stops when its PT run out. Play Mode gave its Group the same one-shot
    * activation checkbox as everything else, which said a Dragon with ten PT
    * was finished for the Round after one Action.
@@ -415,11 +415,11 @@
     /* "Behemoths cannot receive Status tokens" and "Behemoths cannot be
      * Obscured, even by special rules" (Behemoth rules 1.2). All four buttons
      * were live on one, so Play Mode would let you record a state the game
-     * cannot produce — the same fault as putting a Squad's token on every
+     * cannot produce. The same fault as putting a Squad's token on every
      * model, one rule further along. Disabled rather than removed: the reason
      * has to be somewhere, and a control that vanishes says nothing. */
     const noTokens = u.type === 'Behemoth';
-    const noWhy = `${u.name} is a Behemoth — Behemoths cannot receive Status tokens or be Obscured (1.2)`;
+    const noWhy = `${u.name} is a Behemoth: Behemoths cannot receive Status tokens or be Obscured (1.2)`;
     return `<div class="dzc-play-squad">
       <div class="dzc-play-sq-head">
         <span class="dzc-play-name">${esc(u.name)}</span>
@@ -441,11 +441,11 @@
       ${(() => {
         // A Behemoth's condition, from the damage it has taken (1.5.5).
         // Degraded cannot Advance; Crippled cannot Advance or Charge and is
-        // worth half its points — which is worth knowing without counting.
+        // worth half its points. Which is worth knowing without counting.
         const t = models.length === 1 ? threshold(u, models[0].dp) : null;
         return t ? `<p class="dzc-play-cond is-${t.toLowerCase()}">${esc(t)}${
-          t === 'Degraded' ? ' — cannot Advance'
-            : t === 'Crippled' ? ' — cannot Advance or Charge, worth half points' : ''}</p>` : '';
+          t === 'Degraded' ? ', cannot Advance'
+            : t === 'Crippled' ? ', cannot Advance or Charge, worth half points' : ''}</p>` : '';
       })()}
       <div class="dzc-play-models">
         ${models.map((m, i) => `<div class="dzc-model${m.dp > 0 ? '' : ' is-dead'}">
@@ -494,12 +494,12 @@
        *
        * Only when advancing. Stepping back is a mis-tap, not an Initiation
        * Phase, and handing back a Round's spent CP for it would be worse than
-       * the bug. The cap still applies either way — you may never hold more
+       * the bug. The cap still applies either way. You may never hold more
        * than your Commander Level. */
       const lvl = commanderLevel(army());
       state.cp = state.round > was ? lvl : Math.min(state.cp, lvl);
       /* "Behemoths begin each Round with a number of Power tokens (PT) equal
-       * to their Power" (1.3) — every Round, spent or not, which is the same
+       * to their Power" (1.3). Every Round, spent or not, which is the same
        * shape as the Command Point line above and needs no undo guard: a full
        * Power track is where a Round starts whichever way you stepped. */
       const a = army();
@@ -561,10 +561,10 @@
       if (el) {
         /* The total is printed on a 6 as well. 4.1.5: "A roll of 6 wins
          * automatically, but if both players roll 6s, add their Commander
-         * Level as normal" — so the one roll that hid its total was the one
+         * Level as normal". So the one roll that hid its total was the one
          * roll with a case that needs it. */
         el.textContent = `${d6} + ${lvl} = ${d6 + lvl}${
-          d6 === 6 ? ' — wins unless they rolled a 6 too' : ''}`;
+          d6 === 6 ? ', wins unless they rolled a 6 too' : ''}`;
       }
     },
     reset: () => {

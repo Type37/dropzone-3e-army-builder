@@ -32,7 +32,7 @@ vm.createContext(sandbox);
 vm.runInContext(readFileSync(path.join(ROOT, 'js', 'dzc-data.js'), 'utf8'), sandbox);
 vm.runInContext(readFileSync(path.join(ROOT, 'js', 'dzc-army.js'), 'utf8'), sandbox);
 /* dzc-units.js is the renderer, but unitWeapons and removedByUpgrades in it are
- * the definition of what guns a Squad actually has — which is an army question,
+ * the definition of what guns a Squad actually has. Which is an army question,
  * asked here and by the printed sheet. It touches the DOM only inside render
  * functions nothing below calls. */
 vm.runInContext(readFileSync(path.join(ROOT, 'js', 'dzc-units.js'), 'utf8'), sandbox);
@@ -102,7 +102,7 @@ console.log('\nweapon upgrades are per VARIANT, not per model (3.2.3)');
  * put one inside the other: "Oh look, now I have an error." Then: "I did
  * select add unit... I then selected the Triton X. Now I have an error."
  * Baxter could not reproduce it and called it a bug, then said it was not one.
- * Neither of them could tell whether the app was broken. It was not — the list
+ * Neither of them could tell whether the app was broken. It was not. The list
  * really was illegal, and one tap fixed it. Nothing said which tap. */
 console.log('\ntwo loose Squads: the error says which one goes aboard which');
 {
@@ -113,7 +113,9 @@ console.log('\ntwo loose Squads: the error says which one goes aboard which');
   A.addSquad(a, g.id, 'triton-x-gunship', 1);
   const e = A.validate(a).errors.find(x => x.rule === '3.2.4' && /nothing carrying/.test(x.msg));
   ok(!!e, 'two Squads walking on is still an error');
-  ok(/a Group is one Squad and its Transports/.test(e.msg), 'and still quotes the rule', e.msg);
+  // Case-insensitive: the clause opens the sentence now that the em-dash
+  // before it became a full stop, so it reads "A Group", not "a Group".
+  ok(/a Group is one Squad and its Transports/i.test(e.msg), 'and still quotes the rule', e.msg);
   ok(/Put the Medusa aboard the Triton X Gunship\./.test(e.msg),
      'and now names the pair, the right way round', e.msg);
 
@@ -139,7 +141,7 @@ console.log('\ntwo loose Squads: the error says which one goes aboard which');
 /* An upgrade a card offers to SOME variants (3.2.3).
  *
  * "Menchit and Styx may replace Twin RX-20 Miniguns with RM-4 Foeslayer
- * Missiles" — the only sentence in the data that restricts a purchase rather
+ * Missiles". The only sentence in the data that restricts a purchase rather
  * than a printed gun. The restriction lived on the swap and not on the weapon,
  * so upgradesFor scoped it to '*' and an Ares could buy a Foeslayer for 5pts
  * with nothing traded in. Reported by a player, 2026-08-09: "The Foeslayer
@@ -185,7 +187,7 @@ console.log('\nan upgrade restricted to some variants (3.2.3)');
  * 10.1.20 "Commanders cannot be assigned to Living Weapons."
  *
  * Both sentences have been in data/dzc/rules.json since the rulebook was
- * scanned, shown on the card, and enforced nowhere — the app would put a Level
+ * scanned, shown on the card, and enforced nowhere. The app would put a Level
  * 5 Commander on an Archangel and charge you 90pts for an army no opponent
  * would accept. Ten Units carry one keyword or the other. */
 console.log('\nno Commander on a Fast Mover or a Living Weapon (10.1.12, 10.1.20)');
@@ -406,8 +408,8 @@ console.log('\ngroup cost cap (3.2)');
  *
  * The line between the two is whether adding something else could put it
  * right. Taking a second Rare Squad never can, so it is refused. A Group that
- * does not yet make sense — a lone Transport, two Squads with nothing carrying
- * them — is only wrong once you stop building, so validate() reports it. */
+ * does not yet make sense, a lone Transport, two Squads with nothing carrying
+ * them, is only wrong once you stop building, so validate() reports it. */
 console.log('\nRare and Unique are refused, not reported (3.2.1)');
 {
   const a = army(1000);                       // Skirmish: 1 Rare
@@ -438,7 +440,7 @@ console.log('\ntransports and their cargo form one Group (3.2.4)');
   ok(A.canAddUnit(a, g.id, 'condor-dropship').ok, 'a Transport may start a Group');
   const solo = A.addSquad(a, g.id, 'condor-dropship', 1);
   ok(solo !== null, 'and it is added, to be filled afterwards');
-  // A lone Transport is UNFINISHED, not illegal — you may be about to fill it —
+  // A lone Transport is UNFINISHED, not illegal, you may be about to fill it,
   // so it is reported when the list is done rather than blocked as you build.
   ok(hasErr(A.validate(a), 'carries nothing'), 'a Transport carrying nothing is reported');
 
@@ -694,7 +696,7 @@ console.log('\nCommander levels are gated by game size (3.2.5)');
 }
 
 /* Where a Commander may go. commanderTargets is what fills the Aboard select,
- * and until now nothing in the suite had ever called it — so the one control
+ * and until now nothing in the suite had ever called it. So the one control
  * that decides which Unit a Commander leads was answering from untested code.
  *
  * "A Squad may contain only one" (3.2.5) is the rule it enforces: a Squad
@@ -789,8 +791,8 @@ console.log('\nwarnings that are not errors');
  * Aircraft, OR IN A TRANSPORT ABOARD AN AIRCRAFT, always begin Reserved."
  *
  * That second clause is the whole test. Six Legionnaires ride two Bear APCs
- * which ride one Condor — the rulebook's own illustration of nested transport
- * (3.2.4.2, p11) — so nothing in that Group begins Reserved. The check used to
+ * which ride one Condor, the rulebook's own illustration of nested transport
+ * (3.2.4.2, p11), so nothing in that Group begins Reserved. The check used to
  * look at the immediate carrier only, so the Legionnaires, whose carrier is a
  * Vehicle, were reported as walking on while they were in the air.
  */
@@ -1171,7 +1173,7 @@ console.log('\nrequired carrying capacity follows the model count');
 console.log('\nimporting a backup');
 {
   // The other half of exportArmies. A backup you cannot restore is not a
-  // backup, and the export is the stored shape unmodified — so the round trip
+  // backup, and the export is the stored shape unmodified, so the round trip
   // is exactly "stringify the store, read it back".
   const a = army(2000);
   a.name = 'Backup probe';
@@ -1366,7 +1368,7 @@ console.log('\na Squad moves between Groups, and its cargo goes with it');
 
 /* The two starter armies, against TTCombat's own Group composition cards.
  *
- * The point of the test is not that they build — it is that they build the
+ * The point of the test is not that they build. It is that they build the
  * army on the card AND come out legal. A starter list that opens with three
  * errors teaches a new player the wrong thing about the app and about 3.2.4,
  * and the only thing standing between here and that is this. */
@@ -1474,7 +1476,7 @@ console.log('\nquick play does not eat the armies already there');
    * the array first leaves the module still holding them, and then it passes
    * whether quickPlay calls load() or not. */
   store.clear();
-  A.load();                       // armies = [] — the module knows nothing
+  A.load();                       // armies = [], the module knows nothing
   store.set('dzc_armies', saved); // and the store knows about the user's army
   win.DZCStarters.quickPlay(0);
 
@@ -1529,7 +1531,7 @@ console.log('\nraw materials on Genitor Units (Genitor X)');
 
   /* THE CATEGORY CLAUSE. The Ark is Standard, so if RM leaked into
    * categorySpend it would raise the very ceiling the other three are
-   * measured against — 60pts of free headroom for Vanguard. */
+   * measured against, 60pts of free headroom for Vanguard. */
   A.setRm(a, ark.id, 12);
   const spend = A.categorySpend(a);
   const total = A.armyCost(a);
@@ -1550,7 +1552,7 @@ console.log('\nraw materials on Genitor Units (Genitor X)');
   store.clear();
 }
 
-/* SHARING ONE TRANSPORT vs SHARING A TRANSPORT SQUAD — 3.2.4.1 and 3.2.4.3.
+/* SHARING ONE TRANSPORT vs SHARING A TRANSPORT SQUAD, 3.2.4.1 and 3.2.4.3.
  *
  * Jet, 2026-08-08: "Squad of Hazards and squad of legionnaires in a group with
  * Ferrets: okay. ...in a group with Ravens: not okay."
@@ -1568,7 +1570,7 @@ console.log('\nsharing a Transport (3.2.4.1) and an Auxiliary Transport (3.2.4.3
   await DZC.loadFaction('ucm');
   const mk = () => { const a = A.create('ucm', 'Share', 3000); return [a, A.addGroup(a, 'G')]; };
 
-  // Group 4 — an Auxiliary Transport Squad may carry Squad/S, at any size.
+  // Group 4. An Auxiliary Transport Squad may carry Squad/S, at any size.
   const [a, g] = mk();
   const ferrets = A.addSquad(a, g.id, 'ucm-troop-buggy', 4);
   ferrets.models.forEach(m => { m.variant = 'Ferret'; });
@@ -1592,7 +1594,7 @@ console.log('\nsharing a Transport (3.2.4.1) and an Auxiliary Transport (3.2.4.3
      'and the refusal names the rule rather than blaming capacity', refused.reason);
   ok(A.boardOptions(b, haz2.id).length === 0, 'so the chooser never offers it either');
 
-  // Group 5 — ONE larger Transport, shared by up to 4 Squads and their own.
+  // Group 5. ONE larger Transport, shared by up to 4 Squads and their own.
   const [c, g3] = mk();
   const c1 = A.addSquad(c, g3.id, 'legionnaires', 3);
   A.assignTransport(c, c1.id, 'bear-apc');
@@ -1606,7 +1608,7 @@ console.log('\nsharing a Transport (3.2.4.1) and an Auxiliary Transport (3.2.4.3
   ok(A.boardTransport(c, bear2.id, alb.id).ok,
      'and a second Bear APC Squad shares that ONE Albatross — the book’s Group 5');
 
-  // Group 3 — one Squad may still fill several identical Transports alone.
+  // Group 3. One Squad may still fill several identical Transports alone.
   const [d, g4] = mk();
   const tanks = A.addSquad(d, g4.id, 'ucm-main-battle-tank', 6);
   ok(A.assignTransport(d, tanks.id, 'condor-dropship').ok,
@@ -1626,7 +1628,7 @@ console.log('\nsharing a Transport (3.2.4.1) and an Auxiliary Transport (3.2.4.3
   store.clear();
 }
 
-/* SHALTARI GATES — Gate, Shaltari Unit Special Rules.
+/* SHALTARI GATES, Gate, Shaltari Unit Special Rules.
  *
  * Jet, 2026-08-08, after demoing them: "what if Gates were their own category
  * since they aren't directly attached to groups and don't count towards the
@@ -1680,7 +1682,7 @@ console.log('\nShaltari Gates are not part of the Group structure');
   ok(!v.warnings.some(w => /begin Reserved/.test(w.msg)),
      'so the Reserved warning does not also fire');
 
-  /* Reachable only from a link or a backup — canAddUnit refuses to build it,
+  /* Reachable only from a link or a backup. CanAddUnit refuses to build it,
    * which is why the Squad is pushed straight onto the Group here rather than
    * added. That refusal is itself the point: nothing you can press makes one. */
   const g3 = A.addGroup(a, 'Smuggled');

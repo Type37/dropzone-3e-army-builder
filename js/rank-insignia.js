@@ -1,5 +1,5 @@
 /* ─────────────────────────────────────────────────────────────────────────
-   Rank insignia — shared by the desktop (js/app.js) and mobile (mobile/js/
+   Rank insignia. Shared by the desktop (js/app.js) and mobile (mobile/js/
    mobile.js) builders so the icons never drift between the two apps.
 
    RankInsignia(factionKey, level, sizePx?) -> inline <svg> string.
@@ -13,7 +13,7 @@
      phr        post-human geometric up-chevrons
      scourge    organic spine / growth-ripple lines
      shaltari   crystalline diamond pips
-     bioficer   triangular tessellation that GROWS with rank — L1 = 1 triangle,
+     bioficer   triangular tessellation that GROWS with rank. L1 = 1 triangle,
                 each level adds one more, tiling edge-to-edge into a larger
                 subdivided triangle (a fractal Sierpinski-style growth). Reads
                 as a self-assembling Directorate sigil. (Bioficer admirals top
@@ -43,7 +43,7 @@
     return ys;
   }
 
-  // Per-faction mark drawn around centre (12, y) — bold, near-full-width so the
+  // Per-faction mark drawn around centre (12, y), bold, near-full-width so the
   // motif fills the thumbnail. (y, i, n, color) -> svg.
   const MARK = {
     // ucm + resistance + bioficer are special-cased below (not simple stacked rows).
@@ -53,7 +53,7 @@
       `<path d="M2.5 ${y} q4.875 -4 9.5 0 t9.5 0" fill="none" stroke="${c}" stroke-width="2.9" stroke-linecap="round"/>`,
     shaltari: (y, i, n, c) =>
       `<path d="M12 ${y - 3.6} L16.6 ${y} L12 ${y + 3.6} L7.4 ${y} Z" fill="${c}"/>`
-    // bioficer is special-cased (a growing tessellation, not stacked rows) —
+    // bioficer is special-cased (a growing tessellation, not stacked rows),
     // see bioficerInsignia() below.
   };
 
@@ -100,7 +100,7 @@
     else { const step = (bandBottom - bandTop) / (n - 1); for (let i = 0; i < n; i++) ys.push(bandBottom - i * step); }
     const bars = ys.map(y => `<rect x="3" y="${(y - 1.6).toFixed(1)}" width="18" height="3.2" rx="0.8" fill="${c}"/>`).join('');
     const topY = Math.min(...ys);
-    // The curl: a loop centred above the top bar with a short tail joining it —
+    // The curl: a loop centred above the top bar with a short tail joining it,
     // reads as the Royal-Navy executive curl.
     const cyL = topY - 5.2;
     const curl = `<circle cx="12" cy="${cyL.toFixed(1)}" r="3" fill="none" stroke="${c}" stroke-width="2"/>` +
@@ -109,7 +109,7 @@
   }
 
   // ── UCM: top stripes (one per tier) + a diamond device that elaborates with
-  // rank — plain (Captain) → octagon ring (Commodore) → upper half-burst (Rear
+  // rank. Plain (Captain) → octagon ring (Commodore) → upper half-burst (Rear
   // Admiral) → full sunburst (Admiral).
   function ucmInsignia(n, c) {
     const sH = 1.3, sGap = 1.0, sTop = 2.4;
@@ -153,7 +153,7 @@
             ? rows(n).map((y, i) => MARK.phr(y, i, n, c)).join('')
             : rows(n).map((y, i) => mark(y, i, n, c)).join('');
     return `<svg class="rank-insignia rank-${faction}" viewBox="0 0 24 24" width="${s}" height="${s}" ` +
-      `role="img" aria-label="${LABEL[faction] || faction} rank — Level ${n}" ` +
+      `role="img" aria-label="${LABEL[faction] || faction} rank, Level ${n}" ` +
       `xmlns="http://www.w3.org/2000/svg">${marks}</svg>`;
   }
 

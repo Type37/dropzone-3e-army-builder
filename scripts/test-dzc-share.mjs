@@ -1,7 +1,7 @@
 /* Round-trip tests for js/dzc-share.js.
  *
  * A share link is the one artefact that leaves this machine, so what matters is
- * that what comes back is the SAME ARMY — same cost, same nesting, same mixed
+ * that what comes back is the SAME ARMY. Same cost, same nesting, same mixed
  * variants. Costing it on both sides is the check that actually proves it,
  * because a dropped variant or a broken carriedBy shows up in the number.
  *
@@ -98,7 +98,7 @@ ok(A.hasUpgrade(backArch, '*', 'UM-115 Missile Spread'), 'the weapon upgrade sur
 /* Names, and the difference between one you typed and one derived from a
  * position. Both were losing something across a link.
  *
- * A Group you never named has NO name — groupName reads its position instead
+ * A Group you never named has NO name. GroupName reads its position instead
  * (js/dzc-army.js) so that deleting one from the middle can never leave two
  * things called the same thing. unpack handed back the literal string "Group"
  * for those, which is that collision exactly, with no position in it either.
@@ -205,7 +205,7 @@ console.log('\nJSON');
 
 /* Raw Materials across a link and a backup. RM is 5pts a token and the only
  * thing you can buy that leaves no trace in the models, the variants or the
- * upgrades — so a link that drops it hands your opponent an Ark that costs
+ * upgrades. So a link that drops it hands your opponent an Ark that costs
  * 60pts less than the one you built and can Spawn nothing on turn one. */
 console.log('\nraw materials survive the trip');
 {
@@ -235,7 +235,7 @@ console.log('\nraw materials survive the trip');
   ok(S.text(bio).includes('+ 12 RM'), 'the plain-text sheet names them on the Unit line');
 
   /* AND OUR OWN PARSER READS IT BACK. The first version wrote the RM past the
-   * loadouts, where LIST_ENTRY anchors on $ — so the line matched nothing and
+   * loadouts, where LIST_ENTRY anchors on $. So the line matched nothing and
    * re-importing an exported list dropped the whole Genitor, not just its
    * tokens. A round trip through our own format has to be lossless. */
   const txt2 = S.text(bio);

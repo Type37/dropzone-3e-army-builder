@@ -1,4 +1,4 @@
-/* Quick play — the two starter armies, built on demand.
+/* Quick play. The two starter armies, built on demand.
  *
  * Jet, 2026-08-08: "let's have the quickplays instead of the pre-loaded
  * actually." They used to be seeded into Your Armies the first time that

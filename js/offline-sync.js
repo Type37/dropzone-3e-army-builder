@@ -1,4 +1,4 @@
-/* Offline data sync — shared by the desktop app and the /mobile/ sub-app.
+/* Offline data sync. Shared by the desktop app and the /mobile/ sub-app.
  *
  * The service worker already caches whatever you happen to visit, which is not
  * enough: someone who only ever opened UCM would sit down at a table with no
@@ -214,7 +214,7 @@ window.OfflineSync = (function () {
   /* ── Delete ────────────────────────────────────────────────── */
 
   // Removes the downloaded bundle only. Fleets (localStorage) and the app shell
-  // (dfc-cache-vN) are untouched — deleting your downloaded ship art must never
+  // (dfc-cache-vN) are untouched. Deleting your downloaded ship art must never
   // cost you your saved lists.
   async function remove() {
     if (!supported) return { ok: false };
@@ -227,7 +227,7 @@ window.OfflineSync = (function () {
   /* ── Auto-sync ─────────────────────────────────────────────── */
 
   // Auto-download only on a connection we can positively identify as wifi.
-  // Everywhere else (cellular, Data Saver, or a browser that won't tell us —
+  // Everywhere else (cellular, Data Saver, or a browser that won't tell us,
   // which includes every iPhone) it stays quiet and waits to be asked.
   const AUTO_STALE_MS = 7 * 24 * 60 * 60 * 1000; // a week
   let autoTried = false;
@@ -236,7 +236,7 @@ window.OfflineSync = (function () {
     if (!supported || running || autoTried) return false;
     if (!isWifi()) return false;
     const meta = readMeta();
-    if (!meta) return false;          // never opted in — don't decide for them
+    if (!meta) return false;          // never opted in, don't decide for them
     return Date.now() - meta.at > AUTO_STALE_MS;
   }
 

@@ -1,5 +1,5 @@
 /* ============================================================
-   Mobile fixes — loaded AFTER app.css so these win on the cascade.
+   Mobile fixes. Loaded AFTER app.css so these win on the cascade.
    Kept isolated from the large app.css to make mobile-specific
    corrections easy to review and revert.
    ============================================================ */
@@ -9,7 +9,7 @@
      `overflow:visible; align-items:flex-start` while the panel kept
      `margin:auto`. Auto vertical margins on a flex item center it within the
      container's (overflowing) content box, which floated the panel ~half a
-     screen DOWN and off-view — opening "Add Group" showed a near-empty screen.
+     screen DOWN and off-view. Opening "Add Group" showed a near-empty screen.
      Fix: overlay scrolls; panel pins to the top with fixed vertical margins
      (horizontal auto keeps it centered) and may grow with the overlay scrolling. */
   .modal-overlay {
@@ -29,18 +29,18 @@
      18x18, the card menu 24x24, Settings and the modal close 32x32, the
      filter and sort chips 28 high, the faction tabs 33, the search field
      36, the name and points fields 40. A finger pad is about 45px across,
-     so all of those are aimed at rather than pressed — which is the whole
+     so all of those are aimed at rather than pressed, which is the whole
      complaint.
 
      44px, from the platform guidance both phones agree on. min-height and
      min-width, not height and width, so a control that is already bigger
-     keeps its size and nothing here has to know which those are — and min
+     keeps its size and nothing here has to know which those are. And min
      beats an explicit width, so the 24px and 32px squares below grow
      without their own rules being touched.
 
      Rows get taller. That is the trade: this app is used standing up at a
      table, one-handed, and tighter spacing is not worth a control you miss.
-     Desktop is untouched — none of this exists above 768px. */
+     Desktop is untouched, none of this exists above 768px. */
   .btn,
   .dzc-chip,
   .dzc-tab,
@@ -54,7 +54,7 @@
 
   /* Square, icon-only, and the smallest things on the screen. The back
      chevron is the only way out of a view on a phone; the stepper is the
-     most-pressed control in the app — it is how a Squad gets its models,
+     most-pressed control in the app. It is how a Squad gets its models,
      and at 24px square, sat 2px from its twin, it was a coin toss which
      one you hit. The gap goes up with them. */
   .topbar-back,
@@ -70,7 +70,7 @@
   .dzc-stepper { gap: 6px; }
 
   /* A rule chip is 11px gameplay text that opens its own explanation, and
-     it sits inline among other rule chips — 44 tall would make a wall of
+     it sits inline among other rule chips, 44 tall would make a wall of
      them. Padding instead: it grows the chip and the gap between chips at
      the same time, so neighbours do not end up sharing an edge. */
   .dzc-rule {
@@ -83,7 +83,7 @@
      home, so it gets one.
 
      The five footer links do not. Stacked at 44 they came to 217px of
-     footer on a 320px-wide phone — a fifth of the screen given to links
+     footer on a 320px-wide phone. A fifth of the screen given to links
      nobody presses during a game. Small and out of the way is what they
      are for. */
   .topbar-brand {

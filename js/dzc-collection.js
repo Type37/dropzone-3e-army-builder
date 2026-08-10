@@ -1,10 +1,10 @@
-/* Collection — what you actually own, and what that lets you field.
+/* Collection. What you actually own, and what that lets you field.
  *
  * Counts MODELS, not Squads, because that is the question a builder can answer:
  * "I own four Sabres" decides whether a Squad of six is buildable tonight.
  *
  * Deliberately advisory, never enforcing. Owning too few models is not against
- * the rules — it is a shopping list, or a proxy, or a friend's box — so it
+ * the rules, it is a shopping list, or a proxy, or a friend's box, so it
  * never blocks a choice the rulebook allows. That line matters: the builder
  * enforces the RULES and reports everything else.
  */

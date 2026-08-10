@@ -44,7 +44,7 @@ eq(puncts, 2, 'both are in the footer, and nothing else has taken one');
 
 /* Most of the app's text is built in JS, not written in index.html, so
  * counting only the markup file left the rule enforced over the smaller half.
- * &middot; counts too — it is the same character by the time anyone reads it,
+ * &middot; counts too. It is the same character by the time anyone reads it,
  * and it is the form that slips past a search for the glyph. Found by writing
  * one into the printed Commander block and catching it by hand, which is
  * exactly the kind of check that should not depend on catching it by hand. */
@@ -169,7 +169,7 @@ if (nameless.length) console.error('        ' + nameless.join('\n        '));
 
 /* The same rule for the controls that are not buttons. An <input> or a
  * <select> with nothing naming it is announced as "edit text" or "combo box"
- * and nothing else, and a placeholder does not fix it — a placeholder is
+ * and nothing else, and a placeholder does not fix it. A placeholder is
  * cleared the moment you type, so it names the field only while the field is
  * empty. Three ways count, all of which the app already uses somewhere:
  * aria-label, a <label for> pointing at its id, or being wrapped in a <label>
@@ -274,7 +274,7 @@ for (const file of ['index.html', ...readdirSync(path.join(ROOT, 'js'))
 // The two wordmarks and the touch icon. It was four until the Faction
 // References tile went; the quick-reference chooser it linked to is still on
 // disk but nothing points at it any more.
-// Everything else — faction art, unit art — is interpolated from data and is
+// Everything else, faction art, unit art, is interpolated from data and is
 // audited by tools/dzc/audit_art.py.
 ok(refs.size >= 3, 'the asset references were actually found', `found ${refs.size}`);
 const gone = [...refs].filter(p => !existsSync(path.join(ROOT, p)));
@@ -453,7 +453,7 @@ console.log('\nthe way back');
  * page, and nobody does that on the one screen the change was not about.
  *
  * So: every top-level path index.html and the service worker reach for has to
- * be on the cp line. This is a read of the workflow, not a write — the token a
+ * be on the cp line. This is a read of the workflow, not a write. The token a
  * cloud run gets cannot edit one. */
 console.log('\neverything the site fetches is staged for deploy');
 {
@@ -480,14 +480,14 @@ console.log('\neverything the site fetches is staged for deploy');
  * carries its own list of the blocks it treats as unbreakable.
  *
  * A block the stylesheet keeps whole and paginate does not know about is a
- * break drawn where the printer will not make one — a preview that lies, which
+ * break drawn where the printer will not make one. A preview that lies, which
  * is worse than no preview, because the whole reason it exists is that you can
  * trust what you see before spending paper. The source comment on paginate
  * says the two lists have to stay in step; nothing was holding them there.
  *
  * One direction only. paginate may treat MORE things as atoms than the
- * stylesheet marks — a heading it keeps with what follows is not a
- * break-inside rule — but it may never know about fewer.
+ * stylesheet marks. A heading it keeps with what follows is not a
+ * break-inside rule, but it may never know about fewer.
  */
 console.log('\nthe print preview knows every block the stylesheet keeps whole');
 {
@@ -499,7 +499,7 @@ console.log('\nthe print preview knows every block the stylesheet keeps whole');
    *
    * The SUBJECT of the selector, not every class in it. Each rule here is
    * scoped ":is(#dzc-print, .pp-paper) .pr-group", so taking every class would
-   * report .pp-paper — the paper the sheet is drawn on — as a block that must
+   * report .pp-paper, the paper the sheet is drawn on, as a block that must
    * not be cut. Commas are split at paren depth zero so the :is() list is not
    * mistaken for a selector list. */
   const subjects = sel => {
@@ -531,8 +531,8 @@ console.log('\nthe print preview knows every block the stylesheet keeps whole');
 // ------------------------------------- the offline precache matches the page
 /* Everything index.html loads has to be in the service worker's CORE list.
  *
- * Not because a missing entry crashes anything — a <script> that 404s takes
- * only itself down — but because the list is a promise that the app works at a
+ * Not because a missing entry crashes anything. A <script> that 404s takes
+ * only itself down. But because the list is a promise that the app works at a
  * table with no signal, and a promise nobody checks is the same drift that put
  * ref/ on the live site as a 404. Two files had been outside it since they
  * were added.
@@ -555,7 +555,7 @@ console.log('\nthe offline precache matches what the page loads');
  * It is also the part that carries a link somebody else clicked: #army/<id> off
  * a bookmark, #share/<payload> out of a message, #play/<id> off the topbar. A
  * route naming a view id that index.html does not declare shows a blank page
- * and throws nothing, which is exactly how ref/ once 404'd — the same shape of
+ * and throws nothing, which is exactly how ref/ once 404'd. The same shape of
  * fault, a name pointing at something that is not there.
  *
  * Static, deliberately: it reads the switch out of the source and holds it
@@ -656,7 +656,7 @@ console.log('\na phone can hit the control');
 }
 
 // ------------------------------------ a control that disables itself gets put back
-/* Create disables itself for the length of an await, which is right — two
+/* Create disables itself for the length of an await, which is right, two
  * presses would build two armies. What it must not do is stay that way.
  *
  * It did. A throw anywhere between DZCArmy.create() and the render skipped the
@@ -679,7 +679,7 @@ console.log('\na control that disables itself gets put back');
 }
 
 // -------------------------------------------------------------- unused styling
-/* Rules for classes nothing renders any more. Not a failure — ever. A class
+/* Rules for classes nothing renders any more. Not a failure, ever. A class
  * built by interpolation (dzc-issues--${kind}) is live and unfindable by
  * grep, so a hard assertion here would block legitimate work, and a check that
  * cries wolf gets deleted. It warns, and someone decides.
@@ -696,7 +696,7 @@ console.log('\nunused styling');
    *
    * Resolved from the source they are built out of rather than listed here by
    * hand. `dzc-badge-${shape}` takes its shape from the SYMBOL map in
-   * js/dzc-units.js, so the six names are read back out of that map — rename a
+   * js/dzc-units.js, so the six names are read back out of that map. Rename a
    * shape and the exemption follows it, instead of going stale and warning
    * about a class that is very much rendered.
    *

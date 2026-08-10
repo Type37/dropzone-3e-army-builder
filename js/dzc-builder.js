@@ -1,4 +1,4 @@
-/* DZC army builder — the views over js/dzc-army.js.
+/* DZC army builder, the views over js/dzc-army.js.
  *
  * The screen is organised the way the game is: an Army is a list of Groups,
  * and a Group is what activates. Nesting is shown by indentation, because a
@@ -116,7 +116,7 @@
   // opening an army always lands on something rather than an empty pane.
   let selectedGroup = null;
   // Phone only. A Group is a screen you drill into (CLAUDE.md §4), so the list
-  // and the detail take turns rather than stacking into one long scroll — that
+  // and the detail take turns rather than stacking into one long scroll. That
   // stack is the thing the three panes replaced.
   let drilled = false;
   // How the army list is ordered. Not stored: it is a way of looking at the
@@ -208,7 +208,7 @@
       <!-- An empty list is the grid with one tile in it, not a different
            screen with a sentence on it. "No armies yet." told you what you
            could already see; the tile is the thing to press. It appears ONLY
-           when the list is empty — once there are armies the button in the
+           when the list is empty. Once there are armies the button in the
            header is the same action, and a third way to do it is clutter. -->
       <div class="dzc-army-grid">${cards}${list.length ? '' : `
         <button type="button" class="dzc-army-new" onclick="DZCBuilder.openNew()">
@@ -271,7 +271,7 @@
    *
    * Both halves are needed. The size decides the Group cap (3.1). The exact
    * number decides the per-Group ceiling, because that is a quarter of the
-   * AGREED limit and not a quarter of the top of the band (3.2) — so a
+   * AGREED limit and not a quarter of the top of the band (3.2). So a
    * 1,200pt Clash and a 2,000pt Clash have very different Group caps. */
   // `name` stays null until the user types, so the suggested name follows the
   // faction they pick rather than sticking at whatever it opened with.
@@ -375,13 +375,13 @@
   /* Straight into the new army, with nothing in between.
    *
    * This used to close the modal and THEN set the hash, so you watched the
-   * armies list while renderBuilder waited on the faction JSON — a network
+   * armies list while renderBuilder waited on the faction JSON. A network
    * fetch the first time you use a faction. The list flashed up, then the
    * builder replaced it.
    *
    * Now the faction is fetched while the button is still showing its press,
    * so by the time the modal goes the builder is already there. */
-  /* "UCM Army 3" — the faction, then how many of that faction you have. Counts
+  /* "UCM Army 3". The faction, then how many of that faction you have. Counts
    * the highest number already used rather than the list length, so deleting
    * the second of three does not hand the next one a name you already have. */
   function defaultArmyName(factionId) {
@@ -394,7 +394,7 @@
   }
 
   /* The button is disabled while this runs, so whatever happens it has to be
-   * put back — a throw between create() and the render left Create dead with
+   * put back. A throw between create() and the render left Create dead with
    * its pressed look on, and every click after it did nothing, for the rest of
    * the session. Silent, too: the rejection went nowhere an onclick could see.
    * Now the failure says what it was and the button comes back. */
@@ -414,7 +414,7 @@
       picked.name = null;   // next dialog suggests afresh
       picked.description = '';
     } catch (e) {
-      say(`The army was not created — ${e.message}`);
+      say(`The army was not created. ${e.message}`);
       throw e;
     } finally {
       if (btn) { btn.classList.remove('is-going'); btn.disabled = false; }
@@ -422,7 +422,7 @@
   }
 
   /* Create, but filled. Same faction, size and limit already chosen in the
-   * dialog, so it is the same act with the blank part done for you — which is
+   * dialog, so it is the same act with the blank part done for you. Which is
    * why it lives beside Create rather than on the list, where it would have to
    * ask those three questions again. */
   async function surpriseMe() {
@@ -439,7 +439,7 @@
       document.getElementById('dzc-new').classList.remove('active');
       picked.name = null;
     } catch (e) {
-      say(`The army was not created — ${e.message}`);
+      say(`The army was not created. ${e.message}`);
       throw e;
     } finally {
       if (btn) { btn.classList.remove('is-going'); btn.disabled = false; }
@@ -479,7 +479,7 @@
     const size = window.DZC.gameSizeFor(a.pointsLimit);
     const maxG = size ? window.DZC.maxGroups(size, a.pointsLimit) : 0;
     // No per-Group cap here on purpose. It is a constant, and every Group card
-    // already meters itself against it — printing it once more at the top was
+    // already meters itself against it, printing it once more at the top was
     // the header telling you something the thing below it was showing you.
     const v = triage(window.DZCArmy.validate(a), a);
     const spend = window.DZCArmy.categorySpend(a);
@@ -494,7 +494,7 @@
     const gUsed = window.DZCArmy.groupsUsed(a);
     const gCards = a.groups.length;
     const gTitle = gUsed === gCards ? ''
-      : ` title="${esc(`${gCards} Group card${gCards === 1 ? '' : 's'} — a Behemoth counts as several (1.1)`)}"`;
+      : ` title="${esc(`${gCards} Group card${gCards === 1 ? '' : 's'}, and a Behemoth counts as several (1.1)`)}"`;
 
     /* The ratio rule, drawn.
      *
@@ -502,7 +502,7 @@
      * segments the whole list by category. That is the wrong picture here,
      * because DZC's rule is not about shares of the total: Vanguard, Heavy and
      * Support may EACH not exceed Standard (3.2). So Standard is the track and
-     * the other three are measured against it — full means level with
+     * the other three are measured against it. Full means level with
      * Standard, and past full is the breach. The number that would be over is
      * the number you are already reading beside it.
      *
@@ -521,8 +521,8 @@
     const pct = a.pointsLimit ? Math.min(100, Math.round((cost / a.pointsLimit) * 100)) : 0;
 
     /* Desktop gets a rail and a column; the rail carries everything you need
-     * while working — what you have left to spend, and what is outstanding —
-     * so it stays put instead of shoving the Groups down the page every time
+     * while working. What you have left to spend, and what is outstanding.
+     * So it stays put instead of shoving the Groups down the page every time
      * an alert appears or clears. Below 900px it stacks above the list.
      * HANDOFF §2.2: desktop keeps panes, mobile does not. */
     // Fall back to the first Group, and drop a selection whose Group has been
@@ -557,7 +557,7 @@
         <button class="btn btn-ghost btn-sm topbar-action-btn" type="button" onclick="DZCBuilder.play()"
                 ${playable ? '' : 'disabled'} aria-label="Play"
                 title="${playable ? 'Run a game with this army'
-                  : 'Add a Commander first — CP, hand size and Initiative all come from Commander Level (4.1)'}"
+                  : 'Add a Commander first: CP, hand size and Initiative all come from Commander Level (4.1)'}"
           >${window.DZCIcon('layers', { size: 15 })}<span class="topbar-action-label">Play</span></button>
         <button class="btn btn-ghost btn-sm topbar-action-btn" type="button" onclick="DZCBuilder.share()"
                 aria-label="Share" title="Copy a link to this army"
@@ -591,7 +591,7 @@
                900px, where the whole rail is beside the list anyway).
                Everything under it collapses behind this summary, because on a
                phone the rail was four cards of preamble between you and your
-               army — and the two numbers you actually keep glancing at are the
+               army, and the two numbers you actually keep glancing at are the
                points left and how many issues there are. Those are here.
                Gap 47 asks for a drag handle over a bottom sheet; this is the
                same outcome without a gesture. -->
@@ -700,20 +700,20 @@
    * is positioned against the screen and not the viewport. Fixed-and-detached
    * also means opening it moves nothing on the page (CLAUDE.md §4).
    *
-   * Shape taken from Dropfleet rather than invented — a row per band, then a
+   * Shape taken from Dropfleet rather than invented. A row per band, then a
    * number for the exact figure, because the band is the shorthand and the
    * number is what the rules key off. */
   /* Drag to reorder Groups.
    *
    * The array order is the order on screen and on the printed sheet, and that
-   * order is the deployment plan — which Group goes down first is a decision,
+   * order is the deployment plan. Which Group goes down first is a decision,
    * and it used to be whatever order you happened to add them in.
    *
    * Pointer Events, NOT native HTML5 drag-and-drop, and that is not a
    * preference: native drag never fires on touch at all in iOS Safari and is
    * inconsistent on Android. Dropfleet rewrote this for exactly that reason
    * (app.js:2686, after an "unusably bad on touch" report) and this is that
-   * code with the weight-class constraint taken out — a DZC Group has no
+   * code with the weight-class constraint taken out. A DZC Group has no
    * category to be constrained to.
    *
    * setPointerCapture keeps the events coming to the grip even when the finger
@@ -817,7 +817,7 @@
   /* Dragging a Squad into a Transport.
    *
    * "Units with the category Transport may only be chosen along with a Squad
-   * they may transport... Those two Squads form one Group" (3.2.4) — so what
+   * they may transport... Those two Squads form one Group" (3.2.4). So what
    * rides in what is the shape of the Group, and the only way to set it was a
    * modal that asks the question in words. This is the same decision made by
    * moving the thing, which is what everyone is picturing when they think
@@ -828,7 +828,7 @@
    * the Group. Pointer events, not HTML5 drag-and-drop, because the case that
    * has to work is a finger on a phone.
    *
-   * The legal targets are asked for ONCE, at the start, from boardOptions —
+   * The legal targets are asked for ONCE, at the start, from boardOptions,
    * the same function the chooser lists. Nothing legal is computed while the
    * finger is moving, so a drop can never land somewhere the rules refuse. */
   let sqDrag = null;
@@ -1091,8 +1091,8 @@
     }, 0);
   }
 
-  /* The band sets the limit to the top of it, the number sets it exactly —
-   * the same two-halves split the New Army dialog already uses. */
+  /* The band sets the limit to the top of it, the number sets it exactly.
+   * The same two-halves split the New Army dialog already uses. */
   function applyLimit(pts) {
     const a = current;
     if (!a) return;
@@ -1100,7 +1100,7 @@
     closeSizePop();
     renderBuilder(a.id);
     const size = window.DZC.gameSizeFor(n);
-    say(`${n}pts — ${size ? size.label : 'below the 501pt minimum'}`);
+    say(`${n}pts, ${size ? size.label : 'below the 501pt minimum'}`);
   }
 
   /* The overview entry: enough to choose between Groups, and nothing you have
@@ -1126,7 +1126,7 @@
 
            drag_dots, the SAME glyph the Squad grip uses, because it is the
            same gesture and there is no reason for two. drag_rows drew its six
-           dots at radius .75 in a 24 viewBox and laid them out 3 across — so
+           dots at radius .75 in a 24 viewBox and laid them out 3 across, so
            at 16px each dot was half a pixel wide and the whole thing was
            wider than the strip it sits in. Grotwurks, 2026-08-09: "OHHHHH
            there they are.... at 200% zoom I can see them." At 200% they were
@@ -1164,7 +1164,7 @@
   }
 
   /* One thumbnail per distinct Unit, first from each Group, bordered in its
-   * category colour — Dropfleet's renderFleetCardComp (app.js:1809). It is the
+   * category colour. Dropfleet's renderFleetCardComp (app.js:1809). It is the
    * fastest way to tell two lists apart at a glance, which is the whole job of
    * a card in a grid. */
   /* One neutral ink. The per-category colours were removed on 2026-08-07 --
@@ -1216,7 +1216,7 @@
     const short = window.DZCCollection.shortfall(a);
     if (!short.length) return '';
     return `<p class="dzc-short"><b>Not in your collection</b>${
-      short.map(s => `${esc(s.name)} — using ${s.need}, own ${s.have}`).join('; ')}</p>`;
+      short.map(s => `${esc(s.name)}: using ${s.need}, own ${s.have}`).join('; ')}</p>`;
   }
 
   /* What a Group has spent, how big it is, and what its Transports have room
@@ -1361,7 +1361,7 @@
         title="${esc(n ? `${n} to choose from`
           : kind === 'transport'
             ? 'A Transport may only be taken alongside a Squad it can carry (3.2.4).'
-            : 'This Group is full — a Squad may only join it if a Transport already here can carry it (3.2.4).')}">
+            : 'This Group is full: a Squad may only join it if a Transport already here can carry it (3.2.4).')}">
         <span class="dzc-add-squad-i">${window.DZCIcon('add', { size: 20 })}</span>
         <span class="dzc-add-squad-t">${esc(label)}</span>
         <i class="dzc-add-squad-n">${n}</i></button>`;
@@ -1376,8 +1376,8 @@
 
   /* A stepper that stops working says why it stopped.
    *
-   * canSetCount has always returned the sentence — "Legionnaires has a
-   * maximum Squad size of 3" — and both buttons threw it away, so the control
+   * canSetCount has always returned the sentence, "Legionnaires has a
+   * maximum Squad size of 3", and both buttons threw it away, so the control
    * just went dead under your finger with nothing on screen. The rule that
    * refuses an action is the one thing worth saying (3.2), and everywhere
    * else in this builder already says it. */
@@ -1393,7 +1393,7 @@
     /* The reason goes on a WRAPPER, not on the button.
      *
      * A disabled form control does not reliably fire hover, and browsers
-     * disagree about whether title= still shows on one — so a tooltip put
+     * disagree about whether title= still shows on one, so a tooltip put
      * there is a coin flip. A span is never disabled and always gets the
      * pointer. The button keeps aria-label either way, because that is read
      * out rather than hovered. */
@@ -1416,7 +1416,7 @@
    * like 1x or 1 or squad size 1") and a Squad with one legal size shows "×3"
    * and no other word. Everything else is the stepper.
    *
-   * A small range used to become a row of tab buttons — 1 2 3, the size you
+   * A small range used to become a row of tab buttons, 1 2 3, the size you
    * had lit up. Jet, 2026-08-07: "remove the switcher for 1/2/3 we'll worry
    * about it later." It is gone rather than hidden behind a condition: two
    * controls doing the same job, chosen between by how wide the range
@@ -1452,15 +1452,15 @@
    * It replaces one <select> per model. The dropdowns hid the choice twice
    * over: you could not see what a variant was without opening one, and you
    * could not see the mix without reading every one of them in turn. The
-   * blocks were already on the page saying what each variant is and costs —
-   * putting the count on the block makes the thing you read the thing you
+   * blocks were already on the page saying what each variant is and costs.
+   * Putting the count on the block makes the thing you read the thing you
    * press, and a Squad of eight stops being eight dropdowns.
    *
    * Addressed by INDEX, not by name: a name goes into an inline handler as a
    * quoted string, and one apostrophe in a variant name would break it.
    *
-   * Same disabled-reason wrapper as the Squad stepper, for the same reason —
-   * a disabled control does not reliably fire hover, so the title goes on a
+   * Same disabled-reason wrapper as the Squad stepper, for the same reason.
+   * A disabled control does not reliably fire hover, so the title goes on a
    * span that is never disabled. */
   /* RAW MATERIALS, on the only Squads that may hold any.
    *
@@ -1511,7 +1511,7 @@
    * a gun belongs to by reading the "Rocket Bus only" note on each. Here the
    * question is answered by where the card is: the guns under Rocket Bus are
    * the guns a Rocket Bus fires. `lens` is the existing filter that does this
-   * — the variant switcher over the reference table already used it.
+   *. The variant switcher over the reference table already used it.
    *
    * A Unit with no Variants keeps the plain list; there is nothing to split. */
   /* The price, as the control that buys it. "The upgrade can be represented
@@ -1597,14 +1597,14 @@
    * already say exactly this: a hollow symbol is room offered, a solid one is
    * room taken.
    *
-   *   0  hollow only        — a Condor, an Albatross. Carries, is not carried.
-   *   1  hollow AND solid   — a Bear APC. Carries, and rides in something.
-   *   2  solid only, or neither — the guys.
+   *   0  hollow only       , a Condor, an Albatross. Carries, is not carried.
+   *   1  hollow AND solid  , a Bear APC. Carries, and rides in something.
+   *   2  solid only, or neither, the guys.
    *
    * Order was whatever you happened to add things in, so a Group could open
    * with its infantry and end with the dropship that brings them, which is
    * upside down from how it goes on the table. Ties keep the order you built
-   * them in — this sorts the tiers, it does not reshuffle inside one. */
+   * them in. This sorts the tiers, it does not reshuffle inside one. */
   function carryTier(a, sq) {
     const u = window.DZCArmy.unitOf(a, sq);
     const t = (u && u.transport) || {};
@@ -1711,7 +1711,7 @@
   /* THE PROBLEM, ON THE THING WITH THE PROBLEM. Jet, 2026-08-07: "this should
    * live on the unit causing the issue."
    *
-   * "Bear APC is not full — Transports must be taken full (3.2.4)" was in the
+   * "Bear APC is not full. Transports must be taken full (3.2.4)" was in the
    * rail and only there, which means reading a sentence at the top of the
    * screen, finding the Bear it names somewhere in the army, and holding the
    * two together. The rail keeps the count, because how many problems the list
@@ -1719,7 +1719,7 @@
    * it belongs on it.
    *
    * Matched by the Unit's name, which is how every one of these messages
-   * already opens — validate writes them as "<name> ...". A message naming a
+   * already opens, validate writes them as "<name> ...". A message naming a
    * Unit you have two of appears on both, which is right: both are that Unit
    * and the rule is about the Unit. */
   /* A SPAN, not a <p>, and it matters: this goes inside the meta line, which
@@ -1761,7 +1761,7 @@
     if (!u) return '';
     /* Declared HERE, at the top, and it has to stay here. It used to sit
      * beside the meta line two hundred lines down, while the Transport chip
-     * above it already called U.transportHtml — a const is in its temporal
+     * above it already called U.transportHtml. A const is in its temporal
      * dead zone until its own line runs, so reading it earlier is a thrown
      * ReferenceError, not an undefined.
      *
@@ -1819,7 +1819,7 @@
      *
      * Nothing needs a depth limit. The data limits itself: transportOptions
      * only returns carriers whose capacity matches what this Unit FILLS, and a
-     * Transport that prints no solid symbol — an Albatross, a Condor — fills
+     * Transport that prints no solid symbol, an Albatross, a Condor, fills
      * nothing and so is offered nothing. */
     const opts = window.DZCArmy.transportOptions(a, s.id);
     // A Transport already in the Group may have room even when the faction
@@ -2008,8 +2008,8 @@
     });
   }
 
-  /* Commanders live in the rail, as a card each with a button under them —
-   * not as a "— none —" select stapled to the bottom of every Squad, where
+  /* Commanders live in the rail, as a card each with a button under them.
+   * Not as a ", none, " select stapled to the bottom of every Squad, where
    * five Squads meant five empty slots for a thing you take one of.
    *
    * DZC ranks run 4-7; the insignia helper draws 1-5 pips, so the level is
@@ -2023,14 +2023,14 @@
       /* Every option names its Group, and names it through groupName. Reading
        * t.group.name raw meant an unnamed Group contributed nothing, so two
        * Squads of Legionnaires in two unnamed Groups were two options both
-       * reading "Legionnaires" — the collision the derived name exists to
+       * reading "Legionnaires". The collision the derived name exists to
        * prevent, in the one control where picking the wrong one is silent. */
       const assign = targets.length
         ? `<label class="dzc-cmdr-assign">Aboard
              <select onchange="DZCBuilder.assignCommander('${c.id}', this.value)">
                <option value="">Choose a Squad</option>
                ${targets.map(t => `<option value="${t.squad.id}"${t.squad.id === c.squadId ? ' selected' : ''}
-                 >${esc(t.unit.name)} — ${esc(window.DZCArmy.groupName(a, t.group))}</option>`).join('')}
+                 >${esc(t.unit.name)}, ${esc(window.DZCArmy.groupName(a, t.group))}</option>`).join('')}
              </select></label>`
         : '<p class="dzc-cmdr-hint">Add a squad that this Commander can join.</p>';
       return `<div class="dzc-rail-card dzc-cmdr-card${c.squadId ? '' : ' is-loose'}">
@@ -2057,7 +2057,7 @@
     }).join('');
     /* All three numbers come off the HIGHEST Level on the table (4.1.1, 4.1.4,
      * 4.1.5), so with two Commanders they are one line about the army rather
-     * than a repeat on each card — and a second Commander that changes nothing
+     * than a repeat on each card. And a second Commander that changes nothing
      * about them should visibly change nothing about them. */
     const best = list.reduce((n, c) => Math.max(n, c.level), 0);
     const perRound = best ? `<div class="dzc-rail-card dzc-cmdr-buys dzc-cmdr-buys--rail"
@@ -2074,7 +2074,7 @@
    *
    * It used to say here that those numbers would not be invented, because
    * index.json carries level and points only. That was the wrong file to look
-   * in — they are rulebook chapter 4, not a points table, and leaving them out
+   * in. They are rulebook chapter 4, not a points table, and leaving them out
    * meant the ladder read as four prices with nothing to weigh them against. */
   function levelBuys(level) {
     return [{ n: level, k: 'CP' },
@@ -2084,13 +2084,13 @@
 
   /* The whole ladder, with what each level costs and what it brings to the
    * table. Famous Commanders are not released, so this is the generic ladder
-   * only — the schema slot is there for when they are.
+   * only. The schema slot is there for when they are.
    *
    * Every level, including the ones this game size does not allow. Filtering
    * them out enforced 3.2.5 by making them not exist, which is the one form of
    * enforcement this app does not use anywhere else: a Rare Squad at its limit
    * is disabled quoting the limit, an option that cannot be taken full is
-   * disabled with the arithmetic. An absent option teaches nothing — at
+   * disabled with the arithmetic. An absent option teaches nothing. At
    * Skirmish there was no way to learn that Levels 6 and 7 exist, or that a
    * bigger game is what unlocks them. addCommander refuses them either way. */
   function openCommander() {
@@ -2131,14 +2131,14 @@
 
   /* An army you are halfway through building is not a broken army.
    *
-   * Some rules are about what you HAVE built — a Group over the quarter cap, a
+   * Some rules are about what you HAVE built. A Group over the quarter cap, a
    * Rare taken three times, a Transport that is not full. Those are wrong the
    * moment they happen and say so.
    *
    * Others are about what the finished list must CONTAIN. "You haven't added a
    * Commander" fired on your first Squad, before you had any chance to satisfy
    * it and with nothing actually wrong. Those say nothing at all until half
-   * the points are spent — and then they are an ISSUE, not a note, because an
+   * the points are spent. And then they are an ISSUE, not a note, because an
    * army without a Commander is illegal. Notes are for things that are true
    * but not wrong: Squads beginning Reserved, a Group of only Transports.
    *
@@ -2152,7 +2152,7 @@
     return {
       errors: halfway ? v.errors : v.errors.filter(e => !COMPLETENESS.test(e.rule)),
       warnings: v.warnings,
-      // Legality is unchanged — a held requirement is still unmet, so the army
+      // Legality is unchanged. A held requirement is still unmet, so the army
       // is not announced as legal just because the message is not shown yet.
       ok: !v.errors.length
     };
@@ -2244,7 +2244,7 @@
     const f = await window.DZC.loadFaction(a.faction);
     const q = picker.search.trim().toLowerCase();
     /* Transports are IN the picker now. Hiding them and assigning them through
-     * a dropdown made the one thing that grows a Group invisible — and 3.2.4
+     * a dropdown made the one thing that grows a Group invisible. And 3.2.4
      * is explicit that choosing a Transport alongside a Squad is how a Group
      * forms. canAddUnit refuses the ones that make no sense here, and says
      * which rule refuses them. */
@@ -2261,7 +2261,7 @@
      *
      * The number is what EXISTS in the category, not what survives the current
      * search. It is fixed at open, which is what lets the bar be built once and
-     * never rebuilt — the thing that stopped the modal jumping under your
+     * never rebuilt. The thing that stopped the modal jumping under your
      * finger every time you touched a sort. */
     /* One side of the split or the other -- never both. Which side is the
      * button you pressed, and it is the only difference between the two
@@ -2279,7 +2279,7 @@
      * control that does nothing, and this faction is the only scope that
      * matters because an army has exactly one.
      *
-     * It removes Unique from every faction — there is not a single Unique Unit
+     * It removes Unique from every faction. There is not a single Unique Unit
      * in the game as published. The rule is still enforced in canAddUnit for
      * when TTCombat print one; the chip was just an empty promise. Upgrades
      * goes on Scourge, Shaltari and Bioficer for the same reason. */
@@ -2288,8 +2288,8 @@
     // the list with nothing on screen to say so.
     picker.filters = picker.filters.filter(k => filters.some(fl => fl.key === k));
     /* --acc is declared inline on .dzc-wrap, and this modal lives outside it,
-     * so the active chip was painting white text on an undefined background —
-     * the filters worked, you just could not see which one was on. */
+     * so the active chip was painting white text on an undefined background.
+     * The filters worked, you just could not see which one was on. */
     const U = window.DZCUnits;
     /* The bar is built ONCE and never rebuilt. Every control below only ever
      * redraws the list and re-flags the chips in place, because rewriting this
@@ -2366,7 +2366,7 @@
 
   /* Sorting and filtering the adder. Dropfleet has Points / Name / Tonnage
    * plus seven filters and a results bar (renderShipSelectGrid, app.js:4409);
-   * these are the DZC equivalents. Capacity is ours — it decides what a Group
+   * these are the DZC equivalents. Capacity is ours. It decides what a Group
    * can be built around, which Dropfleet has no analogue for. */
   const SORTS = [
     { key: 'points',   label: 'Price',    get: u => unitLowPoints(u) },
@@ -2382,7 +2382,7 @@
     { key: 'carries',  label: 'Carries',  test: u => totalCapacity(u) > 0 },
     { key: 'aux',      label: 'Auxiliary', test: u => !!u.auxiliaryTransport },
     // The sixth gap 24 asked for. A paid weapon upgrade is a green name box
-    // with a points cost (3.2.3), and only 18 Units in the game have one — so
+    // with a points cost (3.2.3), and only 18 Units in the game have one, so
     // "what can I spend the last 40 points on" is a real question this answers.
     { key: 'upgrades', label: 'Upgrades',
       test: u => (u.weapons || []).some(w => w.box === 'upgrade' && w.upgradePoints != null) },
@@ -2413,7 +2413,7 @@
   }
 
   /* Only the list is redrawn on a keystroke. Re-rendering the whole body
-   * replaced the <input>, which threw away focus and the caret — you got one
+   * replaced the <input>, which threw away focus and the caret, you got one
    * character and then nothing. */
   function renderPickList() {
     const a = current;
@@ -2489,7 +2489,7 @@
    * own button. */
   function pickCard(u, a, chk) {
     // The total for the smallest legal Squad, with the arithmetic under it when
-    // that is more than one model — so "70pts" never has to be read as 35.
+    // that is more than one model, so "70pts" never has to be read as 35.
     const sp = squadPrice(u);
     const price = sp ? span(sp.lo, sp.hi) : '—';
     const each = sp && sp.n > 1 ? `${sp.n} × ${span(sp.perLo, sp.perHi)}` : '';
@@ -2545,7 +2545,7 @@
     const u = window.DZC.unit(current.faction, unitId);
     if (!g || !u) return;
 
-    /* Picking a Transport does not make a loose Squad of Transports — it
+    /* Picking a Transport does not make a loose Squad of Transports, it
      * carries something already here. assignTransport builds the Transport
      * Squad, links it and derives how many are needed to take it full, which
      * is the whole of 3.2.4 in one call. */
@@ -2596,7 +2596,7 @@
    *
    * They are three different asks and one of them cannot serve the other two.
    * The LINK carries the whole army in the URL, so it needs no server and
-   * cannot rot — but it is unreadable, and a forum post wants words. The TEXT
+   * cannot rot. But it is unreadable, and a forum post wants words. The TEXT
    * is those words, and it is also what this app's own Import reads back. The
    * JSON is the same file the backup button writes, so a shared army arrives
    * exactly the way a restored one does.
@@ -2801,7 +2801,7 @@
 
       /* A Behemoth's Gear, priced in Power. This is the sheet you take to a
        * table, and Gear is the one thing on a Behemoth card you consult every
-       * activation and cannot work out from anything else — what it may spend
+       * activation and cannot work out from anything else. What it may spend
        * its Power on and what each costs. On paper it is a price list, so it
        * prints as one. */
       const gear = (u.gear || []).length
@@ -2809,7 +2809,7 @@
             .map(x => `${esc(x.power)}PT ${esc(x.name)}`).join(', ')}</div>`
         : '';
 
-      /* The transport symbols, drawn — not spelled. The shape IS the
+      /* The transport symbols, drawn, not spelled. The shape IS the
        * vocabulary (3.2.4.2), and the sheet printed the shape's NAME instead:
        * "carries 2 square", which is both ungrammatical and a second way of
        * saying what the app says with a glyph. Same renderer as the screen, so
@@ -2837,9 +2837,9 @@
           <span class="pr-sq-cost">${cost}pts</span>
         </div>
         ${mixStr ? `<div class="pr-variants">${mixStr}</div>` : ''}
-        <div class="pr-stats">${stats}${ownSpecial ? ` — ${esc(ownSpecial)}` : ''}</div>
+        <div class="pr-stats">${stats}${ownSpecial ? `. ${esc(ownSpecial)}` : ''}</div>
         <!-- RM aboard. This is the sheet you deploy from, and RM tokens are
-             physically placed on the Genitor before the first Round — a
+             physically placed on the Genitor before the first Round. A
              number folded into the Squad's points is not something you can
              set a model up from. It prints as tokens, not as the 35pts they
              cost, because pts are what you paid and tokens are what you put
@@ -2856,7 +2856,7 @@
     /* The Commander block.
      *
      * A Commander was on the sheet only as a tag beside the Squad they ride
-     * with, so one you had not assigned yet did not print at all — and the
+     * with, so one you had not assigned yet did not print at all. And the
      * numbers that come off Commander Level did not print anywhere. Those are
      * the ones you reach for every Round: CP replenishes up to your highest
      * Level and so does your Command Card hand (4.1.1, 4.1.4), and Initiative
@@ -2864,8 +2864,8 @@
      *
      * The activation count goes here too, because it is not the Group count. A
      * Group of nothing but non-auxiliary Transports cannot be picked for a
-     * normal activation (4.1.2, 4.2.1) — it goes in the Orphaned Transport
-     * step — so counting Groups and counting activations give different
+     * normal activation (4.1.2, 4.2.1), it goes in the Orphaned Transport
+     * step, so counting Groups and counting activations give different
      * answers, and the one you want at the table is this one.
      *
      * The Level cell is empty on a Commander you have not named, because then
@@ -2938,7 +2938,7 @@
    * It exists because the one thing you cannot tell from the app is how many
    * sheets of paper this is about to be, and the one thing that ruins a
    * deployment sheet is a Group cut in half. Both are answered here, and
-   * answered by measuring — the breaks are drawn from the same numbers that
+   * answered by measuring. The breaks are drawn from the same numbers that
    * produce the page count, so the two cannot disagree with each other.
    *
    * Ported from Dropfleet's openPrintPreview (app.js:6361) rather than
@@ -2953,8 +2953,8 @@
   /* What the sheet is printed like, kept between prints.
    *
    * They live in the preview and not in Settings, because they are decisions
-   * about THIS printout — which is Dropfleet's own reasoning, written at
-   * app.js:8029 — and a print option in Settings is a setting you have to go
+   * about THIS printout, which is Dropfleet's own reasoning, written at
+   * app.js:8029, and a print option in Settings is a setting you have to go
    * somewhere else to change and then come back to see.
    *
    * Art is off by default and always has been. It is the first thing a printer
@@ -2979,7 +2979,7 @@
     if (PP.ro) PP.ro.disconnect();
     PP.onKey = PP.onPop = PP.ro = null;
     // The parked history entry has to be spent, or Back leaves the app one
-    // press early ever after. Not when Back is what closed us — it is gone.
+    // press early ever after. Not when Back is what closed us, it is gone.
     const armed = PP.armed;
     PP.armed = false;
     if (armed && !fromBack) history.back();
@@ -3062,13 +3062,13 @@
     /* Everything here is measured in the paper's OWN pixels, before its zoom.
      *
      * The sheet shrinks to fit the screen with `zoom`, and that splits the
-     * measurements into two coordinate spaces that agree only at zoom 1 — which
+     * measurements into two coordinate spaces that agree only at zoom 1, which
      * is every desktop. getBoundingClientRect reports what you can see, so it
      * follows the zoom down; scrollHeight, the padding off getComputedStyle,
      * and any `top`/`height` written back as a style are the element's own
      * pixels, which do not. Mixing them made a phone read the same one-page
-     * army as three pages, with a break drawn through the middle of a Squad —
-     * on the one screen whose entire promise is that it agrees with the paper.
+     * army as three pages, with a break drawn through the middle of a Squad.
+     * On the one screen whose entire promise is that it agrees with the paper.
      *
      * So the rect measurements are divided back out, and the page height comes
      * out in the same space as everything written back. */
@@ -3081,14 +3081,14 @@
     /* The blocks print will not cut. A Group is one atom by design (a Group
      * torn across a page is the failure this whole sheet exists to avoid), and
      * so are the Commander block and a rule entry. This list has to stay in
-     * step with the break-inside: avoid rules in css/dzc-print.css — a block
+     * step with the break-inside: avoid rules in css/dzc-print.css. A block
      * the stylesheet keeps whole and this does not is a break drawn where the
      * printer will not make one. */
     const atoms = [...paper.querySelectorAll('.pr-group, .pr-cmdrs, .pr-rule, .pr-rules > h2, .pr-head')]
       .map(el => {
         const r = el.getBoundingClientRect();
         // Distance from the paper's own top edge, unzoomed, then past the
-        // padding — so it is measured from where the content starts.
+        // padding. So it is measured from where the content starts.
         return { el, top: (r.top - paperRect.top) / zoom - padTop, h: r.height / zoom };
       })
       .filter(b => b.h > 0)
@@ -3139,7 +3139,7 @@
   }
 
   /* Toggling redraws the sheet and measures again, because every one of these
-   * changes how much paper it is — which is the number the preview exists to
+   * changes how much paper it is. Which is the number the preview exists to
    * tell you. */
   function printOpt(key, on) {
     printOpts[key] = !!on;
@@ -3168,7 +3168,7 @@
    *
    * Every action here redraws the whole builder by replacing innerHTML. For
    * one frame the view is empty, the document is a few pixels tall, the
-   * browser clamps the scroll position to fit it — and then the content comes
+   * browser clamps the scroll position to fit it. And then the content comes
    * back underneath a page that is now scrolled somewhere else. Press + on a
    * Squad four Groups down and you are looking at the top of the army.
    *
@@ -3231,7 +3231,7 @@
    * because a rule explanation should not be a thing you have to dismiss. */
   let sayTimer = null;
   /* The toast started life as a refusal, hence the padlock. It now also
-   * confirms an add, so the icon is a parameter — a lock on "you can't" and
+   * confirms an add, so the icon is a parameter, a lock on "you can't" and
    * nothing else. */
   function say(msg, iconName) {
     if (!msg) return;
@@ -3264,7 +3264,7 @@
     pickFaction: id => { picked.faction = id; openNew(); },
     /* Clicking a size sets the limit to the TOP of that band, which is what
      * people mean by "a Clash game". Typing an exact number then wins, because
-     * the agreed limit is what the rules actually key off — the per-Group cap
+     * the agreed limit is what the rules actually key off. The per-Group cap
      * is a quarter of IT, not a quarter of the band (3.2). */
     pickSize: id => {
       const g = window.DZC.index.gameSizes.find(s => s.id === id);
@@ -3284,7 +3284,7 @@
       if (g) applyLimit(g.max || g.min);
     },
     setLimit: v => applyLimit(parseInt(v, 10)),
-    /* Enter commits, Escape abandons — the two keys everyone already tries. A
+    /* Enter commits, Escape abandons, the two keys everyone already tries. A
      * contenteditable does neither on its own: Enter inserts a newline into
      * your army name, and Escape does nothing, so the only way out was to
      * click away, which SAVES. There was no way to change your mind.
@@ -3383,7 +3383,7 @@
     },
     /* By index, so a variant name never has to survive a trip through an
      * inline handler. The refusal is spoken because the button is disabled
-     * only while the reason is on its wrapper — a keyboard reaching it another
+     * only while the reason is on its wrapper. A keyboard reaching it another
      * way should still hear why. */
     /* The one-model case: set the model's Variant outright rather than trying
      * to add one of a kind and remove one of another, which cannot be done in

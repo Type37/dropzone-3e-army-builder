@@ -1,4 +1,4 @@
-/* Fleet Sync — opt-in cross-device sync of the shared `dfc_fleets` list.
+/* Fleet Sync. Opt-in cross-device sync of the shared `dfc_fleets` list.
  *
  * Loaded by BOTH apps (index.html and mobile/index.html), same as offline-sync.js,
  * so the merge rules can never drift between desktop and phone.

@@ -1,4 +1,4 @@
-/* App shell — routing, modals, settings, theme, offline and sync.
+/* App shell. Routing, modals, settings, theme, offline and sync.
  *
  * Everything here is game-agnostic: it knows about views and dialogs, never
  * about units or Groups. It replaces the shell that was buried inside app.js
@@ -14,9 +14,9 @@ const App = (() => {
 
   const SETTINGS_KEY = 'dfc_settings';   // kept: renaming it would lose themes
   /* Dropzone's OWN toggles live under their own key, never the shared one.
-   * Dropfleet keeps a field called showCollection in dfc_settings too — a
+   * Dropfleet keeps a field called showCollection in dfc_settings too, a
    * different setting entirely, its own ships against its own Collection tab
-   * — and merging the whole shared object (Object.assign(settings, s), as
+   *, and merging the whole shared object (Object.assign(settings, s), as
    * this used to) pulled Dropfleet's value straight into Dropzone's builder.
    * Turning Collection on in one app silently turned it on in the other.
    * Jet, 2026-08-09: "the collection should be off by default" -- it was, in
@@ -43,7 +43,7 @@ const App = (() => {
    * a worse version of something already automatic. It is the build NUMBER,
    * so a report can say which one it came from and "that was fixed in 419"
    * becomes an answer instead of a guess. */
-  const BUILD = 424;
+  const BUILD = 425;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -204,7 +204,7 @@ const App = (() => {
         show('view-play');
         ctx.innerHTML = back('army/' + param, 'Play Mode')
           // btn-ghost-light, not btn-ghost: this sits on the navy topbar, and
-          // btn-ghost's grey is picked for the paper background — it came out
+          // btn-ghost's grey is picked for the paper background. It came out
           // washed out enough to read as a control you cannot press.
           + ` <button class="btn btn-ghost-light btn-sm" type="button" onclick="DZCPlay.reset()">Reset game</button>`;
         if (window.DZCPlay) DZCPlay.open(param);
@@ -235,7 +235,7 @@ const App = (() => {
       default:
         show('view-landing');
         /* Blank on the landing screen. Dropfleet writes "Fleet Builder" here
-         * and it is the third "Army Builder" on ours — the tile below says it
+         * and it is the third "Army Builder" on ours. The tile below says it
          * and the footer says it again, which is the rule about no phrase more
          * than twice. The wordmark is directly to the left; naming the app
          * beside its own logo was never telling anyone anything. */
@@ -252,7 +252,7 @@ const App = (() => {
   // --------------------------------------------------------------- settings
 
   /* A setting is a name and a switch. The explanation lives in the tooltip,
-   * not in a sentence under the control — same as the Dropfleet builder, where
+   * not in a sentence under the control. Same as the Dropfleet builder, where
    * no toggle carries a caption. */
   function tog(key, name, desc) {
     return `<label class="dzc-set-toggle" title="${esc(desc)}">
@@ -346,7 +346,7 @@ const App = (() => {
    *
    * Armies live in localStorage, which a browser is free to clear and a
    * "clear site data" click will. Sync copies them between your own devices
-   * but is still not a backup — it propagates a deletion just as happily.
+   * but is still not a backup. It propagates a deletion just as happily.
    * This is the copy that survives both.
    *
    * The exact stored shape, unmodified, so it can be pasted straight back. No
@@ -374,7 +374,7 @@ const App = (() => {
    * A backup you cannot restore is not a backup, and armies live in
    * localStorage, which a browser is free to clear. Everything the app can
    * hand you goes back in through one door: a whole backup, one army, or a
-   * share link — because having to know which kind of thing you are holding is
+   * share link. Because having to know which kind of thing you are holding is
    * a question the app can answer for you.
    *
    * Nothing is overwritten. Every id is reissued on the way in (DZCArmy.
@@ -448,7 +448,7 @@ const App = (() => {
 
     // Not JSON at all: a pasted army list. Every faction has to be on hand
     // first, because which one the list belongs to is decided by which roster
-    // its unit names are in — a header can say one thing over another
+    // its unit names are in. A header can say one thing over another
     // faction's units.
     if (parsed == null) {
       for (const f of ['ucm', 'phr', 'scourge', 'shaltari', 'resistance', 'bioficer']) {
@@ -456,7 +456,7 @@ const App = (() => {
       }
       const l = window.DZCArmy.importList(text);
       if (!l.ok) { report(`<p class="dzc-set-note">${esc(l.reason)}</p>`); return; }
-      report(`<p class="dzc-set-note"><b>${esc(l.army.name)}</b> — ${l.matched.length}
+      report(`<p class="dzc-set-note"><b>${esc(l.army.name)}</b>: ${l.matched.length}
           Squad${l.matched.length === 1 ? '' : 's'}, each in a Group of its own.
           A list does not say what rode in what, so the nesting is yours to rebuild (3.2.4).</p>
         ${l.unmatched.length ? `<ul class="dzc-import-list">${
@@ -469,9 +469,9 @@ const App = (() => {
     if (!r.ok && r.reason) { report(`<p class="dzc-set-note">${esc(r.reason)}</p>`); return; }
 
     const lines = r.added.map(a => `<li>${esc(a.name)}${a.unknown.length
-      ? ` — ${a.unknown.length} unit${a.unknown.length === 1 ? '' : 's'} this data does not have: ${esc(a.unknown.join(', '))}`
+      ? `, ${a.unknown.length} unit${a.unknown.length === 1 ? '' : 's'} this data does not have: ${esc(a.unknown.join(', '))}`
       : ''}</li>`)
-      .concat(r.skipped.map(s => `<li>Entry ${s.at} skipped — ${esc(s.reason)}</li>`));
+      .concat(r.skipped.map(s => `<li>Entry ${s.at} skipped: ${esc(s.reason)}</li>`));
     report(`<p class="dzc-set-note"><b>${r.added.length}</b> ${r.added.length === 1 ? 'army' : 'armies'} imported.</p>
       ${lines.length ? `<ul class="dzc-import-list">${lines.join('')}</ul>` : ''}`);
     if (window.DZCBuilder) DZCBuilder.renderList();
@@ -574,11 +574,17 @@ const App = (() => {
 
   // ------------------------------------------------------------- changelog
 
-  /* What's New. Same shape as the Dropfleet builder's log — {date, title,
+  /* What's New. Same shape as the Dropfleet builder's log: {date, title,
    * items}, newest first, written for someone using the app rather than
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-10', title: 'Things arrive and leave, refusals that name the move, and a lot fewer dashes', items: [
+      'Squads, Groups and armies animate on when you add them and off when you delete them. Only the thing that actually arrived moves: adding a Squad does not re-deal the rest of the army, and pressing a stepper animates nothing at all. It is built out of transform and opacity alone so a phone can hand it to the compositor instead of re-running the layout of a dozen Squads every frame, and it does nothing at all if your system asks for reduced motion.',
+      'A refusal tells you what to do about it. Two Squads in a Group with nothing carrying either of them used to quote rule 3.2.4 and stop, which reads as the app breaking rather than the list being half finished. It now names which Squad goes aboard which, worked out from the same list the Transport button offers, so it can only ever suggest something that will work.',
+      'The M&A Max icon is gone from the weapon table and the weapon card. It was three fixed colours at 13px in a 57px column, so it read as a smudge and could not follow the dark theme. The words stayed.',
+      'The writing lost most of its dashes. Several hundred of them across every message, tooltip and note in the app, rewritten into full stops, colons and commas rather than swapped for a shorter dash.'
+    ] },
     { date: '2026-08-10', title: 'A handle you can see, a button with a word on it, and the Foeslayer put back where the card has it', items: [
       'The drag handle was invisible. Two players decided the app had no drag and drop at all, and one of them only found the six dots at 200% zoom. Three things were wrong: the dots drew at about a seventh of the contrast a control needs, the Group card used a glyph whose dots came out half a pixel wide, and the two handles for the same gesture sat at opposite ends of the screen. There is now one handle, one glyph, at the leading edge of both a Group card and a Squad row, dark enough to see in either theme without hovering, and the Group card gets back the space it was holding for a grip that is no longer in its corner.',
       'A Squad’s Transport chooser says “Transport”. It was a small lorry beside a bin, and nobody found it. The panel it opens has always done the thing people were dragging to achieve: a Medusa put aboard a Triton X Gunship in one tap, with the capacity drawn and “Fills it” underneath. Its partner says “Take out”.',
@@ -588,24 +594,24 @@ const App = (() => {
       'Settings shows the build number, and a feedback mail arrives with it filled in. A live tab already updates itself within the minute, so this is not a prompt to reload; it is so a report can say which build it came from.'
     ] },
     { date: '2026-08-08', title: 'Raw Materials, rules on the loadout that has them, and a phone that stopped scrolling sideways', items: [
-      'Shaltari Gates are not part of your Group structure, because the rulebook says so three times: they are not taken with any Units aboard, they do not count against your allowed Groups, and a Gate is never part of another Group. The builder was breaking all three — it offered a Gate as a Squad’s Transport, spent a Group on every Gate you took, and printed “carries nothing” on a Gate that was correctly empty. A Group of Gates is now called Gates, is numbered apart from your Groups, and costs you none of them. And a Squad with no Transport in a list with Gates starts in Holding, which is the whole point of the faction, rather than being warned that it begins Reserved.',
-      'Raw Materials. A Genitor Unit — anything with a hollow green square — may begin the game with RM tokens aboard, 5pts each up to the number in its symbol, and now you can buy them: 12 on a Grievance Genitor Ark, 8 on a Gyro Aero-Genitor. Their points count toward the army and toward their Group, and toward no category at all, which is what the rule says and the only place in this app where that is true. They travel in a share link, in a backup and on the printed sheet, where they print as tokens rather than as the points they cost — points are what you paid, tokens are what you put on the table before Round 1.',
-      'A rule that belongs to one loadout is written on that loadout. “Scanner (Greave)” printed against the whole Squad, so a Sabre, a Tachi and a Rapier all looked like they had a Scanner only the Greave has. Nineteen rules across the game move onto their own Variant — in the builder, in the Unit Reference and on the printed sheet — and the Squad keeps only what every model in it has. Inside the Greave’s own block the chip just reads “Scanner”, because the block is already called Greave.',
-      'The builder scrolled sideways on a phone. Three faults stacked: a grid whose columns had a hard 232px floor in a 170px space, every level of carry spending 96px on indent before a single stat was drawn, and a row of controls that could neither shrink nor wrap. A 320px screen measured 455px of page; it measures 312 now, and nothing runs off the edge at any width. The photograph on a Squad also shrinks properly on a phone at last — it had been sitting in the corner of a box a third bigger than itself, with 37px of blank paper beside it, on every Squad.',
+      'Shaltari Gates are not part of your Group structure, because the rulebook says so three times: they are not taken with any Units aboard, they do not count against your allowed Groups, and a Gate is never part of another Group. The builder was breaking all three. It offered a Gate as a Squad’s Transport, spent a Group on every Gate you took, and printed “carries nothing” on a Gate that was correctly empty. A Group of Gates is now called Gates, is numbered apart from your Groups, and costs you none of them. And a Squad with no Transport in a list with Gates starts in Holding, which is the whole point of the faction, rather than being warned that it begins Reserved.',
+      'Raw Materials. A Genitor Unit, anything with a hollow green square, may begin the game with RM tokens aboard, 5pts each up to the number in its symbol, and now you can buy them: 12 on a Grievance Genitor Ark, 8 on a Gyro Aero-Genitor. Their points count toward the army and toward their Group, and toward no category at all, which is what the rule says and the only place in this app where that is true. They travel in a share link, in a backup and on the printed sheet, where they print as tokens rather than as the points they cost: points are what you paid, tokens are what you put on the table before Round 1.',
+      'A rule that belongs to one loadout is written on that loadout. “Scanner (Greave)” printed against the whole Squad, so a Sabre, a Tachi and a Rapier all looked like they had a Scanner only the Greave has. Nineteen rules across the game move onto their own Variant (in the builder, in the Unit Reference and on the printed sheet), and the Squad keeps only what every model in it has. Inside the Greave’s own block the chip just reads “Scanner”, because the block is already called Greave.',
+      'The builder scrolled sideways on a phone. Three faults stacked: a grid whose columns had a hard 232px floor in a 170px space, every level of carry spending 96px on indent before a single stat was drawn, and a row of controls that could neither shrink nor wrap. A 320px screen measured 455px of page; it measures 312 now, and nothing runs off the edge at any width. The photograph on a Squad also shrinks properly on a phone at last. It had been sitting in the corner of a box a third bigger than itself, with 37px of blank paper beside it, on every Squad.',
       'An alert on a Squad stops repeating the Squad’s name. “UCM Troop Buggy”, and twenty pixels below it, “UCM Troop Buggy: 1 model, minimum is 2.”',
-      'Play Mode counts your RM. A Genitor walks into the game holding what you bought and the count moves both ways from there — down 4 for Drones and 6 for Hulks as you Spawn them, up 2 or 4 every time a Decon weapon finishes something off. It stops at the number in the symbol, because any above that are discarded.',
-      'The +/- on a Squad with Variants is gone. It was the sum of the ones on the blocks underneath it, and pressing it had to guess which Variant you meant. A Unit with no Variants keeps its own — 93 of the 178 have none.'
+      'Play Mode counts your RM. A Genitor walks into the game holding what you bought and the count moves both ways from there: down 4 for Drones and 6 for Hulks as you Spawn them, up 2 or 4 every time a Decon weapon finishes something off. It stops at the number in the symbol, because any above that are discarded.',
+      'The +/- on a Squad with Variants is gone. It was the sum of the ones on the blocks underneath it, and pressing it had to guess which Variant you meant. A Unit with no Variants keeps its own. 93 of the 178 have none.'
     ] },
     { date: '2026-08-07', title: 'A theme that hid the app, and a download with no app in it', items: [
-      'Dark mode was white text on white cards. Six of the tokens the builder is written against — its surfaces, its lines, its second ink — were never defined anywhere, so that whole layer stayed hardcoded to paper while the ink dutifully flipped to near-white. The builder, the picker, the reference and Play Mode all went unreadable the moment you touched a switch that has sat in Settings since the beginning. The printed sheet and its preview went with them. Every screenshot is taken in both themes now, which is how this survived as long as it did.',
-      'A phone had no rail at all. Points left, Groups used and issues outstanding were switched on by one stylesheet rule and off by a later one, so no phone ever saw them — and with nothing drawn there, nobody saw the fault underneath: the army was sitting in a grid column that no longer existed, pushed off a dead gutter down the left.',
+      'Dark mode was white text on white cards. Six of the tokens the builder is written against (its surfaces, its lines, its second ink) were never defined anywhere, so that whole layer stayed hardcoded to paper while the ink dutifully flipped to near-white. The builder, the picker, the reference and Play Mode all went unreadable the moment you touched a switch that has sat in Settings since the beginning. The printed sheet and its preview went with them. Every screenshot is taken in both themes now, which is how this survived as long as it did.',
+      'A phone had no rail at all. Points left, Groups used and issues outstanding were switched on by one stylesheet rule and off by a later one, so no phone ever saw them, and with nothing drawn there, nobody saw the fault underneath: the army was sitting in a grid column that no longer existed, pushed off a dead gutter down the left.',
       '“Download for offline use” fetched 26 MB of art and no app. The list it works from named files belonging to a different game, and none of the twelve modules this one is made of, so the group labelled for the rules and the app contained neither. It reads the list the service worker actually caches now, because two lists that have to agree is one list too many. A re-scan would have left that same download describing photos that were gone, and one missing file takes the whole offline copy down rather than one picture, so regenerating it is part of the scan.',
       'The printable faction references were unreachable. Six sheets and an index, already cached for a table with no signal, and nothing anywhere linked to any of them.',
       'Every variant printed the unit’s stats back at you, three and four times over. A Polecat Buggy gave you Move 9”, Armour 4, Damage Points 1 four times in one card. Not one of the 218 variants in the game changes a stat, so that copy had never once said anything.',
       'Import’s one line of instruction was cut to “…or a pas” on a phone, and it is the only line that tells you a pasted list will do. It wraps now. Its label also rested three rows down the middle of an empty box instead of on the line where you type.',
-      'A new Round capped your Command Points and never handed you any. Replenishing up to your highest Commander Level is half of 4.1.1, and the losing half was the half that worked, so a Level 5 Commander started Round 2 on nothing. The Initiative roll prints its total on a six as well — that is the one roll with a case that needs it.',
-      'Behemoths reached Play Mode a week after they reached the builder, and four of their rules had not travelled with them. One counted as a single Group when Pass tokens are worked out off Group counts and a Dragon is worth five, so every token in the game came out wrong for anyone fielding one. You could Concuss one, and Obscure one, neither of which the game allows. And the biggest model on the table was marked finished for the Round after one activation, when a Behemoth goes once per Power token — four to ten times — and that track was nowhere in the app. Every Behemoth Squad carries it now, refilled at the start of each Round.',
-      'Every Behemoth also said “Squad 1”, which is a number its printed card does not carry: they have a Groups Equivalent instead, and that is the one that decides how much of your Group allowance one eats. It is on the reference card, the picker, the Collection and the unit’s own page now, and the rail counts your Groups in it — that meter was counting cards against an allowance counted in Groups, so it read 3 of 16 on a list already spending fifteen.',
+      'A new Round capped your Command Points and never handed you any. Replenishing up to your highest Commander Level is half of 4.1.1, and the losing half was the half that worked, so a Level 5 Commander started Round 2 on nothing. The Initiative roll prints its total on a six as well, and that is the one roll with a case that needs it.',
+      'Behemoths reached Play Mode a week after they reached the builder, and four of their rules had not travelled with them. One counted as a single Group when Pass tokens are worked out off Group counts and a Dragon is worth five, so every token in the game came out wrong for anyone fielding one. You could Concuss one, and Obscure one, neither of which the game allows. And the biggest model on the table was marked finished for the Round after one activation, when a Behemoth goes once per Power token, four to ten times, and that track was nowhere in the app. Every Behemoth Squad carries it now, refilled at the start of each Round.',
+      'Every Behemoth also said “Squad 1”, which is a number its printed card does not carry: they have a Groups Equivalent instead, and that is the one that decides how much of your Group allowance one eats. It is on the reference card, the picker, the Collection and the unit’s own page now, and the rail counts your Groups in it. That meter was counting cards against an allowance counted in Groups, so it read 3 of 16 on a list already spending fifteen.',
     ]},
     { date: '2026-08-06', title: 'Behemoths, and a weapon table you can read on a phone', items: [
       'Ten Behemoths and the Venus Drone are scanned and read in the Unit Reference, under a seventh tab that is deliberately not a faction: the cards do not say whose they are. Their 39 rules are in the glossary, and their Gear is on the card and on the printed sheet.',
@@ -617,17 +623,17 @@ const App = (() => {
       'No Commander on a Fast Mover or a Living Weapon. A swap takes the weapon it replaces off the sheet. The top bar says what this is, and Play Mode stopped running off the side of a phone.',
     ]},
     { date: '2026-08-02', title: 'Nothing on a phone was big enough to press', items: [
-      'Measured at 390 by 844, every control the app draws: the way back was 18px square, the card menu 24, Settings and the modal close 32, the filter and sort chips 28 high, the search field 36. A finger pad is about 45px across, so all of those were aimed at rather than pressed. Everything clears 44 now, and the model stepper — the most-pressed control here, and two of them sat 2px apart — got the gap as well as the size.',
+      'Measured at 390 by 844, every control the app draws: the way back was 18px square, the card menu 24, Settings and the modal close 32, the filter and sort chips 28 high, the search field 36. A finger pad is about 45px across, so all of those were aimed at rather than pressed. Everything clears 44 now, and the model stepper (the most-pressed control here, and two of them sat 2px apart) got the gap as well as the size.',
       'One failed Create killed Create for the rest of the session. The button disabled itself for the length of the work and re-enabled after a render that a throw could step straight over, so it stayed pressed and silent and no click after it built anything until you reloaded.',
       'The number inside a transport symbol sits on the shape’s real centre of mass rather than the middle of its box, which is not the same place on a triangle.',
     ]},
     { date: '2026-08-01', title: 'A run spent looking at it', items: [
-      'The print preview was telling a phone that a one-page army was three pages, and drawing a page break through the middle of a Squad — through a Group, which is the one thing the whole sheet is built to keep whole. The sheet was being stretched to the height of your window and then measured, and the measuring itself was mixing what you can see with what the paper actually is. Both fixed; a phone and a desktop now agree, and they agree with the paper.',
-      'On a phone there was no way back. The back arrow lives in a strip that had been hidden below 768px since the days of a separate mobile build, so the only way out of an army was the wordmark — which goes to the front page, not back — and Play Mode’s Reset game could not be reached at all.',
+      'The print preview was telling a phone that a one-page army was three pages, and drawing a page break through the middle of a Squad, through a Group, which is the one thing the whole sheet is built to keep whole. The sheet was being stretched to the height of your window and then measured, and the measuring itself was mixing what you can see with what the paper actually is. Both fixed; a phone and a desktop now agree, and they agree with the paper.',
+      'On a phone there was no way back. The back arrow lives in a strip that had been hidden below 768px since the days of a separate mobile build, so the only way out of an army was the wordmark, which goes to the front page rather than back, and Play Mode’s Reset game could not be reached at all.',
       'Status Tokens go on the Squad, which is what the rulebook says three separate times. Concussed, Suppressed and Jammed were on every model, so a Squad of five had five of each and you could record a state the game cannot produce. Obscured stays on the model, because that one is about where a model is standing. A status you have set now says its whole name instead of its first letter.',
       'Every Group card was printing its cost with the last digits under the drag grip: 100/50, with the rest of the ceiling hidden. That number is how you tell whether a Group is legal.',
       'Category spend drew the Standard line in the same green as the card it sits on, so the one row that explains what the other three mean was a smudge beside a number.',
-      'The Unit Reference was cutting the ends off its own stats — 5+ DEFENC, 5+ BRAVE — on nearly every card in the grid.',
+      'The Unit Reference was cutting the ends off its own stats, 5+ DEFENC, 5+ BRAVE, on nearly every card in the grid.',
       'A Commander you have not named reports its Level as its name, and then both the rail and the printed sheet said the Level again beside it. The unit page did the same with the unit’s name.',
       'A Group with nothing in it was tagged “orphaned transports” in Play Mode and told a rule about transports it did not contain.',
       'The search box on the Collection was cutting off the line that tells you what you can type. On a phone the magnifying glass beside it gives way instead of the words.',
@@ -635,16 +641,16 @@ const App = (() => {
     { date: '2026-08-01', title: 'What a Level buys, and guns nobody was firing', items: [
       'A Commander Level says what it is worth. CP replenishes up to your highest Level, your Command Card hand is that many cards, and Initiative is D6 plus it (4.1). Play Mode has run on those three numbers since it was written; the screen where you choose a Level had never been told. They are on every option in the chooser, once in the rail for the army, and on the printable reference.',
       'A Level a smaller game cannot reach says which game reaches it, instead of not being there. At Skirmish there was no way to learn that Levels 6 and 7 exist.',
-      'A Squad’s weapon table is the guns that Squad fires. It was printing the whole card — the gun only a Rapier carries, on a Squad with no Rapier in it, and every paid upgrade whether or not you had bought one. The printed sheet does the same now, where it matters more, and its rules appendix stops printing rules for guns nobody in the army can fire.',
+      'A Squad’s weapon table is the guns that Squad fires. It was printing the whole card: the gun only a Rapier carries, on a Squad with no Rapier in it, and every paid upgrade whether or not you had bought one. The printed sheet does the same now, where it matters more, and its rules appendix stops printing rules for guns nobody in the army can fire.',
       'Compact view, in Settings. A Squad reads as its whole stat card by default; this drops the weapon table and the stat grid repeated under every Variant, and takes away no control.',
       'Every Unit says which stat card page it came off, with the release named beside it. Every rule already cited its rulebook page; the Unit, whose printed card is the one thing this cannot replace, cited nothing.',
-      'The sentence that qualifies an upgrade reads on the unit page as well as over the buttons — and four cards had it wrong in the data. Two stopped mid-clause at “May replace transport capacity of” and two held a paragraph of lore.',
+      'The sentence that qualifies an upgrade reads on the unit page as well as over the buttons, and four cards had it wrong in the data. Two stopped mid-clause at “May replace transport capacity of” and two held a paragraph of lore.',
       '“A save of 4++”, on every Infantry Unit with Hardy. The rulebook heads the rule “Hardy X” and then reads “a save of X+”, while every card prints “Hardy 4+”, so the value took the plus with it.',
     ]},
     { date: '2026-08-01', title: 'A blank builder, and everything that was never pressed', items: [
-      'The builder was drawing nothing at all for any Squad with a Transport, and had been for a day. A helper was used two hundred lines above the line that declares it, which throws rather than coming back empty, so the whole pane stayed blank. Nothing caught it because nothing had ever drawn the builder in a test \u2014 only the pieces it is made of.',
+      'The builder was drawing nothing at all for any Squad with a Transport, and had been for a day. A helper was used two hundred lines above the line that declares it, which throws rather than coming back empty, so the whole pane stayed blank. Nothing caught it because nothing had ever drawn the builder in a test, only the pieces it is made of.',
       'Every screen is driven by the tests now, and so is every control on them: the army list, the builder, the picker, both choosers, Share, the print preview, the unit reference, Collection and Play, about seventy controls pressed in turn.',
-      'Drag a Group to reorder it. The order is the order on your printed sheet, and that is the deployment plan \u2014 until now it was whatever order you happened to add them in.',
+      'Drag a Group to reorder it. The order is the order on your printed sheet, and that is the deployment plan, and until now it was whatever order you happened to add them in.',
       'An army can say what it is for. Set it when you make one, edit it in the builder, and it travels in the link, the JSON and the text.',
       'Play, Share and Print moved into the topbar, which on a phone costs no vertical space at all. On a phone the rail also collapses behind the two numbers you keep glancing at.',
       'One menu on an army card instead of two loose icons crowding the thing you are trying to tap. The picker can show only what you own. Missing art removes itself rather than leaving a broken icon and a hole.',
@@ -656,36 +662,36 @@ const App = (() => {
       'Feedback asks the four questions instead of opening a blank message.',
     ]},
     { date: '2026-08-01', title: 'Surprise me, and a bug that called legal armies illegal', items: [
-      'A Squad that needed more than one Transport was being reported illegal. Six Legionnaires in two Bear APCs is a Group the rulebook itself illustrates, and the app measured them against ONE vehicle\'s capacity — so it said "needs 6, has 3" and there was nothing you could do about it. Fixed, and pinned by six tests.',
+      'A Squad that needed more than one Transport was being reported illegal. Six Legionnaires in two Bear APCs is a Group the rulebook itself illustrates, and the app measured them against ONE vehicle\'s capacity, so it said "needs 6, has 3" and there was nothing you could do about it. Fixed, and pinned by six tests.',
       '"Surprise me" builds a whole army to the faction, size and points you have chosen, legal when it stops. It spends the Commander first, Standard before the categories Standard has to pay for, and takes a Transport only where it comes out exactly full.',
       'A rule links to the rules it names. Grav says it ignores Resilient; Resilient is now one tap away, where before you had to know it existed and go looking. Twenty-three of those cross-references were dead ends.',
-      'Every rule a Unit uses prints in full under its weapon table, not only behind a hover — because on a phone there is no hover, so a tooltip-only rule was simply missing.',
-      'A list pasted out of New Recruit imports. It cannot give you back the Group nesting — a flat list does not record what rode in what — and it says so rather than pretending.',
+      'Every rule a Unit uses prints in full under its weapon table, not only behind a hover, because on a phone there is no hover, so a tooltip-only rule was simply missing.',
+      'A list pasted out of New Recruit imports. It cannot give you back the Group nesting (a flat list does not record what rode in what) and it says so rather than pretending.',
       'Sort your armies by Recent, Name, Faction or Points, and an empty list is a grid with a tile in it instead of a sentence saying it is empty.',
     ]},
     { date: '2026-08-01', title: 'Print what you can see first, and get your armies back', items: [
-      'Print opens a preview: your sheet at A4 with the page breaks drawn on it and the page count in the bar. The breaks are measured rather than spaced every 273mm — a Group is kept whole by the stylesheet, so the preview pushes one that would straddle a boundary onto the next page exactly as the printer will, and then it agrees with the paper.',
+      'Print opens a preview: your sheet at A4 with the page breaks drawn on it and the page count in the bar. The breaks are measured rather than spaced every 273mm: a Group is kept whole by the stylesheet, so the preview pushes one that would straddle a boundary onto the next page exactly as the printer will, and then it agrees with the paper.',
       'Compact, ink-saver and art, decided in the preview where you can see what each costs you in pages. Art on the sheet is new; it stays off unless you ask, because it is the biggest thing between a two-page list and a four-page one.',
-      'Import. There was an Export button and nothing to put it into, which made the backup a file rather than a backup. A whole backup, one army, a share link or a list pasted from New Recruit all go in through the same box, and the report says what came in and what it could not match. Nothing is overwritten — importing twice adds twice.',
+      'Import. There was an Export button and nothing to put it into, which made the backup a file rather than a backup. A whole backup, one army, a share link or a list pasted from New Recruit all go in through the same box, and the report says what came in and what it could not match. Nothing is overwritten: importing twice adds twice.',
       'A pasted list will not give you back the Group nesting, and says so: a flat list does not record what rode in what.',
       'The agreed points limit can be changed after you make the army. The size in the rail opens it. This mattered more than it sounds: the per-Group ceiling is a quarter of the AGREED number, so agreeing 1500 on the day instead of the 2000 you built at moves what is legal, and there was no way to tell the app.',
-      'The per-model variant dropdowns are gone. A Squad of eight was eight dropdowns, and you could not see the mix without opening every one. The variant blocks — which already said what each variant is, which gun makes it that and what it costs — now carry the count, so the thing you read is the thing you press.',
+      'The per-model variant dropdowns are gone. A Squad of eight was eight dropdowns, and you could not see the mix without opening every one. The variant blocks, which already said what each variant is, which gun makes it that and what it costs, now carry the count, so the thing you read is the thing you press.',
       'An upgrade reads as the weapon it is: the same columns as the table above it, arc, range, attacks, accuracy, energy and every special, with the price as the button. The question an upgrade asks is whether the new gun beats the old one, and a name cannot answer it.',
     ]},
     { date: '2026-08-01', title: 'Commanders, Groups you can copy, and tests that read the markup', items: [
       'Commanders have names, the same way Groups do. An unnamed one reports its Level, so deleting one from the middle can never leave two things called the same thing.',
-      'Duplicate a Group — every Squad, its models and their variants, the upgrades and the nesting, with every id reissued so the copy rides its own Transports rather than the original\'s.',
+      'Duplicate a Group, with every Squad, its models and their variants, the upgrades and the nesting, with every id reissued so the copy rides its own Transports rather than the original\'s.',
       'Every army as one JSON file you keep. Armies live in your browser, which is free to clear them; sync moves them between your devices but propagates a deletion just as happily.',
       'On a phone a Group is a screen you drill into rather than another slab in a long column; on a desktop the builder keeps its three panes.',
       'A test suite that reads the rendered markup. Three regressions in one night were caught by looking at a screenshot and none by the tests, which was an argument that nothing was testing the markup rather than an argument for screenshots.',
     ]},
     { date: '2026-08-01', title: 'Rules say what they mean, and the Albatross is reachable', items: [
-      'A rule reads back the number your card printed. "Aegis 6”" says "within 6” of this Unit" instead of "within X”", and it works for words as well as numbers, so "Ineffective: Zones" names Zones. Substituting the value also exposed three keywords the app had been reading wrongly — "Pen 6+" was resolving to Passive Countermeasures, which meant every weapon with Penetrator showed the wrong rule.',
+      'A rule reads back the number your card printed. "Aegis 6”" says "within 6” of this Unit" instead of "within X”", and it works for words as well as numbers, so "Ineffective: Zones" names Zones. Substituting the value also exposed three keywords the app had been reading wrongly. "Pen 6+" was resolving to Passive Countermeasures, which meant every weapon with Penetrator showed the wrong rule.',
       'Every rule now says which page of the rulebook it is on, in the tooltip and on the printed sheet, so the book falls open in the right place mid-game.',
-      'You can build an Albatross. A Transport Squad is a Squad, so it can be carried too — you give an Albatross to a Bear APC exactly as you gave the Bear to the Legionnaires. The rules always allowed it and the builder was refusing.',
+      'You can build an Albatross. A Transport Squad is a Squad, so it can be carried too: you give an Albatross to a Bear APC exactly as you gave the Bear to the Legionnaires. The rules always allowed it and the builder was refusing.',
       'The picker prices the Squad rather than one model: 70pts over "2 × 35". A third of the list has a minimum above one model, so a third of the list had been quietly halving its own price.',
-      'Category tabs say how many units are behind them, and a tab or a filter only appears if it can match something. That adds a filter for units with a paid weapon upgrade — 18 in the whole game — and removes Unique, which could never match anything, because no Unique Unit has been published.',
-      'Search reaches further: category and type, the rules on a weapon rather than only on the Unit, and glossary aliases — so "evasion" finds a Unit whose card only ever prints "Ev1".',
+      'Category tabs say how many units are behind them, and a tab or a filter only appears if it can match something. That adds a filter for units with a paid weapon upgrade (18 in the whole game) and removes Unique, which could never match anything, because no Unique Unit has been published.',
+      'Search reaches further: category and type, the rules on a weapon rather than only on the Unit, and glossary aliases, so "evasion" finds a Unit whose card only ever prints "Ev1".',
       'A control that refuses you says why. The model stepper used to go dead under your finger with nothing on screen; it now quotes the squad size that stopped it. An empty list names which of your choices emptied it.',
       'Renaming an army or a Group looks renameable, and Enter commits while Escape puts it back. Escape used to do nothing, so once you started typing there was no way to change your mind.',
     ]},
@@ -707,7 +713,7 @@ const App = (() => {
     ]},
     { date: '2026-07-31', title: 'Sort, filter and search the picker', items: [
       'Sort by Price, Name, Category, Squad or Capacity, each reversible. Filters for Rare, Unique, Variants, Carries and Auxiliary. Search covers names, variants, weapons and rules. A list view sits beside the card grid for scanning rather than comparing.',
-      'A Group that does not yet make sense is reported when you stop building, not blocked while you build. A lone Transport is unfinished, not illegal — you are probably about to fill it. A second Rare Squad is still refused, because nothing you add later puts it right.',
+      'A Group that does not yet make sense is reported when you stop building, not blocked while you build. A lone Transport is unfinished, not illegal: you are probably about to fill it. A second Rare Squad is still refused, because nothing you add later puts it right.',
       'The active filter pill was painting white on white, and typing in the search box replaced the box under your caret. Both fixed.',
     ]},
     { date: '2026-07-31', title: 'Groups form by transport', items: [
@@ -722,7 +728,7 @@ const App = (() => {
       'Two data faults found by chasing an odd firing arc: every paid weapon upgrade was costing nothing, and eight weapons had arcs made out of footnote text.',
     ]},
     { date: '2026-07-30', title: 'The army builder', items: [
-      'Groups, Squads and per-model variants, with transport nesting drawn as a tree — a Bear APC with its Legionnaires indented beneath it, because that is the deployment plan.',
+      'Groups, Squads and per-model variants, with transport nesting drawn as a tree, a Bear APC with its Legionnaires indented beneath it, because that is the deployment plan.',
       'Illegal choices are unreachable rather than flagged after you have made them.',
       'The print sheet keeps the nesting and appends the verbatim text of every rule your list uses. Groups never split across a page and no rule breaks mid-sentence.',
       'All 178 units are readable on their own, with a 106-rule glossary taken from the rulebook and the faction front matter.',
@@ -732,7 +738,12 @@ const App = (() => {
   function openChangelog() {
     $('changelog-body').innerHTML = CHANGELOG.map(e => `
       <div class="changelog-entry">
-        <div class="changelog-date">${esc(e.date)} &mdash; <span class="changelog-title">${esc(e.title)}</span></div>
+        <!-- A colon between the date and the title. It was an mdash, chosen
+             because an interpunct would have blown the app's budget of two for
+             that glyph (CLAUDE.md 3) -- but one separator per entry meant this
+             single line was 23 of the em-dashes left in the app. A colon costs
+             nothing and says the same thing. -->
+        <div class="changelog-date">${esc(e.date)}: <span class="changelog-title">${esc(e.title)}</span></div>
         <ul class="changelog-list">${e.items.map(i => `<li>${esc(i)}</li>`).join('')}</ul>
       </div>`).join('');
     openModal('modal-changelog');

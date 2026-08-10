@@ -101,7 +101,7 @@
    *
    * There was an export and nothing to put it into. A backup you cannot
    * restore is not a backup, and localStorage is exactly the store a browser
-   * is free to clear — so this is the other half of exportArmies, not a
+   * is free to clear. So this is the other half of exportArmies, not a
    * convenience.
    *
    * Every id is reissued, and carriedBy and squadId are remapped through the
@@ -109,7 +109,7 @@
    * failure duplicateGroup already had to be taught about: import a backup you
    * still have the armies from and the new Squads ride the OLD Squads'
    * Transports. Reissuing also means importing twice adds twice rather than
-   * silently overwriting — nothing an import does may cost you an army.
+   * silently overwriting. Nothing an import does may cost you an army.
    *
    * Nothing is validated against the rules on the way in. A saved army may be
    * mid-build or illegal, and refusing to restore it would be the app deciding
@@ -169,7 +169,7 @@
       s.carriedBy = s.carriedBy && map[s.carriedBy] ? map[s.carriedBy] : null;
     }));
     /* A backup taken before Commanders moved to the army carries them on their
-     * Squads instead, and syncCommanders mirrors the store DOWN — so importing
+     * Squads instead, and syncCommanders mirrors the store DOWN. So importing
      * one of those without lifting them first would wipe every Commander in
      * it. load() already does this for a save on disk; an import is the same
      * file arriving by a different door. */
@@ -195,7 +195,7 @@
   function importArmies(text) {
     let data;
     try { data = JSON.parse(text); } catch (e) {
-      return { ok: false, reason: 'That is not a backup — it will not parse as JSON.', added: [], skipped: [] };
+      return { ok: false, reason: 'That is not a backup. It will not parse as JSON.', added: [], skipped: [] };
     }
     const list = Array.isArray(data) ? data : [data];
     const added = [], skipped = [];
@@ -211,7 +211,7 @@
 
   /* A pasted army list, rather than a file this app wrote.
    *
-   * The conventions are New Recruit's and they are not DZC-specific — "3 x
+   * The conventions are New Recruit's and they are not DZC-specific. "3 x
    * Legionnaires [45pts]", "##" section headers, bullets, a "[2000pts]" title,
    * and lists that arrive collapsed onto one line with commas where the
    * newlines were. All of that is read out of Dropfleet's own parser
@@ -281,7 +281,7 @@
     const entries = [];
     lines.forEach(raw => {
       const line = raw.trim();
-      // A "#" line is a heading, always — the title, a section, a Configuration
+      // A "#" line is a heading, always. The title, a section, a Configuration
       // block. Dropfleet treats it the same way, and without it "## Test Force
       // [500pts]" reads as a Unit called Test Force that resolved to nothing.
       if (!line || /^[#+]/.test(line) || LIST_SECTION.test(line)) return;
@@ -377,8 +377,8 @@
    *
    * Not a gimmick. Three real jobs: it is the fastest way to see what a
    * faction can do at a points level you have never played, it is what makes
-   * the app worth opening before you own anything, and — this is the reason it
-   * is worth the code — it is an exhaustive exercise of the enforcement layer.
+   * the app worth opening before you own anything, and, this is the reason it
+   * is worth the code, it is an exhaustive exercise of the enforcement layer.
    * A generator that has to produce a legal army finds the rules that cannot
    * be satisfied, which is not something a hand-built fixture will ever do.
    *
@@ -387,7 +387,7 @@
    *   1. A Commander, because an army without one is illegal (3.2.5), and
    *      their points come off the budget before anything is spent.
    *   2. Standard first, because Vanguard, Heavy and Support may EACH not
-   *      exceed Standard (3.2) — spend on those before there is any Standard
+   *      exceed Standard (3.2). Spend on those before there is any Standard
    *      to pay for it and every later choice is fighting the ratio.
    *   3. A Transport only when the fit is EXACT, because a Transport must be
    *      taken full (3.2.4) and an inexact one is an error nothing later fixes.
@@ -423,7 +423,7 @@
      * per slot is enough to fill a list and still terminate. */
     /* groupsUsed, not groups.length. A Behemoth Group is worth three to five
      * of the allowance (Behemoth rules 1.1), so counting cards let this build
-     * a Shaltari 3000 with sixteen Groups that count as eighteen — an illegal
+     * a Shaltari 3000 with sixteen Groups that count as eighteen. An illegal
      * list, from the one thing in here whose job is to produce a legal one.
      * Found by the generator, which is what it is for. */
     for (let n = 0; n < maxG * 4 && groupsUsed(a) < maxG; n++) {
@@ -467,8 +467,8 @@
        *
        * All three are checked AFTER the fact because none of them can be
        * predicted from the card: a Squad's price is the sum of its models and
-       * its Transports, and the ratio moves with what the Transport cost —
-       * which is why picking the category with the most room was not enough on
+       * its Transports, and the ratio moves with what the Transport cost.
+       * Which is why picking the category with the most room was not enough on
        * its own, and produced a breach in one generated list out of six. */
       const now = categorySpend(a);
       const overRatio = ['vanguard', 'heavy', 'support']
@@ -493,7 +493,7 @@
     const host = (room.length ? room : targets)[0] ? pick(room.length ? room : targets) : null;
     if (host) assignCommander(a, cmdr.id, host.squad.id);
 
-    /* Groups run out before points do — twelve Squads at their minimum size is
+    /* Groups run out before points do. Twelve Squads at their minimum size is
      * half a Clash. So the rest of the budget goes into the Squads that are
      * already there, one model at a time.
      *
@@ -550,7 +550,7 @@
    *
    * It moves more than the total. The per-Group ceiling is a quarter of the
    * AGREED number (3.2), the Group cap comes off the size band (3.1) and the
-   * Rare allowance moves with the band too (3.2.1) — so agreeing 1500 on the
+   * Rare allowance moves with the band too (3.2.1). So agreeing 1500 on the
    * day instead of the 2000 you built at changes what is legal, and there was
    * no way to tell the app. Anything the change makes illegal is reported by
    * validate(), not refused here; the number is the players' to agree. */
@@ -583,7 +583,7 @@
    *
    * The nesting is the part that has to be got right. carriedBy holds a Squad
    * id, so every id is reissued and every link is remapped through the same
-   * map — copy the ids as they are and the new Group's Squads ride the OLD
+   * map. Copy the ids as they are and the new Group's Squads ride the OLD
    * Group's Transports, which is a corrupt army that still renders.
    *
    * Refused rather than reported where it could never be legal: the Group cap
@@ -614,13 +614,13 @@
     for (const [u, n] of adding) {
       const after = squadsNamed(army, u.name) + n;
       if (u.unique && after > 1) {
-        return { ok: false, reason: `${u.name} is Unique — one per Army (3.2.1).` };
+        return { ok: false, reason: `${u.name} is Unique: one per Army (3.2.1).` };
       }
       if (u.rare) {
         const lim = size ? window.DZC.rareLimit(size.id) : 1;
         if (after > lim) {
           return { ok: false,
-                   reason: `${u.name} is Rare — ${size ? size.label : 'this size'} allows ${lim} (3.2.1).` };
+                   reason: `${u.name} is Rare: ${size ? size.label : 'this size'} allows ${lim} (3.2.1).` };
         }
       }
     }
@@ -718,8 +718,8 @@
   }
 
   /* A Commander's name, the same deal as a Group's: derived unless you gave it
-   * one. The rulebook never names Commanders — 3.2.5 only sets a Level and a
-   * cost — so the default has to say the thing that matters, and the thing
+   * one. The rulebook never names Commanders, 3.2.5 only sets a Level and a
+   * cost, so the default has to say the thing that matters, and the thing
    * that matters is the Level. */
   function commanderName(army, c) {
     if (c.name) return c.name;
@@ -978,7 +978,7 @@
   /* Commanders belong to the ARMY, not to a Squad.
    *
    * You buy one and then decide who it rides with, which is the order people
-   * actually work in — and it is the only way an unassigned Commander can
+   * actually work in. And it is the only way an unassigned Commander can
    * exist long enough to say "add a Squad this Commander can join". Squads
    * still carry a `commander` object so everything that renders a Squad keeps
    * working; `commanders` is the store and assignment keeps the two in step. */
@@ -999,7 +999,7 @@
    *
    * Excluding TRANSPORT Squads is not that rule. 3.2.5 reads, in full, that a
    * Commander "must be assigned to a Unit when building your Army" and that a
-   * Squad may contain one — a Transport is a Unit and a Transport Squad is a
+   * Squad may contain one. A Transport is a Unit and a Transport Squad is a
    * Squad, so the rules permit it and this refuses it. It is a design decision
    * and it is marked as one: 3.2.5 also says a Commander is killed with the
    * Unit they are assigned to, and riding in the Bear APC instead of with the
@@ -1011,7 +1011,7 @@
    *   10.1.20 Living Weapons "Commanders cannot be assigned to Living Weapons."
    *
    * Both sentences have been in data/dzc/rules.json since the rulebook was
-   * scanned, and both were shown on the card and enforced nowhere — so the app
+   * scanned, and both were shown on the card and enforced nowhere. So the app
    * would put a Level 5 Commander on an Archangel and price it, which is an
    * illegal army it never mentioned. Its own test suite built one.
    *
@@ -1026,15 +1026,15 @@
   function commanderBan(unit) {
     if (!unit) return null;
     // "Commanders cannot be assigned to Behemoths" (Behemoth rules 1.1). By
-    // TYPE rather than by a keyword, because the card does not print one — the
+    // TYPE rather than by a keyword, because the card does not print one, the
     // whole of 1.1 is what says it.
     if (unit.type === 'Behemoth') {
-      return { reason: `${unit.name} is a Behemoth — Commanders cannot be assigned to one (1.1).` };
+      return { reason: `${unit.name} is a Behemoth: Commanders cannot be assigned to one (1.1).` };
     }
     const sp = unit.special || '';
     for (const [re, what, rule] of NO_COMMANDER) {
       if (re.test(sp)) {
-        return { reason: `${unit.name} is ${what} — Commanders may not be assigned to one (${rule}).` };
+        return { reason: `${unit.name} is ${what}: Commanders may not be assigned to one (${rule}).` };
       }
     }
     return null;
@@ -1086,7 +1086,7 @@
     if (ban) return { ok: false, reason: ban.reason };
     const held = commanderFor(army, squadId);
     if (held && held.id !== cmdrId) {
-      return { ok: false, reason: 'That Squad already has a Commander — one per Squad (3.2.5).' };
+      return { ok: false, reason: 'That Squad already has a Commander: one per Squad (3.2.5).' };
     }
     c.squadId = squadId;
     syncCommanders(army);
@@ -1180,9 +1180,9 @@
 
     /* What may join a Group is decided by transport and nothing else.
      *
-     * 3.2.4  — a Transport may only be chosen alongside a Squad it can carry.
+     * 3.2.4 . A Transport may only be chosen alongside a Squad it can carry.
      *          Those Transports form a Squad; those two Squads form one Group.
-     * 3.2.4.1 — up to 4 Squads, plus their own Transport Squads, may share ONE
+     * 3.2.4.1. Up to 4 Squads, plus their own Transport Squads, may share ONE
      *          larger Transport, and those all form one Group.
      *
      * There is no other way for a second Squad to enter a Group, and no
@@ -1197,7 +1197,7 @@
     // The 4-Squad ceiling is the one composition rule that can never come good
     // by adding something else, so it is the only one blocked here. Everything
     // else about a Group is a question of what it looks like when you have
-    // FINISHED — a lone Transport is unfinished, not illegal, and you may well
+    // FINISHED. A lone Transport is unfinished, not illegal, and you may well
     // be about to put something in it. Those are reported by validate().
     if (occupied && u.category !== 'Transport' && squads.filter(s => s.carriedBy).length >= 4) {
       return { ok: false, reason: 'At most 4 Squads may share one Transport (3.2.4.1).' };
@@ -1211,7 +1211,7 @@
     if (occupied) {
       const allGates = squads.every(s => gateSquad(army, s));
       if (isGate(u) && !allGates) {
-        return { ok: false, reason: `${u.name} is a Gate — a Gate is never part of another Group.` };
+        return { ok: false, reason: `${u.name} is a Gate: a Gate is never part of another Group.` };
       }
       if (!isGate(u) && allGates) {
         return { ok: false, reason: 'That Group is Gates, and a Gate is never part of another Group.' };
@@ -1220,13 +1220,13 @@
 
     const taken = squadsNamed(army, u.name);
     if (u.unique && taken >= 1) {
-      return { ok: false, reason: `${u.name} is Unique — one per Army (3.2.1).` };
+      return { ok: false, reason: `${u.name} is Unique: one per Army (3.2.1).` };
     }
     if (u.rare) {
       const size = window.DZC.gameSizeFor(army.pointsLimit);
       const lim = size ? window.DZC.rareLimit(size.id) : 1;
       if (taken >= lim) {
-        return { ok: false, reason: `${u.name} is Rare — ${size ? size.label : 'this size'} allows ${lim} (3.2.1).` };
+        return { ok: false, reason: `${u.name} is Rare: ${size ? size.label : 'this size'} allows ${lim} (3.2.1).` };
       }
     }
     return { ok: true, reason: null };
@@ -1255,7 +1255,7 @@
     const u = unitOf(army, s);
     if (!u) return { ok: false, reason: 'Unknown unit.' };
     if (u.category === 'Transport') {
-      return { ok: false, reason: 'A Transport’s count follows its cargo — change the Squad it carries.' };
+      return { ok: false, reason: 'A Transport’s count follows its cargo. Change the Squad it carries.' };
     }
     if (u.squadMax != null && n > u.squadMax) {
       return { ok: false, reason: `${u.name} has a maximum Squad size of ${u.squadMax}.` };
@@ -1494,7 +1494,7 @@
      * cannot carry this Squad at all is refused, because nothing you add later
      * changes a shape mismatch. */
     const warn = opt.exact ? null
-      : `${opt.need} × ${opt.unit.name} is not full — it carries ${opt.per} and this Squad `
+      : `${opt.need} × ${opt.unit.name} is not full: it carries ${opt.per} and this Squad `
         + `fills ${opt.fill}. Transports must be taken full (3.2.4).`;
     const t = {
       id: uid(), unitId: opt.unit.id,
@@ -1515,19 +1515,19 @@
         const tu = carrierOf(army, t);
         if (!tu || tu.category !== 'Transport') return;
         const riders = g.squads.filter(x => x.carriedBy === t.id);
-        /* Nothing aboard means there is nothing to size it against — it does
+        /* Nothing aboard means there is nothing to size it against, it does
          * NOT mean delete it.
          *
          * This used to drop the Transport Squad here, and refitTransports runs
          * on every single model-count change anywhere in the Army. So buying a
-         * Condor first and then adding the Squad to put in it — which the
-         * picker offers in as many words — lost the Condor the moment you set
+         * Condor first and then adding the Squad to put in it, which the
+         * picker offers in as many words, lost the Condor the moment you set
          * the Squad's size, silently, with nothing on screen to say what had
          * gone or why. Reported by Jet 2026-08-07: a Squad taken from 2 to 3
          * and "a bunch of other units in that group got deleted".
          *
-         * The two operations that genuinely orphan a Transport — clearing a
-         * Squad's Transport, and moving it to a different one — already delete
+         * The two operations that genuinely orphan a Transport, clearing a
+         * Squad's Transport, and moving it to a different one, already delete
          * it themselves, at the point where the user did the thing that
          * orphaned it. removeSquad deliberately does not, and says so. A
          * Transport carrying nothing is an illegal Army (3.2.4) and validate
@@ -1561,7 +1561,7 @@
    * twenty-Group allowance that they alone are worth.
    *
    * A Group containing a Behemoth costs its Groups Equivalent INSTEAD of one,
-   * not as well — the Behemoth is what the Group is. */
+   * not as well, the Behemoth is what the Group is. */
   /* A GATE IS NOT PART OF YOUR ARMY'S GROUP STRUCTURE.
    *
    * Jet, 2026-08-08, after demoing Shaltari: "what if Gates were their own
@@ -1628,7 +1628,7 @@
    * shape DZCUnits.unitWeapons wants.
    *
    * One definition, because the Squad row, the printed sheet, its rules
-   * appendix and Play Mode must not disagree about what is in the Squad — and
+   * appendix and Play Mode must not disagree about what is in the Squad. And
    * the appendix is where disagreeing costs paper, since a rule collected off a
    * gun nobody fires is a paragraph printed for nothing. */
   function squadGuns(squad) {
@@ -1756,7 +1756,7 @@
    * not a refactor. Only the storage moved.
    *
    * A Commander with no Squad yet has no Group to charge, so it is added to
-   * the army total directly — its points are spent either way. */
+   * the army total directly, its points are spent either way. */
   function commandersCost(army) {
     return ((army && army.commanders) || [])
       .filter(c => !c.squadId).reduce((t, c) => t + levelCost(c.level), 0);
@@ -1813,7 +1813,7 @@
     const u = unitOf(army, s);
     if (!cap) {
       return { ok: false,
-        reason: `${u ? u.name : 'This Unit'} is not a Genitor — RM tokens are assigned to Units with a hollow green square.` };
+        reason: `${u ? u.name : 'This Unit'} is not a Genitor: RM tokens are assigned to Units with a hollow green square.` };
     }
     const want = Math.floor(Number(n) || 0);
     if (want < 0) return { ok: false, reason: 'A Genitor may begin empty, but not below zero.' };
@@ -1880,7 +1880,7 @@
       errors.push({ rule: '3.1', msg: `${limit}pts is below the 501pt minimum for a game.` });
     }
     if (total > limit) {
-      errors.push({ rule: '3.1', msg: `${total}pts spent, ${limit}pt limit — ${total - limit} over.` });
+      errors.push({ rule: '3.1', msg: `${total}pts spent, ${limit}pt limit, ${total - limit} over.` });
     }
 
     if (size) {
@@ -1897,7 +1897,7 @@
       army.groups.forEach(g => {
         const c = groupCost(army, g);
         if (c > cap) {
-          errors.push({ rule: '3.2', group: g.id, msg: `“${groupName(army, g)}” costs ${c}pts — no Group may exceed a quarter of the limit (${cap}pts).` });
+          errors.push({ rule: '3.2', group: g.id, msg: `“${groupName(army, g)}” costs ${c}pts. No Group may exceed a quarter of the limit (${cap}pts).` });
         }
       });
     }
@@ -1931,7 +1931,7 @@
         const u = unitOf(army, t);
         if (aboard.length && u) {
           errors.push({ rule: 'Gate', group: g.id,
-            msg: `${u.name}: Gates are not taken with any Units aboard — a Squad starts in Holding instead.` });
+            msg: `${u.name}: Gates are not taken with any Units aboard. A Squad starts in Holding instead.` });
         }
       });
     });
@@ -1950,7 +1950,7 @@
         const tu = t && carrierOf(army, t);
         if (!tu || canShare(tu, t, riders[id].slice(1))) return;
         errors.push({ rule: '3.2.4.1', group: g.id,
-          msg: `${tu.name}: ${riders[id].length} Squads aboard a Squad of ${t.models.length} — up to 4 Squads may share ONE Transport.` });
+          msg: `${tu.name}: ${riders[id].length} Squads aboard a Squad of ${t.models.length}. Up to 4 Squads may share ONE Transport.` });
       });
     });
 
@@ -1968,7 +1968,7 @@
           msg: `${u.name} holds ${held} RM but is not a Genitor.` });
       } else if (held > cap) {
         errors.push({ rule: 'Genitor X', group: g.id,
-          msg: `${u.name} holds ${held} RM — it may never have more than ${cap} aboard.` });
+          msg: `${u.name} holds ${held} RM. It may never have more than ${cap} aboard.` });
       }
     }));
 
@@ -1981,11 +1981,11 @@
     Object.keys(byName).forEach(name => {
       const u = byName[name][0], n = byName[name].length;
       if (u.unique && n > 1) {
-        errors.push({ rule: '3.2.1', msg: `${name} is Unique — only one may be taken (${n} present).` });
+        errors.push({ rule: '3.2.1', msg: `${name} is Unique: only one may be taken (${n} present).` });
       } else if (u.rare && size) {
         const lim = window.DZC.rareLimit(size.id);
         if (n > lim) {
-          errors.push({ rule: '3.2.1', msg: `${name} is Rare — ${size.label} allows ${lim} (${n} present).` });
+          errors.push({ rule: '3.2.1', msg: `${name} is Rare: ${size.label} allows ${lim} (${n} present).` });
         }
       }
     });
@@ -2007,14 +2007,14 @@
     /* "Behemoths are so huge that they can only be taken in 3000+ point games"
      * (Behemoth rules, chapter 1). An error rather than a refusal in the
      * picker, because 1.1.1 says in as many words that "in casual games,
-     * players may agree to waive any of the Army building restrictions" — so
+     * players may agree to waive any of the Army building restrictions". So
      * the app says plainly that the list is not tournament-legal and leaves
      * the agreement to the two people having it. */
     const behemoths = army.groups.flatMap(g => g.squads)
       .map(s => unitOf(army, s)).filter(u => u && u.type === 'Behemoth');
     if (behemoths.length && limit < 3000) {
       const names = [...new Set(behemoths.map(u => u.name))].join(', ');
-      errors.push({ rule: '1.1', msg: `${names} may only be taken in games of 3000pts or more — this list is ${limit}.` });
+      errors.push({ rule: '1.1', msg: `${names} may only be taken in games of 3000pts or more. This list is ${limit}.` });
     }
 
     /* WHICH GROUP AN ISSUE BELONGS TO. Jet, 2026-08-07: "new rule: alerts live
@@ -2022,8 +2022,8 @@
      *
      * Every message raised inside a `army.groups.forEach` carries `group: g.id`
      * from here down, so the builder can put it where the thing that is wrong
-     * actually is. The ones with no group — the points limit, the Commander,
-     * the category ratio — are facts about the ARMY and have nowhere else to
+     * actually is. The ones with no group, the points limit, the Commander,
+     * the category ratio, are facts about the ARMY and have nowhere else to
      * go, so they stay in the rail. */
     // Transports: only alongside a Squad they can carry, and taken FULL.
     army.groups.forEach(g => {
@@ -2039,7 +2039,7 @@
           .map(x => ({ unit: unitOf(army, x), count: x.models.length }))
           .filter(x => x.unit);
         if (!cargo.length) {
-          errors.push({ rule: '3.2.4', group: g.id, msg: `${u.name}: carries nothing — a Transport may only be taken alongside a Squad it can carry.` });
+          errors.push({ rule: '3.2.4', group: g.id, msg: `${u.name}: carries nothing: a Transport may only be taken alongside a Squad it can carry.` });
           return;
         }
         // s.models.length is how many of that Transport the Squad holds, and
@@ -2048,7 +2048,7 @@
         const chk = window.DZC.loadCheck(u, cargo, s.models.length);
         if (!chk.ok) errors.push({ rule: '3.2.4.2', group: g.id, msg: chk.reason });
         else if (!window.DZC.isFull(u, cargo, s.models.length)) {
-          errors.push({ rule: '3.2.4', group: g.id, msg: `${u.name}: not full — Transports must be taken full.` });
+          errors.push({ rule: '3.2.4', group: g.id, msg: `${u.name}: not full: Transports must be taken full.` });
         }
       });
 
@@ -2068,7 +2068,7 @@
 
       /* A Group is one Squad and its Transports, or up to 4 Squads sharing one
        * larger Transport (3.2.4 / 3.2.4.1). Two Squads standing side by side
-       * with nothing carrying either of them is not a Group — but it is a
+       * with nothing carrying either of them is not a Group. But it is a
        * perfectly ordinary state to pass through while building, so it is
        * reported when you are done rather than blocked as you go. */
       const loose = g.squads.filter(s => {
@@ -2110,7 +2110,7 @@
         errors.push({
           rule: '3.2.4',
           group: g.id,
-          msg: `“${groupName(army, g)}” has ${loose.length} Squads with nothing carrying them — a Group is one Squad and its Transports, `
+          msg: `“${groupName(army, g)}” has ${loose.length} Squads with nothing carrying them. A Group is one Squad and its Transports, `
             + `or up to 4 Squads sharing one larger Transport. ${fix}`
         });
       }
@@ -2120,7 +2120,7 @@
         const riders = g.squads.filter(x => x.carriedBy === s.id).length;
         if (riders > 4) {
           const u = unitOf(army, s);
-          errors.push({ rule: '3.2.4.1', group: g.id, msg: `${u ? u.name : 'Transport'} carries ${riders} Squads — at most 4 may share one Transport.` });
+          errors.push({ rule: '3.2.4.1', group: g.id, msg: `${u ? u.name : 'Transport'} carries ${riders} Squads: at most 4 may share one Transport.` });
         }
       });
     });
@@ -2139,14 +2139,14 @@
       });
     }
     // Bought but riding with nobody. A Commander is assigned to a Unit
-    // (3.2.5), so one sitting on the shelf is as illegal as not having one —
+    // (3.2.5), so one sitting on the shelf is as illegal as not having one,
     // and the builder holds both back until the list is half spent rather
     // than nagging about them from the first Squad.
     cmdrs.filter(c => !c.squadId).forEach(c => {
       errors.push({ rule: '3.2.5', msg: `Your Level ${c.level} Commander is not with a Squad yet.` });
     });
     /* Riding with a Unit that may never carry one (10.1.12, 10.1.20).
-     * assignCommander refuses this now, so it cannot be built here — but an
+     * assignCommander refuses this now, so it cannot be built here. But an
      * army arriving from a share link or from storage predates that refusal,
      * and validate is where an army the app did not build is checked. */
     cmdrs.filter(c => c.squadId).forEach(c => {
@@ -2162,7 +2162,7 @@
      * Aircraft, OR IN A TRANSPORT ABOARD AN AIRCRAFT, always begin Reserved."
      * That second clause is the whole of it: this used to look at the
      * immediate carrier only, so Legionnaires in a Bear APC in a Condor were
-     * reported as beginning Reserved when they fly in — and that stack is the
+     * reported as beginning Reserved when they fly in. And that stack is the
      * rulebook's own illustration of nested transport (3.2.4.2, p11).
      *
      * So the chain is walked. The intermediate carriers are Transports by
@@ -2193,8 +2193,8 @@
        * faction works. A Squad with no Transport is how Shaltari is built. */
       const hasGate = (army.groups || []).some(g => g.squads.some(s => gateSquad(army, s)));
       warnings.push(hasGate
-        ? { rule: 'Gate', msg: `${grounded} Squad${grounded === 1 ? '' : 's'} may start in Holding — your Gates let any Squad do that.` }
-        : { rule: '9.4', msg: `${grounded} Squad${grounded === 1 ? '' : 's'} will begin Reserved — only Units aboard an Aircraft start on the table.` });
+        ? { rule: 'Gate', msg: `${grounded} Squad${grounded === 1 ? '' : 's'} may start in Holding. Your Gates let any Squad do that.` }
+        : { rule: '9.4', msg: `${grounded} Squad${grounded === 1 ? '' : 's'} will begin Reserved. Only Units aboard an Aircraft start on the table.` });
     }
 
     // Group count is not activation count (4.1.2 / 4.2.1).
@@ -2203,11 +2203,11 @@
       return u && u.category === 'Transport';
     })).length;
     if (transportOnly) {
-      // "1 Group contain only Transports" — the verb has to agree with the
+      // "1 Group contain only Transports", the verb has to agree with the
       // count as well as the noun.
       warnings.push({ rule: '4.2.2', msg: transportOnly === 1
-        ? '1 Group contains only Transports — it cannot be activated normally and is ignored for Pass tokens.'
-        : `${transportOnly} Groups contain only Transports — they cannot be activated normally and are ignored for Pass tokens.` });
+        ? '1 Group contains only Transports. It cannot be activated normally and is ignored for Pass tokens.'
+        : `${transportOnly} Groups contain only Transports. They cannot be activated normally and are ignored for Pass tokens.` });
     }
 
     return { errors, warnings, ok: !errors.length };

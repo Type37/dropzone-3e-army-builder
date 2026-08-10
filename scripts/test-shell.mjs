@@ -85,7 +85,7 @@ const at = sites => sites.slice(0, 3).map(s => s.where).join(', ')
   + (sites.length > 3 ? ` (+${sites.length - 3} more)` : '');
 
 /* Deliberately unset: a per-element override, supplied by whichever element
- * wants it, so there is no global value to give it. The list is not a waiver —
+ * wants it, so there is no global value to give it. The list is not a waiver,
  * each one is still required to carry a fallback at every read site, which is
  * what makes it safe to leave unset. Anything NOT on this list that is unset
  * is either a dead declaration or a token that cannot follow the theme. */
@@ -133,7 +133,7 @@ const block = (src, head) => {
  * Anything not on this list that is light-only is a bug, not a decision. */
 const THEME_FREE = new Set([
   /* A faction's colour is its colour. These six are sampled off the actual
-   * card banner stripes, so they are brand, not theme — the -text variants
+   * card banner stripes, so they are brand, not theme. The -text variants
    * beside them are the ones re-lightened for a dark surface. */
   '--faction-ucm', '--faction-phr', '--faction-scourge',
   '--faction-shaltari', '--faction-resistance', '--faction-bioficer',

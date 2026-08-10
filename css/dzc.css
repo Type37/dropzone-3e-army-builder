@@ -11,7 +11,7 @@
  *
  * Every one of these was written as `var(--surface-2, #fff)` and NEVER
  * DEFINED. A var() with a fallback and no definition is not a token, it is a
- * literal with extra steps — so the whole DZC surface was hardcoded light
+ * literal with extra steps. So the whole DZC surface was hardcoded light
  * while `--ink` (which app.css does define) dutifully flipped to near-white in
  * the dark theme. The result was white text on white cards across the builder,
  * the picker, the reference and Play Mode: a Light/Dark switch that had sat in
@@ -104,8 +104,8 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-count { font-size: 12px; color: var(--ink-2, #6b6459); margin: 4px 0 10px; }
 
 /* Force-organisation category, colour-coded.
-   The four are what the whole of 3.2 turns on — Vanguard, Heavy and Support
-   may not outspend Standard — and they were the same grey word on every card,
+   The four are what the whole of 3.2 turns on, Vanguard, Heavy and Support
+   may not outspend Standard, and they were the same grey word on every card,
    every picker tile, every Squad row and the printed sheet. One ink each, set
    once here off data-cat, so the builder, the picker, the reference and the
    sheet cannot drift apart the way a JS map per file would.
@@ -116,7 +116,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    vivid colour, on a 7px square, which is what carries at a glance. --cat-ink
    is the WORD, darkened until it clears 4.5:1 on paper.
 
-   Straight off the swatch colour the text came out at 2.7 to 3.6 — Heavy,
+   Straight off the swatch colour the text came out at 2.7 to 3.6. Heavy,
    Vanguard and Standard all below AA. This app exists partly because
    TTCombat's own low-contrast printing is hard to read; shipping a category
    label nobody with tired eyes can read would be doing the same thing in a
@@ -125,8 +125,8 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    vanguard/heavy/support bc they conflict with the other colors."
    
    They did. The app already spends colour on two things that are not
-   negotiable — the six transport symbols, whose hue IS their meaning
-   (3.2.4.2), and the faction accent — and a third scheme on the category word
+   negotiable, the six transport symbols, whose hue IS their meaning
+   (3.2.4.2), and the faction accent, and a third scheme on the category word
    put five more hues on the same card competing with both. A category is a
    word; it can be a word. The tokens stay so the ratio bars and the army
    thumbnails still resolve, all on the neutral ink. */
@@ -183,7 +183,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-transport { display: inline-flex; align-items: center; gap: 3px; flex-wrap: wrap; }
 /* ONE number per context.
    Every place that shows a badge used to set width, height and font-size
-   separately, so the digit's size drifted against the shape's — and the
+   separately, so the digit's size drifted against the shape's. And the
    capacity/cargo size difference set from JS did nothing at all, because
    `svg { inset: 0 }` stretched both back to the box. A context sets
    --badge-px now and everything else follows it.
@@ -202,7 +202,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 /* Absolute + top/left % + translate(-50%,-50%), not grid place-items: the
    default (50%,50%) centres on the BOX, but a triangle's own area sits well
    off box-centre, so each shape below moves the anchor point, not the glyph
-   directly — the translate always re-centres on whatever point that is. */
+   directly. The translate always re-centres on whatever point that is. */
 .dzc-badge-n {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
   font: 700 calc(var(--badge-px) * .45) / 1 var(--font-ui, 'Jost', system-ui, sans-serif);
@@ -247,9 +247,9 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-stats { border-radius: 0; }
 /* Art and the capacity/cargo strip, one column down the left of the card.
    Fixed height on the strip so a Unit that prints no symbol leaves the same
-   gap as one that does — the row is only worth having if it is in the same
+   gap as one that does. The row is only worth having if it is in the same
    place on all 178 of them. */
-/* align-self: start — the column holds art and the capacity strip and nothing
+/* align-self: start. The column holds art and the capacity strip and nothing
    else, so stretching it to the height of a taller body just made 59px of
    empty column on every card. */
 .dzc-card-side { flex: 0 0 72px; align-self: start; display: flex; flex-direction: column; gap: 3px; }
@@ -280,11 +280,11 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   font: 500 12.5px/1.35 var(--font-ui, 'Jost', system-ui, sans-serif);
   border: 1px solid var(--acc); border-radius: 3px; background: transparent;
   color: var(--ink, #24201c);
-  /* Rule names wrap rather than truncate — this is gameplay text. */
+  /* Rule names wrap rather than truncate, this is gameplay text. */
   white-space: normal; text-align: left; overflow-wrap: anywhere;
 }
 /* Underline on hover, not a fill. White on the faction accent was unreadable
-   at 11px against half the palette — Shaltari orange and PHR gold especially. */
+   at 11px against half the palette. Shaltari orange and PHR gold especially. */
 .dzc-rule:hover, .dzc-rule:focus-visible {
   background: transparent; color: var(--ink, #24201c);
   text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1.5px;
@@ -310,8 +310,8 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-ruledef-src { display: block; margin-top: 3px; font-size: 10.5px; color: var(--ink-2, #6b6459); }
 /* A rule named inside a sentence is not a chip. A chip mid-prose breaks the
    line it is in and reads as a label rather than as part of what you are
-   reading, so it keeps the sentence's own type and takes a dotted underline —
-   the same affordance the size in the rail uses. */
+   reading, so it keeps the sentence's own type and takes a dotted underline.
+   The same affordance the size in the rail uses. */
 .dzc-rule--inline {
   display: inline; margin: 0; padding: 0; border: 0; border-radius: 0;
   font: inherit; color: inherit;
@@ -355,8 +355,8 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 
 /* ── a weapon as a card ──
    The eight-column table wanted 620px and got it by scrolling sideways inside
-   its own box, so on a phone the Special column — the one carrying the rules —
-   was the one you never saw without dragging. Same eight fields, laid out to be
+   its own box, so on a phone the Special column. The one carrying the rules.
+   Was the one you never saw without dragging. Same eight fields, laid out to be
    read.
 
    auto-fill with a 232px floor: FOUR across on a desktop pane, three on a
@@ -364,7 +364,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    The pane is 970px, so four is 232px a card and every measurement below is
    spent buying that: the arc is 38px rather than 46, the padding and both
    gaps are a couple of pixels tighter, and the value column is 2.7em instead
-   of 3.4. Nothing is dropped — the card carries the same eight fields it did
+   of 3.4. Nothing is dropped. The card carries the same eight fields it did
    at three across. */
 /* A TABLE, not a row of cards. Jet, 2026-08-07: "those weapons shouldn't be
    cards, they should be a table. a vertical table. as in no space between."
@@ -401,7 +401,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   margin: 0; font: 700 13px/1.2 var(--font-ui, 'Jost', system-ui, sans-serif);
   overflow-wrap: anywhere; color: var(--ink, #24201c);
 }
-/* WHICH MODEL CARRIES THIS GUN — a chip with an arrow, not a rule down the
+/* WHICH MODEL CARRIES THIS GUN. A chip with an arrow, not a rule down the
    edge of the card. Jet, 2026-08-07: "the orange dashed line thing is too
    distracting. Thinner. This color. f15d38. actually just make it the tiny
    arrow-ish chip instead."
@@ -460,7 +460,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    gap from it.
    
    Side by side, a pair costs the width of the longest label PLUS the widest
-   value PLUS the rule of whitespace between them — and the whitespace was most
+   value PLUS the rule of whitespace between them, and the whitespace was most
    of it: "MOVE & ATTACK ..... Full" is two short things and an inch of nothing.
    Stacked, a pair costs the wider of the two, which took the card from 319px
    to 232 and is what makes four fit across the pane instead of three. Nothing
@@ -554,7 +554,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 }
 
 /* A Behemoth's Gear. Priced in Power out of the pool it spends to act, so it
-   is a price list to read mid-game rather than anything to buy — no buttons,
+   is a price list to read mid-game rather than anything to buy. No buttons,
    and it sits with the weapons because that is what it is read against. */
 .dzc-gear { margin-top: 10px; }
 .dzc-gear-head {
@@ -580,33 +580,33 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-gear-pt small { font-size: 9.5px; font-weight: 600; margin-left: 1px; color: var(--ink-2, #6b6459); }
 
 /* A Squad's table prints the whole card and marks the guns that Squad actually
-   fires — the variants its models are, the upgrades it bought. The rest stay
+   fires. The variants its models are, the upgrades it bought. The rest stay
    on the page and go quiet.
 
    Quiet, not hidden: --ink-2 is a real colour on paper, and every number on a
    dead row is still there to be read and compared against the live one above
    it. That is the whole point of showing it. Opacity is deliberately not used
-   — it would take the row below the contrast floor. */
+  . It would take the row below the contrast floor. */
 .dzc-wpn--marked tr.is-off td { color: var(--ink-2, #6b6459); }
 .dzc-wpn--marked tr.is-off .dzc-wpn-name { font-weight: 500; border-left-color: var(--line, #d8d0c0); }
 .dzc-wpn--marked tr.is-off .dzc-rule { color: var(--ink-2, #6b6459); border-color: var(--line, #d8d0c0); }
 
 /* Both ends of it, not just the quiet one.
    Dimming alone left the difference to a shade of grey, and "which of these
-   nine rows are mine" is the question the table exists to answer — it should
+   nine rows are mine" is the question the table exists to answer. It should
    be answerable at arm's length, not by comparing two greys. So the live rows
    are lit as well: a tinted band the whole row wide, and the name at full
    weight and full ink. The dead ones keep the bare paper.
 
    Deliberately NOT a coloured left bar. That edge already carries the card's
-   own vocabulary — green is an upgrade, orange is variant-only — and on UCM
+   own vocabulary, green is an upgrade, orange is variant-only, and on UCM
    the faction accent is the same green as the upgrade bar, so "this row is
    live" and "this row is an upgrade" would have been the same mark. The band
    says live; the bar keeps saying what kind of row it is. */
 .dzc-wpn--marked tr.is-live td { background: var(--surface-3, #f2ece0); }
 .dzc-wpn--marked tr.is-live .dzc-wpn-name { font-weight: 700; color: var(--ink, #24201c); }
 
-/* A gun a bought swap traded in — "May replace both its MC-20 Chainguns with
+/* A gun a bought swap traded in. "May replace both its MC-20 Chainguns with
    MM-15 Sidearm Missiles". Struck through, not dimmed: a dead variant row is a
    gun this Squad could have had, and this is one the card prints that the
    purchase above has taken away. Two different sentences, two different marks.
@@ -627,7 +627,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-list-head h1 { font: 800 24px/1.2 var(--font-display, 'Roboto Slab', serif); margin: 0; }
 /* Shown only once there is more than one army to order. The armies view has no
    faction, so --acc is undefined here and the active chip would paint white on
-   white — the picker had exactly that bug. It takes the navy instead. */
+   white, the picker had exactly that bug. It takes the navy instead. */
 .dzc-list-sort { margin: -4px 0 14px; }
 .dzc-list-sort .dzc-chip.is-active {
   background: var(--navy, #1b3a5c); border-color: var(--navy, #1b3a5c); color: #fff;
@@ -637,7 +637,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-army-card:hover { border-color: var(--acc); }
 /* The empty list IS the grid, with one tile in it. Dashed rather than solid so
    it reads as a place for something rather than a thing, and nothing moves on
-   hover — a tile that lifts shoves the grid it sits in. */
+   hover. A tile that lifts shoves the grid it sits in. */
 .dzc-army-new {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 6px; min-height: 148px; cursor: pointer;
@@ -698,7 +698,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-b-name { font: 800 24px/1.2 var(--font-display, 'Roboto Slab', serif); margin: 0 0 4px; overflow-wrap: anywhere; }
 .dzc-b-name:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; }
 .dzc-b-sub { margin: 0; font-size: 12.5px; color: var(--ink-2, #6b6459); }
-/* The size reads as part of the line it sits in until you go near it — it is
+/* The size reads as part of the line it sits in until you go near it. It is
    a fact first and a control second, and dressing it as a button would make
    the faction beside it look broken for not being one. */
 .dzc-b-size {
@@ -783,7 +783,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 /* Capacity beside the name, at a size you can actually read the shapes at. */
 .dzc-detail-name { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
 /* The badge is a fixed 22px box with the svg absolutely filling it and the
-   number on top, so all three have to grow together — sizing the svg alone
+   number on top, so all three have to grow together, sizing the svg alone
    did nothing. */
 .dzc-detail-cap .dzc-transport { gap: 6px; }
 .dzc-detail-cap .dzc-badge { --badge-px: 66px; --cargo-px: 52px; }
@@ -802,21 +802,21 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 /* The rules this Variant alone has (3.2.2), on the Variant rather than on the
    card -- the same move the builder's blocks make, in the reference. */
 .dzc-variant-rules { display: flex; flex-wrap: wrap; gap: 3px; margin: 0 0 6px; }
-/* A variant you have taken is marked on the block, not only in its number —
-   the mix of a Squad should be readable without reading the digits. */
+/* A variant you have taken is marked on the block, not only in its number.
+   The mix of a Squad should be readable without reading the digits. */
 .dzc-v-step { flex: none; }
 .dzc-variant:has(.dzc-v-step.is-on) { border-color: var(--acc); }
 .dzc-wpn-ma { white-space: nowrap; }
 
 /* ── Commanders in the rail ──
-   One card per Commander with a button beneath, instead of a "— none —" select
+   One card per Commander with a button beneath, instead of a ", none, " select
    on the bottom of every Squad. You take one or two of these; five Squads
    should not mean five empty slots. */
 .dzc-cmdr-card { border-left: 3px solid var(--gold, #c9a92c); }
 .dzc-cmdr-card.is-loose { border-left-color: var(--warn-ink, #6b4e00); }
 .dzc-cmdr-head { display: flex; align-items: center; gap: 8px; }
 .dzc-cmdr-head b { display: block; font-size: 13px; }
-/* Editable in place, and it has to say so — the same trap as the Group and
+/* Editable in place, and it has to say so. The same trap as the Group and
    army headings: nobody finds it, or somebody finds it by typing into it. */
 .dzc-cmdr-name {
   cursor: text; border-bottom: 1px dotted var(--ink-2, #9a9285);
@@ -896,9 +896,9 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 
 /* ── builder: rail + column ──
    Desktop keeps panes, mobile does not (HANDOFF §2.2). The rail holds what you
-   need while working — points left and what is outstanding — so it stays put
+   need while working, points left and what is outstanding, so it stays put
    rather than shoving the Groups down the page each time an alert appears. */
-/* Three panes, each scrolling on its own — Dropfleet's builder-layout
+/* Three panes, each scrolling on its own. Dropfleet's builder-layout
    (app.css:507). The overview stays scannable while the detail pane carries
    the weapon tables; one long column made you scroll past a full stat block to
    reach the next Group. */
@@ -940,8 +940,8 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    to be showing art for. */
 .dzc-bb-actions { display: flex; justify-content: flex-end; gap: 2px; margin-top: -2px; }
 /* This row used to reserve 24px on the right for a grip in the corner, so
-   every Group read "100/50" with the last digit crowded against the dots —
-   and a Group at its ceiling is exactly the number you are checking. The grip
+   every Group read "100/50" with the last digit crowded against the dots.
+   And a Group at its ceiling is exactly the number you are checking. The grip
    moved to the leading edge; the row gets its width back. */
 .dzc-bb-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
 .dzc-bb-head b { font: 700 13.5px/1.2 var(--font-ui, 'Jost', sans-serif); overflow-wrap: anywhere; }
@@ -994,7 +994,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    own items, so "Standard" (one word) and "Vanguard" (also one word, but
    sat beside "0 of 60" where Standard sits beside just "60") pushed their
    numbers to different x positions every row. Fixed columns line the four
-   numbers up under each other instead — Jet, 2026-08-09: "align numbers in
+   numbers up under each other instead, Jet, 2026-08-09: "align numbers in
    category spend." */
 .dzc-rail .dzc-ratio {
   display: grid; grid-template-columns: 60px 50px 1fr;
@@ -1005,14 +1005,14 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 
 /* Three panes need real width. The weapon table alone wants ~620px, so below
    1400 the overview folds up into a row and the detail pane takes the width
-   under it — two columns, not a squeezed three.
+   under it, two columns, not a squeezed three.
 
    Both fold into COLUMN 2, beside the rail. They used to be `grid-column:
    1 / -1`, which put each on a row of its own spanning the whole width and
-   left the rail alone in row 1 with a void where the other two columns were —
+   left the rail alone in row 1 with a void where the other two columns were.
    250px of card and a thousand pixels of nothing beside it, then the list, then
    the detail, all stacked. That is not "two panes"; it is one pane and a hole,
-   and it was the layout on every window from 901px to 1400px — an ordinary
+   and it was the layout on every window from 901px to 1400px. An ordinary
    1280 laptop included, not just a window dragged narrow.
 
    The rail stays sticky in column 1 where it is useful, and the list sits on
@@ -1033,7 +1033,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 @media (max-width: 900px) {
   .dzc-b-body { grid-template-columns: 1fr; }
   /* One column means column 1. The 1400px rule above parks both of these in
-     column 2, and dropping to a single track does not undo it — grid invents
+     column 2, and dropping to a single track does not undo it. Grid invents
      an implicit second column instead, so the phone got a dead empty gutter on
      the left and the whole army pushed off it. */
   .dzc-b-list, .dzc-b-detail { grid-column: 1; }
@@ -1053,7 +1053,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
      list and there is nothing to collapse.
      Two classes deep on purpose: the default that hides it is a single class
      LATER in the file, so a single-class rule here lost at every width and the
-     phone got no rail at all — no points left, no Group count, no issue count,
+     phone got no rail at all. No points left, no Group count, no issue count,
      the three numbers the peek exists to keep on screen. */
   .dzc-rail .dzc-rail-peek { display: flex; }
   .dzc-rail-body { display: none; }
@@ -1431,8 +1431,8 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-sq-cap .dzc-transport { gap: 4px; }
 .dzc-sq-cap .dzc-badge { --badge-px: 44px; --cargo-px: 35px; }
 /* The svg is absolutely positioned inside the badge box and keeps its own
-   22px width attribute, so growing the box alone leaves the glyph small —
-   the same trap .dzc-detail-cap documents above. */
+   22px width attribute, so growing the box alone leaves the glyph small.
+   The same trap .dzc-detail-cap documents above. */
 .dzc-sq-cap .dzc-sep { font-size: 19px; }
 /* On the name's line, not under it. Inline-flex so it wraps as one unit when
    the title runs out of room rather than breaking between Category and Type. */
@@ -1794,7 +1794,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-sq-body > .dzc-sq-side { flex: 0 1 auto; max-width: 320px; }
 .dzc-sq-side > .dzc-sq-stats, .dzc-sq-side > .dzc-sq-rules { margin-top: 0; }
 .dzc-sq-side .dzc-stats { width: max-content; max-width: 100%; }
-/* The table never shrinks its columns to fit — it scrolls inside its own box,
+/* The table never shrinks its columns to fit. It scrolls inside its own box,
    so a phone gets every number rather than a squeezed, unreadable version. */
 .dzc-sq-wpn { margin-top: 8px; overflow-x: auto; }
 .dzc-sq-wpn .dzc-wpn { min-width: 620px; }
@@ -1943,7 +1943,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 
 /* Symbols on the picker card, at the size they deserve. Which shape a unit
    fills and which it offers is what decides whether two things can share a
-   Group at all, so it is the single most consequential fact on the card — it
+   Group at all, so it is the single most consequential fact on the card. It
    does not go in a little chip beside the others. A triangle also only has
    room for a digit near its base, so shrinking these hid the count, and the
    count is half the symbol. */
@@ -2071,7 +2071,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-pick-open { display: block; flex: 1 1 auto; min-width: 0; cursor: pointer; }
 /* BIGGER. Jet, 2026-08-07: "when you're in the ADD SQUAD searcher... we must
    make the images bigger." 52px of a model on a 253px card is a thumbnail of a
-   thumbnail — you are choosing between models you cannot see. 96, which is
+   thumbnail. You are choosing between models you cannot see. 96, which is
    most of the card's width and still leaves the stats and the guns above the
    fold. */
 .dzc-pick-art, .dzc-pick-noart {
@@ -2114,10 +2114,10 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-pick-stats { margin-top: 4px; }
 
 /* Two columns, three rows. Every cell carries its icon AND its word AND its
-   value — an icon alone does not tell you what a number means. Same shape as
+   value. An icon alone does not tell you what a number means. Same shape as
    the Dropfleet builder's .stat-grid. */
 /* minmax(0, 1fr), not 1fr. A bare 1fr is minmax(AUTO, 1fr), so every column is
-   floored at its content's min-content width — and .dzc-stat-k refuses to break
+   floored at its content's min-content width. And .dzc-stat-k refuses to break
    inside a word, so DEFENCE and BRAVERY have a floor they cannot go under.
    Three of those were wider than a reference card, the grid overflowed, and the
    card clipped it: the Legionnaire Weapon Team read "5+ DEFENC". */
@@ -2133,7 +2133,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 
    In PX, not em. An em track resolves against whatever font-size the cell has
    inherited, which is not the same on a reference card, a Squad row and the
-   picker — so the label started at a different x on each of them and the
+   picker. So the label started at a different x on each of them and the
    column only looked aligned within one screen at a time.
 
    38px holds 18" and 5+ and 3+. A Behemoth's damage track prints "9, 14, 18",
@@ -2173,7 +2173,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    three then two. */
 .dzc-stats.n-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .dzc-stats.n-5 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-/* COMPACT — the picker card, where three stats share 237px.
+/* COMPACT. The picker card, where three stats share 237px.
    
    The wide cell above is `18px icon | 44px value | label`, and those fixed
    tracks plus their gaps and padding want 84px before the label gets a single
@@ -2200,10 +2200,10 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   grid-column: 1 / -1; grid-row: 2; font-size: 9.5px; letter-spacing: .04em;
 }
 
-/* The detail view only (not .is-compact — the picker still needs four cards
+/* The detail view only (not .is-compact. The picker still needs four cards
    across, spread wide is the point there). A short table going down, icon /
    value / label lined up in their own columns across rows, left-aligned and
-   only as wide as the longest label — not stretched to fill the row like the
+   only as wide as the longest label. Not stretched to fill the row like the
    picker's spread grid. .dzc-stat becomes `display: contents` so its three
    spans join the parent grid directly instead of boxing them off in a row;
    that also voids the chip background/border/padding above for free, since a
@@ -2289,7 +2289,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-pick.is-blocked { opacity: .6; }
 .dzc-pick.is-blocked:hover { border-color: var(--line, #d8d0c0); }
 /* A Commander Level the agreed size does not reach, dimmed the same amount as
-   a Unit you may not take — same refusal, so it should read the same. */
+   a Unit you may not take. Same refusal, so it should read the same. */
 .dzc-cmdr-opt.is-blocked { opacity: .6; }
 .dzc-pick-blocked {
   display: flex; align-items: center; gap: 4px; margin-top: 8px; padding: 8px 10px;
@@ -2304,8 +2304,8 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-search-row { display: flex; align-items: center; gap: 6px; flex: 1 1 280px; min-width: 0; }
 .dzc-search-row .dzc-i { flex: 0 0 auto; color: var(--ink-2, #6b6459); }
 /* On a phone the magnifier goes and the field keeps its width. The placeholder
-   is Jet's, and its whole job is to say what you can type — "Search units,
-   variants, weapons or rules" — so it is the icon that gives way, not the
+   is Jet's, and its whole job is to say what you can type, "Search units,
+   variants, weapons or rules", so it is the icon that gives way, not the
    words: a type="search" field with that in it does not need a picture of a
    magnifying glass to say it is a search. */
 @media (max-width: 560px) { .dzc-search-row > .dzc-i { display: none; } }
@@ -2342,7 +2342,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 }
 .dzc-toast.is-on { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
 
-/* A <select> sizes itself to its widest OPTION, so "Bear APC × 1 — cannot be
+/* A <select> sizes itself to its widest OPTION, so "Bear APC × 1. Cannot be
    full (carries 4, needs 6)" made the row 440px wide and the page scrolled
    sideways at 375. Constrain the control and let the row wrap instead; the
    option text stays complete inside the open dropdown, so nothing is lost. */
@@ -2411,10 +2411,10 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
      is the rule (CLAUDE.md §4) and was the rule when the scroller was written.
 
      Nothing shrinks to buy the space back. Chips are min-height 44px on a
-     phone and that is deliberate — "rows get taller, that is the trade". */
+     phone and that is deliberate, "rows get taller, that is the trade". */
   .dzc-chip, .dzc-shape-chip { flex: 0 0 auto; }
   /* The three numbers a Level buys take their own row rather than squeezing
-     the Level name to nothing — insignia, Level, price and Add first, then
+     the Level name to nothing. Insignia, Level, price and Add first, then
      what you get for it underneath. */
   .dzc-cmdr-opt { flex-wrap: wrap; }
   .dzc-cmdr-opt-pts { order: 1; margin-left: auto; }
@@ -2439,7 +2439,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 }
 
 /* The squad name is the way into its stats, weapons and rules, and it is set
-   in the display face at the size the unit view gives it — a Squad in your
+   in the display face at the size the unit view gives it. A Squad in your
    army is a Unit, not a line item. */
 button.dzc-sq-name {
   border: 0; background: transparent; padding: 0; cursor: pointer; text-align: left;
@@ -2549,7 +2549,7 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 /* The guns this Squad fires, at a table. Scrolls sideways in its own box like
    every other weapon table; the page never does. */
 /* No second scroller, and no min-width.
-   .dzc-wpn is already `display: block; overflow-x: auto` — it scrolls itself,
+   .dzc-wpn is already `display: block; overflow-x: auto`. It scrolls itself,
    the way it does in the reference and the builder. Wrapping it in another
    scroller and then setting min-width: 560px on the table made the SCROLL
    CONTAINER 560px wide, so on a 320px phone Play Mode ran 260px off the right
@@ -2565,7 +2565,7 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 .dzc-play-cond.is-degraded { color: #a86a12; }
 .dzc-play-cond.is-crippled { color: #a3231a; }
 /* Power tokens. Only a Behemoth has any, and what you look at mid-Round is
-   "can it go again" — so the dots carry it and the number confirms it. Same
+   "can it go again". So the dots carry it and the number confirms it. Same
    controls as the damage stepper beside it, because it is the same gesture. */
 /* RM aboard a Genitor, in the same row shape as Power. No dot track: Power
    tops out at 10 and reads as pips, RM goes to 12 and would be confetti. */
@@ -2597,7 +2597,7 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 .dzc-statuses { display: inline-flex; gap: 2px; margin-left: 3px; }
 .dzc-st { width: 22px !important; height: 22px !important; font-size: 10px !important; font-weight: 700; opacity: .4; }
 /* A Behemoth cannot take one (1.2), and an unset status is already drawn at
-   .4 — so without this the refusal looked exactly like every other button on
+   .4. So without this the refusal looked exactly like every other button on
    the row and the only thing saying otherwise was a click that did nothing. */
 .dzc-st[disabled] {
   opacity: .18; cursor: not-allowed; border-style: dashed;
@@ -2617,7 +2617,7 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 .dzc-coll-body { flex: 1 1 auto; min-width: 0; }
 .dzc-coll-name { display: block; font-weight: 600; font-size: 13.5px; overflow-wrap: anywhere; }
 .dzc-coll-meta { display: block; font-size: 11px; color: var(--ink-2, #6b6459); }
-/* Advisory, never blocking — owning too few models is not against the rules. */
+/* Advisory, never blocking. Owning too few models is not against the rules. */
 .dzc-short { margin: 0 0 12px; padding: 9px 12px; border-radius: 6px; font-size: 12.5px; background: var(--surface-3, #f2ece0); }
 .dzc-short b { display: block; margin-bottom: 3px; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2, #6b6459); }
 
@@ -2650,7 +2650,7 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 .dzc-points-row { margin-top: 8px; }
 
 /* The quick-reference tile is a real link, because it goes to a real page
-   rather than a view — so it can be opened in a new tab, which is what you
+   rather than a view. So it can be opened in a new tab, which is what you
    want from something you are about to print. It has to stop looking like a
    link to sit beside the three tiles that are not. */
 a.tool-card { display: block; text-decoration: none; color: inherit; }
@@ -2668,7 +2668,7 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
    and it was right there, because a phone got the separate mobile/ build with
    its own chrome. That build is deleted and this is one responsive app, so the
    rule left a phone with no back chevron on any view and no Reset game at all
-   in Play Mode — on the case CLAUDE.md §4 says has to work, because it is the
+   in Play Mode. On the case CLAUDE.md §4 says has to work, because it is the
    one used at a table.
 
    The chevron and the buttons stay; the label goes, because it is the label
@@ -2699,14 +2699,14 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
 
 /* ── Drag a Group to reorder it ──
    Six dots. It is the one glyph in the app that means "hold this", and it is
-   the only drag target — dragging the card itself would fight the tap that
+   the only drag target. Dragging the card itself would fight the tap that
    opens it, which is the commonest thing you do to one.
 
    THE LEADING EDGE, full height, and visible without being hovered.
 
    It was a 16px icon at 35% opacity in the top-right corner, and two players
    on a PC concluded from that that the app had no drag and drop at all.
-   Grotwurks, 2026-08-09: "There is no drag function on PC" — then, after being
+   Grotwurks, 2026-08-09: "There is no drag function on PC". Then, after being
    told where to look, "Yea, I see it now but it is very hard to see", "OHHHHH
    there they are.... at 200% zoom I can see them", and "I had my friend try
    drag and drop and he didnt see the section till I pointed it out". Baxter,
@@ -2722,7 +2722,7 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
      phone has no hover to reveal anything with.
    - The corner was the wrong CORNER. The Squad grip below is at the leading
      edge, for reasons its own comment argues at length, so the two handles for
-     the same gesture sat at opposite ends of the screen — Baxter, on the same
+     the same gesture sat at opposite ends of the screen, Baxter, on the same
      day: "The six squares are on the opposite side on the full group page on
      phones." One position, learned once. It also gives the cost digits their
      24px back: .dzc-bb-head no longer has to reserve a gap for dots.
@@ -2736,7 +2736,7 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
   transition: opacity .12s, background .12s;
 }
 .dzc-bb:hover .dzc-bb-grip, .dzc-bb-grip:hover { opacity: 1; background: var(--surface-3, #f2ece0); }
-/* Both grips take focus now — the arrows do the move without a pointer — so
+/* Both grips take focus now, the arrows do the move without a pointer, so
    both need to show they have it. Inset, because a grip sits hard against the
    edge of the thing it moves and an outset ring would be clipped by the
    neighbour or hang off the card. */
@@ -2814,7 +2814,7 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
 }
 /* Every Transport in this Group that could legally take it, lit at once, so
    the answer to "where can this go" is on screen before you have moved. Asked
-   for once at pointerdown from the same boardOptions the chooser lists — a
+   for once at pointerdown from the same boardOptions the chooser lists. A
    drop can never land somewhere the rules refuse. */
 .dzc-squad.is-drop > .dzc-sq-main { outline: 2px dashed var(--acc, #1b3a5c); outline-offset: 3px; }
 .dzc-squad.is-drop-on > .dzc-sq-main {
@@ -2822,7 +2822,7 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
   background: color-mix(in srgb, var(--acc, #1b3a5c) 12%, transparent);
 }
 /* And the Group itself is the target that takes a Squad back OFF its
-   Transport — the other half of the gesture, and the only way to undo it
+   Transport. The other half of the gesture, and the only way to undo it
    without opening the chooser. */
 .dzc-group-card.is-dropping.can-walk { outline: 2px dashed var(--line, #d8d0c0); outline-offset: 2px; }
 .dzc-group-card.is-walk-on { outline: 3px solid var(--acc, #1b3a5c); outline-offset: 2px; }
@@ -2837,7 +2837,7 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
 
 /* ── What an army is for ──
    On the card it is one quiet line under the name. In the builder it is
-   editable where it is read, like the name above it — and when it is empty it
+   editable where it is read, like the name above it. And when it is empty it
    shows its prompt in placeholder ink rather than an empty box with a caption
    under it. :empty is exact here: contenteditable leaves the element with no
    child nodes until something is typed. */
@@ -2872,12 +2872,12 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
 .dzc-share-opt svg { flex: 0 0 auto; color: var(--ink-2, #6b6459); }
 
 /* ── Sharp cards ──
-   Every card surface is square. Buttons, chips and inputs keep their radius —
-   a control can be soft, a panel should not be. One rule in one place so the
+   Every card surface is square. Buttons, chips and inputs keep their radius.
+   A control can be soft, a panel should not be. One rule in one place so the
    next card someone adds does not have to remember.
 
    IT HAS TO BE LAST IN THE FILE. It used to sit halfway up, above the rules
-   that declare .dzc-pick, .dzc-rail-card and .dzc-cmdr-opt at 8px — so the
+   that declare .dzc-pick, .dzc-rail-card and .dzc-cmdr-opt at 8px. So the
    picker cards and the whole rail were still rounded, weeks after the rule was
    made, and nothing said so. Same specificity means the later rule wins.
    scripts/test-house-rules.mjs now reads the cascade and fails if any listed

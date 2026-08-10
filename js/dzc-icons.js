@@ -4,7 +4,7 @@
  * https://www.apache.org/licenses/LICENSE-2.0
  * Attribution also appears in the app, under Settings -> About.
  *
- * The six stat_* paths are NOT Material — they are drawn for this app.
+ * The six stat_* paths are NOT Material, they are drawn for this app.
  *
  * INLINED ON PURPOSE. Loading an icon font or SVG sprite from a CDN would
  * break the app at a table with no signal, which is the one place it has to
@@ -21,7 +21,7 @@
   'use strict';
 
   const P = {
-    // — actions —
+    // actions
     add: 'M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z',
     remove: 'M19 13H5v-2h14v2z',
     close: 'M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z',
@@ -40,19 +40,19 @@
       d: 'm11.469.969l-.563 3.562A8.7 8.7 0 0 0 8.5 5.5L5.562 3.406L3.438 5.531L5.5 8.47a8.8 8.8 0 0 0-1 2.406l-3.531.594v3l3.531.625a8.7 8.7 0 0 0 1 2.406l-2.094 2.938l2.125 2.125L8.47 20.5a8.7 8.7 0 0 0 2.406.969l.594 3.562h3l.656-3.562a8.6 8.6 0 0 0 2.375-1l2.969 2.093l2.125-2.125L20.47 17.5c.438-.73.79-1.526 1-2.375l3.562-.656v-3l-3.562-.594a8.8 8.8 0 0 0-1-2.375l2.093-2.969l-2.125-2.125L17.5 5.531a8.8 8.8 0 0 0-2.406-1L14.469.97zM13 6.469A6.535 6.535 0 0 1 19.531 13A6.535 6.535 0 0 1 13 19.531A6.536 6.536 0 0 1 6.469 13A6.536 6.536 0 0 1 13 6.469m0 1.593A4.95 4.95 0 0 0 8.062 13A4.95 4.95 0 0 0 13 17.938A4.95 4.95 0 0 0 17.938 13A4.95 4.95 0 0 0 13 8.062m-.031 2.876c1.146 0 2.094.915 2.094 2.062s-.948 2.063-2.094 2.063A2.054 2.054 0 0 1 10.906 13c0-1.147.917-2.063 2.063-2.063z'
     },
 
-    // — status —
+    // status
     error: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z',
     warning: 'M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z',
     check_circle: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z',
     info: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z',
     lock: 'M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z',
 
-    // — stats —
+    // stats
     // Geometric, not pictorial, and deliberately echoing the Dropfleet stat
     // language: an arrow for movement, a hexagon for the damage track. Armour
     // and Defence are a solid vs an outline shield so the pair reads as one
     // idea with two weights.
-    // Move — a route between two nodes. Supplied by Jet.
+    // Move, a route between two nodes. Supplied by Jet.
     stat_mv: {
       box: '0 0 512 512',
       d: 'M426.667 96c0 5.891-4.777 10.667-10.667 10.667S405.333 101.891 405.333 96S410.11 85.333 416 85.333S426.667 90.11 426.667 96m42.666 0c0 29.455-23.878 53.333-53.333 53.333S362.667 125.455 362.667 96S386.545 42.667 416 42.667S469.333 66.545 469.333 96M106.667 416c0 5.89-4.776 10.667-10.667 10.667c-5.89 0-10.667-4.777-10.667-10.667S90.11 405.333 96 405.333s10.667 4.777 10.667 10.667m42.666 0c0 29.455-23.878 53.333-53.333 53.333S42.667 445.455 42.667 416S66.545 362.667 96 362.667s53.333 23.878 53.333 53.333M320 222.17L164.418 377.751l-30.17-30.169L289.83 192h-55.163v-42.667h128v128H320z'
@@ -71,17 +71,17 @@
       d: 'M156.7 25.83L89 39.38c-.1 58.57-1.74 119.32-43.49 167.22C104.4 246.5 189 260.7 247 248.8v-99L108.3 88.22l7.4-16.44L256 134.2l140.3-62.42l7.4 16.44L265 149.8v99c58 11.9 142.6-2.3 201.5-42.2c-41.8-47.9-43.4-108.65-43.5-167.22l-67.7-13.55c-12.9 13.88-20.6 28.15-32.9 40.53C308.9 79.78 289.5 89 256 89s-52.9-9.22-66.4-22.64c-12.3-12.38-20-26.65-32.9-40.53M53.88 232.9C75.96 281 96.07 336.6 102.7 392.8l65 22.8c4.2-52.7 28.2-104 63.7-146.1c-55.1 6.3-122.7-5.8-177.52-36.6m404.22 0c-54.8 30.8-122.4 42.9-177.5 36.6c35.5 42.1 59.5 93.4 63.7 146.1l65.2-22.9c6.6-56.8 26.6-111.8 48.6-159.8M256 269c-40.5 43.1-67.7 97.9-70.7 152.7l61.7 21.6V336h18v107.3l61.7-21.6c-3.1-54.8-30.2-109.6-70.7-152.7m151.7 143.4L297 451.1v18.8l110.2-44.1c.1-4.5.3-8.9.5-13.4m-303.3.1c.3 4.5.4 8.9.5 13.4l110.1 44v-18.7zM279 457.4l-23 8.1l-23-8v19.6l23 9.2l23-9.2z'
     },
     stat_dp: 'M12 2 21 7v10l-9 5-9-5V7l9-5z',
-    // Power — a Behemoth's activation currency (Behemoth rules 1.2). A bolt,
+    // Power. A Behemoth's activation currency (Behemoth rules 1.2). A bolt,
     // because it is spent and replenished rather than compared: the other five
     // stats say what a Unit IS, this one says what it has left.
     stat_power: 'M13 2 4 14h6l-1 8 9-12h-6l1-8z',
-    // Offence — a soldier firing. Supplied by Jet; carries its own 640 box.
+    // Offence, a soldier firing. Supplied by Jet; carries its own 640 box.
     stat_of: {
       box: '0 0 640 640',
       d: 'M480 64h-32c-8.8 0-16 7.2-16 16s7.2 16 16 16v100.3c-9.6 5.5-16 15.9-16 27.7v32c-17.7 0-32 14.3-32 32v144c0 17.7 14.3 32 32 32h16v96c0 8.8 7.2 16 16 16h59.5c10.4 0 18-9.8 15.5-19.9L516 464h44c8.8 0 16-7.2 16-16v-16c0-8.8-7.2-16-16-16h-48v-26.7l53.1-17.7c6.5-2.2 10.9-8.3 10.9-15.2v-84.5c0-8.8-7.2-16-16-16h-16c-8.8 0-16 7.2-16 16v56l-16 5.3V223.9c0-11.8-6.4-22.2-16-27.7V80c0-8.8-7.2-16-16-16M288 272c-106 0-192 86-192 192v48c0 17.7 14.3 32 32 32s32-14.3 32-32v-48c0-32.5 12.1-62.1 32-84.7V576h160V282.9c-20-7.1-41.6-10.9-64-10.9m56-120c0-39.8-32.2-72-72-72s-72 32.2-72 72s32.2 72 72 72s72-32.2 72-72'
     },
     stat_df: 'M12 2 4 5.5v5.9c0 4.9 3.4 9.5 8 10.6 4.6-1.1 8-5.7 8-10.6V5.5L12 2zm0 2.2 6 2.6v4.6c0 3.8-2.5 7.4-6 8.5-3.5-1.1-6-4.7-6-8.5V6.8l6-2.6z',
-    // Bravery — a banner. Phosphor flag-banner-fold-fill, MIT, inlined from
+    // Bravery, a banner. Phosphor flag-banner-fold-fill, MIT, inlined from
     // the Iconify API at author time. Never fetched at runtime: a CDN icon is
     // a blank square at a table with no signal.
     stat_b: {
@@ -89,7 +89,7 @@
       d: 'm131.79 69.65l-43.63 96a4 4 0 0 1-3.64 2.35H28.23a8.2 8.2 0 0 1-6.58-3.13a8 8 0 0 1 .43-10.25L57.19 116L22.08 77.38a8 8 0 0 1-.43-10.26A8.22 8.22 0 0 1 28.23 64h99.92a4 4 0 0 1 3.64 5.65m105.77-27.41a8.3 8.3 0 0 0-5.79-2.24H168a8 8 0 0 0-7.28 4.69l-42.57 93.65a4 4 0 0 0 3.64 5.66h57.79l-34.86 76.69a8 8 0 1 0 14.56 6.62l80-176a8 8 0 0 0-1.72-9.07'
     },
 
-    // — domain —
+    // domain
     // Group / activation unit. "layers" reads as a stack of things acting together.
     layers: 'M11.99 18.54 4.62 12.81 3 14.07l9 7 9-7-1.63-1.27-7.38 5.74zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16z',
     // Transport. Material "local_shipping".
@@ -126,7 +126,7 @@
     calculate: 'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 7h4v2H7V7zm10 10h-4v-2h4v2zm0-4h-4v-2h4v2zm-6 4H7v-2h4v2zm0-4H7v-2h4v2z',
     // Squads. Material "groups".
     groups: 'M4 13c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm1.13 1.1c-.37-.06-.74-.1-1.13-.1-.99 0-1.93.21-2.78.58C.48 14.9 0 15.62 0 16.43V18h4.5v-1.61c0-.83.23-1.61.63-2.29zM20 13c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm4 3.43c0-.81-.48-1.53-1.22-1.85-.85-.37-1.79-.58-2.78-.58-.39 0-.76.04-1.13.1.4.68.63 1.46.63 2.29V18H24v-1.57zM16.24 12.65c-1.17-.52-2.61-.9-4.24-.9-1.63 0-3.07.39-4.24.9C6.68 13.13 6 14.21 6 15.39V18h12v-2.61c0-1.18-.68-2.26-1.76-2.74zM12 10c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3z',
-    // Models on the table. Material "deployed_code" — a single miniature reads
+    // Models on the table. Material "deployed_code", a single miniature reads
     // as one box you actually own and have to carry to the game.
     deployed_code: 'M12 2 3 7v10l9 5 9-5V7l-9-5zm0 2.3 6.5 3.61L12 11.52 5.5 7.91 12 4.3zM5 9.6l6 3.33v6.47l-6-3.33V9.6zm8 9.8v-6.47l6-3.33v6.47l-6 3.33z'
   };
@@ -152,18 +152,18 @@
    * Dropzone arcs are 90-degree WEDGES (6.1.2) and split the sides into Left
    * and Right, so Dropfleet's arc icons carry over neither in shape nor in
    * vocabulary. Four quadrants of a circle, front at the top, with the covered
-   * ones filled — "F/Sl" is instantly a different picture from "F/Sr", which
+   * ones filled. "F/Sl" is instantly a different picture from "F/Sr", which
    * is the whole reason to draw it.
    *
    * Each wedge is inset 3 degrees from the diagonals it shares, so 84 degrees
    * of ink with 6 degrees of paper between. They used to meet exactly on the
    * diagonal, which meant two lit wedges fused into one shape with no boundary
-   * at all — "F/S" read as a single 270-degree blob and told you nothing that
+   * at all. "F/S" read as a single 270-degree blob and told you nothing that
    * "F/S/R" did not. Uily spotted it: the separators were not visible enough.
    *
    * Cut into the geometry rather than drawn over it with a background-coloured
-   * stroke, because the background is not one colour — paper, the tinted band
-   * on a live row, the dark theme — and a gap is a gap on all of them.
+   * stroke, because the background is not one colour, paper, the tinted band
+   * on a live row, the dark theme, and a gap is a gap on all of them.
    *
    * Endpoints are cos/sin on r=10 about (12,12), y inverted: 48 degrees gives
    * 12±6.69 and 12∓7.43, 42 degrees the same pair the other way round.
@@ -192,7 +192,7 @@
 
   /* Case-insensitively, because the Behemoth cards write "F/SL" and "F/SR"
      where every faction card writes "F/Sl" and "F/Sr". Same arc, different
-     typesetting — and an arc is a code, not prose, so the capital is not
+     typesetting. And an arc is a code, not prose, so the capital is not
      carrying meaning. Matching exactly meant nine Behemoth weapons drew no
      arc at all. */
   const ARC_KEYS = Object.keys(ARC_PARTS).reduce((m, k) => {

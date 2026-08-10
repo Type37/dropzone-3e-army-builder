@@ -1,4 +1,4 @@
-/* DZC data layer — loads data/dzc/ and answers questions about it.
+/* DZC data layer. Loads data/dzc/ and answers questions about it.
  *
  * The app reads the scanner's output NATIVELY. There is deliberately no
  * translation into the old Dropfleet shape: that would mean two canonical
@@ -18,7 +18,7 @@
   'use strict';
 
   /* Relative to the document, so a page that is not index.html has to say where
-   * the data is. `ref/sheet.html` is the only one that does — the printable
+   * the data is. `ref/sheet.html` is the only one that does. The printable
    * quick reference reads the same three files as the app, and duplicating the
    * loader there would be a second copy of the glossary resolver. */
   const BASE = (typeof window !== 'undefined' && window.DZC_DATA_BASE) || 'data/dzc';
@@ -187,7 +187,7 @@
    * tappable where it says so.
    *
    * Overcharge ends "...this weapon counts as a High Power weapon", and High
-   * Power is its own glossary entry — the chips on the card do not carry it,
+   * Power is its own glossary entry. The chips on the card do not carry it,
    * because the card never printed it, so the only way to it was to know it
    * existed and go looking. Dropfleet solved the same problem with
    * linkKeywords (app.js:3566).
@@ -197,7 +197,7 @@
    * nothing nests. Parameterised entries ("Aegis X\"") are left out: their
    * names contain the placeholder rather than anything prose ever says.
    *
-   * `skip` is the rule you are already reading — a definition that links to
+   * `skip` is the rule you are already reading. A definition that links to
    * itself is a circle, and the popover is already headed with its name. */
   function linkKeywords(text, faction, skip) {
     const t = String(text == null ? '' : text);
@@ -206,7 +206,7 @@
       .filter(r => !(skip && r.name.toLowerCase() === String(skip).toLowerCase()));
     if (!pool.length) return esc(t);
     /* Aliases are in, and they are not a nicety. Prose writes "First Strike",
-     * which is the alias of "FS X" — and without it the longest-first sort
+     * which is the alias of "FS X". And without it the longest-first sort
      * matches the bare "Strike" inside it, which is a DIFFERENT rule about
      * Disembarking. That is the "Pen 6+" failure again: a shorter name eating
      * part of a longer one and confidently showing the wrong text. */
@@ -215,7 +215,7 @@
       .filter(n => {
         // Longer than three characters, because "UC" and "AA" appear inside
         // ordinary words; and never a name carrying the value placeholder
-        // ("Aegis X"", "Ev X"), which prose does not write — the alias is what
+        // ("Aegis X"", "Ev X"), which prose does not write, the alias is what
         // it writes.
         if (!n || n.length <= 3 || /\bX\b/.test(n)) return false;
         const k = n.toLowerCase();
@@ -309,11 +309,11 @@
    * critical value is what, 2 higher than the roll on accuracy? sometimes
    * modified? I think?"
    *
-   * Two higher, but not than Accuracy — than the roll to INFLICT DAMAGE, which
+   * Two higher, but not than Accuracy. Than the roll to INFLICT DAMAGE, which
    * is a second roll after the hit and comes off the Energy vs Armour table,
    * not off the Weapon's Ac. Ac decides whether you hit; this decides whether
    * the hit does anything. 6.2.4: "If the result is at least 2 higher than the
-   * required roll, that result is a Critical—another 1 damage is inflicted."
+   * required roll, that result is a Critical, another 1 damage is inflicted."
    *
    * The published table is 10 x 11 and it is one line of arithmetic:
    *
@@ -331,7 +331,7 @@
    *                 Critical either, and nothing at all against a Vehicle
    *                 until five of them are combined (6.4.2)
    *   Infantry      each hit is 1DP with no roll, "so they cannot receive
-   *                 Criticals" — a property of the TARGET, so it is said on
+   *                 Criticals". A property of the TARGET, so it is said on
    *                 the table rather than encoded per weapon */
   const MAX_ARMOUR = 10;
 
@@ -546,12 +546,12 @@
    * rulebook's own worked Group 3 is a single Squad filling several identical
    * Transports. Measuring against one vehicle's capacity therefore reported
    * six Legionnaires in two Bear APCs as "Bear APC has 3 square capacity,
-   * needs 6" — an army the rules explicitly allow, called illegal, with
+   * needs 6". An army the rules explicitly allow, called illegal, with
    * nothing you could do to make it legal. Found by the random generator,
    * which has to produce a legal army and so argues with every rule at once.
    *
-   * Defaults to 1 so a caller asking "could this carry that at all" — the
-   * picker, the Transport chooser — keeps asking about one vehicle. */
+   * Defaults to 1 so a caller asking "could this carry that at all", the
+   * picker, the Transport chooser, keeps asking about one vehicle. */
   function loadCheck(carrier, passengers, carriers) {
     const fleetOf = shape => capacityFor(carrier, shape) * (carriers > 0 ? carriers : 1);
     const mode = (carrier.transport && carrier.transport.capacityMode) || null;
@@ -677,8 +677,8 @@
   const weaponColLabel = k => WEAPON_LABELS[k] || k;
   // Label first, then the definition, so a hover reads as a sentence about a
   // named thing rather than a fragment.
-  const statHelp = k => (STAT_HELP[k] ? `${statLabel(k)} — ${STAT_HELP[k]}` : statLabel(k));
-  const weaponColHelp = k => (WEAPON_HELP[k] ? `${weaponColLabel(k)} — ${WEAPON_HELP[k]}` : '');
+  const statHelp = k => (STAT_HELP[k] ? `${statLabel(k)}: ${STAT_HELP[k]}` : statLabel(k));
+  const weaponColHelp = k => (WEAPON_HELP[k] ? `${weaponColLabel(k)}: ${WEAPON_HELP[k]}` : '');
 
   const api = {
     loadIndex, loadFaction,

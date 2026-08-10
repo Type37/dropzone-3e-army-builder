@@ -1,7 +1,7 @@
 /* Share an army as a link.
  *
  * The whole army travels IN the URL. There is no server, and adding one for
- * this would be the only piece of infrastructure the app needs — a link that
+ * this would be the only piece of infrastructure the app needs. A link that
  * carries its own payload keeps the thing offline-first and means a shared
  * list never rots because a host went away.
  *
@@ -37,7 +37,7 @@
       u: ((army.commanders || []).filter(c => !c.squadId).map(c => c.level)),
       // Their TYPED names, parallel to `u` and absent unless somebody typed
       // one. A Commander you named "Colonel Vance" arrived as "Level 5
-      // Commander", which is the derived name — so a link silently undid the
+      // Commander", which is the derived name, so a link silently undid the
       // one thing about a Commander you had chosen. Group names have always
       // travelled; this is the same field on the other renameable thing.
       w: ((army.commanders || []).filter(c => !c.squadId).some(c => c.name)
@@ -93,7 +93,7 @@
     (data.g || []).forEach(gr => {
       /* null, never "Group". A Group's name is DERIVED unless you typed one
        * (groupName in js/dzc-army.js), so a shared army of six unnamed Groups
-       * arrived as six things all called "Group" — the exact collision the
+       * arrived as six things all called "Group". The exact collision the
        * derived name exists to prevent, and it reported no position either. */
       const group = { id: uid(), name: gr.n || null, squads: [] };
       (gr.s || []).forEach(sq => {
@@ -200,7 +200,7 @@
    *   - readable BACK. Every Unit line is written in the "3 x Name [45pts]"
    *     convention DZCArmy.parseList already reads, so a list pasted into this
    *     app's Import comes back as an army. Nesting does not survive that trip
-   *     — a flat list cannot say what rode in what — but the Units and their
+   *    , a flat list cannot say what rode in what, but the Units and their
    *     counts do, and the indentation is still there for the human.
    *
    * Every line the parser must ignore starts with "#", which is exactly the
@@ -252,7 +252,7 @@
     }
 
     army.groups.forEach(g => {
-      out.push(`# ${A.groupName(army, g)} — ${A.groupCost(army, g)}pts`);
+      out.push(`# ${A.groupName(army, g)}, ${A.groupCost(army, g)}pts`);
       g.squads.filter(s => !s.carriedBy).forEach(s => squad(g, s, 1));
       out.push('');
     });

@@ -5,7 +5,7 @@
  * conversation and cannot write files, so nothing survived the session.
  * Why not a screen grab: CopyFromScreen captures the physical display, so it
  * photographs whatever the user is actually doing.
- * Why not Playwright: not wanted, and not needed — Chrome already speaks CDP,
+ * Why not Playwright: not wanted, and not needed. Chrome already speaks CDP,
  * and Node 22+ ships a WebSocket client, so this has zero dependencies.
  *
  *   node scripts/shots.mjs <baseUrl> <outDir> [dfc|dzc]
@@ -23,7 +23,7 @@ const OUT = process.argv[3] || 'docs/screens/dropfleet';
 const PROFILE = join(process.env.TEMP || '/tmp', 'dzc-shots-profile');
 const PORT = 9333;
 /* SHOT_W/SHOT_H drive CCP's own device-metrics override, which is what the
- * page actually lays out against — unlike resize_window, which reports a
+ * page actually lays out against. Unlike resize_window, which reports a
  * viewport the page never sees. Set them to shoot the phone cases. */
 const VIEW = {
   width: Number(process.env.SHOT_W) || 1400,
@@ -72,7 +72,7 @@ const DZC_STEPS = [
      const c = [...document.querySelectorAll('.dzc-chip')].find(x => /Standard/.test(x.textContent));
      c && c.click()`],
   ['09-picker-search', `DZCBuilder.pickerSearch('a')`],
-  // .dzc-pick-add only — '.dzc-pick, .dzc-pick-add' matches the card first in
+  // .dzc-pick-add only. '.dzc-pick, .dzc-pick-add' matches the card first in
   // document order, which opens the unit info instead of adding.
   // Adding now CLOSES the picker, so each add is followed by reopening it.
   ['10-squad-added', `const gid = () => document.querySelector('[onclick*="openPicker"]')
@@ -149,8 +149,8 @@ const DZC_STEPS = [
   // statsHtml is shared with the reference and the collection, so both get
   // shot too: changing it under them is exactly how a view breaks unnoticed.
   ['14-unit-reference', `DZCUnits.closeDetail(); location.hash = '#units'`],
-  // One reference card at 1:1. The stat cells carry the whole word — MOVE,
-  // ARMOUR, DAMAGE POINTS — in a card a quarter the width of a Squad row, so
+  // One reference card at 1:1. The stat cells carry the whole word, MOVE,
+  // ARMOUR, DAMAGE POINTS. In a card a quarter the width of a Squad row, so
   // this is where they run out of room, and a 1400px page shot cannot show it.
   ['14b-ref-card-1to1', `void 0`, '.dzc-card'],
   ['15-unit-reference-detail', `const c = document.querySelector('.dzc-card'); c && c.click()`],
@@ -164,7 +164,7 @@ const DZC_STEPS = [
      location.hash = '#collection'`],
   /* The print preview, actually opened. This step used to be named
      17-print-sheet and its whole body was `location.hash = '#armies'`, so the
-     file said print sheet and showed the army list — a shot that lies about
+     file said print sheet and showed the army list. A shot that lies about
      what it is, which is worse than a missing one because it is the shot you
      go back to. Back to the army first, because by here the walk is on the
      Collection. */
@@ -182,7 +182,7 @@ const DZC_STEPS = [
   ['17a-print-ink', `DZCBuilder.printOpt('ink', true);
      await new Promise(r => setTimeout(r, 500))`],
   /* Share and Play, which had never been shot at all. Both are driven by the
-     render suite, so they are known not to throw — and "it does not throw" is
+     render suite, so they are known not to throw. And "it does not throw" is
      the whole of what was ever known about how they look. Play needs a
      Commander actually ON a Squad before it will open (4.1), so the Commander
      added earlier is assigned first. */
@@ -223,13 +223,13 @@ const DFC_STEPS = [
      document.getElementById('new-fleet-name').value = 'Bioficer Reconquest';
      document.getElementById('new-fleet-points').value = '4000'`],
   // createFleet ends with navigate('builder', id) but lands back on the fleet
-  // grid — reproduced in a clean profile, so it is a real bug, not local state.
+  // grid. Reproduced in a clean profile, so it is a real bug, not local state.
   // Navigate explicitly or every later step shoots the wrong screen.
   ['05-builder-empty', `App.createFleet();
      await new Promise(r => setTimeout(r, 600));
      const f = JSON.parse(localStorage.dfc_fleets || '[]').find(x => x.name === 'Bioficer Reconquest');
      App.navigate('builder', f.id)`],
-  // addGroup(), not openShipSelectModal() — the real "+ Add Group" button sets
+  // addGroup(), not openShipSelectModal(), the real "+ Add Group" button sets
   // pendingGroupCreation, and addShipToGroup only creates a group when it is set.
   ['06-picker-all', `App.addGroup(); document.querySelector('#modal-ship-select .modal-body').scrollTop = 0`],
   ['07-picker-scrolled', `document.querySelector('#modal-ship-select .modal-body').scrollTop = 1100`],
@@ -294,8 +294,8 @@ const DFC_STEPS = [
 /* The Open Graph card: one shot, of the thing the app actually is.
  *
  * A link preview is the only picture of this app most people will ever see, so
- * it shows a real army in the builder — Groups, a Transport carrying a Squad,
- * a bought upgrade, the points bar — rather than a wordmark on a background.
+ * it shows a real army in the builder, Groups, a Transport carrying a Squad,
+ * a bought upgrade, the points bar, rather than a wordmark on a background.
  * Built through DZCArmy here rather than clicked together, because a preview
  * image regenerated by hand once a year drifts from the app it advertises.
  *
@@ -394,7 +394,7 @@ const proc = spawn(bin, [
   `--window-size=${VIEW.width},${VIEW.height}`,
   '--no-first-run', '--no-default-browser-check',
   /* Linux only, and not optional there: a container runs this as root, and
-     Chrome refuses to start its sandbox as root — it exits before it ever
+     Chrome refuses to start its sandbox as root. It exits before it ever
      opens the debugging port, which surfaces as "never exposed a page target"
      and reads exactly like the browser being missing. --disable-dev-shm-usage
      is the companion: /dev/shm is small in a container and a renderer that
@@ -473,7 +473,7 @@ for (const [name, expr, clipSel] of STEPS) {
    * shot of anything that animates in was a picture of its 0% keyframe.
    *
    * finish() jumps each animation to its end and leaves it there, which is
-   * the state worth looking at anyway — a shot is for judging the layout, not
+   * the state worth looking at anyway. A shot is for judging the layout, not
    * for catching the transition halfway. */
   await s.send('Runtime.evaluate', {
     expression: `document.getAnimations().forEach(a => { try { a.finish(); } catch (e) {} })`
@@ -482,7 +482,7 @@ for (const [name, expr, clipSel] of STEPS) {
   /* A third element clips the shot to one element at 1:1. Legibility is a
    * question about actual pixels, and a full-page shot answers it badly: at
    * 1400px wide a 20px badge is a smudge whether or not it is readable on a
-   * real screen. Scale stays 1 deliberately — capturing at 2x re-rasterises
+   * real screen. Scale stays 1 deliberately. Capturing at 2x re-rasterises
    * the text crisper than the user will ever see it. */
   let clip = null;
   if (clipSel) {

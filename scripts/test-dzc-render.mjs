@@ -161,7 +161,7 @@ if (clashes.length) console.error('        ' + clashes.join('\n        '));
 /* ── 4. Every class the JS emits has a rule behind it ─────────────────
  *
  * A styled element whose class was renamed in one file and not the other looks
- * fine in the markup and unstyled on screen — which is how the faction-mark
+ * fine in the markup and unstyled on screen. Which is how the faction-mark
  * revert could have left dead classes behind.
  */
 console.log('\nevery class the JS emits is styled somewhere');
@@ -227,7 +227,7 @@ console.log('\nthe unit renderers survive all 178 units');
 
   /* "Behemoths have a Groups Equivalent stat instead of Squad Size" (Behemoth
    * rules 1.1). Every card that says how many of a Unit you take goes through
-   * sizeHtml, so the two cannot be labelled differently in different places —
+   * sizeHtml, so the two cannot be labelled differently in different places,
    * which is how all eleven ended up saying "Squad 1", a stat their cards do
    * not print, while the number that decides how much of a Group allowance one
    * eats appeared nowhere. */
@@ -356,7 +356,7 @@ console.log('\nevery screen renders');
   /* A Squad's weapon table is the whole card, with the guns that Squad fires
    * marked and the rest left on the page and quiet. This Squad is a Sabre and
    * a Tachi, so the Avenger Railgun and the Laser are live and the Rapier's
-   * Gatlings are not — nobody in the Squad is a Rapier.
+   * Gatlings are not, nobody in the Squad is a Rapier.
    *
    * It used to DROP the Rapier's row, which fixed the right fault with the
    * wrong tool: the complaint was that nothing said which rows were live, and
@@ -385,19 +385,19 @@ console.log('\nevery screen renders');
    * ... it's obvious what the source is."
    *
    * The test is the pair, because dropping the label everywhere would take it
-   * off the reference card too — where the guns are one undivided list and
+   * off the reference card too. Where the guns are one undivided list and
    * nothing else says which Variant carries which. */
   ok(!/dzc-wc-only/.test(second),
      'a Variant block does not repeat its own name on every card inside it');
   /* And the ungrouped reference card still says it, because nothing else
-   * there does — as the arrow chip, not as an orange rule down the card's
+   * there does. As the arrow chip, not as an orange rule down the card's
    * edge. Jet, 2026-08-07: "just make it the tiny arrow-ish chip instead." */
   ok(/dzc-wc-only/.test(refTable) && /Sabre/.test(refTable),
      'the ungrouped reference card names the Variant on the card itself');
   ok(!/is-variant/.test(refTable),
      'and marks it with the chip alone, not with an edge saying the same thing');
 
-  /* One line per Variant block, always drawn — the edge used to exist only on
+  /* One line per Variant block, always drawn. The edge used to exist only on
    * a Variant you had taken, so a Squad with every count at zero had nothing
    * bounding a block at all. */
   ok(/class="dzc-vblock"/.test(second) && /class="dzc-vblock is-taken/.test(second),
@@ -405,18 +405,18 @@ console.log('\nevery screen renders');
   ok(/Level 5/.test(builder), 'and the Commander');
   /* Gap 51: what the Level is worth per Round, in the rail. Off the HIGHEST
    * Level on the table (4.1.1, 4.1.4, 4.1.5), so it is one line about the army
-   * rather than a repeat on each Commander card — this army has a single
+   * rather than a repeat on each Commander card. This army has a single
    * Level 5, which makes 5 CP, 5 cards and +5 Initiative. */
   ok(/dzc-cmdr-buys--rail/.test(builder), 'the rail says what the Level is worth per Round');
   ok(/<b>5<\/b><i>CP<\/i>/.test(builder) && /<b>\+5<\/b><i>Initiative<\/i>/.test(builder),
      'and reads it off the highest Level in the army');
   /* Gap 47: on a phone the rail collapses behind a line carrying the two
-   * numbers you keep glancing at. The line is always in the markup — CSS
-   * decides whether it is on screen — so what is asserted here is that it
+   * numbers you keep glancing at. The line is always in the markup. CSS
+   * decides whether it is on screen. So what is asserted here is that it
    * carries them. */
   ok(/dzc-rail-peek/.test(builder), 'the rail has a peek line');
   /* It said "N pts left" until 2026-08-09, when Jet took that number off the
-   * rail entirely — "there's a bar that shows how much you've spent... but it's
+   * rail entirely. "there's a bar that shows how much you've spent... but it's
    * a more obvious like 900/2000 or something", then "remove the points left."
    * Spent-over-limit is the same fact, said once. */
   ok(/<b>\d+<\/b><span>\/ \d+pts<\/span>/.test(builder) && /of \d+ Groups/.test(builder),
@@ -426,7 +426,7 @@ console.log('\nevery screen renders');
 
   /* Gap 107: compact view. A Squad reads as its whole stat card by default,
    * which is right when you are deciding and long when you are scanning ten of
-   * them — Dropfleet's own comment on this toggle says it is what makes
+   * them. Dropfleet's own comment on this toggle says it is what makes
    * showing everything by default safe. What it must NOT do is take away a
    * control: a denser overview that also refuses you a purchase is a different
    * feature, so the steppers, the upgrades and the Transport chooser are
@@ -473,7 +473,7 @@ console.log('\nevery screen renders');
    * reading round the derived name.
    *
    * The tag on a Squad looked the Commander up by an id on the Squad's COPY of
-   * it — syncCommanders writes `{ level }` and no id, so it matched nobody
+   * it. SyncCommanders writes `{ level }` and no id, so it matched nobody
    * every time and a Commander you had named still read "Level 5". And the
    * Aboard select appended the Group only where the Group had a typed name, so
    * two Squads of the same Unit in two unnamed Groups were two identical
@@ -492,7 +492,7 @@ console.log('\nevery screen renders');
     // prove nothing about the tag.
     const tag = (named.match(/<span class="dzc-cmdr-tag"[\s\S]*?<\/span>/) || [''])[0];
     ok(/Colonel Vance/.test(tag), 'a named Commander reads as its name on the Squad it is aboard', tag);
-    ok(/Legionnaires — Group 1/.test(named),
+    ok(/Legionnaires, Group 1/.test(named),
        'and every Aboard option names its Group, even one nobody named');
     A.renameCommander(A.get(a.id), A.commanders(A.get(a.id))[0].id, '');
     await B.renderBuilder(a.id);
@@ -553,7 +553,7 @@ console.log('\nevery screen renders');
    * "Level 5 Commander  Level 5  not assigned" on the sheet, and "Level 5,
    * 90pts" under "Level 5 Commander" in the rail.
    *
-   * Counted rather than matched, because "Level 5" appearing at all is right —
+   * Counted rather than matched, because "Level 5" appearing at all is right,
    * it is the name. Twice in one row is the fault. */
   {
     const row = (sheet.match(/<div class="pr-cmdr-row">[\s\S]*?<\/div>/) || [''])[0];
@@ -570,15 +570,15 @@ console.log('\nevery screen renders');
   /* The detail view against the printed card it is a copy of.
    *
    * Two fields were scanned into all 178 Units and rendered nowhere. The page
-   * is the one reference the app cannot replace — the printed card carries art
-   * and wording this does not — and every rule already cites its own page
+   * is the one reference the app cannot replace. The printed card carries art
+   * and wording this does not. And every rule already cites its own page
    * while the Unit cited nothing. The upgrade note is the sentence that says
    * what taking an upgrade costs you, and the builder has always shown it over
    * the buttons while the reference showed the rows with no qualification.
    *
    * Hulks is the reason the note is gated on there being an upgrade: it has no
    * upgrade box, so the scanner took the lore paragraph off the bottom of the
-   * card instead. It is not selectable, so the builder never drew it — but the
+   * card instead. It is not selectable, so the builder never drew it, but the
    * reference draws all 178. */
   await drive('the unit detail', () => win.DZCUnits.openDetail('legionnaires', 'ucm'));
   ok(/Stat card p\.3</.test(els['dzc-detail-body'].innerHTML),
@@ -602,7 +602,7 @@ console.log('\nevery screen renders');
     ok(/<b>4<\/b><i>cards<\/i>/.test(html), 'and a hand of 4 cards');
     ok(/<b>\+4<\/b><i>Initiative<\/i>/.test(html), 'and +4 Initiative');
     /* Gap 35: a refused option says why rather than not being there. This army
-     * is 1500pts, which is a Clash, so Level 7 is out — and it is on the
+     * is 1500pts, which is a Clash, so Level 7 is out. And it is on the
      * chooser, dimmed, naming the size that reaches it. Filtering it away
      * enforced 3.2.5 by making it unlearnable: at Skirmish there was no way to
      * find out Levels 6 and 7 exist. */
@@ -844,7 +844,7 @@ console.log('\nevery screen renders');
      *   11.1.34 "place a Suppressed Status Token on its Squad"
      *
      * and against those, 10.1.21 Obscurer X”: "All friendly Vehicle and
-     * Infantry UNITS within X” of this Unit are Obscured" — where you are
+     * Infantry UNITS within X” of this Unit are Obscured". Where you are
      * standing, not a token on the Squad, so that one stays per model.
      *
      * Four squads (3 + 2 + 3 Legionnaires/tanks, plus the Condor) and nine
@@ -882,7 +882,7 @@ console.log('\nevery screen renders');
     ok(ge > 1, 'the Heavy Battle Mech is worth more than one Group', String(ge));
     eq(mine(), String(ge), 'one Behemoth card counts as its Groups Equivalent (1.1)');
     // Counting cards, a lone Behemoth was 1 Group and six behind an opponent
-    // on 7 — five Pass tokens for fielding the biggest thing on the table.
+    // on 7. Five Pass tokens for fielding the biggest thing on the table.
     P.oppGroups('7');
     eq(passes(), String(7 - ge - 1), 'so the Pass tokens are counted off its worth, not off one card');
 
@@ -913,7 +913,7 @@ console.log('\nevery screen renders');
   }
 
   /* And the builder's own Group meter, which is measured against an allowance
-   * counted in Groups — so it has to be counted in Groups too. It was counting
+   * counted in Groups, so it has to be counted in Groups too. It was counting
    * cards, which put the rail and validate's own error on different numbers
    * for the same army. */
   {
@@ -927,7 +927,7 @@ console.log('\nevery screen renders');
        'the rail counts what the Groups are worth, not the cards (1.1)');
     ok(A.groupsUsed(A.get(ga.id)) > 2, 'and this army is worth more than its two cards',
        String(A.groupsUsed(A.get(ga.id))));
-    ok(/Group cards? — a Behemoth counts as several/.test(rail),
+    ok(/Group cards?, and a Behemoth counts as several/.test(rail),
        'saying how many cards that is, so the two numbers are not a mystery');
     A.remove(ga.id);
   }
@@ -1011,8 +1011,8 @@ console.log('\nevery screen renders');
 
   /* The Collection's arithmetic, which nothing had asserted either.
    *
-   * It counts MODELS, not Squads — "I own four Sabres" is what decides whether
-   * a Squad of six is buildable tonight — and it is advisory, never enforcing.
+   * It counts MODELS, not Squads. "I own four Sabres" is what decides whether
+   * a Squad of six is buildable tonight, and it is advisory, never enforcing.
    * That second half is the one worth a test: owning too few models is a
    * shopping list, or a proxy, or a friend's box, and it must never make a
    * legal army illegal. The builder enforces the RULES and reports the rest.

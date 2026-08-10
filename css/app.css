@@ -1,9 +1,9 @@
 /* ═══════════════════════════════════════════════════════════════
-   DROPFLEET COMMANDER — FLEET BUILDER
+   DROPFLEET COMMANDER. FLEET BUILDER
    Light Theme · Warm Off-White + Navy · Art Deco Gold Accents
    ═══════════════════════════════════════════════════════════════ */
 
-/* Terminal Grotesque Open — Velvetyne / Studio Triple (OFL). Used only for the
+/* Terminal Grotesque Open, Velvetyne / Studio Triple (OFL). Used only for the
    WarLore wordmark in the footer credit. */
 @font-face {
   font-family: "Terminal Grotesque Open";
@@ -15,7 +15,7 @@
 
 /* ── 1. Theme Tokens ─────────────────────────────────────────── */
 :root {
-  /* Light unless the switch in Settings says otherwise, and SAID so — the dark
+  /* Light unless the switch in Settings says otherwise, and SAID so. The dark
      block declares `color-scheme: dark` and nothing declared the other half,
      so a machine whose OS is dark got dark scrollbars, dark select popups and
      dark number steppers on a paper-white page. The app was in light mode and
@@ -34,7 +34,7 @@
   --font-condensed: "Jost", system-ui, sans-serif;
   --font-lore: "Libre Baskerville", "Georgia", serif;
   --font-mono: Consolas, "Courier New", monospace;
-  /* Numbers the player reads as a value — stat cells, points, counts. Outfit
+  /* Numbers the player reads as a value, stat cells, points, counts. Outfit
      is Jet's call for the numeric role: even widths and open counters, so a
      14px stat stays legible on a phone at a table. */
   --font-numeric: "Outfit", "Jost", system-ui, sans-serif;
@@ -68,7 +68,7 @@
   --sp-3xl: 32px;
   --sp-4xl: 48px;
 
-  /* Border Radius — deliberate, not bubbly */
+  /* Border Radius, deliberate, not bubbly */
   --radius-sm: 3px;
   --radius-md: 6px;
   --radius-lg: 8px;
@@ -155,7 +155,7 @@
   --radius-pill: 999px;
   --weight-normal: 400;
 
-  /* Elevation — a strict ladder (Fluent: ambient ring + directional key shadow),
+  /* Elevation, a strict ladder (Fluent: ambient ring + directional key shadow),
      warm-tinted to the theme. Each tier is unambiguously deeper than the last:
      sm resting cards · md raised · lg dropdowns/bars · xl popovers/hover ·
      sheet (28) bottom sheet/side nav · dialog (64) modals. */
@@ -191,7 +191,7 @@
 
 /* ── Dark Theme ──────────────────────────────────────────────────
    Opt-in via the topbar toggle (data-theme="dark" on <html>). Only the COLOUR
-   tokens flip — every component reads them, so the whole on-screen UI re-themes.
+   tokens flip. Every component reads them, so the whole on-screen UI re-themes.
    The print sheet uses hardcoded paper colours (not these tokens), so printouts
    stay light on paper regardless of theme. Contrast tuned for WCAG AA. */
 html[data-theme="dark"] {
@@ -263,7 +263,7 @@ html[data-theme="dark"] .btn-primary:hover { background: #3a7cc6; border-color: 
    dark accent navy is a touch low-contrast; lift to the lighter accent for AA. */
 html[data-theme="dark"] .admiral-flagship-name,
 html[data-theme="dark"] .admiral-ability-cost { color: var(--navy-light); }
-/* Global Settings button — the topbar's only persistent action, present on
+/* Global Settings button. The topbar's only persistent action, present on
    every view (not just inside a fleet), where the theme switch + offline
    download panel live. Filled, not ghost, so it reads as a primary control. */
 .topbar-global-settings-btn {
@@ -305,7 +305,7 @@ a:hover { color: var(--navy-light); }
 
 ::selection { background: var(--gold-light); color: var(--ink); }
 
-/* WarLore wordmark — Terminal Grotesque Open throughout (local font), gold-on-black,
+/* WarLore wordmark. Terminal Grotesque Open throughout (local font), gold-on-black,
    inverts on hover. Standing brand rule (see memory: reference-warlore-brand). */
 .warlore-mark {
   display: inline-block;
@@ -319,7 +319,7 @@ a:hover { color: var(--navy-light); }
   margin-bottom: var(--sp-md);
   transition: color var(--duration-fast) var(--ease-out), background var(--duration-fast) var(--ease-out);
 }
-/* "Lore" is part of the same wordmark — same Terminal Grotesque Open, no slab. */
+/* "Lore" is part of the same wordmark, same Terminal Grotesque Open, no slab. */
 .warlore-mark .wl-lore { font: inherit; }
 .warlore-mark:hover { color: #000; background: #FFCC00; }
 /* Inline variant for the credits footer: same gold-on-black brand, sized to sit
@@ -332,7 +332,7 @@ a:hover { color: var(--navy-light); }
   vertical-align: -2px;
 }
 
-/* Global focus-visible ring — two-stroke (Fluent): a thin light halo tight to
+/* Global focus-visible ring, two-stroke (Fluent): a thin light halo tight to
    the element + a navy ring just outside it. The light inner stroke keeps focus
    visible on the dark navy sidebar; the navy stroke keeps it visible on light
    cards. Works on any surface. */
@@ -502,7 +502,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: var(--text-sm);
   color: rgba(255,255,255,0.88);
   /* No ellipsis. These are four words naming where the chevron goes, and a
-     clipped one reads as a different destination — "Armies li…". If the bar
+     clipped one reads as a different destination, "Armies li…". If the bar
      runs out of room the title beside it gives way first (below). */
   white-space: nowrap;
   display: flex;
@@ -531,7 +531,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 /* Topbar actions: bright, obviously-clickable bordered pills with larger icons.
    Scoped under .topbar-actions so these beat .btn-ghost (which sets ink-muted).
-   Font is Jost (--font-body), the app's primary UI face — unifies the chrome and
+   Font is Jost (--font-body), the app's primary UI face. Unifies the chrome and
    drops Barlow Condensed. #fff on navy-dark = ~14:1. */
 .topbar-actions .topbar-action-btn {
   color: #fff;
@@ -607,7 +607,7 @@ h1, h2, h3, h4, h5, h6 {
   container-type: inline-size;   /* enables width-based container queries below */
 }
 /* Stack the ship card (art on top, full-width stats/weapons) whenever the detail
-   PANEL itself is narrow — independent of viewport — so weapon names and the
+   PANEL itself is narrow, independent of viewport, so weapon names and the
    stat grid never get squeezed at any 3-panel width. */
 @container (max-width: 560px) {
   .group-ship-entry { flex-direction: column; }
@@ -721,14 +721,14 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--gold-light);   /* WCAG: 7.3:1 on the navy sidebar (gold-dark was 2.5:1, failed) */
 }
 /* Navy chrome (points sidebar + topbar): secondary/muted text must be light to
-   pass WCAG on the dark bg — the beige-tuned dark grays fail there (~2.7:1). */
+   pass WCAG on the dark bg. The beige-tuned dark grays fail there (~2.7:1). */
 .builder-sidebar .text-overline,
 .builder-sidebar .text-caption,
 .builder-sidebar .points-limit,
 .topbar .text-overline,
 .topbar .text-caption { color: #c4bfb5; }
 /* Add-slot placeholders ("Add Admiral", "Add Space Station") sit on the navy-dark
-   sidebar — ink-faint (#66615a) only achieves 2.4:1 there (fails AA). Use #c4bfb5
+   sidebar. Ink-faint (#66615a) only achieves 2.4:1 there (fails AA). Use #c4bfb5
    (7.7:1 on navy-dark, matches the sidebar label colour) and a white-wash hover. */
 .builder-sidebar .add-ship-area { color: #c4bfb5; border-color: rgba(255,255,255,0.2); }
 .builder-sidebar .add-ship-area:hover { color: #fff; background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.45); }
@@ -872,7 +872,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .group-nav-item.active {
-  /* The ship/group you're currently customizing — clearly highlighted in the roster. */
+  /* The ship/group you're currently customizing, clearly highlighted in the roster. */
   background: rgba(255,255,255,0.16);
   border-color: rgba(255,255,255,0.30);
   color: #fff;
@@ -915,7 +915,7 @@ h1, h2, h3, h4, h5, h6 {
 .group-nav-item.drag-over-before { box-shadow: inset 0 3px 0 var(--nav-accent, #fff); }
 .group-nav-item.drag-over-after { box-shadow: inset 0 -3px 0 var(--nav-accent, #fff); }
 
-/* A famous admiral's flagship shown among the overview group cards — read-only
+/* A famous admiral's flagship shown among the overview group cards. Read-only
    (managed via the admiral slot), gold accent, "incl." instead of points since
    its cost is already counted with the admiral. */
 .overview-flagship-card { cursor: default; }
@@ -1140,7 +1140,7 @@ h1, h2, h3, h4, h5, h6 {
 .btn-ghost:active { background: rgba(27, 58, 92, 0.12); transform: scale(0.97); }
 
 /* Ghost variant for dark backgrounds. Borderless 60%-white text on navy read
-   as a disabled control — and a phone never gets the hover that brightened it,
+   as a disabled control. And a phone never gets the hover that brightened it,
    so Reset game looked switched off for the whole of a game. */
 .btn-ghost-light {
   background: transparent;
@@ -1707,10 +1707,10 @@ h1, h2, h3, h4, h5, h6 {
 
 /* .tool-card-desc is gone with the sentences it styled. A landing tile said
    "Army Builder" and then, underneath, "Build and manage rosters for all six
-   factions" — a caption explaining a control that had already named itself
+   factions". A caption explaining a control that had already named itself
    (CLAUDE.md §3). The tiles are the title and the icon now. */
 
-/* Landing — Stats Bar */
+/* Landing, Stats Bar */
 .landing-stats {
   display: flex;
   align-items: center;
@@ -1740,7 +1740,7 @@ h1, h2, h3, h4, h5, h6 {
   user-select: none;
 }
 
-/* Landing — Faction Showcase */
+/* Landing, Faction Showcase */
 .landing-factions {
   margin-top: var(--sp-3xl);
   max-width: 800px;
@@ -1867,7 +1867,7 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--ink-muted);
 }
 
-/* Landing — Objectives Reference */
+/* Landing, Objectives Reference */
 .landing-objectives {
   margin-top: var(--sp-3xl);
   max-width: 800px;
@@ -2453,7 +2453,7 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--paper-alt);
   border-bottom: 1px solid var(--stroke-light);
   font-family: var(--font-condensed);
-  font-size: 16px;   /* weapons are key game info — bigger than the old 14px (print unaffected) */
+  font-size: 16px;   /* weapons are key game info. Bigger than the old 14px (print unaffected) */
   line-height: 1.4;
 }
 
@@ -2730,7 +2730,7 @@ h1, h2, h3, h4, h5, h6 {
   flex-shrink: 0;
 }
 
-/* Launch block — the ship's Launch loads + the asset stat reference, grouped */
+/* Launch block. The ship's Launch loads + the asset stat reference, grouped */
 .launch-block {
   margin-top: var(--sp-xs);
   display: flex;
@@ -3073,7 +3073,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .ship-lore-toggle {
   padding: var(--sp-xs) var(--sp-sm);
-  /* The lore heading inside cards reads in Roboto Slab, a touch bigger — the
+  /* The lore heading inside cards reads in Roboto Slab, a touch bigger. The
      display-serif treatment the wordmark deliberately does NOT use. */
   font-family: var(--font-display);
   font-size: var(--text-sm);
@@ -3131,7 +3131,7 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--ink-muted);
   break-inside: avoid;
 }
-/* Sub-faction split (e.g. Independents / Kalium) — separate underlined columns. */
+/* Sub-faction split (e.g. Independents / Kalium), separate underlined columns. */
 .lore-famous-cols {
   display: flex;
   flex-wrap: wrap;
@@ -3166,7 +3166,7 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--gold-dark, #7a6320);
 }
 
-/* Ship Rules — always visible, build-critical (not an accordion) */
+/* Ship Rules. Always visible, build-critical (not an accordion) */
 .ship-rules-block {
   margin-top: var(--sp-xs);
   border: 1px solid var(--stroke-light);
@@ -3191,7 +3191,7 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--ink-soft);
 }
 
-/* Feature Carrier — required Deployable Feature pick */
+/* Feature Carrier, required Deployable Feature pick */
 .feature-carrier-block {
   margin-top: var(--sp-xs);
   padding: var(--sp-sm);
@@ -3330,7 +3330,7 @@ h1, h2, h3, h4, h5, h6 {
 .sys-step-btn:disabled { opacity: 0.35; cursor: default; }
 /* The + button carries the unit cost (e.g. "+10"), so it widens to fit the number. */
 .sys-step-add { width: auto; min-width: 28px; padding: 0 8px; font-variant-numeric: tabular-nums; letter-spacing: 0.01em; }
-/* Snap toggle for Structures (binary on/off — you only ever have 0 or 1). */
+/* Snap toggle for Structures (binary on/off, you only ever have 0 or 1). */
 .sys-opt-structure { align-items: center; }
 .sys-toggle {
   display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;
@@ -3355,7 +3355,7 @@ h1, h2, h3, h4, h5, h6 {
   .sys-step-btn:active:not(:disabled) { transform: none; }
 }
 
-/* Keep wide tables from clipping on narrow screens — scroll instead of spill */
+/* Keep wide tables from clipping on narrow screens, scroll instead of spill */
 .weapon-list, .launch-ref, .launch-ref-table { max-width: 100%; overflow-x: auto; }
 .sys-opt { flex-wrap: wrap; }
 .sys-opt-main { flex: 1 1 60%; }
@@ -3486,8 +3486,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 .ship-select-filters:empty { display: none; }
 .ship-filter-chips { display: flex; flex-wrap: wrap; gap: var(--sp-xs); flex: 1 1 auto; min-width: 0; }
-/* Misc / In-collection aren't filters on the core list — they swap which pool you
-   browse — so they read as labelled snap switches, set apart from the filter chips. */
+/* Misc / In-collection aren't filters on the core list, they swap which pool you
+   browse, so they read as labelled snap switches, set apart from the filter chips. */
 .ship-filter-switches {
   display: flex; flex-wrap: wrap; gap: var(--sp-xs); align-items: center;
   margin-left: auto; padding-left: var(--sp-sm); border-left: 1px solid var(--stroke-light);
@@ -3594,7 +3594,7 @@ h1, h2, h3, h4, h5, h6 {
   position: relative;
   width: 120px;
   height: 120px;
-  /* No frame — the ship art should float, not sit in a visible box */
+  /* No frame. The ship art should float, not sit in a visible box */
   background: transparent;
   overflow: visible;
   flex-shrink: 0;
@@ -3606,7 +3606,7 @@ h1, h2, h3, h4, h5, h6 {
 .overview-group-art.ship-img-modular img {
   filter: grayscale(1) opacity(0.5);
 }
-/* TTCombat store link wrapping the unit-detail ship art — fills the art box so
+/* TTCombat store link wrapping the unit-detail ship art. Fills the art box so
    layout/img sizing is unchanged. The art itself is the link (no badge icon). */
 .shop-link {
   display: block;
@@ -3724,7 +3724,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 12px;
   letter-spacing: 0.06em;
 }
-/* Carrier tag — "Launch"/"Drop" so carriers read at a glance (replaces the star). */
+/* Carrier tag. "Launch"/"Drop" so carriers read at a glance (replaces the star). */
 .ship-badge-launch {
   background: var(--navy);
   color: var(--paper);
@@ -3870,7 +3870,7 @@ h1, h2, h3, h4, h5, h6 {
 .admiral-thumb svg { width: 100%; height: 100%; }
 
 /* Rank insignia (shared js/rank-insignia.js) */
-/* Rank insignia only renders inside the centred .admiral-thumb box now — no
+/* Rank insignia only renders inside the centred .admiral-thumb box now. No
    inline margin/baseline tweaks (they shoved the box svg off-centre). */
 
 .admiral-level {
@@ -3904,10 +3904,10 @@ h1, h2, h3, h4, h5, h6 {
 .admiral-flagship-link:hover { background: var(--navy-wash); border-color: var(--navy); }
 .admiral-flagship-link svg { flex-shrink: 0; color: var(--gold-dark); }
 
-/* Admiral abilities — innate (always shown) + Abilities-Table picker */
+/* Admiral abilities. Innate (always shown) + Abilities-Table picker */
 .admiral-abilities-block { margin-top: var(--sp-md); }
 /* Draw attention to the picker while the admiral still has ability picks to
-   make — adding an admiral should prompt you to choose its abilities. */
+   make. Adding an admiral should prompt you to choose its abilities. */
 .admiral-abilities-block.admiral-abilities-unset {
   border: 1px solid var(--gold-line);
   border-left: 3px solid var(--gold);
@@ -4287,8 +4287,8 @@ h1, h2, h3, h4, h5, h6 {
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
-/* A named flagship's own ship-class, e.g. "Fortune's Fancy (Amber Cruiser)" —
-   the class rides inline on the same line, just smaller/quieter than the
+/* A named flagship's own ship-class, e.g. "Fortune's Fancy (Amber Cruiser)".
+   The class rides inline on the same line, just smaller/quieter than the
    flagship's proper name so it reads as an aside, not equal billing. */
 .flagship-class-inline {
   font-size: 0.85em;
@@ -4299,7 +4299,7 @@ h1, h2, h3, h4, h5, h6 {
 /* ── Battlegroup inline rename ───────────────────────────────── */
 /* Click-to-rename names show a dotted underline on hover so the affordance is
    discoverable without cluttering the layout. */
-/* Click target is the NAME TEXT only, not the whole row — inline-block shrinks
+/* Click target is the NAME TEXT only, not the whole row. Inline-block shrinks
    the editable element to its content width (align-self stops flex stretch). */
 .group-name-editable { cursor: pointer; display: inline-block; align-self: flex-start; max-width: 100%; }
 .group-name-editable:hover {
@@ -4411,7 +4411,7 @@ h1, h2, h3, h4, h5, h6 {
   align-self: stretch;
 }
 
-/* Compact view — smaller cards, no stat/weapon detail */
+/* Compact view, smaller cards, no stat/weapon detail */
 .group-ship-entry.compact {
   padding: var(--sp-md);
   padding-left: calc(var(--sp-md) - 2px);
@@ -4591,7 +4591,7 @@ h1, h2, h3, h4, h5, h6 {
 .game-size-popover-item.active .game-size-popover-desc {
   color: rgba(255,255,255,0.7);
 }
-/* Custom points limit (e.g. a 1500-pt Clash) — set it right in the size popover. */
+/* Custom points limit (e.g. a 1500-pt Clash), set it right in the size popover. */
 .game-size-custom { padding: 10px 12px; border-top: 1px solid var(--stroke-light); display: flex; flex-direction: column; gap: 4px; }
 .game-size-custom-label { font-size: var(--text-xs); font-weight: var(--weight-semibold); color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.04em; }
 .game-size-custom-row { display: flex; align-items: center; gap: 6px; }
@@ -4724,7 +4724,7 @@ h1, h2, h3, h4, h5, h6 {
 .faction-pick-btn:hover .gold-frame rect,
 .faction-pick-btn[data-selected] .gold-frame rect { stroke-dashoffset: 0; }
 @media (prefers-reduced-motion: reduce) { .gold-frame rect { transition: none; } }
-/* The gold frame is the ONLY emphasis on the faction picker — kill the navy
+/* The gold frame is the ONLY emphasis on the faction picker. Kill the navy
    hover (border/text) and the navy focus ring so there's no blue highlight. */
 .faction-pick-btn:hover { border-color: var(--stroke); color: var(--ink); box-shadow: none; }
 .faction-pick-btn:focus-visible { outline-color: var(--gold); }
@@ -4762,7 +4762,7 @@ h1, h2, h3, h4, h5, h6 {
   font-style: italic;
 }
 
-/* New Fleet modal — compact so the whole thing fits with no scroll. */
+/* New Fleet modal. Compact so the whole thing fits with no scroll. */
 .new-fleet-row { display: flex; gap: var(--sp-md); flex-wrap: wrap; }
 .new-fleet-row .form-group { min-width: 180px; }
 .size-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-sm); }
@@ -4776,8 +4776,8 @@ h1, h2, h3, h4, h5, h6 {
 .float-field { position: relative; }
 .float-field > .form-input { width: 100%; }
 /* The label WRAPS. It used to be nowrap + ellipsis, which on a 320px phone cut
-   Import's "Backup, army, share link or a pasted list" down to "…or a pas" —
-   losing the half that tells you a New Recruit list will do, on the one screen
+   Import's "Backup, army, share link or a pasted list" down to "…or a pas".
+   Losing the half that tells you a New Recruit list will do, on the one screen
    where you have nothing else to go on. Nothing in this app is allowed to
    truncate content; a label is content. Every other float label is two words
    and stays on one line by itself. */
@@ -5208,7 +5208,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ── 26. Print ───────────────────────────────────────────────── */
 @media print {
-  /* No forced size — adapt to whatever paper the user selects (A4 or US Letter).
+  /* No forced size. Adapt to whatever paper the user selects (A4 or US Letter).
      Margins are safe for both: content sits inside the A4 width (the narrower)
      and the US Letter height (the shorter), so nothing clips on either. */
   @page {
@@ -5222,7 +5222,7 @@ h1, h2, h3, h4, h5, h6 {
 
   /* macOS/WebKit fix: <body> is a column flexbox (display:flex on screen). In a
      paginated context WebKit will not fragment a flex item across pages and
-     collapses the lone remaining child to ~zero height — printing ONE BLANK PAGE
+     collapses the lone remaining child to ~zero height. Printing ONE BLANK PAGE
      (Windows/Blink prints fine). Reset the body back to normal block flow for
      print so #print-container paginates as an ordinary block. */
   html, body {
@@ -5240,7 +5240,7 @@ h1, h2, h3, h4, h5, h6 {
     transform: none !important;
   }
 
-  /* Stat grid — compact for print */
+  /* Stat grid, compact for print */
   .stat-grid { gap: 0; }
   .stat-cell {
     border-color: #999;
@@ -5255,7 +5255,7 @@ h1, h2, h3, h4, h5, h6 {
   .stat-cell-warn { background: #fff3e0; color: #8a5810; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .stat-cell-good { color: #2e7d32; }
 
-  /* Weapons — tight rows */
+  /* Weapons, tight rows */
   .weapon-list { margin-top: 3px; }
   .weapon-row { background: #fafafa; border-color: #bbb; padding: 1px 6px; min-height: auto; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .weapon-header { background: #eee; padding: 1px 6px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -5298,7 +5298,7 @@ h1, h2, h3, h4, h5, h6 {
   .print-header { break-after: avoid; }
   .print-group-header { break-after: avoid; }
 
-  /* Two-column units layout (Settings toggle) — packs ~4 units per page. The
+  /* Two-column units layout (Settings toggle), packs ~4 units per page. The
      group header spans both columns; ships flow into two columns; tall groups
      may break across pages (they can't fit one column). Weapon rows tighten. */
   .print-2col .print-group { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; align-items: start; break-inside: auto; }
@@ -5308,7 +5308,7 @@ h1, h2, h3, h4, h5, h6 {
 
 }
 
-/* Print Preview overlay — pick options + see the output before the print dialog. */
+/* Print Preview overlay. Pick options + see the output before the print dialog. */
 .print-preview-overlay {
   position: fixed; inset: 0; z-index: 4000;
   background: #5a5a5a; display: flex; flex-direction: column;
@@ -5355,7 +5355,7 @@ h1, h2, h3, h4, h5, h6 {
   background: #b04a3a; color: #fff; font-size: 8pt; font-weight: 700;
   letter-spacing: 0.04em; text-transform: uppercase; padding: 1px 6px; border-radius: 0 0 3px 3px;
 }
-/* Simple Print View — compact roster list (screen + print). */
+/* Simple Print View, compact roster list (screen + print). */
 .print-simple { font-family: 'Jost', sans-serif; color: #1c1a17; font-size: 11pt; }
 .print-simple .sp-head { font-size: 13pt; border-bottom: 2px solid #1c1a17; padding-bottom: 4px; margin-bottom: 8px; }
 .print-simple .sp-section { margin-bottom: 10px; }
@@ -5932,7 +5932,7 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-print-color-adjust: exact; print-color-adjust: exact;
 }
 /* If a card is taller than a page and MUST break, never split it through the
-   stat block / head — force the page break to fall after the stats instead. */
+   stat block / head. Force the page break to fall after the stats instead. */
 .dp-ship-head { break-after: avoid; break-inside: avoid; page-break-inside: avoid; }
 .dp-statgrid, .dp-big-top { break-inside: avoid; page-break-inside: avoid; }
 .dp-ship-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
@@ -5947,7 +5947,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Stat grid (echoes the on-screen stat cells): icon | value over label, packed
    into an aligned grid instead of a loose flowing line. */
-/* 2-column paired layout (Scan|KS, Sig|ES, Thrust|BS, Hull spans) — matches the
+/* 2-column paired layout (Scan|KS, Sig|ES, Thrust|BS, Hull spans), matches the
    on-screen stat grid. width:max-content keeps the block compact, not stretched. */
 .dp-statgrid { display: grid; grid-template-columns: repeat(2, minmax(46px, 78px)); gap: 2px; margin: 3px 0; width: max-content; max-width: 100%; }
 .dp-sc-wide { grid-column: 1 / -1; }
@@ -5972,7 +5972,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .dp-weapons { width: 100%; border-collapse: collapse; margin: 3px 0; font-size: 8pt; }
 .dp-weapons th {
-  /* Dark text on a light tint + a dark underline — readable even if the printer
+  /* Dark text on a light tint + a dark underline. Readable even if the printer
      drops background fills (no white-on-navy). */
   text-align: center; background: #e7ebf0; color: #1b3a5c; font-weight: 700; padding: 1px 4px;
   font-size: 7pt; text-transform: uppercase; letter-spacing: 0.02em;
@@ -6024,7 +6024,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .dp-flagship-name { font-weight: 700; font-size: 8.5pt; color: #1b3a5c; margin-bottom: 2px; }
 
-/* Per-ship thumbnail — sits left of the ship name so the sheet can be matched to
+/* Per-ship thumbnail. Sits left of the ship name so the sheet can be matched to
    the model on the table. Sized by the density tier below. */
 .dp-ship-head { align-items: center; }
 .dp-name-wrap { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
@@ -6228,7 +6228,7 @@ h1, h2, h3, h4, h5, h6 {
   text-transform: none;
   letter-spacing: 0.04em;
 }
-/* Editable points limit — looks like text until focused, so "/ 1500 pts" can be
+/* Editable points limit. Looks like text until focused, so "/ 1500 pts" can be
    overridden to any custom cap (e.g. a 1500-pt game in the Clash bracket). */
 .overview-pts-cap-input {
   width: 4.5ch;
@@ -6250,7 +6250,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: var(--text-sm); padding: 0 2px; line-height: 1;
 }
 .overview-pts-reset:hover { color: var(--navy); }
-/* Visible validation panel — errors were too easy to miss in the legal-mark tooltip. */
+/* Visible validation panel. Errors were too easy to miss in the legal-mark tooltip. */
 .overview-alerts {
   margin: var(--sp-sm) 0;
   border-radius: var(--radius-sm);
@@ -6263,7 +6263,7 @@ h1, h2, h3, h4, h5, h6 {
 .overview-alerts-list { margin: 0; padding-left: 15px; font-size: var(--text-xs); line-height: 1.3; }
 .overview-alerts-list .oa-error { color: #c43c2f; }
 .overview-alerts-list .oa-warn { color: var(--ink-muted); }
-/* Alerts now sit on the navy rail — give them an opaque light card so the
+/* Alerts now sit on the navy rail. Give them an opaque light card so the
    paper-tuned red/amber text keeps its contrast (rail default text is white). */
 .builder-sidebar #sidebar-alerts .overview-alerts { margin: 0; }
 .builder-sidebar #sidebar-alerts .overview-alerts.has-errors { background: #fbecea; }
@@ -6289,7 +6289,7 @@ h1, h2, h3, h4, h5, h6 {
   gap: var(--sp-sm);
 }
 /* Primary action: Add Group floats as a pinned footer at the bottom of the
-   overview (middle) panel — always reachable while the group list scrolls. */
+   overview (middle) panel. Always reachable while the group list scrolls. */
 /* Battle Groups section header: label left, Add Group action right. Anchored
    at the top of the list so it never scrolls off and never floats over content
    (the old sticky bottom bar was persistently in the way). */
@@ -6404,13 +6404,13 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: var(--shadow-md);
   transform: translateX(2px);
 }
-/* The group you're currently customizing — clearly marked in the roster. */
+/* The group you're currently customizing, clearly marked in the roster. */
 .overview-group-card.overview-group-active {
   background: var(--navy-subtle);
   box-shadow: inset 3px 0 0 0 var(--navy), 0 0 0 1px var(--navy-subtle), var(--shadow-md);
   border-left-width: 5px;
 }
-/* Drag-reorder grip on a group card — only shown when its weight class holds 2+
+/* Drag-reorder grip on a group card. Only shown when its weight class holds 2+
    groups. Always visible (subtle) so the affordance is discoverable, unlike the
    old hover-only grip which read as "not there". */
 .overview-group-grip {
@@ -6544,7 +6544,7 @@ h1, h2, h3, h4, h5, h6 {
   .ovg-step { transition: background-color 110ms ease, color 110ms ease, border-color 110ms ease; }
   .ovg-step:active:not(:disabled) { transform: none; }
 }
-/* At the minimum, − removes the whole group — hint with a danger tint. */
+/* At the minimum, − removes the whole group, hint with a danger tint. */
 .ovg-step-remove { color: var(--danger, #c43c2f); border-color: rgba(196, 60, 47, 0.4); }
 .ovg-step-remove:hover { background: var(--danger, #c43c2f) !important; color: #fff !important; border-color: var(--danger, #c43c2f) !important; }
 .ovg-step-remove:active:not(:disabled) { background: var(--danger, #c43c2f) !important; border-color: var(--danger, #c43c2f) !important; }
@@ -6691,7 +6691,7 @@ h1, h2, h3, h4, h5, h6 {
 .detail-hero-image img {
   width: 100%;
   height: 100%;
-  /* Ships are wide — show the whole sculpt rather than cropping it to a square. */
+  /* Ships are wide. Show the whole sculpt rather than cropping it to a square. */
   object-fit: contain;
 }
 /* Facts (tonnage/cost/badges) at the top, stat grid filling the middle, and the
@@ -6857,8 +6857,8 @@ h1, h2, h3, h4, h5, h6 {
   .topbar-context { display: none; }
   .topbar-brand { font-size: var(--text-sm); }
   /* On a phone only "Unofficial" survives. It is the word that is actually
-     doing work — Dropzone Commander belongs to TTCombat and this is a fan tool
-     — and "Army Builder" is already said by the logo beside it and the screen
+     doing work, Dropzone Commander belongs to TTCombat and this is a fan tool
+    , and "Army Builder" is already said by the logo beside it and the screen
      underneath. Dropping the disclosure entirely on the one device this app is
      built for would be the wrong thing to save 90px on. */
   .topbar-title-rest { display: none; }
@@ -6907,7 +6907,7 @@ h1, h2, h3, h4, h5, h6 {
     transform: translateY(0);
     overflow-y: auto;
   }
-  /* The collapsed sidebar sits as a fixed 48px bottom peek here — give the
+  /* The collapsed sidebar sits as a fixed 48px bottom peek here. Give the
      footer room so the peek floats above it instead of covering it. */
   .game-info-footer { padding-bottom: calc(48px + var(--sp-lg) + env(safe-area-inset-bottom, 0px)); }
 
@@ -7023,7 +7023,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Tablets (Fluent "large" ≥640px, incl. iPad portrait at 768) get the full
-   three-panel builder layout — sidebar + overview + detail — rather than the
+   three-panel builder layout, sidebar + overview + detail, rather than the
    phone bottom sheet. */
 @media (min-width: 640px) and (max-width: 768px) {
   .builder-layout { flex-direction: row; }
@@ -7050,7 +7050,7 @@ h1, h2, h3, h4, h5, h6 {
   }
   .overview-group-pts { font-size: var(--text-md); }
   .overview-group-art { width: 44px; height: 44px; }
-  /* The detail panel is narrow at this width — stack the ship card (art on top,
+  /* The detail panel is narrow at this width. Stack the ship card (art on top,
      full-width content below) so the name/points/stats aren't squeezed. */
   .builder-detail .group-ship-entry { flex-direction: column; }
   .builder-detail .ship-card-image { width: 100%; height: 120px; }
@@ -7093,7 +7093,7 @@ h1, h2, h3, h4, h5, h6 {
      station-armaments layout, which adds a stepper column past the plain
      6-column weapon grid above. That extra column has no override at this
      width, so it inherits the wider desktop-narrow-panel grid (sized for the
-     ~309–380px #builder-detail column on a real desktop) — on an actual phone
+     ~309–380px #builder-detail column on a real desktop). On an actual phone
      screen the Special chips and the stepper's "+cost" button end up sharing
      the same cramped cell and visually overlap. Explicitly place every cell so
      Special still wraps to its own full-width row, but the stepper keeps a
@@ -7192,7 +7192,7 @@ h1, h2, h3, h4, h5, h6 {
   white-space: normal; width: max-content; max-width: min(260px, 70vw);
 }
 
-/* Disable tooltips on touch — they require hover */
+/* Disable tooltips on touch, they require hover */
 @media (hover: none) {
   [data-tooltip]::after { display: none; }
 }
@@ -7257,7 +7257,7 @@ body[data-view="builder"] .game-info-footer {
 }
 
 /* ===========================================================================
-   Combat Calculator (js/calc-ui.js) — standalone tool + builder pane.
+   Combat Calculator (js/calc-ui.js), standalone tool + builder pane.
    Light Art Deco theme, no external chart library.
    =========================================================================== */
 
@@ -7664,7 +7664,7 @@ html[data-theme="dark"] .play-hull-plus:hover { color: #81c784; }
   background: rgba(196,60,47,0.12); color: var(--error);
   letter-spacing: 0.06em; text-transform: uppercase; font-family: var(--font-condensed);
 }
-/* Crippled toggle — sits next to the HP pill, reveals the crippling-effects panel */
+/* Crippled toggle. Sits next to the HP pill, reveals the crippling-effects panel */
 .play-crip-toggle {
   position: relative; flex-shrink: 0; height: 26px; padding: 0 10px;
   border: 1px solid var(--stroke); border-radius: var(--radius-sm);

@@ -12,10 +12,10 @@
  *
  * The sheet's own rules are NOT inside @media print any more. The preview has
  * to show the same document on screen, and a rule that only exists at print
- * time is a preview that lies — which is the one thing a preview may not do.
+ * time is a preview that lies. Which is the one thing a preview may not do.
  * They are scoped to the two places the sheet is ever rendered: the hidden
- * print container and the preview's paper. Only the page-level rules — hiding
- * the app, the paper size — stay in @media print, because those have no
+ * print container and the preview's paper. Only the page-level rules, hiding
+ * the app, the paper size, stay in @media print, because those have no
  * meaning on screen.
  */
 
@@ -35,8 +35,8 @@
   background: #fff;
 }
 /* The sheet is a piece of paper whatever theme the app is wearing, and paper
-   is white. app.css colours every heading with var(--ink) — a rule, which
-   beats the inheritance above — so in the dark theme the army name, every
+   is white. app.css colours every heading with var(--ink), a rule, which
+   beats the inheritance above, so in the dark theme the army name, every
    Group name and "Rules used" came out near-white on white, in the preview and
    on the printed page both. */
 :is(#dzc-print, .pp-paper) :is(h1, h2, h3, h4, h5, h6) { color: #000; }
@@ -69,7 +69,7 @@
 :is(#dzc-print, .pp-paper) .pr-sq-cat { font-size: 7.5pt; text-transform: uppercase; letter-spacing: .05em; border: .5pt solid #666; padding: 0 3pt; border-radius: 2pt; }
 :is(#dzc-print, .pp-paper) .pr-sq-cost { margin-left: auto; font-weight: 700; white-space: nowrap; }
 /* Capacity and cargo, as the symbols themselves. Sized down to sit on an 8.5pt
-   line without pushing the row apart — the glyph has to be small enough to be
+   line without pushing the row apart. The glyph has to be small enough to be
    a note beside the name and big enough to still read its digit. */
 /* RM aboard a Genitor. Bold because it is a setup instruction rather than a
    stat: this many tokens go on the model before Round 1. */
@@ -121,7 +121,7 @@
  * what each costs you in pages.
  */
 
-/* Compact. Everything shrinks together — the sheet is already sized in points
+/* Compact. Everything shrinks together. The sheet is already sized in points
    so one step down the type scale takes the spacing with it. */
 :is(#dzc-print, .pp-paper).is-compact { font-size: 8.5pt; line-height: 1.3; }
 :is(#dzc-print, .pp-paper).is-compact .pr-group { padding: 3pt 5pt; margin-bottom: 4pt; }
@@ -131,9 +131,9 @@
 :is(#dzc-print, .pp-paper).is-compact .pr-wpn { font-size: 7pt; }
 :is(#dzc-print, .pp-paper).is-compact .pr-rule p { font-size: 7.5pt; line-height: 1.3; }
 
-/* Ink-saver. The rules stay — the nesting rule down the left of a carried
+/* Ink-saver. The rules stay. The nesting rule down the left of a carried
    Squad is what makes the tree readable, and losing it would cost the sheet
-   its whole point — but they go hairline and every grey goes black, because
+   its whole point. But they go hairline and every grey goes black, because
    grey text is the thing a cheap printer renders worst and it is not saving
    ink to print it twice. */
 :is(#dzc-print, .pp-paper).is-ink .pr-group { border-width: .25pt; }
@@ -145,7 +145,7 @@
 :is(#dzc-print, .pp-paper).is-ink .pr-sq-cat { border-width: .25pt; border-color: #000; }
 :is(#dzc-print, .pp-paper).is-ink :is(.pr-cap, .pr-variants, .pr-rule .pr-src) { color: #000; }
 /* Ink-saver: the shapes go black-on-white. Shape alone carries the meaning
-   (3.2.4.2) — the colour is 1:1 with it and therefore redundant — and a solid
+   (3.2.4.2), the colour is 1:1 with it and therefore redundant, and a solid
    coloured fill is the most expensive thing on the sheet. Cargo stays solid so
    the "drops into the hollow" grammar survives; the digit inside it flips to
    white against that black. */
@@ -170,7 +170,7 @@
  *
  * A sheet of A4 at its real size, with the page boundaries drawn on it. mm and
  * pt are absolute CSS units, so 210mm on screen is 210mm of paper and 10pt of
- * body text is 10pt — the preview is to scale rather than an impression of one.
+ * body text is 10pt. The preview is to scale rather than an impression of one.
  */
 .pp-overlay {
   position: fixed; inset: 0; z-index: 1200;
@@ -179,8 +179,8 @@
 }
 /* The bar is chrome, not paper, so it follows the theme. --surface-1 is
    defined nowhere in the project, so it always fell back to cream while the
-   text on it inherited the theme's ink: in the dark theme the whole toolbar —
-   title, page count, all three toggles — was near-white on cream. */
+   text on it inherited the theme's ink: in the dark theme the whole toolbar.
+   Title, page count, all three toggles, was near-white on cream. */
 .pp-bar {
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
   padding: 8px 12px; background: var(--surface-2, #fdfaf3);
@@ -197,8 +197,8 @@
 .pp-opt input { margin: 0; }
 /* align-items: flex-start, because the default is stretch and a stretched sheet
    is a sheet as tall as your window. The page count is measured off the paper's
-   own height, so on a phone — where the shrunk sheet is shorter than the scroll
-   box — the paper was being pulled down to fill it and the same one-page army
+   own height, so on a phone, where the shrunk sheet is shorter than the scroll
+   box, the paper was being pulled down to fill it and the same one-page army
    read as three. */
 .pp-scroll {
   flex: 1; overflow: auto; padding: 16px 8px 40px;
@@ -215,8 +215,8 @@
   box-sizing: border-box;
   background: #fff;
   box-shadow: 0 6px 28px rgba(0, 0, 0, .45);
-  /* A4 is wider than a phone. The sheet shrinks WHOLE rather than reflowing —
-     a preview that reflows is showing you a page you are not going to get.
+  /* A4 is wider than a phone. The sheet shrinks WHOLE rather than reflowing.
+     A preview that reflows is showing you a page you are not going to get.
      zoom rather than transform because zoom changes the layout box, so the
      shrunk sheet stops overflowing instead of merely looking smaller. The
      measurement reads mm off the rendered width, so it follows this down. */

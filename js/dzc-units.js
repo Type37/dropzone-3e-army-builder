@@ -1,4 +1,4 @@
-/* DZC unit reference — the first screen rendered from data/dzc/.
+/* DZC unit reference. The first screen rendered from data/dzc/.
  *
  * Deliberately its own file rather than more of app.js: app.js is 9,600 lines
  * of Dropfleet domain logic that is being retired, and nothing here should
@@ -19,7 +19,7 @@
     { id: 'bioficer', name: 'Bioficers', full: 'Bioficers', accent: '#9c1818' },
     /* Not a faction, and it is last for that reason: the Behemoth PDF prints
        ten of them and none of the cards says whose they are. Until that is
-       known they are a set you can read, not a faction you can build from —
+       known they are a set you can read, not a faction you can build from,
        every one is selectable: false, so they never reach the picker. */
     { id: 'behemoth', name: 'Behemoths', full: 'Behemoths', accent: '#6b6459' }
   ];
@@ -59,15 +59,15 @@
 
   /* A transport badge.
    *
-   * Two words, and only these two. A HOLLOW badge is this unit's CAPACITY —
-   * room it offers. A SOLID one is its CARGO — the room it takes up aboard
+   * Two words, and only these two. A HOLLOW badge is this unit's CAPACITY,
+   * room it offers. A SOLID one is its CARGO. The room it takes up aboard
    * something else. "Carries" and "Takes up" were two more ways of saying the
    * same pair, and a vocabulary of four words for two ideas is how a symbol
    * stops being read.
    *
    * The solid is drawn SMALLER than the hollow, and that is the whole grammar
    * in one picture: a green solid looks like it would drop into a green hollow,
-   * because that is exactly what it does. Same path, same ink, same digit —
+   * because that is exactly what it does. Same path, same ink, same digit,
    * only the size says which way round it is, so the shape stays free to mean
    * what the rulebook says it means (3.2.4.2).
    *
@@ -84,7 +84,7 @@
     // (where the digit sits, see .dzc-badge-triangle in dzc.css) is nowhere
     // near as wide as a square or diamond's. A 2-digit count (12/18/24 appear
     // 9 times across the six factions) is wide enough to overhang the sloped
-    // edge. Shrink only when both things are true — and as a ratio, so it
+    // edge. Shrink only when both things are true. And as a ratio, so it
     // follows whatever size the context asked for.
     const tight = (shape === 'triangle' || shape === 'triangle-down') && String(n).length > 1;
     const style = `color:${hollow ? s.ink : '#fff'}${tight ? ';font-size:.78em' : ''}`;
@@ -128,7 +128,7 @@
   /* How many of it you take, in the words its own card uses.
    *
    * "Behemoths have a Groups Equivalent stat instead of Squad Size" (Behemoth
-   * rules 1.1) — instead of, not as well as. All eleven of them were labelled
+   * rules 1.1), instead of, not as well as. All eleven of them were labelled
    * "Squad 1", which is a stat their cards do not print, while the number that
    * decides how much of your Group allowance one eats appeared nowhere in the
    * app at all. It is four or five for most of them, out of twelve for a
@@ -162,10 +162,10 @@
 
   /* Two views of the same block.
    *
-   *   compact  — the "Add a Squad" picker. Icon plus the short code the stat
+   *   compact , the "Add a Squad" picker. Icon plus the short code the stat
    *              card itself prints. Four cards across cannot carry six
    *              spelled-out words.
-   *   detailed — the default once a unit is on your list, and whenever you tap
+   *   detailed. The default once a unit is on your list, and whenever you tap
    *              one to see everything. Icon plus the word.
    *
    * The codes are the game's own (Mv, A, DP, OF, DF, B) rather than one letter
@@ -180,7 +180,7 @@
     // icon.
     // Only what the unit's card actually prints. Vehicles and Aircraft have
     // Mv/A/DP; Infantry have Mv/OF/DF/B/DP. Armour is meaningless on Infantry
-    // and Bravery on a tank, so an empty cell for it is noise — showing three
+    // and Bravery on a tank, so an empty cell for it is noise, showing three
     // greyed dashes made every Vehicle look half broken.
     const stats = u.stats || {};
     const keys = STAT_ORDER.filter(k => stats[k] != null);
@@ -189,7 +189,7 @@
     const cells = keys.map(k => {
       const label = window.DZC.statLabel(k);
       // The hover carries what the stat MEANS. It used to carry the label,
-      // which the cell prints directly underneath — a tooltip repeating what
+      // which the cell prints directly underneath, a tooltip repeating what
       // is already on the screen.
       return `<div class="dzc-stat" title="${esc(window.DZC.statHelp(k))}">
         <span class="dzc-stat-i">${window.DZCIcon.stat(k, { size: 17, type: u.type })}</span>
@@ -254,9 +254,9 @@
       // The page goes on the hover too, not only in the popover: someone
       // reading the tooltip with the rulebook open wants to turn to it without
       // a second click to find out where.
-      const tip = (window.DZC.ruleText(tok, faction) || 'No glossary entry — read it from the stat card.')
+      const tip = (window.DZC.ruleText(tok, faction) || 'No glossary entry. Read it from the stat card.')
         + (r && r.page ? ` (p.${r.page})` : '');
-      // Written out — "Tracking-1", not "T1". The printed token is still what
+      // Written out, "Tracking-1", not "T1". The printed token is still what
       // looks it up and still what the popover is opened with.
       return `<button type="button" class="dzc-rule${r ? '' : ' dzc-rule--unknown'}"
         onclick="DZCUnits.showRule(this,'${esc(tok).replace(/'/g, '&#39;')}')"
@@ -273,7 +273,7 @@
     ].join('');
     return `<article class="dzc-card" onclick="DZCUnits.openDetail('${esc(u.id)}')" tabindex="0"
       onkeydown="if(event.key==='Enter'){DZCUnits.openDetail('${esc(u.id)}')}">
-      <!-- Picture, and directly under it the capacity and cargo symbols — on
+      <!-- Picture, and directly under it the capacity and cargo symbols, on
            EVERY card, whether the unit prints one or not. They used to sit at
            the bottom of the body and only when there was something to show, so
            the one thing that decides whether a Unit can join a Group was in a
@@ -333,7 +333,7 @@
       return `<section class="dzc-group">
         <h2 class="dzc-group-head">${esc(cat)}
           <span class="dzc-group-count">${inCat.length} unit${inCat.length === 1 ? '' : 's'}</span>
-          ${cat === 'Generated' ? '<span class="dzc-group-note">produced in play — cannot be chosen</span>' : ''}
+          ${cat === 'Generated' ? '<span class="dzc-group-note">produced in play, cannot be chosen</span>' : ''}
         </h2>
         <div class="dzc-grid">${inCat.map(u => unitCard(u, state.faction)).join('')}</div>
       </section>`;
@@ -363,11 +363,11 @@
    * this that is "enough for the roster", because the numbers you argue over
    * at the table are the ones in this table. */
   /* The weapon table's header and one row of it, separately, because the
-   * upgrade chooser needs the same eight columns with a ninth of its own —
-   * an upgrade is a weapon and should be read as one, not as a name and a
+   * upgrade chooser needs the same eight columns with a ninth of its own.
+   * An upgrade is a weapon and should be read as one, not as a name and a
    * price you have to go and look up. */
   /* Every column heading carries its rulebook definition on hover, the same
-   * way the stat cells do — "Accuracy" over a column of 3+ and 4+ tells you
+   * way the stat cells do. "Accuracy" over a column of 3+ and 4+ tells you
    * nothing about the "A" two rows down, which hits automatically (2.7). */
   function wpnHead(extra) {
     const h = k => esc(window.DZC.weaponColHelp(k));
@@ -438,8 +438,8 @@
 
   /* Which printed weapons a bought upgrade has taken AWAY, by index.
    *
-   * Five cards print a swap — "May replace both its MC-20 Chainguns with MM-15
-   * Sidearm Missiles" — and the app used to grant the new gun and keep the old
+   * Five cards print a swap, "May replace both its MC-20 Chainguns with MM-15
+   * Sidearm Missiles", and the app used to grant the new gun and keep the old
    * ones, so a Super Heavy Tank went to the table with a sheet listing three
    * guns it does not have. The scanner reads the sentence into what it removes
    * and what it grants; this applies it.
@@ -453,7 +453,7 @@
     if (!o.hasUpgrade) return out;
     const ws = u.weapons || [];
     (u.swaps || []).forEach(sw => {
-      // A swap with no gun to buy has no control to take it with yet — the
+      // A swap with no gun to buy has no control to take it with yet, the
       // Harrier Gunship's "remove one UM-117 Cannons and gain Scanner and
       // Scout". Its sentence is still printed; nothing is removed for it.
       if (!sw.grants) return;
@@ -474,7 +474,7 @@
 
   /* The guns a Squad fires, with the rest dropped. This is the PAPER answer:
    * the printed sheet cannot dim a row, and its rules appendix must not collect
-   * a rule off a gun nobody fires — a paragraph printed for nothing. On screen
+   * a rule off a gun nobody fires, a paragraph printed for nothing. On screen
    * use weaponsHtml, which marks instead of drops. */
   function unitWeapons(u, opts) {
     const o = opts || {};
@@ -483,7 +483,7 @@
     return (u.weapons || []).filter((w, i) => !gone[i] && weaponLive(u, w, o));
   }
 
-  /* Every weapon printed on the card, always — including guns that only a
+  /* Every weapon printed on the card, always. Including guns that only a
    * variant you did not take carries, and upgrades nobody has bought.
    *
    * A Squad used to get this table filtered down to the guns it fires, which
@@ -491,7 +491,7 @@
    * said which rows were live, and the answer taken was deletion. Marking says
    * it without hiding, keeps the table the same shape as the card you are
    * holding, and stops it changing height every time you toggle an upgrade.
-   * Nothing on a row needs explaining that the row does not already say — the
+   * Nothing on a row needs explaining that the row does not already say. The
    * name cell carries "Alexander only" and "+10pts" as it always has. */
   /* The variant switcher over a weapon table.
    *
@@ -501,7 +501,7 @@
    * pick a variant and the table is that variant's guns and the ones every
    * variant carries.
    *
-   * It is a LENS, not a choice — it changes nothing about the Unit and nothing
+   * It is a LENS, not a choice. It changes nothing about the Unit and nothing
    * about a Squad. Which is why it opens on "All": the card is the whole card
    * until you ask it to be less, and a switcher that starts filtered is a
    * switcher that hides seven eighths of a stat card from someone who did not
@@ -540,7 +540,7 @@
       .filter(([w]) => inLens(w, lens))
       .map(([w, i]) => {
         // A weapon a swap took away is struck out rather than dimmed. It is not
-        // "a gun this Squad could have" — it is one the card printed and the
+        // "a gun this Squad could have", it is one the card printed and the
         // purchase above traded in, which is a different thing to say.
         const mark = gone[i] ? 'is-swapped' : weaponLive(u, w, o) ? 'is-live' : 'is-off';
         const cls = [w.box === 'upgrade' ? 'is-upgrade' : w.box === 'variant' ? 'is-variant' : '']
@@ -563,13 +563,13 @@
   /* A weapon as a CARD rather than a row of a wide table.
    *
    * The table wants ~620px and got it by scrolling sideways inside its own box,
-   * which on a phone means the Special column — the one carrying the rules — is
+   * which on a phone means the Special column, the one carrying the rules, is
    * the one you never see without dragging. And eight columns of 10px headings
    * repeated above every Unit is a lot of chrome for six numbers.
    *
    * The card is Jet's layout: the name, the arc drawn once at a size you can
    * actually read, then the six values in two columns of label-and-number, then
-   * the rules underneath at full width. Nothing is dropped — this is the same
+   * the rules underneath at full width. Nothing is dropped. This is the same
    * eight fields, laid out to be read rather than to line up.
    *
    * The numbers still line up: each pair is a grid with a fixed label column, so
@@ -593,13 +593,13 @@
            /* "5d6". Attacks IS a number of dice, so it prints as one --
               Jet, 2026-08-07. */
            ? window.DZCIcon('dice', { size: 13 }) : ''}</span>`}</div>`;
-    /* "Sabre only" — and NOT under a heading that already says Sabre.
+    /* "Sabre only". And NOT under a heading that already says Sabre.
      *
      * Jet, 2026-08-07: "remove this line shit: Sabre only... it's obvious what
      * the source is." In a Squad the cards are dealt out into a block per
      * variant, so the gun under the Sabre heading is the Sabre's gun and the
      * label repeated the heading four rows running. `grouped` is that case.
-     * Ungrouped — the reference card, which prints every gun in one list —
+     * Ungrouped. The reference card, which prints every gun in one list,
      * nothing else says it, so it stays. */
     const only = o.grouped || !(w.variants || []).length ? '' : w.variants.join(', ');
     return `<article class="dzc-wc${o.cls ? ' ' + o.cls : ''}">
@@ -633,7 +633,7 @@
   /* Which guns were this Squad's last time we drew it, keyed by Squad and
    * weapon name. Buying an upgrade or taking a Variant rebuilds the whole
    * builder, so without a memory across renders there is no way to tell "this
-   * gun is yours" from "this gun just became yours" — and the moment you paid
+   * gun is yours" from "this gun just became yours". And the moment you paid
    * for it is the moment worth marking.
    *
    * A name the map has never seen is not an unlock: the first draw of a Squad
@@ -675,8 +675,8 @@
 
   /* A Behemoth's Gear: equipment priced in POWER, not points.
    *
-   * It costs nothing to put on a list — it comes out of the same pool the
-   * Behemoth spends to act (Behemoth rules 1.2, 1.7) — so it is not a purchase
+   * It costs nothing to put on a list, it comes out of the same pool the
+   * Behemoth spends to act (Behemoth rules 1.2, 1.7), so it is not a purchase
    * and gets no buttons. It is a price list you read during a game, which is
    * why it sits with the weapons rather than with the upgrades.
    *
@@ -687,14 +687,14 @@
     const fac = u.faction || faction || state.faction;
     if (!(u.gear || []).length) return '';
     return `<div class="dzc-gear">
-      <span class="dzc-gear-head">Gear — paid in Power, not points</span>
+      <span class="dzc-gear-head">Gear, paid in Power, not points</span>
       <ul class="dzc-gear-list">${u.gear.map(g => `<li>
         <span class="dzc-gear-pt">${esc(g.power)}<small>PT</small></span>
         ${rulesHtml(g.name, fac) || esc(g.name)}</li>`).join('')}</ul>
     </div>`;
   }
 
-  /* The sentence on the card that qualifies its upgrades — "Only one of these
+  /* The sentence on the card that qualifies its upgrades. "Only one of these
    * upgrades may be taken", "May replace both its MC-20 Chainguns with MM-15
    * Sidearm Missiles". The builder has always shown it over the upgrade
    * buttons, where it is the constraint on a choice; here it is the same
@@ -703,7 +703,7 @@
    * you.
    *
    * Gated on there BEING an upgrade, which is belt and braces now that
-   * audit_data refuses a note with no upgrade weapon behind it — the fault it
+   * audit_data refuses a note with no upgrade weapon behind it. The fault it
    * was written for was Drones and Hulks carrying a paragraph of lore in this
    * field, and that is fixed in the scanner. The gate stays because a note
    * with nothing to qualify is not a note, whatever put it there. */
@@ -724,7 +724,7 @@
    *
    * `opts.stats: false` drops the stat grid under each block. DZC variants
    * differ by gun and price and never by stats, so a Squad of five variants
-   * repeated one identical grid five times — which is worth it when you are
+   * repeated one identical grid five times. Which is worth it when you are
    * comparing two Units and is pure bulk when you are scanning ten. Compact
    * view is what asks for it. */
   /* Variants, and their stats ONLY where a variant has any of its own.
@@ -747,10 +747,9 @@
       ${u.variants.map((v, i) => {
         const own = (u.weapons || []).filter(w =>
           w.box === 'variant' && (w.variants || []).indexOf(v.name) !== -1);
-        const head = [esc(v.name)]
-          .concat(own.length ? [own.map(w => esc(w.name)).join(', ')] : [])
-          .concat([v.points != null ? v.points + 'pts' : '—'])
-          .join(' — ');
+        const head = esc(v.name)
+          + (own.length ? ': ' + own.map(w => esc(w.name)).join(', ') : '')
+          + (v.points != null ? ` (${v.points}pts)` : '');
         const differs = v.stats && JSON.stringify(v.stats) !== base;
         // The rules the card gives this Variant and no other (3.2.2). On the
         // Variant, the same as its own weapons are -- the whole point of the
@@ -771,7 +770,7 @@
    * reminding. It is not fine when you are deciding: you cannot compare two
    * Units by hovering eleven chips in turn, and on a phone there is no hover
    * at all, so the tooltip does not exist. The source comment on Dropfleet's
-   * equivalent says it outright — "always visible, this is build-critical
+   * equivalent says it outright. "always visible, this is build-critical
    * info, not flavour" (app.js:4129).
    *
    * Keyed by the PRINTED keyword rather than the rule id, the same way the
@@ -849,8 +848,8 @@
       ${unitRulesHtml(u, u.faction || state.faction)}`;
     /* NOT the Unit's name: the body opens with it, at size and beside its
      * capacity symbol, and on a phone both were on screen at once. The header
-     * is what stays put when the body scrolls, so it says what the panel is —
-     * in the app's own words for it, and not the word this project does not
+     * is what stays put when the body scrolls, so it says what the panel is.
+     * In the app's own words for it, and not the word this project does not
      * write (CLAUDE.md §3). */
     document.querySelector('#dzc-detail .modal-title').textContent = 'Stats, weapons and rules';
     document.getElementById('dzc-detail').classList.add('active');
@@ -897,7 +896,7 @@
           ? ` <span class="dzc-pop-alias">(${esc(token)})</span>` : ''}</h5>
          <p>${window.DZC.linkKeywords(window.DZC.ruleText(token, state.faction), state.faction, r.name)}</p>
          <span class="dzc-pop-src">${esc(ruleSource(r))}</span>`
-      : `<h5>${esc(token)}</h5><p>No glossary entry for this keyword — read it from the stat card.</p>`;
+      : `<h5>${esc(token)}</h5><p>No glossary entry for this keyword. Read it from the stat card.</p>`;
     document.body.appendChild(pop);
     placePop(pop, el);
     setTimeout(() => document.addEventListener('click', onDocClick), 0);

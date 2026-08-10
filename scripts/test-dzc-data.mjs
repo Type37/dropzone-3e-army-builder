@@ -76,7 +76,7 @@ eq(DZC.commanderLevels('clash').some(l => l.level === 7), false, 'L7 is not allo
 /* The band EDGES and the Commander prices, against the book.
  *
  * data/dzc/index.json is the one file in the pipeline that is transcribed
- * rather than scanned — chapter 3's limits are prose tables, so there is
+ * rather than scanned. Chapter 3's limits are prose tables, so there is
  * nothing to parse. That makes it the one file where a slip is a typing
  * mistake nobody would notice, and every number in it decides whether an
  * illegal army is refused.
@@ -229,8 +229,8 @@ console.log('\npage numbers (gap 39)');
   eq(DZC.rule('Nanomachines', 'phr').page, null,
      'a faction rule carries none, because its page 1 is not the rulebook\'s');
   /* "Core" is no longer the same thing as "in the rulebook". The 39 Behemoth
-   * rules are core — Macro and Huge Blast are how Behemoths work, not a
-   * faction's trick — but they come out of the Behemoth supplement, and its
+   * rules are core, Macro and Huge Blast are how Behemoths work, not a
+   * faction's trick, but they come out of the Behemoth supplement, and its
    * p.4 is a different book's p.4. Each rule says which document its page is
    * in, and the range check follows the document rather than assuming one. */
   const core = DZC.rules.core;
@@ -484,8 +484,8 @@ eq(DZC.loadCheck(bear, [{ unit: legion, count: 3 }]).ok, true, 'a Bear APC carri
 /* "You may take as many identical Transports as needed" (3.2.4), and Group 3
  * of the rulebook's worked examples is a single Squad filling SEVERAL
  * identical Transports. Both of these read one vehicle's capacity until
- * 2026-08-01, so six Legionnaires in two Bear APCs — a legal Group, and an
- * ordinary one — was reported as "Bear APC has 3 square capacity, needs 6"
+ * 2026-08-01, so six Legionnaires in two Bear APCs, a legal Group, and an
+ * ordinary one, was reported as "Bear APC has 3 square capacity, needs 6"
  * with nothing you could do about it. Found by the random army generator,
  * which has to produce a legal army and so argues with every rule at once. */
 ok(!DZC.loadCheck(bear, [{ unit: legion, count: 6 }]).ok, 'six Legionnaires do not fit ONE Bear APC');
@@ -520,10 +520,10 @@ eq(tegu.transport.capacityMode, 'either', 'Tegu is either/or');
  * numbers around them: an Accuracy of "A" hits automatically and a Bravery of
  * "A" passes automatically (2.6.1, 2.7), and both are printed on real cards.
  *
- * The hover used to carry the label, which the cell already prints — a tooltip
+ * The hover used to carry the label, which the cell already prints: a tooltip
  * saying what is written directly under it. */
 console.log('\nwhat a stat means, not just what it is called');
-ok(/^Bravery — /.test(DZC.statHelp('B')), 'a stat hover leads with the stat name', DZC.statHelp('B'));
+ok(/^Bravery: /.test(DZC.statHelp('B')), 'a stat hover leads with the stat name', DZC.statHelp('B'));
 ok(/a value of A passes automatically/.test(DZC.statHelp('B')),
    'and Bravery says what an A means', DZC.statHelp('B'));
 ok(/a value of A hits automatically/.test(DZC.weaponColHelp('Ac')),
@@ -587,8 +587,8 @@ eq(DZC.weaponColHelp('Special'), '', 'and a column with no definition gets no em
 // ------------------------------------------------------------------ arc icons
 console.log('\nfiring arcs are 90-degree wedges (6.1.2)');
 {
-  /* Counted off OPACITY, not off fill. Every wedge is drawn now — an unlit one
-   * is what a lit one is read against — so "how many are filled" stopped being
+  /* Counted off OPACITY, not off fill. Every wedge is drawn now, an unlit one
+   * is what a lit one is read against, so "how many are filled" stopped being
    * a question about the fill attribute and became one about which are lit. */
   const wedges = a => (Icon.arc(a).match(/opacity="1"/g) || []).length;
   const drawn = a => (Icon.arc(a).match(/<path /g) || []).length;

@@ -52,7 +52,7 @@ for (const [label, file] of SUITES) {
 
 /* ruff and pyright over tools/dzc.
  *
- * uv is found the way it is actually installed on this machine — pip install
+ * uv is found the way it is actually installed on this machine. Pip install
  * uv puts uv.exe in a user Scripts directory that is not on PATH, so `uv`
  * alone fails while `python -m uv` works. Both are tried before giving up.
  *

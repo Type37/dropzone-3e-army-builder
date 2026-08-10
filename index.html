@@ -7,7 +7,7 @@
 <!-- The phone redirect to /mobile/ is GONE.
      Two builds drifted apart in the Dropfleet app, and here it was actively
      wrong: /mobile/ is still the Dropfleet builder, so every phone opening this
-     site landed in the wrong game. One responsive app instead — HANDOFF §2. -->
+     site landed in the wrong game. One responsive app instead, HANDOFF §2. -->
 <script>
   // Apply the saved theme before first paint (no flash of light on dark-mode users).
   (function () {
@@ -23,7 +23,7 @@
 <!-- ?v= BUMPS WITH THE PICTURE, and it is not decoration. Discord, Slack,
      iMessage and Twitter all re-host an og:image on their own proxy and key
      that cache on the image URL, so replacing the file on disk changes nothing
-     anyone sees — the old shot keeps being served for days. A new query string
+     anyone sees. The old shot keeps being served for days. A new query string
      is a new URL, which is the only reliable way to evict it. Bump this every
      time scripts/shots.mjs regenerates og-preview.png, the same way sw.js
      bumps its CACHE, and keep the twitter:image below identical to it. -->
@@ -95,8 +95,8 @@
         </div>
         <!-- Not "Army Builder": the bar directly above it now says that, and
              the footer says it a third time. This tile goes to the list of
-             armies you have, which is what it should have been called anyway
-             — you land on a list, not on a builder. -->
+             armies you have, which is what it should have been called anyway:
+             you land on a list, not on a builder. -->
         <h2 class="tool-card-title">Your Armies</h2>
       </div>
       <!-- Collection is opt-in and off by default, as in the Dropfleet builder.
@@ -138,7 +138,7 @@
     <div class="modal-body" id="dzc-new-body"></div>
     <div class="modal-footer">
       <button class="btn btn-ghost" type="button" onclick="DZCBuilder.closeNew()">Cancel</button>
-      <!-- Same faction, size and limit you have already chosen — it fills the
+      <!-- Same faction, size and limit you have already chosen, so it fills the
            list instead of leaving it empty. -->
       <button class="btn btn-outline" type="button" onclick="DZCBuilder.surpriseMe()">Surprise me</button>
       <button class="btn btn-primary dzc-create" id="dzc-create-btn" type="button" onclick="DZCBuilder.createArmy()">Create</button>
@@ -358,7 +358,7 @@
     if (window.caches) caches.keys().then(ks => ks.forEach(k => caches.delete(k))).catch(() => {});
   } else if ('serviceWorker' in navigator) {
     // Auto-reload an already-controlled tab when a new build takes over, and poll
-    // for new versions while open — so a live tab self-updates (no hard refresh).
+    // for new versions while open, so a live tab self-updates (no hard refresh).
     if (navigator.serviceWorker.controller) {
       let reloading = false;
       navigator.serviceWorker.addEventListener('controllerchange', () => {
