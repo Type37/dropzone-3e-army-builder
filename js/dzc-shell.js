@@ -24,13 +24,6 @@ const App = (() => {
   const DZC_KEY = 'dzc_builder_settings';
   let settings = { theme: 'light' };
 
-  /* Feedback goes to the maker's inbox through the reader's own mail app. The
-   * body is prefilled with the four questions, because a bare mailto returns
-   * "looks cool" and a guided one returns something you can act on.
-   *
-   * The questions are Dropfleet's, word for word (FEEDBACK_HREF, git show
-   * 43773fa:js/app.js:16) with the game swapped -- this is exactly the copy
-   * CLAUDE.md §2 says not to rewrite. */
   /* WHICH BUILD THIS IS.
    *
    * The same number sw.js names its cache with, which is bumped on every
@@ -50,8 +43,16 @@ const App = (() => {
    * a worse version of something already automatic. It is the build NUMBER,
    * so a report can say which one it came from and "that was fixed in 419"
    * becomes an answer instead of a guess. */
-  const BUILD = 423;
+  const BUILD = 424;
 
+  /* Feedback goes to the maker's inbox through the reader's own mail app. The
+   * body is prefilled with the four questions, because a bare mailto returns
+   * "looks cool" and a guided one returns something you can act on.
+   *
+   * The questions are Dropfleet's, word for word (FEEDBACK_HREF, git show
+   * 43773fa:js/app.js:16) with the game swapped -- this is exactly the copy
+   * CLAUDE.md §2 says not to rewrite. The build number on the end is not
+   * Dropfleet's and is not copy: it is the one answer nobody can give. */
   const FEEDBACK_HREF = 'mailto:warlore1@outlook.com?subject='
     + encodeURIComponent('Dropzone Builder feedback') + '&body='
     + encodeURIComponent(
@@ -578,6 +579,14 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-10', title: 'A handle you can see, a button with a word on it, and the Foeslayer put back where the card has it', items: [
+      'The drag handle was invisible. Two players decided the app had no drag and drop at all, and one of them only found the six dots at 200% zoom. Three things were wrong: the dots drew at about a seventh of the contrast a control needs, the Group card used a glyph whose dots came out half a pixel wide, and the two handles for the same gesture sat at opposite ends of the screen. There is now one handle, one glyph, at the leading edge of both a Group card and a Squad row, dark enough to see in either theme without hovering, and the Group card gets back the space it was holding for a grip that is no longer in its corner.',
+      'A Squad’s Transport chooser says “Transport”. It was a small lorry beside a bin, and nobody found it. The panel it opens has always done the thing people were dragging to achieve: a Medusa put aboard a Triton X Gunship in one tap, with the capacity drawn and “Fills it” underneath. Its partner says “Take out”.',
+      'The refusal for two Squads with nothing carrying them now names the move. It used to quote rule 3.2.4 and stop, which reads as the app breaking rather than the list being half built. It says which Squad goes aboard which, worked out from the same list the Transport button opens, so it can only suggest something that will work. Where nothing in the Group fits anything else, it offers a Transport or a second Group instead of inventing a pairing.',
+      'RM-4 Foeslayer Missiles are a Menchit and Styx upgrade, and the app was selling them to an Ares for 5pts with nothing traded in. The card’s sentence had been read into the swap and not onto the gun itself. It is on the gun now, and a re-scan of the stat cards will keep it there. If you had already bought one, it stays bought and reprices to the models that may actually carry it.',
+      'Groups and Squads move without a drag. Focus a handle and the arrow keys shift a Group one place, or send a Squad to the Group before or after it. Left and right as well as up and down, because the cards sit in a row on a computer and a column on a phone.',
+      'Settings shows the build number, and a feedback mail arrives with it filled in. A live tab already updates itself within the minute, so this is not a prompt to reload; it is so a report can say which build it came from.'
+    ] },
     { date: '2026-08-08', title: 'Raw Materials, rules on the loadout that has them, and a phone that stopped scrolling sideways', items: [
       'Shaltari Gates are not part of your Group structure, because the rulebook says so three times: they are not taken with any Units aboard, they do not count against your allowed Groups, and a Gate is never part of another Group. The builder was breaking all three — it offered a Gate as a Squad’s Transport, spent a Group on every Gate you took, and printed “carries nothing” on a Gate that was correctly empty. A Group of Gates is now called Gates, is numbered apart from your Groups, and costs you none of them. And a Squad with no Transport in a list with Gates starts in Holding, which is the whole point of the faction, rather than being warned that it begins Reserved.',
       'Raw Materials. A Genitor Unit — anything with a hollow green square — may begin the game with RM tokens aboard, 5pts each up to the number in its symbol, and now you can buy them: 12 on a Grievance Genitor Ark, 8 on a Gyro Aero-Genitor. Their points count toward the army and toward their Group, and toward no category at all, which is what the rule says and the only place in this app where that is true. They travel in a share link, in a backup and on the printed sheet, where they print as tokens rather than as the points they cost — points are what you paid, tokens are what you put on the table before Round 1.',
