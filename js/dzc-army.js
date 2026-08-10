@@ -2075,12 +2075,43 @@
         const u = unitOf(army, s);
         return u && u.category !== 'Transport' && !s.carriedBy;
       });
+      /* AND IT SAYS WHAT TO DO ABOUT IT.
+       *
+       * This is the message Grotwurks hit in the 2026-08-09 thread. He added a
+       * Triton X Gunship next to a Medusa, meaning to put one inside the
+       * other, and got "Group 1 has 2 Squads with nothing carrying them" the
+       * instant the second Squad landed. "Oh look, now I have an error", then
+       * "I did select add unit... I then selected the Triton X. Now I have an
+       * error." Baxter could not reproduce it and called it a bug, then said
+       * it was not one. Neither of them could tell whether the app was broken.
+       *
+       * The refusal was correct and it named its rule, which is the house
+       * standard. What it did not name was the move: the Triton X carries two
+       * squares, the Medusa fills two, and one tap of the Medusa's Transport
+       * button clears the whole thing. So when a pair in this Group can
+       * actually solve it, the message says which pair and which way round --
+       * that is boardOptions, the same list the button opens, so it can only
+       * suggest something that will work. When no pair fits, the fix is a
+       * Transport or a second Group, and it says that instead.
+       *
+       * It stays an ERROR. 3.2.4 makes the list illegal and a legality check
+       * that goes quiet to feel friendlier is worth nothing at a table. What
+       * was wrong was a message that read as a fault in the app. */
       if (loose.length > 1) {
+        let fix = 'Put one aboard the other, give one a Transport, or move one to a Group of its own.';
+        for (const rider of loose) {
+          const opt = boardOptions(army, rider.id)
+            .find(o => loose.some(l => l.id === o.squad.id));
+          if (!opt) continue;
+          const ru = unitOf(army, rider);
+          fix = `Put the ${ru.name} aboard the ${opt.unit.name}.`;
+          break;
+        }
         errors.push({
           rule: '3.2.4',
           group: g.id,
           msg: `“${groupName(army, g)}” has ${loose.length} Squads with nothing carrying them — a Group is one Squad and its Transports, `
-            + 'or up to 4 Squads sharing one larger Transport.'
+            + `or up to 4 Squads sharing one larger Transport. ${fix}`
         });
       }
 

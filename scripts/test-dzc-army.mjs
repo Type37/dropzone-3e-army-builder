@@ -96,6 +96,46 @@ console.log('\nweapon upgrades are per VARIANT, not per model (3.2.3)');
   A.remove(a.id);
 }
 
+/* The refusal names the move, not just the rule (3.2.4).
+ *
+ * Grotwurks, 2026-08-09, adding a Triton X Gunship beside a Medusa meaning to
+ * put one inside the other: "Oh look, now I have an error." Then: "I did
+ * select add unit... I then selected the Triton X. Now I have an error."
+ * Baxter could not reproduce it and called it a bug, then said it was not one.
+ * Neither of them could tell whether the app was broken. It was not — the list
+ * really was illegal, and one tap fixed it. Nothing said which tap. */
+console.log('\ntwo loose Squads: the error says which one goes aboard which');
+{
+  await DZC.loadFaction('phr');
+  const a = A.create('phr', 'Loose', 2000);
+  const g = A.addGroup(a);
+  const med = A.addSquad(a, g.id, 'medusa', 1);
+  A.addSquad(a, g.id, 'triton-x-gunship', 1);
+  const e = A.validate(a).errors.find(x => x.rule === '3.2.4' && /nothing carrying/.test(x.msg));
+  ok(!!e, 'two Squads walking on is still an error');
+  ok(/a Group is one Squad and its Transports/.test(e.msg), 'and still quotes the rule', e.msg);
+  ok(/Put the Medusa aboard the Triton X Gunship\./.test(e.msg),
+     'and now names the pair, the right way round', e.msg);
+
+  // The suggestion comes from boardOptions, so taking it must clear the error.
+  const tx = g.squads.find(s => s.unitId === 'triton-x-gunship');
+  ok(A.boardTransport(a, med.id, tx.id).ok, 'the move it suggests is one the model allows');
+  ok(!A.validate(a).errors.some(x => /nothing carrying/.test(x.msg)), 'and it clears the error');
+
+  /* Nothing in the Group can carry anything else: no pair to name, so it says
+   * the general way out instead of inventing one. */
+  const b = A.create('phr', 'No fit', 2000);
+  const g2 = A.addGroup(b);
+  A.addSquad(b, g2.id, 'medusa', 1);
+  A.addSquad(b, g2.id, 'type-9-frontier-walker', 1);
+  const e2 = A.validate(b).errors.find(x => /nothing carrying/.test(x.msg));
+  ok(!!e2 && /give one a Transport, or move one to a Group of its own/.test(e2.msg),
+     'with no pair that fits, it offers the two general ways out', e2 && e2.msg);
+  ok(!/Put the .* aboard the/.test(e2.msg), 'and does not invent a pairing', e2.msg);
+
+  A.remove(a.id); A.remove(b.id);
+}
+
 /* An upgrade a card offers to SOME variants (3.2.3).
  *
  * "Menchit and Styx may replace Twin RX-20 Miniguns with RM-4 Foeslayer
