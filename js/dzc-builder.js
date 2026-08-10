@@ -1510,8 +1510,8 @@
    * the ones you do not have greyed, which asks you to work out which loadout
    * a gun belongs to by reading the "Rocket Bus only" note on each. Here the
    * question is answered by where the card is: the guns under Rocket Bus are
-   * the guns a Rocket Bus fires. `lens` is the existing filter that does this
-   *. The variant switcher over the reference table already used it.
+   * the guns a Rocket Bus fires. `lens` is the existing filter that does this,
+   * and the variant switcher over the reference table already used it.
    *
    * A Unit with no Variants keeps the plain list; there is nothing to split. */
   /* The price, as the control that buys it. "The upgrade can be represented
@@ -1597,9 +1597,9 @@
    * already say exactly this: a hollow symbol is room offered, a solid one is
    * room taken.
    *
-   *   0  hollow only       , a Condor, an Albatross. Carries, is not carried.
-   *   1  hollow AND solid  , a Bear APC. Carries, and rides in something.
-   *   2  solid only, or neither, the guys.
+   *   0  hollow only:      a Condor, an Albatross. Carries, is not carried.
+   *   1  hollow AND solid: a Bear APC. Carries, and rides in something.
+   *   2  solid only, or neither: the guys.
    *
    * Order was whatever you happened to add things in, so a Group could open
    * with its infantry and end with the dropship that brings them, which is

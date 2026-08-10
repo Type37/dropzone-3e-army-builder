@@ -6857,8 +6857,8 @@ h1, h2, h3, h4, h5, h6 {
   .topbar-context { display: none; }
   .topbar-brand { font-size: var(--text-sm); }
   /* On a phone only "Unofficial" survives. It is the word that is actually
-     doing work, Dropzone Commander belongs to TTCombat and this is a fan tool
-    , and "Army Builder" is already said by the logo beside it and the screen
+     doing work, Dropzone Commander belongs to TTCombat and this is a fan tool,
+     and "Army Builder" is already said by the logo beside it and the screen
      underneath. Dropping the disclosure entirely on the one device this app is
      built for would be the wrong thing to save 90px on. */
   .topbar-title-rest { display: none; }

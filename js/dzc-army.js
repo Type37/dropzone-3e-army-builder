@@ -1180,7 +1180,7 @@
 
     /* What may join a Group is decided by transport and nothing else.
      *
-     * 3.2.4 . A Transport may only be chosen alongside a Squad it can carry.
+     * 3.2.4.   A Transport may only be chosen alongside a Squad it can carry.
      *          Those Transports form a Squad; those two Squads form one Group.
      * 3.2.4.1. Up to 4 Squads, plus their own Transport Squads, may share ONE
      *          larger Transport, and those all form one Group.

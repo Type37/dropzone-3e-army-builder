@@ -29,8 +29,8 @@
    *
    *   11.1.7  Concussion. "place a Concussed Status Token on its Squad.
    *           Concussed Squads suffer -2Ac."
-   *   11.1.22 Jammer    , "place a Jammed Status Token on its Squad."
-   *   11.1.34 Suppress  , "place a Suppressed Status Token on its Squad.
+   *   11.1.22 Jammer:    "place a Jammed Status Token on its Squad."
+   *   11.1.34 Suppress:  "place a Suppressed Status Token on its Squad.
    *           Suppressed Squads may only move 0” if any Unit within it attacks."
    *
    * Obscured is not one of them and does not move. 10.1.21 Obscurer X”. "All

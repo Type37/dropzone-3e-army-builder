@@ -199,8 +199,8 @@
    *     flattens it.
    *   - readable BACK. Every Unit line is written in the "3 x Name [45pts]"
    *     convention DZCArmy.parseList already reads, so a list pasted into this
-   *     app's Import comes back as an army. Nesting does not survive that trip
-   *    , a flat list cannot say what rode in what, but the Units and their
+   *     app's Import comes back as an army. Nesting does not survive that trip:
+   *     a flat list cannot say what rode in what, but the Units and their
    *     counts do, and the indentation is still there for the human.
    *
    * Every line the parser must ignore starts with "#", which is exactly the

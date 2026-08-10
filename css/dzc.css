@@ -585,8 +585,8 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 
    Quiet, not hidden: --ink-2 is a real colour on paper, and every number on a
    dead row is still there to be read and compared against the live one above
-   it. That is the whole point of showing it. Opacity is deliberately not used
-  . It would take the row below the contrast floor. */
+   it. That is the whole point of showing it. Opacity is deliberately not used:
+   it would take the row below the contrast floor. */
 .dzc-wpn--marked tr.is-off td { color: var(--ink-2, #6b6459); }
 .dzc-wpn--marked tr.is-off .dzc-wpn-name { font-weight: 500; border-left-color: var(--line, #d8d0c0); }
 .dzc-wpn--marked tr.is-off .dzc-rule { color: var(--ink-2, #6b6459); border-color: var(--line, #d8d0c0); }

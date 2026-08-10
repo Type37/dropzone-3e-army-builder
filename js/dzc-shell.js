@@ -15,8 +15,8 @@ const App = (() => {
   const SETTINGS_KEY = 'dfc_settings';   // kept: renaming it would lose themes
   /* Dropzone's OWN toggles live under their own key, never the shared one.
    * Dropfleet keeps a field called showCollection in dfc_settings too, a
-   * different setting entirely, its own ships against its own Collection tab
-   *, and merging the whole shared object (Object.assign(settings, s), as
+   * different setting entirely, its own ships against its own Collection tab,
+   * and merging the whole shared object (Object.assign(settings, s), as
    * this used to) pulled Dropfleet's value straight into Dropzone's builder.
    * Turning Collection on in one app silently turned it on in the other.
    * Jet, 2026-08-09: "the collection should be off by default" -- it was, in

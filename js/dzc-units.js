@@ -162,7 +162,7 @@
 
   /* Two views of the same block.
    *
-   *   compact , the "Add a Squad" picker. Icon plus the short code the stat
+   *   compact: the "Add a Squad" picker. Icon plus the short code the stat
    *              card itself prints. Four cards across cannot carry six
    *              spelled-out words.
    *   detailed. The default once a unit is on your list, and whenever you tap
