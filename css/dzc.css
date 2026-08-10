@@ -941,12 +941,11 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    these two act on the whole Group, not on whatever Squad the card happens
    to be showing art for. */
 .dzc-bb-actions { display: flex; justify-content: flex-end; gap: 2px; margin-top: -2px; }
-/* The grip is absolutely positioned in this card's top-right corner, and this
-   is the row that runs under it — so the row gives up that much of its width
-   rather than letting the dots sit on top of the cost. They did: every Group
-   read "100/50" with the last digit under the grip, on every card in the list,
-   and a Group at its ceiling is exactly the number you are checking. */
-.dzc-bb-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding-right: 24px; }
+/* This row used to reserve 24px on the right for a grip in the corner, so
+   every Group read "100/50" with the last digit crowded against the dots —
+   and a Group at its ceiling is exactly the number you are checking. The grip
+   moved to the leading edge; the row gets its width back. */
+.dzc-bb-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
 .dzc-bb-head b { font: 700 13.5px/1.2 var(--font-ui, 'Jost', sans-serif); overflow-wrap: anywhere; }
 .dzc-bb-head i {
   font-style: normal; white-space: nowrap;
@@ -2612,20 +2611,44 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
 .dzc-pop-menu button.is-danger { color: var(--danger, #b3261e); }
 
 /* ── Drag a Group to reorder it ──
-   Six dots drawn with a gradient rather than an icon: it is the one glyph in
-   the app that means "hold this", it has to read at 10px, and inlining a
-   seventh SVG for it would be more markup than the thing it draws.
+   Six dots. It is the one glyph in the app that means "hold this", and it is
+   the only drag target — dragging the card itself would fight the tap that
+   opens it, which is the commonest thing you do to one.
 
-   The card is position:relative already; the grip sits in its top-right corner
-   so it never lands under the name, and it is the only drag target — dragging
-   the card itself would fight the tap that opens it. */
-.dzc-bb { position: relative; }
+   THE LEADING EDGE, full height, and visible without being hovered.
+
+   It was a 16px icon at 35% opacity in the top-right corner, and two players
+   on a PC concluded from that that the app had no drag and drop at all.
+   Grotwurks, 2026-08-09: "There is no drag function on PC" — then, after being
+   told where to look, "Yea, I see it now but it is very hard to see", "OHHHHH
+   there they are.... at 200% zoom I can see them", and "I had my friend try
+   drag and drop and he didnt see the section till I pointed it out". Baxter,
+   who could use it, agreed: "It's not intuitive enough if we're having trouble
+   with it."
+
+   Three separate faults, and only the first is the obvious one.
+
+   - 35% of --ink-2 measures 1.60:1 against the card. A control has to clear
+     3:1 to be seen at all (WCAG 1.4.11), so it was at half the floor. It is
+     .8 now: 3.36:1 on the selected card's tinted ground and 3.67:1 on dark,
+     full on hover or focus. Resting has to be the visible state, because a
+     phone has no hover to reveal anything with.
+   - The corner was the wrong CORNER. The Squad grip below is at the leading
+     edge, for reasons its own comment argues at length, so the two handles for
+     the same gesture sat at opposite ends of the screen — Baxter, on the same
+     day: "The six squares are on the opposite side on the full group page on
+     phones." One position, learned once. It also gives the cost digits their
+     24px back: .dzc-bb-head no longer has to reserve a gap for dots.
+   - A 16px target in a corner is a target you have to aim at. Full height of
+     the card by 26px wide is one you land on. */
+.dzc-bb { position: relative; padding-left: 32px; }
 .dzc-bb-grip {
-  position: absolute; top: 4px; right: 4px; display: inline-flex;
-  cursor: grab; touch-action: none; opacity: .35; color: var(--ink-2, #6b6459);
-  transition: opacity .12s;
+  position: absolute; left: 0; top: 0; bottom: 0; width: 26px;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: grab; touch-action: none; opacity: .8; color: var(--ink-2, #6b6459);
+  transition: opacity .12s, background .12s;
 }
-.dzc-bb:hover .dzc-bb-grip, .dzc-bb-grip:hover { opacity: .8; }
+.dzc-bb:hover .dzc-bb-grip, .dzc-bb-grip:hover { opacity: 1; background: var(--surface-3, #f2ece0); }
 /* No shadow and no lift: the card must not move except with the finger. */
 .dzc-bb.is-dragging { opacity: .9; position: relative; z-index: 50; cursor: grabbing; }
 .dzc-bb.is-before { box-shadow: inset 0 3px 0 0 var(--acc); }
@@ -2647,19 +2670,25 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
    puts the handle first, because it grabs the WHOLE row and a row is read
    left to right, so its handle belongs where reading starts. (iOS puts it on
    the right, but only in an edit mode where reordering is the sole thing the
-   list does; here it is one action among six.) 44px of target, faint until
-   you are near it. */
+   list does; here it is one action among six.) */
 /* BIGGER. Jet, 2026-08-07: "grip and touch targets must be bigger." 22px
    wide is a 22px target however tall it is -- a finger pad is about 45px
    across, and the misses are sideways as often as vertical. It is 34 wide and
    the full height of the row now, which on a Squad with a photo is 60px. */
+/* AND VISIBLE. It was 28% of --ink-2 -- 1.49:1 against the card, which is to
+   say not drawn at all until you hovered it. The size was already right and
+   nobody could find it anyway: see the Group grip above for the thread. .8
+   measures 3.76:1 on paper and 4.07:1 on dark, full on hover or focus, and
+   resting is the state that has to work because a phone never hovers. */
 .dzc-sq-grip {
   flex: 0 0 auto; align-self: stretch; display: inline-flex; align-items: center;
   justify-content: center; min-width: 34px; min-height: 44px; margin-left: -6px;
-  cursor: grab; touch-action: none; opacity: .28; color: var(--ink-2, #6b6459);
-  transition: opacity .12s;
+  cursor: grab; touch-action: none; opacity: .8; color: var(--ink-2, #6b6459);
+  transition: opacity .12s, background .12s;
 }
-.dzc-squad:hover > .dzc-sq-main > .dzc-sq-grip, .dzc-sq-grip:hover { opacity: .8; }
+.dzc-squad:hover > .dzc-sq-main > .dzc-sq-grip, .dzc-sq-grip:hover {
+  opacity: 1; background: var(--surface-3, #f2ece0);
+}
 /* Nothing moves. The card stays exactly where it is and a chip follows the
    finger instead, which is the only thing on screen that travels. */
 .dzc-squad.is-sq-dragging { opacity: .45; cursor: grabbing; }

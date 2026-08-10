@@ -976,12 +976,21 @@
       cost > cap ? ' is-over' : ''}" data-gid="${g.id}">
       <!-- The grip, and it has to be a separate target: dragging anywhere on
            the card would fight the tap that opens it, which is the commonest
-           thing you do to one. -->
+           thing you do to one.
+
+           drag_dots, the SAME glyph the Squad grip uses, because it is the
+           same gesture and there is no reason for two. drag_rows drew its six
+           dots at radius .75 in a 24 viewBox and laid them out 3 across — so
+           at 16px each dot was half a pixel wide and the whole thing was
+           wider than the strip it sits in. Grotwurks, 2026-08-09: "OHHHHH
+           there they are.... at 200% zoom I can see them." At 200% they were
+           one pixel. drag_dots is radius 1.5 in a 2x3 portrait grid, which is
+           three times the ink and the right shape for a vertical handle. -->
       <span class="dzc-bb-grip" role="button" tabindex="-1"
             aria-label="Drag to reorder ${name}"
             title="Drag to reorder"
             onpointerdown="DZCBuilder.gripDown(event, '${g.id}')"
-            >${window.DZCIcon('drag_rows', { size: 16 })}</span>
+            >${window.DZCIcon('drag_dots', { size: 18 })}</span>
       <button type="button" class="dzc-bb-select" onclick="DZCBuilder.selectGroup('${g.id}')">
         <span class="dzc-bb-head"><b>${name}</b>
           <i>${cost}<s>/${cap}</s></i></span>
@@ -1732,7 +1741,7 @@
               aria-label="Drag ${esc(u.name)} onto a Transport"
               title="Drag onto a Transport to put this Squad aboard"
               onpointerdown="DZCBuilder.sqGrip(event,'${s.id}')"
-              >${window.DZCIcon('drag_dots', { size: 15 })}</span>
+              >${window.DZCIcon('drag_dots', { size: 20 })}</span>
         <!-- ONE PICTURE. Jet, 2026-08-07: "I no longer wish for like, adding
              more units to actually increase the # of minis visible. That's a
              bit silly."
