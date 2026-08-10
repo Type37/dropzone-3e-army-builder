@@ -372,7 +372,7 @@
   function wpnHead(extra) {
     const h = k => esc(window.DZC.weaponColHelp(k));
     return `<tr><th>Weapon</th><th title="${h('Arc')}">Arc</th>
-      <th class="dzc-wpn-ma" title="${h('MA')}">${window.DZCIcon.moveAttack({ size: 15 })}M&amp;A Max</th>
+      <th class="dzc-wpn-ma" title="${h('MA')}">M&amp;A Max</th>
       <th title="${h('R')}">Range</th><th title="${h('Att')}">Attacks</th>
       <th title="${h('Ac')}">Accuracy</th><th title="${h('E')}">Energy</th>
       <th>Special</th>${extra || ''}</tr>`;
@@ -580,8 +580,7 @@
     const o = opts || {};
     const cell = (k, v) => v == null || v === '' ? '' :
       `<div class="dzc-wc-stat" title="${esc(window.DZC.weaponColHelp(k))}">
-         <span class="dzc-wc-k">${k === 'MA' ? window.DZCIcon.moveAttack({ size: 13 }) : ''
-           }${esc(window.DZC.weaponColLabel(k))}</span>
+         <span class="dzc-wc-k">${esc(window.DZC.weaponColLabel(k))}</span>
          ${k === 'E'
            /* Energy is the one stat that is a QUESTION rather than a number:
               on its own it says nothing, and paired with the Armour in front

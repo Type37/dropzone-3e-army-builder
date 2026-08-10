@@ -53,6 +53,65 @@
     return on ? ' is-turn-on' : ' is-turn-off';
   }
 
+  /* THINGS ARRIVE AND THINGS LEAVE. Jet, 2026-08-10: "when stuff appears on
+   * screen, have animations in. when stuff gets deleted, have animations out."
+   *
+   * Both halves fight the same fact: every action here redraws the whole
+   * builder by replacing innerHTML. So on the way IN, everything is new every
+   * time -- a plain CSS entry animation would deal the entire army out again
+   * on each press of a stepper, which is not an animation, it is a flicker.
+   * And on the way OUT there is nothing left to animate: removeSquad mutates
+   * the model and the element is gone in the same frame.
+   *
+   * enter() is flip()'s trick keyed on identity instead of on state. A Squad
+   * id it has never drawn gets the class once and never again. `ready` is the
+   * guard: on the first render of a screen every id is new, and opening a list
+   * you built last week must not deal itself out card by card, so that pass
+   * only fills the set. Everything after it animates.
+   *
+   * leave() runs BEFORE the mutation and hands back a promise, so the action
+   * waits for the card to go rather than racing it.
+   *
+   * The timeout is not belt-and-braces, and this is not a guess: in a tab with
+   * document.hidden the animation reports playState "running" and a
+   * currentTime frozen at 0 forever, because a hidden document is not
+   * rendered and the animation clock does not tick. animationend never fires.
+   * Switch away mid-delete without this and the Squad never goes. Same for a
+   * display:none ancestor and for anything the browser declines to animate. A
+   * delete that silently stops working is far worse than one that skips its
+   * animation, so the race is always won by the timeout. */
+  const seen = new Set();
+  let armySeen = null;      // the army id whose ids are already in `seen`
+  let listSeen = false;     // the armies list has been drawn once
+
+  function enter(key, ready) {
+    if (seen.has(key)) return '';
+    seen.add(key);
+    return ready ? ' is-in' : '';
+  }
+
+  const REDUCED = () => window.matchMedia
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function leave(sel) {
+    const el = typeof sel === 'string' ? document.querySelector(sel) : sel;
+    /* document.hidden short-circuits, and it is the case the timeout below was
+     * written for. A hidden document is not rendered, so nothing plays: the
+     * animation sits at playState "running" with currentTime frozen at 0 and
+     * animationend never arrives. Worse, setTimeout in a hidden tab is
+     * throttled to about a second, so falling through to the guard made a
+     * delete take 1005ms instead of 160. Measured both. Nobody is watching a
+     * hidden tab, so there is nothing to animate for: go straight through. */
+    if (!el || REDUCED() || document.hidden) return Promise.resolve();
+    return new Promise(done => {
+      let over = false;
+      const fin = () => { if (!over) { over = true; done(); } };
+      el.addEventListener('animationend', fin, { once: true });
+      el.classList.add('is-out');
+      setTimeout(fin, 260);
+    });
+  }
+
   // Which Group the detail pane is showing. Null falls back to the first, so
   // opening an army always lands on something rather than an empty pane.
   let selectedGroup = null;
@@ -97,7 +156,8 @@
       const fac = FACTIONS.find(f => f.id === a.faction) || {};
       const pct = Math.min((cost / (a.pointsLimit || 1)) * 100, 100);
       const models = a.groups.reduce((n, g) => n + g.squads.reduce((m, s) => m + s.models.length, 0), 0);
-      return `<article class="dzc-army-card" style="--acc:${accentOf(a.faction)}"
+      return `<article class="dzc-army-card${enter('a:' + a.id, listSeen)}"
+                data-aid="${a.id}" style="--acc:${accentOf(a.faction)}"
                 onclick="DZCBuilder.open('${a.id}')" tabindex="0"
                 onkeydown="if(event.key==='Enter')DZCBuilder.open('${a.id}')">
         <div class="dzc-army-top">
@@ -154,6 +214,10 @@
         <button type="button" class="dzc-army-new" onclick="DZCBuilder.openNew()">
           ${window.DZCIcon('add', { size: 26 })}<b>New Army</b></button>`}</div>
     </div>`;
+
+    // After the draw, so the first visit to this screen fills `seen` quietly
+    // and only an army made from here animates on.
+    listSeen = true;
   }
 
   /* QUICK PLAY. Jet, 2026-08-08: "let's have the quickplays instead of the
@@ -382,11 +446,12 @@
     }
   }
 
-  function del(id) {
+  async function del(id) {
     closeArmyMenu();
     if (!confirm('Delete this army? This cannot be undone.')) return;
+    await leave(`.dzc-army-card[data-aid="${id}"]`);
     window.DZCArmy.remove(id);
-    renderList();
+    await renderList();
   }
 
   // ---------------------------------------------------------------- builder
@@ -401,6 +466,11 @@
     const a = window.DZCArmy.get(id);
     if (!a) { location.hash = '#armies'; return; }
     current = a;
+    // Switching armies starts the enter-animation bookkeeping over: the ids in
+    // `seen` belong to the army that was open, and a Squad in the next one has
+    // not arrived just because this one is gone. armySeen is set at the END of
+    // this function, so the first pass over a new army only fills the set.
+    if (armySeen !== a.id) seen.clear();
     // Fresh every draw -- see groupAlerts.
     groupIssues = null;
     await window.DZC.loadFaction(a.faction);
@@ -617,6 +687,10 @@
          data-empty="Notes"
          onblur="DZCBuilder.setDescription(this.textContent)">${esc(a.description || '')}</p>
     </div>`;
+
+    // Last, and only now: every enter() above has filled `seen` without
+    // animating, so from the next draw onward a new id is genuinely new.
+    armySeen = a.id;
   }
 
   /* Changing the agreed limit after the fact.
@@ -1045,7 +1119,7 @@
         onerror="this.remove()">`).join('');
     const name = esc(window.DZCArmy.groupName(a, g));
     return `<div class="dzc-bb${g.id === selectedGroup ? ' is-on' : ''}${
-      cost > cap ? ' is-over' : ''}" data-gid="${g.id}">
+      cost > cap ? ' is-over' : ''}${enter('g:' + g.id, armySeen === a.id)}" data-gid="${g.id}">
       <!-- The grip, and it has to be a separate target: dragging anywhere on
            the card would fight the tap that opens it, which is the commonest
            thing you do to one.
@@ -1814,7 +1888,7 @@
     ].filter(Boolean).join('');
 
     return `<div class="dzc-squad${isTransport ? ' is-transport' : ''}${s.models.length ? '' : ' is-empty'}${
-      riders.length ? ' is-carrier' : ''}" style="--depth:${depth}" data-sid="${s.id}">
+      riders.length ? ' is-carrier' : ''}${enter('s:' + s.id, armySeen === a.id)}" style="--depth:${depth}" data-sid="${s.id}">
       <div class="dzc-sq-main">
         <!-- The handle comes FIRST. It sat between the thumbnail and the
              name, which is the one place a handle should never be: neither the
@@ -3253,11 +3327,17 @@
     // drilled into whatever Group happened to land in that slot. Back to the
     // list is the actual right answer: you just removed one, look at what's
     // left, not at an arbitrary survivor.
-    removeGroup: id => {
+    removeGroup: async id => {
+      // The card, if the list is what you are looking at. From the drilled-in
+      // header there is no card on screen and leave() resolves at once, which
+      // is the honest answer: the thing you are removing is the whole screen,
+      // and animating a screen out from under a Back navigation is a different
+      // idea from a card leaving a list.
+      await leave(`.dzc-bb[data-gid="${id}"]`);
       window.DZCArmy.removeGroup(current, id);
       selectedGroup = null;
       drilled = false;
-      refresh();
+      await refresh();
     },
     // Baxter: "Duplicating a group does not take me to the duplicated group
     // instead leaving me on the original." Same shape as addGroup -- a new
@@ -3271,7 +3351,14 @@
       refresh();
       say('Group duplicated.', 'add');
     },
-    removeSquad: id => { window.DZCArmy.removeSquad(current, id); refresh(); },
+    removeSquad: async id => {
+      await leave(`[data-sid="${id}"]`);
+      window.DZCArmy.removeSquad(current, id);
+      // Awaited, so the promise this hands back means "gone and redrawn"
+      // rather than "gone". Callers that want to look at the result -- a test,
+      // a follow-on action -- would otherwise read the DOM a frame too early.
+      await refresh();
+    },
     setCount: (id, n) => {
       const r = window.DZCArmy.setModelCount(current, id, n);
       if (r && !r.ok) return say(r.reason);

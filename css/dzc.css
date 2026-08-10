@@ -482,7 +482,6 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-wc-stat { display: flex; flex-direction: column; min-width: 0; }
 /* The one icon that keeps its own colours sits INSIDE its label, so it reads
    as part of the word rather than as a second mark beside it. */
-.dzc-wc-k .dzc-i--ma { vertical-align: -2px; margin-right: 3px; }
 /* ONE LINE, ALWAYS. In a 57px column "M&A MAX", "ATTACKS" and "RANGE" wrapped
    and their cells came out 39px tall against 25 for the two that fitted -- so
    the grid was 64px where 50 would do, on every weapon card in the app. The
@@ -808,7 +807,6 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-v-step { flex: none; }
 .dzc-variant:has(.dzc-v-step.is-on) { border-color: var(--acc); }
 .dzc-wpn-ma { white-space: nowrap; }
-.dzc-wpn-ma .dzc-i { vertical-align: -3px; margin-right: 3px; }
 
 /* ── Commanders in the rail ──
    One card per Commander with a button beneath, instead of a "— none —" select
@@ -1694,6 +1692,68 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .is-turn-off { animation: dzc-turn-off .3s var(--ease-out, cubic-bezier(0,0,0,1)) 1; }
 @media (prefers-reduced-motion: reduce) {
   .is-turn-on, .is-turn-off { animation: none; }
+}
+
+/* ── Arriving and leaving ──
+   Jet, 2026-08-10: "when stuff appears on screen, have animations in. when
+   stuff gets deleted, have animations out."
+
+   TRANSFORM AND OPACITY, AND NOTHING ELSE. Not height, not margin, not
+   max-height, however much a card collapsing into its own gap would look
+   better. Those are layout properties: every frame re-runs layout and paint
+   for the whole list underneath, on the main thread, and this app's lists run
+   to a dozen Squads each carrying a photograph, a stat grid and a weapon
+   table. Transform and opacity are the two the compositor can do on its own
+   thread, which is the difference between a phone animating this and a phone
+   stuttering through it. It is also why the exit does not close the gap: the
+   card fades and shrinks in place, then the redraw takes the space. A gap
+   that closes smoothly is not worth a janky one that does.
+
+   The card is offset from the LEADING edge rather than dropped from above.
+   A list already reads that way, the grip is over there, and 8px of travel is
+   enough to read as "this arrived" without being a slide.
+
+   Durations are Fluent's fast/normal: 200ms in, 160ms out. Out is quicker
+   because it is between you and the result, where in is decoration on
+   something you already have.
+
+   TWO CURVES, NOT ONE. Arriving decelerates (--ease-out, the app's own
+   cubic-bezier(.22,1,.36,1)): it comes in fast and settles, which is how a
+   thing that is staying should behave. Leaving accelerates away instead.
+   Running the exit on --ease-out was measured at 23% opacity by 40ms and 4%
+   by 80ms of its 160, so the whole back half of it played on something
+   already invisible -- an 80ms blink wearing a 160ms budget. Scrubbed frame
+   by frame, not eyeballed, because a hidden tab does not advance an animation
+   clock and the numbers are the only honest way to see the curve. */
+@keyframes dzc-in {
+  from { opacity: 0; transform: translate3d(-8px, 0, 0) scale(.985); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes dzc-out {
+  from { opacity: 1; transform: none; }
+  to   { opacity: 0; transform: translate3d(-10px, 0, 0) scale(.97); }
+}
+.dzc-squad.is-in, .dzc-bb.is-in, .dzc-army-card.is-in {
+  animation: dzc-in var(--duration-normal, 200ms) var(--ease-out, cubic-bezier(.22,1,.36,1)) 1 both;
+}
+/* forwards, so the card holds its faded-out state for the frames between the
+   animation ending and the redraw replacing it. Without it the card snaps back
+   to full opacity first and the delete flashes. */
+.dzc-squad.is-out, .dzc-bb.is-out, .dzc-army-card.is-out {
+  animation: dzc-out 160ms cubic-bezier(.55, 0, 1, .45) 1 forwards;
+  pointer-events: none;
+}
+/* A nested Squad is inside the card of the thing carrying it, so an ancestor
+   leaving already takes it with it. Animating both means two overlapping
+   fades and a passenger that dims twice as fast as its transport. */
+.dzc-squad.is-out .dzc-squad { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .dzc-squad.is-in, .dzc-bb.is-in, .dzc-army-card.is-in,
+  .dzc-squad.is-out, .dzc-bb.is-out, .dzc-army-card.is-out { animation: none; }
+  /* Still hide it on the way out: leave() resolves immediately under reduced
+     motion, but if anything delays the redraw the card must not sit there
+     looking alive after you pressed delete. */
+  .dzc-squad.is-out, .dzc-bb.is-out, .dzc-army-card.is-out { opacity: 0; }
 }
 
 /* A DOT, not a word. Jet, 2026-08-08: "simpler dot picker instead of
