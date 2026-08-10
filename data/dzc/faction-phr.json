@@ -380,7 +380,10 @@
           "e": "5",
           "special": "Demo 1, Devastator 1, L1",
           "box": "upgrade",
-          "variants": [],
+          "variants": [
+            "Menchit",
+            "Styx"
+          ],
           "upgradePoints": 5,
           "capacityDelta": [],
           "boxUnresolved": false

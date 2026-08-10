@@ -1236,6 +1236,24 @@ def parse_swaps(unit: Unit) -> None:
         for g in gains
     ]
 
+    # The restriction belongs on the GUN as well as on the swap.
+    #
+    # "Menchit and Styx may replace Twin RX-20 Miniguns with RM-4 Foeslayer
+    # Missiles" was read into the swap and nowhere else, so the Foeslayer sat
+    # in the weapon table with an empty variants list -- which the app reads as
+    # "every variant". removedByUpgrades honoured the sentence and refused to
+    # take an Ares' miniguns away, but upgradesFor scoped the purchase to ALL
+    # and the buy button appeared under Ares and Phobos too: 5pts for a gun the
+    # card does not offer them, with nothing given up for it. Reported by a
+    # player, 2026-08-09: "The Foeslayer should be Menchit and Styx only."
+    #
+    # A swap that names nobody restricts nobody, and that is the common case --
+    # 29 of the 30 upgrade weapons in the data are open to the whole Unit.
+    if variants:
+        for w in unit["weapons"]:
+            if w["box"] == "upgrade" and w["name"] in gains and not w["variants"]:
+                w["variants"] = list(variants)
+
 
 # "3PT: Redundancy", "1+PT: Shield Booster", "0PT: Scrambler 2+". Only Behemoth
 # cards carry these.

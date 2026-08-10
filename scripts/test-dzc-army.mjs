@@ -96,6 +96,51 @@ console.log('\nweapon upgrades are per VARIANT, not per model (3.2.3)');
   A.remove(a.id);
 }
 
+/* An upgrade a card offers to SOME variants (3.2.3).
+ *
+ * "Menchit and Styx may replace Twin RX-20 Miniguns with RM-4 Foeslayer
+ * Missiles" — the only sentence in the data that restricts a purchase rather
+ * than a printed gun. The restriction lived on the swap and not on the weapon,
+ * so upgradesFor scoped it to '*' and an Ares could buy a Foeslayer for 5pts
+ * with nothing traded in. Reported by a player, 2026-08-09: "The Foeslayer
+ * should be Menchit and Styx only." */
+console.log('\nan upgrade restricted to some variants (3.2.3)');
+{
+  await DZC.loadFaction('phr');
+  const U = win.DZCUnits;
+  const a = A.create('phr', 'Foeslayer', 1500);
+  const s = A.addSquad(a, A.addGroup(a).id, 'type-1-battle-walker', 2);
+  eq(A.squadCost(a, s), 70, 'two Ares are 35pts each');
+  eq(A.upgradesFor(a, s).length, 0, 'an all-Ares Squad is offered no upgrade at all');
+
+  A.setModelVariant(a, s.id, 0, 'Menchit');
+  const offered = A.upgradesFor(a, s);
+  eq(offered.length, 1, 'swapping one for a Menchit offers it');
+  eq(offered[0].scope, 'Menchit', 'scoped to the Menchit');
+  eq(offered[0].count, 1, 'and charged for the one model that may take it');
+
+  ok(A.toggleUpgrade(a, s.id, 'Menchit', 'RM-4 Foeslayer Missiles').ok, 'it can be bought');
+  eq(A.upgradeCost(a, s), 5, '5pts, not 10 — the Ares is not paying for a gun it cannot have');
+
+  // The swap must still take the Menchit's miniguns and leave the Ares alone.
+  const guns = v => U.unitWeapons(DZC.faction('phr').units.find(x => x.id === 'type-1-battle-walker'),
+    { variants: [v], hasUpgrade: w => A.hasUpgrade(s, v, w.name) }).map(w => w.name);
+  ok(guns('Menchit').includes('RM-4 Foeslayer Missiles'), 'the Menchit fires it');
+  ok(!guns('Menchit').includes('Twin RX-20 Miniguns'), 'and has given up its miniguns for it');
+  ok(!guns('Ares').includes('RM-4 Foeslayer Missiles'), 'the Ares does not fire it');
+
+  /* A saved army that bought one before the weapon named its variants holds it
+   * under '*'. Reading only the new scopes would take the gun and its points
+   * off the list without a word. */
+  s.upgrades = { '*': { 'RM-4 Foeslayer Missiles': true } };
+  ok(A.hasUpgrade(s, 'Menchit', 'RM-4 Foeslayer Missiles'), 'an old save keeps its purchase');
+  eq(A.upgradeCost(a, s), 5, 'repriced to the models that may actually carry it');
+  ok(A.toggleUpgrade(a, s.id, 'Menchit', 'RM-4 Foeslayer Missiles').ok, 'and it can still be sold back');
+  eq(A.upgradeCost(a, s), 0, 'which clears the legacy record too');
+
+  A.remove(a.id);
+}
+
 /* 10.1.12 "Commanders may not be assigned to Fast Movers."
  * 10.1.20 "Commanders cannot be assigned to Living Weapons."
  *

@@ -1668,8 +1668,23 @@
     return out;
   }
 
+  /* A gun that GAINS a variant bracket must not drop the purchases already
+   * made against it.
+   *
+   * The Foeslayer was scoped to '*' until 2026-08-10, when the data caught up
+   * with the card and restricted it to Menchit and Styx. Every saved army that
+   * had bought one holds it under '*', and reading only the new scopes would
+   * have taken the gun off the Squad and its points off the list without a
+   * word -- the worst shape a data fix can take, because the list you printed
+   * yesterday quietly stops matching the models in the case.
+   *
+   * So a purchase under '*' still counts, at whatever scopes the weapon names
+   * now. The total moves, and correctly: it was being charged per model across
+   * a whole mixed Squad, including the Ares that were never offered it. */
   function hasUpgrade(squad, scope, name) {
-    return !!(squad.upgrades && squad.upgrades[scope] && squad.upgrades[scope][name]);
+    if (!squad.upgrades) return false;
+    if (squad.upgrades[scope] && squad.upgrades[scope][name]) return true;
+    return !!(squad.upgrades[ALL_VARIANTS] && squad.upgrades[ALL_VARIANTS][name]);
   }
 
   /* Take or drop an upgrade. Where the card prints "Only one of these upgrades
@@ -1681,8 +1696,12 @@
     s.upgrades = s.upgrades || {};
     s.upgrades[scope] = s.upgrades[scope] || {};
 
-    if (s.upgrades[scope][name]) {
+    // The legacy '*' record has to go with it, or a purchase inherited from
+    // before the weapon named its variants cannot be sold back: the button
+    // deletes an entry that was never there and hasUpgrade keeps saying yes.
+    if (hasUpgrade(s, scope, name)) {
       delete s.upgrades[scope][name];
+      if (s.upgrades[ALL_VARIANTS]) delete s.upgrades[ALL_VARIANTS][name];
       touch(army);
       return { ok: true, reason: null };
     }

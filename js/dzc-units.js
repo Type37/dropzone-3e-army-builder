@@ -411,6 +411,31 @@
     return true;
   }
 
+  /* Does this gun belong in the block headed `lens`?
+   *
+   * The test used to be "box is variant, and it names this one", which read the
+   * box rather than the restriction and got both edges wrong.
+   *
+   * An UPGRADE may be restricted too. "Menchit and Styx may replace Twin RX-20
+   * Miniguns with RM-4 Foeslayer Missiles" -- so the Foeslayer is not a gun an
+   * Ares may buy, and it was appearing in the Ares block with a live +5pts
+   * button and no restriction printed on it, because the block suppresses the
+   * "Menchit, Styx" chip on the grounds that the heading already says which
+   * variant you are looking at. Reported by a player, 2026-08-09: "The
+   * Foeslayer should be Menchit and Styx only."
+   *
+   * A gun that names NOBODY belongs to everybody, which now includes the one
+   * variant-boxed row whose variants the scanner could not resolve (the Surge
+   * Gunship's Decon Pulse, boxUnresolved). It used to fall out of every block
+   * and so off the Squad entirely -- a gun printed on the card that the app
+   * would not show you anywhere. Shown in all four blocks is the wrong-but-
+   * visible answer, and visible is the one that matters. */
+  function inLens(w, lens) {
+    if (!lens) return true;
+    const vs = w.variants || [];
+    return !vs.length || vs.indexOf(lens) !== -1;
+  }
+
   /* Which printed weapons a bought upgrade has taken AWAY, by index.
    *
    * Five cards print a swap — "May replace both its MC-20 Chainguns with MM-15
@@ -512,7 +537,7 @@
     const lens = o.lens === undefined ? state.lens[u.id] : o.lens;
     const gone = marking ? removedByUpgrades(u, o) : {};
     const rows = all.map((w, i) => [w, i])
-      .filter(([w]) => !lens || w.box !== 'variant' || (w.variants || []).indexOf(lens) !== -1)
+      .filter(([w]) => inLens(w, lens))
       .map(([w, i]) => {
         // A weapon a swap took away is struck out rather than dimmed. It is not
         // "a gun this Squad could have" — it is one the card printed and the
@@ -627,7 +652,7 @@
     const lens = o.lens === undefined ? state.lens[u.id] : o.lens;
     const gone = marking ? removedByUpgrades(u, o) : {};
     const cards = all.map((w, i) => [w, i])
-      .filter(([w]) => !lens || w.box !== 'variant' || (w.variants || []).indexOf(lens) !== -1)
+      .filter(([w]) => inLens(w, lens))
       .map(([w, i]) => {
         const mark = gone[i] ? 'is-swapped' : weaponLive(u, w, o) ? 'is-live' : 'is-off';
         let gained = '';

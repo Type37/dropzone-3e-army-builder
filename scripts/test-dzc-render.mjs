@@ -415,8 +415,12 @@ console.log('\nevery screen renders');
    * decides whether it is on screen — so what is asserted here is that it
    * carries them. */
   ok(/dzc-rail-peek/.test(builder), 'the rail has a peek line');
-  ok(/pts left/.test(builder) && /of \d+ Groups/.test(builder),
-     'and it carries the points left and the Group count');
+  /* It said "N pts left" until 2026-08-09, when Jet took that number off the
+   * rail entirely — "there's a bar that shows how much you've spent... but it's
+   * a more obvious like 900/2000 or something", then "remove the points left."
+   * Spent-over-limit is the same fact, said once. */
+  ok(/<b>\d+<\/b><span>\/ \d+pts<\/span>/.test(builder) && /of \d+ Groups/.test(builder),
+     'and it carries the spend against the limit and the Group count');
   ok(/For the club night/.test(builder) && /For the club night/.test(list),
      'and what the army is for, on both screens');
 
