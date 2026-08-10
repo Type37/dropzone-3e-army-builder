@@ -1691,17 +1691,31 @@
      * where a bracket would be says; and the consequence of walking on --
      * "Squads not aboard an Aircraft begin Reserved" (9.4) -- is already a
      * warning on the army, where it belongs, because it is a fact about the
-     * list rather than about one Squad. */
+     * list rather than about one Squad.
+     *
+     * THE BUTTON SAYS "TRANSPORT". Not the strip -- that stays gone, and for
+     * the reason above. This is the button's own name, which it did not have:
+     * it was a 15px lorry glyph beside a bin, and in the 2026-08-09 thread two
+     * players spent twenty messages on how to put a Medusa inside a Triton X
+     * without either of them finding it. Grotwurks asked for exactly what this
+     * opens -- "if I want my Triton X listed as Transporting the Medusa, it
+     * should be a selectable transport" -- and it already was: openCarry lists
+     * the Triton X under "Already in this Group", marked "Fills it". Baxter,
+     * who knows the app, still answered "drag your unit underneath it",
+     * because the drag is the route he could see. Then: "My point is that
+     * isnt intuitive. I have to go through extra steps for.... why?"
+     *
+     * There were no extra steps. There was one step with no name on it. */
     const transportPicker = (opts.length || board.length) ? `${carrierUnit
-      ? `<button type="button" class="dzc-icon-btn" title="Walks on instead"
+      ? `<button type="button" class="dzc-sq-btn" title="Walks on instead"
                  onclick="DZCBuilder.assignTransport('${s.id}','')"
                  aria-label="Take ${esc(u.name)} out of its Transport"
-                 >${window.DZCIcon('stat_mv_infantry', { size: 15 })}</button>` : ''}
-      <button type="button" class="dzc-icon-btn dzc-carry-btn"
+                 >${window.DZCIcon('stat_mv_infantry', { size: 15 })}Take out</button>` : ''}
+      <button type="button" class="dzc-sq-btn dzc-carry-btn"
               onclick="DZCBuilder.openCarry('${s.id}')"
               aria-label="${carrierUnit ? 'Ride something else' : 'Choose a Transport'} for ${esc(u.name)}"
               title="${carrierUnit ? 'Ride something else' : 'Choose a Transport'}"
-              >${window.DZCIcon('local_shipping', { size: 15 })}</button>` : '';
+              >${window.DZCIcon('local_shipping', { size: 15 })}Transport</button>` : '';
 
     /* A Squad in your army reads exactly as the unit does when you open it:
      * art, the capacity symbol at size beside the name, the meta line, every
