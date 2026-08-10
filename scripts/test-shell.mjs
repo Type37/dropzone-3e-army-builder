@@ -170,6 +170,21 @@ const sw = readFileSync(path.join(ROOT, 'sw.js'), 'utf8');
 const core = new Set([...(sw.match(/const CORE\s*=\s*\[([\s\S]*?)\];/) || [, ''])[1]
   .matchAll(/'([^']+)'/g)].map(m => m[1].replace(/^\.\//, '')));
 
+/* The build number Settings shows is the one sw.js caches under.
+ *
+ * Two numbers in two files that must agree, edited by hand at deploy time, and
+ * the whole point of showing one is that a bug report can be trusted to name
+ * the build it came from. A version that lies is worse than no version. */
+{
+  const swV = (sw.match(/const CACHE\s*=\s*'dzc-cache-v(\d+)'/) || [])[1];
+  const shell = readFileSync(path.join(ROOT, 'js/dzc-shell.js'), 'utf8');
+  const uiV = (shell.match(/const BUILD\s*=\s*(\d+)/) || [])[1];
+  ok(!!swV, "sw.js names its cache dzc-cache-v<number>");
+  ok(!!uiV, 'dzc-shell.js declares BUILD');
+  ok(swV === uiV, `BUILD ${uiV} matches the service worker cache v${swV}`,
+     'Bump both, or Settings and a feedback mail report a build nobody is running.');
+}
+
 const manifest = JSON.parse(readFileSync(path.join(ROOT, 'data/offline-manifest.json'), 'utf8'));
 const shipped = new Set(manifest.groups.flatMap(g => g.files).map(f => f.u.replace(/^\.\//, '')));
 

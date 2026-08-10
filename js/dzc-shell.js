@@ -31,6 +31,27 @@ const App = (() => {
    * The questions are Dropfleet's, word for word (FEEDBACK_HREF, git show
    * 43773fa:js/app.js:16) with the game swapped -- this is exactly the copy
    * CLAUDE.md §2 says not to rewrite. */
+  /* WHICH BUILD THIS IS.
+   *
+   * The same number sw.js names its cache with, which is bumped on every
+   * deploy. Kept in step by a test rather than by remembering, because two
+   * numbers that must match and are edited in different files will not.
+   *
+   * It exists because of the 2026-08-09 thread. Mitch Novem: "can anyone else
+   * not create squads of multiple units in the army builder? almost all my
+   * squads are locked to units of 1... like I cant make units of 2 ares in the
+   * app." Baxter tried it, it worked, screenshotted it. Then Mitch: "alright,
+   * that didnt work on my end before", "okay now i feel crazy cause it works".
+   * Baxter's guess: "Might have needed a refresh with jet updating stuff."
+   *
+   * Probably right, and unprovable either way, which is the problem. A live
+   * tab does self-update within the minute (index.html polls and reloads on
+   * controllerchange), so this is not a prompt to reload -- a prompt would be
+   * a worse version of something already automatic. It is the build NUMBER,
+   * so a report can say which one it came from and "that was fixed in 419"
+   * becomes an answer instead of a guess. */
+  const BUILD = 423;
+
   const FEEDBACK_HREF = 'mailto:warlore1@outlook.com?subject='
     + encodeURIComponent('Dropzone Builder feedback') + '&body='
     + encodeURIComponent(
@@ -38,7 +59,10 @@ const App = (() => {
       + '1. What were you trying to do, and could you finish it?\n\n'
       + '2. Did anything look wrong (a points cost, a stat, a rule)?\n\n'
       + '3. What would make you use it for your next game?\n\n'
-      + '4. How long have you played DZC?\n'
+      + '4. How long have you played DZC?\n\n'
+      // Last, and already filled in: it is the one answer nobody can give and
+      // the first one needed to reproduce anything.
+      + `Build ${BUILD}\n`
     );
 
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g,
@@ -309,7 +333,7 @@ const App = (() => {
           <button class="btn btn-ghost btn-sm" type="button" onclick="App.openChangelog()">What's new</button>
           <a class="btn btn-ghost btn-sm" href="${FEEDBACK_HREF}">Send feedback</a>
         </div>
-        <p class="dzc-set-note">A WarLore project. Game data and art belong to TTCombat.
+        <p class="dzc-set-note">Build ${BUILD}. A WarLore project. Game data and art belong to TTCombat.
           Interface icons from <a href="https://fonts.google.com/icons" target="_blank" rel="noopener">Material Symbols</a>,
           used under the Apache License 2.0.</p>
       </div>`;
