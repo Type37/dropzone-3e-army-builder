@@ -1779,5 +1779,46 @@ console.log('\nShaltari Gates are not part of the Group structure');
   store.clear();
 }
 
+/* A Commander's points do not count toward the quarter-of-your-points cap.
+ *
+ * 3.2.5: "The Commander's points combine with that Unit's points during games
+ * but are ignored during Army composition besides counting towards your total
+ * allowed points."
+ *
+ * Two halves. categorySpend already left Commanders out, which is the
+ * Standard/Vanguard/Heavy/Support half. The per-Group cap is an Army
+ * composition rule too (3.2) and was being checked against the full Group
+ * cost, so 430pts of tanks plus a Level 6 Commander read 580 against a 500 cap
+ * and a legal list was refused. */
+console.log('\na Commander is ignored by the quarter cap (3.2.5)');
+{
+  await DZC.loadFaction('ucm');
+  const a = A.create('ucm', 'Cap', 2000);            // a quarter of 2000 is 500
+  const g = A.addGroup(a);
+  const s = A.addSquad(a, g.id, 'ucm-main-battle-tank', 6);
+  A.addSquad(a, g.id, 'ucm-heavy-tank', 4);
+  eq(A.groupCompositionCost(a, g), 430, 'the units come to 430');
+
+  ok(A.setCommander(a, s.id, 6).ok, 'a Level 6 Commander goes on one of them');
+  eq(A.groupCost(a, g), 580, 'the Group really costs 580 with the Commander');
+  eq(A.groupCompositionCost(a, g), 430, 'but composition still sees 430');
+  ok(!A.validate(a).errors.some(e => /quarter/.test(e.msg)),
+     'so 430 under a 500 cap is legal',
+     JSON.stringify(A.validate(a).errors.map(e => e.msg)));
+
+  // The Commander's points DO count toward the army total. 3.2.5 says the cap
+  // is the one composition rule they are not ignored by.
+  eq(A.armyCost(a), 580, 'and the 150 still counts toward the total allowed points');
+
+  // And the cap still bites when the UNITS alone bust it.
+  A.addSquad(a, g.id, 'ucm-heavy-tank', 3);
+  const over = A.validate(a).errors.find(e => /quarter/.test(e.msg));
+  ok(!!over, 'units alone over the cap are still refused');
+  ok(/595pts/.test(over ? over.msg : ''),
+     'and the refusal quotes the composition figure, not the Commander-inflated one',
+     over && over.msg);
+  A.remove(a.id);
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

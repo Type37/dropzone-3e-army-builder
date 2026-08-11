@@ -1860,6 +1860,29 @@
     return group.squads.reduce((t, s) => t + squadCost(army, s), 0);
   }
 
+  /* What a Group costs for the COMPOSITION rules, which is not what it costs.
+   *
+   * 3.2.5, on a Commander: "The Commander's points combine with that Unit's
+   * points during games but are ignored during Army composition besides
+   * counting towards your total allowed points."
+   *
+   * Two halves, and only one of them was implemented. categorySpend already
+   * leaves Commanders out, which is the Standard/Vanguard/Heavy/Support half.
+   * The quarter-of-your-points cap is an Army composition rule too (3.2) and
+   * it was being checked against the full Group cost, so 430pts of tanks plus
+   * a Level 6 Commander read 580 against a 500 cap and the list was called
+   * illegal. Composition sees 430 and it is legal.
+   *
+   * RM stays IN. Its own rule is the opposite way round and says so: "Their
+   * points contribute to their Group's total cost but do not contribute
+   * towards any category" (Genitor X). Group cost yes, category no. */
+  function groupCompositionCost(army, group) {
+    return group.squads.reduce((t, s) => {
+      const c = commanderFor(army, s.id);
+      return t + squadCost(army, s) - (c ? levelCost(c.level) : 0);
+    }, 0);
+  }
+
   function armyCost(army) {
     return army.groups.reduce((t, g) => t + groupCost(army, g), 0) + commandersCost(army);
   }
@@ -1917,7 +1940,9 @@
       }
       const cap = window.DZC.maxGroupCost(limit);
       army.groups.forEach(g => {
-        const c = groupCost(army, g);
+        // Composition cost, not cost: a Commander's points are ignored here
+        // (3.2.5). See groupCompositionCost.
+        const c = groupCompositionCost(army, g);
         if (c > cap) {
           errors.push({ rule: '3.2', group: g.id, msg: `“${groupName(army, g)}” costs ${c}pts. No Group may exceed a quarter of the limit (${cap}pts).` });
         }
@@ -2255,7 +2280,7 @@
     setCarrier, moveSquad, setCommander, findSquad, groupOf, unitOf, carrierOf, squadGuns,
     commanders, commanderFor, commanderTargets,
     addCommander, removeCommander, assignCommander, syncCommanders, levelCost,
-    modelCost, squadCost, groupCost, armyCost, categorySpend, validate,
+    modelCost, squadCost, groupCost, groupCompositionCost, armyCost, categorySpend, validate,
     // Raw Materials (Genitor X)
     genitorCap, rmOf, rmCost, setRm, RM_POINTS,
     // Shaltari Gates (Gate, Shaltari Unit Special Rules)

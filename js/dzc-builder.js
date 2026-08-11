@@ -1107,7 +1107,12 @@
    * to read. Name, what it costs, how big it is, and the transport space,
    * which is the fact that decides where the next Unit can go. */
   function groupBrief(a, g) {
-    const cost = window.DZCArmy.groupCost(a, g);
+    // Measured against the quarter cap, so it is the COMPOSITION cost: a
+    // Commander's points are ignored by that rule (3.2.5), and a meter
+    // reading 580 of 500 beside no error would be the app arguing with
+    // itself. The Group's true cost, Commander included, is what the
+    // share export and the printed sheet carry.
+    const cost = window.DZCArmy.groupCompositionCost(a, g);
     const cap = window.DZC.maxGroupCost(a.pointsLimit);
     const models = g.squads.reduce((n, s) => n + s.models.length, 0);
     const U = window.DZCUnits;
@@ -1223,7 +1228,12 @@
    * for. Every number is paired with its icon and spelled out, because "3/6"
    * on its own does not say 3 of what. */
   function groupMeters(a, g) {
-    const cost = window.DZCArmy.groupCost(a, g);
+    // Measured against the quarter cap, so it is the COMPOSITION cost: a
+    // Commander's points are ignored by that rule (3.2.5), and a meter
+    // reading 580 of 500 beside no error would be the app arguing with
+    // itself. The Group's true cost, Commander included, is what the
+    // share export and the printed sheet carry.
+    const cost = window.DZCArmy.groupCompositionCost(a, g);
     const cap = window.DZC.maxGroupCost(a.pointsLimit);
     const models = g.squads.reduce((t, s) => t + s.models.length, 0);
     const squads = g.squads.length;
@@ -1292,7 +1302,12 @@
   }
 
   function groupHtml(a, g) {
-    const cost = window.DZCArmy.groupCost(a, g);
+    // Measured against the quarter cap, so it is the COMPOSITION cost: a
+    // Commander's points are ignored by that rule (3.2.5), and a meter
+    // reading 580 of 500 beside no error would be the app arguing with
+    // itself. The Group's true cost, Commander included, is what the
+    // share export and the printed sheet carry.
+    const cost = window.DZCArmy.groupCompositionCost(a, g);
     const cap = window.DZC.maxGroupCost(a.pointsLimit);
     // Carriers first, then whatever they carry, indented beneath them. The
     // nesting IS the deployment plan, so it is drawn rather than described.
