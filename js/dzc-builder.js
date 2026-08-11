@@ -1503,11 +1503,21 @@
                  aria-label="${label}">${window.DZCIcon(icon, { size: 14 })}</button>`;
       return ok || !why ? b : `<span class="dzc-step-why" title="${esc(why)}">${b}</span>`;
     };
+    /* A COUNT, NOT A QUOTA. This read "3 of 12", which is the shape of a
+     * ration you are drawing down, and RM is not that: "RM tokens cost 5pts
+     * each and are assigned to those Genitor Units". You buy them one at a
+     * time and each one adds 5pts to the army, the same as buying a model.
+     *
+     * The 12 has not gone anywhere, it is just not the frame any more. It is
+     * still the rule the + button enforces, and the button says it: "It may
+     * never have more than 12 RM tokens aboard", on the same disabled-with-a-
+     * reason wrapper every other refusal in the builder uses. */
     return `<div class="dzc-rm">
-      <span class="dzc-rm-head">${window.DZCIcon('rm', { size: 15 })}<b>Raw materials</b></span>
+      <span class="dzc-rm-head">${window.DZCIcon('rm', { size: 15 })}<b>Raw materials</b>
+        <i>${A.RM_POINTS}pts each</i></span>
       <span class="dzc-stepper">
         ${btn(-1, n > 0, 'A Genitor may begin empty, but not below zero.', 'One fewer RM token', 'remove')}
-        <b>${n}</b><i>of ${cap}</i>
+        <b>${n}</b>
         ${btn(1, n < cap, `It may never have more than ${cap} RM tokens aboard.`, 'One more RM token', 'add')}
       </span>
       <span class="dzc-rm-pts">${n * A.RM_POINTS}<small>pts</small></span>

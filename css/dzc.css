@@ -1147,7 +1147,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-space svg { flex: 0 0 auto; }
 .dzc-space-n { display: inline-flex; align-items: baseline; font-family: var(--font-numeric, 'Outfit', sans-serif); }
 .dzc-space-n b { font-size: 26px; font-weight: 700; line-height: 1; color: var(--ink, #2c2a26); }
-.dzc-space-n s { text-decoration: none; font-size: 18px; color: #b3aa9a; padding: 0 2px; }
+.dzc-space-n s { text-decoration: none; font-size: 18px; color: var(--ink-2, #6b6459); padding: 0 2px; }
 .dzc-space-n em { font-style: normal; font-size: 18px; font-weight: 600; color: var(--ink-2, #6b6459); }
 .dzc-space.is-full .dzc-space-n b { color: #14532d; }
 .dzc-space.is-over .dzc-space-n b { color: var(--danger, #b3261e); }
@@ -1379,11 +1379,13 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 }
 .dzc-rm-head b { font-weight: 600; color: var(--ink, #2c2a26); }
 .dzc-rm-head svg { flex: 0 0 auto; color: var(--acc-text, var(--acc, #1b3a5c)); }
-/* "3 of 12" -- the cap is the number on the Unit's own Transport Symbol, so
-   printing it here is not a second fact, it is the one you are spending
-   against. Same shape the category ratios use. */
-.dzc-rm .dzc-stepper i {
-  font-style: normal; font-size: 11px; color: var(--ink-2, #6b6459); padding-left: 2px;
+/* The price, beside the name, because that is the whole of how RM is bought:
+   one token, 5pts, on this Genitor. It used to say "3 of 12" on the stepper,
+   which framed the cap as a ration you were drawing down rather than a limit
+   you will not reach in most lists. The cap is still enforced on the + button
+   and still says itself when it refuses. */
+.dzc-rm-head i {
+  font-style: normal; font-size: 11px; color: var(--ink-2, #6b6459);
 }
 .dzc-rm-pts { margin-left: auto; font-weight: 600; font-size: 13px; }
 .dzc-rm-pts small { font-size: 10px; font-weight: 400; color: var(--ink-2, #6b6459); }

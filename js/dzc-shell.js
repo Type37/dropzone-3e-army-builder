@@ -43,7 +43,7 @@ const App = (() => {
    * a worse version of something already automatic. It is the build NUMBER,
    * so a report can say which one it came from and "that was fixed in 419"
    * becomes an answer instead of a guess. */
-  const BUILD = 435;
+  const BUILD = 436;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -594,6 +594,10 @@ const App = (() => {
     { date: '2026-08-11', title: 'Nothing sends you to the PDF any more', items: [
       'A keyword with no glossary entry used to answer “No glossary entry for this keyword. Read it from the stat card.” Five did: Nanomachines on the Type 7 Grand Walker, Particle on the Dragon, Razorworm Pod on the Terror Mech, and Scrambler on the UCM Light Battle Mech twice over. A Behemoth’s card never says whose faction it is, so its faction rules were out of reach, and the Light Battle Mech’s card prints “Scrambler 2+” where the rulebook heads the rule “Scrambler +X”. All 2,062 keywords the app can print now resolve, and a test walks every one of them so it stays that way.',
       'A Unit no longer tells you which page of the stat card PDF it came from. A rule’s page number is worth printing because the app shows a summary and the book has more; a Unit’s was a pointer to a card whose every field is already on the screen in front of you.'
+    ] },
+    { date: '2026-08-11', title: 'Raw Materials are bought one at a time', items: [
+      'The Raw Materials stepper said "3 of 12", which is the shape of a ration you are drawing down. RM is not that. "RM tokens cost 5pts each and are assigned to those Genitor Units": you buy them one at a time and each adds 5pts to the army, the same as buying a model. So it is a count with its price beside it now. The 12 has not gone anywhere, it is the rule the plus button enforces and it still says itself when it refuses, but it is no longer the frame.',
+      'The Raw Materials control is in the screenshot walk. It is drawn on two Units in one faction, so a walk through UCM had never once seen it and it had been changed twice with nobody looking at it.'
     ] },
     { date: '2026-08-11', title: 'Measured in a real browser: 30 controls too small to press, and four faction colours nobody could read', items: [
       'Every screen was walked in a real Chrome at 390 by 844 and every control on it measured. Thirty came back under 44px. Play Mode had almost all of them, which is the screen used entirely with a finger while standing at a table: the damage stepper at 26px square, the four Status Tokens at 22, Victory Points at 28, and Command Points, Pass tokens, Initiative and the Round counter around 32. So did the variant stepper in the builder, which is how a Squad gets its models, and the Add button in the picker, which is the thing the picker is for. All of them clear 44 now, and the two Victory Point counters still share one row, which they stopped doing until the padding gave way instead of the buttons.',

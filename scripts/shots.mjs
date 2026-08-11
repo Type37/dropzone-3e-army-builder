@@ -212,6 +212,19 @@ const DZC_STEPS = [
      await new Promise(r => setTimeout(r, 200));
      const st2 = document.querySelectorAll('.dzc-st');
      st2[3] && st2[3].click()`],
+  /* Raw Materials, which no shot had ever caught. They are drawn on exactly
+     two Units in one faction, so a walk through UCM never sees the control
+     and it was changed twice without anyone looking at it. Clipped, because
+     legibility is a question about actual pixels. */
+  ['17d-raw-materials', `location.hash = '#armies';
+     await new Promise(r => setTimeout(r, 400));
+     await DZC.loadFaction('bioficer');
+     const bio = DZCArmy.create('bioficer', 'Genitors', 2000);
+     const bg = DZCArmy.addGroup(bio);
+     const ark = DZCArmy.addSquad(bio, bg.id, 'grievance-genitor-ark', 1);
+     DZCArmy.setRm(bio, ark.id, 3);
+     location.hash = '#army/' + bio.id;
+     await new Promise(r => setTimeout(r, 800))`, '.dzc-rm'],
   ['18-armies', `location.hash = '#armies'`],
 ];
 
