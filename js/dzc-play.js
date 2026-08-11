@@ -25,20 +25,29 @@
   'use strict';
 
   const KEY = 'dzc_play';
-  /* Status Tokens are placed on a SQUAD, and the rulebook says so three times:
+  /* Status Tokens are placed on a SQUAD, and the rulebook says so every time
+   * one is placed:
    *
    *   11.1.7  Concussion. "place a Concussed Status Token on its Squad.
    *           Concussed Squads suffer -2Ac."
    *   11.1.22 Jammer:    "place a Jammed Status Token on its Squad."
    *   11.1.34 Suppress:  "place a Suppressed Status Token on its Squad.
    *           Suppressed Squads may only move 0” if any Unit within it attacks."
+   *   11.1.32 Smoke:     "place an Obscured Status Token on that Squad. Squads
+   *           with Obscured Status Tokens are Obscured."
+   *   10.1.30 Stealth:   "this Squad gains an Obscured Status Token."
    *
-   * Obscured is not one of them and does not move. 10.1.21 Obscurer X”. "All
-   * friendly Vehicle and Infantry UNITS within X” of this Unit are Obscured to
-   * enemies". So it is a state a model is in because of where it is standing,
-   * and two models of one Squad can genuinely differ. */
-  const SQUAD_STATUSES = ['Concussed', 'Suppressed', 'Jammed'];
-  const MODEL_STATUSES = ['Obscured'];
+   * Obscured used to sit on the MODEL here, argued off 10.1.21 Obscurer X”:
+   * "All friendly Vehicle and Infantry UNITS within X” of this Unit are
+   * Obscured to enemies". That rule is real, but it is a different thing. Being
+   * Obscured because of where you are standing places no token and needs no
+   * tracking, since this app does not know where anything is standing. The
+   * Obscured Status TOKEN is a token, it goes on the Squad like the other
+   * three, and 10.1.18 Large turns on the distinction: "Large Vehicles cannot
+   * be Obscured except by Obscured Status Tokens granted by Stealth". So the
+   * only Obscured worth a button here is the Squad-wide one, and putting it on
+   * the model meant a Stealth Squad had no way to record what Stealth gave it. */
+  const SQUAD_STATUSES = ['Concussed', 'Suppressed', 'Jammed', 'Obscured'];
 
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g,
     c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -95,8 +104,8 @@
       // game begins (Genitor X). From there it only moves in play.
       squads[s.id] = { st: [], pt: power(u), rm: window.DZCArmy.rmOf(s) };
     }));
-    return { round: 1, cp: 0, myVP: 0, oppVP: 0, oppGroups: 0, activated: {},
-      models: models, squads: squads };
+    return { round: 1, cp: 0, myVP: 0, oppVP: 0, oppGroups: 0, passUsed: 0,
+      activated: {}, models: models, squads: squads };
   }
 
   function load(army) {
@@ -113,10 +122,11 @@
         state.models[id] = fresh.models[id].map((m, i) => old[i] || m);
       }
     });
-    /* A game saved before the Squad statuses moved carries all four on each
-     * model. Hoist the three that belong to the Squad rather than dropping
-     * them: a token placed on ANY model was a token on that Squad, which is
-     * what the rules meant by it in the first place. */
+    /* A game saved before the Squad statuses moved carries them on each model.
+     * Hoist them rather than dropping them: a token placed on ANY model was a
+     * token on that Squad, which is what the rules meant by it in the first
+     * place. Nothing lives on a model now, Obscured included, so this empties
+     * every model's list on its way past. */
     state.squads = state.squads || {};
     Object.keys(fresh.squads).forEach(id => {
       if (!state.squads[id]) state.squads[id] = fresh.squads[id];
@@ -126,11 +136,10 @@
       // when this shipped still has whatever it paid for aboard.
       if (state.squads[id].rm == null) state.squads[id].rm = fresh.squads[id].rm;
       (state.models[id] || []).forEach(m => {
-        m.st = (m.st || []).filter(st => {
-          if (MODEL_STATUSES.indexOf(st) !== -1) return true;
+        (m.st || []).forEach(st => {
           if (state.squads[id].st.indexOf(st) === -1) state.squads[id].st.push(st);
-          return false;
         });
+        m.st = [];
       });
     });
     return state;
@@ -202,6 +211,16 @@
     return theirs - mine >= 2 ? theirs - mine - 1 : 0;
   }
 
+  /* What is still in your hand. Pass tokens are SPENT: "A player may use a Pass
+   * token instead of activating a Group" (4.2.1), and they do not carry over,
+   * because "once all Groups which may activate normally have done so, discard
+   * any remaining Pass tokens" and the next Initiation Phase generates a fresh
+   * lot (4.1.2). The card showed only what you were dealt, so from the second
+   * pass onward the number on screen was one you had already used. */
+  function passLeft(army) {
+    return Math.max(0, passTokens(army) - (state.passUsed || 0));
+  }
+
   // --------------------------------------------------------------- rendering
 
   async function open(id) {
@@ -262,8 +281,12 @@
              it stays, as a number beside theirs, not as a sentence about it. -->
         <div class="dzc-pcard" title="A Group of only non-auxiliary Transports cannot be activated and is ignored here (4.1.2)">
           <span class="dzc-pcard-k">Pass Tokens</span>
-          <span class="dzc-pcard-v">${pass}</span>
+          <span class="dzc-pcard-v">${passLeft(army)}<i>/ ${pass}</i></span>
           <div class="dzc-pcard-act">
+            <button type="button" aria-label="Use a Pass token"
+                    onclick="DZCPlay.pass(-1)" title="Use one instead of activating a Group (4.2.1)">−</button>
+            <button type="button" aria-label="Take a used Pass token back"
+                    onclick="DZCPlay.pass(1)">+</button>
             <!-- Derived from the army, not typed. Uneditable IS the enforcement,
                  so it has to say why rather than just refuse the caret. -->
             <label>Yours<input type="number" value="${groupsOnTable(army)}" disabled
@@ -452,12 +475,6 @@
           <button type="button" onclick="DZCPlay.dp('${s.id}',${i},-1)" aria-label="Damage">−</button>
           <b>${m.dp}</b><i>/${m.max}</i>
           <button type="button" onclick="DZCPlay.dp('${s.id}',${i},1)" aria-label="Repair">+</button>
-          <span class="dzc-statuses">${MODEL_STATUSES.map(st => {
-    const on = (m.st || []).indexOf(st) !== -1;
-    return `<button type="button" class="dzc-st${on ? ' is-on' : ''}"
-            ${noTokens ? `disabled title="${esc(noWhy)}"` : `title="${st}"`} aria-label="${st}"
-            onclick="DZCPlay.status('${s.id}',${i},'${st}')">${on ? st : st[0]}</button>`;
-  }).join('')}</span>
         </div>`).join('')}
       </div>
       ${weaponsHtml(army, s, u)}
@@ -485,6 +502,16 @@
       const was = state.round;
       state.round = Math.max(1, state.round + d);
       state.activated = {};
+      /* Pass tokens are generated fresh in every Initiation Phase and the
+       * leftovers are discarded, not banked: "once all Groups which may
+       * activate normally have done so, discard any remaining Pass tokens"
+       * (4.2.1). So the spend count goes back to nothing with the Round.
+       *
+       * The stash of tokens an activation took off goes with it. A Group that
+       * activated last Round is not going to be un-ticked now, and keeping it
+       * would hand a Round-old Concussion back on a mis-tap. */
+      state.passUsed = 0;
+      Object.keys(state.squads || {}).forEach(id => { delete state.squads[id].was; });
       /* 4.1.1 is two halves and only the second was here: "Players generate/
        * replenish their Command Points (CP) up to a number equal to their
        * highest Commander Level on the Table. Players lose CP here if they
@@ -513,19 +540,48 @@
     cp: d => { state.cp = Math.max(0, Math.min(commanderLevel(army()), state.cp + d)); redraw(); },
     vp: (k, d) => { state[k] = Math.max(0, (state[k] || 0) + d); redraw(); },
     oppGroups: v => { state.oppGroups = Math.max(0, parseInt(v, 10) || 0); redraw(); },
-    activate: id => { state.activated[id] = !state.activated[id]; redraw(); },
+    /* Ticking a Group is the END of its activation, and that is when its Status
+     * Tokens come off: "Remove any Status Tokens on a Squad at the end of its
+     * activation unless they were placed that activation" (6.4.5). Nothing
+     * removed them before, so a Squad Concussed in Round 1 stayed Concussed for
+     * the rest of the game and every -2Ac after the first was invented.
+     *
+     * The exception falls out of the order you do things in rather than needing
+     * a rule of its own: you tick the box when the activation is over, so a
+     * token placed AFTER the tick is a token placed that activation and stays.
+     *
+     * Un-ticking hands them back, because the box is also how you undo a
+     * mis-tap and silently eating three tokens for one is worse than the bug
+     * this fixes. Merged, not restored wholesale, so a token placed since the
+     * tick survives the undo too. */
+    activate: id => {
+      const a = army();
+      const g = a.groups.find(x => x.id === id);
+      const on = !state.activated[id];
+      state.activated[id] = on;
+      (g ? g.squads : []).forEach(s => {
+        const q = state.squads[s.id];
+        if (!q) return;
+        q.st = q.st || [];
+        if (on) { q.was = q.st.slice(); q.st = []; }
+        else {
+          (q.was || []).forEach(st => { if (q.st.indexOf(st) === -1) q.st.push(st); });
+          delete q.was;
+        }
+      });
+      redraw();
+    },
     dp: (sid, i, d) => {
       const m = (state.models[sid] || [])[i];
       if (!m) return;
       m.dp = Math.max(0, Math.min(m.max, m.dp + d));
       redraw();
     },
-    status: (sid, i, st) => {
-      const m = (state.models[sid] || [])[i];
-      if (!m || isBehemoth(sid)) return;
-      m.st = m.st || [];
-      const at = m.st.indexOf(st);
-      if (at === -1) m.st.push(st); else m.st.splice(at, 1);
+    /* Spent, not counted. Clamped to what was generated so it cannot go
+     * negative or bank tokens you were never dealt (4.1.2, 4.2.1). */
+    pass: d => {
+      const gen = passTokens(army());
+      state.passUsed = Math.max(0, Math.min(gen, (state.passUsed || 0) - d));
       redraw();
     },
     rm: (sid, d) => {

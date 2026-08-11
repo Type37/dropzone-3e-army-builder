@@ -745,8 +745,10 @@ console.log('\nevery screen renders');
     await tap('activate again', () => P.activate(pg.id));
     await tap('damage', () => P.dp(psid, 0, -1));
     await tap('repair', () => P.dp(psid, 0, 1));
-    await tap('status on', () => P.status(psid, 0, 'Reserved'));
-    await tap('status off', () => P.status(psid, 0, 'Reserved'));
+    await tap('status on', () => P.squadStatus(psid, 'Obscured'));
+    await tap('status off', () => P.squadStatus(psid, 'Obscured'));
+    await tap('use a Pass token', () => P.pass(-1));
+    await tap('take it back', () => P.pass(1));
     await tap('initiative roll', () => P.roll());
 
     const C = win.DZCCollection;
@@ -799,8 +801,12 @@ console.log('\nevery screen renders');
 
     const cap = () => (els['view-play'].innerHTML
       .match(/Command Points<\/span>[\s\S]*?<span class="dzc-pcard-v">\d+<i>\/ (\d+)<\/i>/) || [])[1];
-    const passes = () => (els['view-play'].innerHTML
-      .match(/Pass Tokens<\/span>[\s\S]*?<span class="dzc-pcard-v">(\d+)<\/span>/) || [])[1];
+    // Generated, and still in hand: the card shows both, the way the CP card
+    // shows what you hold over what you may hold.
+    const passCard = () => els['view-play'].innerHTML
+      .match(/Pass Tokens<\/span>[\s\S]*?<span class="dzc-pcard-v">(\d+)<i>\/ (\d+)<\/i>/) || [];
+    const passes = () => passCard()[2];
+    const passLeft = () => passCard()[1];
 
     const held = () => (els['view-play'].innerHTML
       .match(/Command Points<\/span>[\s\S]*?<span class="dzc-pcard-v">(\d+)<i>/) || [])[1];
@@ -830,6 +836,21 @@ console.log('\nevery screen renders');
     P.oppGroups('7');
     eq(passes(), '3', 'and each further Group behind earns another');
 
+    /* And they get SPENT. "A player may use a Pass token instead of activating
+     * a Group" (4.2.1). The card counted what you were dealt and never what you
+     * had left, so from the second pass on it showed a token you had used.
+     * They do not carry over either: the leftovers are discarded at the end of
+     * the Activation Phase and 4.1.2 deals a fresh lot. */
+    eq(passLeft(), '3', 'and all three start in your hand');
+    P.pass(-1); P.pass(-1);
+    eq(passLeft(), '1', 'using one takes it out of your hand');
+    eq(passes(), '3', 'without changing what you were dealt');
+    P.pass(-1); P.pass(-1); P.pass(-1);
+    eq(passLeft(), '0', 'you cannot spend past nothing');
+    P.round(1);
+    eq(passLeft(), '3', 'and the next Round deals a fresh set (4.1.2)');
+    P.round(-1);
+
     // A Group of only non-auxiliary Transports is not a Group for this
     // purpose, so adding one must not change the count either way (4.1.2).
     const m4 = A.addGroup(A.get(ma.id));
@@ -845,24 +866,48 @@ console.log('\nevery screen renders');
     await P.open(ma.id);
     const tags = (els['view-play'].innerHTML.match(/orphaned transports/g) || []).length;
     eq(String(tags), '1', 'and only the transport Group is called an orphaned transport');
-    /* Where a Status Token goes, which is a rule and not a layout choice:
+    /* Where a Status Token goes, which is a rule and not a layout choice. Every
+     * rule that places one places it on the SQUAD:
      *
      *   11.1.7  "place a Concussed Status Token on its Squad"
      *   11.1.22 "place a Jammed Status Token on its Squad"
      *   11.1.34 "place a Suppressed Status Token on its Squad"
+     *   11.1.32 "place an Obscured Status Token on that Squad"
+     *   10.1.30 "this Squad gains an Obscured Status Token"
      *
-     * and against those, 10.1.21 Obscurer X”: "All friendly Vehicle and
-     * Infantry UNITS within X” of this Unit are Obscured". Where you are
-     * standing, not a token on the Squad, so that one stays per model.
+     * Obscured was the odd one out here for a while, argued off 10.1.21
+     * Obscurer X”, which really does Obscure individual Units. But that is
+     * position, not a token, and this app does not know where anything is
+     * standing. The token version is what you place, and Stealth had nowhere
+     * to record itself.
      *
-     * Four squads (3 + 2 + 3 Legionnaires/tanks, plus the Condor) and nine
-     * models between them. All four statuses were on every model, so this used
-     * to be 36 and 36. */
+     * Four Squads (3 + 2 + 3 Legionnaires/tanks, plus the Condor) and nine
+     * models between them. Four statuses on every model used to make this 36. */
     const play = els['view-play'].innerHTML;
-    eq(String((play.match(/DZCPlay\.squadStatus\(/g) || []).length), '12',
-       'three Status Tokens per Squad, not per model (11.1.7, 11.1.22, 11.1.34)');
-    eq(String((play.match(/DZCPlay\.status\(/g) || []).length), '9',
-       'and Obscured stays on the model, because it is where it is standing (10.1.21)');
+    eq(String((play.match(/DZCPlay\.squadStatus\(/g) || []).length), '16',
+       'all four Status Tokens go on the Squad, not on the model');
+    eq(String((play.match(/DZCPlay\.status\(/g) || []).length), '0',
+       'and nothing is left hanging off a single model');
+
+    /* 6.4.5: "Remove any Status Tokens on a Squad at the end of its activation
+     * unless they were placed that activation." Nothing removed them, so a
+     * Squad Concussed in Round 1 was still -2Ac in Round 6. */
+    const msid = A.get(ma.id).groups[0].squads[0].id;
+    P.squadStatus(msid, 'Concussed');
+    ok(/dzc-st is-on/.test(els['view-play'].innerHTML), 'a token goes on');
+    P.activate(A.get(ma.id).groups[0].id);
+    ok(!/dzc-st is-on/.test(els['view-play'].innerHTML),
+       'and comes off at the end of that Squad\'s activation (6.4.5)');
+    P.activate(A.get(ma.id).groups[0].id);
+    ok(/dzc-st is-on/.test(els['view-play'].innerHTML),
+       'un-ticking the box hands it back, because that is how you undo a mis-tap');
+    // And only until the Round turns over. Un-ticking a box in Round 3 must not
+    // hand back a Concussion the Round 2 activation legitimately removed.
+    P.activate(A.get(ma.id).groups[0].id);
+    P.round(1);
+    P.activate(A.get(ma.id).groups[0].id);
+    ok(!/dzc-st is-on/.test(els['view-play'].innerHTML),
+       'but a Round later there is nothing left to hand back');
     A.remove(ma.id);
   }
 
@@ -883,7 +928,7 @@ console.log('\nevery screen renders');
 
     const view = () => els['view-play'].innerHTML;
     const passes = () => (view()
-      .match(/Pass Tokens<\/span>[\s\S]*?<span class="dzc-pcard-v">(\d+)<\/span>/) || [])[1];
+      .match(/Pass Tokens<\/span>[\s\S]*?<span class="dzc-pcard-v">\d+<i>\/ (\d+)<\/i>/) || [])[1];
     const mine = () => (view().match(/Yours<input type="number" value="(\d+)"/) || [])[1];
 
     const ge = win.DZC.faction('ucm').byId['ucm-heavy-battle-mech'].groupEquivalent;
@@ -896,7 +941,7 @@ console.log('\nevery screen renders');
 
     const bsid = A.get(ba.id).groups[0].squads[0].id;
     P.squadStatus(bsid, 'Concussed');
-    P.status(bsid, 0, 'Obscured');
+    P.squadStatus(bsid, 'Obscured');
     ok(!/dzc-st is-on/.test(view()),
        'and no Status Token, Obscured included, will stick to a Behemoth (1.2)',
        (view().match(/.{0,60}dzc-st is-on.{0,40}/) || [])[0]);

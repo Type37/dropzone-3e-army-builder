@@ -43,7 +43,7 @@ const App = (() => {
    * a worse version of something already automatic. It is the build NUMBER,
    * so a report can say which one it came from and "that was fixed in 419"
    * becomes an answer instead of a guess. */
-  const BUILD = 433;
+  const BUILD = 434;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -594,6 +594,11 @@ const App = (() => {
     { date: '2026-08-11', title: 'Nothing sends you to the PDF any more', items: [
       'A keyword with no glossary entry used to answer “No glossary entry for this keyword. Read it from the stat card.” Five did: Nanomachines on the Type 7 Grand Walker, Particle on the Dragon, Razorworm Pod on the Terror Mech, and Scrambler on the UCM Light Battle Mech twice over. A Behemoth’s card never says whose faction it is, so its faction rules were out of reach, and the Light Battle Mech’s card prints “Scrambler 2+” where the rulebook heads the rule “Scrambler +X”. All 2,062 keywords the app can print now resolve, and a test walks every one of them so it stays that way.',
       'A Unit no longer tells you which page of the stat card PDF it came from. A rule’s page number is worth printing because the app shows a summary and the book has more; a Unit’s was a pointer to a card whose every field is already on the screen in front of you.'
+    ] },
+    { date: '2026-08-11', title: 'Tokens that never came off, and Pass tokens you could not spend', items: [
+      'Status Tokens come off at the end of a Squad’s activation (6.4.5), and nothing was taking them off. A Squad Concussed in Round 1 was still carrying -2Ac in Round 6, and Suppressed and Jammed did the same. Ticking a Group activated clears them now, which is the end of the activation; a token you place after ticking was placed that activation and stays, which is the exception in the same rule. Un-ticking hands them back, because that box is also how you undo a mis-tap.',
+      'Obscured is a Status Token on the Squad, not a note on one model. It was put on the model on the strength of Obscurer X”, which really does Obscure individual Units by where they are standing. But that places no token and this app does not know where anything is standing. The two rules that hand out the token, Smoke and Stealth, both say “on that Squad”, and Large turns on the distinction: a Large Vehicle cannot be Obscured except by the token. A Stealth Squad had nowhere to record what Stealth had just given it.',
+      'Pass tokens are spent. The card showed how many you were dealt and had no way to use one, so from your second pass onward the number on screen was a token you had already handed over. It now reads what is left over what you were given, the way the Command Point card does, and the count starts again every Round because the leftovers are discarded rather than banked.'
     ] },
     { date: '2026-08-11', title: 'Five icons that were shapes typed into a file, replaced with real ones', items: [
       'Damage Points, Power, Defence and the grid/list toggle were not icons. They were geometry written straight into the source: a seven-point hexagon, a lightning bolt in eight integer moves, a shield whose curves were picked by eye, and four bare rectangles. Not one of them contained a single curve command, which is what gave them away. All four come from Phosphor now, and the list half of that toggle moved with the grid half so the two states are from one set rather than two.',
