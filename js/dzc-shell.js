@@ -43,7 +43,7 @@ const App = (() => {
    * a worse version of something already automatic. It is the build NUMBER,
    * so a report can say which one it came from and "that was fixed in 419"
    * becomes an answer instead of a guess. */
-  const BUILD = 434;
+  const BUILD = 435;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -594,6 +594,13 @@ const App = (() => {
     { date: '2026-08-11', title: 'Nothing sends you to the PDF any more', items: [
       'A keyword with no glossary entry used to answer “No glossary entry for this keyword. Read it from the stat card.” Five did: Nanomachines on the Type 7 Grand Walker, Particle on the Dragon, Razorworm Pod on the Terror Mech, and Scrambler on the UCM Light Battle Mech twice over. A Behemoth’s card never says whose faction it is, so its faction rules were out of reach, and the Light Battle Mech’s card prints “Scrambler 2+” where the rulebook heads the rule “Scrambler +X”. All 2,062 keywords the app can print now resolve, and a test walks every one of them so it stays that way.',
       'A Unit no longer tells you which page of the stat card PDF it came from. A rule’s page number is worth printing because the app shows a summary and the book has more; a Unit’s was a pointer to a card whose every field is already on the screen in front of you.'
+    ] },
+    { date: '2026-08-11', title: 'Measured in a real browser: 30 controls too small to press, and four faction colours nobody could read', items: [
+      'Every screen was walked in a real Chrome at 390 by 844 and every control on it measured. Thirty came back under 44px. Play Mode had almost all of them, which is the screen used entirely with a finger while standing at a table: the damage stepper at 26px square, the four Status Tokens at 22, Victory Points at 28, and Command Points, Pass tokens, Initiative and the Round counter around 32. So did the variant stepper in the builder, which is how a Squad gets its models, and the Add button in the picker, which is the thing the picker is for. All of them clear 44 now, and the two Victory Point counters still share one row, which they stopped doing until the padding gave way instead of the buttons.',
+      'An unset Status Token was a letter drawn at 40% opacity, about 1.9:1 against the card. Not faint, unreadable, on one of the four controls that screen exists to press.',
+      'Four of the six faction colours failed as text. Measured on the white card: Scourge purple 7.2:1 and Bioficer red 8.2:1 are fine, UCM green is 4.05:1, Resistance blue 4.00, Shaltari orange 3.50, and PHR gold is 2.28:1, which is gold on white. The colours themselves do not move, because they are the faction and they sit on fills, borders and rules where the bar is 3:1 and all six clear it. What changed is the ink they imply: where the accent was set as small type it is now a darkened cut of the same hue, and where small type sits ON a fill of it, the ink is black or white depending on which one reads. A PHR chip is still gold; its label went from 1.9:1 to 8:1.',
+      'Play Mode is drawn in the army’s colour. Every other view has taken the faction accent since it was written and this one never did, so a Scourge game and a PHR game were the same navy.',
+      'Four more inks that were below the line: the changelog headings you are reading at 2.90:1, the variant chip on a weapon card at 3.30, "just now" on an army card at 3.11, and the Rare and Aux Transport flags at 3.81, which were painted on a border colour rather than on a background.'
     ] },
     { date: '2026-08-11', title: 'Tokens that never came off, and Pass tokens you could not spend', items: [
       'Status Tokens come off at the end of a Squad’s activation (6.4.5), and nothing was taking them off. A Squad Concussed in Round 1 was still carrying -2Ac in Round 6, and Suppressed and Jammed did the same. Ticking a Group activated clears them now, which is the end of the activation; a token you place after ticking was placed that activation and stays, which is the exception in the same rule. Un-ticking hands them back, because that box is also how you undo a mis-tap.',

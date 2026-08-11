@@ -157,7 +157,7 @@
       const pct = Math.min((cost / (a.pointsLimit || 1)) * 100, 100);
       const models = a.groups.reduce((n, g) => n + g.squads.reduce((m, s) => m + s.models.length, 0), 0);
       return `<article class="dzc-army-card${enter('a:' + a.id, listSeen)}"
-                data-aid="${a.id}" style="--acc:${accentOf(a.faction)}"
+                data-aid="${a.id}" style="${window.DZC.accentStyle(accentOf(a.faction))}"
                 onclick="DZCBuilder.open('${a.id}')" tabindex="0"
                 onkeydown="if(event.key==='Enter')DZCBuilder.open('${a.id}')">
         <div class="dzc-army-top">
@@ -233,7 +233,7 @@
     if (!S || !body) return;
     body.innerHTML = `<div class="dzc-quick-grid">${S.list().map(q => {
       const fac = FACTIONS.find(f => f.id === q.faction) || {};
-      return `<button type="button" class="dzc-quick-card" style="--acc:${accentOf(q.faction)}"
+      return `<button type="button" class="dzc-quick-card" style="${window.DZC.accentStyle(accentOf(q.faction))}"
         onclick="DZCBuilder.startQuick(${q.i})">
         <span class="dzc-quick-fac">
           <img src="assets/factions/${esc(q.faction)}.webp" alt="" loading="lazy" onerror="this.remove()">
@@ -324,7 +324,7 @@
           <label class="form-label">Faction</label>
           <div class="dzc-faction-grid" id="dzc-faction-picker" role="radiogroup" aria-label="Faction">
             ${FACTIONS.map(f => `<button type="button" class="dzc-faction-btn${f.id === picked.faction ? ' selected' : ''}"
-              style="--acc:${f.accent}" role="radio" aria-checked="${f.id === picked.faction}"
+              style="${window.DZC.accentStyle(f.accent)}" role="radio" aria-checked="${f.id === picked.faction}"
               onclick="DZCBuilder.pickFaction('${f.id}')">
               <img class="dzc-faction-icon" src="assets/factions/${esc(f.id)}.webp" alt=""
                    loading="lazy" onerror="this.remove()">
@@ -567,7 +567,7 @@
           >${window.DZCIcon('print', { size: 15 })}<span class="topbar-action-label">Print</span></button>`;
     }
 
-    root.innerHTML = `<div class="dzc-wrap dzc-builder" style="--acc:${accentOf(a.faction)}">
+    root.innerHTML = `<div class="dzc-wrap dzc-builder" style="${window.DZC.accentStyle(accentOf(a.faction))}">
       <header class="dzc-b-head">
         <!-- Editable in place, and it has to SAY so. A contenteditable heading
              with no affordance is a trap in both directions: nobody discovers
@@ -2320,7 +2320,7 @@
      * markup moved the caret, reset the scroll and made the whole modal jump
      * under your finger every time you touched a sort. */
     document.getElementById('dzc-picker-body').innerHTML = `
-      <div class="dzc-pick-bar" id="dzc-pick-bar" style="--acc:${accentOf(a.faction)}">
+      <div class="dzc-pick-bar" id="dzc-pick-bar" style="${window.DZC.accentStyle(accentOf(a.faction))}">
         <div class="dzc-search-row">${window.DZCIcon('search')}
           <input class="dzc-search" id="dzc-pick-search" type="search"
                  placeholder="Search units, variants, weapons or rules"
@@ -3274,6 +3274,9 @@
 
   window.DZCBuilder = {
     renderList, renderBuilder, openNew, createArmy, surpriseMe, del, open,
+    // Play Mode draws itself in the army's faction colour too, and the list of
+    // them lives here. Exported rather than copied into a fourth module.
+    accentOf,
     sortList: k => { listSort = k; renderList(); },
     // The app's toast. Exported because the shell has things worth saying too
     // (a backup written, a sync finished) and a second toast implementation

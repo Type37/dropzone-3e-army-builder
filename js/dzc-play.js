@@ -240,7 +240,14 @@
     const lvl = commanderLevel(army);
     const pass = passTokens(army);
 
-    root.innerHTML = `<div class="dzc-wrap dzc-play">
+    /* The faction's own colour, which Play Mode never had. Every other view
+     * sets --acc from the army's faction and this one did not, so a Scourge
+     * game and a PHR game were both drawn in the same fallback navy. It also
+     * carries --acc-on, which is the ink a Status Token's name is set in once
+     * it sits on a fill of that colour: white on Scourge purple, near-black on
+     * PHR gold, which is 1.9:1 the other way round. */
+    root.innerHTML = `<div class="dzc-wrap dzc-play" style="${
+      window.DZC.accentStyle(window.DZCBuilder.accentOf(army.faction))}">
       <header class="dzc-play-head">
         <div class="dzc-round">
           <button type="button" onclick="DZCPlay.round(-1)" aria-label="Previous round">${window.DZCIcon('remove', { size: 16 })}</button>

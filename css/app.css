@@ -7489,7 +7489,12 @@ body[data-view="builder"] .game-info-footer {
   padding-bottom: 2px;
   margin-bottom: var(--sp-xs);
 }
-.changelog-title { color: var(--accent, #b8902b); }
+/* Its own gold rather than --accent, which is 2.90:1 on the panel and this is
+   14px type. --accent has to stay where it is: it is the wordmark's gold and
+   it is a fill and a rule everywhere else, where the bar is 3:1 and it clears.
+   The dark theme's gold already reads there and keeps it. */
+.changelog-title { color: #8a6c1e; }
+html[data-theme="dark"] .changelog-title { color: var(--accent, #d8b24e); }
 .changelog-list { margin: 0; padding-left: 1.1em; }
 .changelog-list li { font-size: var(--text-sm); line-height: 1.45; margin-bottom: 3px; color: var(--fg2); }
 

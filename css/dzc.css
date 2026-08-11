@@ -38,6 +38,7 @@
      variant chip on a weapon card and the variant edge in the weapon table --
      and they must not drift. */
   --variant: #f15d38;
+  --variant-ink: #c33d1c;
   --font-ui: 'Jost', system-ui, sans-serif;
   --ease-deco: cubic-bezier(.33, 0, .67, 1);
 }
@@ -56,6 +57,7 @@ html[data-theme="dark"] {
   /* Lifted off f15d38: the paper orange is a mid tone that goes muddy against
      a dark card, and this is the same hue with the value it needs there. */
   --variant: #ff8362;
+  --variant-ink: #ff8362;
 }
 /* The one place --acc-ink is a background rather than ink. A light navy under
    white text is unreadable, so it takes the saturated navy app.css already
@@ -73,7 +75,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   color: var(--ink, #24201c); transition: background .12s, border-color .12s, color .12s;
 }
 .dzc-tab:hover { border-color: var(--acc); }
-.dzc-tab.is-active { background: var(--acc); border-color: var(--acc); color: #fff; }
+.dzc-tab.is-active { background: var(--acc); border-color: var(--acc); color: var(--acc-on, #fff); }
 
 /* ── toolbar ── */
 .dzc-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 8px; }
@@ -98,7 +100,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    modal lives outside it, so without one the active chip painted white on
    nothing and the filters looked broken. */
 .dzc-chip.is-active {
-  background: var(--acc, #1b3a5c); border-color: var(--acc, #1b3a5c); color: #fff;
+  background: var(--acc, #1b3a5c); border-color: var(--acc, #1b3a5c); color: var(--acc-on, #fff);
 }
 /* One line of text had 22px of margin around it. */
 .dzc-count { font-size: 12px; color: var(--ink-2, #6b6459); margin: 4px 0 10px; }
@@ -169,7 +171,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-card-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12px; color: var(--ink-2, #6b6459); margin-bottom: 6px; }
 .dzc-points { font-weight: 700; color: var(--ink, #24201c); }
 .dzc-pts { font-weight: 500; font-size: 10px; margin-left: 1px; color: var(--ink-2, #6b6459); }
-.dzc-flag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; padding: 3px 7px; border-radius: 3px; background: var(--line, #e8e2d6); color: var(--ink-2, #5b544a); }
+.dzc-flag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; padding: 3px 7px; border-radius: 3px; background: var(--surface-3, #f2ece0); color: var(--ink-2, #5b544a); }
 .dzc-flag--rare { background: #c9a92c; color: #221c00; }
 .dzc-flag--unique { background: #9c1818; color: #fff; }
 
@@ -414,7 +416,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-wc-only {
   display: inline-flex; align-items: center; gap: 3px;
   padding: 0 5px 0 4px; border: 1px solid var(--variant, #f15d38);
-  color: var(--variant, #f15d38);
+  color: var(--variant-ink, var(--variant, #f15d38));
   font: 600 10px/16px var(--font-ui, 'Jost', system-ui, sans-serif);
 }
 .dzc-wc-only-i { flex: none; }
@@ -671,7 +673,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   font-family: var(--font-numeric, 'Outfit', sans-serif);
   font-variant-numeric: tabular-nums;
 }
-.dzc-army-pts b { font: 800 26px/1 var(--font-numeric, 'Outfit', sans-serif); color: var(--acc); }
+.dzc-army-pts b { font: 800 26px/1 var(--font-numeric, 'Outfit', sans-serif); color: var(--acc-text, var(--acc)); }
 .dzc-army-pts i { font-style: normal; font-size: 12px; color: var(--ink-2, #6b6459); }
 .dzc-army-pts span {
   margin-left: auto; font: 400 11.5px/1.3 var(--font-ui, 'Jost', sans-serif);
@@ -690,7 +692,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   border-left: 3px solid var(--cat); background: var(--surface-3, #f2ece0);
 }
 .dzc-army-more { align-self: center; font-size: 11px; color: var(--ink-2, #6b6459); }
-.dzc-army-time { margin: 0; font-size: 11px; color: #9a9184; }
+.dzc-army-time { margin: 0; font-size: 11px; color: var(--ink-2, #6b6459); }
 .dzc-army-pts b { font-size: 19px; font-weight: 600; }
 
 /* ═══ Builder ═══ */
@@ -822,7 +824,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   cursor: text; border-bottom: 1px dotted var(--ink-2, #9a9285);
   overflow-wrap: anywhere;
 }
-.dzc-cmdr-name:hover { border-bottom-color: var(--acc); }
+.dzc-cmdr-name:hover { border-bottom-color: var(--acc-text, var(--acc)); }
 .dzc-cmdr-name:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
 .dzc-cmdr-pts {
   font-family: var(--font-numeric, 'Outfit', sans-serif);
@@ -927,7 +929,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   transition: border-color .12s, background .12s;
 }
 .dzc-bb:hover { border-color: var(--acc); }
-.dzc-bb.is-on { border-left-color: var(--acc); background: var(--surface-3, #f2ece0); }
+.dzc-bb.is-on { border-left-color: var(--acc-text, var(--acc)); background: var(--surface-3, #f2ece0); }
 .dzc-bb.is-over { border-color: var(--danger, #b3261e); }
 .dzc-bb-select {
   display: flex; flex-direction: column; gap: 4px; width: 100%;
@@ -947,7 +949,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-bb-head b { font: 700 13.5px/1.2 var(--font-ui, 'Jost', sans-serif); overflow-wrap: anywhere; }
 .dzc-bb-head i {
   font-style: normal; white-space: nowrap;
-  font: 700 13px/1 var(--font-numeric, 'Outfit', sans-serif); color: var(--acc);
+  font: 700 13px/1 var(--font-numeric, 'Outfit', sans-serif); color: var(--acc-text, var(--acc));
 }
 .dzc-bb-head i s { text-decoration: none; font-weight: 500; font-size: 11px; color: var(--ink-2, #9a9184); }
 .dzc-bb.is-over .dzc-bb-head i { color: var(--danger, #b3261e); }
@@ -1076,7 +1078,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   font-style: normal; font-size: 11.5px; font-weight: 600; color: var(--ink-2, #6b6459);
 }
 .dzc-rail-peek em.is-err { color: var(--danger, #b3261e); }
-.dzc-rail-peek em.is-ok { color: var(--acc); }
+.dzc-rail-peek em.is-ok { color: var(--acc-text, var(--acc)); }
 .dzc-rail-peek svg { flex: 0 0 auto; align-self: center; color: var(--ink-2, #6b6459); }
 
 .dzc-issues { margin: 0 0 6px; padding: 6px 8px; font-size: 13px; }
@@ -1376,7 +1378,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   font-size: 11.5px; color: var(--ink-2, #6b6459);
 }
 .dzc-rm-head b { font-weight: 600; color: var(--ink, #2c2a26); }
-.dzc-rm-head svg { flex: 0 0 auto; color: var(--acc, #1b3a5c); }
+.dzc-rm-head svg { flex: 0 0 auto; color: var(--acc-text, var(--acc, #1b3a5c)); }
 /* "3 of 12" -- the cap is the number on the Unit's own Transport Symbol, so
    printing it here is not a second fact, it is the one you are spending
    against. Same shape the category ratios use. */
@@ -1479,7 +1481,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   font: 600 12px/1 var(--font-ui, 'Jost', sans-serif); cursor: pointer;
   transition: border-color .12s, color .12s;
 }
-.dzc-sq-btn:hover { border-color: var(--acc); color: var(--acc); }
+.dzc-sq-btn:hover { border-color: var(--acc); color: var(--acc-text, var(--acc)); }
 .dzc-sq-btn:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
 /* The stat table and the guns, side by side.
    
@@ -1567,7 +1569,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-vblock.is-taken > .dzc-vblock-head {
   background: color-mix(in srgb, var(--acc, #1b3a5c) 9%, transparent);
 }
-.dzc-vblock.is-taken > .dzc-vblock-head b { color: var(--acc, #1b3a5c); }
+.dzc-vblock.is-taken > .dzc-vblock-head b { color: var(--acc-text, var(--acc, #1b3a5c)); }
 /* Bioficer's accent is #9c1818 -- a dark red that reads fine as a hairline or
    a 9% tint but fails as TEXT on the dark theme's own dark surfaces (Baxter,
    2026-08-09: "the red text of the names is a bit hard to read"). --acc is
@@ -1631,7 +1633,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    carry it printed the whole weapon a second time to have somewhere to put a
    price, so it went and the price came here. Big enough to hit with a thumb,
    and it says what it did rather than what it costs once you own it. */
-.dzc-carry-btn { color: var(--acc, #1b3a5c); }
+.dzc-carry-btn { color: var(--acc-text, var(--acc, #1b3a5c)); }
 /* The rule this Squad is breaking, on this Squad. The rail still counts them;
    this says which one, where you can act on it. */
 /* ON the meta line, beside Vehicle -- Jet, 2026-08-07: "put that alert for
@@ -1912,7 +1914,7 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   display: flex; align-items: center; gap: 10px; width: 100%;
   margin-top: 10px; padding: 12px 16px; cursor: pointer;
   border: 0; border-radius: 0;
-  background: var(--acc, #1b3a5c); color: #fff;
+  background: var(--acc, #1b3a5c); color: var(--acc-on, #fff);
   font: 700 15px/1 var(--font-ui, 'Jost', sans-serif);
   letter-spacing: .06em; text-transform: uppercase;
   transition: box-shadow 180ms cubic-bezier(.33,0,.67,1);
@@ -2456,7 +2458,7 @@ button.dzc-sq-name {
   overflow-wrap: anywhere;
   border-bottom: 1px dotted var(--ink-2, #9a9285);
 }
-button.dzc-sq-name:hover { color: var(--acc); border-bottom-color: var(--acc); }
+button.dzc-sq-name:hover { color: var(--acc-text, var(--acc)); border-bottom-color: var(--acc-text, var(--acc)); }
 button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
 
 /* ── weapon upgrades (3.2.3) ── */
@@ -2578,7 +2580,7 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
    controls as the damage stepper beside it, because it is the same gesture. */
 /* RM aboard a Genitor, in the same row shape as Power. No dot track: Power
    tops out at 10 and reads as pips, RM goes to 12 and would be confetti. */
-.dzc-play-rm svg { flex: 0 0 auto; color: var(--acc, #1b3a5c); }
+.dzc-play-rm svg { flex: 0 0 auto; color: var(--acc-text, var(--acc, #1b3a5c)); }
 .dzc-play-pt, .dzc-play-rm { display: flex; align-items: center; gap: 6px; margin-top: 5px; flex-wrap: wrap; }
 .dzc-play-pt button, .dzc-play-rm button {
   min-width: 26px; min-height: 26px; border-radius: 5px; cursor: pointer;
@@ -2604,7 +2606,14 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 .dzc-model b { min-width: 16px; text-align: center; font-size: 14px; }
 .dzc-model i { font-style: normal; font-size: 10px; color: var(--ink-2, #6b6459); }
 .dzc-statuses { display: inline-flex; gap: 2px; margin-left: 3px; }
-.dzc-st { width: 22px !important; height: 22px !important; font-size: 10px !important; font-weight: 700; opacity: .4; }
+/* An unset status is its initial, and it was drawn at 40% opacity, which
+   works out around 1.9:1 against the card. Not faint, unreadable, and it is
+   one of the four controls this screen exists to press. Muted ink at full
+   opacity instead: quieter than a set one without being a smudge. */
+.dzc-st {
+  width: 22px !important; height: 22px !important; font-size: 10px !important;
+  font-weight: 700; color: var(--ink-2, #6b6459);
+}
 /* A Behemoth cannot take one (1.2), and an unset status is already drawn at
    .4. So without this the refusal looked exactly like every other button on
    the row and the only thing saying otherwise was a click that did nothing. */
@@ -2614,7 +2623,7 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 /* A set status spells itself out, so it needs the room to. */
 .dzc-st.is-on {
   opacity: 1; width: auto !important; padding: 0 7px !important;
-  background: var(--acc, #1b3a5c) !important; color: #fff;
+  background: var(--acc, #1b3a5c) !important; color: var(--acc-on, #fff);
   border-color: var(--acc, #1b3a5c) !important;
 }
 
@@ -2819,7 +2828,7 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
   position: fixed; z-index: 900; pointer-events: none;
   transform: translate(12px, 10px);
   padding: 4px 9px; font: 600 12px/1 var(--font-ui, 'Jost', system-ui, sans-serif);
-  background: var(--acc, #1b3a5c); color: #fff;
+  background: var(--acc, #1b3a5c); color: var(--acc-on, #fff);
 }
 /* Every Transport in this Group that could legally take it, lit at once, so
    the answer to "where can this go" is on screen before you have moved. Asked
@@ -2944,4 +2953,97 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
 .dzc-quick-name { font: 700 16px/1.2 var(--font-display, 'Roboto Slab', serif); }
 .dzc-quick-meta {
   font: 500 12px/1.3 var(--font-numeric, 'Outfit', sans-serif); color: var(--ink-2, #6b6459);
+}
+
+
+/* ── a phone can hit the control, part two ────────────────────────────────
+   Everything below was measured in a real Chrome at 390x844, walking all 41
+   screens and reporting every interactive box under 44px. mobile-fixes.css
+   got the first pass and named the controls the complaint was about; this is
+   what a sweep found afterwards, and it is mostly Play Mode, which is the one
+   screen used entirely with a finger while standing at a table.
+
+   It lives at the end of dzc.css rather than in mobile-fixes.css because
+   mobile-fixes.css is loaded FIRST, so on equal specificity dzc.css wins and
+   a phone override placed there loses silently. The status buttons carry
+   !important for the same reason, one level down: their size is !important
+   here already.
+
+   The exemptions from the first pass still stand and are not repeated: rule
+   chips and footer links stay small on purpose, both for reasons written
+   where they are set. Two more join them: .dzc-wc-e is an underlined number
+   inside a weapon card, inline in a line of stats, and .dzc-rule--inline is
+   the same idea in a sentence. */
+@media (max-width: 768px) {
+  /* Play Mode. Round, VP, Command Points, Pass tokens, Initiative, and the
+     four Status Tokens, which were 22px square. */
+  .dzc-round button,
+  .dzc-vp button,
+  .dzc-pcard-act button,
+  .dzc-play-pt button,
+  .dzc-play-rm button,
+  /* The damage stepper. 26px square, and it is pressed more than anything
+     else on this screen: it is how a model loses a DP. */
+  .dzc-model button,
+  /* And the variant stepper in the builder, which is how a Squad gets its
+     models. Two classes deep, because the desktop rule that sets it to 34x32
+     is .dzc-vblock-n .dzc-stepper button and a single class loses to it. */
+  .dzc-vblock-n .dzc-stepper button,
+  .dzc-v-step button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .dzc-model { gap: 5px; }
+  /* Two VP counters were one row and became two the moment their buttons went
+     from 28 to 44, which is 60px of a phone screen spent before you can see
+     any of your army. They still fit side by side, on the padding and the gaps
+     rather than on the size of the thing you press. */
+  .dzc-play-vp { gap: 6px; }
+  .dzc-vp { gap: 2px; padding: 0 4px; }
+  .dzc-vp b { min-width: 18px; }
+  .dzc-st {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    font-size: 12px !important;
+  }
+  .dzc-st.is-on { padding: 0 12px !important; }
+  .dzc-statuses { gap: 5px; }
+
+  /* The primary action in the picker was 36px, and the rail is how you read
+     your points on a phone. */
+  .dzc-pick-add,
+  .dzc-rail-peek,
+  .dzc-share-opt,
+  .dzc-view-toggle,
+  .dzc-shape-chip,
+  .dzc-sq-btn,
+  #sync-token-input {
+    min-height: 44px;
+  }
+  .dzc-view-toggle,
+  .dzc-shape-chip { min-width: 44px; }
+
+  /* A grip is dragged, so its width is the target as much as its height. */
+  .dzc-sq-grip, .dzc-bb-grip { min-width: 44px; }
+
+  /* A checkbox renders at its font size, 13px, and no padding will grow it.
+     The activation box in Play Mode is the single most-pressed control there:
+     it is how a Group is marked done. */
+  .dzc-act input[type="checkbox"],
+  .dzc-play-group input[type="checkbox"],
+  .dzc-set-toggle input[type="checkbox"],
+  .pp-opt input[type="checkbox"] {
+    width: 26px; height: 26px;
+  }
+  /* The label is the target the box sits in, so that is what has to clear 44,
+     and a bare checkbox never will. */
+  .dzc-act, .dzc-set-toggle, .pp-opt {
+    min-height: 44px; display: inline-flex; align-items: center;
+  }
+  .dzc-set-toggle { display: flex; justify-content: space-between; }
+
+  /* Chips are as wide as their word, and "All" is a short one. */
+  .dzc-chip, .dzc-chip--sm { min-width: 44px; }
+  /* Settings: the theme pair and the picker's Clear. */
+  .dzc-seg button, .dzc-pick-bar button { min-height: 44px; }
 }

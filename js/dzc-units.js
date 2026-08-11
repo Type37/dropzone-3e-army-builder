@@ -311,7 +311,7 @@
 
     const tabs = FACTIONS.map(x =>
       `<button type="button" class="dzc-tab${x.id === state.faction ? ' is-active' : ''}"
-        style="--acc:${x.accent}" onclick="DZCUnits.setFaction('${x.id}')" title="${esc(x.full)}"
+        style="${window.DZC.accentStyle(x.accent)}" onclick="DZCUnits.setFaction('${x.id}')" title="${esc(x.full)}"
         >${esc(x.name)}</button>`).join('');
 
     const cats = ['All'].concat(CATEGORIES).map(c =>
@@ -340,7 +340,7 @@
     }).join('');
 
     root.innerHTML = `
-      <div class="dzc-wrap" style="--acc:${acc}">
+      <div class="dzc-wrap" style="${window.DZC.accentStyle(acc)}">
         <div class="dzc-tabs">${tabs}</div>
         <div class="dzc-toolbar">
           <input class="dzc-search" type="search" placeholder="Search units, variants, weapons or rules"

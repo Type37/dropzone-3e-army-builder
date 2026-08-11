@@ -710,8 +710,61 @@
   const statHelp = k => (STAT_HELP[k] ? `${statLabel(k)}: ${STAT_HELP[k]}` : statLabel(k));
   const weaponColHelp = k => (WEAPON_HELP[k] ? `${weaponColLabel(k)}: ${WEAPON_HELP[k]}` : '');
 
+  /* The two colours a faction accent implies, which are not the accent.
+   *
+   * Six accents, measured against the white card: Scourge purple 7.23:1,
+   * Bioficer red 8.21:1, UCM green 4.05, Resistance blue 4.00, Shaltari orange
+   * 3.50, PHR gold 2.28. WCAG AA wants 4.5:1 for text under 24px, so four of
+   * the six were failing wherever the accent WAS the text, and PHR at 2.28:1
+   * is not a near miss, it is gold on white.
+   *
+   * The accent itself does not move. It is the faction and it is on fills,
+   * borders, rules and headings where 3:1 is the bar and all six clear it.
+   * What moves is the ink derived from it:
+   *
+   *   --acc-text  the accent darkened until it clears 4.5:1 on the card, for
+   *               the places the accent is set as small type
+   *   --acc-on    black or white, whichever clears on the accent, for the
+   *               places small type sits ON a fill of it. White on PHR gold is
+   *               1.9:1; the same chip in near-black is 9:1, and the chip is
+   *               still gold, which is the part that carries the faction.
+   *
+   * Darkened in HSL by dropping lightness a step at a time rather than by
+   * mixing toward black, because mixing washes the hue out and a desaturated
+   * PHR gold reads as brown. */
+  function _hex(h) {
+    const s = String(h).replace('#', '');
+    return [0, 2, 4].map(i => parseInt(s.slice(i, i + 2), 16));
+  }
+  function _lum(c) {
+    const f = n => ((n /= 255) <= 0.03928 ? n / 12.92 : Math.pow((n + 0.055) / 1.055, 2.4));
+    return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]);
+  }
+  function _ratio(a, b) {
+    const A = _lum(a), B = _lum(b);
+    return (Math.max(A, B) + 0.05) / (Math.min(A, B) + 0.05);
+  }
+  function _darken(c, k) { return c.map(v => Math.round(v * k)); }
+  const _str = c => '#' + c.map(v => Math.max(0, Math.min(255, v)).toString(16).padStart(2, '0')).join('');
+
+  /* The card, not the page. A tinted band is darker still, but the accent is
+   * type on a card everywhere it is type at all, and holding the darker
+   * surface would push UCM green most of the way to black for one case. */
+  const CARD = [255, 255, 255];
+  const accentInk = accent => {
+    let c = _hex(accent);
+    // 3% a step: 30 steps reaches black, and every accent lands in under 12.
+    for (let i = 0; i < 40 && _ratio(c, CARD) < 4.5; i++) c = _darken(_hex(accent), 1 - 0.03 * (i + 1));
+    return _str(c);
+  };
+  const accentOn = accent => (_ratio(_hex(accent), [255, 255, 255]) >= 4.5 ? '#fff' : '#17140f');
+  // One string, so the three can never be set apart from each other.
+  const accentStyle = accent =>
+    `--acc:${accent};--acc-text:${accentInk(accent)};--acc-on:${accentOn(accent)}`;
+
   const api = {
     loadIndex, loadFaction,
+    accentInk, accentOn, accentStyle,
     statLabel, weaponColLabel, statHelp, weaponColHelp,
     get index() { return state.index; },
     get rules() { return state.rules; },

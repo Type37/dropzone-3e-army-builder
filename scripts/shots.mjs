@@ -449,20 +449,6 @@ for (const [name, expr, clipSel] of STEPS) {
   const r = await s.send('Runtime.evaluate', { expression: `(async()=>{ ${expr} })()`, awaitPromise: true })
     .catch(e => ({ error: e.message }));
   if (r?.error) { console.log(`  ! ${name}: ${r.error}`); }
-  /* SHOT_REPORT: read a value back out of the page.
-   *
-   * A screenshot answers "does it look right". It cannot answer "did the page
-   * move when I pressed +", which is a number, and the browser pane in a
-   * Claude session does not always composite a frame to look at either. This
-   * is a real window with a real scrollbar, so it can measure the things an
-   * iframe cannot -- the no-jump fix was recorded as unverifiable for exactly
-   * that reason (NEXT.md), and it was only unverifiable with an iframe. */
-  if (process.env.SHOT_REPORT) {
-    const rep = await s.send('Runtime.evaluate', {
-      expression: `JSON.stringify(${process.env.SHOT_REPORT})`, returnByValue: true, awaitPromise: true
-    }).catch(e => ({ error: e.message }));
-    console.log(`  report ${name}: ${rep?.error || rep?.result?.value}`);
-  }
   await sleep(900);
   /* Finish every running animation before the shot.
    *
@@ -479,6 +465,26 @@ for (const [name, expr, clipSel] of STEPS) {
     expression: `document.getAnimations().forEach(a => { try { a.finish(); } catch (e) {} })`
   }).catch(() => {});
   await sleep(120);
+  /* SHOT_REPORT: read a value back out of the page.
+   *
+   * A screenshot answers "does it look right". It cannot answer "did the page
+   * move when I pressed +", which is a number, and the browser pane in a
+   * Claude session does not always composite a frame to look at either. This
+   * is a real window with a real scrollbar, so it can measure the things an
+   * iframe cannot -- the no-jump fix was recorded as unverifiable for exactly
+   * that reason (NEXT.md), and it was only unverifiable with an iframe.
+   *
+   * It reads the SAME frame the shot does, after the settle and after the
+   * animations are finished, and that is not where it started. Measuring
+   * immediately after the step meant measuring mid-animation: a touch-target
+   * and contrast sweep run through here reported the picker chips at 1.14:1,
+   * which is not a colour, it is an element two frames into fading in. */
+  if (process.env.SHOT_REPORT) {
+    const rep = await s.send('Runtime.evaluate', {
+      expression: `JSON.stringify(${process.env.SHOT_REPORT})`, returnByValue: true, awaitPromise: true
+    }).catch(e => ({ error: e.message }));
+    console.log(`  report ${name}: ${rep?.error || rep?.result?.value}`);
+  }
   /* A third element clips the shot to one element at 1:1. Legibility is a
    * question about actual pixels, and a full-page shot answers it badly: at
    * 1400px wide a 20px badge is a smudge whether or not it is readable on a
