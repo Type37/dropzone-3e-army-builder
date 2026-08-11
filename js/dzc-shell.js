@@ -43,7 +43,7 @@ const App = (() => {
    * a worse version of something already automatic. It is the build NUMBER,
    * so a report can say which one it came from and "that was fixed in 419"
    * becomes an answer instead of a guess. */
-  const BUILD = 432;
+  const BUILD = 433;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -581,6 +581,10 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-11', title: 'Your Dropfleet fleets were turning up in your army list', items: [
+      'Both builders are pages on type37.github.io, so a browser treats them as one site and hands them one pile of storage, and both were syncing to the same place under the same name. Turning sync on in either app turned it on in the other, on the same token, and the two games were merged into a single list: fleets appeared here as armies with no Groups, and armies appeared over there as fleets with no ships. Sync carries your lists without ever looking inside them, which is exactly why it could not tell one game from the other. The two are separated now at both ends. This app keeps its own record of whether sync is on, and the same six words name a different list in each game, so nothing has to change about the token you already have. Any fleets that had already landed in your army list are removed the first time this app opens.',
+      'Every edit is timestamped again. Sync settles a disagreement between two devices by keeping whichever copy was edited last, and the call that stamps the time was being handed nothing, so no army here carried one. Two devices holding the same army both looked equally undated, and which one won was down to the order they happened to sync in. An edit on a phone now also pushes itself up rather than waiting for you to leave the app and come back.'
+    ] },
     { date: '2026-08-11', title: 'Two Squads were showing no weapons at all', items: [
       'Resistance ATVs and the UCM Archangel Fighter-Bomber rendered with an empty weapon table, in the builder and on the printed sheet. A gun that belongs to one loadout names it in brackets, and on those two cards the bracket does not match the name in the price line: the ATV card says “25pts (Recon ATVs)” but labels the gun “(Recon ATV)”, and the Archangel’s bracket wraps mid-word across a line. Neither is a scan error, both are on the card, and nothing reconciled the two. All four loadouts show their guns now.'
     ] },

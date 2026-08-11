@@ -1,7 +1,22 @@
-/* Fleet Sync. Opt-in cross-device sync of the shared `dfc_fleets` list.
+/* Fleet Sync. Opt-in cross-device sync of this app's army list.
  *
- * Loaded by BOTH apps (index.html and mobile/index.html), same as offline-sync.js,
- * so the merge rules can never drift between desktop and phone.
+ * WHY EVERYTHING HERE IS NAMESPACED `dzc`
+ *
+ * This started as the Dropfleet builder's file and kept its keys. Both builders
+ * are GitHub Pages sites under type37.github.io, which means ONE origin and
+ * therefore ONE localStorage between them, and both talked to the same
+ * Firestore document `sync/{token}`. So turning sync on in either app turned it
+ * on in the other, on the same token, and the two games' lists merged into a
+ * single array: Dropfleet fleets appeared in the Dropzone app and Dropzone
+ * armies appeared in the Dropfleet app. The merge is game-agnostic by design --
+ * it moves opaque {id, updatedAt} records and never looks inside them -- so it
+ * could not possibly have noticed.
+ *
+ * Two changes stop it, and both are needed:
+ *
+ *   - Local keys are `dzc_sync_*`, so "sync is on" is a fact about THIS app.
+ *   - The document ID is `dzc-<token>`, so the same six words name a different
+ *     document in each game. One token, two lists, never mixed.
  *
  * Design, and why it looks like this:
  *
@@ -36,15 +51,36 @@
   const BASE = 'https://firestore.googleapis.com/v1/projects/' + PROJECT +
                '/databases/(default)/documents/sync/';
 
-  // Which localStorage list this syncs. Settable because the Dropzone app
-  // syncs `dzc_armies` while the retiring Dropfleet views still hold
-  // `dfc_fleets`; the merge itself is game-agnostic (it moves an opaque list of
-  // {id, updatedAt} records) so only the key has to change. Default is left as
-  // the Dropfleet key so existing behaviour and its tests are untouched.
-  let FLEETS_KEY = 'dfc_fleets';
-  const TOKEN_KEY   = 'dfc_sync_token';
-  const DELETED_KEY = 'dfc_sync_deleted';  // { fleetId: deletedAt }
-  const LASTSYNC_KEY = 'dfc_sync_last';
+  /* The token the user sees is six words. The document it names is those six
+   * words with this in front, which is what keeps the two games apart in a
+   * Firestore project they share. Never shown, never typed -- a user pasting
+   * their token into either app gets the right list without knowing this
+   * exists. firestore.rules asks for an ID of 24-200 characters; the prefix
+   * only makes a passing ID longer. */
+  const DOC_PREFIX = 'dzc-';
+  function docId(tok) { return DOC_PREFIX + tok; }
+
+  // Which localStorage list this syncs. Settable because the merge itself is
+  // game-agnostic (it moves an opaque list of {id, updatedAt} records), so
+  // pointing it at a different list is only ever a change of key.
+  let FLEETS_KEY = 'dzc_armies';
+  const TOKEN_KEY   = 'dzc_sync_token';
+  const DELETED_KEY = 'dzc_sync_deleted';  // { armyId: deletedAt }
+  const LASTSYNC_KEY = 'dzc_sync_last';
+
+  /* One-time move off the shared Dropfleet keys, for anyone who turned sync on
+   * before the two apps were separated. The phrase carries over -- it is the
+   * user's token, and now names a document of this app's own -- but the flag is
+   * what makes this one-time: without it, "Turn off" here would be undone by
+   * the next load re-adopting the Dropfleet token forever. */
+  const MIGRATED_KEY = 'dzc_sync_adopted';
+  try {
+    if (!localStorage.getItem(MIGRATED_KEY)) {
+      localStorage.setItem(MIGRATED_KEY, '1');
+      const old = localStorage.getItem('dfc_sync_token');
+      if (old && !localStorage.getItem(TOKEN_KEY)) localStorage.setItem(TOKEN_KEY, old);
+    }
+  } catch (e) { /* no storage; nothing to migrate */ }
 
   const WORDS_PER_TOKEN = 6;
 
@@ -221,7 +257,7 @@
   }
 
   async function remoteGet(tok) {
-    const res = await fetch(BASE + encodeURIComponent(tok) + '?key=' + API_KEY, { cache: 'no-store' });
+    const res = await fetch(BASE + encodeURIComponent(docId(tok)) + '?key=' + API_KEY, { cache: 'no-store' });
     if (res.status === 404) return null;          // token has never been used
     if (!res.ok) throw await failure(res);
     const doc = await res.json();
@@ -245,7 +281,7 @@
       }
     };
     // PATCH upserts in the Firestore REST API, so this both creates and updates.
-    const res = await fetch(BASE + encodeURIComponent(tok) + '?key=' + API_KEY, {
+    const res = await fetch(BASE + encodeURIComponent(docId(tok)) + '?key=' + API_KEY, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
@@ -254,7 +290,7 @@
   }
 
   async function remoteDelete(tok) {
-    const res = await fetch(BASE + encodeURIComponent(tok) + '?key=' + API_KEY, { method: 'DELETE' });
+    const res = await fetch(BASE + encodeURIComponent(docId(tok)) + '?key=' + API_KEY, { method: 'DELETE' });
     if (!res.ok && res.status !== 404) throw await failure(res);
   }
 

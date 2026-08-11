@@ -11,9 +11,12 @@ import vm from 'node:vm';
 
 const SRC = readFileSync(new URL('../js/fleet-sync.js', import.meta.url), 'utf8');
 
-function makeSandbox() {
-  const store = new Map();
-  const remote = { doc: null };     // the single /sync/{token} document
+/* `seed` is written before the module runs, which is the only way to test what
+   it does at load time -- the one-time adoption of a token left behind by the
+   Dropfleet builder happens there and nowhere else. */
+function makeSandbox(seed) {
+  const store = new Map(Object.entries(seed || {}));
+  const remote = { doc: null, urls: [] };   // the single /sync/{id} document, and every URL asked for
   const localStorage = {
     getItem: k => (store.has(k) ? store.get(k) : null),
     setItem: (k, v) => store.set(k, String(v)),
@@ -26,6 +29,7 @@ function makeSandbox() {
     crypto: { getRandomValues: a => { for (let i = 0; i < a.length; i++) a[i] = (i * 2654435761 + 12345) >>> 0; return a; } },
     setTimeout, clearTimeout, console,
     fetch: async (url, opts) => {
+      remote.urls.push(String(url));
       if (opts && opts.method === 'PATCH') {
         remote.doc = JSON.parse(opts.body);
         return { ok: true, status: 200 };
@@ -60,7 +64,7 @@ console.log('\nunion on first join (6 cloud + 3 local = 9)');
 {
   const laptop = makeSandbox();
   const six = Array.from({ length: 6 }, (_, i) => ({ id: 'L' + i, name: 'Laptop ' + i, updatedAt: 1000 }));
-  laptop.localStorage.setItem('dfc_fleets', JSON.stringify(six));
+  laptop.localStorage.setItem('dzc_armies', JSON.stringify(six));
   const res = await laptop.FleetSync.start();
   check('laptop uploads 6', res.total === 6, 'got ' + res.total);
 
@@ -68,69 +72,69 @@ console.log('\nunion on first join (6 cloud + 3 local = 9)');
   const phone = makeSandbox();
   phone.remote.doc = laptop.remote.doc;
   const three = Array.from({ length: 3 }, (_, i) => ({ id: 'P' + i, name: 'Phone ' + i, updatedAt: 2000 }));
-  phone.localStorage.setItem('dfc_fleets', JSON.stringify(three));
+  phone.localStorage.setItem('dzc_armies', JSON.stringify(three));
   const joined = await phone.FleetSync.join(res.token);
   check('phone shows 9', joined.total === 9, 'got ' + joined.total);
   check('counts reported for the modal', joined.fromToken === 6 && joined.fromDevice === 3,
         'fromToken=' + joined.fromToken + ' fromDevice=' + joined.fromDevice);
-  const names = fleets(phone.store.get('dfc_fleets')).map(f => f.id).sort().join(',');
+  const names = fleets(phone.store.get('dzc_armies')).map(f => f.id).sort().join(',');
   check('all 9 ids present', names === 'L0,L1,L2,L3,L4,L5,P0,P1,P2', names);
 }
 
 console.log('\nnewest edit wins on the same fleet id');
 {
   const a = makeSandbox();
-  a.localStorage.setItem('dfc_fleets', JSON.stringify([{ id: 'X', name: 'old', updatedAt: 100 }]));
+  a.localStorage.setItem('dzc_armies', JSON.stringify([{ id: 'X', name: 'old', updatedAt: 100 }]));
   const { token } = await a.FleetSync.start();
 
   const b = makeSandbox();
   b.remote.doc = a.remote.doc;
-  b.localStorage.setItem('dfc_fleets', JSON.stringify([{ id: 'X', name: 'NEWER', updatedAt: 999 }]));
+  b.localStorage.setItem('dzc_armies', JSON.stringify([{ id: 'X', name: 'NEWER', updatedAt: 999 }]));
   await b.FleetSync.join(token);
-  const got = fleets(b.store.get('dfc_fleets'));
+  const got = fleets(b.store.get('dzc_armies'));
   check('local newer edit survives', got.length === 1 && got[0].name === 'NEWER', JSON.stringify(got));
 
   // And the reverse: cloud newer than local.
   const c = makeSandbox();
   c.remote.doc = b.remote.doc;
-  c.localStorage.setItem('dfc_fleets', JSON.stringify([{ id: 'X', name: 'stale', updatedAt: 5 }]));
+  c.localStorage.setItem('dzc_armies', JSON.stringify([{ id: 'X', name: 'stale', updatedAt: 5 }]));
   await c.FleetSync.join(token);
-  const got2 = fleets(c.store.get('dfc_fleets'));
+  const got2 = fleets(c.store.get('dzc_armies'));
   check('cloud newer edit wins', got2.length === 1 && got2[0].name === 'NEWER', JSON.stringify(got2));
 }
 
 console.log('\ndeleted fleets stay deleted (no zombies)');
 {
   const a = makeSandbox();
-  a.localStorage.setItem('dfc_fleets', JSON.stringify([
+  a.localStorage.setItem('dzc_armies', JSON.stringify([
     { id: 'keep', name: 'keep', updatedAt: 100 },
     { id: 'gone', name: 'gone', updatedAt: 100 }
   ]));
   const { token } = await a.FleetSync.start();
 
   // Delete on this device the way the apps will: drop it, tombstone it, sync.
-  a.localStorage.setItem('dfc_fleets', JSON.stringify([{ id: 'keep', name: 'keep', updatedAt: 100 }]));
+  a.localStorage.setItem('dzc_armies', JSON.stringify([{ id: 'keep', name: 'keep', updatedAt: 100 }]));
   a.FleetSync.recordDeleted('gone');
   await a.FleetSync.sync();
-  check('deleting device keeps 1', fleets(a.store.get('dfc_fleets')).length === 1);
+  check('deleting device keeps 1', fleets(a.store.get('dzc_armies')).length === 1);
 
   // A second device that still has the old copy must not push it back.
   const b = makeSandbox();
   b.remote.doc = a.remote.doc;
-  b.localStorage.setItem('dfc_fleets', JSON.stringify([
+  b.localStorage.setItem('dzc_armies', JSON.stringify([
     { id: 'keep', name: 'keep', updatedAt: 100 },
     { id: 'gone', name: 'gone', updatedAt: 100 }
   ]));
   await b.FleetSync.join(token);
-  const ids = fleets(b.store.get('dfc_fleets')).map(f => f.id);
+  const ids = fleets(b.store.get('dzc_armies')).map(f => f.id);
   check('tombstone removes it on the other device too', ids.length === 1 && ids[0] === 'keep', ids.join(','));
 
   // But editing it again after the delete is a deliberate revival.
   const c = makeSandbox();
   c.remote.doc = b.remote.doc;
-  c.localStorage.setItem('dfc_fleets', JSON.stringify([{ id: 'gone', name: 'revived', updatedAt: Date.now() + 5000 }]));
+  c.localStorage.setItem('dzc_armies', JSON.stringify([{ id: 'gone', name: 'revived', updatedAt: Date.now() + 5000 }]));
   await c.FleetSync.join(token);
-  const revived = fleets(c.store.get('dfc_fleets')).some(f => f.id === 'gone');
+  const revived = fleets(c.store.get('dzc_armies')).some(f => f.id === 'gone');
   check('a later edit resurrects on purpose', revived);
 }
 
@@ -156,7 +160,7 @@ console.log('\nunused token is not an error');
   const s = makeSandbox();
   const p = await s.FleetSync.preview('anvil-drift-oculus-vessel-amber-forge');
   check('preview reports it does not exist yet', p.exists === false && p.remoteCount === 0);
-  s.localStorage.setItem('dfc_fleets', JSON.stringify([{ id: 'A', updatedAt: 1 }]));
+  s.localStorage.setItem('dzc_armies', JSON.stringify([{ id: 'A', updatedAt: 1 }]));
   const j = await s.FleetSync.join('anvil-drift-oculus-vessel-amber-forge');
   check('joining a fresh token keeps local fleets', j.total === 1, 'got ' + j.total);
 }
@@ -164,23 +168,23 @@ console.log('\nunused token is not an error');
 console.log('\nstop() keeps fleets, drops the token');
 {
   const s = makeSandbox();
-  s.localStorage.setItem('dfc_fleets', JSON.stringify([{ id: 'A', updatedAt: 1 }, { id: 'B', updatedAt: 1 }]));
+  s.localStorage.setItem('dzc_armies', JSON.stringify([{ id: 'A', updatedAt: 1 }, { id: 'B', updatedAt: 1 }]));
   await s.FleetSync.start();
   check('enabled while syncing', s.FleetSync.enabled());
   s.FleetSync.stop();
   check('disabled after stop', !s.FleetSync.enabled());
-  check('fleets untouched by stop', fleets(s.store.get('dfc_fleets')).length === 2);
+  check('fleets untouched by stop', fleets(s.store.get('dzc_armies')).length === 2);
 }
 
 console.log('\ndeleteRemote erases the cloud copy but never the local fleets');
 {
   const s = makeSandbox();
-  s.localStorage.setItem('dfc_fleets', JSON.stringify([{ id: 'A', updatedAt: 1 }, { id: 'B', updatedAt: 1 }]));
+  s.localStorage.setItem('dzc_armies', JSON.stringify([{ id: 'A', updatedAt: 1 }, { id: 'B', updatedAt: 1 }]));
   await s.FleetSync.start();
   check('cloud doc exists first', s.remote.doc !== null);
   await s.FleetSync.deleteRemote();
   check('cloud doc gone', s.remote.doc === null);
-  check('local fleets survive the cloud delete', fleets(s.store.get('dfc_fleets')).length === 2);
+  check('local fleets survive the cloud delete', fleets(s.store.get('dzc_armies')).length === 2);
   check('syncing is off afterwards', !s.FleetSync.enabled());
 }
 
@@ -192,7 +196,7 @@ console.log('\nstampChanged detects real edits and ignores non-edits');
 {
   const s = makeSandbox();
   const list = [{ id: 'A', name: 'Alpha', updatedAt: 100 }, { id: 'B', name: 'Beta', updatedAt: 100 }];
-  s.localStorage.setItem('dfc_fleets', JSON.stringify(list));
+  s.localStorage.setItem('dzc_armies', JSON.stringify(list));
 
   const noop = s.FleetSync.stampChanged(JSON.parse(JSON.stringify(list)));
   check('no edit means no change reported', noop === false, String(noop));
@@ -225,16 +229,16 @@ console.log('\na merge does not make every fleet look freshly edited');
   // baseline must be rebuilt, or the next save stamps everything with now() and
   // this device wins every future conflict.
   const a = makeSandbox();
-  a.localStorage.setItem('dfc_fleets', JSON.stringify([{ id: 'A', name: 'a', updatedAt: 100 }]));
+  a.localStorage.setItem('dzc_armies', JSON.stringify([{ id: 'A', name: 'a', updatedAt: 100 }]));
   const { token } = await a.FleetSync.start();
 
   const b = makeSandbox();
   b.remote.doc = a.remote.doc;
-  b.localStorage.setItem('dfc_fleets', JSON.stringify([{ id: 'B', name: 'b', updatedAt: 200 }]));
-  b.FleetSync.stampChanged(JSON.parse(b.store.get('dfc_fleets')));   // establish baseline
+  b.localStorage.setItem('dzc_armies', JSON.stringify([{ id: 'B', name: 'b', updatedAt: 200 }]));
+  b.FleetSync.stampChanged(JSON.parse(b.store.get('dzc_armies')));   // establish baseline
   await b.FleetSync.join(token);
 
-  const after = fleets(b.store.get('dfc_fleets'));
+  const after = fleets(b.store.get('dzc_armies'));
   check('merged to 2 fleets', after.length === 2, String(after.length));
   const restamped = b.FleetSync.stampChanged(after);
   check('post-merge save reports no spurious edits', restamped === false, String(restamped));
@@ -249,7 +253,7 @@ console.log('\na merge does not make every fleet look freshly edited');
 console.log('\nautomatic syncs are rate limited, manual ones are not');
 {
   const s = makeSandbox();
-  s.localStorage.setItem('dfc_fleets', JSON.stringify([{ id: 'A', updatedAt: 1 }]));
+  s.localStorage.setItem('dzc_armies', JSON.stringify([{ id: 'A', updatedAt: 1 }]));
   await s.FleetSync.start();
 
   // Count writes reaching the network. Must patch the SANDBOX global, not the
@@ -278,7 +282,7 @@ console.log('\nautomatic syncs are rate limited, manual ones are not');
 console.log('\nreturning to the app re-syncs, but not in a burst');
 {
   const s = makeSandbox();
-  s.localStorage.setItem('dfc_fleets', JSON.stringify([{ id: 'A', updatedAt: 1 }]));
+  s.localStorage.setItem('dzc_armies', JSON.stringify([{ id: 'A', updatedAt: 1 }]));
   await s.FleetSync.start();
 
   let writes = 0;
@@ -294,7 +298,7 @@ console.log('\nreturning to the app re-syncs, but not in a burst');
   check('does not re-sync straight after syncing', writes === 0, 'writes=' + writes);
 
   // Now pretend the last sync was long ago: coming back SHOULD refresh.
-  s.localStorage.setItem('dfc_sync_last', String(Date.now() - 120000));
+  s.localStorage.setItem('dzc_sync_last', String(Date.now() - 120000));
   s.FleetSync.maybeAutoSync();
   await new Promise(r => setTimeout(r, 200));
   check('re-syncs when the data could be stale', writes === 1, 'writes=' + writes);
@@ -312,6 +316,49 @@ console.log('\nreturning to the app re-syncs, but not in a burst');
   off.FleetSync.maybeAutoSync();
   await new Promise(r => setTimeout(r, 150));
   check('silent when syncing is off', offWrites === 0, 'writes=' + offWrites);
+}
+
+/* The bug this file exists to keep dead.
+   Both builders are pages on type37.github.io, so they share an origin and one
+   localStorage, and both spoke to the same Firestore project. With the same keys
+   and the same document ID, turning sync on in either app turned it on in the
+   other on the same token, and the two games' lists merged into one array:
+   Dropfleet fleets showed up in the Dropzone app and Dropzone armies showed up
+   in the Dropfleet app. The merge moves opaque records and cannot notice, so the
+   separation has to hold here. */
+console.log('\nthe two games never touch each other');
+{
+  const s = makeSandbox();
+  const { token } = await s.FleetSync.start();
+
+  check('token is stored under this app\'s own key', s.store.get('dzc_sync_token') === token);
+  check('the Dropfleet token key is left alone', !s.store.has('dfc_sync_token'));
+
+  // The six words the user sees, and the document those words name, are not the
+  // same string. That difference is the whole separation.
+  const doc = s.remote.urls[0].split('/documents/sync/')[1].split('?')[0];
+  check('the document is namespaced, not the bare token', doc !== token, doc);
+  check('the document is this game\'s', doc === 'dzc-' + token, doc);
+  check('every request goes to it',
+        s.remote.urls.every(u => u.includes('/sync/dzc-' + token)));
+}
+
+/* Anyone who turned sync on while the apps shared a token should not have to
+   notice any of this: the phrase carries over, it just names a list of its own
+   now. Once, though -- otherwise turning sync off here would be undone on the
+   next load, forever. */
+console.log('\nadopting a token left behind by the shared-key days');
+{
+  const t = 'anvil-drift-oculus-vessel-amber-forge';
+  const s = makeSandbox({ dfc_sync_token: t });
+  check('sync stays on, on the same phrase', s.FleetSync.token() === t);
+
+  s.FleetSync.stop();
+  check('turning it off works', !s.FleetSync.enabled());
+
+  // Reload, same storage. The adoption must not happen a second time.
+  const again = makeSandbox(Object.fromEntries(s.store));
+  check('and stays off across a reload', !again.FleetSync.enabled(), String(again.FleetSync.token()));
 }
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');

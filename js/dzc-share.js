@@ -248,6 +248,29 @@
       const rm = A.rmOf(s);
       out.push(`${pad}${s.models.length} x ${u.name} [${A.squadCost(army, s)}pts]`
         + (rm ? ` + ${rm} RM` : '') + tail);
+
+      /* THE UPGRADES, ON THEIR OWN "#" LINE.
+       *
+       * They were in the points and nowhere else: an Archangel with a UM-115
+       * Missile Spread exported as "1 x Archangel [50pts]", which is the 40pt
+       * Interceptor plus a 10pt gun the reader is never told about. The whole
+       * job of this export is that somebody else can check your list, and a
+       * weapon that changes what the model does was invisible in it.
+       *
+       * A "#" line rather than more of the Unit line, and that is deliberate.
+       * LIST_ENTRY anchors on $, so anything it does not recognise after the
+       * cost makes the line match NOTHING and the Squad vanishes on import --
+       * which is exactly what the RM token did before it was given its own
+       * capture. Upgrades cannot be imported at all (parseList resolves the
+       * loadout tail to Variants, and an upgrade is not one), so there is
+       * nothing to gain by risking the Unit line for them. "#" is the rule
+       * parseList already applies to every line it must ignore.
+       */
+      const ups = (A.upgradesFor(army, s) || [])
+        .filter(o => A.hasUpgrade(s, o.scope, o.weapon.name))
+        .map(o => o.scope === '*' ? o.weapon.name : `${o.weapon.name} (${o.scope})`);
+      if (ups.length) out.push(`${pad}# upgrade: ${ups.join(', ')}`);
+
       g.squads.filter(x => x.carriedBy === s.id).forEach(r => squad(g, r, depth + 1));
     }
 
