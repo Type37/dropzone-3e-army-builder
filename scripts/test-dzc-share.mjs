@@ -258,5 +258,37 @@ console.log('\nraw materials survive the trip');
      'and says nothing at all about an empty Genitor');
 }
 
+/* Bought upgrades survive the plain-text sheet.
+ *
+ * They were in the points and nowhere else: an Archangel carrying a UM-115
+ * Missile Spread exported as "1 x Archangel [50pts]", which is the 40pt
+ * airframe plus a 10pt gun the reader is never told about. Somebody checking
+ * your list off this sheet cannot see what the extra 10pts bought.
+ *
+ * They go on a "#" line rather than after the cost, for the same reason the RM
+ * token above had to move: LIST_ENTRY anchors on $, so anything it does not
+ * recognise makes the Unit line match NOTHING and the Squad disappears on the
+ * way back in. Hence the second half of this block. */
+console.log('\nbought upgrades survive the plain-text sheet');
+{
+  await DZC.loadFaction('ucm');
+  const up = A.create('ucm', 'Upgrades', 1750);
+  const ug = A.addGroup(up, 'Spearhead');
+  A.addSquad(up, ug.id, 'ucm-main-battle-tank', 4);
+  const ug2 = A.addGroup(up, 'Air');
+  const arch = A.addSquad(up, ug2.id, 'archangel', 1);
+  const t = A.toggleUpgrade(up, arch.id, '*', 'UM-115 Missile Spread');
+  ok(t.ok, 'the upgrade is bought', t.reason);
+
+  const txt3 = S.text(up);
+  ok(/UM-115 Missile Spread/.test(txt3), 'the sheet names it', txt3);
+  ok(/^\s*#\s*upgrade:/m.test(txt3), 'on its own # line', txt3);
+
+  const back4 = A.parseList(txt3);
+  eq(back4.length, 2, 'and both Squads still parse back out of the sheet');
+  ok(back4.some(e => /Archangel/.test(e.name)),
+     'including the upgraded one', back4.map(e => e.name).join(' | '));
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
