@@ -1579,6 +1579,15 @@
       const vRules = U.rulesHtml(u.special, a.faction, U.variantRuleFilter(u, v.name), true);
       return `<section class="dzc-vblock${n ? ' is-taken' : ''}${drawn}">
         <header class="dzc-vblock-head">
+          <!-- THE MODEL, where you choose how many of it.
+               A Sabre and a Rapier are a tracked tank with a chainsaw gun and
+               a hover tank with a long AA barrel, and until now this block
+               showed the same photograph for both, because art was per unit
+               and a unit holds up to four variants. 163 of the 199 variants
+               have their own picture now; the rest have none printed anywhere,
+               so they draw nothing here rather than repeat the unit's. -->
+          ${v.art ? `<img class="dzc-vblock-art" src="${esc(v.art)}" alt=""
+             loading="lazy" onerror="this.remove()">` : ''}
           <b>${esc(v.name)}</b>
           ${v.points != null ? `<i>${v.points}pts</i>` : ''}
           <span class="dzc-vblock-n">${variantStepper(a, s, u, i)}</span>

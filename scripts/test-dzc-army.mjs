@@ -312,13 +312,51 @@ console.log('\na Behemoth counts as several Groups (Behemoth rules 1.1)');
      'one Dragon is five of the nine Skirmish allows, and legal');
   A.addSquad(b, A.addGroup(b).id, 'dragon', 1);
   const over = A.validate(b).errors.find(e => e.rule === '3.1' && /Groups/.test(e.msg));
-  ok(A.validate(b).errors.some(e => e.rule === '1.1' && /3000pts or more/.test(e.msg)),
-     'and a 1000pt list is told the Behemoth needs 3000',
+  /* A 1000pt game allows 250 a Group, and a Dragon is 950. So it IS refused in
+   * a small game, on the rule that actually says so (3.2, the quarter cap that
+   * 1.1 points at) rather than on a 3000pt minimum the rulebook never states.
+   * See the note in validate: the only mention of 3000 anywhere in the
+   * Behemoth document is an introduction saying SOME Behemoths are that big,
+   * and nothing says which. */
+  ok(A.validate(b).errors.some(e => e.rule === '3.2' && /quarter/.test(e.msg)),
+     'a 950pt Dragon busts the quarter cap of a 1000pt game',
      JSON.stringify(A.validate(b).errors.map(e => e.msg)));
+  ok(!A.validate(b).errors.some(e => /3000pts or more/.test(e.msg)),
+     'and is not told it needs a 3000pt game, which is not a rule');
   ok(over && /counting as 10/.test(over.msg),
      "and two say so in the Behemoths' own terms, not as two Groups",
      JSON.stringify(A.validate(b).errors.map(e => e.msg)));
   A.remove(b.id);
+  A.remove(a.id);
+}
+
+/* A Behemoth that FITS the quarter cap is legal, whatever the game size.
+ *
+ * Jet, 2026-08-10, on a 410pt UCM Light Battle Mech in a 1750pt list: "This
+ * tag is incorrect, the Light is 410pts so under the 1/4 restriction." A
+ * quarter of 1750 is 437, the Group card read "410 of 437pts", and the app was
+ * calling the list illegal anyway. */
+console.log('\na Behemoth inside the quarter cap is legal at any size (1.1)');
+{
+  await DZC.loadFaction('ucm');
+  const a = A.create('ucm', 'Light', 1750);
+  const g = A.addGroup(a);
+  const s = A.addSquad(a, g.id, 'ucm-light-battle-mech', 1);
+  A.setModelVariant(a, s.id, 0, 'India');          // 410pts, the dearer of the two
+  eq(A.squadCost(a, s), 410, 'the India is 410pts');
+  const v = A.validate(a);
+  ok(!v.errors.some(e => /3000pts or more/.test(e.msg)),
+     'no 3000pt refusal', JSON.stringify(v.errors.map(e => e.msg)));
+  /* The quarter cap specifically. The list DOES raise "Heavy spend exceeds
+   * Standard", which is the category ratio (3.2) and correct: a lone Behemoth
+   * in the Heavy slot with nothing Standard beside it is illegal for a reason
+   * that has nothing to do with being a Behemoth. */
+  ok(!v.errors.some(e => /quarter/.test(e.msg)),
+     '410 is inside the 437 a 1750pt game allows a Group',
+     JSON.stringify(v.errors.map(e => e.msg)));
+
+  // And it still counts as its Groups Equivalent for the allowance (1.1).
+  eq(A.groupsUsed(a), 3, 'while still spending three of the Group allowance');
   A.remove(a.id);
 }
 
@@ -335,6 +373,47 @@ console.log('\n"only one of these upgrades" is enforced (3.2.3)');
   ok(A.toggleUpgrade(a, s.id, '*', 'MC-30 Heavy Gatlings').ok, 'one can be taken');
   eq(A.squadCost(a, s), 90, '55 + 35');
   A.remove(a.id);
+}
+
+/* And it applies to the STARRED upgrades, not to all of them.
+ *
+ * Both Tritons are the only cards in the game printing that footnote, and both
+ * star two of their three upgrades:
+ *
+ *     RM-1 Stealth Missile Battery (+10pts)
+ *     Twin RX-20 Miniguns (+5pts*)
+ *     RM-7 Skyhammer Missiles (+15pts*)
+ *     *Only one of these upgrades may be taken.
+ *
+ * Jet, 2026-08-10: "With the Triton you can take the RM-1 with the RX-20 or the
+ * RM-7. Just not the RX-20 with the RM-7." */
+console.log('\nthe footnote binds the starred upgrades only (3.2.3)');
+{
+  await DZC.loadFaction('phr');
+  for (const id of ['triton-light-dropship', 'triton-light-troopship']) {
+    const a = A.create('phr', 'Triton', 1500);
+    const s = A.addSquad(a, A.addGroup(a).id, id, 1);
+    const base = A.squadCost(a, s);
+    const RM1 = 'RM-1 Stealth Missile Battery';   // +10, unstarred
+    const RX = 'Twin RX-20 Miniguns';             // +5,  starred
+    const RM7 = 'RM-7 Skyhammer Missiles';        // +15, starred
+
+    ok(A.toggleUpgrade(a, s.id, '*', RM1).ok, `${id}: the RM-1 can be taken`);
+    ok(A.toggleUpgrade(a, s.id, '*', RX).ok, 'and the RX-20 alongside it');
+    eq(A.squadCost(a, s), base + 15, 'costing both, 10 + 5');
+
+    const clash = A.toggleUpgrade(a, s.id, '*', RM7);
+    eq(clash.ok, false, 'but not the RM-7 as well');
+    ok(/only one of/.test(clash.reason) && new RegExp(RX).test(clash.reason)
+       && /3\.2\.3/.test(clash.reason),
+       'and the refusal names both guns and its rule', clash.reason);
+
+    // Drop the RX-20 and the RM-7 becomes legal: the RM-1 never blocked it.
+    ok(A.toggleUpgrade(a, s.id, '*', RX).ok, 'dropping the RX-20');
+    ok(A.toggleUpgrade(a, s.id, '*', RM7).ok, 'lets the RM-7 in beside the RM-1');
+    eq(A.squadCost(a, s), base + 25, 'costing 10 + 15');
+    A.remove(a.id);
+  }
 }
 
 /* "May replace transport capacity of 2 with MM-3 Missile Boxes or MC-30 Heavy

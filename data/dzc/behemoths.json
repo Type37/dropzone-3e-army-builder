@@ -55,6 +55,7 @@
             "America"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -72,6 +73,7 @@
             "America"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -89,6 +91,7 @@
             "America"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -106,6 +109,7 @@
             "America"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -123,6 +127,7 @@
             "Japan"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -140,6 +145,7 @@
             "Japan"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -157,6 +163,7 @@
             "Japan"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -174,6 +181,7 @@
             "Japan"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -189,6 +197,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -204,6 +213,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -281,6 +291,7 @@
             "Brazil"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -298,6 +309,7 @@
             "India"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -315,6 +327,7 @@
             "India"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -330,6 +343,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -345,6 +359,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -418,6 +433,7 @@
             "Tyrant"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -435,6 +451,7 @@
             "Tyrant"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -452,6 +469,7 @@
             "Tyrant"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -469,6 +487,7 @@
             "Tyrant"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -486,6 +505,7 @@
             "Dictator"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -503,6 +523,7 @@
             "Dictator"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -520,6 +541,7 @@
             "Dictator"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -535,6 +557,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -550,6 +573,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -565,6 +589,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -646,6 +671,7 @@
             "Persecutor"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -663,6 +689,7 @@
             "Punisher"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -680,6 +707,7 @@
             "Punisher"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -695,6 +723,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -710,6 +739,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -791,6 +821,7 @@
             "Chronus"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -808,6 +839,7 @@
             "Chronus"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -825,6 +857,7 @@
             "Chronus"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -842,6 +875,7 @@
             "Chronus"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -859,6 +893,7 @@
             "Tethys"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -876,6 +911,7 @@
             "Tethys"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -893,6 +929,7 @@
             "Tethys"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -910,6 +947,7 @@
             "Tethys"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -927,6 +965,7 @@
             "Tethys"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -942,6 +981,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -957,6 +997,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -972,6 +1013,7 @@
           "box": "upgrade",
           "variants": [],
           "upgradePoints": 0,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -987,6 +1029,7 @@
           "box": "upgrade",
           "variants": [],
           "upgradePoints": 0,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -1073,6 +1116,7 @@
             "Alcyoneus"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1088,6 +1132,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1103,6 +1148,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -1177,6 +1223,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1192,6 +1239,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -1256,6 +1304,7 @@
             "Celestial"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1273,6 +1322,7 @@
             "Celestial"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1290,6 +1340,7 @@
             "Earth"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1307,6 +1358,7 @@
             "Earth"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1324,6 +1376,7 @@
             "Earth"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1339,6 +1392,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1354,6 +1408,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1369,6 +1424,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -1462,6 +1518,7 @@
             "Tiger"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1479,6 +1536,7 @@
             "Tiger"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1496,6 +1554,7 @@
             "Lion"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1513,6 +1572,7 @@
             "Lion"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1528,6 +1588,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1543,6 +1604,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -1633,6 +1695,7 @@
             "Juggernaut"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1650,6 +1713,7 @@
             "Colossus"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1667,6 +1731,7 @@
             "Colossus"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1684,6 +1749,7 @@
             "Colossus"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1701,6 +1767,7 @@
             "Colossus"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1718,6 +1785,7 @@
             "Colossus"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1735,6 +1803,7 @@
             "Colossus"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1752,6 +1821,7 @@
             "Colossus"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1769,6 +1839,7 @@
             "Colossus"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1786,6 +1857,7 @@
             "Colossus"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1801,6 +1873,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1816,6 +1889,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -1893,6 +1967,7 @@
             "Avernus"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1910,6 +1985,7 @@
             "Cerberus"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1925,6 +2001,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1940,6 +2017,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }

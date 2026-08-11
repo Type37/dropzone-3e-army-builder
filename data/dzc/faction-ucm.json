@@ -32,7 +32,8 @@
         },
         {
           "name": "Mortar Team",
-          "points": 25
+          "points": 25,
+          "art": "assets/units/variants/legionnaire-weapon-team--mortar-team.webp"
         }
       ],
       "specialVariants": [],
@@ -61,6 +62,7 @@
             "Flak Team"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -78,6 +80,7 @@
             "Mortar Team"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -137,6 +140,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -152,6 +156,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -187,11 +192,13 @@
       "variants": [
         {
           "name": "Polecat A",
-          "points": 25
+          "points": 25,
+          "art": "assets/units/variants/polecat-buggy--polecat-a.webp"
         },
         {
           "name": "Polecat B",
-          "points": 25
+          "points": 25,
+          "art": "assets/units/variants/polecat-buggy--polecat-b.webp"
         },
         {
           "name": "Polecat C",
@@ -224,6 +231,7 @@
             "Polecat A"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -241,6 +249,7 @@
             "Polecat B"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -258,6 +267,7 @@
             "Polecat C"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -293,15 +303,18 @@
       "variants": [
         {
           "name": "Wolf",
-          "points": 50
+          "points": 50,
+          "art": "assets/units/variants/ucm-heavy-buggy--wolf.webp"
         },
         {
           "name": "Jackal",
-          "points": 45
+          "points": 45,
+          "art": "assets/units/variants/ucm-heavy-buggy--jackal.webp"
         },
         {
           "name": "Dingo",
-          "points": 45
+          "points": 45,
+          "art": "assets/units/variants/ucm-heavy-buggy--dingo.webp"
         },
         {
           "name": "Fox",
@@ -341,6 +354,7 @@
             "Wolf"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -358,6 +372,7 @@
             "Wolf"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -375,6 +390,7 @@
             "Jackal"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -392,6 +408,7 @@
             "Dingo"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -409,6 +426,7 @@
             "Dingo"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -444,11 +462,13 @@
       "variants": [
         {
           "name": "Katana",
-          "points": 35
+          "points": 35,
+          "art": "assets/units/variants/ucm-light-battle-tank--katana.webp"
         },
         {
           "name": "Fireblade",
-          "points": 35
+          "points": 35,
+          "art": "assets/units/variants/ucm-light-battle-tank--fireblade.webp"
         },
         {
           "name": "Wakizashi",
@@ -481,6 +501,7 @@
             "Katana"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -498,6 +519,7 @@
             "Fireblade"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -515,6 +537,7 @@
             "Wakizashi"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -532,6 +555,7 @@
             "Wakizashi"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -547,6 +571,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -582,7 +607,8 @@
       "variants": [
         {
           "name": "Sabre",
-          "points": 35
+          "points": 35,
+          "art": "assets/units/variants/ucm-main-battle-tank--sabre.webp"
         },
         {
           "name": "Greave",
@@ -594,7 +620,8 @@
         },
         {
           "name": "Rapier",
-          "points": 40
+          "points": 40,
+          "art": "assets/units/variants/ucm-main-battle-tank--rapier.webp"
         }
       ],
       "specialVariants": [
@@ -630,6 +657,7 @@
             "Sabre"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -647,6 +675,7 @@
             "Tachi"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -664,6 +693,7 @@
             "Rapier"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -681,6 +711,7 @@
             "Rapier"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -696,6 +727,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -735,7 +767,8 @@
         },
         {
           "name": "Falcon-B",
-          "points": 40
+          "points": 40,
+          "art": "assets/units/variants/falcon-gunship--falcon-b.webp"
         }
       ],
       "specialVariants": [],
@@ -759,6 +792,7 @@
             "Falcon-A"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -776,6 +810,7 @@
             "Falcon-A"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -793,6 +828,7 @@
             "Falcon-B"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -810,6 +846,7 @@
             "Falcon-B"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -825,6 +862,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -882,6 +920,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -897,6 +936,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -912,6 +952,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -964,6 +1005,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -979,6 +1021,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -994,6 +1037,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -1029,11 +1073,13 @@
       "variants": [
         {
           "name": "Kodiak",
-          "points": 120
+          "points": 120,
+          "art": "assets/units/variants/ucm-armoured-command-vehicle--kodiak.webp"
         },
         {
           "name": "Panda",
-          "points": 80
+          "points": 80,
+          "art": "assets/units/variants/ucm-armoured-command-vehicle--panda.webp"
         }
       ],
       "specialVariants": [
@@ -1069,6 +1115,7 @@
             "Kodiak"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1086,6 +1133,7 @@
             "Panda"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -1121,11 +1169,13 @@
       "variants": [
         {
           "name": "Grizzly A",
-          "points": 40
+          "points": 40,
+          "art": "assets/units/variants/ucm-artillery-vehicle--grizzly-a.webp"
         },
         {
           "name": "Grizzly B",
-          "points": 40
+          "points": 40,
+          "art": "assets/units/variants/ucm-artillery-vehicle--grizzly-b.webp"
         },
         {
           "name": "Cuprum Drone Launcher",
@@ -1158,6 +1208,7 @@
             "Grizzly A"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1175,6 +1226,7 @@
             "Grizzly B"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1192,6 +1244,7 @@
             "Cuprum Drone Launcher"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -1227,15 +1280,18 @@
       "variants": [
         {
           "name": "Longbow",
-          "points": 25
+          "points": 25,
+          "art": "assets/units/variants/ucm-howitzer--longbow.webp"
         },
         {
           "name": "Crossbow",
-          "points": 25
+          "points": 25,
+          "art": "assets/units/variants/ucm-howitzer--crossbow.webp"
         },
         {
           "name": "Pilum",
-          "points": 25
+          "points": 25,
+          "art": "assets/units/variants/ucm-howitzer--pilum.webp"
         },
         {
           "name": "Scorpio",
@@ -1283,6 +1339,7 @@
             "Longbow"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1300,6 +1357,7 @@
             "Longbow"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1317,6 +1375,7 @@
             "Crossbow"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1334,6 +1393,7 @@
             "Pilum"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1351,6 +1411,7 @@
             "Scorpio"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1368,6 +1429,7 @@
             "Ballista"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1385,6 +1447,7 @@
             "Scutum"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -1437,6 +1500,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1452,6 +1516,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1467,6 +1532,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1482,6 +1548,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -1517,7 +1584,8 @@
       "variants": [
         {
           "name": "Eagle A",
-          "points": 90
+          "points": 90,
+          "art": "assets/units/variants/eagle-heavy-gunship--eagle-a.webp"
         },
         {
           "name": "Eagle B",
@@ -1554,6 +1622,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1569,6 +1638,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1586,6 +1656,7 @@
             "Eagle A"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1603,6 +1674,7 @@
             "Eagle A"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1620,6 +1692,7 @@
             "Eagle B"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -1677,6 +1750,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1692,6 +1766,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -1751,6 +1826,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -1786,11 +1862,13 @@
       "variants": [
         {
           "name": "Seraphim A",
-          "points": 80
+          "points": 80,
+          "art": "assets/units/variants/seraphim-bomber--seraphim-a.webp"
         },
         {
           "name": "Seraphim B",
-          "points": 80
+          "points": 80,
+          "art": "assets/units/variants/seraphim-bomber--seraphim-b.webp"
         }
       ],
       "specialVariants": [],
@@ -1812,6 +1890,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1827,6 +1906,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1844,6 +1924,7 @@
             "Seraphim A"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1861,6 +1942,7 @@
             "Seraphim B"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -1896,15 +1978,18 @@
       "variants": [
         {
           "name": "Gladius",
-          "points": 55
+          "points": 55,
+          "art": "assets/units/variants/ucm-heavy-tank--gladius.webp"
         },
         {
           "name": "Scimitar",
-          "points": 55
+          "points": 55,
+          "art": "assets/units/variants/ucm-heavy-tank--scimitar.webp"
         },
         {
           "name": "Maul",
-          "points": 60
+          "points": 60,
+          "art": "assets/units/variants/ucm-heavy-tank--maul.webp"
         }
       ],
       "specialVariants": [],
@@ -1933,6 +2018,7 @@
             "Gladius"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1950,6 +2036,7 @@
             "Maul"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1967,6 +2054,7 @@
             "Scimitar"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -1982,6 +2070,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -2017,11 +2106,13 @@
       "variants": [
         {
           "name": "Phoenix",
-          "points": 190
+          "points": 190,
+          "art": "assets/units/variants/ucm-super-gunship--phoenix.webp"
         },
         {
           "name": "Roc",
-          "points": 200
+          "points": 200,
+          "art": "assets/units/variants/ucm-super-gunship--roc.webp"
         }
       ],
       "specialVariants": [
@@ -2050,6 +2141,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2065,6 +2157,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2080,6 +2173,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2095,6 +2189,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2110,6 +2205,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2125,6 +2221,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2142,6 +2239,7 @@
             "Roc"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2159,6 +2257,7 @@
             "Roc"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2176,6 +2275,7 @@
             "Roc"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -2215,15 +2315,18 @@
         },
         {
           "name": "Cutlass",
-          "points": 85
+          "points": 85,
+          "art": "assets/units/variants/ucm-super-heavy-tank--cutlass.webp"
         },
         {
           "name": "Claymore",
-          "points": 85
+          "points": 85,
+          "art": "assets/units/variants/ucm-super-heavy-tank--claymore.webp"
         },
         {
           "name": "Broadsword",
-          "points": 90
+          "points": 90,
+          "art": "assets/units/variants/ucm-super-heavy-tank--broadsword.webp"
         }
       ],
       "specialVariants": [],
@@ -2252,6 +2355,7 @@
             "Broadsword"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2269,6 +2373,7 @@
             "Machete"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2286,6 +2391,7 @@
             "Cutlass"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2303,6 +2409,7 @@
             "Claymore"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2321,6 +2428,7 @@
             "Claymore"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -2356,7 +2464,8 @@
       "variants": [
         {
           "name": "Archangel Interceptor",
-          "points": 40
+          "points": 40,
+          "art": "assets/units/variants/archangel--archangel-interceptor.webp"
         },
         {
           "name": "Archangel Fighter-Bomber",
@@ -2384,6 +2493,7 @@
             "Archangel Interceptor"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2401,6 +2511,7 @@
             "Archangel Fighter- Bomber"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2418,6 +2529,7 @@
             "Archangel Fighter- Bomber"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2433,6 +2545,7 @@
           "box": "upgrade",
           "variants": [],
           "upgradePoints": 10,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -2472,7 +2585,8 @@
         },
         {
           "name": "Harrier B",
-          "points": 80
+          "points": 80,
+          "art": "assets/units/variants/harrier-gunship--harrier-b.webp"
         }
       ],
       "specialVariants": [],
@@ -2499,6 +2613,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2514,6 +2629,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2531,6 +2647,7 @@
             "Harrier A"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2548,6 +2665,7 @@
             "Harrier B"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2565,6 +2683,7 @@
             "Harrier B"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2580,6 +2699,7 @@
           "box": "upgrade",
           "variants": [],
           "upgradePoints": 5,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -2656,6 +2776,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -2715,6 +2836,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -2767,6 +2889,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -2806,7 +2929,8 @@
         },
         {
           "name": "Columbus B",
-          "points": 75
+          "points": 75,
+          "art": "assets/units/variants/ucm-columbus-battlewalker--columbus-b.webp"
         }
       ],
       "specialVariants": [],
@@ -2828,6 +2952,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2843,6 +2968,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2860,6 +2986,7 @@
             "Columbus A"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2877,6 +3004,7 @@
             "Columbus B"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -2916,11 +3044,13 @@
         },
         {
           "name": "Badger B",
-          "points": 10
+          "points": 10,
+          "art": "assets/units/variants/ucm-troop-buggy--badger-b.webp"
         },
         {
           "name": "Ferret",
-          "points": 15
+          "points": 15,
+          "art": "assets/units/variants/ucm-troop-buggy--ferret.webp"
         }
       ],
       "specialVariants": [
@@ -2961,6 +3091,7 @@
             "Badger A"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -2978,6 +3109,7 @@
             "Badger B"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -3013,19 +3145,23 @@
       "variants": [
         {
           "name": "Wolverine A",
-          "points": 15
+          "points": 15,
+          "art": "assets/units/variants/wolverine-buggy--wolverine-a.webp"
         },
         {
           "name": "Wolverine B",
-          "points": 15
+          "points": 15,
+          "art": "assets/units/variants/wolverine-buggy--wolverine-b.webp"
         },
         {
           "name": "Wolverine C",
-          "points": 15
+          "points": 15,
+          "art": "assets/units/variants/wolverine-buggy--wolverine-c.webp"
         },
         {
           "name": "Wolverine D",
-          "points": 15
+          "points": 15,
+          "art": "assets/units/variants/wolverine-buggy--wolverine-d.webp"
         }
       ],
       "specialVariants": [],
@@ -3054,6 +3190,7 @@
             "Wolverine A"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -3071,6 +3208,7 @@
             "Wolverine B"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -3088,6 +3226,7 @@
             "Wolverine C"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -3105,6 +3244,7 @@
             "Wolverine D"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -3122,6 +3262,7 @@
             "Wolverine D"
           ],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -3179,6 +3320,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -3194,6 +3336,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -3209,6 +3352,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -3271,6 +3415,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -3328,6 +3473,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -3343,6 +3489,7 @@
           "box": "upgrade",
           "variants": [],
           "upgradePoints": 10,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -3400,6 +3547,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -3415,6 +3563,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -3472,6 +3621,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -3529,6 +3679,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -3586,6 +3737,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -3601,6 +3753,7 @@
           "box": "upgrade",
           "variants": [],
           "upgradePoints": 5,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -3658,6 +3811,7 @@
           "box": "all",
           "variants": [],
           "upgradePoints": null,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         },
@@ -3673,6 +3827,7 @@
           "box": "upgrade",
           "variants": [],
           "upgradePoints": 5,
+          "exclusive": false,
           "capacityDelta": [],
           "boxUnresolved": false
         }

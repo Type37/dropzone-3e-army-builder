@@ -1705,12 +1705,34 @@
       touch(army);
       return { ok: true, reason: null };
     }
-    const onlyOne = /only one of these upgrades/i.test(u && u.upgradeNote || '');
-    if (onlyOne) {
-      const already = Object.keys(s.upgrades).some(k =>
-        Object.keys(s.upgrades[k]).some(n => n !== name));
-      if (already) {
-        return { ok: false, reason: `${u.name}: only one of these upgrades may be taken (3.2.3).` };
+    /* "Only one of these upgrades may be taken" applies to the STARRED ones.
+     *
+     * This used to read the footnote and refuse a second upgrade of any kind,
+     * which is wrong on the only two cards in the game that print it. Both
+     * Tritons list three upgrades and star two:
+     *
+     *     RM-1 Stealth Missile Battery (+10pts)
+     *     Twin RX-20 Miniguns (+5pts*)
+     *     RM-7 Skyhammer Missiles (+15pts*)
+     *     *Only one of these upgrades may be taken.
+     *
+     * Jet, 2026-08-10: "With the Triton you can take the RM-1 with the RX-20 or
+     * the RM-7. Just not the RX-20 with the RM-7." The star is the scope, the
+     * scanner carries it as `exclusive`, and the clash is between two starred
+     * upgrades rather than between any two at all. The RM-1 was being refused
+     * alongside either of them, so the Triton's commonest loadout could not be
+     * built.
+     *
+     * The refusal names both guns: "only one of these" is the card's wording,
+     * and on a card with an unstarred third upgrade it does not say which two. */
+    const starred = n => (u && u.weapons || []).some(w => w.name === n && w.exclusive);
+    if (starred(name)) {
+      const clash = Object.keys(s.upgrades)
+        .reduce((all, k) => all.concat(Object.keys(s.upgrades[k])), [])
+        .find(n => n !== name && starred(n));
+      if (clash) {
+        return { ok: false,
+          reason: `${u.name}: only one of ${clash} and ${name} may be taken (3.2.3).` };
       }
     }
     s.upgrades[scope][name] = true;
@@ -2004,18 +2026,27 @@
       }
     }));
 
-    /* "Behemoths are so huge that they can only be taken in 3000+ point games"
-     * (Behemoth rules, chapter 1). An error rather than a refusal in the
-     * picker, because 1.1.1 says in as many words that "in casual games,
-     * players may agree to waive any of the Army building restrictions". So
-     * the app says plainly that the list is not tournament-legal and leaves
-     * the agreement to the two people having it. */
-    const behemoths = army.groups.flatMap(g => g.squads)
-      .map(s => unitOf(army, s)).filter(u => u && u.type === 'Behemoth');
-    if (behemoths.length && limit < 3000) {
-      const names = [...new Set(behemoths.map(u => u.name))].join(', ');
-      errors.push({ rule: '1.1', msg: `${names} may only be taken in games of 3000pts or more. This list is ${limit}.` });
-    }
+    /* THERE IS NO 3000pt RULE. Removed 2026-08-10.
+     *
+     * This used to refuse every Behemoth in a game under 3000pts, citing
+     * "Behemoths are so huge that they can only be taken in 3000+ point games"
+     * as Behemoth rules chapter 1. That sentence is real, and it is the only
+     * time 3000 appears anywhere in the document, but it is the INTRODUCTION,
+     * two lines after "these are not recommended for new players since they
+     * are quite complex" -- and it says SOME Behemoths. Neither the rules nor
+     * any of the eleven stat cards ever says which, so there was nothing to
+     * enforce and the app enforced it against all of them.
+     *
+     * What actually limits a Behemoth is 1.1, and it is already enforced: "A
+     * Behemoth counts as that many Groups when building your Army and
+     * generating Pass tokens but counts as 1 Group for the 'no Group may cost
+     * more than 1/4 of your total allowed pts' rule." That is the quarter cap
+     * above, and it does the real work -- a 1750pt game allows 437, so a
+     * Behemoth over that is refused on its cost and one under it is legal.
+     *
+     * Reported by Jet, 2026-08-10, against a 410pt UCM Light Battle Mech in a
+     * 1750pt list: "This tag is incorrect, the Light is 410pts so under the
+     * 1/4 restriction." 410 of 437, and the app was calling it illegal. */
 
     /* WHICH GROUP AN ISSUE BELONGS TO. Jet, 2026-08-07: "new rule: alerts live
      * on the group card."

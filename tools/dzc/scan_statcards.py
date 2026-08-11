@@ -133,6 +133,7 @@ class Weapon(TypedDict):
     box: str | None
     variants: list[str]
     upgradePoints: int | None
+    exclusive: bool
     capacityDelta: list[Badge]
     boxUnresolved: bool
 
@@ -1075,7 +1076,22 @@ def upgrade_note(page, below_y, left_edge=None):
 
 # The bracket on a weapon name that is a PRICE rather than a variant:
 # "RM-7 Skyhammer Missiles (+15pts*)".
-COST_RE = re.compile(r"^\+?(\d+)\s*pts?\*?$", re.I)
+#
+# THE ASTERISK IS CAPTURED, because it is the scope of the footnote under it
+# and not decoration. Both Tritons print three upgrades and one note:
+#
+#     RM-1 Stealth Missile Battery (+10pts)
+#     Twin RX-20 Miniguns (+5pts*)
+#     RM-7 Skyhammer Missiles (+15pts*)
+#     *Only one of these upgrades may be taken.
+#
+# "These" is the starred pair. The RM-1 carries no star, so it combines with
+# either of them; what you may not do is take the Miniguns AND the Skyhammers.
+# This pattern used to match the star and throw it away, which left the app
+# applying "only one" to all three and refusing a legal loadout. Reported by
+# Jet, 2026-08-10: "With the Triton you can take the RM-1 with the RX-20 or the
+# RM-7. Just not the RX-20 with the RM-7."
+COST_RE = re.compile(r"^\+?(\d+)\s*pts?(\*?)$", re.I)
 
 # "*May replace transport capacity of 2 with MM-3 Missile Boxes or MC-30 Heavy
 # Gatlings." Two cards in the game, both Resistance tilt-rotors.
@@ -1434,6 +1450,7 @@ def parse_weapons(page, lines) -> tuple[list[Weapon], float]:
             # is a whole record the moment it exists.
             "variants": [],
             "upgradePoints": None,
+            "exclusive": False,
             "capacityDelta": [],
             "boxUnresolved": False,
         }
@@ -1461,6 +1478,8 @@ def parse_weapons(page, lines) -> tuple[list[Weapon], float]:
             cost = COST_RE.match(inner)
             if cost:
                 w["upgradePoints"] = int(cost.group(1))
+                # The star ties this upgrade to the card's footnote. See COST_RE.
+                w["exclusive"] = bool(cost.group(2))
             elif inner:
                 w["variants"] = [v.strip() for v in re.split(r"[,/]", inner) if v.strip()] \
                     + w["variants"]

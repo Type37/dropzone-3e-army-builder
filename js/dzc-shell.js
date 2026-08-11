@@ -43,7 +43,7 @@ const App = (() => {
    * a worse version of something already automatic. It is the build NUMBER,
    * so a report can say which one it came from and "that was fixed in 419"
    * becomes an answer instead of a guess. */
-  const BUILD = 426;
+  const BUILD = 427;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -579,6 +579,11 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-10', title: 'A photo per variant, the Triton’s real upgrade rule, and Behemoths that were never banned', items: [
+      'Every variant that has a picture now shows its own. A Sabre and a Rapier are a tracked tank with a chainsaw gun and a hover tank with a long AA barrel, and the app showed the same photograph for both, because art was per unit and a unit holds up to four variants. 163 of the 199 variants have their own miniature now, on the block where you choose how many of them to take. They come from the previous edition’s cards, which printed as separate units what this edition lists as variants, so they are older sculpts; the 36 with no picture anywhere show nothing rather than the wrong thing.',
+      'The Triton’s upgrades. Its card offers three and stars two of them, and the star is what the footnote means: you may take the RM-1 Stealth Missile Battery alongside either the Twin RX-20 Miniguns or the RM-7 Skyhammer Missiles, just not the Miniguns and the Skyhammers together. The app was reading the footnote and refusing any second upgrade at all, which made the Triton’s commonest loadout unbuildable. It is the only card in the game with that note, and it is on both Tritons.',
+      'Behemoths are not banned below 3000pts. They were being refused in any smaller game, on the strength of a line in the Behemoth introduction saying some of them are that big. It is not a rule, it says some, and nothing anywhere says which. What actually limits a Behemoth is the one rule 1.1 points at: it counts as a single Group against the quarter-of-your-points cap. So a 410pt Light Battle Mech in a 1750pt game, where a Group may cost 437, is legal, and it was being called illegal.'
+    ] },
     { date: '2026-08-10', title: 'Things arrive and leave, refusals that name the move, and a lot fewer dashes', items: [
       'Squads, Groups and armies animate on when you add them and off when you delete them. Only the thing that actually arrived moves: adding a Squad does not re-deal the rest of the army, and pressing a stepper animates nothing at all. It is built out of transform and opacity alone so a phone can hand it to the compositor instead of re-running the layout of a dozen Squads every frame, and it does nothing at all if your system asks for reduced motion.',
       'A refusal tells you what to do about it. Two Squads in a Group with nothing carrying either of them used to quote rule 3.2.4 and stop, which reads as the app breaking rather than the list being half finished. It now names which Squad goes aboard which, worked out from the same list the Transport button offers, so it can only ever suggest something that will work.',

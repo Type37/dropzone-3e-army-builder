@@ -1601,6 +1601,15 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-vblock-head {
   display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; margin-bottom: 2px;
 }
+/* The variant's own miniature, at the size of the line it sits on.
+   contain, not cover: these are cut-outs of very different silhouettes, a
+   squat tracked tank beside a tall walker, and cropping to fill a box would
+   take the legs off the one thing that tells them apart. The box is wider
+   than it is tall for the same reason -- most of them are. */
+.dzc-vblock-art {
+  flex: 0 0 auto; width: 46px; height: 30px; object-fit: contain;
+  object-position: left center;
+}
 .dzc-vblock-head b { font: 700 13px/1.2 var(--font-ui, 'Jost', system-ui, sans-serif); }
 .dzc-vblock-head i {
   font-style: normal; font-size: 11px; color: var(--ink-2, #6b6459);
