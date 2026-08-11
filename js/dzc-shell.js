@@ -43,7 +43,7 @@ const App = (() => {
    * a worse version of something already automatic. It is the build NUMBER,
    * so a report can say which one it came from and "that was fixed in 419"
    * becomes an answer instead of a guess. */
-  const BUILD = 428;
+  const BUILD = 429;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -335,8 +335,10 @@ const App = (() => {
           <a class="btn btn-ghost btn-sm" href="${FEEDBACK_HREF}">Send feedback</a>
         </div>
         <p class="dzc-set-note">Build ${BUILD}. A WarLore project. Game data and art belong to TTCombat.
-          Interface icons from <a href="https://fonts.google.com/icons" target="_blank" rel="noopener">Material Symbols</a>,
-          used under the Apache License 2.0.</p>
+          Interface icons from <a href="https://fonts.google.com/icons" target="_blank" rel="noopener">Material Symbols</a>
+          under the Apache License 2.0, and from
+          <a href="https://phosphoricons.com" target="_blank" rel="noopener">Phosphor</a>
+          under the MIT licence.</p>
       </div>`;
     openModal('modal-settings');
     renderOfflinePanel();
@@ -579,6 +581,11 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-11', title: 'Five icons that were shapes typed into a file, replaced with real ones', items: [
+      'Damage Points, Power, Defence and the grid/list toggle were not icons. They were geometry written straight into the source: a seven-point hexagon, a lightning bolt in eight integer moves, a shield whose curves were picked by eye, and four bare rectangles. Not one of them contained a single curve command, which is what gave them away. All four come from Phosphor now, and the list half of that toggle moved with the grid half so the two states are from one set rather than two.',
+      'The Damage Points hexagon is an outline rather than a solid. Both filled hexagons on offer came out as a black blob at the size the stat block actually draws them, close enough to a house shape to be misread; only the outline still says hexagon at 17px.',
+      'The icon file said "the six stat_* paths are NOT Material, they are drawn for this app". That was wrong in both directions and covered for exactly the three that were the problem. Every path states its own source now.'
+    ] },
     { date: '2026-08-10', title: 'A photo per variant, the Triton’s real upgrade rule, and Behemoths that were never banned', items: [
       'Every variant that has a picture now shows its own. A Sabre and a Rapier are a tracked tank with a chainsaw gun and a hover tank with a long AA barrel, and the app showed the same photograph for both, because art was per unit and a unit holds up to four variants. 98 of the 199 variants have their own miniature now, on the block where you choose how many of them to take. They come from the previous edition’s cards, which printed as separate units what this edition lists as variants, so they are older sculpts; a variant whose model that edition never pictured shows nothing rather than something that is not it.',
       'The Triton’s upgrades. Its card offers three and stars two of them, and the star is what the footnote means: you may take the RM-1 Stealth Missile Battery alongside either the Twin RX-20 Miniguns or the RM-7 Skyhammer Missiles, just not the Miniguns and the Skyhammers together. The app was reading the footnote and refusing any second upgrade at all, which made the Triton’s commonest loadout unbuildable. It is the only card in the game with that note, and it is on both Tritons.',

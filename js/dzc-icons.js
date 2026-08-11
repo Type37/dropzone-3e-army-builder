@@ -4,7 +4,16 @@
  * https://www.apache.org/licenses/LICENSE-2.0
  * Attribution also appears in the app, under Settings -> About.
  *
- * The six stat_* paths are NOT Material, they are drawn for this app.
+ * NOT ALL MATERIAL, and the mix is written down per icon rather than claimed
+ * in one line here. This comment used to say "the six stat_* paths are NOT
+ * Material, they are drawn for this app", which was wrong in both directions
+ * and hid the only three that mattered: stat_mv_infantry and stat_b are
+ * Phosphor, stat_mv, stat_a and stat_of are artwork on their own 512 and 640
+ * grids, and the three genuinely typed by hand were stat_dp, stat_power and
+ * stat_df. Those three were a hexagon, a bolt and a shield written straight
+ * into the file as integer polygons with no curve in them, and a blanket
+ * sentence covering all six is what let them sit here. They are real icons
+ * now. Every path in this file states its source on its own line.
  *
  * INLINED ON PURPOSE. Loading an icon font or SVG sprite from a CDN would
  * break the app at a table with no signal, which is the one place it has to
@@ -70,17 +79,44 @@
       box: '0 0 512 512',
       d: 'M156.7 25.83L89 39.38c-.1 58.57-1.74 119.32-43.49 167.22C104.4 246.5 189 260.7 247 248.8v-99L108.3 88.22l7.4-16.44L256 134.2l140.3-62.42l7.4 16.44L265 149.8v99c58 11.9 142.6-2.3 201.5-42.2c-41.8-47.9-43.4-108.65-43.5-167.22l-67.7-13.55c-12.9 13.88-20.6 28.15-32.9 40.53C308.9 79.78 289.5 89 256 89s-52.9-9.22-66.4-22.64c-12.3-12.38-20-26.65-32.9-40.53M53.88 232.9C75.96 281 96.07 336.6 102.7 392.8l65 22.8c4.2-52.7 28.2-104 63.7-146.1c-55.1 6.3-122.7-5.8-177.52-36.6m404.22 0c-54.8 30.8-122.4 42.9-177.5 36.6c35.5 42.1 59.5 93.4 63.7 146.1l65.2-22.9c6.6-56.8 26.6-111.8 48.6-159.8M256 269c-40.5 43.1-67.7 97.9-70.7 152.7l61.7 21.6V336h18v107.3l61.7-21.6c-3.1-54.8-30.2-109.6-70.7-152.7m151.7 143.4L297 451.1v18.8l110.2-44.1c.1-4.5.3-8.9.5-13.4m-303.3.1c.3 4.5.4 8.9.5 13.4l110.1 44v-18.7zM279 457.4l-23 8.1l-23-8v19.6l23 9.2l23-9.2z'
     },
-    stat_dp: 'M12 2 21 7v10l-9 5-9-5V7l9-5z',
-    // Power. A Behemoth's activation currency (Behemoth rules 1.2). A bolt,
-    // because it is spent and replenished rather than compared: the other five
-    // stats say what a Unit IS, this one says what it has left.
-    stat_power: 'M13 2 4 14h6l-1 8 9-12h-6l1-8z',
+    /* Damage Points, the hull track. Phosphor hexagon, MIT.
+       The hexagon is deliberate and stays: Dropfleet draws Hull as one, and
+       the same people read both apps. What changed is the PATH. It was
+       `M12 2 21 7v10l-9 5-9-5V7l9-5z` -- seven integer points and not one
+       curve, a polygon typed straight into the file rather than an icon from
+       anywhere.
+       OUTLINE, not filled. Both filled hexagons on offer (Tabler's and
+       Phosphor's) come out as a solid blob at the 17px this renders at in a
+       stat block, with the corner rounding making them read closer to a house
+       than a hexagon. Rasterised all three at 17 and compared before picking:
+       only the outline still says hexagon at that size. */
+    stat_dp: {
+      box: '0 0 256 256',
+      d: 'm223.68 66.15l-88-48.15a15.88 15.88 0 0 0-15.36 0l-88 48.17a16 16 0 0 0-8.32 14v95.64a16 16 0 0 0 8.32 14l88 48.17a15.88 15.88 0 0 0 15.36 0l88-48.17a16 16 0 0 0 8.32-14V80.18a16 16 0 0 0-8.32-14.03M216 175.82L128 224l-88-48.18V80.18L128 32l88 48.17Z'
+    },
+    /* Power. A Behemoth's activation currency (Behemoth rules 1.2). A bolt,
+       because it is spent and replenished rather than compared: the other five
+       stats say what a Unit IS, this one says what it has left.
+       Phosphor lightning-fill, MIT. Replaces `M13 2 4 14h6l-1 8 9-12h-6l1-8z`,
+       a bolt in eight integer moves with no curve in it. */
+    stat_power: {
+      box: '0 0 256 256',
+      d: 'm213.85 125.46l-112 120a8 8 0 0 1-13.69-7l14.66-73.33l-57.63-21.64a8 8 0 0 1-3-13l112-120a8 8 0 0 1 13.69 7l-14.7 73.41l57.63 21.61a8 8 0 0 1 3 12.95Z'
+    },
     // Offence, a soldier firing. Supplied by Jet; carries its own 640 box.
     stat_of: {
       box: '0 0 640 640',
       d: 'M480 64h-32c-8.8 0-16 7.2-16 16s7.2 16 16 16v100.3c-9.6 5.5-16 15.9-16 27.7v32c-17.7 0-32 14.3-32 32v144c0 17.7 14.3 32 32 32h16v96c0 8.8 7.2 16 16 16h59.5c10.4 0 18-9.8 15.5-19.9L516 464h44c8.8 0 16-7.2 16-16v-16c0-8.8-7.2-16-16-16h-48v-26.7l53.1-17.7c6.5-2.2 10.9-8.3 10.9-15.2v-84.5c0-8.8-7.2-16-16-16h-16c-8.8 0-16 7.2-16 16v56l-16 5.3V223.9c0-11.8-6.4-22.2-16-27.7V80c0-8.8-7.2-16-16-16M288 272c-106 0-192 86-192 192v48c0 17.7 14.3 32 32 32s32-14.3 32-32v-48c0-32.5 12.1-62.1 32-84.7V576h160V282.9c-20-7.1-41.6-10.9-64-10.9m56-120c0-39.8-32.2-72-72-72s-72 32.2-72 72s32.2 72 72 72s72-32.2 72-72'
     },
-    stat_df: 'M12 2 4 5.5v5.9c0 4.9 3.4 9.5 8 10.6 4.6-1.1 8-5.7 8-10.6V5.5L12 2zm0 2.2 6 2.6v4.6c0 3.8-2.5 7.4-6 8.5-3.5-1.1-6-4.7-6-8.5V6.8l6-2.6z',
+    /* Defence, an outline shield: the lighter-weight pair to Armour's solid
+       plate, so the two read as one idea at two weights.
+       Phosphor shield, MIT. The path it replaces had the right silhouette and
+       invented numbers -- 5.5, 5.9, 10.6, 2.2, 8.5, none of which are any icon
+       set's. It was a shield drawn by eye. */
+    stat_df: {
+      box: '0 0 256 256',
+      d: 'M208 40H48a16 16 0 0 0-16 16v56c0 52.72 25.52 84.67 46.93 102.19c23.06 18.86 46 25.27 47 25.53a8 8 0 0 0 4.2 0c1-.26 23.91-6.67 47-25.53C198.48 196.67 224 164.72 224 112V56a16 16 0 0 0-16-16m0 72c0 37.07-13.66 67.16-40.6 89.42a129.3 129.3 0 0 1-39.4 22.2a128.3 128.3 0 0 1-38.92-21.81C61.82 179.51 48 149.3 48 112V56h160Z'
+    },
     // Bravery, a banner. Phosphor flag-banner-fold-fill, MIT, inlined from
     // the Iconify API at author time. Never fetched at runtime: a CDN icon is
     // a blank square at a table with no signal.
@@ -107,9 +143,11 @@
     /* Commander, supplied by Jet 2026-08-07: a chain of command, not a medal.
        The medal was a rank badge; this says what a Commander DOES to a Group. */
     military_tech: 'M20.01 10.99h-7v-2h-2v2H3.47v4h2v-2h5.54v2h2v-2h5.5v2h2v-4zM12.01 2.01a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.47 16.99a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM12.01 16.99a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM19.51 16.99a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z',
-    /* Two grab handles, both Jet's. Six dots in a 2x3 for a Group -- a whole
-       row you pick up -- and the scattered six for a Squad, so the two grips
-       do not read as the same control at two sizes. */
+    /* ONE grab handle, not two. There was a second, drag_rows, six dots of
+       radius .75 laid three across, and at the 16px the Group card drew it
+       each dot was half a pixel wide. Both grips use this one now (see the
+       note on gripDown in dzc-builder.js), so drag_rows is gone rather than
+       left in the file for nothing to reference. */
     /* A die, for the Attacks column. Jet 2026-08-07: attacks read "5d6",
        because that is what the number is -- how many dice you roll. Two paths
        on a 32 grid, kept as one entry so the pips travel with the cube. */
@@ -117,11 +155,23 @@
       box: '0 0 32 32',
       d: 'M7.988 13.877c.104 1.1-.483 2.054-1.303 2.12c-.82.065-1.57-.773-1.673-1.873c-.104-1.101.483-2.054 1.303-2.12c.82-.073 1.57.764 1.673 1.873m4.698 12.119c.82-.065 1.406-1.018 1.302-2.119c-.103-1.109-.854-1.946-1.673-1.872c-.82.065-1.407 1.018-1.303 2.119c.103 1.1.854 1.938 1.673 1.872m13.001-13.992c.82.065 1.406 1.018 1.302 2.119c-.103 1.109-.854 1.946-1.674 1.873c-.82-.066-1.406-1.019-1.302-2.12c.103-1.1.854-1.938 1.674-1.872m-1.698 7.119c.104-1.1-.483-2.054-1.302-2.12c-.82-.065-1.57.773-1.674 1.873s.483 2.054 1.302 2.12c.82.073 1.57-.764 1.674-1.873m-4.302 2.881c.82.065 1.406 1.018 1.302 2.119c-.103 1.109-.854 1.946-1.674 1.872c-.82-.065-1.406-1.018-1.302-2.119c.103-1.1.854-1.938 1.674-1.872M13.883 2.451L4.494 6.504q-.329.148-.59.39A2.5 2.5 0 0 0 2 9.324v14.17a3 3 0 0 0 1.795 2.747l9.701 4.253c.297.13.6.198.9.21a4.5 4.5 0 0 0 3.209 0c.298-.012.602-.08.899-.21l9.7-4.253A3 3 0 0 0 30 23.493V9.323a2.5 2.5 0 0 0-1.782-2.396a2 2 0 0 0-.61-.423l-9.49-4.053a5.2 5.2 0 0 0-4.235 0M15 14.81v13.396a.5.5 0 0 1-.7.457L4.597 24.41A1 1 0 0 1 4 23.493V9.323a.5.5 0 0 1 .706-.455l9.117 4.118A2 2 0 0 1 15 14.81m2 13.396V14.808a2 2 0 0 1 1.177-1.823l9.117-4.118a.5.5 0 0 1 .706.456v14.17a1 1 0 0 1-.598.915L17.7 28.662a.5.5 0 0 1-.701-.457M16 7.5c-1.657 0-3-.448-3-1s1.343-1 3-1s3 .448 3 1s-1.343 1-3 1'
     },
-    drag_rows: 'M3.25 4.75a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5zm8.25 0a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5zm8.25 0a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5zM3.25 12.25a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5zm8.25 0a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5zm8.25 0a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5z',
     drag_dots: 'M15 19.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm0-6a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm-6 6a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm7.5-13.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zM10.5 12a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zM9 7.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z',
-    // Army / roster list.
-    list_alt: 'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 11h2v2H7zm0-4h2v2H7zm0 8h2v2H7zm4-8h6v2h-6zm0 4h6v2h-6zm0 4h6v2h-6z',
-    grid_view: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z',
+    /* The two halves of one toggle, so they come from one set.
+       Phosphor rows-fill and squares-four-fill, MIT.
+
+       grid_view was `M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z`:
+       four bare rectangles on a 24 grid, no curves, no corner radius. It was
+       four <rect>s wearing an icon's name. Its partner was Material list_alt,
+       and a toggle whose two states come from two different sets reads as two
+       controls, so both moved rather than only the broken one. */
+    list_alt: {
+      box: '0 0 256 256',
+      d: 'M224 152v40a16 16 0 0 1-16 16H48a16 16 0 0 1-16-16v-40a16 16 0 0 1 16-16h160a16 16 0 0 1 16 16M208 48H48a16 16 0 0 0-16 16v40a16 16 0 0 0 16 16h160a16 16 0 0 0 16-16V64a16 16 0 0 0-16-16'
+    },
+    grid_view: {
+      box: '0 0 256 256',
+      d: 'M120 56v48a16 16 0 0 1-16 16H56a16 16 0 0 1-16-16V56a16 16 0 0 1 16-16h48a16 16 0 0 1 16 16m80-16h-48a16 16 0 0 0-16 16v48a16 16 0 0 0 16 16h48a16 16 0 0 0 16-16V56a16 16 0 0 0-16-16m-96 96H56a16 16 0 0 0-16 16v48a16 16 0 0 0 16 16h48a16 16 0 0 0 16-16v-48a16 16 0 0 0-16-16m96 0h-48a16 16 0 0 0-16 16v48a16 16 0 0 0 16 16h48a16 16 0 0 0 16-16v-48a16 16 0 0 0-16-16'
+    },
     // Points / cost.
     calculate: 'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 7h4v2H7V7zm10 10h-4v-2h4v2zm0-4h-4v-2h4v2zm-6 4H7v-2h4v2zm0-4H7v-2h4v2z',
     // Squads. Material "groups".

@@ -8,11 +8,25 @@ app at a table with no signal, which is the one place it has to work. This
 follows the pattern already used by `mobile/js/mobile.js` (`ICON_PATHS`), and
 HANDOFF §2.6 ("Inline them — never load from a CDN, it breaks offline").
 
-**Source:** Material Symbols / Material Icons, 24×24 viewBox, Apache 2.0.
+**Sources, per icon.** Every path says where it came from on its own line in
+`js/dzc-icons.js`. The mix:
+
+| Source | Licence | Icons |
+|---|---|---|
+| Material Symbols, 24×24 | Apache 2.0 | 20, the UI set: add, remove, close, edit, delete, search, arrow_back, content_copy, more_vert, print, share, error, warning, check_circle, info, lock, layers, local_shipping, calculate, groups, deployed_code |
+| Phosphor | MIT | stat_mv_infantry, stat_b, stat_dp, stat_power, stat_df, grid_view, list_alt |
+| Supplied for this app, own grids | — | stat_mv (512), stat_a (512), stat_of (640), settings (26), rm (512), dice (32), drag_dots, military_tech |
+
 Attribution is in the Settings dialog, under About, and in `js/dzc-icons.js`.
 
-**Except the six stat icons**, which are drawn for this app and owe nobody
-anything — see the stats table below.
+**Three of these used to be typed by hand and were replaced on 2026-08-11.**
+stat_dp was `M12 2 21 7v10l-9 5-9-5V7l9-5z`, a seven-point polygon; stat_power
+was a bolt in eight integer moves; stat_df was a shield outline whose numbers
+(5.5, 5.9, 10.6, 8.5) match no icon set, drawn by eye. A fourth, grid_view,
+was four bare rectangles. None had a single curve command in it. The file
+header claimed "the six stat_* paths are NOT Material, they are drawn for this
+app", which covered for exactly the three that were the problem and named
+none of them, so provenance is now per icon rather than one blanket sentence.
 
 ---
 
@@ -48,18 +62,22 @@ Geometric rather than pictorial, following the language already set in the
 Dropfleet builder (arrow for movement, hexagon for the damage track). Reached
 via `DZCIcon.stat('Mv')`.
 
-| Stat | Shape | Why |
-|---|---|---|
-| Move | arrow | same idea as Dropfleet's Thrust |
-| Armour | solid shield | |
-| Damage Points | hexagon | the Hull analogue, and Hull is a hexagon there |
-| Offence | solid triangle | a blade, pointing out |
-| Defence | outline shield | pairs with Armour at a lighter weight, so the two read as one idea |
-| Bravery | star | |
+| Stat | Shape | Source | Why |
+|---|---|---|---|
+| Move | route between two nodes | supplied, 512 | same idea as Dropfleet's Thrust |
+| Move (infantry) | sneaker | Phosphor | infantry walk, so not a route |
+| Armour | plate over a ribcage | supplied, 512 | a UI shield said security, not armour |
+| Damage Points | outline hexagon | Phosphor | the Hull analogue, and Hull is a hexagon there |
+| Offence | soldier firing | supplied, 640 | |
+| Defence | outline shield | Phosphor | pairs with Armour at a lighter weight, so the two read as one idea |
+| Bravery | banner | Phosphor | |
+| Power | bolt | Phosphor | spent and replenished, not compared |
 
-Worth a second opinion: **Offence and Bravery are the weak picks.** A triangle
-is generic, and a star is a rating idiom more than a nerve one. If chapter 12's
-token legend has anything better, lift it.
+Worth a second opinion: **Damage Points is the weak pick.** It is a real
+Phosphor hexagon rather than a typed one, and it keeps the cross-app language
+with Dropfleet's Hull, but a hexagon says "damage track" only to somebody who
+already knows Dropfleet. If chapter 12's token legend has a damage marker
+worth lifting, it would beat this.
 
 ## Decisions I made, worth a second opinion
 
