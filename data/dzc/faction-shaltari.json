@@ -356,18 +356,15 @@
       "variants": [
         {
           "name": "Jaguar",
-          "points": 95,
-          "art": "assets/units/variants/shaltari-warstrider--jaguar.webp"
+          "points": 95
         },
         {
           "name": "Oncilla",
-          "points": 100,
-          "art": "assets/units/variants/shaltari-warstrider--oncilla.webp"
+          "points": 100
         },
         {
           "name": "Puma",
-          "points": 110,
-          "art": "assets/units/variants/shaltari-warstrider--puma.webp"
+          "points": 110
         },
         {
           "name": "Lynx",
@@ -683,8 +680,7 @@
       "variants": [
         {
           "name": "Firebird",
-          "points": 30,
-          "art": "assets/units/variants/shaltari-gunship--firebird.webp"
+          "points": 30
         },
         {
           "name": "Thunderbird",
@@ -1385,8 +1381,7 @@
         },
         {
           "name": "Wildcat",
-          "points": 110,
-          "art": "assets/units/variants/shaltari-gunstrider--wildcat.webp"
+          "points": 110
         }
       ],
       "specialVariants": [],
@@ -1717,8 +1712,7 @@
         },
         {
           "name": "Samurai",
-          "points": 20,
-          "art": "assets/units/variants/shaltari-heavy-warsuits--samurai.webp"
+          "points": 20
         }
       ],
       "specialVariants": [],
@@ -1828,8 +1822,7 @@
         },
         {
           "name": "Khopesh",
-          "points": 70,
-          "art": "assets/units/variants/shaltari-interceptor--khopesh.webp"
+          "points": 70
         }
       ],
       "specialVariants": [],
@@ -1928,8 +1921,7 @@
         },
         {
           "name": "Naginata",
-          "points": 15,
-          "art": "assets/units/variants/shaltari-light-grav-tank--naginata.webp"
+          "points": 15
         },
         {
           "name": "Tate",

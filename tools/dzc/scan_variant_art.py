@@ -156,29 +156,103 @@ def read_gallery(pdf_dir):
 # ------------------------------------------------------------------ matching
 
 
+def resolve_unit(unit, pool):
+    """Photos for one unit's variants, assigned so no two share one.
+
+    Done per unit rather than per variant because the collisions are between
+    SIBLINGS: "Taranis Artillery Tank (Thor Bombard)" matches our Taranis on
+    the unit name and our Thor on the loadout, and only one of them can have
+    it. Resolving a variant at a time cannot see that, and the first version
+    gave the Thor photo to Taranis.
+
+    Two passes. The unit name is stronger evidence than the loadout bracket, so
+    every stem match is settled first and takes its photo out of the pool; the
+    bracket then picks over what is left.
+    """
+    variants = unit.get("variants") or []
+    out, taken = {}, set()
+
+    for v in variants:
+        row, how = match(unit, v, [c for c in pool if id(c) not in taken])
+        if row:
+            out[v["name"]] = (row, how)
+            taken.add(id(row))
+
+    # The bracket, for variants the unit name never named. "Odin Heavy Walker
+    # (Hyperion Laser)" is the Hyperion's photo and nothing else claims it.
+    for v in variants:
+        if v["name"] in out:
+            continue
+        nv = norm(v["name"])
+        word = re.compile(rf"\b{re.escape(nv)}\b")
+        left = [c for c in pool if id(c) not in taken and word.search(c["load"])]
+        if len(left) == 1:
+            out[v["name"]] = (left[0], "loadout-name")
+            taken.add(id(left[0]))
+    return out
+
+
 def match(unit, variant, pool):
-    """The gallery row for this variant, and how it was found."""
+    """The gallery row for this variant, and how it was found.
+
+    THE NAME HAS TO APPEAR. There is no route here that finds a photo by
+    weapon keywords alone, and there was: the first version of this scored
+    every caption in the FACTION against the variant's guns and took the best,
+    with nothing requiring the photo to be of the same vehicle. It handed one
+    "Wolverine Scout Buggy (Missile)" to a UCM Howitzer, an Eagle Heavy
+    Gunship, a Harrier Gunship, a Troop Buggy and a Wolverine, because all five
+    have a gun with "missile" in its name. 58 of 163 matches came through that
+    route and they were not near-misses, they were a different vehicle. Jet,
+    2026-08-10: "so many of these are wrong or nonsensical." Correct, and the
+    fault was that a keyword score was allowed to stand in for identity.
+
+    So the variant's name must appear in the old unit name, and the loadout is
+    used ONLY to choose between several photos of that same old unit.
+    """
     nv = norm(variant["name"])
     word = re.compile(rf"\b{re.escape(nv)}\b")
+    hits = [c for c in pool if word.search(c["stem"])]
 
-    hit = [c for c in pool if word.search(c["stem"])]
-    if hit:
-        return hit[0], "name-in-unit"
+    # A sibling's name in the caption means the photo is the SIBLING'S.
+    # "Taranis Artillery Tank (Thor Bombard)" matches our Taranis on the stem,
+    # but Thor is a variant in its own right and that is Thor's photo. The same
+    # trap sits on Odin/Hyperion and on Bus/Gun Bus, where the shorter name is
+    # a word inside the longer one.
+    sibs = [norm(v["name"]) for v in (unit.get("variants") or [])
+            if norm(v["name"]) and norm(v["name"]) != nv]
 
-    hit = [c for c in pool if word.search(c["load"])]
-    if hit:
-        return hit[0], "name-in-loadout"
+    def sibling_owns(c):
+        for s in sibs:
+            named = re.compile(rf"\b{re.escape(s)}\b")
+            # In the bracket: the photo is captioned as that sibling's loadout.
+            if named.search(c["load"]):
+                return True
+            # In the unit name, and a longer name than mine, so it is the more
+            # specific of the two. "Gun Bus" beats "Bus" for the same caption.
+            if len(s) > len(nv) and named.search(c["stem"]):
+                return True
+        return False
 
+    mine = [c for c in hits if not sibling_owns(c)] or hits
+
+    if len(mine) == 1:
+        return mine[0], "name"
+    if not mine:
+        return None, None
+
+    # Several photos of the same old unit, one per loadout. Now the guns are a
+    # fair way to choose, because every candidate is already the right vehicle.
     own = [w["name"] for w in (unit.get("weapons") or [])
            if w.get("box") == "variant" and w.get("variants") == [variant["name"]]]
     keys = {k for g in own for k in keywords(g)}
     if keys:
-        scored = [(len(keys & keywords(c["load"])), c) for c in pool if c["load"]]
-        scored = [s for s in scored if s[0] > 0]
-        if scored:
-            scored.sort(key=lambda s: -s[0])
-            return scored[0][1], "loadout-by-weapon"
-    return None, None
+        scored = sorted(((len(keys & keywords(c["load"])), c) for c in mine),
+                        key=lambda s: -s[0])
+        if scored[0][0] > 0 and (len(scored) == 1 or scored[0][0] > scored[1][0]):
+            return scored[0][1], "name+loadout"
+
+    # Still ambiguous. No photo beats a coin-flip between two loadouts.
+    return None, "ambiguous"
 
 
 # ------------------------------------------------------------------- writing
@@ -237,9 +311,10 @@ def main() -> int:
         pool = [c for c in gallery if c["faction"] == fac]
         arts = {}
         for u in data["units"]:
+            picked = resolve_unit(u, pool)
             for v in (u.get("variants") or []):
                 total += 1
-                row, how = match(u, v, pool)
+                row, how = picked.get(v["name"], (None, None))
                 routes[how] = routes.get(how, 0) + 1
                 if not row:
                     continue
