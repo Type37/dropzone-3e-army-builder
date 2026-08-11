@@ -653,5 +653,84 @@ console.log('\nrules link to the rules they name');
      'and the text is escaped BEFORE anything is wrapped, so it cannot open a tag');
 }
 
+/* EVERY keyword any card prints resolves to glossary text.
+ *
+ * The app used to answer an unresolved keyword with "No glossary entry for
+ * this keyword. Read it from the stat card." Jet, 2026-08-11: "that is
+ * unacceptable, i already told you this." It is: sending someone to a PDF for
+ * a rule the app is already printing the name of is the app giving up, and a
+ * rules reference that does that has no reason to exist.
+ *
+ * tools/dzc/audit_rules.py reported 263 of 263 resolving while five still fell
+ * through on screen, because it checks unit and weapon Special lines for the
+ * five main factions, and the runtime also renders GEAR and BEHEMOTHS. This
+ * walks what rulesHtml walks, through the functions rulesHtml calls. */
+console.log('\nevery printed keyword resolves to a rule');
+{
+  const FACS = ['ucm', 'phr', 'scourge', 'shaltari', 'resistance', 'bioficer', 'behemoth'];
+  for (const f of FACS) await DZC.loadFaction(f);
+  const missing = [];
+  let seen = 0;
+  for (const fid of FACS) {
+    const fac = DZC.faction(fid);
+    if (!fac) continue;
+    for (const u of fac.units) {
+      const lines = [[u.special, u.name]];
+      for (const w of (u.weapons || [])) lines.push([w.special, u.name + ' / ' + w.name]);
+      for (const g of (u.gear || [])) lines.push([g.name, u.name + ' / gear']);
+      for (const [text, where] of lines) {
+        if (!text) continue;
+        for (const tok of DZC.splitSpecial(text, fid)) {
+          seen++;
+          if (!DZC.ruleText(tok, fid)) missing.push(fid + ' "' + tok + '" on ' + where);
+        }
+      }
+    }
+  }
+  ok(seen > 1500, 'the sweep actually walked the game (' + seen + ' keyword renders)');
+  ok(missing.length === 0,
+     'no keyword any card prints is missing from the glossary',
+     missing.slice(0, 12).join('\n        '));
+}
+
+/* A Behemoth's card never says whose faction it is, so its faction is null and
+ * a faction-scoped rule was out of reach: Nanomachines is PHR's, Particle is
+ * Shaltari's, Razorworm Pod is Scourge's, and all three are printed on
+ * Behemoth cards. resolve() reaches across factions last, after the unit's own
+ * pool and after core, so a same-named faction rule still wins first. */
+console.log('\na Behemoth reaches its parent faction rules');
+{
+  for (const [tok, fac] of [['Nanomachines', 'phr'], ['Particle', 'shaltari'],
+                            ['Razorworm Pod', 'scourge']]) {
+    ok(!!DZC.ruleText(tok, 'behemoth'), tok + ' resolves for a Behemoth');
+    ok(DZC.ruleText(tok, 'behemoth') === DZC.ruleText(tok, fac),
+       'and reads the same as it does for ' + fac.toUpperCase());
+  }
+  // Reaching across factions is only safe while no keyword is defined twice
+  // under two of them.
+  const byName = new Map(), dupes = [];
+  for (const r of DZC._state.rules.all.filter(r => r.faction)) {
+    const k = r.name.toLowerCase();
+    if (byName.has(k) && byName.get(k) !== r.faction) {
+      dupes.push(r.name + ': ' + byName.get(k) + ' and ' + r.faction);
+    }
+    byName.set(k, r.faction);
+  }
+  ok(dupes.length === 0, 'and no rule name belongs to two factions at once', dupes.join('; '));
+}
+
+/* "Scrambler 2+" is the plus on the wrong side. The rulebook heads it
+ * "1.7.7 Scrambler +X", the Porphyrion's card prints "Scrambler +2", and the
+ * UCM Light Battle Mech's prints "Scrambler 2+", which reads as a dice roll
+ * rather than a cost. One card in the game. */
+console.log('\nthe Light Battle Mech Scrambler typo resolves');
+{
+  const a = DZC.ruleText('Scrambler 2+', 'behemoth');
+  const b = DZC.ruleText('Scrambler +2', 'behemoth');
+  ok(!!a, 'Scrambler 2+ resolves');
+  ok(a === b, 'and reads exactly as the correctly printed Scrambler +2 does');
+  ok(/\b2\b/.test(a || ''), 'with the 2 substituted into the rule', a);
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

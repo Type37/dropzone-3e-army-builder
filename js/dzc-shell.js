@@ -43,7 +43,7 @@ const App = (() => {
    * a worse version of something already automatic. It is the build NUMBER,
    * so a report can say which one it came from and "that was fixed in 419"
    * becomes an answer instead of a guess. */
-  const BUILD = 429;
+  const BUILD = 430;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -581,6 +581,10 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-11', title: 'Nothing sends you to the PDF any more', items: [
+      'A keyword with no glossary entry used to answer “No glossary entry for this keyword. Read it from the stat card.” Five did: Nanomachines on the Type 7 Grand Walker, Particle on the Dragon, Razorworm Pod on the Terror Mech, and Scrambler on the UCM Light Battle Mech twice over. A Behemoth’s card never says whose faction it is, so its faction rules were out of reach, and the Light Battle Mech’s card prints “Scrambler 2+” where the rulebook heads the rule “Scrambler +X”. All 2,062 keywords the app can print now resolve, and a test walks every one of them so it stays that way.',
+      'A Unit no longer tells you which page of the stat card PDF it came from. A rule’s page number is worth printing because the app shows a summary and the book has more; a Unit’s was a pointer to a card whose every field is already on the screen in front of you.'
+    ] },
     { date: '2026-08-11', title: 'Five icons that were shapes typed into a file, replaced with real ones', items: [
       'Damage Points, Power, Defence and the grid/list toggle were not icons. They were geometry written straight into the source: a seven-point hexagon, a lightning bolt in eight integer moves, a shield whose curves were picked by eye, and four bare rectangles. Not one of them contained a single curve command, which is what gave them away. All four come from Phosphor now, and the list half of that toggle moved with the grid half so the two states are from one set rather than two.',
       'The Damage Points hexagon is an outline rather than a solid. Both filled hexagons on offer came out as a black blob at the size the stat block actually draws them, close enough to a house shape to be misread; only the outline still says hexagon at 17px.',

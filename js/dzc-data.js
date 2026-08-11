@@ -146,8 +146,20 @@
     };
   }
 
+  /* "Scrambler 2+" is "Scrambler +2" with the plus on the wrong side.
+   *
+   * The rulebook heads it "1.7.7 Scrambler +X" and the Porphyrion's card gets
+   * it right, "1PT: Scrambler +2". The UCM Light Battle Mech's card prints
+   * "0PT: Scrambler 2+", which reads as a dice roll rather than a cost, and
+   * the glossary regex wants the plus first, so that one Behemoth's Gear
+   * resolved to nothing. One card in the game, and it cannot go in
+   * KNOWN_TYPOS because that table swaps a whole word for a fixed string and
+   * this needs the number carried across. */
+  const SCRAMBLER_FLIP = /\bScrambler(\s*[:/\-]*\s*)(\d+)\s*\+/i;
+
   function fixTypos(s) {
-    return s.replace(TYPO_RE, m => KNOWN_TYPOS[m.toLowerCase()]);
+    return s.replace(TYPO_RE, m => KNOWN_TYPOS[m.toLowerCase()])
+      .replace(SCRAMBLER_FLIP, (whole, sep, n) => `Scrambler${sep || ' '}+${n}`);
   }
 
   /* Resolve one printed keyword to its glossary entry.
@@ -160,7 +172,24 @@
     if (!state.rules || !keyword) return null;
     const t = fixTypos(String(keyword).trim());
     if (!t) return null;
-    const pools = [state.rules.byFaction[faction] || [], state.rules.core];
+    /* Own faction first, then core, then EVERY faction.
+     *
+     * The last pool is there for Behemoths. Their cards do not say whose they
+     * are, so a Behemoth's faction is null and it never reached the pool
+     * holding its own rules -- the Type 7 Grand Walker prints Nanomachines,
+     * which is a PHR rule; the Dragon prints Particle, a Shaltari one; the
+     * Terror Mech prints Razorworm Pod, a Scourge one. All three fell through
+     * to "No glossary entry" while the entry sat in the file.
+     *
+     * Reaching across factions cannot pick the wrong rule here: no keyword in
+     * the glossary is defined twice under two factions, asserted by the audit.
+     * If one ever is, the unit's own faction still wins because it is tried
+     * first. */
+    const every = [];
+    Object.keys(state.rules.byFaction).forEach(f => {
+      if (f !== faction) every.push(...state.rules.byFaction[f]);
+    });
+    const pools = [state.rules.byFaction[faction] || [], state.rules.core, every];
     const tries = [t, t.replace(VARIANT_TAIL, '')];
     for (const cand of tries) {
       const c = cand.trim();

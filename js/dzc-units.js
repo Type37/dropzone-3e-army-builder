@@ -254,7 +254,7 @@
       // The page goes on the hover too, not only in the popover: someone
       // reading the tooltip with the rulebook open wants to turn to it without
       // a second click to find out where.
-      const tip = (window.DZC.ruleText(tok, faction) || 'No glossary entry. Read it from the stat card.')
+      const tip = (window.DZC.ruleText(tok, faction) || 'Missing from the glossary, which is a bug in the app.')
         + (r && r.page ? ` (p.${r.page})` : '');
       // Written out, "Tracking-1", not "T1". The printed token is still what
       // looks it up and still what the popover is opened with.
@@ -825,15 +825,16 @@
                on one, and the shapes are the whole grammar (3.2.4.2). -->
           <h3 class="dzc-detail-name">${esc(u.name)}
             <span class="dzc-detail-cap">${transportHtml(u)}</span></h3>
-          <!-- Where it is in TTCombat's PDF. Every rule already says which page
-               of the rulebook it is on; the Unit itself said nothing, so the
-               one thing you cannot look up from the app -- the printed card,
-               with the art and the wording -- was the one thing with no
-               reference. Scanned per Unit, so it cannot go stale against a
-               re-scan the way a typed number would. -->
+          <!-- NO card-page citation here. It was added on the argument that a
+               Unit should cite its source the way every rule cites a rulebook
+               page, and that argument was wrong. A rule's page is how you go
+               and read MORE, because the app shows a summary of it. A Unit's
+               is a pointer to a card whose every field is already on this
+               screen in full, so it sent you to a PDF to be told what you were
+               already looking at. u.page stays in the data, where the scanner
+               writes it and the audits read it. -->
           <p class="dzc-detail-meta"><span class="dzc-cat" data-cat="${esc(u.category)}">${esc(u.category)}</span> <span>${esc(u.type || '')}</span>
             <span>${pointsHtml(u)}</span> <span>${sizeHtml(u)}</span>
-            ${u.page ? `<span>Stat card p.${esc(u.page)}</span>` : ''}
             ${u.rare ? '<span class="dzc-flag dzc-flag--rare">Rare</span>' : ''}${u.unique ? '<span class="dzc-flag dzc-flag--unique">Unique</span>' : ''}</p>
           <div class="dzc-card-stats">${statsHtml(u)}</div>
         </div>
@@ -896,7 +897,15 @@
           ? ` <span class="dzc-pop-alias">(${esc(token)})</span>` : ''}</h5>
          <p>${window.DZC.linkKeywords(window.DZC.ruleText(token, state.faction), state.faction, r.name)}</p>
          <span class="dzc-pop-src">${esc(ruleSource(r))}</span>`
-      : `<h5>${esc(token)}</h5><p>No glossary entry for this keyword. Read it from the stat card.</p>`;
+      /* Not "read it from the stat card". Sending someone to a PDF for a rule
+         this app is already printing the name of is the app giving up, and it
+         is the one thing a rules reference must never do. Every keyword any
+         card prints resolves -- 2062 of 2062, asserted by test-dzc-data.mjs --
+         so this branch is now unreachable by data and only survives as the
+         honest thing to say if it ever becomes reachable again: that the fault
+         is here, not with the reader. */
+      : `<h5>${esc(token)}</h5><p>This keyword is missing from the app's glossary.
+           That is a bug in the app, not something you need to go and look up.</p>`;
     document.body.appendChild(pop);
     placePop(pop, el);
     setTimeout(() => document.addEventListener('click', onDocClick), 0);

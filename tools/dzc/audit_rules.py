@@ -46,8 +46,18 @@ KNOWN_TYPOS = {
 TYPO_RE = re.compile(r"\b(" + "|".join(KNOWN_TYPOS) + r")\b", re.I)
 
 
+# "Scrambler 2+" is "Scrambler +2" with the plus on the wrong side. The
+# rulebook heads it "1.7.7 Scrambler +X" and the Porphyrion's card gets it
+# right; the UCM Light Battle Mech's card does not. It cannot live in
+# KNOWN_TYPOS, which swaps a whole word for a fixed string, because the number
+# has to be carried across. Mirrors SCRAMBLER_FLIP in js/dzc-data.js -- these
+# two lookups have to agree or the audit passes something the app cannot show.
+SCRAMBLER_FLIP = re.compile(r"\bScrambler(\s*[:/\-]*\s*)(\d+)\s*\+", re.I)
+
+
 def fix_typos(s):
-    return TYPO_RE.sub(lambda m: KNOWN_TYPOS[m.group(1).lower()], s)
+    s = TYPO_RE.sub(lambda m: KNOWN_TYPOS[m.group(1).lower()], s)
+    return SCRAMBLER_FLIP.sub(lambda m: f"Scrambler{m.group(1) or ' '}+{m.group(2)}", s)
 
 
 # Keywords that cannot resolve because the CARD is wrong, not the parser.
@@ -200,8 +210,15 @@ def main():
             # a keyword up against the file left the Dragon's Shaltari
             # "Particle" unresolvable when the answer was on its own record.
             fac = u.get("faction") or data["faction"]
+            # GEAR TOO. This walked Special lines only, and a Behemoth's Gear
+            # is a list of rule names in its own field -- so "Scrambler 2+" on
+            # the UCM Light Battle Mech resolved to nothing on screen while
+            # this audit reported 263 of 263 and a clean build. An audit that
+            # checks less than the app renders is worse than none, because it
+            # is the reason nobody looks.
             for src in [u.get("special") or ""] + [
-                    w.get("special") or "" for w in u.get("weapons", [])]:
+                    w.get("special") or "" for w in u.get("weapons", [])] + [
+                    g.get("name") or "" for g in u.get("gear", [])]:
                 for tok in tokenise(src, rules, fac):
                     refs[(fac, tok)] += 1
                     where[(fac, tok)].add(f"{fac}/{u['name']}")

@@ -581,8 +581,16 @@ console.log('\nevery screen renders');
    * card instead. It is not selectable, so the builder never drew it, but the
    * reference draws all 178. */
   await drive('the unit detail', () => win.DZCUnits.openDetail('legionnaires', 'ucm'));
-  ok(/Stat card p\.3</.test(els['dzc-detail-body'].innerHTML),
-     'the detail view says which stat card page the Unit is on');
+  /* NO page citation on a Unit. It was added on the argument that every
+   * rule cites a rulebook page while the Unit cited nothing, and that
+   * argument was wrong: a rule's page is how you go and read MORE,
+   * because the app shows a summary of it. A Unit's card page leads to
+   * a card whose every field is already on this screen in full, so it
+   * sent you to a PDF to be told what you were looking at. Jet,
+   * 2026-08-11: "remove those entries!! that is slop!! that isn't
+   * useful!" u.page stays in the data for the audits. */
+  ok(!/Stat card p\./.test(els['dzc-detail-body'].innerHTML),
+     'the detail view does not send you to a PDF for what it is showing you');
   await drive('a unit with upgrades', () => win.DZCUnits.openDetail('harrier-gunship', 'ucm'));
   ok(/dzc-upg-note/.test(els['dzc-detail-body'].innerHTML),
      'and prints the sentence that qualifies its upgrades');
