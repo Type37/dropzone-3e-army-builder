@@ -2496,7 +2496,7 @@
           "special": "Drive-by, Jammer",
           "box": "variant",
           "variants": [
-            "Recon ATV"
+            "Recon ATVs"
           ],
           "upgradePoints": null,
           "exclusive": false,
@@ -2514,7 +2514,7 @@
           "special": "Alt 1, Battery 1, Blast, Drive-by",
           "box": "variant",
           "variants": [
-            "Attack ATV"
+            "Attack ATVs"
           ],
           "upgradePoints": null,
           "exclusive": false,
@@ -2532,7 +2532,7 @@
           "special": "Alt 1, Concussion, Demo 0, Drive-by, Incendiary 3",
           "box": "variant",
           "variants": [
-            "Attack ATV"
+            "Attack ATVs"
           ],
           "upgradePoints": null,
           "exclusive": false,

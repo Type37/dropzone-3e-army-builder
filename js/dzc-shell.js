@@ -43,7 +43,7 @@ const App = (() => {
    * a worse version of something already automatic. It is the build NUMBER,
    * so a report can say which one it came from and "that was fixed in 419"
    * becomes an answer instead of a guess. */
-  const BUILD = 431;
+  const BUILD = 432;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -581,6 +581,9 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-11', title: 'Two Squads were showing no weapons at all', items: [
+      'Resistance ATVs and the UCM Archangel Fighter-Bomber rendered with an empty weapon table, in the builder and on the printed sheet. A gun that belongs to one loadout names it in brackets, and on those two cards the bracket does not match the name in the price line: the ATV card says “25pts (Recon ATVs)” but labels the gun “(Recon ATV)”, and the Archangel’s bracket wraps mid-word across a line. Neither is a scan error, both are on the card, and nothing reconciled the two. All four loadouts show their guns now.'
+    ] },
     { date: '2026-08-11', title: 'A Commander no longer pushes its Group over the quarter cap', items: [
       'No Group may cost more than a quarter of your points, and a Commander’s points were being counted against that. 3.2.5 says they are “ignored during Army composition besides counting towards your total allowed points”, so 430pts of tanks with a Level 6 Commander read 580 against a 500 cap and a legal list was refused. The category ratios already left Commanders out; the Group cap does now too. The Group meter shows the same figure the rule uses, and your army total still counts every point.'
     ] },

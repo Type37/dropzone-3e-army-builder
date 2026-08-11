@@ -121,6 +121,34 @@ if os.path.exists(BEHEMOTHS):
     if sorted(placed.values()) != [2, 2, 2, 2, 2]:
         problems.append(f"Behemoths are not two per faction across five: {dict(placed)}")
 
+# A weapon's variant bracket must name a variant the unit actually has.
+#
+# weaponLive matches these by exact name against the models a Squad fields, so
+# a bracket that names nothing real marks the gun dead everywhere and the
+# weapon simply vanishes. It is not hypothetical: the Resistance ATVs printed
+# "(Recon ATV)" on the guns against a variant called "Recon ATVs", and the UCM
+# Archangel's bracket wrapped mid-word into "Archangel Fighter- Bomber". Both
+# Squads rendered with NO WEAPONS AT ALL, in the builder and on the printed
+# sheet, and nothing in this file noticed. scan_statcards reconciles the two
+# now (reconcile_variant_names); this is the check that says it worked.
+for path in [*sorted(glob.glob(os.path.join("data", "dzc", "faction-*.json"))), BEHEMOTHS]:
+    if not os.path.exists(path):
+        continue
+    with open(path, encoding="utf-8") as fh:
+        doc = json.load(fh)
+    for u in doc["units"]:
+        have = {v["name"] for v in (u.get("variants") or [])}
+        if not have:
+            continue
+        for w in (u.get("weapons") or []):
+            for vn in (w.get("variants") or []):
+                if vn not in have:
+                    problems.append(
+                        f"{doc['faction']}/{u['name']} / {w['name']}: names variant "
+                        f"{vn!r}, which this unit does not have {sorted(have)} -- "
+                        f"the gun will render for nobody")
+
+
 print("=== counts ===")
 for k, v in sorted(stats.items()):
     print(f"  {k:34s} {v}")

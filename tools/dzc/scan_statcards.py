@@ -1160,6 +1160,59 @@ def norm_weapon(name: str) -> str:
     return re.sub(r"\s+", " ", name).strip().rstrip(".").lower().rstrip("s")
 
 
+def reconcile_variant_names(unit: Unit) -> None:
+    """Make a weapon's variant bracket name a variant the unit actually has.
+
+    A card can print the same variant two different ways, and two do:
+
+      ATVs         price line "25pts (Recon ATVs)", weapon "(Recon ATV)"
+      Archangel    price line "(Archangel Fighter-Bomber)", weapon bracket
+                   wrapped mid-word so it scans as "Archangel Fighter- Bomber"
+
+    Neither is a scanner fault, both are on the card. But weaponLive matches a
+    weapon's variant list against the models a Squad actually fields, by exact
+    name, so a bracket naming "Recon ATV" against a variant called "Recon ATVs"
+    matches nothing. The result was a Squad whose every gun was marked dead:
+    BOTH ATV variants and the Archangel Fighter-Bomber rendered with no weapons
+    at all, in the builder and on the printed sheet.
+
+    Matched on a squashed key, so a trailing s and the space a line-wrap leaves
+    after a hyphen both stop mattering. Rewritten only when exactly one variant
+    matches: an ambiguous bracket is left alone and audit_data will say so,
+    because a gun quietly assigned to the wrong loadout is worse than one
+    flagged as unassigned.
+    """
+    variants = [v["name"] for v in unit.get("variants") or []]
+    if not variants:
+        return
+
+    # A soft hyphen (U+00AD) is what the typesetter breaks a word on, and a
+    # non-breaking hyphen (U+2011) is what it uses where it must NOT break, so
+    # both turn up inside a name the PDF has wrapped. Written as escapes rather
+    # than pasted, because neither is distinguishable from an ASCII hyphen in a
+    # diff and both are why this function exists.
+    nb_hyphen = "‑"    # noqa: RUF001 - U+2011, where a name must NOT wrap
+    soft_hyphen = "­"  # U+00AD, the break the typesetter inserted when it did
+
+    def key(s: str) -> str:
+        s = (s or "").lower().replace(nb_hyphen, "-").replace(soft_hyphen, "")
+        return re.sub(r"\s+", "", s).rstrip("s")
+
+    by_key: dict[str, list[str]] = {}
+    for v in variants:
+        by_key.setdefault(key(v), []).append(v)
+
+    for w in unit["weapons"]:
+        fixed = []
+        for got in w["variants"]:
+            if got in variants:
+                fixed.append(got)
+                continue
+            hit = by_key.get(key(got), [])
+            fixed.append(hit[0] if len(hit) == 1 else got)
+        w["variants"] = fixed
+
+
 def parse_swaps(unit: Unit) -> None:
     """
     Read the swap sentence into what it removes and what it grants.
@@ -1702,6 +1755,7 @@ def parse_page(page, doc, art_dir) -> Unit | None:
     # Needs the weapons, the transport badges and the footnote all parsed, so
     # it runs on the assembled unit rather than inside any one of them.
     apply_capacity_upgrades(unit)
+    reconcile_variant_names(unit)
     parse_swaps(unit)
     if art_dir:
         extract_art(page, doc, art_dir, header["name"])
