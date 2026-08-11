@@ -82,6 +82,33 @@
     }
   } catch (e) { /* no storage; nothing to migrate */ }
 
+  /* ── Keeping the Dropfleet builder's fleets out ───────────────
+   *
+   * The same separation, from this side. What is left to deal with is the
+   * fleets that arrived before it existed: in localStorage, and in the cloud
+   * copy, which would otherwise hand them back on every pull.
+   *
+   * This has to run HERE rather than in dzc-army.js, and that is the whole
+   * point of it. dzc-army.js only loads the list when the armies view is first
+   * opened, and a sync can fire before that -- a phone returning to the app
+   * lands on the home screen, `focus` fires, and the list goes up untouched.
+   * Doing it in this file's body puts it before every reader and every sync,
+   * because index.html loads this script first.
+   *
+   * The test is positive rather than "does not look like an army": a fleet has
+   * a `battleGroups` array, which nothing here has ever written. An army that
+   * somehow lacks `groups` is still an army and is left alone. */
+  function isForeign(f) {
+    return !!f && Array.isArray(f.battleGroups) && !f.groups;
+  }
+  try {
+    const raw = JSON.parse(localStorage.getItem(FLEETS_KEY) || '[]');
+    if (Array.isArray(raw)) {
+      const clean = raw.filter(f => !isForeign(f));
+      if (clean.length !== raw.length) localStorage.setItem(FLEETS_KEY, JSON.stringify(clean));
+    }
+  } catch (e) { /* unreadable list; load() will reset it */ }
+
   const WORDS_PER_TOKEN = 6;
 
   /* Wordlist for token phrases. Dropfleet/naval flavoured so a token reads like
@@ -303,6 +330,7 @@
 
     (remote.fleets || []).forEach(f => {
       if (!f || !f.id) return;
+      if (isForeign(f)) return;         // a fleet left in this token's cloud copy
       const mine = byId[f.id];
       if (!mine || (f.updatedAt || 0) > (mine.updatedAt || 0)) byId[f.id] = f;
     });

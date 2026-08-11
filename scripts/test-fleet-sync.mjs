@@ -361,5 +361,41 @@ console.log('\nadopting a token left behind by the shared-key days');
   check('and stays off across a reload', !again.FleetSync.enabled(), String(again.FleetSync.token()));
 }
 
+/* The mirror image of the Dropfleet side: fleets that crossed over before the
+   two apps were separated, in both places they sit. It has to happen in this
+   file's body rather than in dzc-army.js, which does not load the list until
+   the armies view is first opened -- a phone returning to the app lands on the
+   home screen, `focus` fires a sync, and an uncleaned list goes straight up. */
+console.log('\nDropfleet fleets stay out of the army list');
+{
+  const army  = { id: 'A1', name: 'UCM army',  faction: 'ucm', groups: [], commanders: [], updatedAt: 500 };
+  const fleet = { id: 'F1', name: 'UCM fleet', faction: 'ucm', battleGroups: [], admirals: [], updatedAt: 100 };
+
+  const s = makeSandbox({ dzc_armies: JSON.stringify([army, fleet]) });
+  const kept = fleets(s.store.get('dzc_armies'));
+  check('the fleet is evicted at load', kept.length === 1, JSON.stringify(kept.map(f => f.id)));
+  check('the army is untouched', kept[0].id === 'A1');
+
+  // Nothing but this file has run, which is the case that matters: a sync
+  // firing before the armies view is ever opened must not upload the fleet.
+  const c = makeSandbox({ dzc_armies: JSON.stringify([army, fleet]), dzc_sync_token: 'anvil-drift-oculus-vessel-amber-forge' });
+  c.remote.doc = { fields: { payload: { stringValue: JSON.stringify({ fleets: [fleet], deleted: {} }) } } };
+  await c.FleetSync.sync();
+  const after = fleets(c.store.get('dzc_armies'));
+  check('a sync before anything else uploads only armies', after.length === 1, JSON.stringify(after.map(f => f.id)));
+  check('a pull does not bring the fleet back',
+        !JSON.parse(c.remote.doc.fields.payload.stringValue).fleets.some(f => f.id === 'F1'));
+}
+
+/* Positive test, not "does not look like a fleet". An army that somehow lacks
+   `groups` is still an army, and throwing one away would be the data loss this
+   file exists to prevent. */
+console.log('\nan army missing groups is still an army');
+{
+  const odd = { id: 'A2', name: 'half-built', faction: 'phr', commanders: [], updatedAt: 1 };
+  const s = makeSandbox({ dzc_armies: JSON.stringify([odd]) });
+  check('it is kept', fleets(s.store.get('dzc_armies')).length === 1);
+}
+
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
 process.exit(fail ? 1 : 0);

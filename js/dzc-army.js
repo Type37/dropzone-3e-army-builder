@@ -31,22 +31,11 @@
       armies = JSON.parse(localStorage.getItem(STORE) || '[]');
       if (!Array.isArray(armies)) armies = [];
     } catch (e) { armies = []; }
-    /* Evict Dropfleet fleets. Both builders are pages on type37.github.io, so
-     * they share an origin and shared a sync document, and for as long as that
-     * was true a synced device merged the two games' lists into one array --
-     * fleets landed here and armies landed there. fleet-sync.js is namespaced
-     * now and no more can arrive, but whatever already landed is in this list
-     * and would render as an army with no Groups. A fleet is unmistakable: it
-     * carries `battleGroups`, which nothing here ever writes.
-     *
-     * Written straight back out, not left for the next save: Fleet Sync reads
-     * localStorage itself rather than this array, so a list cleaned only in
-     * memory would be uploaded dirty. */
-    const before = armies.length;
-    armies = armies.filter(a => a && !a.battleGroups);
-    if (armies.length !== before) {
-      try { localStorage.setItem(STORE, JSON.stringify(armies)); } catch (e) { /* quota */ }
-    }
+    // Dropfleet fleets that crossed over while the two apps shared a sync
+    // document are evicted in fleet-sync.js, not here. This function does not
+    // run until the armies view is first opened, and a sync can happen before
+    // that; the eviction has to be in front of both.
+    //
     // Armies saved before Commanders moved to the army carry them on their
     // Squads. Lift those into the store, then mirror the store back down, so
     // an old save and a new one look the same to everything downstream.
