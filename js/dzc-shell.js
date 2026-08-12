@@ -43,7 +43,7 @@ const App = (() => {
    * a worse version of something already automatic. It is the build NUMBER,
    * so a report can say which one it came from and "that was fixed in 419"
    * becomes an answer instead of a guess. */
-  const BUILD = 439;
+  const BUILD = 440;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -581,6 +581,10 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-12', title: 'The last two controls under 44px, found by measuring instead of reading', items: [
+      'Buying a weapon upgrade was a 62 by 32 button pinned to a corner of the weapon card, and it is the only control on that card. And the opponent’s Group count in Play Mode was 56 by 25, typed into while standing at a table, on the one screen where everything else had already been taken to 44. Both clear it now.',
+      'These were found by walking every route and every modal at 390 and measuring every button, link and field on each, rather than by reading the rules and judging what looked covered. What is left under 44 is under it on purpose and says so where it is set: a rule chip, which would be a wall of them, the footer links, and the Energy number on a weapon card, which is a number in a line of numbers that happens to be pressable.'
+    ] },
     { date: '2026-08-12', title: 'Category spend ran its own labels out of their column', items: [
       'Two of the four words in Category spend did not fit their own column. The numbers are lined up under each other on purpose, so the column holding Standard, Vanguard, Heavy and Support is a fixed 60px, and Standard wanted 62 of it and Vanguard 64. It is 68 now. It only bites when the webfont has not arrived, which is a phone at a table with no signal.'
     ] },

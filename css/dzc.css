@@ -3115,6 +3115,20 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
   .dzc-view-toggle,
   .dzc-shape-chip,
   .dzc-sq-btn,
+  /* Two the first pass did not reach, found by sweeping every interactive
+     element on every route and modal at 390 rather than by reading the rules
+     and deciding they looked covered.
+
+     A paid weapon upgrade at 62x32. It is a button that spends points, it is
+     the only control on a weapon card, and it is pinned to a corner where a
+     thumb arrives at an angle. The card reserves 66px beside the weapon name
+     for it, so growing it downward costs nothing.
+
+     And the opponent's Group count in Play Mode at 56x25, which is typed into
+     while standing at a table -- the one screen where every other control was
+     already taken to 44. */
+  .dzc-buy,
+  .dzc-pcard-act input[type="number"],
   #sync-token-input {
     min-height: 44px;
   }

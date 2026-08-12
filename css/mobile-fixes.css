@@ -61,11 +61,6 @@
   .topbar-global-settings-btn,
   .modal-close,
   .dzc-icon-btn,
-  /* Missed the first time round. The two square buttons on the picker's
-     search row -- cards/list, and sort and filter -- are 30px, which is the
-     same miss as the 32px squares above and they sit right beside a 44px
-     field where the difference is visible. */
-  .dzc-view-toggle,
   .dzc-carry-add,
   .dzc-stepper button,
   .dzc-step-why button {
