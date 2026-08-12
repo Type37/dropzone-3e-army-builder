@@ -1003,8 +1003,15 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    numbers to different x positions every row. Fixed columns line the four
    numbers up under each other instead, Jet, 2026-08-09: "align numbers in
    category spend." */
+/* The name column is 68, not 60. At 60 "Standard" wanted 62 and "Vanguard" 64
+   and both ran out of their track -- the four numbers stayed lined up, which
+   is what the column is for, and the words they belong to did not fit. It only
+   shows up when the webfont has not loaded, which is the offline case this app
+   is built for, so it is measured against the fallback face rather than Jost.
+   The track beside it is 83px against a 54px minimum, so the 8px comes out of
+   slack. */
 .dzc-rail .dzc-ratio {
-  display: grid; grid-template-columns: 60px 50px 1fr;
+  display: grid; grid-template-columns: 68px 50px 1fr;
   align-items: baseline; column-gap: 8px; padding: 4px 8px;
 }
 .dzc-rail .dzc-ratio span { display: inline; font-size: 10.5px; }

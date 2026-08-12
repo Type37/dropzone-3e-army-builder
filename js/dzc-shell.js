@@ -43,7 +43,7 @@ const App = (() => {
    * a worse version of something already automatic. It is the build NUMBER,
    * so a report can say which one it came from and "that was fixed in 419"
    * becomes an answer instead of a guess. */
-  const BUILD = 438;
+  const BUILD = 439;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -581,6 +581,9 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-12', title: 'Category spend ran its own labels out of their column', items: [
+      'Two of the four words in Category spend did not fit their own column. The numbers are lined up under each other on purpose, so the column holding Standard, Vanguard, Heavy and Support is a fixed 60px, and Standard wanted 62 of it and Vanguard 64. It is 68 now. It only bites when the webfont has not arrived, which is a phone at a table with no signal.'
+    ] },
     { date: '2026-08-12', title: 'Add Units opened on a screenful of its own controls', items: [
       'On a phone the picker showed no units. Measured at 390 by 844: the toolbar was 363px tall and the first unit card began 467px down, so more than half the screen was search, tabs, sorts, filters and Fits before a single thing you could add. The tabs had wrapped to two rows and the sorts and filters to three, because every chip is 44px tall now so a finger can hit it. Sort, the filters and Fits fold behind one button on the tab line, and the first card starts 275px down. The button carries a count and lights up when a filter is on, so nothing can be cutting the list from behind a closed row without saying so. Nothing changed on a desktop: every control in that toolbar lands on the same pixel it did.',
       'A modal on a phone was giving up a sixth of the screen to its own margins. 12px of overlay padding and 20px of panel padding each side left a unit card 324px of a 390px phone, and a unit card carries a three-column stat grid. 348 now, and the search field holds its full placeholder again at every width down to 320.',
