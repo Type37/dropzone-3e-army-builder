@@ -61,6 +61,11 @@
   .topbar-global-settings-btn,
   .modal-close,
   .dzc-icon-btn,
+  /* Missed the first time round. The two square buttons on the picker's
+     search row -- cards/list, and sort and filter -- are 30px, which is the
+     same miss as the 32px squares above and they sit right beside a 44px
+     field where the difference is visible. */
+  .dzc-view-toggle,
   .dzc-carry-add,
   .dzc-stepper button,
   .dzc-step-why button {
@@ -91,4 +96,19 @@
     align-items: center;
     min-height: 44px;
   }
+}
+
+/* ── A phone gets its width back ──────────────────────────────
+   Measured on the picker at 390: 12px of overlay padding and 20px of body
+   padding each side put the toolbar and every unit card in 324px. 66px --
+   a sixth of the screen -- spent on white space around content that is
+   already fighting for room, and a unit card carries a stat grid that has
+   to fit three columns.
+
+   Desktop keeps its 20px: a modal there is a panel floating on a scrim and
+   the padding is what makes it one. On a phone the panel IS the screen. */
+@media (max-width: 560px) {
+  .modal-overlay { padding: var(--sp-sm); }
+  .modal-header { padding-inline: var(--sp-md); }
+  .modal-body { padding-inline: var(--sp-md); }
 }

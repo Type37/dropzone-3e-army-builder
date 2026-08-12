@@ -80,6 +80,11 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 /* ── toolbar ── */
 .dzc-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 8px; }
 .dzc-search {
+  /* An <input> does not inherit a font, so every search box in the app was
+     rendering its placeholder in the UA's Arial while the rest of the screen
+     was Jost. Wider, too, which is how the picker's placeholder came to be
+     the thing that decides how much room the row has. */
+  font-family: var(--font-ui, 'Jost', system-ui, sans-serif);
   flex: 1 1 280px; min-width: 0; padding: 9px 12px; font-size: 14px;
   border: 1px solid var(--line, #d8d0c0); border-radius: 6px;
   background: var(--surface-2, #fff); color: var(--ink, #24201c);
@@ -2034,6 +2039,86 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 }
 .dzc-view-toggle:hover { border-color: var(--acc); color: var(--ink, #24201c); }
 
+/* ── the fold ──
+ *
+ * Sort, the filters and Fits are one row each on a desktop and they cost
+ * nothing there, so both wrappers are DISPLAY: CONTENTS: the Sort row and the
+ * Fits row go on being children of the bar, at the spacing they always had,
+ * and above 768px neither wrapper may as well exist. They only become boxes on
+ * a phone, where what they become is a box that is shut. Two of them because
+ * the animation needs an inner element to overflow-hide while the outer one
+ * goes from 0fr to 1fr.
+ *
+ * The measurement that put it here: at 390 wide, the bar was 363px tall and
+ * the first unit card started 467px down an 844px screen. Over half the
+ * viewport was controls, and the picker's job is to show you units. */
+.dzc-pick-more, .dzc-pick-more-in { display: contents; }
+.dzc-pick-more-btn { display: none; }
+
+/* The category tabs are the last item in the flex row and take a whole line to
+   themselves, which is exactly where they already were -- they just used to be
+   their own element to do it. Row gap has to be nothing, or the whole toolbar
+   drops 6px on a desktop that asked for none. Measured either side at 900,
+   1100 and 1280: every child of the bar lands on the same pixel it did. */
+#dzc-picker-body .dzc-pick-top { row-gap: 0; }
+.dzc-pick-top > .dzc-chips { order: 9; flex: 1 1 100%; min-width: 0; }
+
+@media (max-width: 768px) {
+  /* THE FIELD KEEPS THE WHOLE FIRST LINE. Two 44px squares beside it left
+     230px for "Search units, variants, weapons or rules" -- Jet's copy, whose
+     whole job is to say what you can type -- and clipped it at 390. So the
+     buttons go down among the tabs instead, where they take the room the last
+     wrapped line was leaving empty anyway. */
+  #dzc-picker-body .dzc-pick-top { row-gap: 5px; }
+  #dzc-picker-body .dzc-pick-top > .dzc-search { flex: 1 1 100%; }
+  /* DISPLAY: CONTENTS on the tab strip, so its chips become items of the row
+     above and wrap in the same flow as the two buttons. The buttons then ride
+     along at the end of the last tab line instead of sitting in a fixed column
+     the tabs have to be cut off against -- a chip sliced down the middle by a
+     button's border is not a scroll affordance, it is a broken chip. */
+  #dzc-picker-body .dzc-pick-top > .dzc-chips { display: contents; }
+  /* The magnifier would be left standing alone on the line the field just
+     took, and it was already going at 560 for the reason that covers this
+     band too: a type="search" box with that placeholder in it does not need a
+     picture of a magnifying glass to say it is a search. */
+  #dzc-picker-body .dzc-pick-top > .dzc-i { display: none; }
+
+  /* Everything else folds. 0fr to 1fr rather than a max-height guess, so the
+     row opens to exactly its own height whatever is in it -- the filter chips
+     are built from what this faction actually has and there are between six
+     and eight of them. */
+  #dzc-picker-body .dzc-pick-more-btn { display: inline-flex; }
+  .dzc-pick-more {
+    display: grid; grid-template-rows: 0fr;
+    transition: grid-template-rows .16s cubic-bezier(.33, 0, .67, 1);
+  }
+  .dzc-pick-more.is-open { grid-template-rows: 1fr; }
+  /* Shut means shut for a keyboard too: a zero-height box still hands focus to
+     every chip inside it, and tabbing into controls nobody can see is the same
+     bug as the filter that cuts the list from behind a closed row. */
+  .dzc-pick-more-in {
+    display: block; overflow: hidden; min-height: 0;
+    visibility: hidden; transition: visibility 0s .16s;
+  }
+  .dzc-pick-more.is-open .dzc-pick-more-in { visibility: visible; transition-delay: 0s; }
+  .dzc-pick-more .dzc-pick-sorts { margin-top: 0; padding-top: 5px; }
+
+  /* Open is a state you can see without opening it, and so is a filter left on
+     from last time -- the count is on the button. */
+  .dzc-pick-more-btn { gap: 3px; padding: 0 8px; width: auto; min-width: 44px; }
+  .dzc-pick-more-btn.is-open { border-color: var(--acc, #1b3a5c); color: var(--ink, #24201c); }
+  .dzc-pick-more-btn.is-active {
+    background: var(--acc, #1b3a5c); border-color: var(--acc, #1b3a5c); color: var(--acc-on, #fff);
+  }
+  .dzc-more-n {
+    font: 700 11px/1 var(--font-numeric, inherit); font-style: normal;
+  }
+  .dzc-more-n:empty { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dzc-pick-more, .dzc-pick-more-in { transition: none; }
+}
+
 /* List view: one row per unit, for scanning names and prices rather than
    comparing cards. */
 .dzc-pick-list.is-list { grid-template-columns: 1fr; gap: 3px; }
@@ -2326,6 +2411,10 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 #dzc-picker-body .dzc-search { flex: 1 1 200px; padding: 6px 10px; font-size: 13px; }
 #dzc-picker-body .dzc-chips { display: flex; gap: 4px; margin: 0; }
 #dzc-picker-body .dzc-chip { padding: 5px 9px; font-size: 11.5px; }
+/* 320 is the narrowest the layout check measures and the field has the whole
+   line to itself there, so the last thing between the placeholder and its own
+   box is the field's own padding. It gives way; the words do not. */
+@media (max-width: 560px) { #dzc-picker-body .dzc-search { padding-inline: 6px; } }
 #dzc-picker .modal-header { padding-block: 10px; }
 #dzc-picker .modal-body { padding-top: 8px; }
 .dzc-stepper button:disabled { opacity: .35; cursor: not-allowed; }

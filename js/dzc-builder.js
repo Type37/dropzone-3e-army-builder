@@ -25,7 +25,7 @@
 
   let current = null;                 // the army being edited
   let picker = { groupId: null, kind: 'unit', category: 'All', search: '', sort: 'points', dir: 1,
-                 view: 'grid', filters: [], shapes: [] };
+                 view: 'grid', filters: [], shapes: [], more: false };
   /* THINGS TURNING ON AND OFF, SAID ONCE, EVERYWHERE. Jet, 2026-08-07: "I want
    * ANIMATIONS FOR THINGS TURNING ON OR OFF across da board."
    *
@@ -2258,6 +2258,9 @@
     // The category tabs are the wrong control for a list that is already one
     // category, so a fresh open always starts on All within its own side.
     picker.category = 'All';
+    // Shut, every time. An open fold on a phone is the whole viewport again,
+    // and the sort it holds survives the close, so nothing is lost by folding.
+    picker.more = false;
     await renderPicker();
     // The panel says which of the two you opened, in the button's own words.
     const t = document.querySelector('#dzc-picker .modal-title');
@@ -2331,36 +2334,56 @@
      * under your finger every time you touched a sort. */
     document.getElementById('dzc-picker-body').innerHTML = `
       <div class="dzc-pick-bar" id="dzc-pick-bar" style="${window.DZC.accentStyle(accentOf(a.faction))}">
-        <div class="dzc-search-row">${window.DZCIcon('search')}
+        <!-- The search, the two lens buttons and the category tabs are ONE
+             wrapping flex row, not two stacked ones, because which line each
+             lands on differs by width and CSS order is the only way to say that
+             without building the toolbar twice. A desktop puts the field and
+             both buttons on line 1 and the tabs on line 2; a phone gives the
+             field the whole of line 1 -- the placeholder is Jet's copy and it
+             has to fit -- and puts the tabs on line 2 with the buttons pinned
+             to the right of them. -->
+        <div class="dzc-search-row dzc-pick-top">${window.DZCIcon('search')}
           <input class="dzc-search" id="dzc-pick-search" type="search"
                  placeholder="Search units, variants, weapons or rules"
                  value="${esc(picker.search)}"
                  oninput="DZCBuilder.pickerSearch(this.value)" aria-label="Search units">
+          <div class="dzc-chips">${cats.map(c =>
+            `<button type="button" class="dzc-chip" data-cat="${esc(c.name)}"
+              onclick="DZCBuilder.pickerCat('${c.name}')"
+              >${esc(c.name)}<i class="dzc-chip-n">${c.n}</i></button>`).join('')}</div>
+          <!-- Phone only. Sort, the filters and Fits are three rows of chips at
+               44px each, and at 390 they came to 324px of controls above the
+               first card -- the picker opened on nothing but its own toolbar.
+               They fold behind this; the count on it is what says a fold is
+               hiding something, so a filter can never be on with nothing on
+               screen to say so. Desktop never sees the button. -->
+          <button type="button" class="dzc-view-toggle dzc-pick-more-btn" id="dzc-pick-more-btn"
+                  aria-expanded="false" aria-controls="dzc-pick-more"
+                  aria-label="Sort and filter" onclick="DZCBuilder.pickerMore()"
+            >${window.DZCIcon('tune', { size: 17 })}<i class="dzc-more-n"></i></button>
           <button type="button" class="dzc-view-toggle" id="dzc-pick-view"
                   aria-label="Show as a list" onclick="DZCBuilder.pickerView()"></button>
         </div>
-        <div class="dzc-chips">${cats.map(c =>
-          `<button type="button" class="dzc-chip" data-cat="${esc(c.name)}"
-            onclick="DZCBuilder.pickerCat('${c.name}')"
-            >${esc(c.name)}<i class="dzc-chip-n">${c.n}</i></button>`).join('')}</div>
-        <div class="dzc-pick-sorts">
-          <span class="dzc-pick-sortlab">Sort</span>
-          ${SORTS.map(s => `<button type="button" class="dzc-chip dzc-chip--sm" data-sort="${s.key}"
-            onclick="DZCBuilder.pickerSort('${s.key}')"
-            >${esc(s.label)}<i class="dzc-dir"></i></button>`).join('')}
-          ${filters.map(fl => `<button type="button" class="dzc-chip dzc-chip--sm" data-filter="${fl.key}"
-            onclick="DZCBuilder.pickerFilter('${fl.key}')">${esc(fl.label)}</button>`).join('')}
-        </div>
-        <!-- The six transport symbols are the grammar of what fits with what
-             (3.2.4.2), so they filter by the glyph itself rather than by a word
-             for the glyph -- the chip is the thing printed on the card. -->
-        <div class="dzc-pick-shapes">
-          <span class="dzc-pick-sortlab">Fits</span>
-          ${U.SHAPES.map(sh => `<button type="button" class="dzc-shape-chip" data-shape="${sh}"
-            style="--sh:${U.shapeInk(sh)}" onclick="DZCBuilder.pickerShape('${sh}')"
-            title="${esc('Only units that carry or fill a ' + U.shapeName(sh))}"
-            aria-label="${esc('Filter to ' + U.shapeName(sh))}">${U.shape(sh, 15, true)}</button>`).join('')}
-        </div>
+        <div class="dzc-pick-more" id="dzc-pick-more"><div class="dzc-pick-more-in">
+          <div class="dzc-pick-sorts">
+            <span class="dzc-pick-sortlab">Sort</span>
+            ${SORTS.map(s => `<button type="button" class="dzc-chip dzc-chip--sm" data-sort="${s.key}"
+              onclick="DZCBuilder.pickerSort('${s.key}')"
+              >${esc(s.label)}<i class="dzc-dir"></i></button>`).join('')}
+            ${filters.map(fl => `<button type="button" class="dzc-chip dzc-chip--sm" data-filter="${fl.key}"
+              onclick="DZCBuilder.pickerFilter('${fl.key}')">${esc(fl.label)}</button>`).join('')}
+          </div>
+          <!-- The six transport symbols are the grammar of what fits with what
+               (3.2.4.2), so they filter by the glyph itself rather than by a word
+               for the glyph -- the chip is the thing printed on the card. -->
+          <div class="dzc-pick-shapes">
+            <span class="dzc-pick-sortlab">Fits</span>
+            ${U.SHAPES.map(sh => `<button type="button" class="dzc-shape-chip" data-shape="${sh}"
+              style="--sh:${U.shapeInk(sh)}" onclick="DZCBuilder.pickerShape('${sh}')"
+              title="${esc('Only units that carry or fill a ' + U.shapeName(sh))}"
+              aria-label="${esc('Filter to ' + U.shapeName(sh))}">${U.shape(sh, 15, true)}</button>`).join('')}
+          </div>
+        </div></div>
         <div class="dzc-pick-results" id="dzc-pick-results"></div>
       </div>
       <div class="dzc-pick-list" id="dzc-pick-list"></div>`;
@@ -2395,6 +2418,20 @@
       v.title = lab;
       v.setAttribute('aria-label', lab);
       v.innerHTML = window.DZCIcon(grid ? 'list_alt' : 'grid_view', { size: 16 });
+    }
+    /* The fold is only honest if it says what it is holding. A count on the
+     * button, and the button lit, so a Fits shape left on from the last time
+     * cannot quietly empty the list from behind a closed row. */
+    const more = document.getElementById('dzc-pick-more');
+    const mb = document.getElementById('dzc-pick-more-btn');
+    if (more && mb) {
+      const n = picker.filters.length + picker.shapes.length;
+      more.classList.toggle('is-open', !!picker.more);
+      mb.classList.toggle('is-open', !!picker.more);
+      mb.classList.toggle('is-active', n > 0);
+      mb.setAttribute('aria-expanded', picker.more ? 'true' : 'false');
+      const i = mb.querySelector('.dzc-more-n');
+      if (i) i.textContent = n || '';
     }
   }
 
@@ -3577,6 +3614,10 @@
       renderPickList();
     },
     pickerView: () => { picker.view = picker.view === 'grid' ? 'list' : 'grid'; renderPickList(); },
+    // The fold. syncChips owns the classes, so this only flips the flag and
+    // does not touch the list -- nothing about opening a row changes what is
+    // in it, and redrawing 29 cards to show a row of chips is a stutter.
+    pickerMore: () => { picker.more = !picker.more; syncChips(); },
     pickerClear: () => {
       picker.search = ''; picker.filters = []; picker.shapes = []; picker.category = 'All';
       const box = document.getElementById('dzc-pick-search');
