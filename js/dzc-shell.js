@@ -43,7 +43,7 @@ const App = (() => {
    * a worse version of something already automatic. It is the build NUMBER,
    * so a report can say which one it came from and "that was fixed in 419"
    * becomes an answer instead of a guess. */
-  const BUILD = 442;
+  const BUILD = 443;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -581,6 +581,15 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-12', title: 'Add Transports opened on the ones that do not fit', items: [
+      'With Legionnaires in a Group, all eight UCM Transports were offered in price order. That put the Condor second and the Crow third, and neither of them can take a square — the three that can, the Bear APC, the Raven Light Troopship and the Vulture Troopship, were first, sixth and eighth. They are the first three now, and the same holds for a Group of tanks, which gets the triangles.',
+      'Ordering, not filtering. 3.2.4 lets a Transport into a Group for a Squad that is not in it yet, so nothing has been taken out of the list — the rest are underneath, in whatever the sort says. A Group whose every Squad is already aboard something has nothing to sort for and is left exactly as it was.'
+    ] },
+    { date: '2026-08-12', title: 'The picker’s toolbar was seven rows of chips', items: [
+      'Measured at 390 by 844 with Sort and filter open: 369px of toolbar over seven rows, and the first unit card 383px down. It is 234px over five now, and 118px over two the way it opens. Every chip went from 44px tall to 36 — a category tab, a sort, a filter and a Fits shape are a strip you read across, not the thing you press to do something, and Add, Clear and the two toolbar buttons are all still 44.',
+      'Two of the rows were nobody’s. Sort, the filters and Fits had a line each, which left the Fits line two thirds empty; they are one wrapping flow now, so seventeen chips and their two labels pack onto three rows instead of four. And the two buttons on the tab line moved up beside the search field, which gives the tabs a line of their own — all five of a faction’s fit it, 332px of chips against 348 of column.',
+      'Below 390 the old layout is kept, because the sum stops working: at 360 those two buttons would leave the search field 238px to set a 242px placeholder in, and the tabs want 348px of a 320px column anyway, so the top of the toolbar is three lines there whatever happens on the first one. Measured at 320, 360, 375, 390, 412 and 430 — every one of them is shorter than it was, 417 down to 314 at the narrowest and 369 down to 234 at 390.'
+    ] },
     { date: '2026-08-12', title: 'A Group’s buttons had a whole empty line to themselves', items: [
       'On a phone the duplicate and remove buttons sat alone on a second line, thrown to the far right with 246px of nothing beside them. The name and the three numbers came to 307px of the 344 available, which left 37px for two 44px squares, so the pair wrapped — and being pinned right is what turned a wrap into a band of dead space.',
       'Self-inflicted and recent: those buttons were 24px until the touch-target pass took every icon button to 44, which is the size they should be and is also more than the line had spare. So the numbers take the second line now and the buttons stay up with the name they act on — title on the left, actions on the right, which is where the bin already sits on every Squad row underneath. Desktop has room for all of it on one line and is untouched, to the pixel.'

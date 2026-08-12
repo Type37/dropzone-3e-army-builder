@@ -2096,23 +2096,25 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-pick-top > .dzc-chips { order: 9; flex: 1 1 100%; min-width: 0; }
 
 @media (max-width: 768px) {
-  /* THE FIELD KEEPS THE WHOLE FIRST LINE. Two 44px squares beside it left
-     230px for "Search units, variants, weapons or rules" -- Jet's copy, whose
-     whole job is to say what you can type -- and clipped it at 390. So the
-     buttons go down among the tabs instead, where they take the room the last
-     wrapped line was leaving empty anyway. */
-  #dzc-picker-body .dzc-pick-top { row-gap: 5px; }
-  #dzc-picker-body .dzc-pick-top > .dzc-search { flex: 1 1 100%; }
-  /* DISPLAY: CONTENTS on the tab strip, so its chips become items of the row
-     above and wrap in the same flow as the two buttons. The buttons then ride
-     along at the end of the last tab line instead of sitting in a fixed column
-     the tabs have to be cut off against -- a chip sliced down the middle by a
-     button's border is not a scroll affordance, it is a broken chip. */
-  #dzc-picker-body .dzc-pick-top > .dzc-chips { display: contents; }
-  /* The magnifier would be left standing alone on the line the field just
-     took, and it was already going at 560 for the reason that covers this
-     band too: a type="search" box with that placeholder in it does not need a
-     picture of a magnifying glass to say it is a search. */
+  /* THE BUTTONS SIT BESIDE THE FIELD, and the tabs get the next line whole.
+     They used to be pushed down among the tabs, because at 44px square the
+     pair left 230px for "Search units, variants, weapons or rules" -- Jet's
+     copy, whose whole job is to say what you can type -- and clipped it at
+     390. At 36 they leave 268 and the placeholder sets in 240, measured in
+     Jost at 13px with the field's own padding counted, so it has 28px spare
+     and the line it used to cost is gone.
+
+     Which also gives the tabs a line of their own, and all five of a faction's
+     categories fit it: 332px of chips and gaps against 348 of column. That is
+     the second of the two rows this block used to spend on the same content.
+     The desktop rule below already puts the strip on its own full-width line;
+     the phone now wants exactly that, so the override that broke it up is
+     gone. */
+  #dzc-picker-body .dzc-pick-top { row-gap: 4px; }
+  /* The magnifier goes: it was already going at 560, for the reason that
+     covers this band too -- a type="search" box with that placeholder in it
+     does not need a picture of a magnifying glass to say it is a search --
+     and the 28px of slack above is measured without it. */
   #dzc-picker-body .dzc-pick-top > .dzc-i { display: none; }
 
   /* Everything else folds. 0fr to 1fr rather than a max-height guess, so the
@@ -2128,12 +2130,19 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   /* Shut means shut for a keyboard too: a zero-height box still hands focus to
      every chip inside it, and tabbing into controls nobody can see is the same
      bug as the filter that cuts the list from behind a closed row. */
+  /* ONE wrapping flow, not three stacked groups. Sort, the filters and Fits are
+     chips of the same size doing the same job, and a line each left the Fits
+     row two thirds empty and spent a whole row saying so. Both wrappers go to
+     display: contents so all seventeen chips and their two labels wrap
+     together, which is the same trick the category tabs already use above. */
   .dzc-pick-more-in {
-    display: block; overflow: hidden; min-height: 0;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 4px;
+    padding-top: 4px; overflow: hidden; min-height: 0;
     visibility: hidden; transition: visibility 0s .16s;
   }
   .dzc-pick-more.is-open .dzc-pick-more-in { visibility: visible; transition-delay: 0s; }
-  .dzc-pick-more .dzc-pick-sorts { margin-top: 0; padding-top: 5px; }
+  #dzc-picker-body .dzc-pick-sorts,
+  #dzc-picker-body .dzc-pick-shapes { display: contents; }
 
   /* Open is a state you can see without opening it, and so is a filter left on
      from last time -- the count is on the button. */
@@ -2146,6 +2155,46 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
     font: 700 11px/1 var(--font-numeric, inherit); font-style: normal;
   }
   .dzc-more-n:empty { display: none; }
+
+  /* Tighter than the 44px pass leaves them. A category tab, a sort, a filter
+     and a Fits shape are a dense strip you read across, not the thing you
+     press to do something -- Add, Clear and the two toolbar buttons all stay
+     at 44 -- and at 44 apiece the strip cost more of the phone than the units
+     it filters. 36 is still twelve past the 24px the guideline asks of a
+     control this size. */
+  #dzc-picker-body .dzc-pick-bar .dzc-chip,
+  #dzc-picker-body .dzc-pick-bar .dzc-chip--sm,
+  #dzc-picker-body .dzc-pick-bar .dzc-view-toggle,
+  #dzc-picker-body .dzc-shape-chip { min-height: 36px; min-width: 0; }
+  #dzc-picker-body .dzc-chip { padding: 4px 6px; font-size: 11px; }
+  #dzc-picker-body .dzc-chip--sm { padding: 4px 6px; font-size: 11px; }
+  #dzc-picker-body .dzc-chip-n { margin-left: 3px; }
+  #dzc-picker-body .dzc-shape-chip { width: 34px; height: 36px; }
+  #dzc-picker-body .dzc-view-toggle { width: 36px; height: 36px; }
+  #dzc-picker-body .dzc-pick-more-btn { min-width: 36px; padding: 0 7px; }
+  #dzc-picker-body .dzc-pick-top { row-gap: 4px; column-gap: 4px; }
+  #dzc-picker-body .dzc-pick-bar { padding-bottom: 4px; }
+  #dzc-picker-body .dzc-pick-results { margin-top: 4px; }
+}
+
+/* Below 390 the sum stops working, on both halves of it at once.
+
+   The modal is 40px narrower than the viewport by the time the overlay and the
+   body have taken their padding, so at 360 the pair of buttons leaves the field
+   238px for a placeholder that sets in 242, and at 320 it leaves 200. The words
+   do not give way.
+
+   And there is nothing to win by cramming them anyway: a faction's five tabs
+   want 348px, which a 360 phone does not have either, so the top of this
+   toolbar is three lines below 390 whatever happens on the first one. The
+   buttons go back down among the tabs -- which is what they did at every width
+   until this build -- and the strip goes back to DISPLAY: CONTENTS so they ride
+   at the end of the last tab line rather than claiming a line of their own.
+   Measured at 320, 360 and 375: every one of them packs shorter this way than
+   with the buttons moved up. */
+@media (max-width: 389px) {
+  #dzc-picker-body .dzc-pick-top > .dzc-search { flex: 1 1 100%; }
+  #dzc-picker-body .dzc-pick-top > .dzc-chips { display: contents; }
 }
 @media (prefers-reduced-motion: reduce) {
   .dzc-pick-more, .dzc-pick-more-in { transition: none; }

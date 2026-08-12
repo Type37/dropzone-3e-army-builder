@@ -314,8 +314,13 @@ console.log('\nevery screen renders');
   // Every mount point index.html declares for these screens. A missing one
   // reads as "no such element" and the renderer quietly does nothing, so they
   // are all created up front rather than on demand.
+  /* dzc-pick-list and dzc-pick-results are written by the picker's OWN
+     markup and then looked up by id, so without a stub of their own
+     renderPickList found nothing to draw into and every card the picker has
+     ever produced went unrendered here. The bar was all this file could see. */
   ['view-armies', 'view-army', 'view-units', 'view-play', 'view-collection',
-    'dzc-picker', 'dzc-picker-body', 'dzc-carry', 'dzc-carry-body',
+    'dzc-picker', 'dzc-picker-body', 'dzc-pick-list', 'dzc-pick-results',
+    'dzc-carry', 'dzc-carry-body',
     'dzc-cmdr', 'dzc-cmdr-body', 'dzc-share', 'dzc-share-body',
     'dzc-detail', 'dzc-detail-body', 'dzc-print', 'topbar-actions'].forEach(stub);
 
@@ -530,6 +535,38 @@ console.log('\nevery screen renders');
      'and appears once the Collection is on and something is owned');
   delete win.App;
   win.DZCCollection = realCollection;
+  /* ADD TRANSPORTS OPENS ON THE ONES THAT FIT. Group 2 holds two Main Battle
+   * Tanks and nothing to carry them, so every UCM Transport is offered and
+   * only some of them can take what a tank fills. Sorted on price alone the
+   * ones that cannot came second and third, which is the whole reason this
+   * ordering exists, so the assertion is that every Transport that fits sits
+   * above every one that does not.
+   *
+   * Read off the rendered cards rather than out of the data: a sort is worth
+   * nothing until it reaches the list. Group 1 is no good for this -- its
+   * Legionnaires are already aboard a Bear APC, so nothing there wants a ride
+   * and the order is left alone by design. */
+  await B.openPicker(g2.id, 'transport');
+  {
+    const names = (els['dzc-pick-list'].innerHTML
+      .match(/class="dzc-pick-name">([^<]+)</g) || [])
+      .map(m => m.replace(/^[^>]*>/, '').replace(/<$/, '').trim());
+    const uf = DZC.faction('ucm');
+    const rider = uf.units.find(u => u.id === tank.unitId);
+    const carries = n => {
+      const t = uf.units.find(u => u.name === n);
+      return !!(t && DZC.canCarry(t, rider));
+    };
+    const shown = names.map(n => (carries(n) ? '+ ' : '  ') + n).join(' | ');
+    ok(names.length > 1, 'Add Transports lists more than one Transport', `${names.length} cards`);
+    const lastFit = names.reduce((i, n, k) => (carries(n) ? k : i), -1);
+    const firstMiss = names.findIndex(n => !carries(n));
+    ok(lastFit >= 0 && firstMiss >= 0,
+       'and the list holds both kinds, so the order is worth asserting on', shown);
+    ok(lastFit < firstMiss, 'and every Transport that fits the Group is above every one that does not', shown);
+  }
+  await B.openPicker(g.id);
+
   await drive('the Transport chooser', () => B.openCarry(legion.id));
   await drive('the Commander chooser', () => B.openCommander());
   await drive('Share', () => B.share());

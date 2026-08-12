@@ -2483,6 +2483,18 @@
     return (((u.transport || {}).capacity) || []).reduce((t, c) => t + (c.n || 0), 0);
   }
 
+  /* What is in this Group and still wants a ride: the Squads that are not
+   * aboard anything, and are not Transports themselves. A Group where every
+   * Squad is already carried has nothing to answer for, and returns nothing --
+   * which leaves the list in exactly the order the sort put it. */
+  function needsCarrying(a, groupId) {
+    const g = (a.groups || []).find(x => x.id === groupId);
+    if (!g) return [];
+    return g.squads.filter(s => !s.carriedBy)
+      .map(s => window.DZCArmy.unitOf(a, s))
+      .filter(u => u && u.category !== 'Transport');
+  }
+
   /* Only the list is redrawn on a keystroke. Re-rendering the whole body
    * replaced the <input>, which threw away focus and the caret, you got one
    * character and then nothing. */
@@ -2516,6 +2528,22 @@
     // answers if the Group changes mid-render.
     const checks = new Map(units.map(u => [u.id, window.DZCArmy.canAddUnit(a, picker.groupId, u.id)]));
 
+    /* ADD TRANSPORTS OPENS ON THE ONES THAT FIT. Jet, 2026-08-12: "if you have
+     * a unit and you click or press add transport then it should default to
+     * having transports that fit that unit first."
+     *
+     * These are not refusals, so canAddUnit does not sink them: 3.2.4 lets a
+     * Transport into a Group for a Squad that is not there yet. With
+     * Legionnaires in the Group all eight UCM Transports were offered in price
+     * order, which put the Condor and the Crow above the Bear APC, and neither
+     * of those can take a square.
+     *
+     * ORDERING, NOT FILTERING. The rest are still in the list, underneath,
+     * because the Squad they would be for is a Squad you have not added yet. */
+    const riders = picker.kind === 'transport' ? needsCarrying(a, picker.groupId) : [];
+    const fits = new Map(riders.length
+      ? units.map(u => [u.id, riders.some(p => window.DZC.canCarry(u, p))]) : []);
+
     const s = SORTS.find(x => x.key === picker.sort) || SORTS[0];
     units = units.slice().sort((x, y) => {
       // What cannot join this Group sinks to the bottom regardless of sort or
@@ -2523,6 +2551,10 @@
       // under construction stops surfacing things that would refuse it.
       const bx = !checks.get(x.id).ok, by = !checks.get(y.id).ok;
       if (bx !== by) return bx ? 1 : -1;
+      if (fits.size) {
+        const fx = !fits.get(x.id), fy = !fits.get(y.id);
+        if (fx !== fy) return fx ? 1 : -1;
+      }
       const ax = s.get(x), ay = s.get(y);
       return (ax < ay ? -1 : ax > ay ? 1 : x.name.localeCompare(y.name)) * picker.dir;
     });
