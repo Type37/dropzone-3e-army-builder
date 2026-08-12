@@ -1522,6 +1522,14 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 }
 .dzc-sq-btn:hover { border-color: var(--acc); color: var(--acc-text, var(--acc)); }
 .dzc-sq-btn:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+/* The cost and the bin travel together, so what the row breaks off is a pair
+   rather than a lone bin. flex: 1 1 auto and space-between, so on the line it
+   wraps to it spreads to the width it has -- the number at one end, the Squad's
+   own bin at the other -- and on a line it shares it takes only its content. */
+.dzc-sq-tail {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; flex: 1 1 auto; min-width: 0;
+}
 /* The stat table and the guns, side by side.
    
    .dzc-sq-stats is `width: max-content` -- only as wide as its longest label,

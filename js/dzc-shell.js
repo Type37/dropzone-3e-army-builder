@@ -43,7 +43,7 @@ const App = (() => {
    * a worse version of something already automatic. It is the build NUMBER,
    * so a report can say which one it came from and "that was fixed in 419"
    * becomes an answer instead of a guess. */
-  const BUILD = 443;
+  const BUILD = 444;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -581,6 +581,11 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-12', title: 'Two buttons about Transports, one word between them', items: [
+      'A Squad’s own button said Transport and the Group’s said Add Transports, and on a phone both were on screen at once, in the same green, a row apart. Jet: “it’s confusing that there’s two add transport buttons.” They do different things — one ties this Squad to something that carries it, the other puts a Transport in the Group and links it to nothing — and the word they shared said neither.',
+      'The Squad’s one is Linked transport now, and it carries a chain instead of a second lorry. The lorry is what a Transport is; this button is not a Transport, it is the tie between a Squad and one. The Group’s button is untouched: Add Transports has always said exactly what it does.',
+      'The name is 38px wider than the word it replaced, which took the Squad’s four controls to 343px of a 314px row at 360 — and what wrapped was the last thing in it, the bin, alone on a line under 270px of nothing. That is the empty line the last build took off the Group header turning up on every Squad in the army instead. The cost and the bin travel as a pair now, so what breaks off is a pair, and a Transport’s own row — no stepper in it — still fits on one line at 320.'
+    ] },
     { date: '2026-08-12', title: 'Add Transports opened on the ones that do not fit', items: [
       'With Legionnaires in a Group, all eight UCM Transports were offered in price order. That put the Condor second and the Crow third, and neither of them can take a square — the three that can, the Bear APC, the Raven Light Troopship and the Vulture Troopship, were first, sixth and eighth. They are the first three now, and the same holds for a Group of tanks, which gets the triangles.',
       'Ordering, not filtering. 3.2.4 lets a Transport into a Group for a Squad that is not in it yet, so nothing has been taken out of the list — the rest are underneath, in whatever the sort says. A Group whose every Squad is already aboard something has nothing to sort for and is left exactly as it was.'

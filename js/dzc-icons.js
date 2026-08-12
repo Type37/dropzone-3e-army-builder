@@ -128,6 +128,13 @@
     // domain
     // Group / activation unit. "layers" reads as a stack of things acting together.
     layers: 'M11.99 18.54 4.62 12.81 3 14.07l9 7 9-7-1.63-1.27-7.38 5.74zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16z',
+    /* A Squad LINKED to a Transport. Material "link".
+       Not another lorry: the lorry is what a Transport IS, and this button is
+       not "a Transport" -- it is the tie between this Squad and one. Jet,
+       2026-08-12, on the two buttons reading as the same thing: "add linked
+       transport and we could use a chain icon". Two links of a chain, which is
+       the only glyph in the file that says joined-to. */
+    link: 'M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z',
     // Transport. Material "local_shipping".
     local_shipping: 'M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9 1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z',
     /* Raw Materials, supplied by Jet 2026-08-08. Bioficer RM tokens are

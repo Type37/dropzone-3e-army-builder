@@ -13,7 +13,7 @@ HANDOFF §2.6 ("Inline them — never load from a CDN, it breaks offline").
 
 | Source | Licence | Icons |
 |---|---|---|
-| Material Symbols, 24×24 | Apache 2.0 | 21, the UI set: add, remove, close, edit, delete, search, arrow_back, content_copy, more_vert, print, share, error, warning, check_circle, info, lock, layers, local_shipping, calculate, groups, deployed_code, tune |
+| Material Symbols, 24×24 | Apache 2.0 | 22, the UI set: add, remove, close, edit, delete, search, arrow_back, content_copy, more_vert, print, share, error, warning, check_circle, info, lock, layers, link, local_shipping, calculate, groups, deployed_code, tune |
 | Phosphor | MIT | stat_mv_infantry, stat_b, stat_dp, stat_power, stat_df, grid_view, list_alt |
 | Supplied for this app, own grids | — | stat_mv (512), stat_a (512), stat_of (640), settings (26), rm (512), dice (32), drag_dots, military_tech |
 
@@ -51,6 +51,7 @@ none of them, so provenance is now per icon rather than one blanket sentence.
 | `info` | rule explanation | — |
 | `lock` | an option disabled by a rule | reads as "the rules forbid this", not "broken" |
 | `layers` | **Group** | a Group is things that activate together — a stack, not a folder |
+| `link` | **Linked transport**, on a Squad | two links of a chain: the button is the tie between this Squad and a Transport, not a Transport, so it must not be a second lorry |
 | `local_shipping` | **Transport** | — |
 | `military_tech` | **Commander** | a medal reads as rank |
 | `list_alt` | army roster | — |

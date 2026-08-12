@@ -1874,19 +1874,38 @@
      * warning on the army, where it belongs, because it is a fact about the
      * list rather than about one Squad.
      *
-     * THE BUTTON SAYS "TRANSPORT". Not the strip -- that stays gone, and for
-     * the reason above. This is the button's own name, which it did not have:
-     * it was a 15px lorry glyph beside a bin, and in the 2026-08-09 thread two
-     * players spent twenty messages on how to put a Medusa inside a Triton X
-     * without either of them finding it. Grotwurks asked for exactly what this
-     * opens -- "if I want my Triton X listed as Transporting the Medusa, it
-     * should be a selectable transport" -- and it already was: openCarry lists
-     * the Triton X under "Already in this Group", marked "Fills it". Baxter,
-     * who knows the app, still answered "drag your unit underneath it",
-     * because the drag is the route he could see. Then: "My point is that
-     * isnt intuitive. I have to go through extra steps for.... why?"
+     * THE BUTTON HAS A NAME. Not the strip -- that stays gone, and for the
+     * reason above. It was a 15px lorry glyph beside a bin, and in the
+     * 2026-08-09 thread two players spent twenty messages on how to put a
+     * Medusa inside a Triton X without either of them finding it. Grotwurks
+     * asked for exactly what this opens -- "if I want my Triton X listed as
+     * Transporting the Medusa, it should be a selectable transport" -- and it
+     * already was: openCarry lists the Triton X under "Already in this Group",
+     * marked "Fills it". Baxter, who knows the app, still answered "drag your
+     * unit underneath it", because the drag is the route he could see. Then:
+     * "My point is that isnt intuitive. I have to go through extra steps
+     * for.... why?"
      *
-     * There were no extra steps. There was one step with no name on it. */
+     * There were no extra steps. There was one step with no name on it.
+     *
+     * "LINKED TRANSPORT", NOT "TRANSPORT". The name it got first was the noun,
+     * and the noun is the collision. Jet, 2026-08-12: "it's confusing that
+     * there's two add transport buttons... one of them obviously add to
+     * transport to the unit you're looking at it's like carry this unit! But
+     * then the other button just lets you add more generic transports."
+     *
+     * Both were true of the word Transport, and on a phone both were on screen
+     * at once, in the same accent, a Squad row apart. So the difference goes
+     * where it is read: this one is a LINK between this Squad and a Transport,
+     * and it says so and carries a chain rather than a second lorry. The
+     * Group's own button keeps the plus and the plain word -- it adds a
+     * Transport to the Group and links it to nothing, which is exactly what
+     * "Add Transports" has always said.
+     *
+     * NOT "add linked transport", which was Jet's phrasing, because the button
+     * is also how a Squad already aboard something rides a different one, and
+     * on that press nothing is added. The noun covers both; the verb lies on
+     * half of them. */
     const transportPicker = (opts.length || board.length) ? `${carrierUnit
       ? `<button type="button" class="dzc-sq-btn" title="Walks on instead"
                  onclick="DZCBuilder.assignTransport('${s.id}','')"
@@ -1896,7 +1915,7 @@
               onclick="DZCBuilder.openCarry('${s.id}')"
               aria-label="${carrierUnit ? 'Ride something else' : 'Choose a Transport'} for ${esc(u.name)}"
               title="${carrierUnit ? 'Ride something else' : 'Choose a Transport'}"
-              >${window.DZCIcon('local_shipping', { size: 15 })}Transport</button>` : '';
+              >${window.DZCIcon('link', { size: 15 })}Linked transport</button>` : '';
 
     /* A Squad in your army reads exactly as the unit does when you open it:
      * art, the capacity symbol at size beside the name, the meta line, every
@@ -1967,15 +1986,27 @@
         <div class="dzc-sq-ctl">
           ${transportPicker}
           ${stepper}
-          <span class="dzc-sq-cost">${cost}pts</span>
-          <!-- The only control that actually deletes the Squad -- a trash
-               icon rather than the × the stepper's neighbours use, so it
-               reads as the one destructive action here and not one more
-               close button (Jet, 2026-08-09: "maybe trash icon for
-               consistency" -- 'delete' is what the army list's own Delete
-               already uses). Reducing to zero no longer does this itself. -->
-          <button class="dzc-icon-btn" type="button" title="Remove Squad"
-                  onclick="DZCBuilder.removeSquad('${s.id}')" aria-label="Remove ${esc(u.name)}">${window.DZCIcon('delete', { size: 16 })}</button>
+          <!-- THE COST AND THE BIN ARE ONE ITEM, so the row is told what to
+               break off when it runs out. Naming the Transport button cost it
+               38px, which took the four controls to 343px of a 314px row at
+               360, and what wrapped was the last thing in the row: the bin, on
+               a line of its own, on the left, under 270px of nothing. That is
+               the empty line Build 442 took off the Group header turning up on
+               every Squad in the army instead. As a pair they wrap as a pair,
+               the cost at one end and its Squad's bin at the other, and a row
+               with no stepper in it -- a Transport's -- still fits on one line
+               at 320. -->
+          <span class="dzc-sq-tail">
+            <span class="dzc-sq-cost">${cost}pts</span>
+            <!-- The only control that actually deletes the Squad -- a trash
+                 icon rather than the × the stepper's neighbours use, so it
+                 reads as the one destructive action here and not one more
+                 close button (Jet, 2026-08-09: "maybe trash icon for
+                 consistency" -- 'delete' is what the army list's own Delete
+                 already uses). Reducing to zero no longer does this itself. -->
+            <button class="dzc-icon-btn" type="button" title="Remove Squad"
+                    onclick="DZCBuilder.removeSquad('${s.id}')" aria-label="Remove ${esc(u.name)}">${window.DZCIcon('delete', { size: 16 })}</button>
+          </span>
         </div>
       </div>
       <!-- Stats LEFT, guns RIGHT, on one row. The stat table is only as wide
