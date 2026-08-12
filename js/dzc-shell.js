@@ -43,7 +43,7 @@ const App = (() => {
    * a worse version of something already automatic. It is the build NUMBER,
    * so a report can say which one it came from and "that was fixed in 419"
    * becomes an answer instead of a guess. */
-  const BUILD = 440;
+  const BUILD = 441;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -581,6 +581,11 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-12', title: 'One big vehicle was being carried by three small ones', items: [
+      'A Ferrum Drone Base fills 18 and a Condor carries 6, and the Transport chooser was offering three Condors — one vehicle cut into three pieces. Nine Crows too. The number on a solid symbol is what ONE Unit fills, and a Transport “may not carry more than their number indicates” (3.2.4.2), so a Unit bigger than a Transport’s whole capacity cannot ride in it: not in two of them, not in nine. Only the Albatross, which carries 18, can take a Ferrum.',
+      'It was not one card. Fifteen pairs across five factions were on offer that the rules forbid: a Type-4 Battle Scorpion at 6 was offered three Neptunes at 2 and two Njords at 4, a Grievance Genitor Ark at 4 was offered two Digits at 2, a Resistance Super Heavy Tank at 6 was offered two Carryhawks at 3, and every UCM tank at 3 was offered two Crows at 2. The check was on the symbol’s SHAPE and never on its number; the count was then the Squad’s total divided by the Transport’s capacity, which is the arithmetic that let a model be halved.',
+      'Nothing legal moved. Every unit at every Squad size against every Transport it is offered — 740 pairings — was measured either side of the change: 27 disappear, all of them a model being split, and not one that remains changed its count or whether it is full. Three Sabres still exactly fill one Condor and six still fill two, which are the rulebook’s own worked examples. An army already saved with one of the forbidden pairings still opens and is now named illegal on the Group it is on, rather than being quietly repaired or quietly allowed.'
+    ] },
     { date: '2026-08-12', title: 'The last two controls under 44px, found by measuring instead of reading', items: [
       'Buying a weapon upgrade was a 62 by 32 button pinned to a corner of the weapon card, and it is the only control on that card. And the opponent’s Group count in Play Mode was 56 by 25, typed into while standing at a table, on the one screen where everything else had already been taken to 44. Both clear it now.',
       'These were found by walking every route and every modal at 390 and measuring every button, link and field on each, rather than by reading the rules and judging what looked covered. What is left under 44 is under it on purpose and says so where it is set: a rule chip, which would be a wall of them, the footer links, and the Energy number on a weapon card, which is a number in a line of numbers that happens to be pressable.'

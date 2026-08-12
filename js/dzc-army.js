@@ -1306,16 +1306,45 @@
     return f.units.filter(t => t.category === 'Transport' && !isGate(t)
         && window.DZC.canCarry(t, u))
       .map(t => {
-        const shape = (window.DZC.fillsOf(u).find(x => window.DZC.capacityFor(t, x.shape) > 0) || {}).shape;
+        /* The shape a Unit with two solid symbols uses here is the cheapest
+         * one this Transport can actually hold a whole model of, not the first
+         * one whose shape matches -- fitsIn has already thrown away any that
+         * cannot. */
+        const opt = window.DZC.fitsIn(t, u).reduce((a, b) => (b.n < a.n ? b : a));
+        const shape = opt.shape;
         const per = window.DZC.capacityFor(t, shape);
         const fill = squadFill(army, s, shape);
-        const need = per ? Math.ceil(fill / per) : 0;
+        /* COUNTED IN MODELS, NOT IN SPACE.
+         *
+         * This divided the Squad's total fill by the Transport's capacity,
+         * which is the same arithmetic that let a model be cut in half. Each
+         * vehicle takes whole models -- floor(capacity / fill per model) --
+         * and you need enough vehicles for all of them (3.2.4).
+         *
+         * DEFENSIVE, and said plainly rather than dressed up as a fix: every
+         * real Transport's capacity is an exact multiple of the fill of
+         * anything it can carry, so on today's data this returns what the old
+         * division returned, for all 740 pairs. Checked by diffing every unit
+         * at every legal Squad size against every Transport offered to it: 27
+         * lines disappear, all of them a model being split, and not one
+         * surviving line changes. It is here because the rule is about models
+         * and the old form was about space, and the next card TTCombat print
+         * does not have to divide evenly. */
+        const eachHolds = Math.floor(per / opt.n);
+        const need = eachHolds ? Math.ceil(s.models.length / eachHolds) : 0;
         return {
           unit: t, shape: shape, per: per, need: need,
-          // "Transports must be taken full" (3.2.4). With identical Transports
-          // that means the Squad's fill must divide exactly into their
-          // capacity -- 5 Legionnaires cannot fill two Bear APCs.
-          exact: per > 0 && fill % per === 0,
+          /* "Transports must be taken full" (3.2.4), and full means every one
+           * of them full. Two conditions, because both can fail on their own:
+           * the models have to divide evenly between the vehicles (5
+           * Legionnaires cannot fill two Bear APCs), and a full vehicle's
+           * worth of models has to actually come to its capacity -- a hold
+           * of 3 taking one model of 2 has a hole in it however many of them
+           * you take. The second condition cannot fail on today's cards, for
+           * the reason given above; it is what makes the first one mean what
+           * it says. */
+          exact: eachHolds > 0 && s.models.length % eachHolds === 0
+            && eachHolds * opt.n === per,
           fill: fill
         };
       });

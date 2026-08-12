@@ -839,6 +839,76 @@ console.log('\nsymbol shape decides what may be offered at all');
   A.remove(b.id);
 }
 
+/* A MODEL IS NOT DIVISIBLE (3.2.4.2).
+ *
+ * "Transports may only carry Units with the same shaped Symbol as itself and
+ * may not carry more than their number indicates." The number on a solid
+ * symbol is what ONE Unit fills, so a Unit filling more than a Transport's
+ * whole capacity cannot ride in it -- not in two of them, not in nine.
+ *
+ * Shape alone was the whole test, and the count was then the Squad's total
+ * fill divided by the Transport's capacity. That offered a Ferrum Drone Base
+ * at 18 three Condors at 6, which is one vehicle sawn into three pieces.
+ * Reported by Jet, 2026-08-12: "i'm pretty sure that one big vehicle can't be
+ * carried by 3 small ones." 15 such pairs existed across five factions.
+ *
+ * The rulebook's own worked examples are the fixed points on the other side of
+ * this, and they are asserted first: whatever the fix does, 3 Sabres must
+ * still fill one Condor (3.2.4.2) and 6 must still fill two (Group 3). */
+console.log('\na Unit too big for a Transport cannot ride in several of them (3.2.4.2)');
+{
+  await DZC.loadFaction('ucm');
+  const a = A.create('ucm', 'T', 3000);
+
+  const g1 = A.addGroup(a);
+  const sabres3 = A.addSquad(a, g1.id, 'ucm-main-battle-tank', 3);
+  const c3 = A.transportOptions(a, sabres3.id).find(o => o.unit.id === 'condor-dropship');
+  eq(c3 && c3.need, 1, "3 Sabres at 2 fill one Condor at 6 — the rulebook's own example");
+  eq(c3 && c3.exact, true, 'and it is exactly full');
+
+  const g2 = A.addGroup(a);
+  const sabres6 = A.addSquad(a, g2.id, 'ucm-main-battle-tank', 6);
+  const c6 = A.transportOptions(a, sabres6.id).find(o => o.unit.id === 'condor-dropship');
+  eq(c6 && c6.need, 2, '6 Sabres fill two Condors, three in each (Group 3)');
+  eq(c6 && c6.exact, true, 'and both are full');
+
+  const g3 = A.addGroup(a);
+  const ferrum = A.addSquad(a, g3.id, 'ferrum-drone-base', 1);
+  const names = A.transportOptions(a, ferrum.id).map(o => o.unit.id);
+  ok(!names.includes('condor-dropship'),
+     'a Condor at 6 is NOT offered for a Ferrum Drone Base at 18', names.join(', '));
+  ok(!names.includes('crow-dropship'), 'nor a Crow at 2', names.join(', '));
+  ok(names.includes('albatross-heavy-dropship'),
+     'the Albatross at 18 is, and it is the only one', names.join(', '));
+  eq(A.assignTransport(a, ferrum.id, 'condor-dropship').ok, false,
+     'and assigning three Condors directly is refused');
+
+  /* A Squad already saved this way -- built before the rule was enforced --
+   * must still open and be REPORTED, not silently repaired and not crashed. */
+  const t = A.addSquad(a, g3.id, 'condor-dropship', 3);
+  ferrum.carriedBy = t.id;
+  ok(A.validate(a).errors.some(e => e.rule === '3.2.4.2' && /Ferrum Drone Base/.test(e.msg)),
+     'an army saved under the old rule opens and is named illegal');
+  A.remove(a.id);
+}
+
+/* The same rule reaches Auxiliary Transports, which are a different path --
+ * they are chosen as ordinary Squads and go through canCarry rather than
+ * transportOptions. 3.2.4.3 excuses them from being FULL; it does not excuse
+ * them from the capacity number. An Angelos Jetskimmer carries 1 square and a
+ * Medusa fills 2, so no number of Angelos ever carries a Medusa. */
+console.log('\nan Auxiliary Transport is excused being full, not being big enough (3.2.4.3)');
+{
+  await DZC.loadFaction('phr');
+  const angelos = DZC.unit('phr', 'angelos-jetskimmer');
+  const medusa = DZC.unit('phr', 'medusa');
+  ok(angelos && medusa, 'both cards are in the data');
+  eq(DZC.canCarry(angelos, medusa), false,
+     'an Angelos at 1 square cannot carry a Medusa at 2');
+  eq(DZC.loadCheck(angelos, [{ unit: medusa, count: 1 }], 2).ok, false,
+     'and two Angelos between them still cannot — a model is not divisible');
+}
+
 /* "At least one Commander" cannot be enforced at the point of action -- an
  * army legitimately has none while you are still building it -- so it stays an
  * error on the finished list. That distinction is the whole line between

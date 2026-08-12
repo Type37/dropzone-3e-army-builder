@@ -561,8 +561,33 @@
     });
   }
 
+  /* A MODEL IS NOT DIVISIBLE.
+   *
+   * "Transports may only carry Units with the same shaped Symbol as itself and
+   * MAY NOT CARRY MORE THAN THEIR NUMBER INDICATES" (3.2.4.2). The number on
+   * the solid symbol is what one Unit fills, so a Unit filling more than a
+   * Transport's whole capacity cannot go in it -- not in two of them, not in
+   * nine. The rulebook's own worked examples are all whole models in one hull:
+   * three Sabres at 2 inside a Condor at 6 (3.2.4.2), and six Sabres across
+   * two Condors, three in each (Group 3).
+   *
+   * The shape has to be picked HERE rather than by the caller, because a Unit
+   * with two solid symbols may use either (3.2.4.2) and only one of them may
+   * be the one that fits.
+   *
+   * This was matching on shape alone, so any Transport of the right shape was
+   * offered whatever the numbers said, and the total was then divided by the
+   * Transport's capacity to get a count. 15 pairs across five factions came
+   * out of that: a Ferrum Drone Base at 18 offered three Condors at 6, a
+   * Type-4 Battle Scorpion at 6 offered three Neptunes at 2, and every UCM
+   * tank at 3 offered two Crows at 2. Jet, 2026-08-12, on the Ferrum: "i'm
+   * pretty sure that one big vehicle can't be carried by 3 small ones." */
+  function fitsIn(carrier, passenger) {
+    return fillsOf(passenger).filter(f => capacityFor(carrier, f.shape) >= f.n);
+  }
+
   function canCarry(carrier, passenger) {
-    return fillsOf(passenger).some(f => capacityFor(carrier, f.shape) > 0);
+    return fitsIn(carrier, passenger).length > 0;
   }
 
   /* Space used in `carrier` by a list of {unit, count} passengers.
@@ -587,9 +612,12 @@
     const mode = (carrier.transport && carrier.transport.capacityMode) || null;
     const byShape = {};
     for (const p of passengers) {
-      // A Unit with two solid symbols separated by "/" may use EITHER, so the
-      // cheapest legal fit is taken rather than the first listed.
-      const opts = fillsOf(p.unit).filter(f => capacityFor(carrier, f.shape) > 0);
+      /* A Unit with two solid symbols separated by "/" may use EITHER, so the
+       * cheapest legal fit is taken rather than the first listed. Legal means
+       * one whole model fits in ONE of these vehicles: capacity is pooled
+       * across identical Transports below, but a model is not divisible, so a
+       * shape whose slot is smaller than the model is not an option at all. */
+      const opts = fitsIn(carrier, p.unit);
       if (!opts.length) {
         return { ok: false, byShape, mode,
                  reason: `${p.unit.name} cannot be carried by ${carrier.name}` };
@@ -772,7 +800,7 @@
     unit: (fid, uid) => (state.factions[fid] || { byId: {} }).byId[uid],
     rule, ruleText, ruleLabel, linkKeywords, splitSpecial, matches, squadPrice,
     damageRoll, damageTable, energyKind,
-    capacityFor, fillsOf, canCarry, carrierWithUpgrades, loadCheck, isFull,
+    capacityFor, fillsOf, fitsIn, canCarry, carrierWithUpgrades, loadCheck, isFull,
     gameSizeFor, maxGroups, maxGroupCost, rareLimit, commanderLevels,
     _state: state, _compileRules: compileRules
   };
