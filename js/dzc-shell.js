@@ -43,7 +43,7 @@ const App = (() => {
    * a worse version of something already automatic. It is the build NUMBER,
    * so a report can say which one it came from and "that was fixed in 419"
    * becomes an answer instead of a guess. */
-  const BUILD = 441;
+  const BUILD = 442;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -581,6 +581,10 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-12', title: 'A Group’s buttons had a whole empty line to themselves', items: [
+      'On a phone the duplicate and remove buttons sat alone on a second line, thrown to the far right with 246px of nothing beside them. The name and the three numbers came to 307px of the 344 available, which left 37px for two 44px squares, so the pair wrapped — and being pinned right is what turned a wrap into a band of dead space.',
+      'Self-inflicted and recent: those buttons were 24px until the touch-target pass took every icon button to 44, which is the size they should be and is also more than the line had spare. So the numbers take the second line now and the buttons stay up with the name they act on — title on the left, actions on the right, which is where the bin already sits on every Squad row underneath. Desktop has room for all of it on one line and is untouched, to the pixel.'
+    ] },
     { date: '2026-08-12', title: 'One big vehicle was being carried by three small ones', items: [
       'A Ferrum Drone Base fills 18 and a Condor carries 6, and the Transport chooser was offering three Condors — one vehicle cut into three pieces. Nine Crows too. The number on a solid symbol is what ONE Unit fills, and a Transport “may not carry more than their number indicates” (3.2.4.2), so a Unit bigger than a Transport’s whole capacity cannot ride in it: not in two of them, not in nine. Only the Albatross, which carries 18, can take a Ferrum.',
       'It was not one card. Fifteen pairs across five factions were on offer that the rules forbid: a Type-4 Battle Scorpion at 6 was offered three Neptunes at 2 and two Njords at 4, a Grievance Genitor Ark at 4 was offered two Digits at 2, a Resistance Super Heavy Tank at 6 was offered two Carryhawks at 3, and every UCM tank at 3 was offered two Crows at 2. The check was on the symbol’s SHAPE and never on its number; the count was then the Squad’s total divided by the Transport’s capacity, which is the arithmetic that let a model be halved.',

@@ -1124,6 +1124,31 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-g-head .dzc-icon-btn { margin-left: 0; }
 .dzc-g-head .dzc-icon-btn:first-of-type { margin-left: auto; }
 .dzc-g-head h2:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; }
+
+/* ON A PHONE THE BUTTONS SHARE THE TITLE'S LINE.
+ *
+ * Jet, 2026-08-12, on the Group header: "these buttons are weird. Too much big
+ * wide dead space." Measured at 390: the name and the three meters came to
+ * 307px of 344, leaving 37px for two 44px squares, so the pair wrapped -- and
+ * `margin-left: auto` then threw them at the far right of a line of their own.
+ * A 44px band with 246px of nothing to the left of two icons.
+ *
+ * Self-inflicted, and recently: these were 24px until the touch-target sweep
+ * took every icon button to 44 (mobile-fixes.css), which is the size they
+ * should be and is also 40px more than the line had spare. The fix is which
+ * thing yields, not how big the target is.
+ *
+ * So the METERS take the second line and the buttons stay up with the name
+ * they act on -- title left, actions right, which is where the trash can
+ * already sits on every Squad row beneath this. Order does it rather than a
+ * grid, because the header must still collapse to one line on desktop, where
+ * there is room for all of it and nothing to fix. */
+@media (max-width: 768px) {
+  .dzc-g-head { align-items: center; }
+  .dzc-g-head h2 { order: 1; flex: 1 1 auto; }
+  .dzc-g-head .dzc-icon-btn { order: 2; }
+  .dzc-g-head .dzc-g-meters { order: 3; flex: 1 0 100%; }
+}
 .dzc-g-empty { margin: 4px 0 8px; font-size: 12px; color: var(--ink-2, #6b6459); }
 
 /* What the Group costs, how big it is, and what its Transports still have room
