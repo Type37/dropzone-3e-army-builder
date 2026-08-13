@@ -43,7 +43,7 @@ const App = (() => {
    * a worse version of something already automatic. It is the build NUMBER,
    * so a report can say which one it came from and "that was fixed in 419"
    * becomes an answer instead of a guess. */
-  const BUILD = 446;
+  const BUILD = 447;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -581,6 +581,14 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-13', title: 'The printed sheet looks like the app now', items: [
+      'The sheet had every fact right and drew none of them the way the builder does. Stats printed as a run-on line — "Move 18” Armour 2 Damage Points 3" — with each value the same weight as its label and no way to read one Squad against the next down the page. They print in the builder’s own grid now: the icon over the number, the label under it, and only the stats the card actually carries, because a tank has no Bravery.',
+      'A weapon’s arc was the letters "F/S", which is a code you have to already know. It is the glyph off the stat card, with the letters beside it. A weapon’s keywords were a comma list; they are the same chips the app draws, outlined rather than filled so a page of them is not a page of toner.',
+      'Variants print their own photograph. 155 of them have one and the sheet only ever printed the unit’s, so a page of Wolverines showed the same buggy four times — which is the complaint that got variants their pictures to begin with. When every line in a Squad has its own, the general photo above them goes.',
+      'The faction’s colour is on the sheet: the Group heading, and the line down the left of a carried Squad, which is the one rule on the page that means something rather than divides something. Ink saver takes all of it back to black — it means one ink, not one ink except where the pretty parts are.',
+      'A Group says what carries it, and the army prints the notes you wrote on it. Both were on screen and neither was on the paper you hand across the table.',
+      'None of this is a second set of markup for print. Every renderer is the screen’s. The sheet spent months printing "carries 2 square" in words because it had its own idea of what a capacity looked like, and that is what having two of them costs.'
+    ] },
     { date: '2026-08-13', title: 'The carry line stops at the picture, and one toolbar has one left edge', items: [
       'The Add Units toolbar had five rows and four different left edges: the search field at 25px behind its magnifier, the category tabs at 0, the sort chips at 34 behind the word Sort, the shape chips at 28 behind the shorter word Fits, and the count back at 0. Nothing was wrong with any one row — each simply started wherever its own first child happened to end. There is one gutter now and everything that reads as content starts on it, with the two labels and the magnifier hanging in it. The bar is no wider; the gutter is carved out of the row rather than added to the edge.',
       'The carry line stopped 22px inside the picture it points at, drawn across the model. It ends at the edge of the box now. And it draws on: the drop grows down out of the carrier’s photograph, the arm follows it sideways into the cargo’s, so the link reads as one stroke turning a corner. Only a link you just made animates — opening an army you built yesterday draws nothing.',

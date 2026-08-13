@@ -2964,8 +2964,17 @@
       collectRules(u, guns);
       const riders = g.squads.filter(x => x.carriedBy === s.id);
       const cost = window.DZCArmy.squadCost(a, s);
-      const stats = Object.keys(u.stats || {})
-        .map(k => `${esc(window.DZC.statLabel(k))} <b>${esc(u.stats[k])}</b>`).join('  ');
+      /* THE SAME STATS THE SCREEN DRAWS. Jet, 2026-08-13: "I'd like if print
+       * mode could resemble all the nice work (with icons and shit) we put
+       * into builder mode."
+       *
+       * It was a run-on string -- "Move 18” Armour 2 Damage Points 3" -- with
+       * every value the same weight as its label and no way to read one Squad
+       * against the next. statsHtml is the builder's own renderer: a fixed
+       * grid, the icon over the number, the label under it, and only the
+       * stats the card actually prints (a tank has no Bravery). Compact,
+       * because paper is the one place a column really is scarce. */
+      const stats = window.DZCUnits.statsHtml(u, { compact: true });
 
       // Variants are per model, so a mixed Squad is listed by its actual mix.
       const mix = {};
@@ -2979,11 +2988,23 @@
       const vRule = name => ((u.specialVariants || [])
         .filter(x => x.variants.indexOf(name) !== -1)
         .map(x => x.rule));
+      /* A VARIANT'S OWN PHOTOGRAPH, when art is on. 155 of the 199 variants
+       * have one and the sheet only ever printed the unit's, so a page of
+       * Wolverines showed the same buggy four times over -- which is the exact
+       * complaint that got the variants their pictures in the first place.
+       * The Squad's own photo drops when every line here carries one, rather
+       * than printing the general picture above four specific ones. */
+      const vArt = name => (u.variants || []).find(v => v.name === name);
       const mixStr = Object.keys(mix).length > 1 || (u.variants || []).length
         ? Object.keys(mix).map(k => {
           const rs = vRule(k);
-          return `${mix[k]}× ${esc(k)}${rs.length ? ` <i>(${esc(rs.join(', '))})</i>` : ''}`;
-        }).join(', ') : '';
+          const v = vArt(k);
+          return `<span class="pr-mix">${printOpts.art && v && v.art
+            ? `<img class="pr-vart" src="${esc(v.art)}" alt="" onerror="this.remove()">` : ''
+            }${mix[k]}× ${esc(k)}${rs.length ? ` <i>(${esc(rs.join(', '))})</i>` : ''}</span>`;
+        }).join('') : '';
+      const allVartd = printOpts.art && Object.keys(mix).length
+        && Object.keys(mix).every(k => { const v = vArt(k); return v && v.art; });
       // Everything the card restricts, so the stat line can print the rest.
       const ownSpecial = (u.specialVariants || []).length
         ? window.DZC.splitSpecial(u.special || '', a.faction)
@@ -3016,12 +3037,20 @@
       const wpns = guns.length ? `<table class="pr-wpn">
         <tr><th>Weapon</th><th>Arc</th><th>Move &amp; Attack</th><th>Range</th><th>Attacks</th><th>Accuracy</th><th>Energy</th><th>Special</th></tr>
         ${guns.map(w => `<tr><td>${esc(w.name)}${(w.variants || []).length ? ` <i>(${esc(w.variants.join(', '))})</i>` : ''}</td>
-          <td>${esc(w.arc || '')}</td><td>${esc(w.ma || '')}</td><td>${esc(w.r || '')}</td>
+          <!-- The arc DRAWN, then named, exactly as the weapon table on screen
+               does it. "F/S" is a code you have to already know; the glyph is
+               the thing printed on the stat card. -->
+          <td class="dzc-arc-cell">${window.DZCIcon.arc(w.arc)}<span>${esc(w.arc || '')}</span></td>
+          <td>${esc(w.ma || '')}</td><td>${esc(w.r || '')}</td>
           <td>${esc(w.att || '')}</td><td>${esc(w.ac || '')}</td><td>${esc(w.e || '')}</td>
-          <td>${esc(w.special || '')}</td></tr>`).join('')}</table>` : '';
+          <!-- Rule chips, not a comma list. Same renderer, so a keyword reads
+               the same on paper as it does in the app, and the glossary at the
+               back is printing the text behind each one. -->
+          <td>${w.special ? window.DZCUnits.rulesHtml(w.special, a.faction, null, true) : ''}</td></tr>`).join('')}</table>` : '';
 
       return `<div class="pr-squad${depth ? ' pr-squad--nested' : ''}" style="--depth:${depth}">
-        ${printOpts.art && u.art ? `<img class="pr-art" src="${esc(u.art)}" alt="" onerror="this.remove()">` : ''}
+        ${printOpts.art && u.art && !allVartd
+          ? `<img class="pr-art" src="${esc(u.art)}" alt="" onerror="this.remove()">` : ''}
         <div class="pr-sq-line">
           ${s.models.length > 1 ? `<span class="pr-sq-n">${s.models.length}×</span>` : ''}
           <span class="pr-sq-name">${esc(u.name)}</span>
@@ -3030,7 +3059,9 @@
           <span class="pr-sq-cost">${cost}pts</span>
         </div>
         ${mixStr ? `<div class="pr-variants">${mixStr}</div>` : ''}
-        <div class="pr-stats">${stats}${ownSpecial ? `. ${esc(ownSpecial)}` : ''}</div>
+        <div class="pr-stats">${stats}</div>
+        ${ownSpecial ? `<div class="pr-rules-row">${
+          window.DZCUnits.rulesHtml(ownSpecial, a.faction, null, true) || esc(ownSpecial)}</div>` : ''}
         <!-- RM aboard. This is the sheet you deploy from, and RM tokens are
              physically placed on the Genitor before the first Round. A
              number folded into the Squad's points is not something you can
@@ -3087,9 +3118,20 @@
         activations === 1 ? '' : 's'} (4.2.1).</p>
     </section>` : '';
 
-    const groups = a.groups.map(g => `<section class="pr-group">
+    const groups = a.groups.map(g => `<section class="pr-group" style="${
+      window.DZC.accentStyle(accentOf(a.faction))}">
       <div class="pr-g-head">
         <h2 class="pr-g-name">${esc(window.DZCArmy.groupName(a, g))}</h2>
+        <!-- What carries the Group, named, the same as its card in the app. -->
+        ${(() => {
+          const c = new Map();
+          g.squads.forEach(s => {
+            const cu = window.DZCArmy.unitOf(a, s);
+            if (cu && cu.category === 'Transport') c.set(cu.name, (c.get(cu.name) || 0) + 1);
+          });
+          return c.size ? `<span class="pr-g-carry">${[...c].map(([nm, n]) =>
+            esc((n > 1 ? n + ' ' : '') + (n > 1 ? nm + 's' : nm))).join(', ')}</span>` : '';
+        })()}
         <span class="pr-g-cost">${window.DZCArmy.groupCost(a, g)}pts</span>
       </div>
       ${g.squads.filter(s => !s.carriedBy).map(s => squad(g, s, 0)).join('')}
@@ -3108,13 +3150,21 @@
           ? e.rule.faction.toUpperCase()
           : e.rule.section + (e.rule.page ? `, p.${e.rule.page}` : ''))}</span></p></div>`).join('');
 
+    /* The faction's own colour, on the sheet, the way every other screen in
+     * the app is drawn in it. Set as a variable on the root so headings, the
+     * carry line and the category chips all take it from one place -- and so
+     * the ink-saver option can override it in one place too. */
     return `
-      <div class="pr-head">
+      <div class="pr-head" style="${window.DZC.accentStyle(accentOf(a.faction))}">
         <h1 class="pr-title">${esc(a.name)}</h1>
         <p class="pr-sub"><span>${esc((FACTIONS.find(f => f.id === a.faction) || {}).name || a.faction)}</span>
           <span>${size ? esc(size.label) : ''}</span>
           <span>${sheetGroups(a)}</span>
           <span><b>${window.DZCArmy.armyCost(a)}</b> / ${a.pointsLimit}pts</span></p>
+        <!-- The notes you wrote on the army. They print because this is the
+             sheet you hand across the table, and "the UCM half of the starter
+             set" is the sort of thing you write there to say what the list IS. -->
+        ${a.description ? `<p class="pr-desc">${esc(a.description)}</p>` : ''}
       </div>
       ${commanderBlock}
       ${v.errors.length ? `<p class="pr-warn"><b>Not legal:</b> ${
