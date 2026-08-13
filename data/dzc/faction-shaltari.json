@@ -360,7 +360,8 @@
         },
         {
           "name": "Oncilla",
-          "points": 100
+          "points": 100,
+          "art": "assets/units/variants/shaltari-warstrider--oncilla.webp"
         },
         {
           "name": "Puma",
@@ -680,7 +681,8 @@
       "variants": [
         {
           "name": "Firebird",
-          "points": 30
+          "points": 30,
+          "art": "assets/units/variants/shaltari-gunship--firebird.webp"
         },
         {
           "name": "Thunderbird",
@@ -1197,7 +1199,8 @@
       "variants": [
         {
           "name": "Firstborns",
-          "points": 45
+          "points": 45,
+          "art": "assets/units/variants/assault-warsuits--firstborns.webp"
         },
         {
           "name": "Daimyo",
@@ -1381,7 +1384,8 @@
         },
         {
           "name": "Wildcat",
-          "points": 110
+          "points": 110,
+          "art": "assets/units/variants/shaltari-gunstrider--wildcat.webp"
         }
       ],
       "specialVariants": [],
@@ -1822,7 +1826,8 @@
         },
         {
           "name": "Khopesh",
-          "points": 70
+          "points": 70,
+          "art": "assets/units/variants/shaltari-interceptor--khopesh.webp"
         }
       ],
       "specialVariants": [],
@@ -1921,7 +1926,8 @@
         },
         {
           "name": "Naginata",
-          "points": 15
+          "points": 15,
+          "art": "assets/units/variants/shaltari-light-grav-tank--naginata.webp"
         },
         {
           "name": "Tate",

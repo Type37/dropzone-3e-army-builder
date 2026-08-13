@@ -43,7 +43,7 @@ const App = (() => {
    * a worse version of something already automatic. It is the build NUMBER,
    * so a report can say which one it came from and "that was fixed in 419"
    * becomes an answer instead of a guess. */
-  const BUILD = 444;
+  const BUILD = 445;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -581,6 +581,13 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-13', title: '57 more variants have their own photograph', items: [
+      'A variant with its own miniature shows it; the rest fall back to the unit’s. That went from 98 of the 199 to 155. Nothing new was found in the previous edition’s cards — the same 275 photographs were there all along, and 177 of them were being read, captioned and thrown away because the matcher could not tell what it was holding.',
+      'Half the variants in this edition are not named, they are lettered. Polecat A, Eagle B, Wolverine D, Juno A1. The previous edition never printed a letter, so a rule that the variant’s name must appear on the old card ruled out 94 of them before their weapons were ever looked at. The letter comes off first now, and the model name is what has to match, which is what the old card is captioned with.',
+      'The weapons decide which photograph, and a plural was stopping them. “UM-88 Cannons” sits under a picture captioned “(Twin Cannon)”, and comparing whole words called that no evidence at all — so the Katana, the Slayer, the Jaguar, the Menchit and the Pizzaro all had a photograph naming them and got none. TTCombat’s own captions carry typos too, “Attila Trackwalkers” one line under “Atilla Trackwalkers”, and each one cost a picture.',
+      'A variant this edition renamed can be found through its siblings. Our Tormentor is the acid-streamer Scourge Heavy Skimmer and the word Tormentor appears nowhere on the old cards; what does appear is “Slayer Heavy Tank (Acid Streamer)”, alongside the Slayer photograph its sibling claimed. The vehicle is identified by the sibling and the guns pick which of its photographs is which, so a keyword is never on its own — that was the fault behind the wrong pictures before, where a Wolverine buggy’s missile shot ended up on a Howitzer, an Eagle and a Harrier.',
+      'Two photographs one variant’s guns cannot separate is still no photograph. The unit’s own picture beats a coin-flip, which is why 44 variants show nothing: the previous edition has no picture of a Styx, a Greave, a Tachi or a Falcon-A, and a wrong photograph is worse than a general one.'
+    ] },
     { date: '2026-08-12', title: 'Two buttons about Transports, one word between them', items: [
       'A Squad’s own button said Transport and the Group’s said Add Transports, and on a phone both were on screen at once, in the same green, a row apart. Jet: “it’s confusing that there’s two add transport buttons.” They do different things — one ties this Squad to something that carries it, the other puts a Transport in the Group and links it to nothing — and the word they shared said neither.',
       'The Squad’s one is Linked transport now, and it carries a chain instead of a second lorry. The lorry is what a Transport is; this button is not a Transport, it is the tie between a Squad and one. The Group’s button is untouched: Add Transports has always said exactly what it does.',

@@ -374,7 +374,8 @@
         },
         {
           "name": "Phantom",
-          "points": 25
+          "points": 25,
+          "art": "assets/units/variants/scourge-light-skimmer--phantom.webp"
         }
       ],
       "specialVariants": [],
@@ -1332,11 +1333,13 @@
       "variants": [
         {
           "name": "Slayer",
-          "points": 50
+          "points": 50,
+          "art": "assets/units/variants/scourge-heavy-skimmer--slayer.webp"
         },
         {
           "name": "Tormentor",
-          "points": 50
+          "points": 50,
+          "art": "assets/units/variants/scourge-heavy-skimmer--tormentor.webp"
         }
       ],
       "specialVariants": [],
@@ -1742,7 +1745,8 @@
       "variants": [
         {
           "name": "Eraser",
-          "points": 140
+          "points": 140,
+          "art": "assets/units/variants/scourge-chamelopod--eraser.webp"
         },
         {
           "name": "Eradicator",
@@ -1989,7 +1993,8 @@
         },
         {
           "name": "Brigand",
-          "points": 50
+          "points": 50,
+          "art": "assets/units/variants/scourge-interceptor--brigand.webp"
         }
       ],
       "specialVariants": [],

@@ -277,7 +277,8 @@
         },
         {
           "name": "Mehmed",
-          "points": 45
+          "points": 45,
+          "art": "assets/units/variants/resistance-main-battle-tank--mehmed.webp"
         },
         {
           "name": "Saladin",
@@ -638,11 +639,13 @@
       "variants": [
         {
           "name": "Thunder Wagon",
-          "points": 20
+          "points": 20,
+          "art": "assets/units/variants/artillery-wagon--thunder-wagon.webp"
         },
         {
           "name": "Storm Wagon",
-          "points": 20
+          "points": 20,
+          "art": "assets/units/variants/artillery-wagon--storm-wagon.webp"
         }
       ],
       "specialVariants": [],
@@ -741,7 +744,8 @@
       "variants": [
         {
           "name": "Typhoon",
-          "points": 60
+          "points": 60,
+          "art": "assets/units/variants/attack-helicopter--typhoon.webp"
         },
         {
           "name": "Cyclone",
@@ -1507,7 +1511,8 @@
       "variants": [
         {
           "name": "Atilla A",
-          "points": 35
+          "points": 35,
+          "art": "assets/units/variants/atilla-trackwalker--atilla-a.webp"
         },
         {
           "name": "Atilla B",
@@ -1922,11 +1927,13 @@
       "variants": [
         {
           "name": "Gun Bus A",
-          "points": 35
+          "points": 35,
+          "art": "assets/units/variants/ordnance-bus--gun-bus-a.webp"
         },
         {
           "name": "Gun Bus B",
-          "points": 35
+          "points": 35,
+          "art": "assets/units/variants/ordnance-bus--gun-bus-b.webp"
         }
       ],
       "specialVariants": [],
@@ -2470,7 +2477,8 @@
         },
         {
           "name": "Attack ATVs",
-          "points": 30
+          "points": 30,
+          "art": "assets/units/variants/atvs--attack-atvs.webp"
         }
       ],
       "specialVariants": [],
@@ -2938,11 +2946,13 @@
       "variants": [
         {
           "name": "Pizzaro",
-          "points": 90
+          "points": 90,
+          "art": "assets/units/variants/theropod-walker--pizzaro.webp"
         },
         {
           "name": "Cortez",
-          "points": 95
+          "points": 95,
+          "art": "assets/units/variants/theropod-walker--cortez.webp"
         }
       ],
       "specialVariants": [],
@@ -3045,7 +3055,8 @@
         },
         {
           "name": "Rocket Bus",
-          "points": 25
+          "points": 25,
+          "art": "assets/units/variants/battle-bus--rocket-bus.webp"
         },
         {
           "name": "Gun Bus",
@@ -3353,11 +3364,13 @@
       "variants": [
         {
           "name": "Rocket Leviathan",
-          "points": 90
+          "points": 90,
+          "art": "assets/units/variants/leviathan-heavy-hovercraft--rocket-leviathan.webp"
         },
         {
           "name": "Gun Leviathan",
-          "points": 120
+          "points": 120,
+          "art": "assets/units/variants/leviathan-heavy-hovercraft--gun-leviathan.webp"
         }
       ],
       "specialVariants": [],
@@ -3740,11 +3753,13 @@
       "variants": [
         {
           "name": "Patton A",
-          "points": 25
+          "points": 25,
+          "art": "assets/units/variants/patton-ifv--patton-a.webp"
         },
         {
           "name": "Patton B",
-          "points": 25
+          "points": 25,
+          "art": "assets/units/variants/patton-ifv--patton-b.webp"
         }
       ],
       "specialVariants": [],

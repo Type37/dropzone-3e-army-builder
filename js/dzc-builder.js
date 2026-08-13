@@ -1608,7 +1608,7 @@
                A Sabre and a Rapier are a tracked tank with a chainsaw gun and
                a hover tank with a long AA barrel, and until now this block
                showed the same photograph for both, because art was per unit
-               and a unit holds up to four variants. 163 of the 199 variants
+               and a unit holds up to four variants. 155 of the 199 variants
                have their own picture now; the rest have none printed anywhere,
                so they draw nothing here rather than repeat the unit's. -->
           ${v.art ? `<img class="dzc-vblock-art" src="${esc(v.art)}" alt=""

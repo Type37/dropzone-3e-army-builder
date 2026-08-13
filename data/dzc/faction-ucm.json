@@ -28,7 +28,8 @@
       "variants": [
         {
           "name": "Flak Team",
-          "points": 25
+          "points": 25,
+          "art": "assets/units/variants/legionnaire-weapon-team--flak-team.webp"
         },
         {
           "name": "Mortar Team",
@@ -192,11 +193,13 @@
       "variants": [
         {
           "name": "Polecat A",
-          "points": 25
+          "points": 25,
+          "art": "assets/units/variants/polecat-buggy--polecat-a.webp"
         },
         {
           "name": "Polecat B",
-          "points": 25
+          "points": 25,
+          "art": "assets/units/variants/polecat-buggy--polecat-b.webp"
         },
         {
           "name": "Polecat C",
@@ -460,11 +463,13 @@
       "variants": [
         {
           "name": "Katana",
-          "points": 35
+          "points": 35,
+          "art": "assets/units/variants/ucm-light-battle-tank--katana.webp"
         },
         {
           "name": "Fireblade",
-          "points": 35
+          "points": 35,
+          "art": "assets/units/variants/ucm-light-battle-tank--fireblade.webp"
         },
         {
           "name": "Wakizashi",
@@ -759,11 +764,13 @@
       "variants": [
         {
           "name": "Falcon-A",
-          "points": 40
+          "points": 40,
+          "art": "assets/units/variants/falcon-gunship--falcon-a.webp"
         },
         {
           "name": "Falcon-B",
-          "points": 40
+          "points": 40,
+          "art": "assets/units/variants/falcon-gunship--falcon-b.webp"
         }
       ],
       "specialVariants": [],
@@ -1164,11 +1171,13 @@
       "variants": [
         {
           "name": "Grizzly A",
-          "points": 40
+          "points": 40,
+          "art": "assets/units/variants/ucm-artillery-vehicle--grizzly-a.webp"
         },
         {
           "name": "Grizzly B",
-          "points": 40
+          "points": 40,
+          "art": "assets/units/variants/ucm-artillery-vehicle--grizzly-b.webp"
         },
         {
           "name": "Cuprum Drone Launcher",
@@ -1853,11 +1862,13 @@
       "variants": [
         {
           "name": "Seraphim A",
-          "points": 80
+          "points": 80,
+          "art": "assets/units/variants/seraphim-bomber--seraphim-a.webp"
         },
         {
           "name": "Seraphim B",
-          "points": 80
+          "points": 80,
+          "art": "assets/units/variants/seraphim-bomber--seraphim-b.webp"
         }
       ],
       "specialVariants": [],
@@ -1977,7 +1988,8 @@
         },
         {
           "name": "Maul",
-          "points": 60
+          "points": 60,
+          "art": "assets/units/variants/ucm-heavy-tank--maul.webp"
         }
       ],
       "specialVariants": [],
@@ -2303,7 +2315,8 @@
         },
         {
           "name": "Cutlass",
-          "points": 85
+          "points": 85,
+          "art": "assets/units/variants/ucm-super-heavy-tank--cutlass.webp"
         },
         {
           "name": "Claymore",
@@ -2910,11 +2923,13 @@
       "variants": [
         {
           "name": "Columbus A",
-          "points": 75
+          "points": 75,
+          "art": "assets/units/variants/ucm-columbus-battlewalker--columbus-a.webp"
         },
         {
           "name": "Columbus B",
-          "points": 75
+          "points": 75,
+          "art": "assets/units/variants/ucm-columbus-battlewalker--columbus-b.webp"
         }
       ],
       "specialVariants": [],
@@ -3128,15 +3143,18 @@
       "variants": [
         {
           "name": "Wolverine A",
-          "points": 15
+          "points": 15,
+          "art": "assets/units/variants/wolverine-buggy--wolverine-a.webp"
         },
         {
           "name": "Wolverine B",
-          "points": 15
+          "points": 15,
+          "art": "assets/units/variants/wolverine-buggy--wolverine-b.webp"
         },
         {
           "name": "Wolverine C",
-          "points": 15
+          "points": 15,
+          "art": "assets/units/variants/wolverine-buggy--wolverine-c.webp"
         },
         {
           "name": "Wolverine D",

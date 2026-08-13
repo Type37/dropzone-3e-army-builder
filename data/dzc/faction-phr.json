@@ -26,11 +26,13 @@
       "variants": [
         {
           "name": "Angelos A1",
-          "points": 30
+          "points": 30,
+          "art": "assets/units/variants/angelos-jetskimmer--angelos-a1.webp"
         },
         {
           "name": "Angelos A2",
-          "points": 30
+          "points": 30,
+          "art": "assets/units/variants/angelos-jetskimmer--angelos-a2.webp"
         }
       ],
       "specialVariants": [],
@@ -252,11 +254,13 @@
         },
         {
           "name": "Styx",
-          "points": 35
+          "points": 35,
+          "art": "assets/units/variants/type-1-battle-walker--styx.webp"
         },
         {
           "name": "Menchit",
-          "points": 40
+          "points": 40,
+          "art": "assets/units/variants/type-1-battle-walker--menchit.webp"
         },
         {
           "name": "Phobos",
@@ -911,7 +915,8 @@
       "variants": [
         {
           "name": "Phaethon",
-          "points": 45
+          "points": 45,
+          "art": "assets/units/variants/support-jetskimmer--phaethon.webp"
         },
         {
           "name": "Helios",
@@ -1107,11 +1112,13 @@
       "variants": [
         {
           "name": "Erebos A",
-          "points": 40
+          "points": 40,
+          "art": "assets/units/variants/type-3-em-walker--erebos-a.webp"
         },
         {
           "name": "Erebos B",
-          "points": 40
+          "points": 40,
+          "art": "assets/units/variants/type-3-em-walker--erebos-b.webp"
         }
       ],
       "specialVariants": [],
@@ -1307,7 +1314,8 @@
         },
         {
           "name": "Enyo",
-          "points": 70
+          "points": 70,
+          "art": "assets/units/variants/type-2-heavy-battle-walker--enyo.webp"
         },
         {
           "name": "Zeus",
@@ -2190,7 +2198,8 @@
         },
         {
           "name": "Minerva",
-          "points": 110
+          "points": 110,
+          "art": "assets/units/variants/phr-air-superiority-fighter--minerva.webp"
         }
       ],
       "specialVariants": [],
@@ -2300,11 +2309,13 @@
       "variants": [
         {
           "name": "Columbus A",
-          "points": 75
+          "points": 75,
+          "art": "assets/units/variants/phr-columbus-battlewalker--columbus-a.webp"
         },
         {
           "name": "Columbus B",
-          "points": 75
+          "points": 75,
+          "art": "assets/units/variants/phr-columbus-battlewalker--columbus-b.webp"
         }
       ],
       "specialVariants": [],
@@ -2706,11 +2717,13 @@
       "variants": [
         {
           "name": "Juno A2",
-          "points": 15
+          "points": 15,
+          "art": "assets/units/variants/juno-ifvs--juno-a2.webp"
         },
         {
           "name": "Juno A1",
-          "points": 20
+          "points": 20,
+          "art": "assets/units/variants/juno-ifvs--juno-a1.webp"
         }
       ],
       "specialVariants": [],
