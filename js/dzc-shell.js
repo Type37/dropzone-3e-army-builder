@@ -43,7 +43,7 @@ const App = (() => {
    * a worse version of something already automatic. It is the build NUMBER,
    * so a report can say which one it came from and "that was fixed in 419"
    * becomes an answer instead of a guess. */
-  const BUILD = 448;
+  const BUILD = 449;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -581,6 +581,12 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-13', title: 'Ctrl+P printed a blank page', items: [
+      'Printing from anywhere except the app’s own Print button gave you one blank sheet. The rule that hands the printer the deployment sheet hides the entire app and prints a container the Print button is what fills — so Ctrl+P, the browser menu, File then Print, and every print-to-PDF extension hid the page and printed an empty box. It fills on any route to the printer now.',
+      'And the app is only hidden when there is a sheet to put in its place. Ctrl+P on the Armies list or the Unit Reference used to hide that page too and print the same empty box; those print the page you are looking at.',
+      'The four numbers a Commander’s Level buys were one run-on line — "CP per Round 5, hand 5 cards, Initiative D6 + 5 (4.1). 5 activations (4.2.1)" — four unrelated figures, three of them the same digit, with a rulebook citation wedged in the middle. Each has its own cell now: the number set large, what it is under it, when you use it under that. They are looked up one at a time in the middle of a Round.',
+      'A measured sheet of a nine-Group army went from 4.0 pages to 3.3, and from 16% of the paper covered in a filled background to none. The stat cells were carrying the app’s own panel fill into print, which is a screen surface and on paper is just toner. Ink saver now takes the stat values black as well as their labels; the only colour it leaves is the digit on a cargo symbol, because that colour is which shape it is.'
+    ] },
     { date: '2026-08-13', title: 'Fewer lines on the sheet, and it saves ink unless you say otherwise', items: [
       'Print opens with ink saver and compact both on. The sheet had just gained the app’s colour — accent headings, an accent carry line, outlined keyword chips — and defaulting a document whose whole job is to be printed to the expensive version has the trade backwards. Both toggles are on the preview and whatever you pick is remembered, so this is the first print only.',
       'A Squad was four lines: the name, then its capacity symbols, then how much RM it carried, then its stats. It is two. Capacity and RM sit on the name line where they belong, and the Squad’s own rules share the stat line rather than opening one.',

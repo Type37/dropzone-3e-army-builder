@@ -3120,9 +3120,20 @@
           <span class="pr-cmdr-pts">${window.DZCArmy.levelCost(c.level)}pts</span>
         </div>`;
       }).join('')}
-      <p class="pr-cmdr-play">CP per Round ${top}, hand ${top} card${top === 1 ? '' : 's'},
-        Initiative D6 + ${top} (4.1). ${activations} activation${
-        activations === 1 ? '' : 's'} (4.2.1).</p>
+      <!-- FOUR NUMBERS, NOT ONE SENTENCE OF THEM. Jet, 2026-08-13: "CP per
+           Round 5, hand 5 cards, Initiative D6 + 5 (4.1). 5 activations
+           (4.2.1). this is too truncated slop."
+           He is right: four unrelated figures run together with commas, three
+           of them the same digit, and a rulebook citation wedged in the middle.
+           These are looked up mid-game, one at a time -- so each gets its own
+           cell, its number set large, and its name spelled out underneath. The
+           same shape as a stat block, because that is what it is. -->
+      <div class="pr-cmdr-play">
+        <div><b>${top}</b><span>Command Points<i>per Round (4.1.1)</i></span></div>
+        <div><b>${top}</b><span>Command Card${top === 1 ? '' : 's'}<i>in hand (4.1.4)</i></span></div>
+        <div><b>D6 + ${top}</b><span>Initiative<i>each Round (4.1)</i></span></div>
+        <div><b>${activations}</b><span>Activation${activations === 1 ? '' : 's'}<i>per Round (4.2.1)</i></span></div>
+      </div>
     </section>` : '';
 
     const groups = a.groups.map(g => `<section class="pr-group" style="${
@@ -3390,13 +3401,46 @@
   /* The sheet is rebuilt clean into the hidden print container: the preview's
    * spacers and break lines are scaffolding for the screen and must not reach
    * the paper. */
-  function printNow() {
+  function fillPrintEl() {
     let el = document.getElementById('dzc-print');
     if (!el) { el = document.createElement('div'); el.id = 'dzc-print'; document.body.appendChild(el); }
     el.className = printClass().trim();
     el.innerHTML = sheetHtml();
+    return el;
+  }
+
+  function printNow() {
+    fillPrintEl();
     window.print();
   }
+
+  /* CTRL+P PRINTS THE SHEET TOO. Jet, 2026-08-13: "I CLICK PRINT, i get
+   * blank."
+   *
+   * @media print hides the entire app -- `body > *:not(#dzc-print)` -- and
+   * hands the printer #dzc-print instead. That container was only ever filled
+   * by the app's own Print button. So every other route to the printer
+   * (Ctrl+P, the browser menu, File > Print, a print-to-PDF extension) hid the
+   * whole page and printed an empty div: one blank sheet, which is exactly
+   * what the dialog reported.
+   *
+   * beforeprint fires for all of them, the app's button included -- filling it
+   * twice costs one render of a document we were about to render anyway, and
+   * a guard that tried to skip the second would be a cache to keep in step
+   * with printOpts.
+   *
+   * The body class is the other half, and without it this trades one blank
+   * page for another: the rule that hides the app is unconditional, so Ctrl+P
+   * on the Armies list or the Unit Reference hid that page and printed the
+   * empty container just the same. Now the app is only hidden when there is a
+   * sheet to put in its place, and everywhere else the browser prints the page
+   * you are looking at, which is what Ctrl+P is for. */
+  window.addEventListener('beforeprint', () => {
+    const sheet = !!current && String(location.hash || '').indexOf('#army/') === 0;
+    document.body.classList.toggle('is-sheet', sheet);
+    if (sheet) fillPrintEl();
+  });
+  window.addEventListener('afterprint', () => document.body.classList.remove('is-sheet'));
 
   /* Toggling redraws the sheet and measures again, because every one of these
    * changes how much paper it is. Which is the number the preview exists to

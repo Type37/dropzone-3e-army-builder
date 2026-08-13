@@ -23,9 +23,13 @@
 
 @media print {
   /* Hide the app entirely; the sheet is its own document. The preview overlay
-     goes with it: it is chrome, and chrome never prints. */
-  body > *:not(#dzc-print) { display: none !important; }
-  #dzc-print { display: block; }
+     goes with it: it is chrome, and chrome never prints.
+     ONLY WHEN THERE IS A SHEET. `.is-sheet` is put on the body by the
+     beforeprint handler and only when an army is open. Unconditional, this
+     rule hid whatever page you were on and printed the empty container in its
+     place -- one blank sheet from Ctrl+P anywhere in the app. */
+  body.is-sheet > *:not(#dzc-print) { display: none !important; }
+  body.is-sheet #dzc-print { display: block; }
   @page { margin: 12mm 10mm; }
 }
 
@@ -193,7 +197,27 @@
 :is(#dzc-print, .pp-paper) .pr-cmdr-row { display: flex; align-items: baseline; gap: 8pt; font-size: 9pt; padding: 1pt 0; }
 :is(#dzc-print, .pp-paper) .pr-cmdr-name { font-weight: 700; }
 :is(#dzc-print, .pp-paper) .pr-cmdr-pts { margin-left: auto; font-weight: 700; white-space: nowrap; }
-:is(#dzc-print, .pp-paper) .pr-cmdr-play { margin: 3pt 0 0; font-size: 8pt; }
+/* The four numbers a Commander's Level buys, each one its own cell. They are
+   looked up one at a time in the middle of a Round, so they are set as a stat
+   block rather than as a sentence: the figure large, what it is under it, when
+   you use it under that. */
+:is(#dzc-print, .pp-paper) .pr-cmdr-play {
+  display: flex; flex-wrap: wrap; gap: 4pt 16pt; margin: 5pt 0 0;
+  border-top: .5pt solid #999; padding-top: 4pt;
+}
+:is(#dzc-print, .pp-paper) .pr-cmdr-play > div {
+  display: flex; align-items: baseline; gap: 4pt;
+}
+:is(#dzc-print, .pp-paper) .pr-cmdr-play b {
+  font: 700 13pt/1 'Roboto Slab', Georgia, serif; white-space: nowrap;
+}
+:is(#dzc-print, .pp-paper) .pr-cmdr-play span {
+  display: flex; flex-direction: column; font-size: 8pt; line-height: 1.2;
+}
+:is(#dzc-print, .pp-paper) .pr-cmdr-play i {
+  font-style: normal; font-size: 6.5pt; color: #555;
+}
+:is(#dzc-print, .pp-paper).is-ink .pr-cmdr-play i { color: #000; }
 :is(#dzc-print, .pp-paper).is-ink .pr-cmdrs { border-width: .25pt; }
 :is(#dzc-print, .pp-paper).is-ink .pr-cmdrs-head { border-bottom-color: #000; border-bottom-width: .25pt; }
 
@@ -234,7 +258,12 @@
 :is(#dzc-print, .pp-paper).is-ink :is(.pr-stats .dzc-stat-i svg, .dzc-arc-cell svg) {
   color: #000; fill: #000;
 }
-:is(#dzc-print, .pp-paper).is-ink .pr-stats .dzc-stat-k { color: #000; }
+/* Every stat cell to black, value and label both. The value inherits --ink,
+   which is the app's text colour and not black, so a measured sheet in ink
+   mode still had 59 cells of off-black on it. The cargo badge's digit is the
+   last coloured thing left and it stays: that colour IS which shape it is. */
+:is(#dzc-print, .pp-paper).is-ink .pr-stats :is(.dzc-stat-k, .dzc-stat-v) { color: #000; }
+:is(#dzc-print, .pp-paper).is-ink .pr-desc { color: #000; }
 :is(#dzc-print, .pp-paper).is-ink .pr-wpn th { border-bottom-width: .25pt; border-bottom-color: #000; }
 :is(#dzc-print, .pp-paper).is-ink .pr-wpn td { border-bottom: 0; }
 :is(#dzc-print, .pp-paper).is-ink :is(.pr-cap, .pr-variants, .pr-rule .pr-src) { color: #000; }
