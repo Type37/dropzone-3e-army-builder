@@ -43,7 +43,7 @@ const App = (() => {
    * a worse version of something already automatic. It is the build NUMBER,
    * so a report can say which one it came from and "that was fixed in 419"
    * becomes an answer instead of a guess. */
-  const BUILD = 445;
+  const BUILD = 446;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -581,6 +581,13 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-13', title: 'The carry line stops at the picture, and one toolbar has one left edge', items: [
+      'The Add Units toolbar had five rows and four different left edges: the search field at 25px behind its magnifier, the category tabs at 0, the sort chips at 34 behind the word Sort, the shape chips at 28 behind the shorter word Fits, and the count back at 0. Nothing was wrong with any one row — each simply started wherever its own first child happened to end. There is one gutter now and everything that reads as content starts on it, with the two labels and the magnifier hanging in it. The bar is no wider; the gutter is carved out of the row rather than added to the edge.',
+      'The carry line stopped 22px inside the picture it points at, drawn across the model. It ends at the edge of the box now. And it draws on: the drop grows down out of the carrier’s photograph, the arm follows it sideways into the cargo’s, so the link reads as one stroke turning a corner. Only a link you just made animates — opening an army you built yesterday draws nothing.',
+      'Linked transport and Add Transports have swapped weight. Tying a Squad to what carries it is the commonest move in a Group and it was the quietest control on the row, a small grey chip in the same ink as Take out; meanwhile two solid accent bars sat side by side giving a Transport the same standing as the Squad it exists to carry. Linked transport takes the accent fill and the icon tile, one size down. Add Transports outlines. Neither gained emphasis — they traded it.',
+      'A Group card in the list says what is carrying it, by name. The Transports were on the card already, leading the row of thumbnails, but a picture 26px wide is not a name and the text underneath said "2 Squads, 5 models" without once saying Condor. Which Transports a Group holds is what decides where the next Unit can go, which is why the space meters are on the card at all.',
+      'The pictures are bigger, on the Squad and on every variant block — a fifth up on the desktop and proportionally on a phone. Two of them were wrong rather than small: at 640px and below the photograph carried its own fixed size instead of filling its box, and at 420px that was 96px of picture in a 46px box. It stood twice the height of the thing meant to bound it, hung 50px into the row underneath, and the carry line — which is measured off the box — pointed at 23px into a 96px image. Every Squad, on the narrowest phone, which is the device this app is for.'
+    ] },
     { date: '2026-08-13', title: '57 more variants have their own photograph', items: [
       'A variant with its own miniature shows it; the rest fall back to the unit’s. That went from 98 of the 199 to 155. Nothing new was found in the previous edition’s cards — the same 275 photographs were there all along, and 177 of them were being read, captioned and thrown away because the matcher could not tell what it was holding.',
       'Half the variants in this edition are not named, they are lettered. Polecat A, Eagle B, Wolverine D, Juno A1. The previous edition never printed a letter, so a rule that the variant’s name must appear on the old card ruled out 94 of them before their weapons were ever looked at. The letter comes off first now, and the model name is what has to match, which is what the old card is captioned with.',

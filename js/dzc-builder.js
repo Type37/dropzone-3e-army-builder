@@ -471,6 +471,10 @@
     // not arrived just because this one is gone. armySeen is set at the END of
     // this function, so the first pass over a new army only fills the set.
     if (armySeen !== a.id) seen.clear();
+    if (armySeen !== a.id) rodeOn.clear();
+    // Which carry lines are new since the last draw. Before any markup, and
+    // once -- see markLinks.
+    markLinks(a);
     // Fresh every draw -- see groupAlerts.
     groupIssues = null;
     await window.DZC.loadFaction(a.faction);
@@ -1122,6 +1126,23 @@
     const art = g.squads.map(s => window.DZCArmy.unitOf(a, s)).filter(u => u && u.art)
       .slice(0, 4).map(u => `<img src="${esc(u.art)}" alt="" loading="lazy" title="${esc(u.name)}"
         onerror="this.remove()">`).join('');
+    /* WHAT IS CARRYING THIS GROUP, by name. Jet, 2026-08-13: "can we show
+     * transports on the group cards?" They were on it already -- a Transport
+     * is a Squad and its photograph leads the thumbnail strip -- but a
+     * photograph 26px wide is not a name, and the card's own text said "2
+     * Squads, 5 models" without once saying Condor. A Group is chosen between
+     * on what carries it, which is why the space meters are here at all.
+     *
+     * Counted by unit, not by Squad, so two Ravens read "2 Raven Light
+     * Dropships" rather than the same name printed twice. */
+    const carry = new Map();
+    g.squads.forEach(s => {
+      const u = window.DZCArmy.unitOf(a, s);
+      if (u && u.category === 'Transport') carry.set(u.name, (carry.get(u.name) || 0) + 1);
+    });
+    const carriers = [...carry].map(([nm, n]) =>
+      `<span>${window.DZCIcon('local_shipping', { size: 13 })}${n > 1 ? `${n} ` : ''}${
+        esc(n > 1 ? nm + 's' : nm)}</span>`).join('');
     const name = esc(window.DZCArmy.groupName(a, g));
     return `<div class="dzc-bb${g.id === selectedGroup ? ' is-on' : ''}${
       cost > cap ? ' is-over' : ''}${enter('g:' + g.id, armySeen === a.id)}" data-gid="${g.id}">
@@ -1148,6 +1169,7 @@
           <i>${cost}<s>/${cap}</s></i></span>
         <span class="dzc-bb-meta">${g.squads.length} Squad${g.squads.length === 1 ? '' : 's'}${
           models ? `, ${models} model${models === 1 ? '' : 's'}` : ''}</span>
+        ${carriers ? `<span class="dzc-bb-carriers">${carriers}</span>` : ''}
         ${space ? `<span class="dzc-bb-spaces">${space}</span>` : ''}
         ${art ? `<span class="dzc-bb-art">${art}</span>` : ''}
       </button>
@@ -1369,9 +1391,17 @@
     const open = kind => pool.filter(u =>
       (kind === 'transport') === (u.category === 'Transport')
       && window.DZCArmy.canAddUnit(a, g.id, u.id).ok).length;
+    /* Add Transports is the QUIETER of the two. Jet, 2026-08-13: "let's make
+     * the add transports button a bit less attractive." Two solid accent bars
+     * side by side gave a Transport the same weight as the Squad it exists to
+     * carry, and the button that ties a Squad to one -- the commoner move by
+     * far -- was a 12px ghost chip up in the row. The pair have swapped
+     * emphasis rather than gained any: Add Units keeps the fill, this one
+     * outlines. */
     const btn = (kind, label) => {
       const n = open(kind);
-      return `<button class="dzc-add-squad${n ? '' : ' is-empty'}" type="button"
+      return `<button class="dzc-add-squad${kind === 'transport' ? ' dzc-add-squad--quiet' : ''}${
+        n ? '' : ' is-empty'}" type="button"
         ${n ? `onclick="DZCBuilder.openPicker('${g.id}','${kind}')"` : 'disabled'}
         title="${esc(n ? `${n} to choose from`
           : kind === 'transport'
@@ -1567,6 +1597,34 @@
   /* Which variants this Squad had last time we drew it, keyed by Squad and
    * variant name. Read and written in variantGuns. */
   const tookVariant = new Map();
+
+  /* And what was carrying each Squad last time, so the carry line can draw on
+   * the moment the link is made. Same shape as tookVariant and for the same
+   * reason: choosing a Transport rebuilds the whole Group, so the row you were
+   * looking at is replaced by an identical one that happens to be aboard
+   * something. Only the FLIP is an arrival. A Squad this map has never seen is
+   * not one -- opening yesterday's army would otherwise draw every line in it.
+   *
+   * Both ends are marked. The drop belongs to the carrier and the arm to the
+   * cargo, so a link that draws only on the row that changed would animate a
+   * horizontal tick appearing out of a vertical that was already there. */
+  const rodeOn = new Map();
+  /* Squad ids whose line should draw on THIS pass. Settled in one sweep before
+   * anything is drawn, because squadHtml recurses -- a carrier renders its
+   * riders, so a flip consulted from inside the rider would find a map the
+   * carrier had already updated and report nothing. */
+  let drawLink = new Set();
+
+  function markLinks(a) {
+    const now = new Set();
+    (a.groups || []).forEach(g => (g.squads || []).forEach(s => {
+      const was = rodeOn.get(s.id);
+      const car = s.carriedBy || null;
+      if (was !== undefined && was !== car && car) { now.add(s.id); now.add(car); }
+      rodeOn.set(s.id, car);
+    }));
+    drawLink = now;
+  }
 
   function variantGuns(a, s, u) {
     const U = window.DZCUnits;
@@ -1941,7 +1999,8 @@
     ].filter(Boolean).join('');
 
     return `<div class="dzc-squad${isTransport ? ' is-transport' : ''}${s.models.length ? '' : ' is-empty'}${
-      riders.length ? ' is-carrier' : ''}${enter('s:' + s.id, armySeen === a.id)}" style="--depth:${depth}" data-sid="${s.id}">
+      riders.length ? ' is-carrier' : ''}${drawLink.has(s.id) ? ' is-linked' : ''}${
+      enter('s:' + s.id, armySeen === a.id)}" style="--depth:${depth}" data-sid="${s.id}">
       <div class="dzc-sq-main">
         <!-- The handle comes FIRST. It sat between the thumbnail and the
              name, which is the one place a handle should never be: neither the

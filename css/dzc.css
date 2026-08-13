@@ -959,6 +959,14 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-bb-head i s { text-decoration: none; font-weight: 500; font-size: 11px; color: var(--ink-2, #9a9184); }
 .dzc-bb.is-over .dzc-bb-head i { color: var(--danger, #b3261e); }
 .dzc-bb-meta { font-size: 11px; color: var(--ink-2, #6b6459); }
+/* What carries this Group, named. Wraps rather than truncating -- a Group with
+   three kinds of Transport gets three lines (CLAUDE.md §4). */
+.dzc-bb-carriers {
+  display: flex; flex-wrap: wrap; gap: 2px 10px;
+  font-size: 11px; color: var(--acc-text, var(--acc, #1b3a5c));
+}
+.dzc-bb-carriers span { display: inline-flex; align-items: center; gap: 4px; }
+.dzc-bb-carriers svg { flex: 0 0 auto; opacity: .8; }
 .dzc-bb-spaces { display: flex; flex-wrap: wrap; gap: 3px 8px; }
 .dzc-bb-sp { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; }
 .dzc-bb-sp b { font: 700 12px/1 var(--font-numeric, 'Outfit', sans-serif); }
@@ -1252,7 +1260,10 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    --carry-gap is the one number both halves are built from. The drop sits that
    far left of the cargo's picture; the arm crosses exactly that gap and then
    22px more, INTO the picture. Written once so the two can never drift. */
-.dzc-squad { --mini-x: 37px; --rider-step: 52px; --carry-gap: 5px; }
+/* BIGGER AGAIN. Jet, 2026-08-13: "can we make pics for variants and main
+   units a bit bigger?" 105x75 -> 128x92, a fifth up, and --mini-x moves with
+   it because the carry line is measured off the picture and nothing else. */
+.dzc-squad { --mini-x: 37px; --rider-step: 52px; --carry-gap: 5px; --mini-w: 128px; --mini-h: 92px; }
 /* In the CARRIER row's coordinates. Inside a rider row the same stroke is
    --rider-step further left, which is `--mini-x - --carry-gap`. */
 .dzc-squad { --carry-x: calc(var(--mini-x) + var(--rider-step) - var(--carry-gap)); }
@@ -1338,8 +1349,41 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
      the two pictures very nearly sharing a column, and this is the reason:
      move the vertical into the cargo's indent and the horizontal has almost
      nothing left to cross. */
-  width: calc(var(--carry-gap) + 22px);
+  /* AND IT STOPS AT THE BOX. Jet, 2026-08-13: "can we have the lines go to
+     the edge of the box behind the unit rather than the inside?" The picture
+     sits on a filled panel, so the last 22px of this arm were drawn ACROSS
+     the photograph -- a line running over the model it points at. It reaches
+     the panel's left edge and ends there. --carry-gap alone is that distance,
+     which is the same number the drop is placed with, so the two cannot
+     drift apart. */
+  width: var(--carry-gap);
   background: var(--acc, #1b3a5c);
+}
+/* AND THEY DRAW ON. Jet, 2026-08-13: "when the lines are added, could they be
+   drawn on?" -- the same ask as the variant line, which has done this since
+   2026-08-07, and the carry line is the one stroke in a Group card he has
+   said is worth keeping.
+
+   The drop grows downward out of the carrier's photograph and the arm grows
+   sideways into the cargo's, both on transform alone so nothing reflows and a
+   phone can hand the whole thing to the compositor. scaleY/scaleX rather than
+   height/width for the same reason: animating a length on a positioned
+   pseudo-element relays out every Squad under it, every frame. */
+@keyframes dzc-carry-drop { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes dzc-carry-arm  { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.dzc-squad.is-linked.is-carrier::after {
+  transform-origin: top center;
+  animation: dzc-carry-drop .34s var(--ease-out, cubic-bezier(0, 0, 0, 1)) 1;
+}
+.dzc-riders > .dzc-squad.is-linked > .dzc-sq-main::after {
+  transform-origin: left center;
+  /* After the drop it hangs off, so the line reads as one stroke turning a
+     corner rather than two marks appearing at once. */
+  animation: dzc-carry-arm .2s var(--ease-out, cubic-bezier(0, 0, 0, 1)) .28s backwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dzc-squad.is-linked.is-carrier::after,
+  .dzc-riders > .dzc-squad.is-linked > .dzc-sq-main::after { animation: none; }
 }
 /* And the PARENT's drop stops at the last thing it reaches.
 
@@ -1655,8 +1699,12 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    squat tracked tank beside a tall walker, and cropping to fill a box would
    take the legs off the one thing that tells them apart. The box is wider
    than it is tall for the same reason -- most of them are. */
+/* 46x30 -> 60x40, on the same ask. It is the only picture that tells a Sabre
+   from a Rapier, and it was drawn smaller than the stepper beside it. The
+   header is a flex row that centres on its tallest child, so the block grows
+   with it rather than the photograph overflowing. */
 .dzc-vblock-art {
-  flex: 0 0 auto; width: 46px; height: 30px; object-fit: contain;
+  flex: 0 0 auto; width: 60px; height: 40px; object-fit: contain;
   object-position: left center;
 }
 .dzc-vblock-head b { font: 700 13px/1.2 var(--font-ui, 'Jost', system-ui, sans-serif); }
@@ -1680,7 +1728,34 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    carry it printed the whole weapon a second time to have somewhere to put a
    price, so it went and the price came here. Big enough to hit with a thumb,
    and it says what it did rather than what it costs once you own it. */
-.dzc-carry-btn { color: var(--acc-text, var(--acc, #1b3a5c)); }
+/* LINKED TRANSPORT IS THE LOUD ONE. Jet, 2026-08-13: "let's make the 'add
+   linked transport' much more visible, by making it a bit bigger, matching
+   the aesthetics of the 'add transports' button."
+
+   Tying a Squad to the thing that carries it is the commonest move in a
+   Group, and it was the quietest control on the row: a 12px ghost chip in the
+   same grey as Take out. It takes Add Transports' old clothes -- the accent
+   fill, the uppercase label, the icon in its own tile -- one size down,
+   because this belongs to a Squad and that belongs to the Group. */
+.dzc-carry-btn {
+  min-height: 36px; padding: 5px 12px 5px 6px; gap: 8px;
+  border: 0; border-radius: 0;
+  background: var(--acc, #1b3a5c); color: var(--acc-on, #fff);
+  font: 700 12px/1 var(--font-ui, 'Jost', sans-serif);
+  letter-spacing: .05em; text-transform: uppercase;
+  transition: box-shadow 180ms cubic-bezier(.33,0,.67,1), filter .12s;
+}
+/* The chain rides in its own tile, as the chevron does on Add Units. */
+.dzc-carry-btn svg {
+  box-sizing: content-box; flex: 0 0 auto; padding: 6px;
+  background: rgba(255,255,255,.16);
+}
+.dzc-carry-btn:hover, .dzc-carry-btn:focus-visible {
+  border: 0; color: var(--acc-on, #fff);
+  box-shadow: inset 0 0 0 2px var(--gold, #c9a92c);
+}
+.dzc-carry-btn:active { filter: brightness(.92); box-shadow: none; }
+@media (prefers-reduced-motion: reduce) { .dzc-carry-btn { transition: none; } }
 /* The rule this Squad is breaking, on this Squad. The rail still counts them;
    this says which one, where you can act on it. */
 /* ON the meta line, beside Vehicle -- Jet, 2026-08-07: "put that alert for
@@ -1936,6 +2011,23 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    mystery. */
 .dzc-add-row { display: flex; flex-wrap: wrap; gap: 6px; }
 .dzc-add-row > .dzc-add-squad { flex: 1 1 190px; }
+/* Outlined, not filled. Same size, same chamfer, same hairline draw on hover --
+   only the fill goes, so the two still read as a pair and one of them leads. */
+.dzc-add-squad--quiet {
+  background: transparent; color: var(--acc-text, var(--acc, #1b3a5c));
+  box-shadow: inset 0 0 0 1px var(--line, #d8d0c0);
+}
+.dzc-add-squad--quiet .dzc-add-squad-i {
+  background: color-mix(in srgb, var(--acc, #1b3a5c) 12%, transparent);
+  color: var(--acc-text, var(--acc, #1b3a5c));
+}
+.dzc-add-squad--quiet:hover, .dzc-add-squad--quiet:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--acc, #1b3a5c);
+}
+.dzc-add-squad--quiet:hover .dzc-add-squad-i,
+.dzc-add-squad--quiet:focus-visible .dzc-add-squad-i {
+  background: color-mix(in srgb, var(--acc, #1b3a5c) 20%, transparent);
+}
 .dzc-add-squad-n {
   font-style: normal; font-family: var(--font-numeric, 'Outfit', sans-serif);
   font-size: 12px; opacity: .75; margin-left: auto;
@@ -2029,6 +2121,32 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   font: 700 10px/1 var(--font-condensed, 'Jost', sans-serif);
   text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2, #6b6459);
   margin-right: 2px;
+}
+/* ONE LEFT EDGE FOR THE WHOLE TOOLBAR. Jet, 2026-08-13: "Shit feels...
+   misaligned. I don't need a bunch more padding (on desktop at least) but
+   maybe some more alignment."
+
+   Five rows and four different left edges, measured: the search field at 25
+   (behind a 20px magnifier), the category tabs at 0, the sort chips at 34
+   (behind "Sort"), the shape chips at 28 (behind "Fits", which is narrower),
+   and the count at 0. Nothing was wrong with any one row; they simply each
+   started wherever their own first child ended.
+
+   So the labels stop setting the indent and a gutter does. Everything that
+   reads as content -- field, tabs, chips, count -- starts at --pick-gutter,
+   and the two labels and the magnifier hang in it. The bar is no wider: the
+   gutter is carved out of the row, not added to the bar. */
+@media (min-width: 861px) {
+  .dzc-pick-bar { --pick-gutter: 34px; }
+  /* Minus the row's own 6px gap, so the field lands ON the gutter. */
+  .dzc-pick-bar .dzc-search-row > .dzc-i { flex: 0 0 calc(var(--pick-gutter) - 6px); }
+  .dzc-pick-bar .dzc-chips,
+  .dzc-pick-bar .dzc-pick-results { padding-left: var(--pick-gutter); }
+  /* Minus the row's own 4px gap, for the same reason. A fixed width also
+     stops "Sort" and "Fits" indenting their rows by different amounts. */
+  .dzc-pick-bar .dzc-pick-sortlab {
+    flex: 0 0 calc(var(--pick-gutter) - 4px); margin-right: 0;
+  }
 }
 .dzc-chip--sm { padding: 4px 8px; font-size: 11px; }
 /* The variant switcher over a weapon table. A lens, not a choice: it changes
@@ -2571,7 +2689,8 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 @media (max-width: 860px) {
   .dzc-builder { --sq-indent: 14px; }
   .dzc-group-card { padding: 12px; }
-  .dzc-squad { --mini-w: 84px; --mini-h: 60px; --rider-step: 44px; }
+  /* The step up on desktop carries down, proportionally: 84x60 -> 100x72. */
+  .dzc-squad { --mini-w: 100px; --mini-h: 72px; --rider-step: 44px; }
   button.dzc-sq-name { font-size: 16px; }
   .dzc-sq-cap .dzc-badge { --badge-px: 38px; --cargo-px: 30px; }
 }
@@ -2580,14 +2699,19 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   .dzc-b-head { gap: 8px; }
   .dzc-builder { --sq-indent: 8px; }
   .dzc-group-card { padding: 10px; }
-  .dzc-squad { --mini-w: 74px; --mini-h: 53px; --rider-step: 36px; }
+  .dzc-squad { --mini-w: 86px; --mini-h: 62px; --rider-step: 36px; }
   .dzc-squad .dzc-squad { padding-left: 8px; }
   .dzc-sq-main { gap: 8px; }
   /* The controls drop to their own full-width row and spread out: at this
      width they were being crushed against the name by margin-left:auto. */
   .dzc-sq-ctl { flex: 1 1 100%; margin-left: 0; justify-content: space-between; }
   .dzc-sq-id { flex: 1 1 140px; }
-  .dzc-sq-art { width: 56px; height: 42px; }
+  /* NO SECOND SIZE FOR THE PICTURE. It is 100% of .dzc-sq-minis and that box
+     is what --mini-w/--mini-h set, three lines up. A literal here is the bug
+     the comment on .dzc-sq-minis describes and was only half fixed: 56x42 in
+     an 86x62 box left the photograph in the top-left corner of a box half
+     again its size, and the carry line -- which is measured off the BOX --
+     pointed at 31px into a 42px image. Every phone, every Squad. */
   button.dzc-sq-name { font-size: 15px; }
   .dzc-g-space { gap: 8px 16px; }
   .dzc-space-n b { font-size: 22px; }
@@ -2622,8 +2746,13 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   /* The narrowest case in the harness, and the one a three-level chain has to
      survive: 28px of step leaves the carrier's own body starting at 72 rather
      than 96, and a rider's at 44 either way. */
-  .dzc-squad { --mini-w: 64px; --mini-h: 46px; --rider-step: 28px; }
-  .dzc-sq-art { width: 100%; height: 96px; }
+  .dzc-squad { --mini-w: 74px; --mini-h: 53px; --rider-step: 28px; }
+  /* NO HEIGHT HERE EITHER, and this one was doing real damage: 96px of
+     photograph in a 46px box, so on the narrowest phone the picture stood
+     twice the height of the box that is supposed to bound it and hung 50px
+     into the row beneath, while the carry line -- measured off --mini-h --
+     aimed at 23px into a 96px image. .dzc-sq-art is 100% of .dzc-sq-minis and
+     that is the only place its size is allowed to be set. */
   .dzc-sq-cap .dzc-badge { --badge-px: 34px; --cargo-px: 27px; }
   .dzc-pick .dzc-badge { --badge-px: 36px; --cargo-px: 29px; }
   .dzc-add-squad { padding: 11px 12px; font-size: 14px; }
