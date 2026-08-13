@@ -38,12 +38,16 @@ const App = (() => {
    * Baxter's guess: "Might have needed a refresh with jet updating stuff."
    *
    * Probably right, and unprovable either way, which is the problem. A live
-   * tab does self-update within the minute (index.html polls and reloads on
-   * controllerchange), so this is not a prompt to reload -- a prompt would be
-   * a worse version of something already automatic. It is the build NUMBER,
-   * so a report can say which one it came from and "that was fixed in 419"
-   * becomes an answer instead of a guess. */
-  const BUILD = 450;
+   * tab is already running current code -- the worker fetches html, js, css
+   * and json with cache:'no-store' while online -- so this is not a prompt to
+   * reload. It is the build NUMBER, so a report can say which one it came from
+   * and "that was fixed in 419" becomes an answer instead of a guess.
+   *
+   * It used to say the tab "self-updates within the minute (index.html polls
+   * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
+   * on Firefox for iOS it fired every poll and threw the user out of the army
+   * they were building, once a minute. See the note in index.html. */
+  const BUILD = 451;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -581,6 +585,11 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-13', title: 'The app threw you out of your army once a minute on Firefox for iOS', items: [
+      'Reported by a reader on an iPhone: "every 1-2 minutes it will almost refresh the whole thing, taking me out of the list, clearing and reloading to the list page." It was a loop the app built for itself. Every 60 seconds it asked whether a new version had been published; the answer arrived as a new worker that took over the page immediately, and taking over triggered a reload. On browsers that decide the file has not changed, nothing happened and nobody noticed. On Firefox for iOS the answer came back "new" nearly every time, so it reloaded once a minute, forever, out of whatever you were building.',
+      'Nothing reloads the page any more. It was never needed to stay current — the app already fetches its own code and data fresh whenever you are online, so an open tab is running the live version regardless. The reload bought nothing and cost the army you were in the middle of.',
+      'The version check itself stays, because it is what keeps the offline copy current, but every half hour instead of every minute. On a phone that check is a radio wake-up.'
+    ] },
     { date: '2026-08-13', title: 'A three-page army list prints on two', items: [
       'The rules appendix is two columns, packed tight, and starts wherever the army finished instead of forcing a fresh sheet. That break bought the appendix a clean start and cost most of a page of white paper every time. Each keyword now runs into its own text as one paragraph rather than sitting on a line of its own — at this size a line per name was a third of the appendix spent on names.',
       'The army itself is still one column and that is not going to change: the Group nesting tree is tall and narrow, and splitting it puts a Condor at the foot of one column and the cargo it carries at the head of the next, which loses the one thing the sheet is for. A hundred short independent rules are the opposite shape, which is what columns are for.',
