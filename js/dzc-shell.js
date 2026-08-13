@@ -43,7 +43,7 @@ const App = (() => {
    * a worse version of something already automatic. It is the build NUMBER,
    * so a report can say which one it came from and "that was fixed in 419"
    * becomes an answer instead of a guess. */
-  const BUILD = 449;
+  const BUILD = 450;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -581,6 +581,14 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-13', title: 'A three-page army list prints on two', items: [
+      'The rules appendix is two columns, packed tight, and starts wherever the army finished instead of forcing a fresh sheet. That break bought the appendix a clean start and cost most of a page of white paper every time. Each keyword now runs into its own text as one paragraph rather than sitting on a line of its own — at this size a line per name was a third of the appendix spent on names.',
+      'The army itself is still one column and that is not going to change: the Group nesting tree is tall and narrow, and splitting it puts a Condor at the foot of one column and the cargo it carries at the head of the next, which loses the one thing the sheet is for. A hundred short independent rules are the opposite shape, which is what columns are for.',
+      'No box round a Group. The heading and the rule under it already say where one starts; a full border round each of nine Groups was nine rectangles of toner drawing what the whitespace draws for free. A Group still never splits across a page — that was never the border’s job.',
+      'No line under every weapon. That was most of the 247 borders on a three-page sheet, drawing a grid the columns already line up without. The header keeps its rule, because that one separates two different kinds of row.',
+      'Fifteen different type sizes became four. Nothing about the hierarchy changed; there were simply four or five sizes doing one job each and ten more that were an accident.',
+      'Measured end to end on a nine-Group army: 4.02 A4 pages down to 2.80, and 16% of the paper under a filled background down to none.'
+    ] },
     { date: '2026-08-13', title: 'Ctrl+P printed a blank page', items: [
       'Printing from anywhere except the app’s own Print button gave you one blank sheet. The rule that hands the printer the deployment sheet hides the entire app and prints a container the Print button is what fills — so Ctrl+P, the browser menu, File then Print, and every print-to-PDF extension hid the page and printed an empty box. It fills on any route to the printer now.',
       'And the app is only hidden when there is a sheet to put in its place. Ctrl+P on the Armies list or the Unit Reference used to hide that page too and print the same empty box; those print the page you are looking at.',
