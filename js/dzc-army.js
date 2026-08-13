@@ -2256,47 +2256,18 @@
       if (ban) errors.push({ rule: '10.1.12', msg: ban.reason });
     });
 
-    /* Not illegal, but worth saying: anything not aboard an Aircraft starts
-     * Reserved, off the table until Round 2 (9.4).
+    /* NOTHING IS SAID ABOUT WHO BEGINS RESERVED. Jet, 2026-08-13:
+     * "remove this warning."
      *
-     * 9.4 reads "Vehicles and Infantry which do not begin the game aboard an
-     * Aircraft, OR IN A TRANSPORT ABOARD AN AIRCRAFT, always begin Reserved."
-     * That second clause is the whole of it: this used to look at the
-     * immediate carrier only, so Legionnaires in a Bear APC in a Condor were
-     * reported as beginning Reserved when they fly in. And that stack is the
-     * rulebook's own illustration of nested transport (3.2.4.2, p11).
+     * It counted every Squad not aboard an Aircraft and warned that they
+     * begin Reserved (9.4). True, and not a problem with the list -- it is
+     * how deployment works, restated. On a normal army it fired on most of
+     * the Squads in it, so the warning panel opened with a line that reads
+     * the same every game and says nothing about what you just built.
      *
-     * So the chain is walked. The intermediate carriers are Transports by
-     * construction, which is exactly the case the clause describes, and the
-     * seen set is there because a corrupt save could point two Squads at each
-     * other and a validator must not be the thing that hangs. */
-    const flying = s => {
-      const seen = new Set();
-      let cur = s;
-      while (cur && cur.carriedBy && !seen.has(cur.id)) {
-        seen.add(cur.id);
-        cur = findSquad(army, cur.carriedBy);
-        const cu = cur && unitOf(army, cur);
-        if (cu && cu.type === 'Aircraft') return true;
-      }
-      return false;
-    };
-    let grounded = 0;
-    army.groups.forEach(g => g.squads.forEach(s => {
-      const u = unitOf(army, s);
-      if (!u || u.type === 'Aircraft') return;
-      if (!flying(s)) grounded++;
-    }));
-    if (grounded) {
-      /* Unless you brought Gates. "If your Army contains Gates, any of your
-       * Squads may start the game in Holding" -- so on a Shaltari list the
-       * Reserved warning is not only wrong, it is advice against the way the
-       * faction works. A Squad with no Transport is how Shaltari is built. */
-      const hasGate = (army.groups || []).some(g => g.squads.some(s => gateSquad(army, s)));
-      warnings.push(hasGate
-        ? { rule: 'Gate', msg: `${grounded} Squad${grounded === 1 ? '' : 's'} may start in Holding. Your Gates let any Squad do that.` }
-        : { rule: '9.4', msg: `${grounded} Squad${grounded === 1 ? '' : 's'} will begin Reserved. Only Units aboard an Aircraft start on the table.` });
-    }
+     * The walk that worked out who was flying is gone with it rather than
+     * left sitting unused; 9.4's nested-carrier clause is in the history if
+     * this ever comes back as something printed on the sheet instead. */
 
     // Group count is not activation count (4.1.2 / 4.2.1).
     const transportOnly = army.groups.filter(g => g.squads.length && g.squads.every(s => {

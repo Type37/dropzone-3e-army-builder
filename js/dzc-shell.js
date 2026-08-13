@@ -43,7 +43,7 @@ const App = (() => {
    * a worse version of something already automatic. It is the build NUMBER,
    * so a report can say which one it came from and "that was fixed in 419"
    * becomes an answer instead of a guess. */
-  const BUILD = 447;
+  const BUILD = 448;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -581,6 +581,13 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-13', title: 'Fewer lines on the sheet, and it saves ink unless you say otherwise', items: [
+      'Print opens with ink saver and compact both on. The sheet had just gained the app’s colour — accent headings, an accent carry line, outlined keyword chips — and defaulting a document whose whole job is to be printed to the expensive version has the trade backwards. Both toggles are on the preview and whatever you pick is remembered, so this is the first print only.',
+      'A Squad was four lines: the name, then its capacity symbols, then how much RM it carried, then its stats. It is two. Capacity and RM sit on the name line where they belong, and the Squad’s own rules share the stat line rather than opening one.',
+      'Stats print vertically — icon, number, what it is. Five stats laid on their side are five label-value pairs to read left to right; stacked they are five numbers on one baseline you take in at a glance. Each stack is narrow, so the block is still one line.',
+      'A Squad no longer says whether it is Standard, Vanguard, Heavy or Support. That decides whether a list is legal, which is settled before the sheet is printed and never asked again, and it was riding on every Squad on the one document you read with a model in your hand.',
+      'And nothing warns that Squads will begin Reserved. True of most Squads in most armies, and it is deployment restated rather than a fault in the list — the warning panel was opening with a line that reads the same every game.'
+    ] },
     { date: '2026-08-13', title: 'The printed sheet looks like the app now', items: [
       'The sheet had every fact right and drew none of them the way the builder does. Stats printed as a run-on line — "Move 18” Armour 2 Damage Points 3" — with each value the same weight as its label and no way to read one Squad against the next down the page. They print in the builder’s own grid now: the icon over the number, the label under it, and only the stats the card actually carries, because a tank has no Bravery.',
       'A weapon’s arc was the letters "F/S", which is a code you have to already know. It is the glyph off the stat card, with the letters beside it. A weapon’s keywords were a comma list; they are the same chips the app draws, outlined rather than filled so a page of them is not a page of toner.',

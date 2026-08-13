@@ -931,21 +931,29 @@ console.log('\nwarnings that are not errors');
   const s = A.addSquad(a, g.id, 'ucm-main-battle-tank', 2);
   A.setCommander(a, s.id, 5);
   const v = A.validate(a);
-  ok(v.warnings.some(w => w.msg.includes('Reserved')), 'ground units are flagged as starting Reserved (9.4)');
-  ok(!v.errors.some(e => e.msg.includes('Reserved')), 'that is a warning, never an error');
+  ok(!v.warnings.some(w => w.msg.includes('Reserved')), 'nothing is said about who begins Reserved');
+  ok(!v.errors.some(e => e.msg.includes('Reserved')), 'and it was never an error either');
   A.remove(a.id);
 }
 
-/* 9.4, in full: "Vehicles and Infantry which do not begin the game aboard an
- * Aircraft, OR IN A TRANSPORT ABOARD AN AIRCRAFT, always begin Reserved."
+/* 9.4 SAYS NOTHING ANY MORE. Jet, 2026-08-13: "remove this warning."
  *
- * That second clause is the whole test. Six Legionnaires ride two Bear APCs
- * which ride one Condor, the rulebook's own illustration of nested transport
- * (3.2.4.2, p11), so nothing in that Group begins Reserved. The check used to
- * look at the immediate carrier only, so the Legionnaires, whose carrier is a
- * Vehicle, were reported as walking on while they were in the air.
+ * It counted the Squads not aboard an Aircraft and warned they begin
+ * Reserved, which is true of most Squads in most armies and is deployment
+ * restated rather than a fault in the list.
+ *
+ * What went with it was a real piece of rules reading, and it is recorded
+ * here because the next person to want this on the sheet needs it: 9.4 is
+ * "Vehicles and Infantry which do not begin the game aboard an Aircraft, OR
+ * IN A TRANSPORT ABOARD AN AIRCRAFT, always begin Reserved." That second
+ * clause is the whole of it. Six Legionnaires in two Bear APCs in one Condor
+ * -- the rulebook's own illustration of nested transport (3.2.4.2, p11) --
+ * all fly in, and the first version looked at the immediate carrier only and
+ * reported the Legionnaires walking on while they were in the air.
+ *
+ * The check below is what remains: the validator stays silent either way.
  */
-console.log('\nwho actually begins Reserved (9.4)');
+console.log('\nnothing is said about who begins Reserved (9.4)');
 {
   const a = army();
   const g = A.addGroup(a);
@@ -954,16 +962,12 @@ console.log('\nwho actually begins Reserved (9.4)');
   const bears = g.squads.find(s => (A.unitOf(a, s) || {}).id === 'bear-apc');
   eq(bears.models.length, 2, 'two of them, derived from the load');
   ok(A.assignTransport(a, bears.id, 'condor-dropship').ok, 'and the Bears take a Condor');
+  ok(!A.validate(a).warnings.some(w => w.msg.includes('Reserved')),
+     'aboard an Aircraft: silent', JSON.stringify(A.validate(a).warnings));
 
-  const v = A.validate(a);
-  ok(!v.warnings.some(w => w.msg.includes('Reserved')),
-     'nothing in that Group begins Reserved — the Legionnaires are in a Transport aboard an Aircraft',
-     JSON.stringify(v.warnings));
-
-  // Take the Condor away and every one of them is on the ground again.
   A.assignTransport(a, bears.id, '');
-  ok(A.validate(a).warnings.some(w => w.msg.includes('Reserved')),
-     'without the Aircraft they are back to starting Reserved');
+  ok(!A.validate(a).warnings.some(w => w.msg.includes('Reserved')),
+     'and on the ground: still silent');
   A.remove(a.id);
 }
 
@@ -1826,10 +1830,10 @@ console.log('\nShaltari Gates are not part of the Group structure');
   // The error that used to print on every correctly built Shaltari list.
   const v = A.validate(a);
   ok(!hasErr(v, 'carries nothing'), 'an empty Gate is correct, not an error');
-  ok(v.warnings.some(w => /Holding/.test(w.msg)),
-     'and a Squad with no Transport starts in Holding rather than Reserved');
-  ok(!v.warnings.some(w => /begin Reserved/.test(w.msg)),
-     'so the Reserved warning does not also fire');
+  // The Holding line went with the Reserved one it stood in for (2026-08-13):
+  // both restated deployment rather than naming a fault in the list.
+  ok(!v.warnings.some(w => /Holding|begin Reserved/.test(w.msg)),
+     'and neither deployment line is printed at a Shaltari list');
 
   /* Reachable only from a link or a backup. CanAddUnit refuses to build it,
    * which is why the Squad is pushed straight onto the Group here rather than

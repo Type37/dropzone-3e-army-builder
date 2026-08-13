@@ -3051,26 +3051,33 @@
       return `<div class="pr-squad${depth ? ' pr-squad--nested' : ''}" style="--depth:${depth}">
         ${printOpts.art && u.art && !allVartd
           ? `<img class="pr-art" src="${esc(u.art)}" alt="" onerror="this.remove()">` : ''}
+        <!-- ONE LINE, NOT FOUR. Jet, 2026-08-13: "less lines. for example put
+             the unit transport icons on the same line as other shit."
+             The name, what it is, what it carries, what it is carrying in RM,
+             and what it cost all belong to the same fact and were stacked
+             four deep. Capacity and RM move up here; the stats row that
+             follows carries the Squad's rules on its right rather than
+             opening a line of its own. -->
         <div class="pr-sq-line">
           ${s.models.length > 1 ? `<span class="pr-sq-n">${s.models.length}×</span>` : ''}
+          <!-- NO CATEGORY. Jet, 2026-08-13: "we don't really need to be
+               reminding people if a unit is standard/heavy/etc during play."
+               Standard/Vanguard/Heavy/Support decide whether a list is LEGAL
+               (3.2), which is a question answered before the sheet is printed
+               and never again. It rode on every Squad line, on the one
+               document you read with a model in your hand. -->
           <span class="pr-sq-name">${esc(u.name)}</span>
-          <span class="pr-sq-cat" data-cat="${esc(u.category)}">${esc(u.category)}</span>
+          ${cap ? `<span class="pr-cap">${cap}</span>` : ''}
+          ${window.DZCArmy.rmOf(s) ? `<span class="pr-rm">${window.DZCArmy.rmOf(s)} RM</span>` : ''}
           ${s.commander ? `<span class="pr-cmdr">${esc(commanderTagName(a, s))}</span>` : ''}
           <span class="pr-sq-cost">${cost}pts</span>
         </div>
         ${mixStr ? `<div class="pr-variants">${mixStr}</div>` : ''}
-        <div class="pr-stats">${stats}</div>
-        ${ownSpecial ? `<div class="pr-rules-row">${
-          window.DZCUnits.rulesHtml(ownSpecial, a.faction, null, true) || esc(ownSpecial)}</div>` : ''}
-        <!-- RM aboard. This is the sheet you deploy from, and RM tokens are
-             physically placed on the Genitor before the first Round. A
-             number folded into the Squad's points is not something you can
-             set a model up from. It prints as tokens, not as the 35pts they
-             cost, because pts are what you paid and tokens are what you put
-             on the table. -->
-        ${window.DZCArmy.rmOf(s) ? `<div class="pr-rm">${
-          window.DZCArmy.rmOf(s)} RM aboard</div>` : ''}
-        ${cap ? `<div class="pr-cap">${cap}</div>` : ''}
+        <div class="pr-statline">
+          <div class="pr-stats">${stats}</div>
+          ${ownSpecial ? `<div class="pr-rules-row">${
+            window.DZCUnits.rulesHtml(ownSpecial, a.faction, null, true) || esc(ownSpecial)}</div>` : ''}
+        </div>
         ${wpns}
         ${gear}
         ${riders.map(r => squad(g, r, depth + 1)).join('')}
@@ -3204,8 +3211,18 @@
    * makes a mess of, the sheet is a deployment plan rather than a display
    * piece, and it is the single biggest thing between a two-page list and a
    * four-page one. Off by default, available when you want it. */
+  /* PRINT FRIENDLY BY DEFAULT. Jet, 2026-08-13: "print mode should be more
+   * print friendly by default."
+   *
+   * Ink saver and compact are both ON out of the box now, and art stays off.
+   * The sheet just gained the app's colour -- accent headings, an accent carry
+   * line, outlined rule chips -- and a default that spends colour on a
+   * document whose job is to be printed has the trade backwards: the person
+   * who wants the pretty one is choosing to want it, and the toggles are right
+   * there on the preview. Whatever you pick is remembered, so this is the
+   * first print only. */
   const PRINT_KEY = 'dzc_print';
-  let printOpts = { compact: false, ink: false, art: false };
+  let printOpts = { compact: true, ink: true, art: false };
   try { Object.assign(printOpts, JSON.parse(localStorage.getItem(PRINT_KEY) || '{}')); }
   catch (e) { /* nothing saved, or a browser refusing storage */ }
 
