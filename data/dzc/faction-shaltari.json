@@ -1195,7 +1195,7 @@
         "B": "2+",
         "DP": "3"
       },
-      "special": "",
+      "special": "Agile 2, Hardy 3+, Lethal, Warsuit (All), Command Centre, Microgate (Daimyo)",
       "variants": [
         {
           "name": "Firstborns",
@@ -1208,7 +1208,14 @@
           "art": "assets/units/variants/assault-warsuits--daimyo.webp"
         }
       ],
-      "specialVariants": [],
+      "specialVariants": [
+        {
+          "rule": "Microgate",
+          "variants": [
+            "Daimyo"
+          ]
+        }
+      ],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1500,7 +1507,7 @@
         "A": "4",
         "DP": "4"
       },
-      "special": "",
+      "special": "Skimmer, Ev2, P5+, Wide 6” (All), Command Centre (Gharial, Crocodile)",
       "variants": [
         {
           "name": "Alligator",
@@ -1523,7 +1530,15 @@
           "art": "assets/units/variants/shaltari-heavy-grav-tank--gharial.webp"
         }
       ],
-      "specialVariants": [],
+      "specialVariants": [
+        {
+          "rule": "Command Centre",
+          "variants": [
+            "Gharial",
+            "Crocodile"
+          ]
+        }
+      ],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -1917,7 +1932,7 @@
         "A": "2",
         "DP": "1"
       },
-      "special": "",
+      "special": "Skimmer, P5+, Ev2, Scout (All), Shield: Friendly Vehicles 3” 4+ (Tate)",
       "variants": [
         {
           "name": "Yari",
@@ -1935,7 +1950,14 @@
           "art": "assets/units/variants/shaltari-light-grav-tank--tate.webp"
         }
       ],
-      "specialVariants": [],
+      "specialVariants": [
+        {
+          "rule": "Shield: Friendly Vehicles 3” 4+",
+          "variants": [
+            "Tate"
+          ]
+        }
+      ],
       "transport": {
         "capacity": [],
         "capacityMode": null,

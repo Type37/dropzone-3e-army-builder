@@ -1422,7 +1422,7 @@
           "box": "upgrade",
           "variants": [],
           "upgradePoints": 25,
-          "exclusive": false,
+          "exclusive": true,
           "capacityDelta": [
             {
               "shape": "circle",
@@ -1443,7 +1443,7 @@
           "box": "upgrade",
           "variants": [],
           "upgradePoints": 35,
-          "exclusive": false,
+          "exclusive": true,
           "capacityDelta": [
             {
               "shape": "circle",
@@ -1661,7 +1661,7 @@
           "box": "upgrade",
           "variants": [],
           "upgradePoints": 25,
-          "exclusive": false,
+          "exclusive": true,
           "capacityDelta": [
             {
               "shape": "circle",
@@ -1682,7 +1682,7 @@
           "box": "upgrade",
           "variants": [],
           "upgradePoints": 35,
-          "exclusive": false,
+          "exclusive": true,
           "capacityDelta": [
             {
               "shape": "circle",
@@ -2233,7 +2233,7 @@
           "box": "upgrade",
           "variants": [],
           "upgradePoints": 0,
-          "exclusive": false,
+          "exclusive": true,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -2469,7 +2469,7 @@
         "B": "5+",
         "DP": "3"
       },
-      "special": "",
+      "special": "Bikes 1, Ev1, Infiltrate 18”, UC (All), Scanner, Scout (Recon ATVs)",
       "variants": [
         {
           "name": "Recon ATVs",
@@ -2481,7 +2481,14 @@
           "art": "assets/units/variants/atvs--attack-atvs.webp"
         }
       ],
-      "specialVariants": [],
+      "specialVariants": [
+        {
+          "rule": "Scout",
+          "variants": [
+            "Recon ATVs"
+          ]
+        }
+      ],
       "transport": {
         "capacity": [],
         "capacityMode": null,
@@ -3699,7 +3706,7 @@
           "box": "upgrade",
           "variants": [],
           "upgradePoints": 10,
-          "exclusive": false,
+          "exclusive": true,
           "capacityDelta": [],
           "boxUnresolved": false
         }

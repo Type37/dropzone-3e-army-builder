@@ -1634,6 +1634,30 @@
 
   function gateSquad(army, squad) { return isGate(unitOf(army, squad)); }
 
+  /* The Group a Gate belongs in, made if it is not there yet.
+   *
+   * "A Gate is never part of another Group", and it spends none of the
+   * allowance either, so it does not join whatever Group you happened to be
+   * looking at when you bought it -- it goes beside the other Gates. The first
+   * Group that is nothing but Gates is that place.
+   *
+   * This is the whole of a bug reported from a phone on 2026-08-15: "I'm not
+   * able to add transports for shaltari". Every Shaltari Transport is a Gate,
+   * canAddUnit refuses a Gate into an occupied Group -- rightly, that army
+   * would be illegal -- and every Group you look at has something in it, so
+   * Add Transports counted zero and disabled itself on every screen that
+   * offered it. The refusal was right and the route out of it did not exist. */
+  function gateHome(army, create) {
+    const home = (army.groups || []).find(g =>
+      (g.squads || []).length && g.squads.every(s => gateSquad(army, s)));
+    if (home) return home;
+    // An empty Group is a fine home too -- it is what "Add Group then add a
+    // Gate" leaves behind, and making a second one beside it is litter.
+    const empty = (army.groups || []).find(g => !(g.squads || []).length);
+    if (empty) return empty;
+    return create ? addGroup(army) : null;
+  }
+
   function groupsUsed(army) {
     return (army.groups || []).reduce((n, g) => {
       // "Gates do not count against your number of allowed Groups." A Group
@@ -2269,11 +2293,21 @@
      * left sitting unused; 9.4's nested-carrier clause is in the history if
      * this ever comes back as something printed on the sheet instead. */
 
-    // Group count is not activation count (4.1.2 / 4.2.1).
-    const transportOnly = army.groups.filter(g => g.squads.length && g.squads.every(s => {
-      const u = unitOf(army, s);
-      return u && u.category === 'Transport';
-    })).length;
+    /* Group count is not activation count (4.1.2 / 4.2.1).
+     *
+     * A Group of Gates is exempt, and for the same reason it is exempt from
+     * the Group allowance: it is not a Group that failed to get a fighting
+     * Squad, it is where every Gate in a Shaltari army lives. Its own rule
+     * gives it an activation -- "any number of them which have not yet been
+     * activated that Round may be activated together with any non-Gate Group"
+     * -- so the warning was both wrong and permanent on every Shaltari list
+     * that took a Gate at all. */
+    const transportOnly = army.groups.filter(g => g.squads.length
+      && !g.squads.every(s => gateSquad(army, s))
+      && g.squads.every(s => {
+        const u = unitOf(army, s);
+        return u && u.category === 'Transport';
+      })).length;
     if (transportOnly) {
       // "1 Group contain only Transports", the verb has to agree with the
       // count as well as the noun.
@@ -2300,7 +2334,7 @@
     // Raw Materials (Genitor X)
     genitorCap, rmOf, rmCost, setRm, RM_POINTS,
     // Shaltari Gates (Gate, Shaltari Unit Special Rules)
-    isGate, gateSquad,
+    isGate, gateSquad, gateHome,
     // enforcement
     canAddUnit, canSetCount, squadsNamed, squadFill,
     upgradesFor, hasUpgrade, toggleUpgrade, upgradeCost,

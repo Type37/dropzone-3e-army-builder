@@ -473,6 +473,46 @@ console.log('\neverything the site fetches is staged for deploy');
      unstaged.join(', '));
 }
 
+// ------------------------------------------- the printer is handed a container
+/* Every stylesheet that hides the app at print time names the SAME container
+ * the app fills, and that container exists.
+ *
+ * css/app.css is Dropfleet-era. Its print block hid every child of the body
+ * except `#print-container`, which is Dropfleet's id and was never ported --
+ * so the rule matched `#dzc-print` too, `!important` beat everything
+ * dzc-print.css could say, and the sheet the app had just built was hidden
+ * along with the app. Every browser, every route to the printer, one blank
+ * page: "print mode don't work. It gets to a white screen when I try to
+ * print" (2026-08-15).
+ *
+ * A blank page is the one print bug no test can notice by reading the JS, and
+ * the sheet renders perfectly right up to the moment it is hidden. So the
+ * check is on the id: whatever the stylesheets hide the app in favour of must
+ * be the element dzc-builder.js creates. */
+console.log('\nthe printer is handed the container the app fills');
+{
+  const builder = readFileSync(path.join(ROOT, 'js/dzc-builder.js'), 'utf8');
+  const made = builder.match(/el\.id\s*=\s*'([\w-]+)'/);
+  ok(!!made, 'the builder creates a print container with an id');
+  const id = made && made[1];
+  eq(id, 'dzc-print', 'and it is #dzc-print');
+
+  const sheets = ['css/app.css', 'css/mobile-fixes.css', 'css/dzc.css', 'css/dzc-print.css'];
+  const strays = [];
+  for (const f of sheets) {
+    // Comments out first: the note explaining this very bug quotes the dead
+    // selector, and a check that cannot survive being written about is no use.
+    const css = readFileSync(path.join(ROOT, f), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+    // Every id the print rules exempt from being hidden, or reveal.
+    for (const m of css.matchAll(/:not\(#([\w-]+)\)|#([\w-]+)\s*\{[^}]*display\s*:\s*block/g)) {
+      const name = m[1] || m[2];
+      if (name !== id) strays.push(`${f}: #${name}`);
+    }
+  }
+  eq(strays.length, 0, 'no stylesheet hides the app in favour of a container that is not it',
+     strays.join(', '));
+}
+
 // -------------------------------- the preview and the printer agree on breaks
 /* The print preview draws the page breaks. It can only draw them where the
  * printer will actually make them, and the two know that from different

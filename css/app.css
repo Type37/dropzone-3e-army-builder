@@ -5215,16 +5215,24 @@ h1, h2, h3, h4, h5, h6 {
     margin: 12mm;
   }
 
-  /* Hide everything except the print container */
+  /* THE CONTAINER IS #dzc-print. It was #print-container, which is Dropfleet's
+     id and exists nowhere in this app -- the whole of "print mode gets to a
+     white screen", reported 2026-08-15.
+     `body > *:not(#print-container) { display: none !important }` matched every
+     child of the body INCLUDING the sheet, and `!important` beats any
+     specificity dzc-print.css can bring, so the correctly built, correctly
+     filled sheet was hidden by a rule naming a container that was never
+     ported. Every browser, every route to the printer, one blank page.
+     The hiding lives in dzc-print.css, where it is gated on `body.is-sheet` so
+     Ctrl+P elsewhere in the app still prints the page you are looking at. What
+     stays here is the paper itself and the WebKit fix below. */
   body { background: white !important; color: black !important; font-size: 10pt; }
-  body > *:not(#print-container) { display: none !important; }
-  #print-container { display: block !important; }
 
   /* macOS/WebKit fix: <body> is a column flexbox (display:flex on screen). In a
      paginated context WebKit will not fragment a flex item across pages and
      collapses the lone remaining child to ~zero height. Printing ONE BLANK PAGE
      (Windows/Blink prints fine). Reset the body back to normal block flow for
-     print so #print-container paginates as an ordinary block. */
+     print so the sheet paginates as an ordinary block. */
   html, body {
     display: block !important;
     min-height: 0 !important;
@@ -5232,7 +5240,7 @@ h1, h2, h3, h4, h5, h6 {
     overflow: visible !important;
     margin: 0 !important;
   }
-  #print-container {
+  #dzc-print {
     position: static !important;
     width: auto !important;
     height: auto !important;

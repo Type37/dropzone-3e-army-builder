@@ -840,6 +840,19 @@ def columns_from_header(header_line, headers):
     return sorted(out, key=lambda c: c[1])
 
 
+def column_bounds(cols, rules=None):
+    """The x edge between each adjacent pair of columns."""
+    if rules:
+        # Keep only rules that actually separate two adjacent header centres.
+        bounds = []
+        for i in range(len(cols) - 1):
+            lo, hi = cols[i][1], cols[i + 1][1]
+            between = [x for x in rules if lo < x < hi]
+            bounds.append(between[len(between) // 2] if between else (lo + hi) / 2)
+        return bounds
+    return [(cols[i][1] + cols[i + 1][1]) / 2 for i in range(len(cols) - 1)]
+
+
 def split_row(line, cols, rules=None):
     """
     Assign each word to a column by boundary, not by nearest centre.
@@ -850,15 +863,7 @@ def split_row(line, cols, rules=None):
     """
     if not cols:
         return {}
-    if rules:
-        # Keep only rules that actually separate two adjacent header centres.
-        bounds = []
-        for i in range(len(cols) - 1):
-            lo, hi = cols[i][1], cols[i + 1][1]
-            between = [x for x in rules if lo < x < hi]
-            bounds.append(between[len(between) // 2] if between else (lo + hi) / 2)
-    else:
-        bounds = [(cols[i][1] + cols[i + 1][1]) / 2 for i in range(len(cols) - 1)]
+    bounds = column_bounds(cols, rules)
     buckets = defaultdict(list)
     for w in line:
         cx = (w[0] + w[2]) / 2
@@ -929,17 +934,56 @@ def parse_stat_table(page, lines) -> tuple[str, str | None, dict[str, str], str,
     rules = sorted(vertical_rules(page, top, bottom))
     if len(rules) < len(cols) - 1:
         rules = sorted(set(rules) | set(doc_rules(page.parent)))
-    for ln in lines[i + 1:i + 4]:
+    for k, ln in enumerate(lines[i + 1:i + 4], start=i + 1):
         row = split_row(ln, cols, rules)
         m = TYPE_RE.match((row.get("Type") or "").strip())
         if m:
-            special = row.pop("Special", "") or ""
             row.pop("Type")
+            row.pop("Special", None)
+            special, bottom = read_special_cell(lines, i, k, cols, rules)
             return (m.group(1), m.group(2) or None,
-                    {k: v for k, v in row.items() if v},
+                    {k2: v for k2, v in row.items() if v},
                     join_broken_hyphen(special.strip(" -")),
-                    float(max(w[3] for w in ln)))
+                    max(float(max(w[3] for w in ln)), bottom))
     return None
+
+
+def read_special_cell(lines, header_i, type_k, cols, rules):
+    """The whole Special cell, however many lines it wraps to.
+
+    The stat row is one line; the Special cell beside it is not. It is
+    vertically centred against that row, so a two-line rule list straddles it —
+    one line above the Type word, one below. Reading Special off the Type line
+    alone dropped the Siren Corps' entire rule list on the floor: everything up
+    to "Rapid Insertion" sits 4pt higher than "Infantry", and only the trailing
+    "6”" shares its line group.
+
+    So the cell is read as a cell: every word right of the last column edge,
+    between the header and the last line the cell reaches, in reading order.
+    Returns the text and the y it bottoms out at, which is the floor the
+    footnote reader starts below on cards with no weapon table.
+    """
+    bounds = column_bounds(cols, rules)
+    if not bounds:
+        return "", 0.0
+    edge = bounds[-1]
+    row = lines[type_k]
+    top, bot = min(w[1] for w in row), max(w[3] for w in row)
+    lh = bot - top
+    out, bottom = [], 0.0
+    # One line either side, and only if it sits within a line height of the
+    # stat row. Index alone is not enough: on a card WITH a weapon table the
+    # next line is that table's header, whose own "Special" also falls right
+    # of this edge.
+    for ln in lines[max(header_i + 1, type_k - 1):type_k + 2]:
+        if min(w[1] for w in ln) > bot + lh or max(w[3] for w in ln) < top - lh:
+            continue
+        words = [w for w in ln if (w[0] + w[2]) / 2 > edge]
+        if not words:
+            continue
+        out.append(" ".join(w[4] for w in sorted(words, key=lambda w: w[0])))
+        bottom = max(bottom, max(w[3] for w in words))
+    return " ".join(out).strip(), bottom
 
 
 def weapon_swatches(page):

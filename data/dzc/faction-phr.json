@@ -402,7 +402,7 @@
             "Styx"
           ],
           "upgradePoints": 5,
-          "exclusive": false,
+          "exclusive": true,
           "capacityDelta": [],
           "boxUnresolved": false
         }
@@ -870,7 +870,7 @@
         "B": "3+",
         "DP": "3"
       },
-      "special": "",
+      "special": "Agile 4, Breachers 1, FS5, Lethal, Rapid Insertion 6”",
       "variants": [],
       "specialVariants": [],
       "transport": {
@@ -2421,7 +2421,7 @@
         "A": "5",
         "DP": "2"
       },
-      "special": "",
+      "special": "Jump 18”, Rapid Insertion 8” (All), Command Centre, Ev1, Resilient (Hera)",
       "variants": [
         {
           "name": "Apollo A",
@@ -2436,7 +2436,14 @@
           "points": 65
         }
       ],
-      "specialVariants": [],
+      "specialVariants": [
+        {
+          "rule": "Resilient",
+          "variants": [
+            "Hera"
+          ]
+        }
+      ],
       "transport": {
         "capacity": [],
         "capacityMode": null,

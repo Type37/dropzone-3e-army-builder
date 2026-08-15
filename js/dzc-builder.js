@@ -1385,12 +1385,34 @@
    * Group of tanks with a full Condor, Add Units has nothing to offer either.
    * Both cases are counted here and the button says so on its face rather than
    * opening a picker where everything is greyed out. */
+  /* Can this Unit be added FROM here -- which is not the same question as
+   * whether it may join this Group.
+   *
+   * They differ on exactly one Unit type, and it is every Transport a Shaltari
+   * player owns. A Gate is never part of another Group, so canAddUnit refuses
+   * it into any Group with a Squad in it, and it is right to: that army would
+   * be illegal. But the Gate is not going into this Group. It goes to the
+   * Gates Group, which gateHome finds or makes, and the only question worth
+   * asking here is whether it may go THERE.
+   *
+   * Asked with no Group at all when there is no Gates Group yet: canAddUnit
+   * takes a null groupId and checks what is true of the army rather than of a
+   * Group -- Rare and Unique -- which is exactly the set that could still
+   * refuse a Gate. */
+  function canOffer(a, groupId, u) {
+    if (window.DZCArmy.isGate(u)) {
+      const home = window.DZCArmy.gateHome(a, false);
+      return window.DZCArmy.canAddUnit(a, home ? home.id : null, u.id);
+    }
+    return window.DZCArmy.canAddUnit(a, groupId, u.id);
+  }
+
   function addButtons(a, g) {
     const f = window.DZC.faction(a.faction);
     const pool = ((f && f.units) || []).filter(u => u.selectable !== false);
     const open = kind => pool.filter(u =>
       (kind === 'transport') === (u.category === 'Transport')
-      && window.DZCArmy.canAddUnit(a, g.id, u.id).ok).length;
+      && canOffer(a, g.id, u).ok).length;
     /* Add Transports is the QUIETER of the two. Jet, 2026-08-13: "let's make
      * the add transports button a bit less attractive." Two solid accent bars
      * side by side gave a Transport the same weight as the Squad it exists to
@@ -2616,7 +2638,7 @@
     // Checked once per unit and reused for the sort, the count and the card
     // itself, rather than three separate calls landing on three separate
     // answers if the Group changes mid-render.
-    const checks = new Map(units.map(u => [u.id, window.DZCArmy.canAddUnit(a, picker.groupId, u.id)]));
+    const checks = new Map(units.map(u => [u.id, canOffer(a, picker.groupId, u)]));
 
     /* ADD TRANSPORTS OPENS ON THE ONES THAT FIT. Jet, 2026-08-12: "if you have
      * a unit and you click or press add transport then it should default to
@@ -2686,7 +2708,7 @@
     const sp = squadPrice(u);
     const price = sp ? span(sp.lo, sp.hi) : '—';
     const each = sp && sp.n > 1 ? `${sp.n} × ${span(sp.perLo, sp.perHi)}` : '';
-    if (!chk) chk = window.DZCArmy.canAddUnit(a, picker.groupId, u.id);
+    if (!chk) chk = canOffer(a, picker.groupId, u);
     const U = window.DZCUnits;
     const meta = [
       `<span class="dzc-cat" data-cat="${esc(u.category)}">${esc(u.category)}</span>`,
@@ -2737,6 +2759,26 @@
     const g = (current.groups || []).find(x => x.id === picker.groupId);
     const u = window.DZC.unit(current.faction, unitId);
     if (!g || !u) return;
+
+    /* A Gate lands in the Gates Group, whichever Group you were looking at.
+     * "A Gate is never part of another Group" and it costs none of the
+     * allowance, so putting it where you pressed the button would build an
+     * illegal army out of a legal press. It carries nothing and it is not
+     * carried, so nothing below this applies to it either.
+     *
+     * The Group you are on wins when it can take one, so pressing Add
+     * Transports on a Group you just made puts the Gate in THAT Group rather
+     * than in one somewhere else on the screen. */
+    if (window.DZCArmy.isGate(u)) {
+      const here = !g.squads.length
+        || g.squads.every(s => window.DZCArmy.gateSquad(current, s));
+      const home = here ? g : window.DZCArmy.gateHome(current, true);
+      const gs = window.DZCArmy.addSquad(current, home.id, unitId);
+      if (!gs) return;
+      closePicker();
+      await renderBuilder(current.id);
+      return say(`${u.name} added to ${window.DZCArmy.groupName(current, home)}.`, 'add');
+    }
 
     /* Picking a Transport does not make a loose Squad of Transports, it
      * carries something already here. assignTransport builds the Transport
@@ -3409,9 +3451,21 @@
     return el;
   }
 
+  /* The app's own Print button sets the body up ITSELF rather than trusting
+   * beforeprint to do it. Safari on iOS does not fire beforeprint, and a phone
+   * is where this button gets pressed, so the one browser most likely to use
+   * it was the one browser where the class that reveals the sheet never
+   * arrived. Setting it here is idempotent -- beforeprint sets the same class
+   * where it does fire.
+   *
+   * afterprint is not fired there either, so the class is also cleared on a
+   * timer. It costs nothing to leave on: it means nothing outside @media
+   * print. */
   function printNow() {
+    document.body.classList.add('is-sheet');
     fillPrintEl();
     window.print();
+    setTimeout(() => document.body.classList.remove('is-sheet'), 1000);
   }
 
   /* CTRL+P PRINTS THE SHEET TOO. Jet, 2026-08-13: "I CLICK PRINT, i get

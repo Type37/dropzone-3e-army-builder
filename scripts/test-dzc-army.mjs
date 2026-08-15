@@ -1830,10 +1830,43 @@ console.log('\nShaltari Gates are not part of the Group structure');
   // The error that used to print on every correctly built Shaltari list.
   const v = A.validate(a);
   ok(!hasErr(v, 'carries nothing'), 'an empty Gate is correct, not an error');
+  /* Nor the warning that came after it. A Group of Gates IS every Gate in the
+   * army, not a Group that failed to get a fighting Squad, and its own rule
+   * gives it an activation: "any number of them which have not yet been
+   * activated that Round may be activated together with any non-Gate Group."
+   * The 4.2.2 line was permanent on every Shaltari list that took one. */
+  ok(!v.warnings.some(w => /only Transports/.test(w.msg)),
+     'and a Group of Gates is not warned about as Transport-only');
   // The Holding line went with the Reserved one it stood in for (2026-08-13):
   // both restated deployment rather than naming a fault in the list.
   ok(!v.warnings.some(w => /Holding|begin Reserved/.test(w.msg)),
      'and neither deployment line is printed at a Shaltari list');
+
+  /* THERE IS A WAY IN. Reported from a phone, 2026-08-15: "I'm not able to add
+   * transports for shaltari".
+   *
+   * Every Shaltari Transport is a Gate, canAddUnit refuses a Gate into a Group
+   * with anything in it, and every Group you are looking at has something in
+   * it -- so Add Transports counted zero everywhere and disabled itself. The
+   * refusal is right; what was missing is where the Gate goes instead. */
+  const home = A.gateHome(a, false);
+  ok(!!home && home.id === g2.id, 'gateHome finds the Group the Gates are in');
+  ok(A.canAddUnit(a, home.id, 'gaia-heavy-gate').ok,
+     'and a Gate may be added THERE while it is refused beside the Braves');
+
+  {
+    const fresh = A.create('shaltari', 'No Gates yet', 2000);
+    const only = A.addGroup(fresh);
+    A.addSquad(fresh, only.id, 'brave-warsuits', 2);
+    const made = A.gateHome(fresh, true);
+    ok(!!made && made.id !== only.id, 'with no Gates Group yet, one is made');
+    ok(A.addSquad(fresh, made.id, 'spirit-light-gate', 1) !== null,
+       'and the Gate goes into it');
+    eq(String(A.groupsUsed(fresh)), '1', 'the new Group spends none of the allowance');
+    eq(A.groupName(fresh, made), 'Gates', 'and it is called Gates, not Group 2');
+    ok(A.gateHome(fresh, false).id === made.id,
+       'a second Gate finds the same home rather than making another');
+  }
 
   /* Reachable only from a link or a backup. CanAddUnit refuses to build it,
    * which is why the Squad is pushed straight onto the Group here rather than
