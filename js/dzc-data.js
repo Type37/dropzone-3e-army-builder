@@ -644,13 +644,33 @@
    * Full means every one of them full, so the count matters here for the same
    * reason it matters above: three Legionnaires across two Bear APCs fills
    * neither, and is not a legal Group. */
+  /* How full "full" is for THIS Transport.
+   *
+   * Normally all of it. "Flexible Capacity: this Transport may be taken if at
+   * least half full" is the one card-printed exception, and it goes here
+   * rather than into a list of unit ids -- the same reading Gate gets, so the
+   * next card to print it needs no code. The Resistance Battle Bus and the
+   * Leviathan Heavy Hovercraft both carry it, and both were being told they
+   * were not full while doing exactly what their own rule allows.
+   *
+   * The token must match exactly. "Flexible Capacity" is the whole rule name;
+   * a substring test would be a different rule the day TTCombat print one. */
+  function fillFloor(carrier) {
+    return String((carrier && carrier.special) || '').split(',')
+      .some(t => t.trim() === 'Flexible Capacity') ? 0.5 : 1;
+  }
+
   function isFull(carrier, passengers, carriers) {
     const n = carriers > 0 ? carriers : 1;
     const chk = loadCheck(carrier, passengers, n);
     if (!chk.ok) return false;
     const shapes = Object.keys(chk.byShape);
     if (!shapes.length) return false;
-    return shapes.every(s => chk.byShape[s] === capacityFor(carrier, s) * n);
+    // loadCheck has already refused anything OVER capacity, so at a floor of 1
+    // this is the equality it was before.
+    const floor = fillFloor(carrier);
+    return shapes.every(s =>
+      chk.byShape[s] >= Math.ceil(capacityFor(carrier, s) * n * floor));
   }
 
   // -------------------------------------------------------------- army limits
@@ -800,7 +820,7 @@
     unit: (fid, uid) => (state.factions[fid] || { byId: {} }).byId[uid],
     rule, ruleText, ruleLabel, linkKeywords, splitSpecial, matches, squadPrice,
     damageRoll, damageTable, energyKind,
-    capacityFor, fillsOf, fitsIn, canCarry, carrierWithUpgrades, loadCheck, isFull,
+    capacityFor, fillsOf, fitsIn, canCarry, carrierWithUpgrades, loadCheck, isFull, fillFloor,
     gameSizeFor, maxGroups, maxGroupCost, rareLimit, commanderLevels,
     _state: state, _compileRules: compileRules
   };

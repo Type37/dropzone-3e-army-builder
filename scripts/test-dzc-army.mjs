@@ -1761,11 +1761,79 @@ console.log('\nsharing a Transport (3.2.4.1) and an Auxiliary Transport (3.2.4.3
   ok(A.boardTransport(c, bear2.id, alb.id).ok,
      'and a second Bear APC Squad shares that ONE Albatross — the book’s Group 5');
 
+  /* THE WHOLE OF GROUP 5, WHICH IS WHERE IT USED TO STOP.
+   *
+   * The book prints it as one Albatross over two Bear APCs, their two
+   * Legionnaire Squads, three Sabres and two Gladius (p.10) — four Squads,
+   * "plus their Transport Squads if they have any", filling all 18 triangles
+   * exactly.
+   *
+   * The cap counted every Squad in the GROUP holding a carrier of any kind,
+   * so the two Bears each spent a slot their own rule gives them for free and
+   * the count hit four with half the Group still to add. The Sabres were
+   * refused, and the Albatross left holding six of eighteen then reported
+   * "not full" for good — an error thrown at an Army the rulebook prints as
+   * legal. Reported 2026-08-15. */
+  const sabres = A.addSquad(c, g3.id, 'ucm-main-battle-tank', 3);
+  ok(!!sabres, 'three Sabres join that Group — the Bears do not spend a slot (3.2.4.1)',
+     sabres ? '' : A.canAddUnit(c, g3.id, 'ucm-main-battle-tank').reason);
+  if (sabres) ok(A.boardTransport(c, sabres.id, alb.id).ok, 'and board the Albatross');
+  const gladius = A.addSquad(c, g3.id, 'ucm-heavy-tank', 2);
+  ok(!!gladius, 'and so do two Gladius, the fourth Squad',
+     gladius ? '' : A.canAddUnit(c, g3.id, 'ucm-heavy-tank').reason);
+  if (gladius) ok(A.boardTransport(c, gladius.id, alb.id).ok, 'boarding it as well');
+  const bookV = A.validate(c);
+  ok(!hasErr(bookV, 'not full'),
+     'the book’s Group 5, complete, fills the Albatross exactly',
+     JSON.stringify(bookV.errors.map(e => e.msg)));
+  ok(!hasErr(bookV, 'share one Transport'),
+     'and four Squads plus their two Transport Squads is not five');
+
+  /* The cap is still a cap, and it is enforced where the sharing happens.
+   *
+   * Not at addSquad: a Group whose only Transport is full is exactly where you
+   * stand when you are about to buy a second Squad AND the second Transport to
+   * put it in, so refusing on capacity there would block a legal build. The
+   * Albatross itself refuses, which is the press that would break the rule. */
+  const fifth = A.addSquad(c, g3.id, 'praetorian-snipers', 2);
+  ok(!!fifth, 'a fifth Squad may still be ADDED — it may be about to get its own ride');
+  const over = A.boardTransport(c, fifth.id, alb.id);
+  ok(!over.ok, 'but the Albatross refuses it: four Squads is four (3.2.4.1)', over.reason);
+  ok(!A.boardOptions(c, fifth.id).some(o => o.squad && o.squad.id === alb.id),
+     'and the chooser does not offer the Albatross either');
+
   // Group 3. One Squad may still fill several identical Transports alone.
   const [d, g4] = mk();
   const tanks = A.addSquad(d, g4.id, 'ucm-main-battle-tank', 6);
   ok(A.assignTransport(d, tanks.id, 'condor-dropship').ok,
      'six tanks still fill two Condors on their own — the book’s Group 3');
+
+  /* Flexible Capacity, end to end. Three places assert fullness -- the warning
+   * when you choose a Transport, the warning when you board one already in the
+   * Group, and validate -- and all three quoted "Transports must be taken
+   * full" at a card that says otherwise. */
+  {
+    await DZC.loadFaction('resistance');
+    const r = A.create('resistance', 'Flex', 3000);
+    const rg = A.addGroup(r, 'G');
+    const fighters = A.addSquad(r, rg.id, 'resistance-fighters', 2);
+    const got = A.assignTransport(r, fighters.id, 'battle-bus');
+    ok(got.ok, 'a Battle Bus takes two Resistance Fighters');
+    eq(got.warn, null, 'with no warning: two of four squares is half (Flexible Capacity)');
+    ok(!hasErr(A.validate(r), 'not full'), 'and the Army is legal at half a Bus');
+
+    // The rule it names when it IS under half, because a refusal names the
+    // rule it is enforcing -- and that rule is not 3.2.4 here.
+    const s2 = A.create('resistance', 'Flex2', 3000);
+    const sg = A.addGroup(s2, 'G');
+    const bomb = A.addSquad(s2, sg.id, 'remote-bomb-bus', 1);
+    const under = A.assignTransport(s2, bomb.id, 'leviathan-heavy-hovercraft');
+    ok(/Flexible Capacity/.test(under.warn || ''),
+       'under half, the Leviathan names Flexible Capacity, not "taken full"', under.warn);
+    ok(hasErr(A.validate(s2), 'Flexible Capacity'),
+       'and validate says the same thing about the same Transport');
+    await DZC.loadFaction('ucm');
+  }
 
   // Nothing you can press builds an illegal share, so validate is for a link.
   const [e, g5] = mk();

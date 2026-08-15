@@ -495,6 +495,40 @@ ok(!DZC.isFull(bear, [{ unit: legion, count: 5 }], 2), 'five fills neither, so t
 ok(!DZC.loadCheck(bear, [{ unit: legion, count: 7 }], 2).ok, 'and seven overfills the pair');
 ok(DZC.isFull(bear, [{ unit: legion, count: 3 }]), 'a count of one is still the default');
 
+/* "Flexible Capacity: this Transport may be taken if at least half full."
+ *
+ * A printed rule on two Resistance cards that nothing in the app read, so both
+ * were told "not full. Transports must be taken full" while doing exactly what
+ * their own card allows -- an error with no way out of it short of not taking
+ * the Transport. Part of a player's report that the transport error fires when
+ * it should not (2026-08-15).
+ *
+ * Read off the printed rule, like Gate, so the next card to carry it needs no
+ * code. Pinned in both directions: the exemption applies to the cards that
+ * print it and to nothing else. */
+console.log('\nFlexible Capacity takes a Transport at half full');
+{
+  await DZC.loadFaction('resistance');
+  const bus = DZC.unit('resistance', 'battle-bus');
+  const fighters = DZC.unit('resistance', 'resistance-fighters');
+  const lev = DZC.unit('resistance', 'leviathan-heavy-hovercraft');
+  const atv = DZC.unit('resistance', 'atvs');
+
+  eq(DZC.fillFloor(bus), 0.5, 'the Battle Bus prints Flexible Capacity');
+  eq(DZC.fillFloor(lev), 0.5, 'and so does the Leviathan Heavy Hovercraft');
+  eq(DZC.fillFloor(bear), 1, 'a Bear APC does not, so it is held to all of it');
+
+  eq(DZC.capacityFor(bus, 'square'), 4, 'the Battle Bus carries 4 squares');
+  ok(DZC.isFull(bus, [{ unit: fighters, count: 2 }]),
+     'two Fighters is half of it, which is enough (Flexible Capacity)');
+  ok(DZC.isFull(bus, [{ unit: fighters, count: 4 }]), 'and four is all of it');
+  ok(!DZC.isFull(bus, [{ unit: fighters, count: 1 }]), 'but one is under half');
+
+  eq(DZC.capacityFor(lev, 'diamond'), 24, 'the Leviathan carries 24 diamonds');
+  ok(DZC.isFull(lev, [{ unit: atv, count: 6 }]), '6 ATVs fill 12 of 24 — half');
+  ok(!DZC.isFull(lev, [{ unit: atv, count: 5 }]), '5 fill 10, which is not');
+}
+
 // The inverted triangle is a DIFFERENT symbol. This is the bug that let a
 // Condor load a K9 Pack, so it is pinned here.
 console.log('\ninverted triangle is not a triangle');

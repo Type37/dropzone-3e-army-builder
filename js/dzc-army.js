@@ -1210,12 +1210,24 @@
     const squads = (group && group.squads) || [];
     const occupied = squads.length > 0;
 
-    // The 4-Squad ceiling is the one composition rule that can never come good
-    // by adding something else, so it is the only one blocked here. Everything
-    // else about a Group is a question of what it looks like when you have
-    // FINISHED. A lone Transport is unfinished, not illegal, and you may well
-    // be about to put something in it. Those are reported by validate().
-    if (occupied && u.category !== 'Transport' && squads.filter(s => s.carriedBy).length >= 4) {
+    /* The 4-Squad ceiling is the one composition rule that can never come good
+     * by adding something else, so it is the only one blocked here. Everything
+     * else about a Group is a question of what it looks like when you have
+     * FINISHED. A lone Transport is unfinished, not illegal, and you may well
+     * be about to put something in it. Those are reported by validate().
+     *
+     * PER CARRIER, not per Group. The cap in 3.2.4.1 is on what may share ONE
+     * Transport, and this counted every Squad in the Group with a carrier of
+     * any kind -- which on any Group with nesting in it is a different, larger
+     * number, and refused Squads the rulebook prints as legal. It can only
+     * never come good when EVERY carrier here is already full of Squads; while
+     * one has room, the thing you are adding has somewhere to go. */
+    const carriers = squads.filter(x => {
+      const xu = carrierOf(army, x);
+      return xu && (xu.category === 'Transport' || xu.auxiliaryTransport) && !isGate(xu);
+    });
+    if (occupied && u.category !== 'Transport' && carriers.length
+        && carriers.every(c => sharesOf(army, group, c.id) >= 4)) {
       return { ok: false, reason: 'At most 4 Squads may share one Transport (3.2.4.1).' };
     }
 
@@ -1290,6 +1302,14 @@
     return best.n * squad.models.length;
   }
 
+  /* The fullness rule this carrier is actually held to, in the words that name
+   * it. CLAUDE.md: a refusal names the rule it is enforcing -- and "Transports
+   * must be taken full" is the wrong rule to quote at a Battle Bus, whose card
+   * says in as many words that half is enough. */
+  const fullRule = u => (window.DZC.fillFloor(u) < 1
+    ? 'Flexible Capacity takes it at half full.'
+    : 'Transports must be taken full (3.2.4).');
+
   /* Which Transports in this faction could carry this Squad, and how many of
    * each it would take. "You may take as many identical Transports as needed"
    * (3.2.4), so the number is computed -- never typed by the user. */
@@ -1343,8 +1363,16 @@
            * you take. The second condition cannot fail on today's cards, for
            * the reason given above; it is what makes the first one mean what
            * it says. */
-          exact: eachHolds > 0 && s.models.length % eachHolds === 0
-            && eachHolds * opt.n === per,
+          /* Flexible Capacity takes the same exemption here that it takes in
+           * isFull. "This Transport may be taken if at least half full", so
+           * the even-division test is not the question being asked of the
+           * Battle Bus or the Leviathan -- half of the hold is enough, and
+           * warning them that they must be taken full was the app quoting a
+           * rule the card overrides. */
+          exact: window.DZC.fillFloor(t) < 1
+            ? need > 0 && fill >= Math.ceil(per * need * window.DZC.fillFloor(t))
+            : (eachHolds > 0 && s.models.length % eachHolds === 0
+               && eachHolds * opt.n === per),
           fill: fill
         };
       });
@@ -1400,6 +1428,42 @@
    * Raven Troopships and two Troopships hold four, so a square went begging
    * and a Hazard Suit was allowed into it -- two Squads split across two
    * aircraft, which is the case Jet named. */
+  /* How many of the four a Transport has spent (3.2.4.1).
+   *
+   * "Up to 4 Squads, PLUS THEIR TRANSPORT SQUADS if they have any, may all
+   * share ONE Transport." The capital half is the half that was being counted
+   * anyway: a Bear APC riding in an Albatross does not spend one of the four.
+   * What it brings is the Squad IT carries, and that Squad is one of them.
+   *
+   * So a Transport aboard a Transport counts as its own cargo, not as itself.
+   * The book's Group 5 (p.10) is exactly this -- one Albatross over two Bear
+   * APCs, their two Legionnaire Squads, three Sabres and two Gladius -- and it
+   * is printed as legal. Counting the Bears as well made it six, so the app
+   * refused the Sabres and left a half-built Group whose Albatross then
+   * reported "not full" permanently. Reported as the transport error firing
+   * when it should not (2026-08-15).
+   *
+   * An empty Transport aboard one counts nothing: it is a Squad half built,
+   * not a Squad along for the ride.
+   *
+   * `seen` is a corrupt-data guard, not a rule. carriesTransitively stops a
+   * loop being BUILT; a loop that arrives in a share link or a backup would
+   * otherwise recurse until the stack went. */
+  function sharesOf(army, group, carrierId, ignoreId, seen) {
+    const mark = seen || new Set();
+    if (mark.has(carrierId)) return 0;
+    mark.add(carrierId);
+    return (group.squads || [])
+      .filter(x => x.carriedBy === carrierId && x.id !== ignoreId)
+      .reduce((n, x) => {
+        const xu = unitOf(army, x);
+        if (xu && xu.category === 'Transport') {
+          return n + sharesOf(army, group, x.id, ignoreId, mark);
+        }
+        return n + 1;
+      }, 0);
+  }
+
   function canShare(carrierUnit, carrierSquad, aboard) {
     if (!aboard.length) return true;                 // nobody to share with yet
     if (carrierUnit.auxiliaryTransport) return true;  // 3.2.4.3
@@ -1437,9 +1501,10 @@
       // Aux Gate is, and deliberately: it is "taken as a non-Gate Squad".
       if (isGate(tu)) return false;
       if (!window.DZC.canCarry(tu, u)) return false;
-      // 3.2.4.1 caps the sharing at 4 Squads.
+      // 3.2.4.1 caps the sharing at 4 Squads -- plus their Transport Squads,
+      // which is what sharesOf takes off the count.
       const aboard = g.squads.filter(x => x.carriedBy === t.id && x.id !== s.id);
-      if (aboard.length >= 4) return false;
+      if (sharesOf(army, g, t.id, s.id) >= 4) return false;
       if (!canShare(tu, t, aboard)) return false;
       const load = aboard.map(x => ({ unit: unitOf(army, x), count: x.models.length }))
         .filter(x => x.unit);
@@ -1461,7 +1526,10 @@
         after: shape ? after.byShape[shape] : 0,
         room: room,
         riders: aboard.length,
-        full: shape ? after.byShape[shape] === room : false
+        // Full enough to be legal, which Flexible Capacity puts at half.
+        full: shape
+          ? after.byShape[shape] >= Math.ceil(room * window.DZC.fillFloor(tu))
+          : false
       };
     });
   }
@@ -1506,7 +1574,7 @@
     return {
       ok: true, reason: null,
       warn: opt.full ? null
-        : `${opt.unit.name} still has room for ${opt.room - opt.after}. Transports must be taken full (3.2.4).`
+        : `${opt.unit.name} still has room for ${opt.room - opt.after}. ${fullRule(opt.unit)}`
     };
   }
 
@@ -1540,7 +1608,7 @@
      * changes a shape mismatch. */
     const warn = opt.exact ? null
       : `${opt.need} × ${opt.unit.name} is not full: it carries ${opt.per} and this Squad `
-        + `fills ${opt.fill}. Transports must be taken full (3.2.4).`;
+        + `fills ${opt.fill}. ${fullRule(opt.unit)}`;
     const t = {
       id: uid(), unitId: opt.unit.id,
       models: Array.from({ length: opt.need }, () => ({ variant: defaultVariant(opt.unit) })),
@@ -2173,7 +2241,7 @@
         const chk = window.DZC.loadCheck(u, cargo, s.models.length);
         if (!chk.ok) errors.push({ rule: '3.2.4.2', group: g.id, msg: chk.reason });
         else if (!window.DZC.isFull(u, cargo, s.models.length)) {
-          errors.push({ rule: '3.2.4', group: g.id, msg: `${u.name}: not full. Transports must be taken full.` });
+          errors.push({ rule: '3.2.4', group: g.id, msg: `${u.name}: not full. ${fullRule(u)}` });
         }
       });
 
@@ -2240,9 +2308,10 @@
         });
       }
 
-      // Up to 4 Squads may share ONE Transport (3.2.4.1).
+      // Up to 4 Squads may share ONE Transport (3.2.4.1) -- plus their own
+      // Transport Squads, which sharesOf does not charge for.
       g.squads.forEach(s => {
-        const riders = g.squads.filter(x => x.carriedBy === s.id).length;
+        const riders = sharesOf(army, g, s.id);
         if (riders > 4) {
           const u = unitOf(army, s);
           errors.push({ rule: '3.2.4.1', group: g.id, msg: `${u ? u.name : 'Transport'} carries ${riders} Squads: at most 4 may share one Transport.` });
