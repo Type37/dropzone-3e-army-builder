@@ -537,6 +537,36 @@ console.log('\nFlexible Capacity takes a Transport at half full');
  * actually does is under the bare "Subterranean", which no card prints and
  * nothing in the app reached. audit_rules had been listing it as unreferenced
  * the whole time. */
+/* No rule says the same sentence twice.
+ *
+ * Errata 3.01 amends the third paragraph of Field (p.49), and the digital
+ * rulebook carries the amendment AND the paragraph it replaced, one after the
+ * other, differing only in "Status Tokens" against "status tokens". The app
+ * printed it twice on screen and twice in the appendix on paper.
+ *
+ * Dropped in the scanner, which is the one thing it may do to a source defect
+ * without inventing anything: no token is lost, and a sentence said twice has
+ * only one reading. Checked over the WHOLE glossary rather than pinned to
+ * Field, so the next re-export cannot bring one back somewhere else. */
+console.log('\nno rule prints the same sentence twice');
+{
+  const sentences = t => String(t || '').split(/(?<=[.!?])\s+/)
+    .map(s => s.replace(/[^a-z0-9 ]/gi, '').toLowerCase().trim())
+    .filter(s => s.length > 25);
+  const dupes = [];
+  for (const r of DZC._state.rules.all) {
+    const seen = new Set();
+    for (const s of sentences(r.text)) {
+      if (seen.has(s)) dupes.push(r.name);
+      seen.add(s);
+    }
+  }
+  eq(String(dupes.length), '0', 'every glossary rule reads once', dupes.join(', '));
+  const field = DZC.ruleText('Field', 'ucm') || '';
+  eq(String((field.match(/are not damaged by it/gi) || []).length), '1',
+     'Field says its Squad is safe from it once, not twice');
+}
+
 console.log('\na qualifying rule carries the rule it qualifies');
 {
   await DZC.loadFaction('resistance');

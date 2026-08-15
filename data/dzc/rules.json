@@ -697,7 +697,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Field\\s*$",
-   "text": "This Weapon does not target anything. Instead, each Zone, Vehicle, and Infantry Unit within its R are assigned attacks equal to its Att. If its R exceeds 6”, Units within half its R are assigned attacks equal to twice its Att. Since it does not target anything, Line of Sight is not needed and friendlies may be hit. Units within this Weapon’s Squad are not damaged by it and cannot receive Concussed, Jammed, or Suppressed Status Tokens from it. Units within this Weapon’s Squad are not damaged by it and cannot receive Concussed, Jammed, or Suppressed status tokens from it. If this Weapon has AA, you may assign its attacks only to Aircraft instead of Zones, Vehicles, and Infantry. If this Weapon places Status Tokens, place one on every Squad within its R that could receive the Token. This counts as placing one of that Token.",
+   "text": "This Weapon does not target anything. Instead, each Zone, Vehicle, and Infantry Unit within its R are assigned attacks equal to its Att. If its R exceeds 6”, Units within half its R are assigned attacks equal to twice its Att. Since it does not target anything, Line of Sight is not needed and friendlies may be hit. Units within this Weapon’s Squad are not damaged by it and cannot receive Concussed, Jammed, or Suppressed Status Tokens from it. If this Weapon has AA, you may assign its attacks only to Aircraft instead of Zones, Vehicles, and Infantry. If this Weapon places Status Tokens, place one on every Squad within its R that could receive the Token. This counts as placing one of that Token.",
    "page": 49
   },
   {

@@ -208,6 +208,40 @@ def tidy(s):
     return re.sub(r"(\w)-\s+(\w)", r"\1-\2", re.sub(r"\s+", " ", s)).strip()
 
 
+# A sentence, for the duplicate check below. Compared without case or
+# punctuation, which is the only thing that separates the two copies.
+_SENT = re.compile(r"(?<=[.!?])\s+")
+
+
+def dedupe_sentences(text):
+    """Drop a sentence the book prints twice in the same rule.
+
+    Errata 3.01 amends the third paragraph of Field (p.49). The digital
+    rulebook this scans carries the amendment AND the paragraph it replaced,
+    one after the other, differing only in "Status Tokens" against "status
+    tokens" -- so the app printed it twice on screen and twice in the rules
+    appendix on paper.
+
+    This is the ONE thing the scanner may do to a source defect without
+    inventing anything: no token is lost, because the identical sentence is
+    still there, and there is only ever one legal reading of a sentence said
+    twice. Anything that changes what a rule MEANS stays broken and stays
+    visible -- see KNOWN_PRINTED_SPECIAL in scan_statcards.py for that bar.
+
+    Whole sentences only, and only inside one rule. Two rules may legitimately
+    share a sentence, and often do.
+    """
+    out, seen = [], set()
+    for s in _SENT.split(text or ""):
+        key = re.sub(r"[^a-z0-9 ]", "", s.lower()).strip()
+        if key and key in seen:
+            continue
+        if key:
+            seen.add(key)
+        out.append(s)
+    return " ".join(out).strip()
+
+
 # A rule name may carry a spelled-out alias in brackets, because the cards print
 # the abbreviation and the rulebook prints both: "Ev X (Evasion)" is referenced
 # on a card as "Ev". Note "FS X(First Strike)" has no space before the bracket.
@@ -547,7 +581,7 @@ def main():
                 # plain one ("Climber") is matched literally.
                 "parameterised": bool(PLACEHOLDER_RE.search(head)),
                 "match": matcher_pattern(head),
-                "text": tidy(r["text"]),
+                "text": dedupe_sentences(tidy(r["text"])),
                 "page": r["page"],
             })
 
@@ -574,7 +608,7 @@ def main():
                 "alias": alias,
                 "parameterised": bool(PLACEHOLDER_RE.search(head)),
                 "match": matcher_pattern(head),
-                "text": tidy(text),
+                "text": dedupe_sentences(tidy(text)),
                 "page": 1,
             })
             found += 1
@@ -622,7 +656,7 @@ def main():
                 "alias": alias,
                 "parameterised": bool(PLACEHOLDER_RE.search(head)),
                 "match": matcher_pattern(head),
-                "text": tidy(r["text"]),
+                "text": dedupe_sentences(tidy(r["text"])),
                 "page": r["page"],
             })
             beh_count += 1
