@@ -453,12 +453,16 @@
     if (!o.hasUpgrade) return out;
     const ws = u.weapons || [];
     (u.swaps || []).forEach(sw => {
-      // A swap with no gun to buy has no control to take it with yet, the
-      // Harrier Gunship's "remove one UM-117 Cannons and gain Scanner and
-      // Scout". Its sentence is still printed; nothing is removed for it.
-      if (!sw.grants) return;
-      const gun = ws.find(w => w.box === 'upgrade' && w.name === sw.grants);
-      if (!gun || !o.hasUpgrade(gun)) return;
+      /* A swap with no gun to buy is taken by its own key rather than by
+       * buying something -- the Harrier Gunship's "remove one UM-117 Cannons
+       * and gain Scanner and Scout", the only one in the game. It used to be
+       * skipped here, so the sentence sat in the data and nothing happened. */
+      if (!sw.grants) {
+        if (!o.hasOption || !o.hasOption(sw)) return;
+      } else {
+        const gun = ws.find(w => w.box === 'upgrade' && w.name === sw.grants);
+        if (!gun || !o.hasUpgrade(gun)) return;
+      }
       // "Menchit and Styx may replace..." only bites on a Squad fielding one.
       if ((sw.variants || []).length && o.variants
           && !sw.variants.some(v => o.variants.indexOf(v) !== -1)) return;
@@ -606,13 +610,18 @@
       <header class="dzc-wc-head">
         <h4 class="dzc-wc-name">${esc(w.name)}</h4>
         ${only ? `<span class="dzc-wc-only">${ARROW}${esc(only)}</span>` : ''}
-        ${w.upgradePoints == null ? ''
-          /* The price is the BUTTON when there is somewhere to buy it. The
+        ${/* The price is the BUTTON when there is somewhere to buy it. The
              upgrade table under the Squad printed this whole weapon a second
              time just to hang a price on it -- same eight fields, once as a
              card and once as a row. The card is the better of the two, so the
-             price moved onto it and the table went. */
-          : o.buy ? o.buy(w)
+             price moved onto it and the table went.
+
+             Asked FIRST now, before the price is tested, because a card option
+             can hang a button on a row that has no price at all: the Harrier
+             Gunship's is on the gun it removes. buy() returns '' when a row
+             has neither. */
+          o.buy ? o.buy(w)
+          : w.upgradePoints == null ? ''
           : `<span class="dzc-wpn-up">+${w.upgradePoints}pts</span>`}
       </header>
       <div class="dzc-wc-body">

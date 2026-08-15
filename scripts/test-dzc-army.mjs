@@ -400,6 +400,60 @@ console.log('\na Transport Behemoth does not share its Group with its cargo');
   await DZC.loadFaction('ucm');
 }
 
+/* THE ONE CARD OPTION THAT BUYS NO GUN.
+ *
+ * UCM Harrier Gunship: "May remove one UM-117 Cannons and gain Scanner and
+ * Scout." Every other swap in the game hangs its toggle off the green name box
+ * of the gun it sells you; this one sells nothing, so it had no control at all
+ * and the sentence sat in the data doing nothing. It is free, so no points
+ * move — what moves is a weapon off the Squad and two rules onto it. */
+console.log('\na card option that buys no gun (UCM Harrier Gunship)');
+{
+  store.clear();
+  A.load();
+  await DZC.loadFaction('ucm');
+  const a = A.create('ucm', 'Harrier', 2000);
+  const g = A.addGroup(a);
+  const s = A.addSquad(a, g.id, 'harrier-gunship');
+  const guns = () => win.DZCUnits.unitWeapons(A.unitOf(a, s), A.squadGuns(s)).map(w => w.name);
+
+  const opts = A.optionsFor(a, s);
+  eq(String(opts.length), '1', 'the Harrier offers one such option');
+  eq(opts[0].swap.removes[0].weapon, 'UM-117 Cannons', 'and it drops a UM-117 Cannons');
+
+  const before = guns();
+  eq(String(before.filter(n => n === 'UM-117 Cannons').length), '2', 'it starts with two of them');
+  eq(A.unitOf(a, s).special, 'Ev1', 'and neither Scanner nor Scout');
+  const cost = A.squadCost(a, s);
+
+  A.toggleOption(a, s, opts[0].scope, opts[0].key);
+  eq(String(guns().filter(n => n === 'UM-117 Cannons').length), '1',
+     'taking it removes ONE — the card says one');
+  eq(A.unitOf(a, s).special, 'Ev1, Scanner, Scout', 'and the Squad gains both rules');
+  eq(String(A.squadCost(a, s)), String(cost), 'it is free, so nothing moves in the points');
+
+  /* A copy, never a mutation. unit objects are the shared faction data, so a
+   * Harrier that gained Scanner in place would have gained it for every
+   * Harrier in every army in the browser. */
+  const s2 = A.addSquad(a, A.addGroup(a).id, 'harrier-gunship');
+  eq(A.unitOf(a, s2).special, 'Ev1', 'a second Harrier is untouched by the first');
+  eq(DZC.unit('ucm', 'harrier-gunship').special, 'Ev1', 'and so is the faction data');
+
+  A.toggleOption(a, s, opts[0].scope, opts[0].key);
+  eq(String(guns().filter(n => n === 'UM-117 Cannons').length), '2', 'putting it back restores the gun');
+  eq(A.unitOf(a, s).special, 'Ev1', 'and takes the rules away again');
+
+  // It travels: the key is stored the way an upgrade is, so a share link
+  // carries it with no encoder of its own.
+  A.toggleOption(a, s, opts[0].scope, opts[0].key);
+  ok(A.hasOption(s, opts[0].swap), 'the option is recorded on the Squad');
+  ok(/option:/.test(JSON.stringify(s.upgrades)),
+     'under a key no weapon name can collide with', JSON.stringify(s.upgrades));
+
+  A.load().slice().forEach(x => A.remove(x.id));
+  store.clear();
+}
+
 console.log('\n"only one of these upgrades" is enforced (3.2.3)');
 {
   await DZC.loadFaction('resistance');

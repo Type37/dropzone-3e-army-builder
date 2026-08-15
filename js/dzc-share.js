@@ -269,6 +269,16 @@
       const ups = (A.upgradesFor(army, s) || [])
         .filter(o => A.hasUpgrade(s, o.scope, o.weapon.name))
         .map(o => o.scope === '*' ? o.weapon.name : `${o.weapon.name} (${o.scope})`);
+      /* A card option that buys no gun belongs on this line too. The Harrier
+       * Gunship's "remove one UM-117 Cannons and gain Scanner and Scout" costs
+       * nothing, so it is invisible in the points -- and a pasted list where
+       * one Harrier has Scanner and another does not, with nothing on the page
+       * saying why, is a list nobody can check. Written as the removal, which
+       * is the half you would otherwise have to count guns to spot. */
+      (A.optionsFor(army, s) || [])
+        .filter(o => A.hasOption(s, o.swap))
+        .forEach(o => (o.swap.removes || []).forEach(r =>
+          ups.push(`−1 ${r.weapon}${o.scope === '*' ? '' : ` (${o.scope})`}`)));
       if (ups.length) out.push(`${pad}# upgrade: ${ups.join(', ')}`);
 
       g.squads.filter(x => x.carriedBy === s.id).forEach(r => squad(g, r, depth + 1));

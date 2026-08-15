@@ -1798,6 +1798,17 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 .dzc-buy:hover { background: rgba(46,158,79,.12); }
 .dzc-buy.is-on { background: #2e9e4f; border-color: #2e9e4f; color: #fff; }
 
+/* The one option on a card that takes a gun AWAY instead of selling you one --
+   "May remove one UM-117 Cannons and gain Scanner and Scout". Green is the
+   colour of a green name box, which is what a paid upgrade is printed in, and
+   this is not one. It sits on the row of the gun it drops, so it takes the
+   ink's own colour and reads as a subtraction. */
+.dzc-buy--drop { border-color: var(--stroke, #d9d0be); color: var(--ink-2, #6b6459); }
+.dzc-buy--drop:hover { background: rgba(0,0,0,.06); }
+.dzc-buy--drop.is-on {
+  background: var(--ink, #24201c); border-color: var(--ink, #24201c); color: var(--surface-2, #fff);
+}
+
 /* ── TURNING ON AND OFF ──
 
    Jet, 2026-08-07: "I want ANIMATIONS FOR THINGS TURNING ON OR OFF across da

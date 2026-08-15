@@ -569,6 +569,31 @@
    *
    * Returns the unit ITSELF when nothing changes. The clone is the rare path,
    * so every identity check downstream still holds for the other 176 units. */
+  /* The Unit as THIS Squad has it: the rules it has gained off a card option.
+   *
+   * "May remove one UM-117 Cannons and gain Scanner and Scout" grants two
+   * rules and no weapon, and everything on screen and on paper reads a Squad's
+   * rules off unit.special. So the rules are appended to a copy of it, in the
+   * card's own words, and every reader gets them without knowing this exists.
+   *
+   * A copy, never a mutation: unit objects are the shared faction data, and a
+   * Harrier that gained Scanner would have gained it for every Harrier in
+   * every army in the browser. */
+  function unitWithOptions(unit, tookOption) {
+    if (!unit || typeof tookOption !== 'function') return unit;
+    const gained = [];
+    (unit.swaps || []).forEach(sw => {
+      if (sw.grants || !(sw.grantsRules || []).length) return;
+      if (!tookOption(sw)) return;
+      sw.grantsRules.forEach(r => { if (gained.indexOf(r) === -1) gained.push(r); });
+    });
+    if (!gained.length) return unit;
+    const had = String(unit.special || '').split(',').map(s => s.trim()).filter(Boolean);
+    const fresh = gained.filter(r => !had.some(h => h.toLowerCase() === r.toLowerCase()));
+    if (!fresh.length) return unit;
+    return Object.assign({}, unit, { special: had.concat(fresh).join(', ') });
+  }
+
   function carrierWithUpgrades(unit, taken) {
     if (!unit || typeof taken !== 'function') return unit;
     const deltas = [];
@@ -846,7 +871,7 @@
     unit: (fid, uid) => (state.factions[fid] || { byId: {} }).byId[uid],
     rule, ruleText, ruleLabel, linkKeywords, splitSpecial, matches, squadPrice,
     damageRoll, damageTable, energyKind,
-    capacityFor, fillsOf, fitsIn, canCarry, carrierWithUpgrades, loadCheck, isFull, fillFloor,
+    capacityFor, fillsOf, fitsIn, canCarry, carrierWithUpgrades, loadCheck, isFull, fillFloor, unitWithOptions,
     gameSizeFor, maxGroups, maxGroupCost, rareLimit, commanderLevels,
     _state: state, _compileRules: compileRules
   };

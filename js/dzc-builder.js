@@ -1603,9 +1603,42 @@
    * button that would refuse. */
   function buyButton(a, s) {
     const list = window.DZCArmy.upgradesFor(a, s) || [];
+    /* A card option that buys no gun goes on the row of the gun it DROPS,
+     * which is where the choice is: "May remove one UM-117 Cannons and gain
+     * Scanner and Scout" (UCM Harrier Gunship, and the only one). Same toggle,
+     * same place, no price on it because it costs nothing. */
+    const opts = window.DZCArmy.optionsFor(a, s) || [];
+    /* ONE BUTTON, on the first row it could drop. "May remove ONE UM-117
+     * Cannons" and a Harrier A carries two of them, so a button on both rows
+     * says the option is two options and, once taken, marks a row that is
+     * still being fired. Which row is struck through is decided by
+     * removedByUpgrades and it takes the first, so this follows it.
+     *
+     * Per closure, and buyButton is called once per Variant block, so the
+     * Harrier B block gets its own button rather than none. */
+    const shown = new Set();
     return w => {
+      const oi = opts.findIndex(o => (o.swap.removes || []).some(r => r.weapon === w.name));
+      if (oi !== -1 && !shown.has(opts[oi].key)) {
+        shown.add(opts[oi].key);
+        const o = opts[oi];
+        const on = window.DZCArmy.hasOption(s, o.swap);
+        return `<button type="button" class="dzc-buy dzc-buy--drop${on ? ' is-on' : ''}${
+          flip('opt|' + s.id + '|' + o.key, on)}"
+          aria-pressed="${on}"
+          aria-label="${on ? 'Put back' : 'Remove'} one ${esc(w.name)}, gaining ${
+            esc((o.swap.grantsRules || []).join(' and '))}"
+          title="${esc(o.swap.note || '')}"
+          onclick="DZCBuilder.toggleOption('${s.id}',${oi})"
+          >${on ? 'Removed' : 'Remove'}</button>`;
+      }
       const i = list.findIndex(o => o.weapon.name === w.name);
-      if (i === -1) return `<span class="dzc-wpn-up">+${w.upgradePoints}pts</span>`;
+      // Nothing to buy and nothing to drop: the row keeps its printed price,
+      // or nothing at all if it never had one.
+      if (i === -1) {
+        return w.upgradePoints == null ? ''
+          : `<span class="dzc-wpn-up">+${w.upgradePoints}pts</span>`;
+      }
       const on = window.DZCArmy.hasUpgrade(s, list[i].scope, w.name);
       return `<button type="button" class="dzc-buy${on ? ' is-on' : ''}${
         flip('buy|' + s.id + '|' + list[i].scope + '|' + w.name, on)}"
@@ -3799,6 +3832,15 @@
     },
     // By index into upgradesFor, for the same reason as variantShift: a scope
     // and a weapon name are two more strings to get through an inline handler.
+    // Same shape as toggleUpgrade, by index into optionsFor.
+    toggleOption: (id, idx) => {
+      const s = window.DZCArmy.findSquad(current, id);
+      const o = s && window.DZCArmy.optionsFor(current, s)[idx];
+      if (!o) return;
+      const r = window.DZCArmy.toggleOption(current, s, o.scope, o.key);
+      if (r && !r.ok) say(r.reason);
+      refresh();
+    },
     toggleUpgrade: (id, idx) => {
       const s = window.DZCArmy.findSquad(current, id);
       const o = s && window.DZCArmy.upgradesFor(current, s)[idx];

@@ -1825,7 +1825,21 @@
     return army.groups.find(g => g.squads.some(s => s.id === squadId)) || null;
   }
 
-  function unitOf(army, squad) { return window.DZC.unit(army.faction, squad.unitId); }
+  /* The Unit this Squad IS -- with the rules it has GAINED off a card option
+   * already on it.
+   *
+   * Applied here rather than at the call sites because there are a dozen of
+   * them: the Squad card, the picker, the printed sheet, its rules appendix,
+   * Play Mode and the share text all read a Squad's rules off unit.special,
+   * and an option that only some of them knew about would be a Harrier with
+   * Scanner on screen and without it on paper.
+   *
+   * Costs nothing on the 177 Units that have no such option: unitWithOptions
+   * returns the very same object when there is nothing to add. */
+  function unitOf(army, squad) {
+    const u = window.DZC.unit(army.faction, squad.unitId);
+    return window.DZC.unitWithOptions(u, sw => hasOption(squad, sw));
+  }
 
   /* The Unit a Transport Squad IS, with the room its own upgrades cost it
    * already taken off. Every question about how much a Transport in an army
@@ -1851,7 +1865,9 @@
   function squadGuns(squad) {
     return {
       variants: squad.models.map(m => m.variant),
-      hasUpgrade: w => hasAnyUpgrade(squad, w.name)
+      hasUpgrade: w => hasAnyUpgrade(squad, w.name),
+      // A swap that grants no weapon is taken by its own key, not by a gun.
+      hasOption: sw => hasOption(squad, sw)
     };
   }
 
@@ -1864,6 +1880,56 @@
   //   squad.upgrades = { <variant or '*'>: { <weapon name>: true } }
 
   const ALL_VARIANTS = '*';
+
+  /* A CARD OPTION THAT BUYS NO GUN.
+   *
+   * "May remove one UM-117 Cannons and gain Scanner and Scout" -- the UCM
+   * Harrier Gunship, and the only one of the eight swaps in the game that
+   * grants no weapon. Every other one hangs its toggle off the green name box
+   * of the gun it sells you; this one has no green box, so it had no control,
+   * and the sentence sat in the data doing nothing.
+   *
+   * It is not a new kind of thing. It is the same toggle, stored the same way,
+   * on the row of the gun it takes AWAY rather than the row of the gun it adds
+   * -- which is where the choice is anyway. Free, so no points move; what
+   * moves is a weapon off the Squad and two rules onto it.
+   *
+   * Keyed on what it grants so the key is stable, readable in a share link and
+   * cannot collide with a weapon name (no weapon has a colon in it). A card
+   * that changes drops the option the same way a renamed weapon drops today. */
+  function optionKey(sw) {
+    return 'option:' + (sw.grantsRules || []).join('+');
+  }
+
+  /* The grants-less swaps this Squad may take, and the weapon each one drops.
+   * Scoped to the Variants the swap names, exactly as an upgrade is. */
+  function optionsFor(army, squad) {
+    const u = unitOf(army, squad);
+    if (!u) return [];
+    const out = [];
+    (u.swaps || []).forEach(sw => {
+      if (sw.grants || !(sw.grantsRules || []).length) return;
+      const scopes = (sw.variants || []).length ? sw.variants : [ALL_VARIANTS];
+      scopes.forEach(scope => {
+        const n = scope === ALL_VARIANTS
+          ? squad.models.length
+          : squad.models.filter(m => m.variant === scope).length;
+        if (n) out.push({ scope: scope, swap: sw, key: optionKey(sw), count: n });
+      });
+    });
+    return out;
+  }
+
+  function hasOption(squad, sw) { return hasAnyUpgrade(squad, optionKey(sw)); }
+
+  function toggleOption(army, squad, scope, key) {
+    squad.upgrades = squad.upgrades || {};
+    squad.upgrades[scope] = squad.upgrades[scope] || {};
+    if (squad.upgrades[scope][key]) delete squad.upgrades[scope][key];
+    else squad.upgrades[scope][key] = true;
+    touch(army);
+    return { ok: true, reason: null };
+  }
 
   /* Which upgrades this Squad may take, grouped by the variant they apply to.
    * A weapon with no variant bracket applies to every model in the Squad. */
@@ -2501,6 +2567,7 @@
     // enforcement
     canAddUnit, canSetCount, squadsNamed, squadFill,
     upgradesFor, hasUpgrade, toggleUpgrade, upgradeCost,
+    optionsFor, hasOption, toggleOption,
     transportOptions, assignTransport, refitTransports, groupSpace, groupsUsed,
     boardOptions, boardTransport
   };
