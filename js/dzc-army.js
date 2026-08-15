@@ -1794,7 +1794,30 @@
         const u = unitOf(army, s);
         return (u && u.groupEquivalent) || 0;
       }).filter(Boolean);
-      return n + (ge.length ? Math.max.apply(null, ge) : 1);
+      /* A BEHEMOTH'S CARGO IS ITS OWN GROUP. Transport Behemoths, Behemoth
+       * rules:
+       *
+       *   "Except for Behemoths with the Director Gear, Behemoths taken with
+       *    Squads aboard do not share a Group with their transported Squads.
+       *    Instead, all Squads aboard a Behemoth at the start of the game form
+       *    a single Group."
+       *
+       * ONE extra Group however many Squads are aboard -- "a single Group" --
+       * and none at all if it carries nothing. An Explorator with a Squad in
+       * the back was costing its Groups Equivalent of 4 and the Squad was
+       * riding free; it is 5.
+       *
+       * The exception is read off the printed Gear, the way every other rule
+       * here is read off the card: the Type 6 Grand Walker lists "Director 2:
+       * 4 Venus" and its Venus Drones are not taken separately anyway
+       * (Directed), so nothing about it is a second Group. */
+      const behemothCargo = squads.some(s => {
+        const u = unitOf(army, s);
+        if (!u || !u.groupEquivalent) return false;
+        if ((u.gear || []).some(x => /^Director\b/.test(String(x.name || '')))) return false;
+        return squads.some(x => x.carriedBy === s.id);
+      });
+      return n + (ge.length ? Math.max.apply(null, ge) : 1) + (behemothCargo ? 1 : 0);
     }, 0);
   }
 

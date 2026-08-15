@@ -360,6 +360,46 @@ console.log('\na Behemoth inside the quarter cap is legal at any size (1.1)');
   A.remove(a.id);
 }
 
+/* A TRANSPORT BEHEMOTH'S CARGO IS A GROUP OF ITS OWN. Transport Behemoths:
+ *
+ *   "Except for Behemoths with the Director Gear, Behemoths taken with Squads
+ *    aboard do not share a Group with their transported Squads. Instead, all
+ *    Squads aboard a Behemoth at the start of the game form a single Group."
+ *
+ * The Squads were riding free: an Explorator with a Squad in the back cost its
+ * Groups Equivalent of 4 and the Squad cost nothing. */
+console.log('\na Transport Behemoth does not share its Group with its cargo');
+{
+  store.clear();
+  A.load();
+  await DZC.loadFaction('resistance');
+  const a = A.create('resistance', 'Explorator', 5000);
+  const g = A.addGroup(a);
+  const ex = A.addSquad(a, g.id, 'explorator', 1);
+  eq(DZC.unit('resistance', 'explorator').groupEquivalent, 4, 'an Explorator is worth four Groups');
+  eq(A.groupsUsed(a), 4, 'and on its own that is what it spends');
+
+  const sq = A.addSquad(a, g.id, 'resistance-fighters', 3);
+  ok(A.boardTransport(a, sq.id, ex.id).ok, 'a Squad rides in the back');
+  eq(A.groupsUsed(a), 5, 'which is a fifth Group, not a free ride');
+
+  const sq2 = A.addSquad(a, g.id, 'berserkers', 2);
+  ok(A.boardTransport(a, sq2.id, ex.id).ok, 'a second Squad joins it');
+  eq(A.groupsUsed(a), 5, 'and they are ONE Group between them, not two');
+
+  /* Director Gear is the exception the rule names. The Type 6 Grand Walker
+   * lists "Director 2: 4 Venus", and its Venus Drones are not taken separately
+   * at all (Directed), so nothing about it is a second Group. */
+  await DZC.loadFaction('phr');
+  const t6 = DZC.unit('phr', 'type-6-grand-walker');
+  ok((t6.gear || []).some(x => /^Director\b/.test(x.name)), 'the Type 6 has Director Gear');
+  ok(!DZC.unit('phr', 'venus-drone').selectable, 'and its Venus Drones cannot be taken separately');
+
+  A.load().slice().forEach(x => A.remove(x.id));
+  store.clear();
+  await DZC.loadFaction('ucm');
+}
+
 console.log('\n"only one of these upgrades" is enforced (3.2.3)');
 {
   await DZC.loadFaction('resistance');
