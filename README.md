@@ -8,7 +8,7 @@
 
 </div>
 
-Assemble and print your army in this unofficial army builder for [Dropzone Commander](https://www.ttcombat.com/games/dropzone-commander), published by TTCombat. Unofficial builder by WarLore.
+Assemble and print your army in this unofficial army builder for [Dropzone Commander](https://www.ttcombat.com/games/dropzone-commander), published by TTCombat. This web app was designed by WarLore.
 
 ## What it does
 
