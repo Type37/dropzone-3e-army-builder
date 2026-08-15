@@ -20,6 +20,7 @@ a bad glossary would silently leave rule keywords dead on the page.
     audit_art        every unit has art and every art file has a unit
     audit_rules      every keyword a card prints resolves to glossary text
     audit_special    every word in a card's Special cell reached the data
+    audit_card_text  every word anywhere on a card reached the data
 
 Pass --skip-scan to re-run only the audits against data already on disk, which
 is what you want while working on an audit itself.
@@ -59,6 +60,7 @@ AUDITS = [
     ("audit: art", ["audit_art.py"]),
     ("audit: rules", ["audit_rules.py"]),
     ("audit: special", ["audit_special.py"]),
+    ("audit: card text", ["audit_card_text.py"]),
 ]
 
 

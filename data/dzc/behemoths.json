@@ -224,15 +224,18 @@
       "gear": [
         {
           "power": "3",
-          "name": "Redundancy"
+          "name": "Redundancy",
+          "variants": []
         },
         {
           "power": "1",
-          "name": "Target Lock"
+          "name": "Target Lock",
+          "variants": []
         },
         {
           "power": "1",
-          "name": "Decoys"
+          "name": "Decoys",
+          "variants": []
         }
       ],
       "page": 11,
@@ -370,11 +373,13 @@
       "gear": [
         {
           "power": "0",
-          "name": "Target Lock"
+          "name": "Target Lock",
+          "variants": []
         },
         {
           "power": "0",
-          "name": "Scrambler 2+"
+          "name": "Scrambler 2+",
+          "variants": []
         }
       ],
       "page": 12,
@@ -600,19 +605,23 @@
       "gear": [
         {
           "power": "2",
-          "name": "Redundancy"
+          "name": "Redundancy",
+          "variants": []
         },
         {
           "power": "1",
-          "name": "Target Lock"
+          "name": "Target Lock",
+          "variants": []
         },
         {
           "power": "1",
-          "name": "Shroud 2+"
+          "name": "Shroud 2+",
+          "variants": []
         },
         {
           "power": "2",
-          "name": "Weapon Capacitors"
+          "name": "Weapon Capacitors",
+          "variants": []
         }
       ],
       "page": 13,
@@ -750,19 +759,23 @@
       "gear": [
         {
           "power": "1",
-          "name": "Redundancy"
+          "name": "Redundancy",
+          "variants": []
         },
         {
           "power": "1",
-          "name": "Target Lock"
+          "name": "Target Lock",
+          "variants": []
         },
         {
           "power": "1",
-          "name": "Shroud 2+"
+          "name": "Shroud 2+",
+          "variants": []
         },
         {
           "power": "1",
-          "name": "Weapon Capacitors"
+          "name": "Weapon Capacitors",
+          "variants": []
         }
       ],
       "page": 14,
@@ -1040,19 +1053,27 @@
       "gear": [
         {
           "power": "3",
-          "name": "Redundancy"
+          "name": "Redundancy",
+          "variants": []
         },
         {
           "power": "1",
-          "name": "Target Lock"
+          "name": "Target Lock",
+          "variants": []
         },
         {
           "power": "3",
-          "name": "Weapons Capacitors"
+          "name": "Weapons Capacitors",
+          "variants": [
+            "Tethys"
+          ]
         },
         {
           "power": "1",
-          "name": "Healing System D3"
+          "name": "Healing System D3",
+          "variants": [
+            "Tethys"
+          ]
         }
       ],
       "page": 15,
@@ -1159,19 +1180,29 @@
       "gear": [
         {
           "power": "3",
-          "name": "Redundancy"
+          "name": "Redundancy",
+          "variants": []
         },
         {
           "power": "1",
-          "name": "Target Lock"
+          "name": "Target Lock",
+          "variants": [
+            "Alcyoneus"
+          ]
         },
         {
           "power": "1",
-          "name": "Scrambler +2"
+          "name": "Scrambler +2",
+          "variants": [
+            "Porphyrion"
+          ]
         },
         {
           "power": "2",
-          "name": "Director 2: 4 Venus"
+          "name": "Director 2: 4 Venus Drones",
+          "variants": [
+            "Porphyrion"
+          ]
         }
       ],
       "page": 16,
@@ -1435,19 +1466,23 @@
       "gear": [
         {
           "power": "1",
-          "name": "Target Lock"
+          "name": "Target Lock",
+          "variants": []
         },
         {
           "power": "5",
-          "name": "Jump System 18”"
+          "name": "Jump System 18”",
+          "variants": []
         },
         {
           "power": "3",
-          "name": "Weapon Capacitors"
+          "name": "Weapon Capacitors",
+          "variants": []
         },
         {
           "power": "1+",
-          "name": "Shield Booster"
+          "name": "Shield Booster",
+          "variants": []
         }
       ],
       "page": 18,
@@ -1615,15 +1650,18 @@
       "gear": [
         {
           "power": "1",
-          "name": "Target Lock"
+          "name": "Target Lock",
+          "variants": []
         },
         {
           "power": "2",
-          "name": "Weapon Capacitors"
+          "name": "Weapon Capacitors",
+          "variants": []
         },
         {
           "power": "1+",
-          "name": "Shield Booster"
+          "name": "Shield Booster",
+          "variants": []
         }
       ],
       "page": 19,
@@ -1900,15 +1938,18 @@
       "gear": [
         {
           "power": "1",
-          "name": "Target Lock"
+          "name": "Target Lock",
+          "variants": []
         },
         {
           "power": "1",
-          "name": "Redundancy"
+          "name": "Redundancy",
+          "variants": []
         },
         {
           "power": "0",
-          "name": "Decoys"
+          "name": "Decoys",
+          "variants": []
         }
       ],
       "page": 20,
@@ -2028,11 +2069,13 @@
       "gear": [
         {
           "power": "1",
-          "name": "Target Lock"
+          "name": "Target Lock",
+          "variants": []
         },
         {
           "power": "0",
-          "name": "Decoys"
+          "name": "Decoys",
+          "variants": []
         }
       ],
       "page": 21,

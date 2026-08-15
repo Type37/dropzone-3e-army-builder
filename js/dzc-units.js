@@ -690,7 +690,13 @@
       <span class="dzc-gear-head">Gear, paid in Power, not points</span>
       <ul class="dzc-gear-list">${u.gear.map(g => `<li>
         <span class="dzc-gear-pt">${esc(g.power)}<small>PT</small></span>
-        ${rulesHtml(g.name, fac) || esc(g.name)}</li>`).join('')}</ul>
+        ${rulesHtml(g.name, fac) || esc(g.name)}${(g.variants || []).length
+          /* Which Variant this Gear belongs to, in the same words a weapon
+             restricted to one uses. Three of the Type 6 Grand Walker's four
+             pieces are one Variant's or the other's, and every one of them was
+             printed against both -- each priced in Power, so a player was
+             reading a pool that was not theirs to spend. */
+          ? `<span class="dzc-wpn-only">${esc(g.variants.join(', '))} only</span>` : ''}</li>`).join('')}</ul>
     </div>`;
   }
 

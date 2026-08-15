@@ -173,6 +173,9 @@ class Gear(TypedDict):
 
     name: str
     power: str
+    # The Variants this Gear belongs to, off the bracket the card prints after
+    # it. Empty means every Variant has it, which is most of them.
+    variants: list[str]
 
 
 class Swap(TypedDict):
@@ -1394,17 +1397,64 @@ def gear_top(page, below_y):
 def parse_gear(page) -> list[Gear]:
     """A Behemoth's Power-priced Gear, off the card's Gear list.
 
-    Read as whole LINES rather than by position: the list is set in one column
-    on some cards and two on others, and the "NPT:" prefix is unambiguous
-    enough that geometry buys nothing. A card with no Gear yields nothing,
-    which is every card in the six faction PDFs."""
-    out: list[Gear] = []
+    Anchored on the "NPT:" prefix, which is unambiguous, but a gear entry is a
+    centred COLUMN and the long ones wrap -- and what wraps onto the second
+    line is the end of the name and, on two cards, the whole variant bracket.
+
+    Read line by line and stopping there, the Type 6 Grand Walker's
+    "2PT: Director 2: 4 Venus Drones (Porphyrion)" came back as "Director 2: 4
+    Venus", and its Target Lock (Alcyoneus) and Scrambler +2 (Porphyrion) came
+    back with no variant at all -- so the app showed all four pieces of gear on
+    both variants, each of which is priced in Power and half of which belong to
+    the other model. The Type 7's Weapons Capacitors and Healing System, both
+    (Tethys), were the same.
+
+    So a line with no prefix is a continuation, and it belongs to the entry
+    above it that it sits under. Horizontal overlap picks which column, which
+    is the only thing that separates two entries printed side by side."""
+    heading = gear_top(page, 0)
+    if heading is None:
+        return []
+    rows = []
     for blk in page.get_text("dict")["blocks"]:
         for ln in blk.get("lines", []):
             text = " ".join(sp["text"] for sp in ln["spans"]).strip()
-            m = GEAR_RE.match(text)
-            if m:
-                out.append({"power": m.group(1), "name": m.group(2)})
+            if not text or ln["bbox"][1] < heading - 1 or text.lower() == "gear":
+                continue
+            rows.append((ln["bbox"], text))
+    rows.sort(key=lambda r: (r[0][1], r[0][0]))
+
+    entries: list[tuple[list[float], dict[str, str]]] = []
+    for box, text in rows:
+        m = GEAR_RE.match(text)
+        if m:
+            entries.append(([box[0], box[2]], {"power": m.group(1), "name": m.group(2)}))
+            continue
+        # A continuation. Whichever entry above it this sits under -- widest
+        # horizontal overlap wins, so two columns cannot steal each other's.
+        best, best_overlap = None, 0.0
+        for span, rec in entries:
+            overlap = min(span[1], box[2]) - max(span[0], box[0])
+            if overlap > best_overlap:
+                best, best_overlap = rec, overlap
+        if best is not None:
+            best["name"] = (best["name"] + " " + text).strip()
+
+    # Card order is left to right: the Gear list is a ROW of columns, and a
+    # two-line entry starts a few points higher than its one-line neighbours
+    # because it is centred against them. Sorting on y put those first.
+    entries.sort(key=lambda e: e[0][0])
+    out: list[Gear] = []
+    for _span, rec in entries:
+        # The trailing bracket is the VARIANT the gear belongs to, exactly as
+        # it is on a weapon name, and it is not part of what the gear is called.
+        variants: list[str] = []
+        m = re.search(r"\(([^)]*)\)\s*$", rec["name"])
+        if m:
+            variants = [v.strip() for v in re.split(r",| and ", m.group(1)) if v.strip()]
+            rec["name"] = rec["name"][: m.start()].strip()
+        out.append({"power": rec["power"], "name": join_broken_hyphen(rec["name"]),
+                    "variants": variants})
     return out
 
 
