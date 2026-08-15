@@ -234,6 +234,22 @@ def main():
             seen_where[k[1]] |= where[k]
     distinct = {k[1] for k in refs}
     used = {h["id"] for h in hits.values() if h}
+    # A rule reached through a rule that QUALIFIES it is referenced. No card
+    # prints the bare "Subterranean"; two print "Subterranean Small" and
+    # "Subterranean Medium", which are qualifiers on it, and DZC.ruleText hands
+    # over the parent with the child. Counting it as orphaned here is what kept
+    # a real orphan invisible in a list of thirty names -- the parent went
+    # unenforced and unreadable for as long as the list looked normal.
+    by_id = {r["id"]: r for r in rules}
+    for rid in list(used):
+        r = by_id.get(rid)
+        if not r:
+            continue
+        for p in rules:
+            if (p["id"] != rid and not p.get("parameterised")
+                    and p.get("faction") == r.get("faction")
+                    and r["name"].lower().startswith(p["name"].lower() + " ")):
+                used.add(p["id"])
     unused = [r["name"] for r in rules if r["id"] not in used]
 
     print(f"  {len(rules)} glossary rules")

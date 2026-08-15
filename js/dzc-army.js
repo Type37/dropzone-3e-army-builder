@@ -1500,6 +1500,10 @@
       // of another Group either -- so it can never be a carrier in here. An
       // Aux Gate is, and deliberately: it is "taken as a non-Gate Squad".
       if (isGate(tu)) return false;
+      // "Subterranean Units with a Transport Symbol are not taken with any
+      // Units aboard." Same sentence, same answer: a Squad rides a Splitting
+      // Drill during the game, out of Holding, not on the list.
+      if (isSubterranean(tu)) return false;
       if (!window.DZC.canCarry(tu, u)) return false;
       // 3.2.4.1 caps the sharing at 4 Squads -- plus their Transport Squads,
       // which is what sharesOf takes off the count.
@@ -1553,6 +1557,16 @@
         return { ok: false,
           reason: `${aboard.length + 1} Squads may only share ONE Transport, and this is a Squad of ${t.models.length} (3.2.4.1).` };
       }
+      // Capacity is not why these two refuse, and saying it was sent you off
+      // to shrink a Squad that would never have been allowed aboard.
+      if (tu && isGate(tu)) {
+        return { ok: false,
+          reason: `${tu.name} is a Gate: Gates are not taken with any Units aboard.` };
+      }
+      if (tu && isSubterranean(tu)) {
+        return { ok: false,
+          reason: `${tu.name} is Subterranean: it is not taken with any Units aboard.` };
+      }
       return { ok: false, reason: 'That Transport has no room for this Squad (3.2.4.2).' };
     }
 
@@ -1571,9 +1585,14 @@
     s.carriedBy = carrierSquadId;
     refitTransports(army);
     touch(army);
+    /* AN AUXILIARY TRANSPORT IS NOT WARNED. "Auxiliary Transports do not have
+     * to be full" (3.2.4.3), and this told you they did -- on the book's own
+     * Group 4, four Ferrets carrying Legionnaires and Hazard Suits, which the
+     * rulebook prints as legal and validate agrees is legal. A toast that
+     * contradicts the army panel is worse than no toast. */
     return {
       ok: true, reason: null,
-      warn: opt.full ? null
+      warn: (opt.full || opt.unit.category !== 'Transport') ? null
         : `${opt.unit.name} still has room for ${opt.room - opt.after}. ${fullRule(opt.unit)}`
     };
   }
@@ -1702,6 +1721,36 @@
 
   function gateSquad(army, squad) { return isGate(unitOf(army, squad)); }
 
+  /* SUBTERRANEAN, which is the Gate rule wearing a Resistance coat.
+   *
+   *   "Unarmed Subterranean Units do not count against your number of allowed
+   *    Groups. Subterranean Units with a Transport Symbol are not taken with
+   *    any Units aboard."
+   *
+   * Both sentences were unenforced. The two Splitting Drills are the only
+   * Units in the game that print it, both are unarmed, both are Auxiliary
+   * Transports, and both spent a Group they do not cost and accepted cargo
+   * they may not be taken with.
+   *
+   * THE CARD NEVER PRINTS THE BARE WORD. It prints "Subterranean Small" and
+   * "Subterranean Medium", which are their own glossary entries -- the size of
+   * thing that may Embark, nothing more -- so an exact-token test the way Gate
+   * does it would match neither. The token is the FIRST word, and the trap is
+   * the same one "Aux Gate" is for Gate: a rule that merely contains the word
+   * is a different rule, so it has to be the head of the token rather than
+   * anywhere in it. */
+  function isSubterranean(unit) {
+    return !!unit && String(unit.special || '').split(',')
+      .some(t => /^Subterranean\b/.test(t.trim()));
+  }
+
+  // "UNARMED Subterranean Units", and only those, are free of the allowance.
+  // An armed one is an ordinary Squad in an ordinary Group.
+  function freeOfGroupCap(army, squad) {
+    const u = unitOf(army, squad);
+    return isSubterranean(u) && !(u.weapons || []).length;
+  }
+
   /* The Group a Gate belongs in, made if it is not there yet.
    *
    * "A Gate is never part of another Group", and it spends none of the
@@ -1728,11 +1777,19 @@
 
   function groupsUsed(army) {
     return (army.groups || []).reduce((n, g) => {
-      // "Gates do not count against your number of allowed Groups." A Group
-      // that is nothing but Gates spends none of the allowance; a Group that
-      // mixes them is illegal and is reported rather than discounted here.
+      /* "Gates do not count against your number of allowed Groups." A Group
+       * that is nothing but Gates spends none of the allowance; a Group that
+       * mixes them is illegal and is reported rather than discounted here.
+       *
+       * Unarmed Subterranean Units get the same sentence in their own rule and
+       * the same treatment here. They differ from Gates in what they are NOT:
+       * nothing says a Subterranean Unit may not share a Group, so a Group
+       * holding a Splitting Drill and a fighting Squad is legal and costs the
+       * one Group that Squad costs. Only a Group that is nothing but free
+       * Units is free. */
       const squads = g.squads || [];
       if (squads.length && squads.every(s => gateSquad(army, s))) return n;
+      if (squads.length && squads.every(s => freeOfGroupCap(army, s))) return n;
       const ge = squads.map(s => {
         const u = unitOf(army, s);
         return (u && u.groupEquivalent) || 0;
@@ -2118,6 +2175,18 @@
             msg: `${u.name}: Gates are not taken with any Units aboard. A Squad starts in Holding instead.` });
         }
       });
+
+      /* The same sentence, printed on a Splitting Drill instead of a Gate.
+       * Nothing you can press loads one any more, so this is for an Army
+       * arriving from a share link or a backup made before it was enforced. */
+      g.squads.forEach(t => {
+        const u = unitOf(army, t);
+        if (!isSubterranean(u)) return;
+        if (g.squads.some(x => x.carriedBy === t.id)) {
+          errors.push({ rule: 'Subterranean', group: g.id,
+            msg: `${u.name}: a Subterranean Unit is not taken with any Units aboard. A Squad starts in Holding instead.` });
+        }
+      });
     });
 
     /* Two Squads split across a Transport SQUAD. 3.2.4.1 shares ONE Transport
@@ -2404,6 +2473,8 @@
     genitorCap, rmOf, rmCost, setRm, RM_POINTS,
     // Shaltari Gates (Gate, Shaltari Unit Special Rules)
     isGate, gateSquad, gateHome,
+    // Subterranean (Resistance Unit Special Rules)
+    isSubterranean,
     // enforcement
     canAddUnit, canSetCount, squadsNamed, squadFill,
     upgradesFor, hasUpgrade, toggleUpgrade, upgradeCost,

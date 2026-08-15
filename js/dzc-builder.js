@@ -3206,7 +3206,15 @@
       .map(e => `<div class="pr-rule"><h3>${esc(e.label)}${
         e.label.toLowerCase() !== String(e.token).trim().toLowerCase()
           ? ` (${esc(e.token)})` : ''}</h3>
-        <p>${esc(e.text)} <span class="pr-src">${esc(e.rule.faction
+        <!-- One running paragraph, joined on a space. The sheet sets .pr-rule p
+             to display:inline on purpose -- a line per rule name was a third of
+             the appendix -- so two <p> elements here butt together with no gap
+             and read "...into or from this Unit.If your Army contains...". A
+             rule that now arrives in two paragraphs (a qualifier plus the rule
+             it qualifies) is spliced here rather than on screen, where the
+             break is drawn. -->
+        <p>${esc(String(e.text || '').split(/\n{2,}/)
+          .map(t => t.trim()).filter(Boolean).join(' '))} <span class="pr-src">${esc(e.rule.faction
           ? e.rule.faction.toUpperCase()
           : e.rule.section + (e.rule.page ? `, p.${e.rule.page}` : ''))}</span></p></div>`).join('');
 

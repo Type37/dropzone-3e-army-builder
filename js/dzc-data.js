@@ -275,10 +275,36 @@
    *
    * Word suffixes work the same as numeric ones: "Ineffective: Zones" reads
    * "...things of the type Zones", not "...of the type X". */
+  /* A rule whose NAME extends another rule's name is a qualifier on it, and
+   * the app has to hand over both or it hands over neither.
+   *
+   * The Splitting Drills print "Subterranean Small" and "Subterranean Medium".
+   * Those are real glossary entries and they resolve, so every audit passed --
+   * but each says only which size of thing may Embark. What a Subterranean
+   * Unit actually DOES, the Holding, the deployment anywhere on the table, the
+   * Group it does not cost, is under the bare "Subterranean", which no card
+   * prints and nothing in the app ever reached. audit_rules has been listing
+   * it as an unreferenced glossary entry the whole time; that was the smell.
+   *
+   * By name rather than by a list of two ids, so the day TTCombat print
+   * "Subterranean Large" it needs no code. Same faction only: a core rule that
+   * happens to start with a faction rule's name is a coincidence, not a
+   * parent. */
+  function parentRule(r) {
+    if (!state.rules) return null;
+    const pool = r.faction ? (state.rules.byFaction[r.faction] || []) : state.rules.core;
+    return pool
+      .filter(p => p !== r && !p.parameterised
+        && r.name.toLowerCase().startsWith(p.name.toLowerCase() + ' '))
+      .sort((a, b) => b.name.length - a.name.length)[0] || null;
+  }
+
   function ruleText(keyword, faction) {
     const hit = resolve(keyword, faction);
     if (!hit) return null;
     const r = hit.rule;
+    const up = parentRule(r);
+    if (up) return `${r.text}\n\n${up.text}`;
     if (!r.parameterised) return r.text;
     // A trailing bracket names the VARIANTS the rule applies to, never part of
     // the value -- "AWACS 12” (Lynx)" is 12 inches, not 12” (Lynx). Lookup can

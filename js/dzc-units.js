@@ -800,7 +800,7 @@
       return `<div class="dzc-ruledef">
         <h5>${esc(label)}${label.toLowerCase() !== tok.toLowerCase()
           ? ` <i>(${esc(tok)})</i>` : ''}</h5>
-        <p>${window.DZC.linkKeywords(window.DZC.ruleText(tok, fac), fac, r.name)}</p>
+        ${ruleParas(window.DZC.ruleText(tok, fac), fac, r.name)}
         <span class="dzc-ruledef-src">${esc(ruleSource(r))}</span>
       </div>`;
     }).join('');
@@ -868,6 +868,21 @@
 
   function closeDetail() { document.getElementById('dzc-detail').classList.remove('active'); }
 
+  /* Rule text as paragraphs, because it can now be more than one.
+   *
+   * DZC.ruleText joins a qualifying rule to the rule it qualifies -- the
+   * Splitting Drills print "Subterranean Small", and what a Subterranean Unit
+   * DOES is under the bare "Subterranean". Run into one <p> the two ran
+   * together into a wall, so the break the join puts in is the break drawn
+   * here. Every other rule in the game is one paragraph and comes out of this
+   * exactly as it went in. */
+  function ruleParas(text, faction, skip) {
+    return String(text == null ? '' : text).split(/\n{2,}/)
+      .map(t => t.trim()).filter(Boolean)
+      .map(t => `<p>${window.DZC.linkKeywords(t, faction, skip)}</p>`)
+      .join('') || '<p></p>';
+  }
+
   /* Where a rule comes from, close enough to go and read it. The section
    * number says which rule; the page number says where the book falls open,
    * which is the one you want mid-game with the rulebook on the table. */
@@ -895,7 +910,7 @@
     pop.innerHTML = r
       ? `<h5>${esc(label)}${label.toLowerCase() !== String(token).trim().toLowerCase()
           ? ` <span class="dzc-pop-alias">(${esc(token)})</span>` : ''}</h5>
-         <p>${window.DZC.linkKeywords(window.DZC.ruleText(token, state.faction), state.faction, r.name)}</p>
+         ${ruleParas(window.DZC.ruleText(token, state.faction), state.faction, r.name)}
          <span class="dzc-pop-src">${esc(ruleSource(r))}</span>`
       /* Not "read it from the stat card". Sending someone to a PDF for a rule
          this app is already printing the name of is the app giving up, and it

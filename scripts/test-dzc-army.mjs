@@ -1730,8 +1730,15 @@ console.log('\nsharing a Transport (3.2.4.1) and an Auxiliary Transport (3.2.4.3
   const legs = A.addSquad(a, g.id, 'legionnaires', 2);
   A.boardTransport(a, legs.id, ferrets.id);
   const haz = A.addSquad(a, g.id, 'hazard-suits', 2);
-  ok(A.boardTransport(a, haz.id, ferrets.id).ok,
+  const boarded = A.boardTransport(a, haz.id, ferrets.id);
+  ok(boarded.ok,
      'four Ferrets carry Legionnaires AND Hazard Suits — the book’s Group 4 (3.2.4.3)');
+  /* "Auxiliary Transports do not have to be full" (3.2.4.3), and this said
+   * they did: boarding one raised "still has room for 2. Transports must be
+   * taken full (3.2.4)" on the book's own legal Group, while validate — which
+   * has always had the exemption — said nothing. A toast that contradicts the
+   * army panel is worse than no toast. */
+  eq(boarded.warn, null, 'and nothing warns them they must be full: they need not be');
 
   // The case Jet named. Three Legionnaires need two Troopships, two Troopships
   // hold four, and that spare square is what let a second Squad in.
@@ -1952,6 +1959,57 @@ console.log('\nShaltari Gates are not part of the Group structure');
 
   A.load().slice().forEach(x => A.remove(x.id));
   store.clear();
+}
+
+/* SUBTERRANEAN (Resistance Unit Special Rules) — the Gate rule in a Resistance
+ * coat, and unenforced until 2026-08-15.
+ *
+ *   "Unarmed Subterranean Units do not count against your number of allowed
+ *    Groups. Subterranean Units with a Transport Symbol are not taken with any
+ *    Units aboard."
+ *
+ * The two Splitting Drills are the only Units that print it. Both are unarmed,
+ * both are Auxiliary Transports, and both spent a Group they do not cost and
+ * accepted cargo they may not be taken with. Neither card prints the bare word
+ * — they print "Subterranean Small" and "Subterranean Medium" — which is why
+ * an exact-token test the way Gate does it would have matched neither.
+ */
+console.log('\nunarmed Subterranean Units cost no Group and carry nothing on the list');
+{
+  store.clear();
+  A.load();
+  await DZC.loadFaction('resistance');
+  const drills = DZC.faction('resistance').units.filter(u => A.isSubterranean(u));
+  eq(String(drills.length), '2', 'two Units print Subterranean', drills.map(u => u.name).join(', '));
+  ok(drills.every(u => !(u.weapons || []).length), 'and both of them are unarmed');
+  ok(!A.isSubterranean(DZC.unit('resistance', 'kraken-hovercraft')),
+     'an ordinary Resistance Transport is not one of them');
+
+  const a = A.create('resistance', 'Drills', 2000);
+  const dg = A.addGroup(a);
+  const drill = A.addSquad(a, dg.id, '209-splitting-drill', 1);
+  ok(!!drill, 'a Splitting Drill is an ordinary Squad you may take');
+  eq(String(A.groupsUsed(a)), '0', 'and its Group spends none of the allowance');
+  const fg = A.addGroup(a);
+  A.addSquad(a, fg.id, 'resistance-fighters', 2);
+  eq(String(A.groupsUsed(a)), '1', 'only the fighting Group is counted');
+
+  // "...not taken with any Units aboard." Refused, and it names its own rule.
+  const rider = A.addSquad(a, dg.id, 'atvs', 2);
+  ok(!A.boardOptions(a, rider.id).length, 'the chooser never offers a Splitting Drill');
+  const no = A.boardTransport(a, rider.id, drill.id);
+  ok(!no.ok, 'and boarding one is refused');
+  ok(/Subterranean/.test(no.reason || ''),
+     'naming Subterranean rather than blaming capacity', no.reason);
+
+  // Reachable only from a link or a backup made before this was enforced.
+  rider.carriedBy = drill.id;
+  ok(hasErr(A.validate(a), 'not taken with any Units aboard'),
+     'a Squad smuggled aboard one is reported');
+
+  A.load().slice().forEach(x => A.remove(x.id));
+  store.clear();
+  await DZC.loadFaction('ucm');
 }
 
 /* A Commander's points do not count toward the quarter-of-your-points cap.

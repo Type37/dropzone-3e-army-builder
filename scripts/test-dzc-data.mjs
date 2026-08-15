@@ -529,6 +529,35 @@ console.log('\nFlexible Capacity takes a Transport at half full');
   ok(!DZC.isFull(lev, [{ unit: atv, count: 5 }]), '5 fill 10, which is not');
 }
 
+/* A rule that QUALIFIES another hands over both, or it hands over neither.
+ *
+ * The Splitting Drills print "Subterranean Small" and "Subterranean Medium".
+ * Both are real glossary entries and both resolve, so every audit passed — and
+ * each says only which size of thing may Embark. What a Subterranean Unit
+ * actually does is under the bare "Subterranean", which no card prints and
+ * nothing in the app reached. audit_rules had been listing it as unreferenced
+ * the whole time. */
+console.log('\na qualifying rule carries the rule it qualifies');
+{
+  await DZC.loadFaction('resistance');
+  const small = DZC.ruleText('Subterranean Small', 'resistance');
+  ok(/initial DP of 1/.test(small), 'Subterranean Small still says what may Embark');
+  ok(/do not count against your number of allowed Groups/.test(small),
+     'and now carries Subterranean, which is where the rule actually is');
+
+  // Scoped, not sprayed: only a name that EXTENDS another rule's name gets one.
+  let merged = 0;
+  for (const fid of ['ucm', 'scourge', 'phr', 'shaltari', 'resistance', 'bioficer']) {
+    await DZC.loadFaction(fid);
+    for (const u of DZC.faction(fid).units) {
+      for (const tok of String(u.special || '').split(',').map(s => s.trim()).filter(Boolean)) {
+        if ((DZC.ruleText(tok, fid) || '').includes('\n\n')) merged++;
+      }
+    }
+  }
+  eq(String(merged), '2', 'and exactly two printed keywords in the game do — the two Drills');
+}
+
 // The inverted triangle is a DIFFERENT symbol. This is the bug that let a
 // Condor load a K9 Pack, so it is pinned here.
 console.log('\ninverted triangle is not a triangle');
