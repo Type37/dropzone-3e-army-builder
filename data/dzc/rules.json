@@ -493,58 +493,6 @@
    "page": 47
   },
   {
-   "id": "concussion",
-   "faction": null,
-   "source": "rulebook",
-   "section": "11.1.7",
-   "chapter": "11. Weapon Special Rules",
-   "name": "Concussion",
-   "alias": null,
-   "parameterised": false,
-   "match": "^\\s*Concussion\\s*$",
-   "text": "If a Unit is hit by this Weapon, place a Concussed Status Token on its Squad. Concussed Squads suffer -2Ac. Concussed Infantry also count as Sited in CQBs and do not contribute to Entrances Covered.",
-   "page": 48
-  },
-  {
-   "id": "critical-x",
-   "faction": null,
-   "source": "rulebook",
-   "section": "11.1.8",
-   "chapter": "11. Weapon Special Rules",
-   "name": "Critical X",
-   "alias": null,
-   "parameterised": true,
-   "match": "^\\s*Critical[\\s:/\\-]*(.+?)\\s*$",
-   "text": "This Weapon inflicts X additional DP for each Critical it inflicts against Units.",
-   "page": 48
-  },
-  {
-   "id": "demo-x",
-   "faction": null,
-   "source": "rulebook",
-   "section": "11.1.9",
-   "chapter": "11. Weapon Special Rules",
-   "name": "Demo X",
-   "alias": null,
-   "parameterised": true,
-   "match": "^\\s*Demo[\\s:/\\-]*(.+?)\\s*$",
-   "text": "This Weapon can inflict Critical damage against Zones. It also inflicts X additional DP for each success when rolling to inflict damage against Zones.",
-   "page": 48
-  },
-  {
-   "id": "destroyer-x",
-   "faction": null,
-   "source": "rulebook",
-   "section": "11.1.10",
-   "chapter": "11. Weapon Special Rules",
-   "name": "Destroyer X+",
-   "alias": null,
-   "parameterised": true,
-   "match": "^\\s*Destroyer[\\s:/\\-]*([^\\s]+?)\\+\\s*$",
-   "text": "If this Weapon hits by rolling equal to or higher than X, it will automatically cause a Critical instead of rolling to damage. This counts as a successful roll to damage. This Weapon’s Ac cannot be modified below X.",
-   "page": 48
-  },
-  {
    "id": "aa",
    "faction": null,
    "source": "rulebook",
@@ -645,7 +593,59 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Blast\\s*$",
-   "text": "This Weapon uses the Blast Template — a 5” diameter circle. First, place the template’s centre over the target’s",
+   "text": "This Weapon uses the Blast Template — a 5” diameter circle. First, place the template’s centre over the target’s centre—this is the primary target. Place all templates from one activation’s attacks simultaneously. All Units and Zones within the template are now targets. Roll to hit once against each target for each template. If the primary target was Obscured, everything under the template is Obscured, otherwise Obscured is ignored. Roll D6 times per template against Infantry. If the primary target is a Vehicle with Large or a Zone, do not place the template but roll to hit D3 times. This Weapon can inflict Critical damage against Zones. If the primary target is a Sited Squad, do not place the template. Instead, roll to hit the Squad D6 times. Roll to hit the Zone once. If the primary target is an Aircraft, only Aircraft under the template and not flying high are targets. If the primary target is a non-Aircraft, aircraft are not targets.",
+   "page": 48
+  },
+  {
+   "id": "concussion",
+   "faction": null,
+   "source": "rulebook",
+   "section": "11.1.7",
+   "chapter": "11. Weapon Special Rules",
+   "name": "Concussion",
+   "alias": null,
+   "parameterised": false,
+   "match": "^\\s*Concussion\\s*$",
+   "text": "If a Unit is hit by this Weapon, place a Concussed Status Token on its Squad. Concussed Squads suffer -2Ac. Concussed Infantry also count as Sited in CQBs and do not contribute to Entrances Covered.",
+   "page": 48
+  },
+  {
+   "id": "critical-x",
+   "faction": null,
+   "source": "rulebook",
+   "section": "11.1.8",
+   "chapter": "11. Weapon Special Rules",
+   "name": "Critical X",
+   "alias": null,
+   "parameterised": true,
+   "match": "^\\s*Critical[\\s:/\\-]*(.+?)\\s*$",
+   "text": "This Weapon inflicts X additional DP for each Critical it inflicts against Units.",
+   "page": 48
+  },
+  {
+   "id": "demo-x",
+   "faction": null,
+   "source": "rulebook",
+   "section": "11.1.9",
+   "chapter": "11. Weapon Special Rules",
+   "name": "Demo X",
+   "alias": null,
+   "parameterised": true,
+   "match": "^\\s*Demo[\\s:/\\-]*(.+?)\\s*$",
+   "text": "This Weapon can inflict Critical damage against Zones. It also inflicts X additional DP for each success when rolling to inflict damage against Zones.",
+   "page": 48
+  },
+  {
+   "id": "destroyer-x",
+   "faction": null,
+   "source": "rulebook",
+   "section": "11.1.10",
+   "chapter": "11. Weapon Special Rules",
+   "name": "Destroyer X+",
+   "alias": null,
+   "parameterised": true,
+   "match": "^\\s*Destroyer[\\s:/\\-]*([^\\s]+?)\\+\\s*$",
+   "text": "If this Weapon hits by rolling equal to or higher than X, it will automatically cause a Critical instead of rolling to damage. This counts as a successful roll to damage. This Weapon’s Ac cannot be modified below X.",
    "page": 48
   },
   {
@@ -1763,7 +1763,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Weapons[\\s:/\\-]*Capacitors\\s*$",
-   "text": "Weapons with Capacitors on this Behemoth gain the stated effect when attacking this Round. 2. Behemoth Special Rules",
+   "text": "Weapons with Capacitors on this Behemoth gain the stated effect when attacking this Round.",
    "page": 7
   },
   {
@@ -1815,7 +1815,7 @@
    "alias": null,
    "parameterised": true,
    "match": "^\\s*Walker[\\s:/\\-]*([^\\s]+?)[”″\\\"]?[\\s:/\\-]*x[\\s:/\\-]*([^\\s]+?)[”″\\\"]?\\s*$",
-   "text": "Many Behemoths stride into battle and can move dynamically. On something this huge, its pose could excessively advantage/disadvantage it. Treat Walkers as if they were a solid cylinder with an X” radius and Y” high. When measuring to/from a Walker, use any point within this cylinder to determine range and Line of Sight (use the same point for both). Arcs should be drawn to/from the centre of the model as usual. Walkers must still conform to the normal placement rules too—parts of the model that protrude from this cylinder still count, but ONLY when placing. Be mindful of this when building them. An ultra-wide pose might make one needlessly awkward to place. 3. Behemoth Weapon Special Rules",
+   "text": "Many Behemoths stride into battle and can move dynamically. On something this huge, its pose could excessively advantage/disadvantage it. Treat Walkers as if they were a solid cylinder with an X” radius and Y” high. When measuring to/from a Walker, use any point within this cylinder to determine range and Line of Sight (use the same point for both). Arcs should be drawn to/from the centre of the model as usual. Walkers must still conform to the normal placement rules too—parts of the model that protrude from this cylinder still count, but ONLY when placing. Be mindful of this when building them. An ultra-wide pose might make one needlessly awkward to place.",
    "page": 8
   },
   {
@@ -1932,7 +1932,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Secondary\\s*$",
-   "text": "This Weapon may attack at the end of any of its Behemoth’s Actions in addition to other Weapons that attacked that Action. 4. Behemoth FAQ’s & Rules Clashes",
+   "text": "This Weapon may attack at the end of any of its Behemoth’s Actions in addition to other Weapons that attacked that Action.",
    "page": 9
   },
   {

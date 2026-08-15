@@ -177,21 +177,49 @@ def chapter_pages(doc):
 
 def spans_in_order(page):
     """
-    Every non-empty span, in PyMuPDF's own block order.
+    Every non-empty span, in READING order: left column, then right.
 
     Deliberately NOT re-sorted by (y, x). The section number sits in the left
     margin at a different baseline from the heading it labels, so a positional
     sort interleaves them and emits rules out of order -- 10.1.9 arrived before
-    10.1.8, and headings were stranded from their numbers. The extractor's
-    reading order is already correct for this single-column layout.
+    10.1.8, and headings were stranded from their numbers. Within a column the
+    extractor's own order is right and is kept.
+
+    ACROSS columns it is not. These pages are set in TWO columns and PyMuPDF
+    returned the right one FIRST on the opening page of chapter 11, so the
+    twenty-two lines at the top of that column -- the whole of how a Blast
+    template is placed, what a primary target is, and what happens against a
+    Large Vehicle, a Zone, a Sited Squad and an Aircraft -- arrived before any
+    heading on the page. With no rule open yet they were dropped on the floor,
+    and 11.1.6 Blast shipped ending mid-sentence: "place the template's centre
+    over the target's".
+
+    So the columns are put in order and the extractor's order is kept inside
+    each. Which column a span is in is decided by its own left edge against the
+    page's middle, which is all a two-column grid needs and costs nothing on a
+    page that only has one.
     """
-    out = []
+    spans = []
     for blk in page.get_text("dict")["blocks"]:
         for ln in blk.get("lines", []):
             for sp in ln["spans"]:
                 if sp["text"].strip():
-                    out.append(sp)
-    return out
+                    spans.append(sp)
+    mid = page.rect.width / 2
+    # A page is only TWO-COLUMN if there is a gutter: no line of BODY text
+    # crosses the middle. The faction front matter is one wide column and
+    # splitting it on the midpoint cut its lines in half -- "(e.g. ) are
+    # Genitor Units" came back as "(e.g. Units. Genitor Units may" -- so one
+    # straddling line of body is proof enough that there is no gutter.
+    #
+    # The chapter title is exempt and has to be: it is a full-width banner
+    # across the top of a genuinely two-column page, and it straddles by
+    # design. It is recognised the same way chapter_pages recognises it, by
+    # being set at 19pt or larger, so the two cannot drift apart.
+    if any(sp["bbox"][0] < mid < sp["bbox"][2] and sp["size"] < 19 for sp in spans):
+        return spans
+    # A stable sort, so within a column nothing moves at all.
+    return sorted(spans, key=lambda sp: 0 if sp["bbox"][0] < mid else 1)
 
 
 
@@ -484,6 +512,10 @@ def parse_front_matter(doc):
 # spans, and parse() keys off a span that is only a number.
 BEHEMOTH_HEAD_RE = re.compile(r"^(\d+(?:\.\d+)+)\s+(\S.*)$")
 
+# "2. Behemoth Special Rules" -- a chapter, not a rule. One number where a rule
+# has two, which is the whole of the difference on the page.
+BEHEMOTH_CHAPTER_RE = re.compile(r"^\d+\.\s+\S")
+
 
 def parse_behemoth_rules(doc, pages) -> list[Rule]:
     """The Behemoth PDF's own rules pages.
@@ -522,6 +554,20 @@ def parse_behemoth_rules(doc, pages) -> list[Rule]:
                     out.append(cur)
                 cur = {"section": m.group(1), "name": m.group(2),
                        "text": "", "page": pno + 1}
+            elif BEHEMOTH_CHAPTER_RE.match(txt) and sp["size"] > body_size + 0.4:
+                # A CHAPTER heading ends the rule above it and starts nothing.
+                # "2. Behemoth Special Rules" has one number where a rule has
+                # two, so BEHEMOTH_HEAD_RE never matched it and it was filed as
+                # the last line of whatever rule it followed: Weapons
+                # Capacitors, Walker X" x Y" and Secondary each shipped with
+                # the next chapter's title welded onto the end of the rule.
+                #
+                # Size is what separates it from an ordinary numbered list item
+                # inside a rule ("2. Pen Weapons of E3 or lower..."), which is
+                # set at body size and must stay in the text.
+                if cur:
+                    out.append(cur)
+                cur = None
             elif cur is not None and not txt.isdigit():
                 cur["text"] = (cur["text"] + " " + txt) if cur["text"] else txt
     if cur:

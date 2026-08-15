@@ -548,6 +548,45 @@ console.log('\nFlexible Capacity takes a Transport at half full');
  * without inventing anything: no token is lost, and a sentence said twice has
  * only one reading. Checked over the WHOLE glossary rather than pinned to
  * Field, so the next re-export cannot bring one back somewhere else. */
+/* A rule is not cut off, and it does not swallow what follows it.
+ *
+ * Chapters 10 and 11 are set in TWO columns and PyMuPDF handed back the right
+ * one first on the opening page of chapter 11, so the twenty-two lines at the
+ * top of that column arrived before any heading and were dropped: 11.1.6 Blast
+ * shipped ending "place the template's centre over the target's" and the whole
+ * of how a template is placed, what a primary target is, and what happens
+ * against a Large Vehicle, a Zone, a Sited Squad and an Aircraft was in no rule
+ * at all.
+ *
+ * The other end of the same fault: a Behemoth chapter title has ONE number
+ * where a rule has two, so it matched no heading pattern and was filed as the
+ * last line of the rule above it. Weapons Capacitors, Walker X" x Y" and
+ * Secondary each ended with the next chapter's title welded on.
+ *
+ * Both are invisible downstream — the keyword still resolves, every other
+ * audit still passes — so they are pinned here by shape rather than by name. */
+console.log('\nno rule is cut off, and none swallows a chapter title');
+{
+  /* TTCombat's own missing full stops, both checked against the PDF. A rule
+   * defect reproduced faithfully is not a scan defect; listing them keeps the
+   * check sharp instead of loosening it. */
+  const NO_STOP_IN_THE_BOOK = new Set(['Incendiary X', 'Casual Games and Behemoth Scenarios']);
+  const cut = DZC._state.rules.all
+    .filter(r => !NO_STOP_IN_THE_BOOK.has(r.name))
+    .filter(r => !/[.!?:”)]$/.test(String(r.text || '').trim()));
+  eq(String(cut.length), '0', 'every rule ends on a full stop',
+     cut.map(r => `${r.name}: …${String(r.text).slice(-40)}`).join(' | '));
+
+  const ate = DZC._state.rules.all
+    .filter(r => /\b\d\.\s+Behemoth (Special|Weapon|Core|FAQ)/.test(String(r.text || '')));
+  eq(String(ate.length), '0', 'and none of them ends with the next chapter’s title',
+     ate.map(r => r.name).join(', '));
+
+  const blast = DZC.ruleText('Blast', 'ucm') || '';
+  ok(/primary target/.test(blast), 'Blast says what a primary target is');
+  ok(/not flying high are targets/.test(blast), 'and how it treats Aircraft, to the last line');
+}
+
 console.log('\nno rule prints the same sentence twice');
 {
   const sentences = t => String(t || '').split(/(?<=[.!?])\s+/)
