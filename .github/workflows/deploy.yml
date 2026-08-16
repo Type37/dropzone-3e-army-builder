@@ -1,8 +1,16 @@
 name: Test and deploy to GitHub Pages
 
+# A push made with the default GITHUB_TOKEN does not start a workflow — that
+# is GitHub's rule against a job triggering itself forever. "Watch TTCombat for
+# new PDFs" commits with that token, so its data landed on master and stopped
+# there: deployed nowhere, waiting on the next push by a person. workflow_run
+# is the way back in, and it does not need a personal token.
 on:
   push:
     branches: [master]
+  workflow_run:
+    workflows: ["Watch TTCombat for new PDFs"]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -26,9 +34,18 @@ jobs:
   # branch — which only works if something downstream is checking.
   test:
     runs-on: ubuntu-latest
+    # workflow_run fires whatever the outcome. A re-scan that failed its audits
+    # is the one run that must not reach Pages.
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     steps:
+      # ref: master, not the default. On a workflow_run event GITHUB_SHA is the
+      # commit that STARTED the other workflow — the state before it committed
+      # anything — so the default checkout would test and deploy the data this
+      # is meant to replace.
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: master
 
       - name: Node
         uses: actions/setup-node@v4
@@ -60,6 +77,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: master
 
       # Stage ONLY the site. The repo carries ~317 MB of rules and lore PDFs the
       # app never fetches, plus the scanner, the one-off scripts and the
@@ -85,7 +104,10 @@ jobs:
       # cache: 'no-cache' so it revalidates on its own.
       - name: Cache-bust css and js with the commit SHA
         run: |
-          SHA="${GITHUB_SHA::8}"
+          # HEAD, not GITHUB_SHA: on a workflow_run event those are different
+          # commits, and GITHUB_SHA is the stale one. A stamp that does not
+          # move is a cache bust that does not bust.
+          SHA="$(git rev-parse --short=8 HEAD)"
           find _site -name '*.html' -print0 | xargs -0 sed -i -E \
             's#(href="|src=")((css|js)/[^"?]+\.(css|js))"#\1\2?v='"$SHA"'"#g'
           echo "--- stamped with $SHA ---"
