@@ -1,7 +1,7 @@
 {
   "name": "Dropzone Commander 3E Army Builder",
   "short_name": "Dropzone 3E",
-  "description": "Build armies for Dropzone Commander 3rd Edition — all six factions, full unit stats, weapons, transports and rules.",
+  "description": "Assemble and print your army in this unofficial army builder for Dropzone Commander, published by TTCombat. This web app was designed by WarLore.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

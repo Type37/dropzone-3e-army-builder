@@ -1,7 +1,7 @@
 # Is the adaptation finished, or is there porting left?
 
 Jet asked, 2026-07-31. Answered 2026-08-01 by reading the fork point, not by
-guessing.
+guessing. The gap list re-checked against the code 2026-08-16.
 
 ---
 
@@ -15,6 +15,11 @@ were cut on purpose. There is no subsystem in a broken middle state.
 Dropfleet does that this app does not, and they are absent because nobody built
 them, not because a port stalled. Twenty-four already had a Todoist task; the
 twenty-fifth had none, and it was the worst of them:
+
+> **Fourteen of the twenty-five have been built since.** The list below is
+> rewritten as of 2026-08-16 and says which. The paragraph above is kept as it
+> was written because the ANSWER it gives — the port is finished, what is left
+> is features — is still the answer.
 
 > **You cannot change an army's points limit after you create it.** Dropfleet
 > has `openGameSizeChanger` / `applyGameSize` / `setCustomMax`. Here
@@ -105,44 +110,51 @@ built until there are abilities to pick.
 
 ---
 
-## Not ported — the twenty-five
+## Not ported — what is actually left
 
-Ranked by how much they cost someone actually using this at a table.
+**Rewritten 2026-08-16, by grepping the code rather than trusting the last
+list.** The twenty-five below were the answer on 2026-08-01. Fourteen of them
+have since been built, which made this the exact thing the file warns about:
+a list of open work that is mostly closed reads as a to-do and is really a
+history. Checked one by one against `js/`, not remembered.
 
-**Blocks a real session**
+**Built since, and struck from the list**
 
-1. **Change the points limit after creation.** No task. See above.
-2. Print preview with page-break markers (110)
-3. Import from clipboard, including a New Recruit list (113) and its import
-   report (114)
-4. Faction References tool — `ref/`, seven files (119)
+Change the points limit after creation (`setPointsLimit`) · print preview with
+page-break markers (`paginate`) · import from clipboard (`importFrom`,
+`parseList`) · duplicate a Group (`duplicateGroup`) · drag to reorder Groups
+(`moveGroup`) · per-army overflow menu (`armyMenu`) · share as plain text and
+as JSON (`DZCShare.text`, `.json`) · export every army as a backup ·
+ink-saver and density toggles for print (`printOpt`) · per-unit thumbnails on
+the sheet (`printOpts.art`) · seed example armies, now the two starter lists
+(`js/dzc-starters.js`) · a random army generator (`generate`) · an army
+description field (`setDescription`) · the Bioficer Generated/Genitor case
+(`genitorCap`, `RM_POINTS`).
 
-**Costs you time every session**
+**Still not built**
 
-5. Duplicate a Group (124)
-6. Drag to reorder Groups (123)
-7. Sort the army list (98)
-8. Tabs on the army list (96)
-9. Per-army overflow menu (100)
-10. Share as plain text and as JSON (115)
-11. Export every army as a JSON backup (116)
-12. Ink-saver and density toggles for print (111)
-13. Per-unit thumbnails on the printed sheet (112)
+Ranked by how much it costs someone actually using this at a table.
 
-**Makes the app feel unfinished**
+1. Sort the army list (98)
+2. Tabs on the army list (96)
+3. Fast Play sheets (118)
+4. Art carousel with sculpt labels (67) and store links (122)
+5. Pronunciation guide (121)
+6. Three-pane desktop layout (45) — a rail exists; the third pane does not
 
-14. Seed example armies on first run (94)
-15. Fast Play sheets (118)
-16. A "Surprise me" random army generator (91)
-17. An army description field (88)
-18. Misc/optional units toggle in the picker (31)
-19. In-collection filter in the picker (32)
-20. Mobile rail as a drag handle with a peek summary (47)
-21. Art carousel with sculpt labels (67) and store links (122)
-22. Namesake lore per unit (120)
-23. Pronunciation guide (121)
-24. Deployable Feature / carrier handling — the Bioficer Generated case (127)
-25. Three-pane desktop layout (45) — a rail exists; the third pane does not
+**Built, then killed on purpose — not a gap**
+
+**Faction References tool** (119). Built as `assets/ref/index.html` and
+`assets/ref/sheet.html`, then deleted whole in `c766b78`: *"kill the faction
+references entirely"* — Jet, 2026-08-08. It is listed here because a list of
+"not ported" that does not say this invites the next reader to build it again.
+
+**Partly there, and worth a look before being called either**
+
+Misc/optional units toggle in the picker (31) · in-collection filter in the
+picker (32) · mobile rail as a drag handle with a peek summary (47) · namesake
+lore per unit (120). Each has something in the code that answers part of it;
+none was checked closely enough on 2026-08-16 to say done or not done.
 
 ---
 

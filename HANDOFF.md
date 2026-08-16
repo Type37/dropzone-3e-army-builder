@@ -42,7 +42,7 @@ release is re-ingested rather than re-typed.
 
 ```sh
 python -m pip install pymupdf pillow
-python tools/dzc/rebuild.py            # scan both sources, then all four audits
+python tools/dzc/rebuild.py            # scan both sources, then all six audits
 python tools/dzc/rebuild.py --skip-scan   # re-audit data already on disk
 ```
 
@@ -56,6 +56,14 @@ Stages run in order; the first failure stops the run.
 | `audit_transport.py` | symbol shapes, carrier/passenger lineages |
 | `audit_art.py` | every unit has art, every art file has a unit |
 | `audit_rules.py` | every printed keyword resolves to glossary text |
+| `audit_special.py` | every word in a card's Special cell reached the data |
+| `audit_card_text.py` | every word ANYWHERE on a card reached the data |
+
+The last two are the only ones that open the PDFs. Every other audit reads the
+JSON, and a rule that was never scanned is an empty string — which passes every
+check that is not one of these. Seven units shipped with no rules at all behind
+that gap (build 452), and two Behemoths shipped offering each Variant the
+other's Power-priced Gear (456).
 
 `data/dzc/index.json` is the one file **not** scanned — game sizes, category
 caps, commander levels and Command Card deck rules are prose tables in chapter
@@ -206,8 +214,8 @@ not happened.** What exists was guessed. It needs a real spec from Jet.
 | `js/dzc-collection.js` | what you own; advisory, never blocking |
 | `js/dzc-shell.js` | routing, modals, settings, theme, offline, sync |
 | `css/dzc.css`, `css/dzc-print.css` | |
-| `scripts/test-all.mjs` | 483 assertions across six suites |
-| `assets/ref/` | the printable quick references — see §11 for why they are not at `/ref/` |
+| `scripts/test-all.mjs` | 1,680 assertions across seven suites, plus ruff and pyright |
+| `tools/dzc/` | the PDF ingest and its six audits — see §2 |
 
 Routes: `#armies`, `#army/<id>`, `#units`, `#collection`, `#play/<id>`,
 `#share/<payload>`.
@@ -317,7 +325,9 @@ and pushed. This pass verified rather than built:
 - `node scripts/test-all.mjs` — **606 assertions, all passing**, six suites
   (data layer, army construction, share links, fleet sync, house rules,
   render). Up from 167 at the start of the previous session.
+  *(1,680 across seven suites as of 2026-08-16.)*
 - `python tools/dzc/rebuild.py --skip-scan` — all four data audits clean.
+  *(Six as of 2026-08-16.)*
 - Latest Pages deploy: success. Live site: 200.
 
 **Confirmed live, the thing Jet was angriest about:** the unit picker did not

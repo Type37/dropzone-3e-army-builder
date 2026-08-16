@@ -192,6 +192,60 @@ three defects per unlooked-at change is the going rate.
 
 ---
 
+## Session, 2026-08-15/16
+
+### 11. Ran three probes that could not have found anything
+
+**What happened.** Chasing a player's report that the transport error fires
+when it should not, I wrote three scripts to build every Transport pairing in
+the game and validate them. All three came back "0 problems". I was one step
+from reporting that the error could not be reproduced.
+
+They loaded the faction data but never called `DZC.loadIndex()`, and
+`validate()` opens with `if (!idx) return { errors: [], warnings: [], ok: true }`
+— so every one of those runs asserted that a function which had returned early
+found nothing wrong. With the index loaded the same probe found 98 problems on
+the first run.
+
+**What should have happened.** A probe that reports "no problems" has to be
+shown finding a problem first. Every audit I wrote afterwards in this session
+was run against the pre-fix data and made to fail before it was allowed to
+pass, which is the same discipline and it costs one command.
+
+**Pattern:** verifying by proxy.
+
+### 12. Reported two working features as broken
+
+**What happened.** Sweeping the card footnotes for ones the app does not
+enforce, I reported the Lifthawk Troopship's and the Harrier Gunship's swaps as
+doing nothing. The Lifthawk's works. My probe compared weapon NAMES before and
+after, and a Lifthawk carries two MM-3 Missile Pods — remove one and the name
+is still in the list, so a correct removal read as no removal at all.
+
+Caught only because I went to debug the Lifthawk and found it already right.
+
+**What should have happened.** Counted, not tested for membership. A diff over
+a list with repeats is a multiset question and I wrote it as a set question.
+
+**Pattern:** verifying by proxy.
+
+### 13. Filed a deliberate deletion as missing work
+
+**What happened.** Rewriting `PORTING.md`, I listed the Faction References tool
+as "still not built — the directory does not exist here". It was built, and
+then deleted whole on Jet's instruction: *"kill the faction references
+entirely"* (c766b78, 2026-08-08). His commit message even says HANDOFF and
+PORTING keep their references because they are dated records.
+
+**What should have happened.** `git log -- <path>` before writing that
+something was never there. Absence in the tree is not evidence of absence in
+the history, and a to-do list that re-files a decision as an oversight is worse
+than no list.
+
+**Pattern:** racing to the fix.
+
+---
+
 ## Carried in from before this session
 
 Recorded in the handoff at the time, and still the root cause of most rework:

@@ -18,9 +18,15 @@
   'use strict';
 
   /* Relative to the document, so a page that is not index.html has to say where
-   * the data is. `ref/sheet.html` is the only one that does. The printable
-   * quick reference reads the same three files as the app, and duplicating the
-   * loader there would be a second copy of the glossary resolver. */
+   * the data is, by setting window.DZC_DATA_BASE before this loads.
+   *
+   * NOTHING IN THIS REPO DOES ANY MORE. This used to name the Faction
+   * Reference sheet as the one page that did, and it was right until c766b78
+   * deleted the Faction References whole -- "kill the faction references
+   * entirely", Jet, 2026-08-08. The hook stays because it is what any second
+   * page reading this data would need and it costs one `||`; naming a file
+   * that is gone does not: the asset check in test-house-rules reads a path in
+   * a comment exactly as it reads one in the markup, and fails on it. */
   const BASE = (typeof window !== 'undefined' && window.DZC_DATA_BASE) || 'data/dzc';
 
   const state = {

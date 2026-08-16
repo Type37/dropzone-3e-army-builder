@@ -1,7 +1,8 @@
 # Next
 
-Rewritten 2026-08-08. Everything described as done is committed and pushed to
-`master`. Suite: 1277 assertions, layout harness 126/126.
+Rewritten 2026-08-08, re-checked 2026-08-16. Everything described as done is
+committed and pushed to `master`. Suite: 1680 assertions, layout harness
+126/126.
 
 Read `CLAUDE.md` first, then `FAILINGS.md`. This file is only the open work,
 and it is only worth having if it is true — the version before this one listed
@@ -9,9 +10,10 @@ three things that had already shipped, which is worse than listing nothing.
 
 ---
 
-## 1. Two decisions only Jet can make
+## 1. Decisions only Jet can make
 
-**Neither is a bug. Both change what gets built, so neither should be guessed.**
+**None of these is a bug. Every one changes what gets built, so none should be
+guessed.** The last two are settled and kept here as answers, not questions.
 
 ### The Squad card is still too tall
 
@@ -33,6 +35,31 @@ fits in 200px" — rather than another round of trimming px and guessing.
 Open in Todoist: the ranges too wide for a size tab switcher (3–6, 3–9, 4–8,
 6–12). That task carries the unit lists and three options.
 
+### Whether an Aux Gate may be taken loaded
+
+Added 2026-08-16, out of the rules sweep. "Aux Gate" says these "use the same
+rules as Gates except they are taken as non-Gate Squads"; the Gate rule says a
+Gate is "not taken with any Units aboard". Whether the exception covers that
+sentence decides whether a Firedrake, a Tegu and an Adamah may be loaded on the
+list. The app allows it today. Nothing in the app should decide this by
+guessing which reading is nicer.
+
+### Whether a Transport Behemoth's cargo becomes a real Group
+
+Its rule is enforced in the ALLOWANCE as of build 455 — an Explorator with a
+Squad aboard costs five Groups, not four — but the Squads are still drawn
+inside the Behemoth's Group on screen and on the sheet, because `carriedBy` is
+what draws the nesting tree. Splitting them into a second Group is a change to
+how a Group is modelled, not a fix.
+
+### Whether assignTransport should grow a Squad to fill its ride
+
+Jet, 2026-08-15: **"No automatic."** Left here as the answer rather than the
+question, so nobody re-opens it. The picker offers Transports that report "not
+full" at the Squad's default size; 68 of those come good by growing the Squad
+and 33 need a second Squad to share the ride (3.2.4.1), which the app supports.
+Both are the error firing correctly at an unfinished Group.
+
 ---
 
 ## 2. Everything else that was in this file has shipped
@@ -45,6 +72,27 @@ Open in Todoist: the ranges too wide for a size tab switcher (3–6, 3–9, 4–
   `scan_statcards.py` into `specialVariants`, rendered on the Variant in the
   builder, the Unit Reference and the printed sheet.
 - **The no-jump fix** — verified 2026-08-08, see below.
+
+### The 2026-08-15 player report, and the sweep it started
+
+Three things from a player, then eight builds of chasing what else was claimed
+in the PDFs and not done in the app. All on `master`.
+
+| Build | What was wrong |
+|---|---|
+| 452 | Seven units had NO rules: a Special cell that wrapped was read on one line. Siren Corps, Type-3 Strike Walker, ATVs, Evicerators, Assault Warsuits, both Shaltari Grav-tanks. Shaltari could not take a Gate at all. Print produced one blank page in every browser — `css/app.css` hid the sheet in favour of `#print-container`, Dropfleet's id, never ported |
+| 453 | The 4-Squad cap counted Transport Squads, which 3.2.4.1 exempts, so the rulebook's own Group 5 was refused and the Albatross reported "not full" for good. Flexible Capacity was unimplemented |
+| 454 | Subterranean unimplemented: the Splitting Drills spent a Group they do not cost and took cargo they may not be taken with. An Auxiliary Transport was told it must be full |
+| 455 | A Transport Behemoth's cargo rode free of the Group allowance |
+| 456 | Behemoth Gear lost its Variant bracket and one Gear name was cut off, so both Grand Walkers offered each Variant the other's Power-priced gear |
+| 457 | The Harrier Gunship's card option, the one swap in the game that grants no weapon and so had no control |
+| 458 | Errata 3.01 checked against the sources — already applied — and the Field rule it amended was printing the same paragraph twice |
+| 459 | Chapter 11 is two-column and was read right-column-first, so **Blast** shipped ending mid-sentence and three Behemoth rules ended with the next chapter's title |
+
+Four audits now stand behind that: `audit_special` and `audit_card_text` open
+the PDFs and prove every word printed on a card reached the data, and two
+glossary checks in `test-dzc-data.mjs` prove no rule is cut off, swallows a
+chapter title, or says the same sentence twice.
 
 ---
 
