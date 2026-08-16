@@ -39,6 +39,21 @@ than a general one.
 These are PREVIOUS-EDITION sculpts. That is the trade, and it is deliberate:
 a specific old photo tells you which loadout you are looking at, a general new
 one does not.
+
+When to run it
+--------------
+By hand, after a re-scan brings in new units -- rebuild.py deliberately does
+not call this, and neither does CI. It reads the five
+*_Stat_Cards_250912.pdf files in Pics/, which are gitignored and exist only on
+Jet's machine, so GitHub Actions can never do this and a fresh clone cannot
+either. That is not a fault to fix; it is why this is the one step still done
+locally.
+
+    python tools/dzc/scan_variant_art.py --pdf-dir Pics
+
+The number to watch is the match count: 155 of 199 at Build 445. It should
+climb or hold. A fall means the matcher stopped recognising captions it used
+to, which is a bug in here rather than in the source.
 """
 
 import argparse
