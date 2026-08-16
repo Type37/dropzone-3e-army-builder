@@ -60,6 +60,14 @@ full" at the Squad's default size; 68 of those come good by growing the Squad
 and 33 need a second Squad to share the ride (3.2.4.1), which the app supports.
 Both are the error firing correctly at an unfinished Group.
 
+### Small and mechanical, not a decision
+
+- **The dead `/mobile/` branch.** `sw.js` and `js/offline-sync.js` both test
+  `location.pathname.includes('/mobile/')` for a sub-app Dropfleet has and this
+  app does not — one responsive build is the whole point. Two lines, but they
+  are service-worker lines, so they come out together and get tested rather
+  than tidied in passing.
+
 ---
 
 ## 2. Everything else that was in this file has shipped

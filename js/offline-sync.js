@@ -1,13 +1,23 @@
-/* Offline data sync. Shared by the desktop app and the /mobile/ sub-app.
+/* Offline data sync.
+ *
+ * Ported from the Dropfleet builder, where the header said "shared by the
+ * desktop app and the /mobile/ sub-app". There is no /mobile/ here: this is one
+ * responsive app, which is the whole of CLAUDE.md's "desktop keeps panes,
+ * mobile does not".
  *
  * The service worker already caches whatever you happen to visit, which is not
  * enough: someone who only ever opened UCM would sit down at a table with no
- * signal and find five factions missing. This downloads the whole thing up
- * front, on purpose, with the size shown before you commit to it.
+ * signal and find the other five factions missing. This downloads the whole
+ * thing up front, on purpose, with the size shown before you commit to it.
  *
- * Storage lives in its own cache (dfc-offline) rather than the versioned
- * dfc-cache-vN, so a deploy never silently throws away a 26 MB download the
+ * Storage lives in its own cache, `dfc-offline`, rather than the versioned
+ * `dzc-cache-vN`, so a deploy never silently throws away a 26 MB download the
  * user chose to make, and "Delete downloaded data" never breaks the app shell.
+ *
+ * THE NAME KEEPS ITS `dfc-`. It is a live key in every user's browser holding
+ * the bundle they already downloaded, and sw.js reads it as KEEP. Renaming it
+ * to match the app would orphan that bundle and silently re-download 26 MB on
+ * the next visit, at a table, on a phone. A wrong-looking name is cheaper.
  * The SW's offline fallback uses CacheStorage.match(), which searches every
  * cache, so files landed here are served automatically with no SW changes.
  */
@@ -21,9 +31,13 @@ window.OfflineSync = (function () {
   // flaky tournament hotspot doesn't drop half the requests at once.
   const PARALLEL = 6;
 
-  // Both apps live one directory apart (/ and /mobile/). Manifest URLs are
-  // repo-root-relative ('./data/…'), so resolve them against the origin root
-  // and not against whichever page is asking.
+  // Manifest URLs are repo-root-relative ('./data/…'), so they resolve against
+  // the origin root and not against whichever page is asking.
+  //
+  // The /mobile/ arm is DEAD HERE and inherited: Dropfleet ships a sub-app one
+  // directory down, this app does not. It is left rather than deleted because
+  // the same line is in sw.js and the pair should come out together, tested,
+  // rather than half in a docs pass. Listed in NEXT.md.
   const ROOT = new URL(
     location.pathname.includes('/mobile/') ? '../' : './',
     location.href
@@ -192,7 +206,8 @@ window.OfflineSync = (function () {
       );
 
       // Drop anything cached from a previous sync that is no longer in the
-      // manifest (retired ship art), so deleted files don't accumulate forever.
+      // manifest (unit art dropped by a re-scan), so deleted files don't
+      // accumulate forever.
       const wanted = new Set(files.map(f => abs(f.u)));
       const stale = (await cache.keys()).filter(req => !wanted.has(req.url));
       await Promise.all(stale.map(req => cache.delete(req)));
@@ -213,8 +228,8 @@ window.OfflineSync = (function () {
 
   /* ── Delete ────────────────────────────────────────────────── */
 
-  // Removes the downloaded bundle only. Fleets (localStorage) and the app shell
-  // (dfc-cache-vN) are untouched. Deleting your downloaded ship art must never
+  // Removes the downloaded bundle only. Armies (localStorage) and the app shell
+  // (dzc-cache-vN) are untouched. Deleting your downloaded unit art must never
   // cost you your saved lists.
   async function remove() {
     if (!supported) return { ok: false };

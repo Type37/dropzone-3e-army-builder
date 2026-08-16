@@ -5,15 +5,21 @@ Everything lives in `js/dzc-icons.js` as an inline path map, used as
 
 **Inlined on purpose.** An icon font or SVG sprite from a CDN would break the
 app at a table with no signal, which is the one place it has to work. This
-follows the pattern already used by `mobile/js/mobile.js` (`ICON_PATHS`), and
-HANDOFF §2.6 ("Inline them — never load from a CDN, it breaks offline").
+follows the pattern already used in the Dropfleet builder this forked from
+(`mobile/js/mobile.js`, `ICON_PATHS` — that path is THERE, not here; this app
+has no `mobile/` build), and HANDOFF §2.6 ("Inline them — never load from a
+CDN, it breaks offline").
+
+`box` and the arc paths `F`/`Sl`/`Sr`/`R` in `js/dzc-icons.js` are not in the
+table on purpose: `box` is a viewBox and the arcs are the firing-arc wedges
+drawn by `DZCIcon.arc`, not icons anything asks for by name.
 
 **Sources, per icon.** Every path says where it came from on its own line in
 `js/dzc-icons.js`. The mix:
 
 | Source | Licence | Icons |
 |---|---|---|
-| Material Symbols, 24×24 | Apache 2.0 | 22, the UI set: add, remove, close, edit, delete, search, arrow_back, content_copy, more_vert, print, share, error, warning, check_circle, info, lock, layers, link, local_shipping, calculate, groups, deployed_code, tune |
+| Material Symbols, 24×24 | Apache 2.0 | 23, the UI set: add, remove, close, edit, delete, search, arrow_back, content_copy, more_vert, print, share, error, warning, check_circle, info, lock, layers, link, local_shipping, calculate, groups, deployed_code, tune |
 | Phosphor | MIT | stat_mv_infantry, stat_b, stat_dp, stat_power, stat_df, grid_view, list_alt |
 | Supplied for this app, own grids | — | stat_mv (512), stat_a (512), stat_of (640), settings (26), rm (512), dice (32), drag_dots, military_tech |
 

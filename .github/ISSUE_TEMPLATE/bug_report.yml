@@ -1,5 +1,5 @@
 name: Bug report
-description: Something in the fleet builder looks wrong or does not work
+description: Something in the army builder looks wrong or does not work
 labels: ["bug"]
 body:
   - type: markdown
@@ -11,7 +11,7 @@ body:
     attributes:
       label: What happened?
       description: What did you do, and what did you see? A screenshot is worth a lot here.
-      placeholder: e.g. I removed a ship and the points counter at the top did not change.
+      placeholder: e.g. I removed a Squad and the points counter at the top did not change.
     validations:
       required: true
   - type: textarea
@@ -38,7 +38,15 @@ body:
       description: If you know it. e.g. "iPhone 15, Safari" or "Windows, Chrome".
     validations:
       required: false
+  - type: input
+    id: build
+    attributes:
+      label: Build number
+      description: Settings, at the bottom. It says which version you are on, which is often the whole answer.
+      placeholder: e.g. 461
+    validations:
+      required: false
   - type: markdown
     attributes:
       value: |
-        If the problem is a wrong points cost, stat, or rule, please say which ship and which faction so it can be checked against the official PDF.
+        If the problem is a wrong points cost, stat, or rule, please say which Unit and which faction so it can be checked against TTCombat's own PDF.

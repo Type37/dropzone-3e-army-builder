@@ -3,7 +3,7 @@
 // populating the cache as resources are fetched.
 // Bump this on every deploy so existing clients purge the old cache on activate
 // (the app updates frequently — stale assets must not survive a new build).
-const CACHE = 'dzc-cache-v460';
+const CACHE = 'dzc-cache-v461';
 // Same-origin code/data that MUST be fresh when online. Network-first alone is
 // not enough: fetch() still consults the browser HTTP cache, so a client can
 // keep running a stale app.js for as long as GitHub Pages' cache headers allow.
@@ -69,9 +69,13 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return; // let cross-origin (fonts CDN) pass through
 
-  // The root SW controls the whole origin — desktop AND the /mobile/ sub-app.
-  // Both use the same strategy: network-first for fresh content when online,
-  // falling back to cache when offline (so each works at the table with no signal).
+  // Network-first for fresh content when online, falling back to cache when
+  // offline, so the app works at the table with no signal.
+  //
+  // The /mobile/ arm below is DEAD HERE and inherited: Dropfleet ships a
+  // sub-app one directory down and this app is one responsive build. Left
+  // rather than deleted because js/offline-sync.js carries the same branch and
+  // the pair should come out together, tested. Listed in NEXT.md.
   const isMobile = url.pathname.includes('/mobile/');
   const offlineShell = isMobile ? './mobile/index.html' : './index.html';
 
