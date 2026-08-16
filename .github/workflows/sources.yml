@@ -64,7 +64,7 @@ jobs:
           uv run python tools/dzc/fetch_sources.py --check | tee check.log
           echo "changed=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
 
-      - name: Download, re-scan, and prove it
+      - name: Download and re-scan
         if: steps.week.outputs.run == 'true' && steps.check.outputs.changed != '0'
         run: |
           uv run python tools/dzc/fetch_sources.py
@@ -74,7 +74,38 @@ jobs:
           # silently dropped every Aircraft card in the game — UCM came back
           # with 20 units instead of 36 and no dropships at all.
           uv run python tools/dzc/rebuild.py
-          node scripts/test-all.mjs
+
+      # A new PDF does not always mean new data — TTCombat reissue files that
+      # scan to the same numbers. This asks about the scan's output, not its
+      # input: rules/ is always dirty here, because fetch_sources.py has just
+      # written the new PDFs into it. Those get committed either way; only a
+      # change in data/ is a reason to raise the build number.
+      #
+      # --porcelain rather than `git diff --quiet` because a genuinely new
+      # unit arrives as an untracked file in assets/units, which a diff of
+      # tracked files does not see.
+      - name: Did the data actually change?
+        if: steps.week.outputs.run == 'true' && steps.check.outputs.changed != '0'
+        id: data
+        run: |
+          if [ -z "$(git status --porcelain -- data assets/units)" ]; then
+            echo "New PDFs, but the scan produced identical data."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Before the tests, so test-shell.mjs is what proves the two numbers
+      # still match. Data that lands without a new cache name is data nobody
+      # sees: sw.js precaches data/dzc/index.json and rules.json, so an
+      # installed app keeps serving the old points with nothing to say so.
+      - name: Raise the build number
+        if: steps.week.outputs.run == 'true' && steps.data.outputs.changed == 'true'
+        run: node scripts/bump-build.mjs
+
+      - name: Prove it
+        if: steps.week.outputs.run == 'true' && steps.check.outputs.changed != '0'
+        run: node scripts/test-all.mjs
 
       # Only reached when the scan AND every audit AND the whole suite passed,
       # because each step above fails the job. An unattended commit is fine on
@@ -85,11 +116,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet; then
-            echo "New PDFs, but the scan produced identical data. Nothing to commit."
+          git add -A rules data assets/units js/dzc-shell.js sw.js
+          if git diff --cached --quiet; then
+            echo "Nothing to commit."
             exit 0
           fi
-          git add -A rules data assets/units
           git commit -F - <<'MSG'
           Re-scan against TTCombat's current PDFs
 
@@ -100,6 +131,9 @@ jobs:
 
           The superseded PDFs are kept: they are the only record of what the
           previous data was built from.
+
+          No changelog entry. Nobody read this diff — what changed in the
+          points is still to be written up by hand.
           MSG
           git push
 
