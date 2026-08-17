@@ -500,6 +500,20 @@
     const gTitle = gUsed === gCards ? ''
       : ` title="${esc(`${gCards} Group card${gCards === 1 ? '' : 's'}, and a Behemoth counts as several (1.1)`)}"`;
 
+    /* HOW MANY MODELS THE WHOLE ARMY IS. Jet, 2026-08-17: "on the groups can
+     * you show how many minis we actually have in totality?"
+     *
+     * Every Group card already says its own -- "2 Squads, 5 models" -- and the
+     * army card in the list says the army's, but the screen you are standing
+     * in while you build had the sum of them nowhere. It is what you count out
+     * of the case, and it does not follow from the points.
+     *
+     * Beside the Group count rather than on a line of its own: both are "how
+     * big is this", and the rail is already four cards deep on a phone. */
+    const models = a.groups.reduce((n, g) =>
+      n + g.squads.reduce((m, s) => m + s.models.length, 0), 0);
+    const modelLine = `${models} model${models === 1 ? '' : 's'}`;
+
     /* The ratio rule, drawn.
      *
      * Dropfleet has a composition bar (renderCompositionBar, app.js:2359) that
@@ -518,7 +532,12 @@
       const pct = std ? Math.min(100, Math.round((val / std) * 100)) : (val ? 100 : 0);
       return `<div class="dzc-ratio${over ? ' is-over' : ''}" style="--cat:${CAT_INK[c[0].toUpperCase() + c.slice(1)]}">
         <span>${c[0].toUpperCase() + c.slice(1)}</span>
-        <span class="dzc-ratio-n"><b>${val}</b><i>of ${std}</i></span>
+        <!-- "110/495", not "110 of 495". Jet, 2026-08-17. Four of these stack
+             in a 250px rail beside a meter, and the word was two thirds of the
+             cell it had to fit in -- which is why it was running under the
+             track to its right. It is a ratio, and a slash is what a ratio is
+             written with. -->
+        <span class="dzc-ratio-n"><b>${val}</b><i>/${std}</i></span>
         <span class="dzc-ratio-track"><i style="width:${pct}%"></i></span></div>`;
     }).join('');
 
@@ -562,7 +581,7 @@
                 ${playable ? '' : 'disabled'} aria-label="Play"
                 title="${playable ? 'Run a game with this army'
                   : 'Add a Commander first: CP, hand size and Initiative all come from Commander Level (4.1)'}"
-          >${window.DZCIcon('layers', { size: 15 })}<span class="topbar-action-label">Play</span></button>
+          >${window.DZCIcon('play_circle', { size: 15 })}<span class="topbar-action-label">Play</span></button>
         <button class="btn btn-ghost btn-sm topbar-action-btn" type="button" onclick="DZCBuilder.share()"
                 aria-label="Share" title="Copy a link to this army"
           >${window.DZCIcon('share', { size: 15 })}<span class="topbar-action-label">Share</span></button>
@@ -602,7 +621,8 @@
           <button type="button" class="dzc-rail-peek" aria-expanded="${railOpen}"
                   aria-controls="dzc-rail-body" onclick="DZCBuilder.toggleRail()">
             <b>${cost}</b><span>/ ${a.pointsLimit}pts</span>
-            <i${gTitle}>${gUsed} of ${maxG || '—'} Groups</i>
+            <i${gTitle}>${gUsed}/${maxG || '—'} Groups</i>
+            <span class="dzc-rail-models">${modelLine}</span>
             ${(() => {
               // The SAME count the list under it prints. A peek line saying
               // "4 to fix" over a list of two is the peek line lying.
@@ -633,7 +653,8 @@
               <b>${cost}</b><span>/ ${a.pointsLimit}pts</span>
             </div>
             <div class="dzc-rail-track"><i style="width:${pct}%"></i></div>
-            <p class="dzc-rail-line"${gTitle}>${gUsed} of ${maxG || '—'} Groups</p>
+            <p class="dzc-rail-line"${gTitle}>${gUsed}/${maxG || '—'} Groups<span
+               class="dzc-rail-models">${modelLine}</span></p>
           </div>
 
           <div class="dzc-rail-card">

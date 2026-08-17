@@ -735,8 +735,9 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   font-family: var(--font-numeric, 'Outfit', sans-serif);
   font-variant-numeric: tabular-nums;
 }
-.dzc-ratio i { font-style: normal; color: var(--ink-2, #6b6459); margin-left: 4px; }
-.dzc-ratio-n { display: inline-flex; align-items: baseline; }
+/* No gap before the slash: "110 /495" is not a ratio, it is two things. */
+.dzc-ratio i { font-style: normal; color: var(--ink-2, #6b6459); font-size: 11px; }
+.dzc-ratio-n { display: inline-flex; align-items: baseline; min-width: 0; }
 /* Standard used to be a solid block of the faction accent with white text --
    the one loud thing on a card of otherwise quiet rows, and worse on a
    red-accent faction (Bioficer's #9c1818), where "this is fine, it's just
@@ -1004,6 +1005,13 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   margin: 1px 0; font-size: 11.5px; color: var(--ink-2, #6b6459);
   font-variant-numeric: tabular-nums;
 }
+/* The army's model count, beside its Group count. Divided by a rule rather
+   than a comma: the two are separate facts about the same army, and a comma
+   would read as one sentence about Groups. */
+.dzc-rail-models::before {
+  content: ''; display: inline-block; width: 1px; height: .85em;
+  margin: 0 7px -1px; background: currentColor; opacity: .4;
+}
 .dzc-rail .dzc-ratios { flex-direction: column; gap: 4px; margin: 0; }
 /* Grid, not flex-with-space-between: space-between only spaces out ONE row's
    own items, so "Standard" (one word) and "Vanguard" (also one word, but
@@ -1018,12 +1026,25 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    is built for, so it is measured against the fallback face rather than Jost.
    The track beside it is 83px against a 54px minimum, so the 8px comes out of
    slack. */
+/* THE NUMBER COLUMN HOLDS THE WHOLE NUMBER.
+   It was 50px against "110 of 495", which is about 68, and .dzc-ratio-n is
+   nowrap -- so the ratio ran straight out of its cell and printed over the
+   meter in the column beside it. Reported by Jet, 2026-08-17, with a
+   screenshot of "80 of 495" lying across its own track.
+   Two fixes, because either alone leaves it tight: the word became a slash
+   (see the ratio markup), and the column is 74px. Measured rather than
+   guessed: "110/495" comes to 61px and a 3000pt Behemoth army's "1495/1500"
+   to about 70, so 62 would have shipped the same bug one army size up. The
+   name column stays 68 -- that width was measured against the fallback face
+   for a reason, and taking it back would re-break "Standard" and "Vanguard".
+   The room comes out of the gaps and the meter, which still clears its 54px
+   minimum in a 250px rail. */
 .dzc-rail .dzc-ratio {
-  display: grid; grid-template-columns: 68px 50px 1fr;
-  align-items: baseline; column-gap: 8px; padding: 4px 8px;
+  display: grid; grid-template-columns: 68px 74px minmax(54px, 1fr);
+  align-items: baseline; column-gap: 6px; padding: 4px 8px;
 }
 .dzc-rail .dzc-ratio span { display: inline; font-size: 10.5px; }
-.dzc-rail .dzc-ratio-n { display: flex; align-items: baseline; gap: 3px; white-space: nowrap; }
+.dzc-rail .dzc-ratio-n { display: flex; align-items: baseline; white-space: nowrap; }
 
 /* Three panes need real width. The weapon table alone wants ~620px, so below
    1400 the overview folds up into a row and the detail pane takes the width
@@ -2836,6 +2857,22 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
    and still the thing this screen was asked not to do. Equal-width digits mean
    a value can change without anything beside it moving. */
 .dzc-play, .dzc-play input { font-variant-numeric: tabular-nums; }
+/* AND AGAIN, AFTER THE SHORTHANDS.
+   `font:` is a shorthand that resets font-variant-numeric to normal, so the
+   two counters set with it -- the Round heading and the Command Point /
+   Pass Token value -- threw the inherited setting away and went back to
+   proportional digits. Which is exactly where the last pixel of movement was
+   hiding: stepping the CP cap from /0 to /4 narrowed that <i> by one pixel.
+   Declared after the shorthands rather than folded into them, so the reason
+   it is a separate line is visible.
+
+   It is not enough on its own. font-variant-numeric only does anything if the
+   face actually ships tabular figures, and the display face here does not, so
+   the "/4" beside a Command Point count still measured a pixel narrower than
+   "/0". A held-open well is the fix that does not depend on a font feature;
+   the property stays because on a face that has them it is the better one. */
+.dzc-round b, .dzc-pcard-v { font-variant-numeric: tabular-nums; }
+.dzc-pcard-v i { display: inline-block; min-width: 24px; }
 .dzc-round { display: flex; align-items: center; gap: 10px; }
 .dzc-round button { width: 36px; height: 36px; border-radius: 8px; cursor: pointer; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); display: grid; place-items: center; }
 /* Wide enough for "Round 10", so reaching double figures does not push the
@@ -2875,8 +2912,47 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 .dzc-pcard-v i { font-style: normal; font-size: 13px; font-weight: 500; color: var(--ink-2, #6b6459); }
 .dzc-pcard-act { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .dzc-pcard-act button { padding: 5px 12px; border-radius: 6px; cursor: pointer; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); font-size: 13px; }
-.dzc-pcard-act label { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-2, #6b6459); display: inline-flex; align-items: center; gap: 5px; }
 .dzc-pcard-act input { width: 56px; padding: 4px 6px; border-radius: 5px; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); color: var(--ink, #24201c); }
+
+/* ── one row ──
+   Name, number and controls on a line, instead of three stacked bands. Wraps
+   below about 360px rather than being squeezed: the buttons are 44px on a
+   phone and that is not negotiable, so the row is what gives. */
+.dzc-pcard--row {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px;
+  padding: 7px 10px;
+}
+.dzc-pcard--row .dzc-pcard-k {
+  /* Two short lines rather than one long one: "Command Points" set across the
+     row is 95px of a 340px phone card spent on a label. */
+  display: block; max-width: 70px; line-height: 1.15;
+}
+.dzc-pcard--row .dzc-pcard-v { margin: 0; font-size: 21px; }
+.dzc-pcard--row .dzc-pcard-v b { min-width: 24px; }
+.dzc-pcard--row .dzc-pcard-v i { font-size: 12px; }
+.dzc-pcard--row .dzc-pcard-act { margin-left: auto; gap: 5px; }
+
+/* Groups, yours against theirs, as one cluster: the word small over the
+   number, which is the shape a stat takes everywhere else in this app. */
+.dzc-pcard-groups { display: inline-flex; align-items: stretch; gap: 6px; }
+.dzc-pg {
+  display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 1px; line-height: 1;
+}
+.dzc-pg i {
+  font-style: normal; font-size: 9px; text-transform: uppercase; letter-spacing: .05em;
+  color: var(--ink-2, #6b6459);
+}
+.dzc-pg b { font-size: 15px; font-family: var(--font-numeric, inherit); }
+.dzc-pg input { width: 46px; text-align: center; }
+
+/* ── a stepper at its stop ──
+   It still fires, and pressing it still says why (the float). This is so you
+   can see it before you press: CP is generated to your Commander Level at the
+   top of every Round, so + is at its ceiling the moment a Round begins, and a
+   live-looking button that answers with silence reads as a broken one. */
+.dzc-press.is-nil { opacity: .34; }
+.dzc-press.is-nil:active { box-shadow: none; }
 
 /* ── the press ──
    Every control on this screen is a bare glyph or a picture, and until now a
@@ -2944,11 +3020,17 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 .dzc-act { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
 .dzc-act b { font: 700 14px/1.2 var(--font-ui, 'Jost', sans-serif); }
 .dzc-play-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; text-transform: uppercase; letter-spacing: .05em; padding: 2px 7px; border-radius: 3px; background: #dbe9f5; color: #16466e; }
-/* A Squad, with the model washed out behind its own numbers.
+/* A Squad, with the model behind its own numbers.
    Which is how you find one on a screen of eleven: you are looking for the
    shape you just picked up off the table, not for its name. The art is inert
    and decorative -- `contain`, so it is never stretched, and pinned right so
-   it sits under the model count rather than under the name. */
+   it sits under the model count rather than under the name.
+
+   IN COLOUR, AND NOT FADED OUT. Jet, 2026-08-17: "have those vague outlines
+   behind not fading, and give them color." The first pass drained it to grey
+   and ran a gradient mask across it, which left half a ghost of a silhouette
+   -- enough to notice, not enough to recognise, which is the one thing it is
+   there to do. Whole picture, own colours, one flat opacity. */
 .dzc-play-squad {
   position: relative; isolation: isolate;
   padding: 6px 0; border-top: 1px solid var(--line, #eee5d6);
@@ -2961,11 +3043,9 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
      rather than to the Squad. */
   top: 4px; right: 0; height: calc(100% - 8px); width: min(46%, 210px);
   object-fit: contain; object-position: right center;
-  opacity: .13; filter: grayscale(1) contrast(.8);
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 42%);
-  mask-image: linear-gradient(to right, transparent, #000 42%);
+  opacity: .2;
 }
-[data-theme="dark"] .dzc-play-art { opacity: .17; filter: grayscale(1) brightness(1.5); }
+[data-theme="dark"] .dzc-play-art { opacity: .26; }
 /* Everything the Squad prints sits above the watermark. One wrapper rather
    than a z-index on each child: a weapon card and a rule chip both open
    popovers, and stacking contexts fought over which was on top. */

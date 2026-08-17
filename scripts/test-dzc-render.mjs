@@ -424,8 +424,14 @@ console.log('\nevery screen renders');
    * rail entirely. "there's a bar that shows how much you've spent... but it's
    * a more obvious like 900/2000 or something", then "remove the points left."
    * Spent-over-limit is the same fact, said once. */
-  ok(/<b>\d+<\/b><span>\/ \d+pts<\/span>/.test(builder) && /of \d+ Groups/.test(builder),
+  // "10/16 Groups", not "10 of 16 Groups" -- Jet, 2026-08-17, wanted ratios
+  // written as ratios, and the peek line needed the width back.
+  ok(/<b>\d+<\/b><span>\/ \d+pts<\/span>/.test(builder) && /\d+\/(?:\d+|—) Groups/.test(builder),
      'and it carries the spend against the limit and the Group count');
+  // And the army's model total, which is what you count out of the case.
+  ok(/class="dzc-rail-models">\d+ models?</.test(builder),
+     'and how many models the whole army is',
+     (builder.match(/.{0,60}dzc-rail-models.{0,40}/) || [])[0]);
   ok(/For the club night/.test(builder) && /For the club night/.test(list),
      'and what the army is for, on both screens');
 
@@ -836,11 +842,11 @@ console.log('\nevery screen renders');
     await P.open(ma.id);
 
     const cap = () => (els['view-play'].innerHTML
-      .match(/Command Points<\/span>[\s\S]*?<i data-cp-max[^>]*>\/ (\d+)<\/i>/) || [])[1];
+      .match(/Command Points<\/span>[\s\S]*?<i data-cp-max[^>]*>\/(\d+)<\/i>/) || [])[1];
     // Generated, and still in hand: the card shows both, the way the CP card
     // shows what you hold over what you may hold.
     const passCard = () => els['view-play'].innerHTML
-      .match(/Pass Tokens<\/span>[\s\S]*?<b data-pass[^>]*>(\d+)<\/b><i data-pass-max[^>]*>\/ (\d+)<\/i>/) || [];
+      .match(/Pass Tokens<\/span>[\s\S]*?<b data-pass[^>]*>(\d+)<\/b><i data-pass-max[^>]*>\/(\d+)<\/i>/) || [];
     const passes = () => passCard()[2];
     const passLeft = () => passCard()[1];
 
@@ -964,8 +970,9 @@ console.log('\nevery screen renders');
 
     const view = () => els['view-play'].innerHTML;
     const passes = () => (view()
-      .match(/Pass Tokens<\/span>[\s\S]*?<i data-pass-max[^>]*>\/ (\d+)<\/i>/) || [])[1];
-    const mine = () => (view().match(/Yours<input type="number" value="(\d+)"/) || [])[1];
+      .match(/Pass Tokens<\/span>[\s\S]*?<i data-pass-max[^>]*>\/(\d+)<\/i>/) || [])[1];
+    // Yours is READ, not typed, so it stopped being a disabled number field.
+    const mine = () => (view().match(/<b data-mine[^>]*>(\d+)<\/b>/) || [])[1];
 
     const ge = win.DZC.faction('ucm').byId['ucm-heavy-battle-mech'].groupEquivalent;
     ok(ge > 1, 'the Heavy Battle Mech is worth more than one Group', String(ge));
@@ -1011,7 +1018,7 @@ console.log('\nevery screen renders');
     A.addSquad(ga, A.addGroup(ga).id, 'warstrider', 1);
     await B.renderBuilder(ga.id);
     const rail = els['view-army'].innerHTML;
-    const meter = (rail.match(/(\d+) of (\d+|—) Groups/) || []);
+    const meter = (rail.match(/(\d+)\/(\d+|—) Groups/) || []);
     eq(meter[1], String(A.groupsUsed(A.get(ga.id))),
        'the rail counts what the Groups are worth, not the cards (1.1)');
     ok(A.groupsUsed(A.get(ga.id)) > 2, 'and this army is worth more than its two cards',

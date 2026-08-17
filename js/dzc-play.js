@@ -262,12 +262,13 @@
   const val = {
     round: () => 'Round ' + state.round,
     cp: () => String(state.cp),
-    cpMax: army => '/ ' + commanderLevel(army),
+    // "3/4", not "3 / 4" -- same ratio shape as Category spend in the builder.
+    cpMax: army => '/' + commanderLevel(army),
     cpWhy: army => state.round <= 1
       ? 'Commanders count as Level 0 throughout Round 1 (4.1.1)'
       : (l => `Hand size is also ${l} card${l === 1 ? '' : 's'} (4.1.4)`)(commanderLevel(army)),
     pass: army => String(passLeft(army)),
-    passMax: army => '/ ' + passTokens(army),
+    passMax: army => '/' + passTokens(army),
     vp: k => String(state[k] || 0),
     alive: s => aliveIn(s) + '/' + (state.models[s.id] || []).length,
     dp: (sid, i) => String(((state.models[sid] || [])[i] || {}).dp),
@@ -396,35 +397,53 @@
              that produced its number, which is the app explaining itself. The
              rules still live here, on hover, where they are there when you
              want them and silent when you do not. -->
-        <div class="dzc-pcard" data-cp-card title="${esc(val.cpWhy(army))}">
+        <!-- ONE ROW EACH. Jet, 2026-08-17: "we can def fit everything for
+             command points on one row, same with pass tokens if we try hard
+             and shrink shit a tiny bit." They were three stacked bands -- name,
+             then number, then controls -- which is a card and a half of height
+             for two digits, and on a phone it pushed the army itself below the
+             fold. Name, number and controls now sit on one line and only wrap
+             below about 360px. -->
+        <div class="dzc-pcard dzc-pcard--row" data-cp-card title="${esc(val.cpWhy(army))}">
           <span class="dzc-pcard-k">Command Points</span>
           <span class="dzc-pcard-v"><b data-cp>${val.cp()}</b><i data-cp-max>${val.cpMax(army)}</i></span>
           <div class="dzc-pcard-act">
-            <button type="button" class="dzc-press" aria-label="One fewer Command Point"
+            <button type="button" class="dzc-press" data-step="cp-down" aria-label="One fewer Command Point"
                     onclick="DZCPlay.cp(this,-1)">−</button>
-            <button type="button" class="dzc-press" aria-label="One more Command Point"
+            <button type="button" class="dzc-press" data-step="cp-up" aria-label="One more Command Point"
                     onclick="DZCPlay.cp(this,1)">+</button>
-            <button type="button" class="dzc-press" onclick="DZCPlay.replenish(this)" title="Replenish up to your highest Commander Level (4.1.1)">Refill</button>
+            <button type="button" class="dzc-press" data-step="cp-fill" onclick="DZCPlay.replenish(this)" title="Replenish up to your highest Commander Level (4.1.1)">Refill</button>
           </div>
         </div>
 
         <!-- Your own Group count is the other half of the Pass arithmetic, so
              it stays, as a number beside theirs, not as a sentence about it. -->
-        <div class="dzc-pcard" title="A Group of only non-auxiliary Transports cannot be activated and is ignored here (4.1.2)">
+        <div class="dzc-pcard dzc-pcard--row" data-pass-card title="A Group of only non-auxiliary Transports cannot be activated and is ignored here (4.1.2)">
           <span class="dzc-pcard-k">Pass Tokens</span>
           <span class="dzc-pcard-v"><b data-pass>${val.pass(army)}</b><i data-pass-max>${val.passMax(army)}</i></span>
           <div class="dzc-pcard-act">
-            <button type="button" class="dzc-press" aria-label="Use a Pass token"
+            <button type="button" class="dzc-press" data-step="pass-down" aria-label="Use a Pass token"
                     onclick="DZCPlay.pass(this,-1)" title="Use one instead of activating a Group (4.2.1)">−</button>
-            <button type="button" class="dzc-press" aria-label="Take a used Pass token back"
+            <button type="button" class="dzc-press" data-step="pass-up" aria-label="Take a used Pass token back"
                     onclick="DZCPlay.pass(this,1)">+</button>
-            <!-- Derived from the army, not typed. Uneditable IS the enforcement,
-                 so it has to say why rather than just refuse the caret. -->
-            <label>Yours<input type="number" value="${groupsOnTable(army)}" data-mine disabled
-                   title="Counted from your army. Groups of only Transports are ignored (4.1.2), and a Behemoth counts as several (1.1)"></label>
-            <label>Theirs
-              <input type="number" min="0" max="40" value="${state.oppGroups}"
-                     oninput="DZCPlay.oppGroups(this.value)"></label>
+            <!-- Groups, yours against theirs, as one cluster rather than two
+                 full-width labelled fields. Yours is READ, not typed -- it is
+                 counted off the army -- and it spent a whole disabled number
+                 field saying so, 56px of caret-refusing input for a figure you
+                 cannot change. It is a number with a word over it now, and the
+                 rule it is counted by is still on the hover. -->
+            <span class="dzc-pcard-groups">
+              <span class="dzc-pg"
+                    title="Counted from your army. Groups of only Transports are ignored (4.1.2), and a Behemoth counts as several (1.1)">
+                <i>Yours</i><b data-mine>${groupsOnTable(army)}</b></span>
+              <!-- aria-label rather than a wrapping <label>: the pair has to
+                   be the same element as Yours beside it (one class, one tag),
+                   and Yours labels a number you cannot type into. -->
+              <span class="dzc-pg"><i aria-hidden="true">Theirs</i>
+                <input type="number" min="0" max="40" value="${state.oppGroups}"
+                       aria-label="Their Group count"
+                       oninput="DZCPlay.oppGroups(this.value)"></span>
+            </span>
           </div>
         </div>
       </div>
@@ -447,7 +466,7 @@
   function counter(label, key) {
     return `<div class="dzc-vp">
       <span>${esc(label)}</span>
-      <button type="button" class="dzc-press" onclick="DZCPlay.vp(this,'${key}',-1)"
+      <button type="button" class="dzc-press" data-step="vp-down" onclick="DZCPlay.vp(this,'${key}',-1)"
               aria-label="One fewer ${esc(label)}">−</button>
       <b data-vp="${key}">${val.vp(key)}</b>
       <button type="button" class="dzc-press" onclick="DZCPlay.vp(this,'${key}',1)"
@@ -565,10 +584,10 @@
     const dots = Array.from({ length: max }, (_, i) =>
       `<i class="dzc-pt-dot${i < left ? ' is-on' : ''}"></i>`).join('');
     return `<div class="dzc-play-pt" data-pt="${esc(s.id)}" title="Power tokens: one Action each, refilled every Round (1.3)">
-      <button type="button" class="dzc-press" onclick="DZCPlay.pt(this,'${esc(s.id)}',-1)" aria-label="Spend a Power token">−</button>
+      <button type="button" class="dzc-press" data-step="down" onclick="DZCPlay.pt(this,'${esc(s.id)}',-1)" aria-label="Spend a Power token">−</button>
       <span class="dzc-pt-track" aria-label="${left} of ${max} Power tokens left">${dots}</span>
       <b data-pt-n>${left}</b><i>of ${max} PT</i>
-      <button type="button" class="dzc-press" onclick="DZCPlay.pt(this,'${esc(s.id)}',1)" aria-label="Give back a Power token">+</button>
+      <button type="button" class="dzc-press" data-step="up" onclick="DZCPlay.pt(this,'${esc(s.id)}',1)" aria-label="Give back a Power token">+</button>
     </div>`;
   }
 
@@ -587,9 +606,9 @@
     const cap = window.DZCArmy.genitorCap(army, s);
     if (!cap) return '';
     return `<div class="dzc-play-rm" data-rm="${esc(s.id)}">
-      <button type="button" class="dzc-press" onclick="DZCPlay.rm(this,'${esc(s.id)}',-1)" aria-label="Spend an RM token">−</button>
+      <button type="button" class="dzc-press" data-step="down" onclick="DZCPlay.rm(this,'${esc(s.id)}',-1)" aria-label="Spend an RM token">−</button>
       ${window.DZCIcon('rm', { size: 14 })}<b data-rm-n>${val.rm(army, s)}</b><i>of ${cap} RM</i>
-      <button type="button" class="dzc-press" onclick="DZCPlay.rm(this,'${esc(s.id)}',1)" aria-label="Gain an RM token">+</button>
+      <button type="button" class="dzc-press" data-step="up" onclick="DZCPlay.rm(this,'${esc(s.id)}',1)" aria-label="Gain an RM token">+</button>
     </div>`;
   }
 
@@ -642,9 +661,9 @@
     : '')(val.cond(u, models))}
       <div class="dzc-play-models">
         ${models.map((m, i) => `<div class="dzc-model${m.dp > 0 ? '' : ' is-dead'}" data-model="${i}">
-          <button type="button" class="dzc-press" onclick="DZCPlay.dp(this,'${esc(s.id)}',${i},-1)" aria-label="One damage point off ${esc(u.name)}">−</button>
+          <button type="button" class="dzc-press" data-step="down" onclick="DZCPlay.dp(this,'${esc(s.id)}',${i},-1)" aria-label="One damage point off ${esc(u.name)}">−</button>
           <b data-dp>${m.dp}</b><i>/${m.max}</i>
-          <button type="button" class="dzc-press" onclick="DZCPlay.dp(this,'${esc(s.id)}',${i},1)" aria-label="One damage point back on ${esc(u.name)}">+</button>
+          <button type="button" class="dzc-press" data-step="up" onclick="DZCPlay.dp(this,'${esc(s.id)}',${i},1)" aria-label="One damage point back on ${esc(u.name)}">+</button>
         </div>`).join('')}
       </div>
       ${rulesHtml(army, s, u)}
@@ -675,19 +694,49 @@
     const setText = (el, v) => { if (el && el.textContent !== v) el.textContent = v; };
     const setCls = (el, cls, on) => { if (el) el.classList.toggle(cls, !!on); };
 
+    /* A STEPPER THAT CANNOT MOVE SAYS SO BEFORE YOU PRESS IT.
+     *
+     * Jet, 2026-08-17: "the buttons don't work btw, +/- command points don't
+     * work right." They fire; they were refusing. CP is generated to your
+     * Commander Level at the top of every Round (4.1.1), so + is at its
+     * ceiling the moment the Round begins and does nothing until you have
+     * spent some -- and in Round 1 the ceiling is zero, so it does nothing at
+     * all. Both are the rules working, and a live-looking button that answers
+     * a press with silence is indistinguishable from a broken one.
+     *
+     * Not `disabled`: a disabled button fires no click, so it could not float
+     * the reason, and a title is nothing on a phone. Dimmed and marked
+     * aria-disabled, so it reads as spent before you press and still explains
+     * itself if you do. */
+    const setNil = (el, nil) => {
+      if (!el) return;
+      el.classList.toggle('is-nil', !!nil);
+      el.setAttribute('aria-disabled', nil ? 'true' : 'false');
+    };
+
     setText(q('[data-round]'), val.round());
     setText(q('[data-cp]'), val.cp());
     setText(q('[data-cp-max]'), val.cpMax(army));
     const cpCard = q('[data-cp-card]');
     if (cpCard) cpCard.title = val.cpWhy(army);
+    const lvl = commanderLevel(army);
+    setNil(q('[data-step="cp-down"]'), state.cp <= 0);
+    setNil(q('[data-step="cp-up"]'), state.cp >= lvl);
+    setNil(q('[data-step="cp-fill"]'), state.cp >= lvl);
+
     setText(q('[data-pass]'), val.pass(army));
     setText(q('[data-pass-max]'), val.passMax(army));
-    const mine = q('[data-mine]');
-    // Property AND attribute. The property is what the field shows; the
-    // attribute is what serialises, and this number is read back out of the
-    // rendered markup by the render tests.
-    if (mine) { mine.value = groupsOnTable(army); mine.setAttribute('value', mine.value); }
-    ['myVP', 'oppVP'].forEach(k => setText(q(`[data-vp="${k}"]`), val.vp(k)));
+    setNil(q('[data-step="pass-down"]'), passLeft(army) <= 0);
+    setNil(q('[data-step="pass-up"]'), (state.passUsed || 0) <= 0);
+    setText(q('[data-mine]'), String(groupsOnTable(army)));
+    ['myVP', 'oppVP'].forEach(k => {
+      const cell = q(`[data-vp="${k}"]`);
+      setText(cell, val.vp(k));
+      const counter = cell && cell.parentElement;
+      if (counter && counter.querySelector) {
+        setNil(counter.querySelector('[data-step="vp-down"]'), !state[k]);
+      }
+    });
 
     army.groups.forEach(g => {
       const sec = q(`[data-group="${cssId(g.id)}"]`);
@@ -716,9 +765,16 @@
           pt.querySelectorAll('.dzc-pt-dot').forEach((d, i) => d.classList.toggle('is-on', i < left));
           const track = q('.dzc-pt-track', pt);
           if (track) track.setAttribute('aria-label', `${left} of ${power(u)} Power tokens left`);
+          setNil(q('[data-step="down"]', pt), left <= 0);
+          setNil(q('[data-step="up"]', pt), left >= power(u));
         }
         const rm = q('[data-rm]', el);
-        if (rm) setText(q('[data-rm-n]', rm), val.rm(army, s));
+        if (rm) {
+          const have = +val.rm(army, s);
+          setText(q('[data-rm-n]', rm), String(have));
+          setNil(q('[data-step="down"]', rm), have <= 0);
+          setNil(q('[data-step="up"]', rm), have >= window.DZCArmy.genitorCap(army, s));
+        }
         const cond = q('[data-cond]', el);
         if (cond) {
           const t = val.cond(u, models);
@@ -730,6 +786,8 @@
           if (!models[i]) return;
           setText(q('[data-dp]', m), val.dp(s.id, i));
           m.classList.toggle('is-dead', models[i].dp <= 0);
+          setNil(q('[data-step="down"]', m), models[i].dp <= 0);
+          setNil(q('[data-step="up"]', m), models[i].dp >= models[i].max);
         });
       });
     });
@@ -825,15 +883,25 @@
     },
     replenish: el => {
       const was = state.cp;
-      state.cp = commanderLevel(army());
-      float(el, state.cp > was ? `+${state.cp - was} CP` : 'No CP to draw', 'good');
+      const lvl = commanderLevel(army());
+      state.cp = lvl;
+      float(el, state.cp > was ? `+${state.cp - was} CP`
+        : lvl ? 'Already full' : 'Level 0 in Round 1 (4.1.1)',
+      state.cp > was ? 'good' : 'nil');
       commit();
     },
     cp: (el, d) => {
       const was = state.cp;
-      state.cp = Math.max(0, Math.min(commanderLevel(army()), state.cp + d));
-      float(el, state.cp === was ? (d > 0 ? 'At your Commander Level' : 'No CP')
-        : (d > 0 ? '+1 CP' : '−1 CP'), state.cp === was ? 'nil' : d > 0 ? 'good' : 'bad');
+      const lvl = commanderLevel(army());
+      state.cp = Math.max(0, Math.min(lvl, state.cp + d));
+      /* Which refusal it is, exactly. "At your Commander Level" is true from
+       * Round 2 on and nonsense in Round 1, where the cap is zero because
+       * every Commander counts as Level 0 until the Round turns over -- a
+       * different rule, and the one that makes this card look broken. */
+      float(el, state.cp !== was ? (d > 0 ? '+1 CP' : '−1 CP')
+        : d < 0 ? 'No CP to spend'
+          : lvl ? 'At your Commander Level' : 'Level 0 in Round 1 (4.1.1)',
+      state.cp === was ? 'nil' : d > 0 ? 'good' : 'bad');
       commit();
     },
     vp: (el, k, d) => {

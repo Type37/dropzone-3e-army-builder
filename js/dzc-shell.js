@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 462;
+  const BUILD = 463;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -585,6 +585,15 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-17', title: 'Command Points looked broken because the rules were quietly refusing you', items: [
+      'The + on Command Points did nothing almost every time it was pressed, and nothing on screen said why. CP is generated up to your highest Commander Level at the top of every Round (4.1.1), so + is already at its ceiling the moment a Round begins — and throughout Round 1 that ceiling is zero, because every Commander counts as Level 0 until the Round turns over. Both are the rules working. A live-looking button that answers a press with silence is indistinguishable from a broken one.',
+      'Every stepper on the screen now dims when it has nowhere to go, and still says why if you press it: "Level 0 in Round 1 (4.1.1)", "At your Commander Level", "No CP to spend". Dimmed rather than disabled, because a disabled button cannot answer at all and a tooltip is nothing on a phone.',
+      'Command Points and Pass Tokens are one row each instead of three stacked bands — name, number and controls on a line. That is 56 pixels of phone screen back per card, and it was the army you were pushing below the fold. The opponent Group count lost a whole disabled number field for "Yours": it is counted off your army, so it is a number with a word over it now, not a caret that refuses to blink.',
+      'Category spend printed "110 of 495" across the meter beside it — the word was two thirds of the cell it had to fit in. It reads "110/495" and the column was measured against a 3000pt army rather than the one on screen. The Group count is a ratio too now: "10/16 Groups".',
+      'The Groups screen says how many models the whole army is. Every Group card said its own and the army list said the total, and the screen you actually build in had it nowhere — it is what you count out of the case, and it does not follow from the points.',
+      'The unit behind a Squad in Play Mode is in colour and no longer fades out sideways. Drained to grey under a gradient it was half a ghost of a silhouette: enough to notice, not enough to recognise, which is the one thing it is there for.',
+      'The Play button wore the Group icon, so the one control that leaves the builder was marked with the symbol for the thing you were building. It is a play triangle.'
+    ] },
     { date: '2026-08-17', title: 'Play Mode presses back, and nothing on it moves when you do', items: [
       'A Status Token was a letter — C, S, J, O — that turned into the whole word the moment you set it. The button went from 22 pixels wide to about 110, which shoved the model count on to its own line and moved everything under it. It is the token off page 51 of the rulebook now: the spiral, the ricochets, the struck-out signal, the struck-out eye, the four shapes already sitting beside the models. Same box set or unset, so nothing can move.',
       'And the name rises off it when you press it. Every control on this screen was a bare glyph or a picture with a tooltip, which a phone never shows — so pressing one changed a number somewhere else on the card and you had to go and find it. Damage says "+1 damage", a repair says "−1 damage", a model that runs out says "Destroyed", and a press that changes nothing says so rather than looking like a press that worked.',

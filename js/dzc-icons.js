@@ -128,6 +128,17 @@
     // domain
     // Group / activation unit. "layers" reads as a stack of things acting together.
     layers: 'M11.99 18.54 4.62 12.81 3 14.07l9 7 9-7-1.63-1.27-7.38 5.74zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16z',
+    /* PLAY MODE. Supplied by Jet, 2026-08-17, and it carries its own 20x20 box
+       rather than being redrawn on Material's 24 -- rescaling a hairline ring
+       by 1.2 is how a stroke ends up a third of a pixel off at 15px.
+       The button wore `layers` before, which is the Group icon, so the one
+       control that leaves the builder was marked with the symbol for the thing
+       you were building. A play triangle in a ring is what a play button is,
+       everywhere, and this screen has no second meaning to protect. */
+    play_circle: {
+      box: '0 0 20 20',
+      d: 'M2.93 17.07A10 10 0 1 1 17.07 2.93A10 10 0 0 1 2.93 17.07m12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32M7 6l8 4l-8 4z'
+    },
     /* A Squad LINKED to a Transport. Material "link".
        Not another lorry: the lorry is what a Transport IS, and this button is
        not "a Transport" -- it is the tie between this Squad and one. Jet,
