@@ -772,21 +772,20 @@ console.log('\nevery screen renders');
     const psid = pg.squads[0].id;
     await tap('round up', () => P.round(1));
     await tap('round down', () => P.round(-1));
-    await tap('replenish', () => P.replenish());
-    await tap('cp up', () => P.cp(1));
-    await tap('cp down', () => P.cp(-1));
-    await tap('my VP', () => P.vp('myVP', 1));
-    await tap('their VP', () => P.vp('oppVP', 1));
+    await tap('replenish', () => P.replenish(null));
+    await tap('cp up', () => P.cp(null, 1));
+    await tap('cp down', () => P.cp(null, -1));
+    await tap('my VP', () => P.vp(null, 'myVP', 1));
+    await tap('their VP', () => P.vp(null, 'oppVP', 1));
     await tap('their Groups', () => P.oppGroups('4'));
-    await tap('activate', () => P.activate(pg.id));
-    await tap('activate again', () => P.activate(pg.id));
-    await tap('damage', () => P.dp(psid, 0, -1));
-    await tap('repair', () => P.dp(psid, 0, 1));
-    await tap('status on', () => P.squadStatus(psid, 'Obscured'));
-    await tap('status off', () => P.squadStatus(psid, 'Obscured'));
-    await tap('use a Pass token', () => P.pass(-1));
-    await tap('take it back', () => P.pass(1));
-    await tap('initiative roll', () => P.roll());
+    await tap('activate', () => P.activate(null, pg.id));
+    await tap('activate again', () => P.activate(null, pg.id));
+    await tap('damage', () => P.dp(null, psid, 0, -1));
+    await tap('repair', () => P.dp(null, psid, 0, 1));
+    await tap('status on', () => P.squadStatus(null, psid, 'Obscured'));
+    await tap('status off', () => P.squadStatus(null, psid, 'Obscured'));
+    await tap('use a Pass token', () => P.pass(null, -1));
+    await tap('take it back', () => P.pass(null, 1));
 
     const C = win.DZCCollection;
     await tap('collection open', () => C.open());
@@ -837,16 +836,16 @@ console.log('\nevery screen renders');
     await P.open(ma.id);
 
     const cap = () => (els['view-play'].innerHTML
-      .match(/Command Points<\/span>[\s\S]*?<span class="dzc-pcard-v">\d+<i>\/ (\d+)<\/i>/) || [])[1];
+      .match(/Command Points<\/span>[\s\S]*?<i data-cp-max[^>]*>\/ (\d+)<\/i>/) || [])[1];
     // Generated, and still in hand: the card shows both, the way the CP card
     // shows what you hold over what you may hold.
     const passCard = () => els['view-play'].innerHTML
-      .match(/Pass Tokens<\/span>[\s\S]*?<span class="dzc-pcard-v">(\d+)<i>\/ (\d+)<\/i>/) || [];
+      .match(/Pass Tokens<\/span>[\s\S]*?<b data-pass[^>]*>(\d+)<\/b><i data-pass-max[^>]*>\/ (\d+)<\/i>/) || [];
     const passes = () => passCard()[2];
     const passLeft = () => passCard()[1];
 
     const held = () => (els['view-play'].innerHTML
-      .match(/Command Points<\/span>[\s\S]*?<span class="dzc-pcard-v">(\d+)<i>/) || [])[1];
+      .match(/Command Points<\/span>[\s\S]*?<b data-cp[^>]*>(\d+)<\/b>/) || [])[1];
 
     eq(cap(), '0', 'Round 1 caps CP at nothing — every Commander counts as Level 0 (4.1.1)');
     P.round(1);
@@ -856,7 +855,7 @@ console.log('\nevery screen renders');
      * do only the losing half of it: the cap moved to 5 and you were left
      * holding 0 until you found the Refill button. */
     eq(held(), '5', 'advancing a Round GENERATES the CP, it does not only cap it');
-    P.cp(-1); P.cp(-1);
+    P.cp(null, -1); P.cp(null, -1);
     eq(held(), '3', 'and spending it takes it away');
     P.round(-1);
     eq(held(), '0', 'stepping back a Round is a mis-tap, not an Initiation Phase');
@@ -879,10 +878,10 @@ console.log('\nevery screen renders');
      * They do not carry over either: the leftovers are discarded at the end of
      * the Activation Phase and 4.1.2 deals a fresh lot. */
     eq(passLeft(), '3', 'and all three start in your hand');
-    P.pass(-1); P.pass(-1);
+    P.pass(null, -1); P.pass(null, -1);
     eq(passLeft(), '1', 'using one takes it out of your hand');
     eq(passes(), '3', 'without changing what you were dealt');
-    P.pass(-1); P.pass(-1); P.pass(-1);
+    P.pass(null, -1); P.pass(null, -1); P.pass(null, -1);
     eq(passLeft(), '0', 'you cannot spend past nothing');
     P.round(1);
     eq(passLeft(), '3', 'and the next Round deals a fresh set (4.1.2)');
@@ -930,19 +929,19 @@ console.log('\nevery screen renders');
      * unless they were placed that activation." Nothing removed them, so a
      * Squad Concussed in Round 1 was still -2Ac in Round 6. */
     const msid = A.get(ma.id).groups[0].squads[0].id;
-    P.squadStatus(msid, 'Concussed');
+    P.squadStatus(null, msid, 'Concussed');
     ok(/dzc-st is-on/.test(els['view-play'].innerHTML), 'a token goes on');
-    P.activate(A.get(ma.id).groups[0].id);
+    P.activate(null, A.get(ma.id).groups[0].id);
     ok(!/dzc-st is-on/.test(els['view-play'].innerHTML),
        'and comes off at the end of that Squad\'s activation (6.4.5)');
-    P.activate(A.get(ma.id).groups[0].id);
+    P.activate(null, A.get(ma.id).groups[0].id);
     ok(/dzc-st is-on/.test(els['view-play'].innerHTML),
        'un-ticking the box hands it back, because that is how you undo a mis-tap');
     // And only until the Round turns over. Un-ticking a box in Round 3 must not
     // hand back a Concussion the Round 2 activation legitimately removed.
-    P.activate(A.get(ma.id).groups[0].id);
+    P.activate(null, A.get(ma.id).groups[0].id);
     P.round(1);
-    P.activate(A.get(ma.id).groups[0].id);
+    P.activate(null, A.get(ma.id).groups[0].id);
     ok(!/dzc-st is-on/.test(els['view-play'].innerHTML),
        'but a Round later there is nothing left to hand back');
     A.remove(ma.id);
@@ -965,7 +964,7 @@ console.log('\nevery screen renders');
 
     const view = () => els['view-play'].innerHTML;
     const passes = () => (view()
-      .match(/Pass Tokens<\/span>[\s\S]*?<span class="dzc-pcard-v">\d+<i>\/ (\d+)<\/i>/) || [])[1];
+      .match(/Pass Tokens<\/span>[\s\S]*?<i data-pass-max[^>]*>\/ (\d+)<\/i>/) || [])[1];
     const mine = () => (view().match(/Yours<input type="number" value="(\d+)"/) || [])[1];
 
     const ge = win.DZC.faction('ucm').byId['ucm-heavy-battle-mech'].groupEquivalent;
@@ -977,8 +976,8 @@ console.log('\nevery screen renders');
     eq(passes(), String(7 - ge - 1), 'so the Pass tokens are counted off its worth, not off one card');
 
     const bsid = A.get(ba.id).groups[0].squads[0].id;
-    P.squadStatus(bsid, 'Concussed');
-    P.squadStatus(bsid, 'Obscured');
+    P.squadStatus(null, bsid, 'Concussed');
+    P.squadStatus(null, bsid, 'Obscured');
     ok(!/dzc-st is-on/.test(view()),
        'and no Status Token, Obscured included, will stick to a Behemoth (1.2)',
        (view().match(/.{0,60}dzc-st is-on.{0,40}/) || [])[0]);
@@ -990,10 +989,10 @@ console.log('\nevery screen renders');
      * instead activate a Behemoth with PT remaining." Play Mode gave its
      * Group the same one-shot activation box as everything else, which said a
      * Behemoth with seven PT was finished for the Round after one Action. */
-    const pt = () => (view().match(/<b>(\d+)<\/b><i>of (\d+) PT/) || []).slice(1);
+    const pt = () => (view().match(/<b data-pt-n[^>]*>(\d+)<\/b><i>of (\d+) PT/) || []).slice(1);
     const pw = parseInt(win.DZC.faction('ucm').byId['ucm-heavy-battle-mech'].stats.Power, 10);
     eq(pt().join('/'), `${pw}/${pw}`, 'a Behemoth starts the Round on a full Power track (1.3)');
-    P.pt(bsid, -1); P.pt(bsid, -1);
+    P.pt(null, bsid, -1); P.pt(null, bsid, -1);
     eq(pt().join('/'), `${pw - 2}/${pw}`, 'and spends one per Action');
     P.round(1);
     eq(pt().join('/'), `${pw}/${pw}`, 'refilled every Round, spent or not');

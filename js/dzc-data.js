@@ -261,9 +261,12 @@
     const re = new RegExp('\\b(' + names.map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')\\b', 'gi');
     // Escape FIRST, then wrap, so the markup this adds is the only markup in
     // the result and a rule whose text contains "<" cannot open a tag.
+    // The faction rides along, same as on the chips rulesHtml draws: an inline
+    // keyword inside a Scourge rule must open the Scourge glossary, not
+    // whichever one the Unit Reference happens to be sitting on.
     return esc(t).replace(re, m =>
       `<button type="button" class="dzc-rule dzc-rule--inline"`
-      + ` onclick="DZCUnits.showRule(this,'${m.replace(/'/g, '&#39;')}')">${m}</button>`);
+      + ` onclick="DZCUnits.showRule(this,'${m.replace(/'/g, '&#39;')}','${esc(faction || '')}')">${m}</button>`);
   }
 
   /* The glossary text with the printed value folded in.

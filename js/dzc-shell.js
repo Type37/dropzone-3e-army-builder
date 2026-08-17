@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 461;
+  const BUILD = 462;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -585,6 +585,16 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-17', title: 'Play Mode presses back, and nothing on it moves when you do', items: [
+      'A Status Token was a letter — C, S, J, O — that turned into the whole word the moment you set it. The button went from 22 pixels wide to about 110, which shoved the model count on to its own line and moved everything under it. It is the token off page 51 of the rulebook now: the spiral, the ricochets, the struck-out signal, the struck-out eye, the four shapes already sitting beside the models. Same box set or unset, so nothing can move.',
+      'And the name rises off it when you press it. Every control on this screen was a bare glyph or a picture with a tooltip, which a phone never shows — so pressing one changed a number somewhere else on the card and you had to go and find it. Damage says "+1 damage", a repair says "−1 damage", a model that runs out says "Destroyed", and a press that changes nothing says so rather than looking like a press that worked.',
+      'Nothing redraws. Every button used to rebuild the whole screen — a thousand elements thrown away and remade to change one digit, which took the button out from under your finger and orphaned a rule you had open. The numbers are written into the screen that is already there. Measured across every control on the screen: zero pixels of movement.',
+      'A Squad carries its own rules, tappable, the same chips as everywhere else. The guns always had theirs; what the Unit itself was — an Aegis, a Vulnerable, a Stabilised — was on no screen you could reach mid-game without going back to the builder. Rules restricted to one Variant show under the Variants this Squad actually fields.',
+      'The model, washed out, behind its own numbers. On a screen of eleven Squads you are looking for the thing you just picked up off the table, not for its name.',
+      'The Initiative roller is gone. It tracked nothing: you roll a D6 on the table and the app cannot see it, so all it ever did was roll a different one and print a sum you then had to reconcile. What it added — your highest Commander Level — is on the Command Points card, which is where it comes from.',
+      'A rule chip opened the wrong glossary anywhere but the Unit Reference. It looked the keyword up in whichever faction that screen was last left on, so every rule on a Scourge army in Play Mode was read out of the UCM’s. The chip carries its own faction now.',
+      'The wordmark in the top bar was squashed on every phone-width screen in the app — 1600 by 230 drawn at 27 by 20 in the builder, which is 81% off its own shape. It cannot be squeezed any more, and below the phone breakpoint it is not there at all: unsquashed it wants 139 pixels of a bar already carrying the disclaimer, the way back, where you are and two buttons.'
+    ] },
     { date: '2026-08-13', title: 'The app threw you out of your army once a minute on Firefox for iOS', items: [
       'Reported by a reader on an iPhone: "every 1-2 minutes it will almost refresh the whole thing, taking me out of the list, clearing and reloading to the list page." It was a loop the app built for itself. Every 60 seconds it asked whether a new version had been published; the answer arrived as a new worker that took over the page immediately, and taking over triggered a reload. On browsers that decide the file has not changed, nothing happened and nobody noticed. On Firefox for iOS the answer came back "new" nearly every time, so it reloaded once a minute, forever, out of whatever you were building.',
       'Nothing reloads the page any more. It was never needed to stay current — the app already fetches its own code and data fresh whenever you are online, so an open tab is running the live version regardless. The reload bought nothing and cost the army you were in the middle of.',

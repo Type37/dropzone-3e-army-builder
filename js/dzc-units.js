@@ -231,7 +231,21 @@
 
   function variantRuleFilter(u, lens) {
     const list = (u && u.specialVariants) || [];
-    if (!list.length) return null;
+    /* NOTHING RESTRICTED ON THIS CARD IS NOT THE SAME AS NOTHING TO FILTER.
+     *
+     * This returned null either way, and null means "draw them all" -- so
+     * asking a card with no bracketed rules for the Killer's rules got back
+     * every rule the card prints, and a Squad with three Variants drew its own
+     * rule list four times over: once as the Squad's, then again under each
+     * Variant block. Seen in Play Mode on a Scourge Battle Skimmer
+     * ("Evasion-2, Skimmer, Evasion-2, Skimmer"), and the builder's Variant
+     * blocks and the reference's Variant list have been doing it too.
+     *
+     * With no lens the answer is still null, because then the question really
+     * is "the card's own rules", and on a card with no brackets that is all of
+     * them. With a lens it is an empty set: this Variant has nothing of its
+     * own, which is a different answer from "no filter". */
+    if (!list.length) return lens ? () => false : null;
     return tok => {
       const bare = String(tok).replace(VARIANT_TAIL, '').trim();
       const hit = list.find(x => bare === x.rule || bare.endsWith(x.rule));
@@ -258,8 +272,16 @@
         + (r && r.page ? ` (p.${r.page})` : '');
       // Written out, "Tracking-1", not "T1". The printed token is still what
       // looks it up and still what the popover is opened with.
+      //
+      // THE FACTION TRAVELS WITH THE CHIP. showRule used to look the rule up
+      // in state.faction, which is whichever faction the Unit Reference was
+      // last left on -- so a chip drawn anywhere else was resolved against the
+      // wrong glossary. Play Mode never touches state.faction at all, so every
+      // rule on a Scourge army's weapon cards was being read out of the UCM's.
+      // The chip already knows which glossary it was rendered from; it just
+      // was not saying so.
       return `<button type="button" class="dzc-rule${r ? '' : ' dzc-rule--unknown'}"
-        onclick="DZCUnits.showRule(this,'${esc(tok).replace(/'/g, '&#39;')}')"
+        onclick="DZCUnits.showRule(this,'${esc(tok).replace(/'/g, '&#39;')}','${esc(faction || '')}')"
         title="${esc(tip)}">${esc(window.DZC.ruleLabel(tok, faction))}</button>`;
     }).join('');
   }
@@ -911,9 +933,13 @@
 
   /* Rule popover. Positioned absolutely against the page so opening one never
    * displaces the content behind it. */
-  function showRule(el, token) {
+  function showRule(el, token, faction) {
     hideRule();
-    const r = window.DZC.rule(token, state.faction);
+    // The chip's own faction first: it was drawn from one glossary and must be
+    // read out of the same one. state.faction is the fallback, and it is only
+    // ever right on the screen that sets it.
+    const fac = faction || state.faction;
+    const r = window.DZC.rule(token, fac);
     const pop = document.createElement('div');
     pop.className = 'dzc-pop';
     pop.id = 'dzc-pop';
@@ -921,11 +947,11 @@
     // prints, which is the way round you need it: you came here from the chip,
     // and the thing you cannot look up is which two letters on the stat card
     // this is.
-    const label = window.DZC.ruleLabel(token, state.faction);
+    const label = window.DZC.ruleLabel(token, fac);
     pop.innerHTML = r
       ? `<h5>${esc(label)}${label.toLowerCase() !== String(token).trim().toLowerCase()
           ? ` <span class="dzc-pop-alias">(${esc(token)})</span>` : ''}</h5>
-         ${ruleParas(window.DZC.ruleText(token, state.faction), state.faction, r.name)}
+         ${ruleParas(window.DZC.ruleText(token, fac), fac, r.name)}
          <span class="dzc-pop-src">${esc(ruleSource(r))}</span>`
       /* Not "read it from the stat card". Sending someone to a PDF for a rule
          this app is already printing the name of is the app giving up, and it

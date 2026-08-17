@@ -2829,16 +2829,27 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 /* ═══ Play Mode ═══
    Sized for a phone on a table: big tap targets, no hover-only affordances. */
 .dzc-play-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+/* EVERY NUMBER ON THIS SCREEN IS TABULAR.
+   The counters are what change, and in a proportional face a 1 is narrower
+   than a 4 -- so advancing the Round moved the button you had just pressed by
+   two pixels, and stepping CP from 0 to 4 nudged the label beside it. Small,
+   and still the thing this screen was asked not to do. Equal-width digits mean
+   a value can change without anything beside it moving. */
+.dzc-play, .dzc-play input { font-variant-numeric: tabular-nums; }
 .dzc-round { display: flex; align-items: center; gap: 10px; }
 .dzc-round button { width: 36px; height: 36px; border-radius: 8px; cursor: pointer; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); display: grid; place-items: center; }
-.dzc-round span { text-align: center; }
+/* Wide enough for "Round 10", so reaching double figures does not push the
+   step buttons apart mid-game. */
+.dzc-round span { text-align: center; min-width: 92px; }
 .dzc-round b { display: block; font: 800 20px/1 var(--font-display, 'Roboto Slab', serif); }
 .dzc-round i { font-style: normal; font-size: 11px; color: var(--ink-2, #6b6459); }
 .dzc-play-vp { display: flex; gap: 10px; flex-wrap: wrap; }
 .dzc-vp { display: flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 8px; background: var(--surface-3, #f2ece0); }
 .dzc-vp span { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2, #6b6459); }
 .dzc-vp button { width: 28px; height: 28px; border-radius: 6px; cursor: pointer; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); font-size: 16px; line-height: 1; }
-.dzc-vp b { min-width: 22px; text-align: center; font-size: 17px; }
+/* Two digits' worth, because VP reach them and a counter that widens as it
+   counts drags the button beside it along. */
+.dzc-vp b { min-width: 24px; text-align: center; font-size: 17px; }
 
 /* Play Mode keeps panes too: the counters you consult stay put, the Groups you
    act on scroll beside them. */
@@ -2858,12 +2869,73 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 .dzc-pcard { padding: 9px 10px; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); }
 .dzc-pcard-k { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-2, #6b6459); }
 .dzc-pcard-v { display: block; font: 800 26px/1.1 var(--font-display, 'Roboto Slab', serif); margin: 2px 0 6px; }
+/* Both counters reach double figures, and the "/ 4" beside them must not slide
+   when they do. */
+.dzc-pcard-v b { display: inline-block; min-width: 32px; }
 .dzc-pcard-v i { font-style: normal; font-size: 13px; font-weight: 500; color: var(--ink-2, #6b6459); }
 .dzc-pcard-act { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .dzc-pcard-act button { padding: 5px 12px; border-radius: 6px; cursor: pointer; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); font-size: 13px; }
 .dzc-pcard-act label { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-2, #6b6459); display: inline-flex; align-items: center; gap: 5px; }
 .dzc-pcard-act input { width: 56px; padding: 4px 6px; border-radius: 5px; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); color: var(--ink, #24201c); }
-.dzc-roll { font-weight: 700; font-size: 14px; }
+
+/* ── the press ──
+   Every control on this screen is a bare glyph or a picture, and until now a
+   tap produced no acknowledgement at all: the value changed somewhere else on
+   the card and you had to go and look for it to know you had hit anything.
+   Two answers, and both are needed. This one is the flash under the finger,
+   and it is drawn with colour and an inset shadow ONLY -- no padding, no
+   border width, no transform that could nudge a neighbour. The other is the
+   float, which says what the press meant. */
+.dzc-press { transition: background-color .1s, box-shadow .1s, color .1s; }
+.dzc-press:active:not([disabled]) {
+  background: var(--acc, #1b3a5c) !important;
+  border-color: var(--acc, #1b3a5c) !important;
+  color: var(--acc-on, #fff) !important;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,.25);
+}
+.dzc-press:active:not([disabled]) svg { color: var(--acc-on, #fff); }
+@media (prefers-reduced-motion: reduce) { .dzc-press { transition: none; } }
+
+/* ── the float ──
+   A number that rises off what you pressed and fades, the way a game prints
+   damage over the thing it hit. It is the only label the icon controls have.
+
+   Fixed and in its own layer, so it cannot lengthen the document, bring a
+   scrollbar, or take a tap meant for the button underneath it. */
+#dzc-floats {
+  position: fixed; inset: 0; z-index: 9600; pointer-events: none; overflow: hidden;
+}
+.dzc-float {
+  position: absolute; transform: translate(-50%, -100%);
+  padding: 3px 9px; border-radius: 999px; white-space: nowrap;
+  font: 800 13px/1.25 var(--font-display, 'Roboto Slab', serif);
+  letter-spacing: .01em;
+  background: #2b2118; color: #fff8ec;
+  box-shadow: 0 4px 14px rgba(0,0,0,.3);
+  animation: dzc-float-up 1.15s cubic-bezier(.16,.84,.44,1) forwards;
+}
+.dzc-float.is-bad  { background: #a3231a; color: #fff; }
+.dzc-float.is-good { background: #1d6b34; color: #fff; }
+.dzc-float.is-dead { background: #24201c; color: #ffd7d2; }
+/* Nothing happened -- a stepper at its floor or its ceiling. Said quietly and
+   said anyway, because a press that changes nothing must not read the same as
+   a press that did. */
+.dzc-float.is-nil  { background: var(--surface-3, #f2ece0); color: var(--ink, #24201c); font-weight: 600; }
+@keyframes dzc-float-up {
+  0%   { opacity: 0; transform: translate(calc(-50% + var(--float-shift, 0px)), -70%) scale(.85); }
+  14%  { opacity: 1; transform: translate(calc(-50% + var(--float-shift, 0px)), -108%) scale(1.06); }
+  30%  { transform: translate(calc(-50% + var(--float-shift, 0px)), -118%) scale(1); }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--float-shift, 0px)), -215%) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Still shown, and still gone on its own. Motion is what is removed, not the
+     only thing telling you what the button did. */
+  .dzc-float { animation: dzc-float-hold 1.15s steps(1) forwards; }
+  @keyframes dzc-float-hold {
+    0%, 85% { opacity: 1; transform: translate(-50%, -115%); }
+    100%    { opacity: 0; transform: translate(-50%, -115%); }
+  }
+}
 
 .dzc-play-group { border: 1px solid var(--line, #d8d0c0); padding: 8px 9px; margin-bottom: 7px; background: var(--surface-2, #fff); }
 .dzc-play-group.is-done { opacity: .58; }
@@ -2872,8 +2944,45 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 .dzc-act { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
 .dzc-act b { font: 700 14px/1.2 var(--font-ui, 'Jost', sans-serif); }
 .dzc-play-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; text-transform: uppercase; letter-spacing: .05em; padding: 2px 7px; border-radius: 3px; background: #dbe9f5; color: #16466e; }
-.dzc-play-squad { padding: 6px 0; border-top: 1px solid var(--line, #eee5d6); }
+/* A Squad, with the model washed out behind its own numbers.
+   Which is how you find one on a screen of eleven: you are looking for the
+   shape you just picked up off the table, not for its name. The art is inert
+   and decorative -- `contain`, so it is never stretched, and pinned right so
+   it sits under the model count rather than under the name. */
+.dzc-play-squad {
+  position: relative; isolation: isolate;
+  padding: 6px 0; border-top: 1px solid var(--line, #eee5d6);
+}
+.dzc-play-art {
+  position: absolute; z-index: 0; pointer-events: none; user-select: none;
+  /* HEIGHT, not top-and-bottom. An <img> is a replaced element: with `height:
+     auto` it takes its INTRINSIC height and the `bottom` offset is thrown away
+     as over-constrained, so a pair of offsets sized it to the photograph
+     rather than to the Squad. */
+  top: 4px; right: 0; height: calc(100% - 8px); width: min(46%, 210px);
+  object-fit: contain; object-position: right center;
+  opacity: .13; filter: grayscale(1) contrast(.8);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 42%);
+  mask-image: linear-gradient(to right, transparent, #000 42%);
+}
+[data-theme="dark"] .dzc-play-art { opacity: .17; filter: grayscale(1) brightness(1.5); }
+/* Everything the Squad prints sits above the watermark. One wrapper rather
+   than a z-index on each child: a weapon card and a rule chip both open
+   popovers, and stacking contexts fought over which was on top. */
+.dzc-play-sq { position: relative; z-index: 1; }
 .dzc-play-sq-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+/* What this Squad IS, tappable. Same chips the reference and the builder use,
+   so a rule reads and opens identically wherever you meet it. */
+.dzc-play-rules {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 6px;
+}
+/* Which Variant a restricted rule belongs to (3.2.2). A word, not a heading:
+   the chips after it are the sentence. */
+.dzc-play-rule-of {
+  font: 600 10px/1 var(--font-ui, 'Jost', sans-serif);
+  text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2, #6b6459);
+  margin-left: 4px;
+}
 .dzc-play-name { font-weight: 600; font-size: 13.5px; overflow-wrap: anywhere; }
 .dzc-play-alive { margin-left: auto; font-size: 12px; font-weight: 700; }
 .dzc-play-models { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
@@ -2907,7 +3016,8 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
   border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff);
   font-size: 15px; line-height: 1;
 }
-.dzc-play-pt b, .dzc-play-rm b { font-family: var(--font-numeric, inherit); font-size: 13px; }
+/* PT goes to 10 and RM to 12: two digits' worth, held open. */
+.dzc-play-pt b, .dzc-play-rm b { font-family: var(--font-numeric, inherit); font-size: 13px; min-width: 17px; text-align: right; }
 .dzc-play-pt i, .dzc-play-rm i { font-style: normal; font-size: 11px; color: var(--ink-2, #6b6459); }
 .dzc-pt-track { display: flex; gap: 3px; align-items: center; }
 .dzc-pt-dot {
@@ -2923,29 +3033,52 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 .dzc-model { display: flex; align-items: center; gap: 4px; padding: 4px 7px; border-radius: 6px; background: var(--surface-3, #f2ece0); }
 .dzc-model.is-dead { opacity: .45; text-decoration: line-through; }
 .dzc-model button { width: 26px; height: 26px; border-radius: 5px; cursor: pointer; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); font-size: 15px; line-height: 1; }
-.dzc-model b { min-width: 16px; text-align: center; font-size: 14px; }
+/* A Behemoth has 22 DP, so the well has to hold two digits from the start or
+   the stepper widens the first time one takes a hit. */
+.dzc-model b { min-width: 20px; text-align: center; font-size: 14px; }
 .dzc-model i { font-style: normal; font-size: 10px; color: var(--ink-2, #6b6459); }
-.dzc-statuses { display: inline-flex; gap: 2px; margin-left: 3px; }
-/* An unset status is its initial, and it was drawn at 40% opacity, which
-   works out around 1.9:1 against the card. Not faint, unreadable, and it is
-   one of the four controls this screen exists to press. Muted ink at full
-   opacity instead: quieter than a set one without being a smudge. */
+.dzc-statuses { display: inline-flex; gap: 3px; margin-left: 3px; }
+/* THE PRINTED TOKEN, AT ONE SIZE, ALWAYS.
+   It used to be a letter -- C, S, J, O -- that swelled into the whole word
+   when you set it, which took the button from 22px to about 110px and shoved
+   the model count on to its own line. Pressing a control must never move the
+   things beside it, and this was the one place in the app that did.
+   So: the picture off page 51 of the rulebook, the shape actually sitting
+   beside the models, at a fixed box in both states. Set is full colour on the
+   faction accent; unset is the same token drained and quiet. Nothing resizes,
+   so nothing can move. The name rises off it on tap (.dzc-float). */
 .dzc-st {
-  width: 22px !important; height: 22px !important; font-size: 10px !important;
-  font-weight: 700; color: var(--ink-2, #6b6459);
+  width: 30px !important; height: 30px !important; padding: 0 !important;
+  display: inline-grid !important; place-items: center;
+  font-size: 11px !important; font-weight: 700; color: var(--ink-2, #6b6459);
+  overflow: visible;
 }
-/* A Behemoth cannot take one (1.2), and an unset status is already drawn at
-   .4. So without this the refusal looked exactly like every other button on
-   the row and the only thing saying otherwise was a click that did nothing. */
+.dzc-st img {
+  width: 74%; height: 74%; object-fit: contain; display: block;
+  /* Quiet, not invisible. An unset token at low opacity was a smudge; drained
+     of colour at full strength it still reads as a shape you can recognise. */
+  filter: grayscale(1) contrast(.55) brightness(1.12); opacity: .62;
+  transition: filter .12s, opacity .12s;
+}
+/* A Behemoth cannot take one (1.2). Without this the refusal looked exactly
+   like every other button on the row and the only thing saying otherwise was
+   a click that did nothing. */
 .dzc-st[disabled] {
-  opacity: .18; cursor: not-allowed; border-style: dashed;
+  opacity: .3; cursor: not-allowed; border-style: dashed;
 }
-/* A set status spells itself out, so it needs the room to. */
 .dzc-st.is-on {
-  opacity: 1; width: auto !important; padding: 0 7px !important;
-  background: var(--acc, #1b3a5c) !important; color: var(--acc-on, #fff);
+  background: var(--acc, #1b3a5c) !important;
   border-color: var(--acc, #1b3a5c) !important;
+  color: var(--acc-on, #fff);
 }
+.dzc-st.is-on img { filter: none; opacity: 1; }
+/* All four Status Tokens are printed as a black disc with white line art, so
+   the drained version of one on a dark card is dark on dark. Lifted rather
+   than inverted: a white disc would be a different token to recognise, and
+   recognising it is the whole reason it is a picture. Set, it sits on the
+   faction fill and needs nothing. */
+[data-theme="dark"] .dzc-st img { filter: grayscale(1) brightness(2.1) contrast(.75); opacity: .72; }
+@media (prefers-reduced-motion: reduce) { .dzc-st img { transition: none; } }
 
 /* ── collection ── */
 .dzc-coll-list { display: grid; gap: 6px; }
@@ -2997,10 +3130,31 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
    TTCombat's own DZC logo, two cuts: all-white for the navy topbar, and the
    black/green cut for the light landing page. Dark mode swaps the landing one
    to white, because the black cut disappears against a dark background. */
-.topbar-logo { height: 26px; width: auto; display: block; }
+/* THE WORDMARK IS NEVER SQUASHED.
+   `width: auto` does not survive being a flex item: the topbar runs out of
+   room, the image is shrinkable by default, and the browser narrows it while
+   the fixed height holds -- so a 1600x230 wordmark was drawn at 27x20 in the
+   builder at 375px, which is 81% off its own aspect ratio. Measured across
+   four widths and five routes on 2026-08-17; it was wrong on every phone-width
+   screen in the app and nowhere else.
+   `flex: none` stops the shrink and `object-fit: contain` means that if
+   anything ever does constrain the box again, the picture letterboxes inside
+   it instead of distorting. */
+.topbar-logo {
+  height: 26px; width: auto; display: block;
+  flex: none; object-fit: contain;
+}
 .landing-logo-img { max-width: min(440px, 78vw); width: 100%; height: auto; display: block; margin: 0 auto; }
 [data-theme="dark"] #landing-logo { content: url("../assets/logos/dzc_logo_white.webp"); }
 @media (max-width: 640px) { .topbar-logo { height: 20px; } }
+/* And below the phone breakpoint it is cut. Jet, 2026-08-17: "feel free to cut
+   the DZC logo." Unsquashed it wants 139px, and the bar it shares is already
+   carrying the disclaimer, the way back, the screen you are on and two
+   buttons; on a 320px phone that is nearly half the width spent on a picture
+   of the game's name. Nothing is lost with it -- the way back to the landing
+   screen is the chevron that is already there on every screen but that one,
+   and the landing screen has the wordmark at size in its own hero. */
+@media (max-width: 767px) { .topbar-brand { display: none; } }
 
 /* css/app.css hides .topbar-context entirely below 768px. That is Dropfleet-era
    and it was right there, because a phone got the separate mobile/ build with
@@ -3295,8 +3449,10 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
    inside a weapon card, inline in a line of stats, and .dzc-rule--inline is
    the same idea in a sentence. */
 @media (max-width: 768px) {
-  /* Play Mode. Round, VP, Command Points, Pass tokens, Initiative, and the
-     four Status Tokens, which were 22px square. */
+  /* Play Mode. Round, VP, Command Points, Pass tokens, and the four Status
+     Tokens, which were 22px square. (Initiative was in this list until its
+     card was removed: it rolled a D6 the app could not see, beside the one on
+     the table.) */
   .dzc-round button,
   .dzc-vp button,
   .dzc-pcard-act button,
@@ -3313,20 +3469,40 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
     min-width: 44px;
     min-height: 44px;
   }
-  .dzc-model { gap: 5px; }
+  /* TWO STEPPERS TO A ROW ON A PHONE.
+     At 44px a side the buttons are right, and at 320px two of them plus the
+     number came to 149px -- six pixels too wide to pair up, so a six-model
+     Squad was six rows of stepper, 312px of screen for six numbers. The
+     buttons keep their size; the padding, the gaps and the well give way, and
+     the row becomes a grid so the pair share the width evenly instead of one
+     of them deciding it. */
+  .dzc-play-models {
+    display: grid; gap: 6px;
+    /* 1fr, not a fixed ceiling. auto-fit counts its repetitions against the
+       track's MAX when that max is definite, so minmax(118px, 152px) at 320
+       fits one column of 152 rather than two of 131 -- the opposite of what
+       this rule is for. The cap belongs on the stepper instead
+       (.dzc-model max-width), which leaves the spare width of a wide track
+       empty rather than blowing one stepper out to 236px of grey around a
+       two-character number. */
+    grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+  }
+  .dzc-model { gap: 2px; padding: 4px 3px; justify-content: center; max-width: 152px; }
+  .dzc-model b { min-width: 18px; }
   /* Two VP counters were one row and became two the moment their buttons went
      from 28 to 44, which is 60px of a phone screen spent before you can see
      any of your army. They still fit side by side, on the padding and the gaps
      rather than on the size of the thing you press. */
   .dzc-play-vp { gap: 6px; }
   .dzc-vp { gap: 2px; padding: 0 4px; }
-  .dzc-vp b { min-width: 18px; }
+  .dzc-vp b { min-width: 22px; }
+  /* Same box set or unset -- there is no "is-on" size any more, which is the
+     point of it being a picture rather than a word that grows. */
   .dzc-st {
-    min-width: 44px !important;
-    min-height: 44px !important;
-    font-size: 12px !important;
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 13px !important;
   }
-  .dzc-st.is-on { padding: 0 12px !important; }
   .dzc-statuses { gap: 5px; }
 
   /* The primary action in the picker was 36px, and the rail is how you read
