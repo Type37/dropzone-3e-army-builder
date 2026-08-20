@@ -1634,6 +1634,19 @@ def parse_weapons(page, lines) -> tuple[list[Weapon], float]:
             cost = re.search(r"\+?(\d+)\s*pts?", w["special"], re.I)
             if cost and w["box"] == "upgrade":
                 w["upgradePoints"] = int(cost.group(1))
+        # A price in the NAME makes it an upgrade, whatever colour the box is.
+        #
+        # The Harbinger Dropship (Scourge p.27) prints "Mini Arc Caster
+        # (+5pts)" in a BLUE all-models box. Read by colour alone that is a gun
+        # every Harbinger carries for free, with a price on it nobody can pay
+        # -- and the builder drew exactly that: a "+5pts" label on a row with
+        # no button, the one weapon in the game you could see the cost of and
+        # not buy. It is the only priced weapon on any card not printed green.
+        #
+        # Nothing is invented here. The card's own bracket is taken at its
+        # word, and the bracket is the thing that says "pay for this".
+        if w["upgradePoints"] is not None and w["box"] == "all":
+            w["box"] = "upgrade"
         # An orange box means "restricted to the Variant named in brackets"
         # (rulebook 3.2.2). A few cards print orange with NO bracket -- the
         # Bioficer Surge Gunship's Decon Pulse. That is a source-data quirk,

@@ -2381,7 +2381,7 @@
           "ac": "6+",
           "e": "3",
           "special": "AA, Spark",
-          "box": "all",
+          "box": "upgrade",
           "variants": [],
           "upgradePoints": 5,
           "exclusive": false,
