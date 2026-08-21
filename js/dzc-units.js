@@ -368,6 +368,9 @@
           <input class="dzc-search" type="search" placeholder="Search units, variants, weapons or rules"
                  value="${esc(state.search)}" oninput="DZCUnits.setSearch(this.value)" aria-label="Search units">
           <div class="dzc-chips">${cats}</div>
+          <!-- Beside the filters because it prints what they leave on screen. -->
+          <button type="button" class="dzc-sq-btn dzc-ref-print" onclick="DZCUnits.print()"
+                  title="Print these units">${window.DZCIcon('print', { size: 15 })}Print</button>
         </div>
         <p class="dzc-count">${units.length} of ${f.units.length} units${q ? ` matching “${esc(state.search)}”` : ''}</p>
         <!-- Named by cause, and worded exactly as the picker words it. "Nothing
@@ -1028,6 +1031,169 @@
     document.removeEventListener('click', onDocClick);
   }
 
+  // ------------------------------------------------------------ printed sheet
+
+  /* THE WHOLE FACTION, ON PAPER. Jet, 2026-08-21: "An option to print out each
+   * factions unit stats would be good. Similar to the army list print out but
+   * for all units. maybe in the compendium."
+   *
+   * It is the army sheet's document with the army taken out of it: the same
+   * pr- markup, the same stat grid, the same weapon table, the same glossary at
+   * the back, and the same preview -- DZCBuilder.preview takes a sheet function
+   * now rather than always meaning an army, so the page count, the three
+   * options and the printer wiring come with it, and there is one of each in
+   * the app instead of two.
+   *
+   * WHAT IT PRINTS IS WHAT IS ON THE SCREEN. The search box and the category
+   * chips filter the sheet exactly as they filter the grid, because the useful
+   * version of this is not always 31 units: it is the Scourge's Transports, or
+   * every gun with Spark on it. The head line says which, and the preview says
+   * how much paper it is before it costs any.
+   *
+   * Every weapon on every card, including guns only one Variant carries and
+   * upgrades nobody has bought -- there is no Squad here to have taken them, so
+   * each row carries the "(Alexander)" and the "+10pts" the card prints. */
+  function sheetHtml(opts) {
+    const o = opts || {};
+    const f = window.DZC.faction(state.faction);
+    if (!f) return '';
+    const fac = FACTIONS.find(x => x.id === state.faction) || {};
+    const acc = fac.accent || '#1b3a5c';
+
+    const q = state.search.trim().toLowerCase();
+    let units = f.units.slice();
+    if (q) units = units.filter(u => window.DZC.matches(u, q, state.faction));
+    if (state.category !== 'All') units = units.filter(u => u.category === state.category);
+
+    // Keyed by the PRINTED keyword, the same as the army sheet: Aegis 3" and
+    // Aegis 6" are one glossary entry and two different sentences.
+    const used = new Map();
+    const collect = sp => window.DZC.splitSpecial(sp || '', state.faction).forEach(tok => {
+      const r = window.DZC.rule(tok, state.faction);
+      if (r && !used.has(tok)) {
+        used.set(tok, { token: tok, rule: r, text: window.DZC.ruleText(tok, state.faction) });
+      }
+    });
+
+    function entry(u) {
+      const guns = unitWeapons(u);
+      collect(u.special);
+      guns.forEach(w => collect(w.special));
+
+      /* A Variant's rules belong to the Variant (3.2.2), so the Unit's own line
+       * prints only what every model in it has -- the same split the builder
+       * and the army sheet make, for the same reason: "Scanner" printed against
+       * a Unit whose Greave alone has one is a sheet you would lose an argument
+       * with. */
+      const ownSpecial = (u.specialVariants || []).length
+        ? window.DZC.splitSpecial(u.special || '', state.faction)
+          .filter(tok => !(u.specialVariants || []).some(x =>
+            String(tok).replace(VARIANT_TAIL, '').trim().endsWith(x.rule)))
+          .join(', ')
+        : (u.special || '');
+
+      const vRule = name => ((u.specialVariants || [])
+        .filter(x => x.variants.indexOf(name) !== -1).map(x => x.rule));
+      // 49 Units of the 178 are priced per Variant and have no price of their
+      // own, so the price goes on the line that actually has one.
+      const vars = (u.variants || []).map(v => {
+        const rs = vRule(v.name);
+        return `<span class="pr-mix">${o.art && v.art
+          ? `<img class="pr-vart" src="${esc(v.art)}" alt="" onerror="this.remove()">` : ''
+          }${esc(v.name)}${v.points != null ? ` <b>${v.points}pts</b>` : ''}${
+          rs.length ? ` <i>(${esc(rs.join(', '))})</i>` : ''}</span>`;
+      }).join('');
+      const allVartd = o.art && (u.variants || []).length
+        && (u.variants || []).every(v => v.art);
+
+      const gear = (u.gear || []).length
+        ? `<div class="pr-gear"><b>Gear</b> ${u.gear
+            .map(x => `${esc(x.power)}PT ${esc(x.name)}`).join(', ')}</div>`
+        : '';
+
+      const cap = transportHtml(u);
+      const size = sizeHtml(u);
+      const note = String(u.upgradeNote || '').trim();
+
+      const wpns = guns.length ? `<table class="pr-wpn">
+        <tr><th>Weapon</th><th>Arc</th><th>Move &amp; Attack</th><th>Range</th><th>Attacks</th><th>Accuracy</th><th>Energy</th><th>Special</th></tr>
+        ${guns.map(w => `<tr><td>${esc(w.name)}${(w.variants || []).length
+            ? ` <i>(${esc(w.variants.join(', '))})</i>` : ''}${w.upgradePoints != null
+            ? ` <b>+${w.upgradePoints}pts${w.exclusive ? '*' : ''}</b>` : ''}</td>
+          <td class="dzc-arc-cell">${window.DZCIcon.arc(w.arc)}<span>${esc(w.arc || '')}</span></td>
+          <td>${esc(w.ma || '')}</td><td>${esc(w.r || '')}</td>
+          <td>${esc(w.att || '')}</td><td>${esc(w.ac || '')}</td><td>${esc(w.e || '')}</td>
+          <td>${w.special ? rulesHtml(w.special, state.faction, null, true) : ''}</td></tr>`).join('')}</table>` : '';
+
+      return `<div class="pr-ref-unit">
+        ${o.art && u.art && !allVartd
+          ? `<img class="pr-art" src="${esc(u.art)}" alt="" onerror="this.remove()">` : ''}
+        <div class="pr-sq-line">
+          <span class="pr-sq-name">${esc(u.name)}</span>
+          ${u.rare ? '<span class="pr-ref-flag">Rare</span>' : ''}
+          ${u.unique ? '<span class="pr-ref-flag">Unique</span>' : ''}
+          ${u.selectable === false ? '<span class="pr-ref-flag">Generated in play</span>' : ''}
+          <span class="pr-ref-type">${esc([u.type, u.base].filter(Boolean).join(', '))}</span>
+          ${size ? `<span class="pr-ref-size">${esc(size)}</span>` : ''}
+          ${cap ? `<span class="pr-cap">${cap}</span>` : ''}
+          <span class="pr-sq-cost">${pointsHtml(u)}</span>
+        </div>
+        ${vars ? `<div class="pr-variants">${vars}</div>` : ''}
+        <div class="pr-statline">
+          <div class="pr-stats">${statsHtml(u, { compact: true })}</div>
+          ${ownSpecial ? `<div class="pr-rules-row">${
+            rulesHtml(ownSpecial, state.faction, null, true) || esc(ownSpecial)}</div>` : ''}
+        </div>
+        ${wpns}
+        <!-- The footnote under a card's upgrades is a construction rule --
+             "Only one of these upgrades may be taken" -- so it prints under the
+             table it qualifies. As a line, not the panel the screen draws:
+             paper has no room for a panel per Unit. -->
+        ${note ? `<div class="pr-gear">${esc(note)}</div>` : ''}
+        ${gear}
+      </div>`;
+    }
+
+    const extra = [...new Set(units.map(u => u.category)
+      .filter(c => c && CATEGORIES.indexOf(c) === -1))];
+    const cats = CATEGORIES.concat(extra).map(cat => {
+      const inCat = units.filter(u => u.category === cat);
+      if (!inCat.length) return '';
+      return `<section class="pr-refcat" style="${window.DZC.accentStyle(acc)}">
+        <h2 class="pr-refcat-head">${esc(cat)}</h2>
+        ${inCat.map(entry).join('')}
+      </section>`;
+    }).join('');
+
+    const rules = [...used.values()]
+      .map(e => Object.assign({}, e, { label: window.DZC.ruleLabel(e.token, state.faction) }))
+      .sort((x, y) => x.label.localeCompare(y.label))
+      .map(e => `<div class="pr-rule"><h3>${esc(e.label)}${
+        e.label.toLowerCase() !== String(e.token).trim().toLowerCase()
+          ? ` (${esc(e.token)})` : ''}</h3>
+        <p>${esc(String(e.text || '').split(/\n{2,}/)
+          .map(t => t.trim()).filter(Boolean).join(' '))} <span class="pr-src">${esc(e.rule.faction
+          ? e.rule.faction.toUpperCase()
+          : e.rule.section + (e.rule.page ? `, p.${e.rule.page}` : ''))}</span></p></div>`).join('');
+
+    return `
+      <div class="pr-head" style="${window.DZC.accentStyle(acc)}">
+        <h1 class="pr-title">${esc(fac.full || fac.name || state.faction)}</h1>
+        <p class="pr-sub"><span>Stats, weapons and rules</span>
+          <span>${units.length === f.units.length ? `all ${units.length}`
+            : `${units.length} of ${f.units.length}`} unit${units.length === 1 ? '' : 's'}</span>
+          ${state.category !== 'All' ? `<span>${esc(state.category)}</span>` : ''}
+          ${q ? `<span>matching &ldquo;${esc(state.search)}&rdquo;</span>` : ''}</p>
+      </div>
+      ${cats || '<p class="pr-warn">Nothing matches what is on screen.</p>'}
+      ${rules ? `<section class="pr-rules"><h2>Rules used</h2>${rules}</section>` : ''}`;
+  }
+
+  async function printSheet() {
+    await window.DZC.loadFaction(state.faction);
+    window.DZCBuilder.preview(sheetHtml);
+  }
+
   window.DZCUnits = {
     render,
     open: () => render(),
@@ -1035,6 +1201,7 @@
     setCategory: c => { state.category = c; render(); },
     setSearch: v => { state.search = v; render(); },
     openDetail, closeDetail, setLens, showRule, showDamage, hideRule,
+    print: printSheet, sheetHtml,
     // Shared with the builder's picker so a unit reads the same in both places.
     statsHtml, rulesHtml, variantRuleFilter, squadHtml, sizeHtml, transportHtml, unitWeapons, weaponLive,
     removedByUpgrades, weaponsHtml, variantsHtml,

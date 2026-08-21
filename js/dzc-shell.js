@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 465;
+  const BUILD = 466;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -585,6 +585,11 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-21', title: 'The Unit Reference prints', items: [
+      'A Print button on the Unit Reference puts a whole faction on paper: every Unit under its category heading, with its Variants and their prices, the stat block, every weapon on the card — including the ones only one Variant carries and the upgrades nobody has bought — and the rules glossary at the back. The UCM is nine pages.',
+      'It prints what is on the screen. Filter to Transports or search for Spark and the sheet is that, because the useful version of this is rarely all 38 Units. The head line says which, and the preview says how much paper it is before it costs any.',
+      'Same preview as the army sheet, so Compact, Ink-saver and Art are the same three switches, and Ctrl+P prints the sheet in front of you rather than the app behind it.'
+    ] },
     { date: '2026-08-21', title: 'Duplicate a Squad, and a gun you could see the price of but never buy', items: [
       'Every Squad has a Duplicate button beside its bin. It copies the models and their Variants, the weapon upgrades, the Raw Materials aboard a Genitor — everything you bought for it.',
       'The Transport comes too. Several Squads may share only a single Transport (3.2.4.1), so a copy that will not fit in the one already there buys its own: two Legionnaire Squads in Bear APCs are two Bear Squads. Press it on the Transport instead and what it was carrying comes with it, because an empty Bear APC is half a list. A Commander does not come — one is assigned and paid for by the Army (3.2.5).',

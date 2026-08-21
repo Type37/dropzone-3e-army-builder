@@ -91,6 +91,11 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 }
 .dzc-search:focus-visible { outline: 2px solid var(--acc); outline-offset: 1px; }
 .dzc-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+/* Print, on the Unit Reference's toolbar. Pushed to the end of the row so
+   it is the last thing on the line rather than another filter: it acts on
+   what the filters left, and it is the one control here that is not one. */
+.dzc-ref-print { margin-left: auto; }
+@media (max-width: 640px) { .dzc-ref-print { margin-left: 0; } }
 /* Deco pills: the corners are cut, not rounded. A 999px radius is the shape
    this project explicitly does not want, and a chamfer is the period-correct
    way to soften a rectangle. */

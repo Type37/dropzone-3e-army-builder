@@ -414,3 +414,40 @@
 .pr-gear { font-size: 8pt; margin-top: 1mm; }
 .pr-gear b { font-weight: 700; }
 
+
+/* ---------------------------------------------------- the reference sheet
+
+   A faction's whole roster on paper (DZCUnits.sheetHtml). It borrows the army
+   sheet's vocabulary -- pr-sq-line, pr-stats, pr-wpn, pr-rule -- so there is
+   one printed language in the app rather than two; only what is genuinely
+   different is written here.
+
+   The ATOM is one Unit, not one category. A category is Standard, which is
+   eleven Units and three pages, and keeping that whole is not a thing paper
+   can do. This list has to stay in step with the atoms query in
+   dzc-builder.js: a block the stylesheet keeps whole and the preview does not
+   is a break drawn where the printer will not make one. */
+:is(#dzc-print, .pp-paper) .pr-ref-unit {
+  break-inside: avoid; page-break-inside: avoid;
+  padding: 2.5pt 0; border-bottom: .25pt solid #ccc;
+}
+:is(#dzc-print, .pp-paper) .pr-ref-unit:last-child { border-bottom: 0; }
+:is(#dzc-print, .pp-paper).is-compact .pr-ref-unit { padding: 1.5pt 0; }
+:is(#dzc-print, .pp-paper) .pr-refcat { margin-bottom: 6pt; }
+/* The category heading repeats the army sheet's Group heading, because it is
+   doing the same job: this is where a section starts. */
+:is(#dzc-print, .pp-paper) .pr-refcat-head {
+  font: 700 11pt/1.1 'Roboto Slab', Georgia, serif; margin: 0 0 3pt;
+  color: var(--acc-text, var(--acc, #000));
+  border-bottom: .75pt solid #000; padding-bottom: 2pt;
+}
+/* What the Unit IS, and how many of it you take. Set quieter than the name:
+   they are the qualifiers on the line, not the line. */
+:is(#dzc-print, .pp-paper) .pr-ref-type,
+:is(#dzc-print, .pp-paper) .pr-ref-size { font-size: 7.5pt; color: #444; }
+/* Rare and Unique change what you may take (3.2.1), so they are the one thing
+   on this line that is boxed. */
+:is(#dzc-print, .pp-paper) .pr-ref-flag {
+  font: 700 6.5pt/1 'Jost', sans-serif; text-transform: uppercase;
+  letter-spacing: .05em; border: .5pt solid #666; padding: .5pt 2pt;
+}

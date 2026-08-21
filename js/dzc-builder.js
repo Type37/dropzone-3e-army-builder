@@ -3036,7 +3036,24 @@
     return used === cards ? g(used) : `${g(used)} on ${cards} cards`;
   }
 
-  function sheetHtml() {
+  /* WHAT THE PREVIEW IS PREVIEWING.
+   *
+   * The preview, the pagination, the three options and the hidden container
+   * the printer is actually handed were all written around one document -- the
+   * army sheet -- and named as if there could never be another. There is: the
+   * Unit Reference prints a faction's stats the same way (DZCUnits.sheetHtml).
+   *
+   * So the sheet is a FUNCTION passed to openPreview, held here for as long as
+   * the preview is open, and everything below asks it rather than reaching for
+   * `current`. Null means no preview, which is what beforeprint reads to decide
+   * whether Ctrl+P prints a sheet or the page you are looking at. */
+  let sheetSrc = null;
+  // The sheet function is handed the print options, so a sheet written in
+  // another file honours Compact, Ink-saver and Art without reaching in here
+  // for them. The army sheet reads the same object off its own closure.
+  const sheetNow = () => (sheetSrc || armySheetHtml)(printOpts);
+
+  function armySheetHtml() {
     const a = current;
     if (!a) return '';
     const size = window.DZC.gameSizeFor(a.pointsLimit);
@@ -3357,6 +3374,7 @@
     if (PP.onPop) window.removeEventListener('popstate', PP.onPop);
     if (PP.ro) PP.ro.disconnect();
     PP.onKey = PP.onPop = PP.ro = null;
+    sheetSrc = null;
     // The parked history entry has to be spent, or Back leaves the app one
     // press early ever after. Not when Back is what closed us, it is gone.
     const armed = PP.armed;
@@ -3364,9 +3382,9 @@
     if (armed && !fromBack) history.back();
   }
 
-  function openPreview() {
-    if (!current) return;
+  function openPreview(fn) {
     closePreview();
+    sheetSrc = fn || null;
     const ov = document.createElement('div');
     ov.id = 'dzc-pp';
     ov.className = 'pp-overlay';
@@ -3382,7 +3400,7 @@
         <button class="btn btn-primary btn-sm" type="button" onclick="DZCBuilder.printNow()">Print</button>
       </div>
       <div class="pp-scroll" id="dzc-pp-scroll">
-        <div class="pp-paper${printClass()}" id="dzc-pp-paper">${sheetHtml()}</div>
+        <div class="pp-paper${printClass()}" id="dzc-pp-paper">${sheetNow()}</div>
       </div>`;
     document.body.appendChild(ov);
 
@@ -3463,7 +3481,7 @@
      * step with the break-inside: avoid rules in css/dzc-print.css. A block
      * the stylesheet keeps whole and this does not is a break drawn where the
      * printer will not make one. */
-    const atoms = [...paper.querySelectorAll('.pr-group, .pr-cmdrs, .pr-rule, .pr-rules > h2, .pr-head')]
+    const atoms = [...paper.querySelectorAll('.pr-group, .pr-cmdrs, .pr-rule, .pr-rules > h2, .pr-head, .pr-ref-unit, .pr-refcat-head')]
       .map(el => {
         const r = el.getBoundingClientRect();
         // Distance from the paper's own top edge, unzoomed, then past the
@@ -3513,7 +3531,7 @@
     let el = document.getElementById('dzc-print');
     if (!el) { el = document.createElement('div'); el.id = 'dzc-print'; document.body.appendChild(el); }
     el.className = printClass().trim();
-    el.innerHTML = sheetHtml();
+    el.innerHTML = sheetNow();
     return el;
   }
 
@@ -3555,8 +3573,13 @@
    * empty container just the same. Now the app is only hidden when there is a
    * sheet to put in its place, and everywhere else the browser prints the page
    * you are looking at, which is what Ctrl+P is for. */
+  /* A preview that is OPEN is the sheet, whichever screen it was opened from.
+   * The Unit Reference is a page Ctrl+P should print as a page, right up until
+   * you ask it for a reference sheet -- and then Ctrl+P has to mean the sheet
+   * in front of you, not the app behind it. */
   window.addEventListener('beforeprint', () => {
-    const sheet = !!current && String(location.hash || '').indexOf('#army/') === 0;
+    const sheet = !!sheetSrc
+      || (!!current && String(location.hash || '').indexOf('#army/') === 0);
     document.body.classList.toggle('is-sheet', sheet);
     if (sheet) fillPrintEl();
   });
@@ -3571,7 +3594,7 @@
     const paper = document.getElementById('dzc-pp-paper');
     if (!paper) return;
     paper.className = 'pp-paper' + printClass();
-    paper.innerHTML = sheetHtml();
+    paper.innerHTML = sheetNow();
     paper.querySelectorAll('img').forEach(img => {
       img.addEventListener('load', paginate);
       img.addEventListener('error', paginate);
@@ -3918,6 +3941,10 @@
     },
     openPicker, pick, openQuick, closeQuick, startQuick,
     print: printSheet, closePreview, printNow, printOpt,
+    /* Any screen with something worth putting on paper hands its own sheet
+     * here and gets the preview, the page count, the three options and the
+     * printer wiring that the army sheet has. Used by the Unit Reference. */
+    preview: openPreview,
     openCommander, closeCommander,
     addCommander: level => {
       const r = window.DZCArmy.addCommander(current, level);
