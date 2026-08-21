@@ -1188,6 +1188,112 @@ console.log('\nduplicating a Group (gap 124)');
   A.remove(a.id);
 }
 
+/* Jet, 2026-08-21: "Would be nice to be able to duplicate squads within a
+ * group." Duplicate Group one level down, and the transport question is the
+ * whole of it: 3.2.4.1 lets several Squads share only a SINGLE Transport, so
+ * the copy either fits in the one already there or it buys its own. */
+console.log('\nduplicating a Squad');
+{
+  const a = army(2000);
+  const g = A.addGroup(a);
+  const l = A.addSquad(a, g.id, 'legionnaires', 3);
+  A.assignTransport(a, l.id, 'bear-apc');
+  const before = A.groupCost(a, g);
+
+  const r = A.duplicateSquad(a, l.id);
+  ok(r.ok, 'a Squad duplicates', r.reason);
+  eq(g.squads.filter(s => s.unitId === 'legionnaires').length, 2, 'and there are two of it');
+  eq(A.groupCost(a, g), before * 2, 'the Group costs twice what it did');
+  eq(g.squads.filter(s => s.unitId === 'bear-apc').length, 2,
+     'a full Bear APC cannot be shared, so the copy bought its own (3.2.4.1)');
+  ok(r.squad.carriedBy && r.squad.carriedBy !== l.carriedBy,
+     'and rides a Transport of its own');
+  eq(A.validate(a).errors.filter(e => e.rule === '3.2.4').length, 0,
+     'both Transports are full', JSON.stringify(A.validate(a).errors.map(e => e.msg)));
+  eq(g.squads.indexOf(r.squad), g.squads.indexOf(l) + 1, 'the copy sits beside the original');
+  A.remove(a.id);
+}
+
+{
+  // Room in the Transport already there means riding along, not buying a
+  // second one: one Legionnaire fills 1 of a Bear APC's 3 squares.
+  const a = army(2000);
+  const g = A.addGroup(a);
+  const l = A.addSquad(a, g.id, 'legionnaires', 1);
+  A.assignTransport(a, l.id, 'bear-apc');
+  const r = A.duplicateSquad(a, l.id);
+  ok(r.ok, 'a Squad with room beside it duplicates', r.reason);
+  eq(g.squads.filter(s => s.unitId === 'bear-apc').length, 1, 'no second Transport was bought');
+  eq(r.squad.carriedBy, l.carriedBy, 'the copy rides the same one (3.2.4.1)');
+  A.remove(a.id);
+}
+
+{
+  // Press it on the TRANSPORT and everything aboard comes too. An empty Bear
+  // APC is not an army list, it is half of one (3.2.4).
+  const a = army(2000);
+  const g = A.addGroup(a);
+  const l = A.addSquad(a, g.id, 'legionnaires', 3);
+  A.assignTransport(a, l.id, 'bear-apc');
+  const bear = g.squads.find(s => s.unitId === 'bear-apc');
+  const r = A.duplicateSquad(a, bear.id);
+  ok(r.ok, 'a Transport duplicates', r.reason);
+  eq(g.squads.filter(s => s.unitId === 'legionnaires').length, 2, 'and what it was carrying came with it');
+  eq(g.squads.filter(s => s.unitId === 'bear-apc').length, 2, 'as two Transports, not one of two');
+  const copied = g.squads.filter(s => s.unitId === 'legionnaires')[1];
+  ok(copied.carriedBy === r.squad.id, 'the copied cargo rides the copied Transport');
+  A.remove(a.id);
+}
+
+{
+  // Everything that was bought for the Squad is bought for the copy, or the
+  // copy is a different Squad wearing the same name.
+  const a = army(2000);
+  const g = A.addGroup(a);
+  const s = A.addSquad(a, g.id, 'ucm-main-battle-tank', 2);
+  A.setModelVariant(a, s.id, 0, 'Tachi');
+  const v = A.addSquad(a, A.addGroup(a).id, 'vulture-dropship', 1);
+  A.toggleUpgrade(a, v.id, '*', 'UM-903 Defence pods');
+  const cost = A.squadCost(a, s), vcost = A.squadCost(a, v);
+
+  const r = A.duplicateSquad(a, s.id);
+  eq(r.squad.models.map(m => m.variant).join(','), s.models.map(m => m.variant).join(','),
+     'every model keeps the variant it had');
+  eq(A.squadCost(a, r.squad), cost, 'so the copy costs what the original costs');
+
+  const rv = A.duplicateSquad(a, v.id);
+  ok(A.hasUpgrade(rv.squad, '*', 'UM-903 Defence pods'), 'a bought upgrade is bought on the copy');
+  eq(A.squadCost(a, rv.squad), vcost, 'and paid for');
+  A.remove(a.id);
+}
+
+{
+  // A Commander is assigned to a Unit and costs the Army points (3.2.5).
+  // Duplicating a Squad must not quietly buy a second officer.
+  const a = army(2000);
+  const g = A.addGroup(a);
+  const s = A.addSquad(a, g.id, 'legionnaires', 3);
+  const c = A.addCommander(a, 1);
+  if (c && c.id) A.assignCommander(a, c.id, s.id);
+  const r = A.duplicateSquad(a, s.id);
+  ok(r.ok, 'a Squad carrying a Commander duplicates', r.reason);
+  ok(!r.squad.commander, 'and the copy has no Commander');
+  A.remove(a.id);
+}
+
+{
+  // Refused where it could never be legal, quoting the rule.
+  const a = army(1000);           // Skirmish: Rare limit 1
+  const rare = (DZC.faction('ucm').units || []).find(u => u.rare && u.selectable !== false);
+  const g = A.addGroup(a);
+  const s = A.addSquad(a, g.id, rare.id, rare.squadMin || 1);
+  const r = A.duplicateSquad(a, s.id);
+  eq(r.ok, false, 'a Rare Squad will not duplicate past the limit');
+  ok(/Rare/.test(r.reason || ''), 'and says which rule refuses it', r.reason);
+  eq(g.squads.length, 1, 'nothing was added');
+  A.remove(a.id);
+}
+
 {
   // The agreed limit is an input for the whole life of the army, not just at
   // creation: the per-Group ceiling is a quarter of it (3.2) and the Group cap

@@ -594,6 +594,32 @@
     return g;
   }
 
+  /* Room in the Army for another one of each of these Units.
+   *
+   * Rare and Unique are counted in SQUADS across the whole Army (3.2.1), so a
+   * copy that brings two Squads of the same Rare Unit adds two, not one. Both
+   * Duplicate buttons ask this: a Group and a Squad are the same question at
+   * different sizes. */
+  function roomForCopies(army, units) {
+    const size = window.DZC.gameSizeFor(army.pointsLimit);
+    const adding = new Map();
+    (units || []).forEach(u => { if (u) adding.set(u, (adding.get(u) || 0) + 1); });
+    for (const [u, n] of adding) {
+      const after = squadsNamed(army, u.name) + n;
+      if (u.unique && after > 1) {
+        return { ok: false, reason: `${u.name} is Unique: one per Army (3.2.1).` };
+      }
+      if (u.rare) {
+        const lim = size ? window.DZC.rareLimit(size.id) : 1;
+        if (after > lim) {
+          return { ok: false,
+                   reason: `${u.name} is Rare: ${size ? size.label : 'this size'} allows ${lim} (3.2.1).` };
+        }
+      }
+    }
+    return { ok: true, reason: null };
+  }
+
   /* Duplicate a Group: every Squad, its models and their variants, the weapon
    * upgrades, and the nesting.
    *
@@ -620,26 +646,8 @@
       return { ok: false, reason: `${size.label} allows ${maxG} Groups (3.1).` };
     }
 
-    // Rare and Unique are counted in Squads across the whole Army, so a Group
-    // holding two Squads of the same Rare Unit adds two, not one.
-    const adding = new Map();
-    g.squads.forEach(s => {
-      const u = unitOf(army, s);
-      if (u) adding.set(u, (adding.get(u) || 0) + 1);
-    });
-    for (const [u, n] of adding) {
-      const after = squadsNamed(army, u.name) + n;
-      if (u.unique && after > 1) {
-        return { ok: false, reason: `${u.name} is Unique: one per Army (3.2.1).` };
-      }
-      if (u.rare) {
-        const lim = size ? window.DZC.rareLimit(size.id) : 1;
-        if (after > lim) {
-          return { ok: false,
-                   reason: `${u.name} is Rare: ${size ? size.label : 'this size'} allows ${lim} (3.2.1).` };
-        }
-      }
-    }
+    const room = roomForCopies(army, g.squads.map(s => unitOf(army, s)));
+    if (!room.ok) return room;
 
     const idMap = {};
     const squads = g.squads.map(s => {
@@ -653,6 +661,10 @@
         commander: null
       };
       if (s.upgrades) copy.upgrades = JSON.parse(JSON.stringify(s.upgrades));
+      // Raw Materials are bought and they are the Squad's, so they travel with
+      // it. Left behind, a duplicated Bioficer Group came back cheaper than the
+      // one it was copied from and with its Genitors empty.
+      if (s.rm) copy.rm = s.rm;
       return copy;
     });
     squads.forEach(s => { if (s.carriedBy) s.carriedBy = idMap[s.carriedBy] || null; });
@@ -928,6 +940,82 @@
     refitTransports(army);
     touch(army);
     return { ok: true, reason: null };
+  }
+
+  /* ANOTHER ONE OF THESE, beside the one you pressed. Jet, 2026-08-21: "Would
+   * be nice to be able to duplicate squads within a group."
+   *
+   * Duplicate Group, one level down, and it answers the same two questions.
+   *
+   * Everything the Squad CARRIES comes with it, all the way down. moveSquad
+   * takes that view already and for the same reason: a Bear APC copied without
+   * its Legionnaires is a Squad that means nothing on its own, and the rules
+   * will not have it either (3.2.4).
+   *
+   * Whatever was carrying IT is not copied blindly. The copy asks to ride
+   * along first, which is the right answer for a Transport with room -- a
+   * fourth Squad joining an Albatross that has space, not a second Albatross.
+   * Only when there is no room does it buy its own, and that is the common
+   * case and the one worth the button: 3.2.4.1 lets several Squads share only
+   * a SINGLE Transport, so two Legionnaire Squads in Bear APCs are two Bear
+   * Squads and never one Squad of two Bears. boardTransport and
+   * assignTransport own both rules; this only decides which one to ask.
+   *
+   * The Commander does not come along, for the reason it does not come along
+   * from a Group: one is assigned to a Unit and costs the Army points (3.2.5).
+   */
+  function duplicateSquad(army, squadId) {
+    const g = groupOf(army, squadId);
+    const s = g && g.squads.find(x => x.id === squadId);
+    if (!g || !s) return { ok: false, reason: 'Unknown Squad.' };
+    const u = unitOf(army, s);
+    if (!u) return { ok: false, reason: 'Unknown unit.' };
+
+    // The Squad and everything riding in it, however deep the nesting goes.
+    const set = [];
+    (function walk(x) {
+      set.push(x);
+      g.squads.forEach(y => { if (y.carriedBy === x.id && set.indexOf(y) === -1) walk(y); });
+    })(s);
+
+    const room = roomForCopies(army, set.map(x => unitOf(army, x)));
+    if (!room.ok) return room;
+
+    const idMap = {};
+    const copies = set.map(x => {
+      const id = uid();
+      idMap[x.id] = id;
+      const copy = {
+        id: id,
+        unitId: x.unitId,
+        models: x.models.map(m => ({ variant: m.variant })),
+        carriedBy: x.carriedBy,
+        commander: null
+      };
+      if (x.upgrades) copy.upgrades = JSON.parse(JSON.stringify(x.upgrades));
+      if (x.rm) copy.rm = x.rm;
+      return copy;
+    });
+    // Links inside the copied set are remapped; a link OUT of it is the head's
+    // own ride, and that one is decided below rather than assumed.
+    copies.forEach(c => { if (c.carriedBy) c.carriedBy = idMap[c.carriedBy] || null; });
+    const head = copies[0];
+    const ride = s.carriedBy;
+    head.carriedBy = null;
+
+    // Beside the Squad it was copied from, not at the end of the Group.
+    g.squads.splice(g.squads.indexOf(s) + 1, 0, ...copies);
+
+    if (ride) {
+      const carrier = g.squads.find(x => x.id === ride);
+      const tu = carrier && unitOf(army, carrier);
+      if (!boardTransport(army, head.id, ride).ok && tu) {
+        assignTransport(army, head.id, tu.id);
+      }
+    }
+    refitTransports(army);
+    touch(army);
+    return { ok: true, reason: null, squad: head };
   }
 
   function removeSquad(army, squadId) {
@@ -2552,7 +2640,7 @@
     load, save, all, get, create, remove, touch, setPointsLimit, setDescription,
     importArmies, importList, parseList, generate,
     addGroup, removeGroup, duplicateGroup, moveGroup, groupName, renameGroup,
-    commanderName, renameCommander, addSquad, removeSquad, setModelCount, setModelVariant,
+    commanderName, renameCommander, addSquad, removeSquad, duplicateSquad, setModelCount, setModelVariant,
     canShiftVariant, shiftVariant, canAdjustVariantCount, adjustVariantCount,
     setCarrier, moveSquad, setCommander, findSquad, groupOf, unitOf, carrierOf, squadGuns,
     commanders, commanderFor, commanderTargets,

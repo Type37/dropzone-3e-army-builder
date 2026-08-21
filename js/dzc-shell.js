@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 464;
+  const BUILD = 465;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -585,6 +585,12 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-21', title: 'Duplicate a Squad, and a gun you could see the price of but never buy', items: [
+      'Every Squad has a Duplicate button beside its bin. It copies the models and their Variants, the weapon upgrades, the Raw Materials aboard a Genitor — everything you bought for it.',
+      'The Transport comes too. Several Squads may share only a single Transport (3.2.4.1), so a copy that will not fit in the one already there buys its own: two Legionnaire Squads in Bear APCs are two Bear Squads. Press it on the Transport instead and what it was carrying comes with it, because an empty Bear APC is half a list. A Commander does not come — one is assigned and paid for by the Army (3.2.5).',
+      'A Rare or Unique Squad refuses to duplicate past its limit and says which rule stopped it.',
+      'The Harbinger Dropship’s Mini Arc Caster is +5pts on its stat card and there was no way to pay it. TTCombat printed the row in the blue box that means every model has it rather than the green one that means you buy it, and this app was reading the colour. It is a button now, like the other 28 upgrades in the game.'
+    ] },
     { date: '2026-08-17', title: 'Command Points looked broken because the rules were quietly refusing you', items: [
       'The + on Command Points did nothing almost every time it was pressed, and nothing on screen said why. CP is generated up to your highest Commander Level at the top of every Round (4.1.1), so + is already at its ceiling the moment a Round begins — and throughout Round 1 that ceiling is zero, because every Commander counts as Level 0 until the Round turns over. Both are the rules working. A live-looking button that answers a press with silence is indistinguishable from a broken one.',
       'Every stepper on the screen now dims when it has nowhere to go, and still says why if you press it: "Level 0 in Round 1 (4.1.1)", "At your Commander Level", "No CP to spend". Dimmed rather than disabled, because a disabled button cannot answer at all and a tooltip is nothing on a phone.',

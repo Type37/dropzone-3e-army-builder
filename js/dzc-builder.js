@@ -2139,6 +2139,10 @@
                  close button (Jet, 2026-08-09: "maybe trash icon for
                  consistency" -- 'delete' is what the army list's own Delete
                  already uses). Reducing to zero no longer does this itself. -->
+            <!-- Duplicate sits BEFORE the bin, in the order the two are used:
+                 the copy icon is the Group header's own, one level down. -->
+            <button class="dzc-icon-btn" type="button" title="Duplicate Squad"
+                    onclick="DZCBuilder.duplicateSquad('${s.id}')" aria-label="Duplicate ${esc(u.name)}">${window.DZCIcon('content_copy', { size: 15 })}</button>
             <button class="dzc-icon-btn" type="button" title="Remove Squad"
                     onclick="DZCBuilder.removeSquad('${s.id}')" aria-label="Remove ${esc(u.name)}">${window.DZCIcon('delete', { size: 16 })}</button>
           </span>
@@ -3773,6 +3777,14 @@
       drilled = true;
       refresh();
       say('Group duplicated.', 'add');
+    },
+    /* No toast on the way in. The card arrives beside the one you copied and
+       animates as it does; saying so as well is the interface narrating
+       itself. A refusal still speaks, because it has a rule to name. */
+    duplicateSquad: id => {
+      const r = window.DZCArmy.duplicateSquad(current, id);
+      if (!r.ok) return say(r.reason);
+      refresh();
     },
     removeSquad: async id => {
       await leave(`[data-sid="${id}"]`);
