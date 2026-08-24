@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 466;
+  const BUILD = 467;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -585,6 +585,11 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-22', title: 'A Group has one Squad at the top of it', items: [
+      'Two Squads, each in its own dropship, in one Group is two Groups — and the app called it legal. The check counted only the Squads with nothing carrying them, which is the same question on two Squads standing side by side and blind to two Squads that are each aboard something. It counts the Squads nothing else in the Group is carrying now: every one of the five Groups printed on page 10 has exactly one, and a Group with two is named as the two Groups it is.',
+      'The way out it offers is one your faction has. Shaltari Transports are Gates, a Gate is never part of another Group and is never taken with anything aboard — so "give one a Transport" was advice the faction cannot take, and the real answer, a Group each, was third in a list of three. Where no Transport can carry either Squad the sentence no longer mentions one, and it no longer suggests putting one aboard the other where nothing in the game allows it.',
+      'Duplicate, added yesterday, was building that illegal Group in one press: a copy that needs its own Transport now takes a Group of its own, and says so. A copy that fits in the Transport already there still stays where it was.'
+    ] },
     { date: '2026-08-21', title: 'The Unit Reference prints', items: [
       'A Print button on the Unit Reference puts a whole faction on paper: every Unit under its category heading, with its Variants and their prices, the stat block, every weapon on the card — including the ones only one Variant carries and the upgrades nobody has bought — and the rules glossary at the back. The UCM is nine pages.',
       'It prints what is on the screen. Filter to Transports or search for Spark and the sheet is that, because the useful version of this is rarely all 38 Units. The head line says which, and the preview says how much paper it is before it costs any.',

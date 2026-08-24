@@ -3801,13 +3801,26 @@
       refresh();
       say('Group duplicated.', 'add');
     },
-    /* No toast on the way in. The card arrives beside the one you copied and
-       animates as it does; saying so as well is the interface narrating
-       itself. A refusal still speaks, because it has a rule to name. */
+    /* No toast when the copy lands beside the original: the card arrives and
+       animates as it does, and saying so as well is the interface narrating
+       itself. A refusal still speaks, because it has a rule to name.
+     *
+     * WHEN IT LANDS SOMEWHERE ELSE, IT SAYS SO. A copy that needs its own
+     * Transport is the top of its own Group (3.2.4), so it is not on the card
+     * you pressed -- and a press whose result is off screen reads as a press
+     * that did nothing. Same answer as Duplicate Group, and Baxter's for the
+     * same reason: go and look at it. */
     duplicateSquad: id => {
+      const from = window.DZCArmy.groupOf(current, id);
       const r = window.DZCArmy.duplicateSquad(current, id);
       if (!r.ok) return say(r.reason);
+      const moved = r.group && from && r.group.id !== from.id;
+      if (moved) { selectedGroup = r.group.id; if (drilled) drilled = true; }
       refresh();
+      if (moved) {
+        say(`${window.DZCArmy.unitOf(current, r.squad).name} needs its own Transport, `
+          + `so it is a Group of its own (3.2.4).`, 'content_copy');
+      }
     },
     removeSquad: async id => {
       await leave(`[data-sid="${id}"]`);

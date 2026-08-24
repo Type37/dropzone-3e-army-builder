@@ -942,8 +942,8 @@
     return { ok: true, reason: null };
   }
 
-  /* ANOTHER ONE OF THESE, beside the one you pressed. Jet, 2026-08-21: "Would
-   * be nice to be able to duplicate squads within a group."
+  /* ANOTHER ONE OF THESE. Jet, 2026-08-21: "Would be nice to be able to
+   * duplicate squads within a group."
    *
    * Duplicate Group, one level down, and it answers the same two questions.
    *
@@ -952,14 +952,15 @@
    * its Legionnaires is a Squad that means nothing on its own, and the rules
    * will not have it either (3.2.4).
    *
-   * Whatever was carrying IT is not copied blindly. The copy asks to ride
-   * along first, which is the right answer for a Transport with room -- a
-   * fourth Squad joining an Albatross that has space, not a second Albatross.
-   * Only when there is no room does it buy its own, and that is the common
-   * case and the one worth the button: 3.2.4.1 lets several Squads share only
-   * a SINGLE Transport, so two Legionnaire Squads in Bear APCs are two Bear
-   * Squads and never one Squad of two Bears. boardTransport and
-   * assignTransport own both rules; this only decides which one to ask.
+   * WHERE IT LANDS is the whole of the rest, and "within a group" is only
+   * sometimes the answer. A Group has one Squad at the top of it, so the copy
+   * stays here when something already in the Group can carry it -- a fourth
+   * Squad joining an Albatross with room -- and takes a Group of its own when
+   * it needs a Transport of its own, which is what the rulebook's three
+   * Legionnaire Squads in three Bear APCs are: three Groups.
+   *
+   * boardTransport and assignTransport own the rules; this only decides which
+   * to ask, and where to put what comes back.
    *
    * The Commander does not come along, for the reason it does not come along
    * from a Group: one is assigned to a Unit and costs the Army points (3.2.5).
@@ -1006,16 +1007,44 @@
     // Beside the Squad it was copied from, not at the end of the Group.
     g.squads.splice(g.squads.indexOf(s) + 1, 0, ...copies);
 
-    if (ride) {
-      const carrier = g.squads.find(x => x.id === ride);
-      const tu = carrier && unitOf(army, carrier);
-      if (!boardTransport(army, head.id, ride).ok && tu) {
-        assignTransport(army, head.id, tu.id);
+    /* IN THE GROUP ONLY IF IT FITS IN WHAT IS ALREADY THERE.
+     *
+     * A Group has one Squad at the top of it (3.2.4, 3.2.4.1, and the five
+     * Groups printed on p.10). A copy that is not carried by something already
+     * in the Group is a second top, which is not a Group with two Squads in it
+     * -- it is two Groups.
+     *
+     * Build 465 shipped this wrong and the bug is exactly the one Jet had been
+     * explaining to people by hand, 2026-08-21: "I keep having to explain to my
+     * friends that they can't have multiple squads with different dropships in
+     * the same group, but the list builder says 'This army is legal.'" Pressing
+     * Duplicate on Legionnaires in a full Bear APC built that Group in one
+     * press, and validate had no test that could see it.
+     *
+     * So: ride along where there is room -- a fourth Squad joining an Albatross
+     * with space is one Group and stays one -- and otherwise take a Group of
+     * its own, with its own Transport, which is what the rulebook's own worked
+     * example of three Legionnaire Squads in three Bear APCs is. */
+    const boarded = ride && boardTransport(army, head.id, ride).ok;
+    if (!boarded) {
+      const size = window.DZC.gameSizeFor(army.pointsLimit);
+      const maxG = size ? window.DZC.maxGroups(size, army.pointsLimit) : 0;
+      if (maxG && groupsUsed(army) >= maxG) {
+        // Put the Group back as it was before saying no.
+        g.squads = g.squads.filter(x => copies.indexOf(x) === -1);
+        return { ok: false,
+          reason: `${size.label} allows ${maxG} Groups, and this copy needs one of its own (3.1).` };
       }
+      g.squads = g.squads.filter(x => copies.indexOf(x) === -1);
+      const to = { id: uid(), name: null, squads: copies };
+      army.groups.splice(army.groups.indexOf(g) + 1, 0, to);
+      const carrier = ride ? g.squads.find(x => x.id === ride) : null;
+      const tu = carrier && unitOf(army, carrier);
+      if (tu) assignTransport(army, head.id, tu.id);
     }
     refitTransports(army);
     touch(army);
-    return { ok: true, reason: null, squad: head };
+    return { ok: true, reason: null, squad: head, group: groupOf(army, head.id) };
   }
 
   function removeSquad(army, squadId) {
@@ -2505,15 +2534,35 @@
         }
       });
 
-      /* A Group is one Squad and its Transports, or up to 4 Squads sharing one
-       * larger Transport (3.2.4 / 3.2.4.1). Two Squads standing side by side
-       * with nothing carrying either of them is not a Group. But it is a
-       * perfectly ordinary state to pass through while building, so it is
-       * reported when you are done rather than blocked as you go. */
-      const loose = g.squads.filter(s => {
-        const u = unitOf(army, s);
-        return u && u.category !== 'Transport' && !s.carriedBy;
-      });
+      /* ONE TOP SQUAD. A Group is built from the outside in, and the thing on
+       * the outside is one Squad -- 3.2.4: "Those Transport(s) form a Squad.
+       * Those two Squads form one Group", and 3.2.4.1: up to 4 Squads plus
+       * their own Transport Squads may share ONE Transport. Every one of the
+       * five Groups printed on p.10 has exactly one Squad that nothing else in
+       * it is carrying:
+       *
+       *   1  an Archangel, on its own            the Archangel
+       *   2  3 Sabres in 1 Condor                the Condor
+       *   3  6 Sabres in 2 Condors               the Condors
+       *   4  Squads in one Auxiliary Transport   the Auxiliary
+       *   5  4 Squads and their Bears in an Albatross   the Albatross
+       *
+       * This used to count only the Squads with NOTHING carrying them and
+       * ignore Transports, which is the same test on the one shape where they
+       * coincide -- two Squads standing side by side -- and blind to the shape
+       * Jet keeps having to explain to people: two Squads, each in its OWN
+       * dropship, in one Group. Both of those are top-level, so the Group has
+       * two, and the app called it legal. It is two Groups.
+       *
+       * Reported rather than refused, as it always was: it is an ordinary
+       * state to pass through while building, and one press of a Transport
+       * button or a drag into another Group fixes it.
+       *
+       * Gates are exempt. A Group of them is several top-level Squads by
+       * design ("a Gate is never part of another Group"), which their own rule
+       * above already polices. */
+      const loose = g.squads.every(s => gateSquad(army, s))
+        ? [] : g.squads.filter(s => !s.carriedBy && unitOf(army, s));
       /* AND IT SAYS WHAT TO DO ABOUT IT.
        *
        * This is the message Grotwurks hit in the 2026-08-09 thread. He added a
@@ -2537,7 +2586,25 @@
        * that goes quiet to feel friendlier is worth nothing at a table. What
        * was wrong was a message that read as a fault in the app. */
       if (loose.length > 1) {
-        let fix = 'Put one aboard the other, give one a Transport, or move one to a Group of its own.';
+        /* AND IT ONLY OFFERS A FIX THAT EXISTS.
+         *
+         * "give one a Transport" was in this sentence unconditionally, and
+         * Shaltari do not have one to give: their Transports are Gates, and a
+         * Gate is never part of another Group and is never taken with anything
+         * aboard. So every Shaltari player putting two Squads in a Group was
+         * told to do the one thing their faction cannot do, and the only real
+         * answer -- a Group each -- was third in a list of three.
+         *
+         * Reported by Jet, 2026-08-21: "it keeps telling me that my Shaltari
+         * groups aren't legal because they don't have transports... it can be
+         * confusing to someone who dives into list building without reading the
+         * rules several times first."
+         *
+         * transportOptions is the same list the Squad's own Transport button
+         * opens, and it already excludes Gates and Subterranean carriers. If it
+         * is empty for every Squad here, there is no Transport to give and the
+         * sentence does not mention one. */
+        let fix = null;
         for (const rider of loose) {
           const opt = boardOptions(army, rider.id)
             .find(o => loose.some(l => l.id === o.squad.id));
@@ -2546,11 +2613,37 @@
           fix = `Put the ${ru.name} aboard the ${opt.unit.name}.`;
           break;
         }
+        /* AND NOTHING IS OFFERED THAT DOES NOT FIT EITHER. "Put one aboard the
+         * other" sat at the front of the general sentence whether or not any
+         * pair could do it, which on the commonest shape -- two Bear APCs -- is
+         * a move no Transport in the game allows. The pair is named when there
+         * is one, and not alluded to when there is not. */
+        if (!fix) {
+          fix = loose.some(s => transportOptions(army, s.id).length)
+            ? 'Give one a Transport, or move one to a Group of its own.'
+            : 'Move one to a Group of its own.';
+        }
+        /* WHAT IS WRONG, IN THE SHAPE IT IS WRONG IN. Two Squads standing side
+         * by side and two Squads each in their own dropship are the same fault
+         * -- a Group with two tops -- and "nothing carrying them" is only true
+         * of the first. Each is named, because on the second the Squads that
+         * are wrong are the two Transports and every other line on the card
+         * says those are fine.
+         *
+         * Counted where a name repeats, because the commonest way to build this
+         * is two of the SAME dropship and "Bear APC and Bear APC" reads like a
+         * bug in the sentence rather than one in the list. */
+        const tally = new Map();
+        loose.forEach(s => {
+          const n = unitOf(army, s).name;
+          tally.set(n, (tally.get(n) || 0) + 1);
+        });
+        const names = [...tally].map(([n, c]) => (c > 1 ? `${c} × ${n}` : n));
         errors.push({
           rule: '3.2.4',
           group: g.id,
-          msg: `“${groupName(army, g)}” has ${loose.length} Squads with nothing carrying them. A Group is one Squad and its Transports, `
-            + `or up to 4 Squads sharing one larger Transport. ${fix}`
+          msg: `“${groupName(army, g)}” is ${loose.length} Groups: ${names.join(' and ')} are each the top of one. `
+            + `A Group is one Squad and its Transports, or up to 4 Squads sharing one larger Transport. ${fix}`
         });
       }
 

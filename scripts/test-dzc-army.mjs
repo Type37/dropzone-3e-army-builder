@@ -111,8 +111,10 @@ console.log('\ntwo loose Squads: the error says which one goes aboard which');
   const g = A.addGroup(a);
   const med = A.addSquad(a, g.id, 'medusa', 1);
   A.addSquad(a, g.id, 'triton-x-gunship', 1);
-  const e = A.validate(a).errors.find(x => x.rule === '3.2.4' && /nothing carrying/.test(x.msg));
+  const e = A.validate(a).errors.find(x => x.rule === '3.2.4' && /is 2 Groups/.test(x.msg));
   ok(!!e, 'two Squads walking on is still an error');
+  ok(/Medusa and Triton X Gunship are each the top of one/.test(e.msg),
+     'and names both, so it reads on a Group whose Squads are all aboard something', e.msg);
   // Case-insensitive: the clause opens the sentence now that the em-dash
   // before it became a full stop, so it reads "A Group", not "a Group".
   ok(/a Group is one Squad and its Transports/i.test(e.msg), 'and still quotes the rule', e.msg);
@@ -122,7 +124,7 @@ console.log('\ntwo loose Squads: the error says which one goes aboard which');
   // The suggestion comes from boardOptions, so taking it must clear the error.
   const tx = g.squads.find(s => s.unitId === 'triton-x-gunship');
   ok(A.boardTransport(a, med.id, tx.id).ok, 'the move it suggests is one the model allows');
-  ok(!A.validate(a).errors.some(x => /nothing carrying/.test(x.msg)), 'and it clears the error');
+  ok(!A.validate(a).errors.some(x => /is \d+ Groups/.test(x.msg)), 'and it clears the error');
 
   /* Nothing in the Group can carry anything else: no pair to name, so it says
    * the general way out instead of inventing one. */
@@ -130,10 +132,12 @@ console.log('\ntwo loose Squads: the error says which one goes aboard which');
   const g2 = A.addGroup(b);
   A.addSquad(b, g2.id, 'medusa', 1);
   A.addSquad(b, g2.id, 'type-9-frontier-walker', 1);
-  const e2 = A.validate(b).errors.find(x => /nothing carrying/.test(x.msg));
-  ok(!!e2 && /give one a Transport, or move one to a Group of its own/.test(e2.msg),
+  const e2 = A.validate(b).errors.find(x => /is \d+ Groups/.test(x.msg));
+  ok(!!e2 && /Give one a Transport, or move one to a Group of its own/.test(e2.msg),
      'with no pair that fits, it offers the two general ways out', e2 && e2.msg);
   ok(!/Put the .* aboard the/.test(e2.msg), 'and does not invent a pairing', e2.msg);
+  ok(!/aboard the other/.test(e2.msg),
+     'and does not suggest a move no Transport in the game allows', e2.msg);
 
   A.remove(a.id); A.remove(b.id);
 }
@@ -1202,15 +1206,19 @@ console.log('\nduplicating a Squad');
 
   const r = A.duplicateSquad(a, l.id);
   ok(r.ok, 'a Squad duplicates', r.reason);
-  eq(g.squads.filter(s => s.unitId === 'legionnaires').length, 2, 'and there are two of it');
-  eq(A.groupCost(a, g), before * 2, 'the Group costs twice what it did');
-  eq(g.squads.filter(s => s.unitId === 'bear-apc').length, 2,
-     'a full Bear APC cannot be shared, so the copy bought its own (3.2.4.1)');
-  ok(r.squad.carriedBy && r.squad.carriedBy !== l.carriedBy,
-     'and rides a Transport of its own');
+  eq(A.armyCost(a), before * 2, 'the Army costs twice what it did');
+  /* A full Bear APC cannot be shared (3.2.4.1), so the copy needs its own --
+   * and a Squad with its own Transport is the TOP of a Group. Keeping it here
+   * would make one Group with two tops, which is two Groups. */
+  eq(a.groups.length, 2, 'and it is a Group of its own, not a second top in this one');
+  eq(g.squads.length, 2, 'the original Group is untouched');
+  const copyG = a.groups[1];
+  eq(copyG.squads.filter(s => s.unitId === 'legionnaires').length, 1, 'the copy is over there');
+  eq(copyG.squads.filter(s => s.unitId === 'bear-apc').length, 1, 'with a Bear APC of its own');
+  ok(copyG.squads.some(s => s.id === r.squad.carriedBy), 'which is the one it rides');
   eq(A.validate(a).errors.filter(e => e.rule === '3.2.4').length, 0,
-     'both Transports are full', JSON.stringify(A.validate(a).errors.map(e => e.msg)));
-  eq(g.squads.indexOf(r.squad), g.squads.indexOf(l) + 1, 'the copy sits beside the original');
+     'and both Groups are legal', JSON.stringify(A.validate(a).errors.map(e => e.msg)));
+  eq(a.groups.indexOf(copyG), a.groups.indexOf(g) + 1, 'the new Group sits beside the original');
   A.remove(a.id);
 }
 
@@ -1223,8 +1231,14 @@ console.log('\nduplicating a Squad');
   A.assignTransport(a, l.id, 'bear-apc');
   const r = A.duplicateSquad(a, l.id);
   ok(r.ok, 'a Squad with room beside it duplicates', r.reason);
+  eq(a.groups.length, 1, 'and stays in the Group, because it is not a second top');
   eq(g.squads.filter(s => s.unitId === 'bear-apc').length, 1, 'no second Transport was bought');
   eq(r.squad.carriedBy, l.carriedBy, 'the copy rides the same one (3.2.4.1)');
+  // The Group shape specifically: this fixture is a 1-model Squad in a 3-square
+  // Bear, so it is under its minimum and the Bear is not full both before and
+  // after. Neither is what this test is about.
+  ok(!A.validate(a).errors.some(e => /is \d+ Groups/.test(e.msg)),
+     'and the Group still has one top');
   A.remove(a.id);
 }
 
@@ -1238,10 +1252,13 @@ console.log('\nduplicating a Squad');
   const bear = g.squads.find(s => s.unitId === 'bear-apc');
   const r = A.duplicateSquad(a, bear.id);
   ok(r.ok, 'a Transport duplicates', r.reason);
-  eq(g.squads.filter(s => s.unitId === 'legionnaires').length, 2, 'and what it was carrying came with it');
-  eq(g.squads.filter(s => s.unitId === 'bear-apc').length, 2, 'as two Transports, not one of two');
-  const copied = g.squads.filter(s => s.unitId === 'legionnaires')[1];
-  ok(copied.carriedBy === r.squad.id, 'the copied cargo rides the copied Transport');
+  eq(a.groups.length, 2, 'into a Group of its own -- a Transport is the top of one');
+  const copyG = a.groups[1];
+  eq(copyG.squads.filter(s => s.unitId === 'legionnaires').length, 1, 'and what it was carrying came with it');
+  eq(copyG.squads.filter(s => s.unitId === 'bear-apc').length, 1, 'as its own Transport Squad');
+  ok(copyG.squads[0].id === r.squad.id || copyG.squads.some(x => x.carriedBy === r.squad.id),
+     'the copied cargo rides the copied Transport');
+  eq(A.validate(a).errors.filter(e => e.rule === '3.2.4').length, 0, 'both Groups are legal');
   A.remove(a.id);
 }
 
@@ -1291,6 +1308,139 @@ console.log('\nduplicating a Squad');
   eq(r.ok, false, 'a Rare Squad will not duplicate past the limit');
   ok(/Rare/.test(r.reason || ''), 'and says which rule refuses it', r.reason);
   eq(g.squads.length, 1, 'nothing was added');
+  A.remove(a.id);
+}
+
+/* ONE SQUAD AT THE TOP OF A GROUP (3.2.4, 3.2.4.1).
+ *
+ * Jet, 2026-08-21: "I keep having to explain to my friends that they can't
+ * have multiple squads with different dropships in the same group, but the
+ * list builder says 'This army is legal.'"
+ *
+ * The check counted only Squads with nothing carrying them, which is the same
+ * question on one shape and blind on the other: two Squads each in their OWN
+ * dropship are both carried, so nothing fired. The five Groups printed on p.10
+ * are checked below, because a rule stated as an invariant is only worth what
+ * the book's own examples say about it. */
+console.log('\nthe five Groups on p.10, and the one that is two Groups');
+{
+  await DZC.loadFaction('ucm');
+  const top = /is \d+ Groups/;
+  const shape = a => A.validate(a).errors.filter(e => top.test(e.msg)).map(e => e.msg);
+
+  // p.10 Group 1: a single Squad, no Transport.
+  const g1 = army(2000);
+  A.addSquad(g1, A.addGroup(g1).id, 'archangel', 1);
+  eq(shape(g1).length, 0, 'Group 1: an Archangel on its own is a Group');
+
+  // p.10 Group 2: a single Squad entirely filling a single Transport.
+  const g2 = army(2000);
+  const sab = A.addSquad(g2, A.addGroup(g2).id, 'ucm-main-battle-tank', 3);
+  A.assignTransport(g2, sab.id, 'condor-dropship');
+  eq(shape(g2).length, 0, 'Group 2: 3 Sabres in 1 Condor is a Group');
+
+  // p.10 Group 3: a single Squad filling several identical Transports.
+  const g3 = army(2000);
+  const six = A.addSquad(g3, A.addGroup(g3).id, 'ucm-main-battle-tank', 6);
+  A.assignTransport(g3, six.id, 'condor-dropship');
+  eq(shape(g3).length, 0, 'Group 3: 6 Sabres in 2 Condors is a Group');
+
+  // p.10 Group 5: several Squads, with their own filled Transports, sharing
+  // ONE larger Transport.
+  const g5 = army(2000);
+  const gg = A.addGroup(g5);
+  const legs = A.addSquad(g5, gg.id, 'legionnaires', 3);
+  A.assignTransport(g5, legs.id, 'bear-apc');
+  const bear = gg.squads.find(s => s.unitId === 'bear-apc');
+  A.assignTransport(g5, bear.id, 'albatross-heavy-dropship');
+  // The fixture is the point of the test, so it is asserted rather than
+  // assumed: a nesting that silently failed to build would pass every check
+  // below by having nothing in it.
+  eq(gg.squads.filter(s => !s.carriedBy).length, 1,
+     'and it really is nested three deep',
+     JSON.stringify(gg.squads.map(s => A.unitOf(g5, s).name + (s.carriedBy ? ' aboard' : ' TOP'))));
+  eq(shape(g5).length, 0,
+     'Group 5: Legionnaires in a Bear in an Albatross is one Group', JSON.stringify(shape(g5)));
+
+  /* AND THE ONE THAT IS NOT. Two Squads, each in its own dropship, in one
+   * Group: two tops, so it is two Groups. This is the list the app called
+   * legal. */
+  const bad = army(2000);
+  const bg = A.addGroup(bad);
+  const l1 = A.addSquad(bad, bg.id, 'legionnaires', 3);
+  A.assignTransport(bad, l1.id, 'bear-apc');
+  const l2 = A.addSquad(bad, bg.id, 'legionnaires', 3);
+  A.assignTransport(bad, l2.id, 'bear-apc');
+  eq(bg.squads.length, 4, 'the Group really does hold two Squads and two Bears');
+  eq(bg.squads.filter(s => !s.carriedBy).length, 2, 'two of them tops');
+  const e = A.validate(bad).errors.find(x => top.test(x.msg));
+  ok(!!e, 'two Squads in two dropships in one Group is refused', JSON.stringify(shape(bad)));
+  ok(/2 × Bear APC are each the top of one/.test(e ? e.msg : ''),
+     'and names them counted, not repeated', e && e.msg);
+  ok(/3\.2\.4/.test(e ? e.rule : ''), 'quoting 3.2.4');
+
+  // Moving one out fixes it, and that is the fix the message offers.
+  A.moveGroup && 0;
+  const to = A.addGroup(bad);
+  A.moveSquad(bad, bg.squads.find(s => s.unitId === 'bear-apc' && s.id !== l1.carriedBy).id, to.id);
+  eq(shape(bad).length, 0, 'a Group each and it is legal', JSON.stringify(shape(bad)));
+
+  [g1, g2, g3, g5, bad].forEach(x => A.remove(x.id));
+}
+
+/* A FIX THE FACTION CAN ACTUALLY CARRY OUT.
+ *
+ * Jet, 2026-08-21: "it keeps telling me that my Shaltari groups aren't legal
+ * because they don't have transports... it can be confusing to someone who
+ * dives into list building without reading the rules several times first."
+ *
+ * Shaltari Transports are Gates, and a Gate is never part of another Group and
+ * never taken with anything aboard, so "give one a Transport" is advice their
+ * faction cannot take. */
+console.log('\nthe way out named is one this faction has');
+{
+  await DZC.loadFaction('shaltari');
+  const a = A.create('shaltari', 'Shaltari', 1500);
+  const g = A.addGroup(a);
+  const f = DZC.faction('shaltari');
+  const std = f.units.filter(u => u.category === 'Standard' && u.selectable !== false);
+  A.addSquad(a, g.id, std[0].id, std[0].squadMin || 1);
+  A.addSquad(a, g.id, std[1].id, std[1].squadMin || 1);
+  const e = A.validate(a).errors.find(x => /is \d+ Groups/.test(x.msg));
+  ok(!!e, 'two Shaltari Squads in one Group is still an error');
+  ok(/Move one to a Group of its own\./.test(e.msg),
+     'and the only fix offered is the one that exists', e.msg);
+  ok(!/give one a Transport/.test(e.msg),
+     'it does not send a Shaltari player looking for a Transport', e.msg);
+  A.remove(a.id);
+
+  // A faction that HAS one is still told about it.
+  await DZC.loadFaction('phr');
+  const b = A.create('phr', 'PHR', 2000);
+  const g2 = A.addGroup(b);
+  A.addSquad(b, g2.id, 'medusa', 1);
+  A.addSquad(b, g2.id, 'type-9-frontier-walker', 1);
+  const e2 = A.validate(b).errors.find(x => /is \d+ Groups/.test(x.msg));
+  ok(!!e2 && /Give one a Transport/.test(e2.msg),
+     'where Transports exist, that way out is still offered', e2 && e2.msg);
+  A.remove(b.id);
+}
+
+/* A Group of Gates is several top-level Squads on purpose: "a Gate is never
+ * part of another Group", which is its own rule and already checked. It must
+ * not also be reported as two Groups. */
+console.log('\na Group of Gates is not two Groups');
+{
+  await DZC.loadFaction('shaltari');
+  const a = A.create('shaltari', 'Gates', 1500);
+  const g = A.addGroup(a);
+  const gates = DZC.faction('shaltari').units.filter(u =>
+    u.category === 'Transport' && /gate/i.test(u.name) && u.selectable !== false);
+  gates.slice(0, 2).forEach(u => A.addSquad(a, g.id, u.id, 1));
+  eq(g.squads.length, 2, 'two Gate Squads in one Group', JSON.stringify(gates.map(u => u.name)));
+  ok(!A.validate(a).errors.some(x => /is \d+ Groups/.test(x.msg)),
+     'and the shape rule leaves them alone',
+     JSON.stringify(A.validate(a).errors.map(e => e.msg)));
   A.remove(a.id);
 }
 
