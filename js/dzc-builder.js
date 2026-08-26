@@ -2048,7 +2048,26 @@
     // an Aircraft -- so "Take out" is the wrong verb and "Let go" is the one
     // the picture already shows.
     const clinger = window.DZCArmy.hasCling(u);
-    const transportPicker = (opts.length || board.length || cling.length) ? `${carrierUnit
+    /* A CLING SQUAD ALWAYS HAS THE CONTROL, even when the list is empty.
+     *
+     * The other two are offers -- no Transport can carry this, so there is
+     * nothing to open. Cling is not: the Squad has the rule printed on its
+     * card whether or not an Aircraft in this Army happens to clear its DP,
+     * and hiding the button hid the rule with it. Two ways that went wrong,
+     * both found by walking the app after Build 468 shipped:
+     *
+     *   A Vampire Squad in an Army with no Aircraft had no control at all, so
+     *   nothing on screen said Cling existed or what it would need.
+     *
+     *   Worse: a Squad already clinging, grown past its Aircraft's DP, is
+     *   reported illegal -- "3 DP clinging to 2 DP" -- and clingOptions then
+     *   returns nothing, so the button that would let it go was gone too. An
+     *   error with no control to clear it, which is the dead control this app
+     *   has fixed twice before under other names.
+     *
+     * The panel says what the bar is and offers Flies on its own, so opening
+     * it is always worth something. */
+    const transportPicker = (opts.length || board.length || cling.length || clinger) ? `${carrierUnit
       ? `<button type="button" class="dzc-sq-btn" title="${clinger ? 'Fly on its own' : 'Walks on instead'}"
                  onclick="DZCBuilder.${clinger ? 'setCling' : 'assignTransport'}('${s.id}','')"
                  aria-label="${clinger ? 'Let go' : 'Take'} ${esc(u.name)} ${clinger ? 'of' : 'out of'} its ${clinger ? 'Aircraft' : 'Transport'}"

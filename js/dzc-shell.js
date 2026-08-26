@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 468;
+  const BUILD = 469;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -585,6 +585,12 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-22', title: 'Your own exported list imports back as the army it was', items: [
+      'Share writes the text list with a heading per Group and cargo indented under its carrier, and says that text is what Import reads. Import read neither: every line became a Group of its own with nothing linked, so pasting your own export back turned Legionnaires in a Bear APC into two Groups, one of them an empty Transport — an illegal army it then reported at you. It reads both now, three levels deep, and a clinging Squad with them. A list pasted from anywhere else has no Group headings and no indentation, and is still read flat rather than having nesting invented for it.',
+      'The Commander comes back with it. Every line of that block is written commented out so the parser cannot mistake it for a unit, and nothing then read it — so a 1000pt list returned as 910pts with “You haven’t added a Commander” on it. Its level, the Squad it rides with and a name you typed all survive. Measured on 108 generated armies: every one now comes back at the same cost with the same verdict.',
+      'A Vampire Squad always has its Cling control, even when nothing in the Army can carry it. It was drawn only when there was something to offer, which hid the rule from anyone whose list had no Aircraft yet — and worse, a Squad grown past its Aircraft’s DP was reported illegal with no control left to let it go.',
+      'A Group with two tops offers the cling where there is one. A Scourge Gunship and a Squad of Vampires beside it was told to move one to another Group; the move that makes it one Group is the Vampires clinging to the Gunship, and that is what it says.'
+    ] },
     { date: '2026-08-22', title: 'Vampires can be given an Aircraft to cling to', items: [
       'Cling is built now. A Vampire Squad’s row has “Cling to”, and it lists every Aircraft in the Army with the same or more initial DP than the Squad — 2 Vampires need 2 DP, so a Scourge Gunship will do; 4 need a Harbinger, a Marauder will not. Picking one moves the Squad into that Aircraft’s Group, which is what the rule says happens.',
       'Transport Symbols are ignored, in both directions: the Vampires need no room and take none, so a Harbinger with three Battle Beetles inside still reads as full with four Vampires on the outside. An Aircraft that already has a Squad clinging to it is not offered a second, and a Vampire Squad is never offered another Vampire Squad.',

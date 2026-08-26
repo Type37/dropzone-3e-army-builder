@@ -292,11 +292,29 @@
     return fuzzy ? { unit: fuzzy, variant: null } : null;
   }
 
+  /* THE SHAPE IS IN THE WHITESPACE, and it was being thrown away.
+   *
+   * DZCShare.text writes a Group per "# Group N" heading and nests what is
+   * carried by indenting it under its carrier -- that is what makes the text
+   * readable as a list rather than a pile of names, and the Share panel says
+   * in as many words that this is the format Import reads back. It did not
+   * read either: every entry became a Group of its own with nothing linked to
+   * anything, so pasting the app's own export back into it turned one Group of
+   * Legionnaires in a Bear APC into two Groups, one of them an empty Transport
+   * -- an illegal Army, which it then reported at you. Found by walking the
+   * round trip, 2026-08-22.
+   *
+   * Every entry is still a UNIT. The Group is a NUMBER on each entry rather
+   * than a marker object in the list, because parseList is exported and "each
+   * of these is a Unit line" is what every caller assumes about it. `indent`
+   * is the raw depth; importList turns the pair into carriedBy. */
   function parseList(text) {
     const lines = listNormalize(String(text || '')).split(/\r?\n/);
     const entries = [];
+    let group = 0;
     lines.forEach(raw => {
       const line = raw.trim();
+      if (/^#+\s*Group\b/i.test(line)) { group++; return; }
       // A "#" line is a heading, always. The title, a section, a Configuration
       // block. Dropfleet treats it the same way, and without it "## Test Force
       // [500pts]" reads as a Unit called Test Force that resolved to nothing.
@@ -309,6 +327,10 @@
       const late = tail.match(/\+\s*(\d+)\s*RM\b\s*$/i);
       entries.push({
         line: line,
+        // Which "# Group N" this fell under, and how deep it sits inside it.
+        // 0 means the list never said, which is most lists from anywhere else.
+        group: group,
+        indent: (raw.match(/^[ \t]*/) || [''])[0].replace(/\t/g, '  ').length,
         count: m[1] ? parseInt(m[1], 10) : 1,
         name: m[2].replace(/^#+\s*/, '').trim(),
         points: parseInt(m[3], 10),
@@ -359,6 +381,19 @@
       groups: [], commanders: [], created: Date.now(), updatedAt: Date.now()
     };
     const matched = [], unmatched = [];
+    /* A list that says where its Groups start is read that way; one that does
+     * not keeps the old behaviour of a Group per entry.
+     *
+     * Both are right for what they are. Our own export writes "# Group N" and
+     * indents cargo under its carrier, and reading that back is the whole
+     * point of the format. A list pasted from somewhere else usually has
+     * neither, and guessing a shape out of a flat list would invent nesting
+     * nobody wrote -- so it stays flat and validate says what is unfinished.
+     *
+     * `stack` is the open carriers by indent: an entry deeper than the one
+     * above it is aboard it. */
+    const grouped = entries.some(e => e.group > 0);
+    let cur = null, curNo = -1, stack = [];
     entries.forEach(e => {
       const hit = findByName(faction, e.name);
       if (!hit) { unmatched.push(e.line); return; }
@@ -368,22 +403,79 @@
         || (u.variants || []).map(v => v.name).find(v =>
           e.loadouts.some(l => l.toLowerCase() === v.toLowerCase()))
         || defaultVariant(u);
-      const g = { id: uid(), name: null, squads: [] };
-      g.squads.push({
+      if (!grouped || !cur || e.group !== curNo) {
+        cur = { id: uid(), name: null, squads: [] };
+        curNo = e.group;
+        army.groups.push(cur);
+        stack = [];
+      }
+      const g = cur;
+      while (stack.length && stack[stack.length - 1].indent >= e.indent) stack.pop();
+      const over = stack[stack.length - 1];
+      const squad = {
         id: uid(), unitId: u.id,
         models: Array.from({ length: Math.max(1, e.count) }, () => ({ variant: named })),
-        carriedBy: null, commander: null,
+        carriedBy: over ? over.id : null, commander: null,
         // Only where the Unit can actually hold any. A pasted list is somebody
         // else's file and may say anything; validate reports what survives.
         rm: e.rm > 0 && window.DZC.capacityFor(u, 'square') > 0 && faction === 'bioficer'
           ? e.rm : undefined
-      });
-      army.groups.push(g);
+      };
+      g.squads.push(squad);
+      stack.push({ id: squad.id, indent: e.indent });
+      if (!grouped) cur = null;
       matched.push({ name: u.name, count: e.count });
     });
     if (!matched.length) {
       return { ok: false, reason: 'Nothing in that list matched a Unit.', matched: [], unmatched: unmatched };
     }
+
+    /* AND THE COMMANDER, who was being left behind.
+     *
+     * DZCShare.text writes the Commander block as "# Level 5 Commander, with
+     * Legionnaires [90pts]" -- every line commented out, because the parser
+     * skips "#" and the block would otherwise read as a Unit called Level 5
+     * Commander. That worked, and it meant a round trip lost the Commander,
+     * the points, and with them the legality of the list: every generated army
+     * came back 90pts light with "You haven't added a Commander" on it.
+     *
+     * Read here rather than in parseList, which returns Unit lines and should
+     * keep doing only that. "with <Unit>" puts them back on the first Squad of
+     * that Unit; a Commander whose Squad cannot be found stays unassigned,
+     * which is a state the app already has and reports. */
+    String(text || '').split(/\r?\n/).forEach(raw => {
+      const line = raw.trim();
+      /* The line is "# <name>[, Level N], with <Unit>|not assigned [Npts]",
+       * and the name may itself BE "Level 5 Commander" -- an unnamed one
+       * reports its Level as its name, which is why the writer does not print
+       * the Level twice. So the Level is matched wherever it falls rather than
+       * anchored after the name. Every part has to be there: a "#" line with a
+       * Level, a cost, and one of the two placements. */
+      if (!/^#/.test(line)) return;
+      const lv = line.match(/\bLevel\s+(\d+)\b/i);
+      const place = line.match(/,\s*(?:with\s+(.+?)|not\s+assigned)\s*\[\s*\d+\s*pts?\s*\]\s*$/i);
+      if (!lv || !place) return;
+      const level = parseInt(lv[1], 10);
+      if (!(level > 0)) return;
+      const c = { id: uid(), level: level, name: null, squadId: null };
+      const typed = (line.match(/^#+\s*([^,]+)/) || [])[1];
+      const head = String(typed || '').trim();
+      if (head && !/^Level\s+\d+(\s+Commander)?$/i.test(head) && !/^Commanders?$/i.test(head)) {
+        c.name = head;
+      }
+      if (place[1]) {
+        const want = String(place[1]).trim().toLowerCase();
+        for (const g of army.groups) {
+          const sq = g.squads.find(s => {
+            const su = window.DZC.unit(faction, s.unitId);
+            return su && su.name.toLowerCase() === want;
+          });
+          if (sq) { c.squadId = sq.id; sq.commander = { level: level }; break; }
+        }
+      }
+      army.commanders.push(c);
+    });
+
     armies.unshift(army);
     save();
     return { ok: true, army: army, matched: matched, unmatched: unmatched };
@@ -2768,6 +2860,23 @@
           const ru = unitOf(army, rider);
           fix = `Put the ${ru.name} aboard the ${opt.unit.name}.`;
           break;
+        }
+        /* CLING IS A PAIRING TOO, and for one pair in the game it is the only
+         * one. A Scourge Gunship and a Squad of two Vampires beside it is two
+         * tops, and the move that makes it one Group is the Vampires clinging
+         * to the Gunship -- which boardOptions cannot see, because nothing
+         * about Cling goes through a Transport Symbol. Told to "move one to a
+         * Group of its own" instead, a player gets a legal list and never
+         * learns their Squad has the rule. */
+        if (!fix) {
+          for (const rider of loose) {
+            const opt = clingOptions(army, rider.id)
+              .find(o => loose.some(l => l.id === o.squad.id));
+            if (!opt) continue;
+            const ru = unitOf(army, rider);
+            fix = `Cling the ${ru.name} to the ${opt.unit.name}.`;
+            break;
+          }
         }
         /* AND NOTHING IS OFFERED THAT DOES NOT FIT EITHER. "Put one aboard the
          * other" sat at the front of the general sentence whether or not any

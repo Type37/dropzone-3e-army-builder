@@ -1522,6 +1522,26 @@ console.log('\nCling: a ride that ignores the symbols');
 }
 
 {
+  /* THE TWO-TOPS MESSAGE KNOWS ABOUT CLING. A Gunship and a Squad of Vampires
+   * beside it is two tops, and the move that makes it one Group is the cling
+   * -- which boardOptions cannot see, because nothing about Cling goes through
+   * a Transport Symbol. Told to move one to another Group instead, a player
+   * gets a legal list and never learns their Squad has the rule. */
+  const a = A.create('scourge', 'Two tops', 2000);
+  const g = A.addGroup(a);
+  const gun = A.addSquad(a, g.id, 'scourge-gunship', 1);
+  const v = A.addSquad(a, g.id, 'vampire', 2);
+  const e = A.validate(a).errors.find(x => /is 2 Groups/.test(x.msg));
+  ok(!!e, 'a Gunship and a Vampire Squad side by side is two tops');
+  ok(/Cling the Vampire to the Scourge Gunship\./.test(e ? e.msg : ''),
+     'and the fix named is the cling, not a second Group', e && e.msg);
+  // The move it names is one setCling allows, so taking it clears the error.
+  ok(A.setCling(a, v.id, gun.id).ok, 'the move it suggests is one the rule allows');
+  ok(!A.validate(a).errors.some(x => /is \d+ Groups/.test(x.msg)), 'and it clears the error');
+  A.remove(a.id);
+}
+
+{
   // Letting go puts it back on its own, and only a Cling Squad may be clung.
   const a = A.create('scourge', 'Let go', 2000);
   const g = A.addGroup(a);

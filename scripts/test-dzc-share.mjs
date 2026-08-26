@@ -290,5 +290,194 @@ console.log('\nbought upgrades survive the plain-text sheet');
      'including the upgraded one', back4.map(e => e.name).join(' | '));
 }
 
+/* THE TEXT LIST IS WHAT IMPORT READS BACK, and for a long time it was not.
+ *
+ * The Share panel offers three routes and says of this one that it is also
+ * what the app's own Import reads. It wrote "# Group N" per Group and indented
+ * cargo under its carrier -- and read neither back: every entry became a Group
+ * of its own with nothing linked, so your own export returned as a pile of
+ * one-Squad Groups with an empty Bear APC among them, which is illegal.
+ *
+ * Found by walking the round trip, 2026-08-22, while auditing the app after
+ * the Cling work. The shape, the costs and what validate says about it all
+ * have to survive; the ORDER of Squads inside a Group does not, because the
+ * export writes the carrier first and the builder holds cargo first.
+ */
+console.log('\nan exported list imports back as the army it was');
+{
+  const nest = a => a.groups.map(g => g.squads.map(s => {
+    const carrier = s.carriedBy ? g.squads.find(x => x.id === s.carriedBy) : null;
+    return A.unitOf(a, s).name + ' x' + s.models.length
+      + (carrier ? ' in ' + A.unitOf(a, carrier).name : '');
+  }).sort());
+  const errsOf = a => A.validate(a).errors.map(e => e.msg).sort();
+
+  const trip = (label, build) => {
+    const a = build();
+    const was = { nest: nest(a), errs: errsOf(a), cost: A.armyCost(a) };
+    const text = S.text(a);
+    A.remove(a.id);
+    const r = A.importList(text);
+    ok(r.ok, label + ': it imports', r.reason);
+    const back = r.army;
+    eq(JSON.stringify(nest(back)), JSON.stringify(was.nest), label + ': same Groups, same nesting');
+    eq(A.armyCost(back), was.cost, label + ': same cost');
+    eq(JSON.stringify(errsOf(back)), JSON.stringify(was.errs), label + ': and the same verdict');
+    A.remove(back.id);
+  };
+
+  await DZC.loadFaction('ucm');
+  trip('a Squad in a Transport', () => {
+    const a = A.create('ucm', 'Trip 1', 2000);
+    const g = A.addGroup(a);
+    const l = A.addSquad(a, g.id, 'legionnaires', 3);
+    A.assignTransport(a, l.id, 'bear-apc');
+    return a;
+  });
+
+  // Three levels, which is where a naive reader stops: the Bear is both cargo
+  // and carrier and the indentation is the only thing that says so.
+  trip('nested three deep', () => {
+    const a = A.create('ucm', 'Trip 2', 2000);
+    const g = A.addGroup(a);
+    const l = A.addSquad(a, g.id, 'legionnaires', 3);
+    A.assignTransport(a, l.id, 'bear-apc');
+    const bear = g.squads.find(s => s.unitId === 'bear-apc');
+    A.assignTransport(a, bear.id, 'albatross-heavy-dropship');
+    return a;
+  });
+
+  trip('two Groups', () => {
+    const a = A.create('ucm', 'Trip 3', 2000);
+    const g1 = A.addGroup(a);
+    const l = A.addSquad(a, g1.id, 'legionnaires', 3);
+    A.assignTransport(a, l.id, 'bear-apc');
+    A.addSquad(a, A.addGroup(a).id, 'ucm-main-battle-tank', 3);
+    return a;
+  });
+
+  await DZC.loadFaction('scourge');
+  trip('a clinging Squad', () => {
+    const a = A.create('scourge', 'Trip 4', 2000);
+    const g = A.addGroup(a);
+    const gun = A.addSquad(a, g.id, 'scourge-gunship', 1);
+    const v = A.addSquad(a, g.id, 'vampire', 2);
+    A.setCling(a, v.id, gun.id);
+    return a;
+  });
+
+  /* A LIST FROM SOMEWHERE ELSE IS STILL READ FLAT. Most pastes have no Group
+   * headings and no indentation, and inventing nesting out of a flat list
+   * would put Squads inside Transports nobody wrote. */
+  const flat = ['Someone else’s list [1000pts]',
+    '3 x Legionnaires [60pts]', '1 x Bear APC [10pts]'].join('\n');
+  const fr = A.importList(flat);
+  ok(fr.ok, 'a flat list still imports', fr.reason);
+  eq(fr.army.groups.length, 2, 'as a Group per entry, the way it always was');
+  ok(fr.army.groups.every(g => g.squads.every(s => !s.carriedBy)),
+     'and nothing is put inside anything');
+  A.remove(fr.army.id);
+
+  // parseList is exported and every caller reads its entries as Unit lines.
+  // The Group is a number ON an entry, never an entry of its own.
+  const a = A.create('ucm', 'Entries', 2000);
+  const g = A.addGroup(a);
+  const l = A.addSquad(a, g.id, 'legionnaires', 3);
+  A.assignTransport(a, l.id, 'bear-apc');
+  const entries = A.parseList(S.text(a));
+  ok(entries.every(e => e.name && e.points > 0), 'every entry parseList returns is a Unit line');
+  ok(entries.every(e => e.group === 1), 'each carrying the Group it fell under');
+  eq(entries.find(e => e.name === 'Legionnaires').indent
+     > entries.find(e => e.name === 'Bear APC').indent, true,
+     'and the cargo is indented deeper than its carrier');
+  A.remove(a.id);
+}
+
+/* THE COMMANDER TRAVELS TOO.
+ *
+ * The block is written with every line commented out -- "# Level 5 Commander,
+ * with Legionnaires [90pts]" -- because the parser skips "#" and would
+ * otherwise read it as a Unit called Level 5 Commander. That worked, and it
+ * meant the round trip lost the Commander, its points, and with them the
+ * legality of the list: a generated army came back 90pts light and illegal for
+ * having no Commander at all.
+ */
+console.log('\nthe Commander survives the plain-text sheet');
+{
+  const nameOf = (a, c) => A.commanderName(a, c);
+
+  const a = A.create('ucm', 'Cmdr trip', 2000);
+  const g = A.addGroup(a);
+  const l = A.addSquad(a, g.id, 'legionnaires', 3);
+  A.assignTransport(a, l.id, 'bear-apc');
+  // addCommander returns {ok, commander}, and the level has to be one the game
+  // size allows (3.2.5) -- so both are taken off commanderLevels rather than
+  // typed in, or the fixture quietly builds an army with no Commander in it.
+  const levels = DZC.commanderLevels(DZC.gameSizeFor(a.pointsLimit).id).map(x => x.level);
+  const c1 = A.addCommander(a, levels[levels.length - 1]).commander;
+  A.assignCommander(a, c1.id, l.id);
+  const c2 = A.addCommander(a, levels[0]).commander;
+  A.renameCommander(a, c2.id, 'Colonel Vance');
+  const cost = A.armyCost(a);
+
+  const text = S.text(a);
+  A.remove(a.id);
+  const r = A.importList(text);
+  ok(r.ok, 'a list with Commanders imports', r.reason);
+  const back = r.army;
+  eq((back.commanders || []).length, 2, 'both Commanders came back');
+  eq(A.armyCost(back), cost, 'so the army costs what it cost');
+
+  const five = (back.commanders || []).find(c => c.level === c1.level);
+  ok(!!five, 'the assigned one is there');
+  ok(!!five && !!five.squadId, 'and it is with a Squad again');
+  const sq = five && A.findSquad(back, five.squadId);
+  eq(sq ? A.unitOf(back, sq).name : '', 'Legionnaires', 'the Squad the sheet named');
+
+  const vance = (back.commanders || []).find(c => c.name === 'Colonel Vance');
+  ok(!!vance, 'a typed name is not turned back into the derived one',
+     JSON.stringify((back.commanders || []).map(c => nameOf(back, c))));
+  eq(vance ? vance.level : 0, c2.level, 'with its level');
+  A.remove(back.id);
+}
+
+/* AND THE WHOLE THING, ON ARMIES NOBODY WROTE BY HAND.
+ *
+ * The generator has to produce a legal army, so every one of these is a list
+ * whose verdict is known before it goes out. If the text can carry it, the
+ * same army comes back: same cost, same verdict. This is the assertion that
+ * would have caught the lost nesting and the lost Commander on the day each
+ * shipped. */
+console.log('\ngenerated armies survive their own export');
+{
+  let n = 0, broke = 0, worst = '';
+  for (const fac of ['ucm', 'scourge']) {
+    await DZC.loadFaction(fac);
+    for (const pts of [1000, 2000]) {
+      for (let i = 0; i < 3; i++) {
+        const gen = A.generate(fac, pts);
+        if (!gen.ok) continue;
+        n++;
+        const army = gen.army;
+        const was = JSON.stringify(A.validate(army).errors.map(e => e.msg).sort());
+        const cost = A.armyCost(army);
+        const text = S.text(army);
+        A.remove(army.id);
+        const im = A.importList(text);
+        if (!im.ok) { broke++; worst = worst || ('import failed: ' + im.reason); continue; }
+        const now = JSON.stringify(A.validate(im.army).errors.map(e => e.msg).sort());
+        if (now !== was || A.armyCost(im.army) !== cost) {
+          broke++;
+          worst = worst || (fac + ' ' + pts + ': ' + cost + ' -> ' + A.armyCost(im.army)
+            + ' | was ' + was + ' | now ' + now);
+        }
+        A.remove(im.army.id);
+      }
+    }
+  }
+  ok(n >= 8, 'enough armies to be worth it', String(n));
+  eq(broke, 0, 'every generated army comes back as itself', worst);
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
