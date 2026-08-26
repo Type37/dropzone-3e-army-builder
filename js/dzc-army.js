@@ -1294,7 +1294,7 @@
       const cap = ((tu.transport || {}).capacity) || [];
       if (!cap.length) return;
       cap.forEach(c => { slot(c.shape).total += (c.n || 0) * t.models.length; });
-      const aboard = group.squads.filter(x => x.carriedBy === t.id)
+      const aboard = cargoOf(army, group, t.id)
         .map(x => ({ unit: unitOf(army, x), count: x.models.length }))
         .filter(x => x.unit);
       const chk = window.DZC.loadCheck(tu, aboard, t.models.length);
@@ -1570,8 +1570,10 @@
     const mark = seen || new Set();
     if (mark.has(carrierId)) return 0;
     mark.add(carrierId);
-    return (group.squads || [])
-      .filter(x => x.carriedBy === carrierId && x.id !== ignoreId)
+    // A clinging Squad does not share the Transport, it is stuck to the
+    // outside of an Aircraft. It is in the Group and not in the four.
+    return cargoOf(army, group, carrierId)
+      .filter(x => x.id !== ignoreId)
       .reduce((n, x) => {
         const xu = unitOf(army, x);
         if (xu && xu.category === 'Transport') {
@@ -1624,7 +1626,7 @@
       if (!window.DZC.canCarry(tu, u)) return false;
       // 3.2.4.1 caps the sharing at 4 Squads -- plus their Transport Squads,
       // which is what sharesOf takes off the count.
-      const aboard = g.squads.filter(x => x.carriedBy === t.id && x.id !== s.id);
+      const aboard = cargoOf(army, g, t.id).filter(x => x.id !== s.id);
       if (sharesOf(army, g, t.id, s.id) >= 4) return false;
       if (!canShare(tu, t, aboard)) return false;
       const load = aboard.map(x => ({ unit: unitOf(army, x), count: x.models.length }))
@@ -1633,7 +1635,7 @@
       return window.DZC.loadCheck(tu, load, t.models.length).ok;
     }).map(t => {
       const tu = carrierOf(army, t);
-      const aboard = g.squads.filter(x => x.carriedBy === t.id && x.id !== s.id);
+      const aboard = cargoOf(army, g, t.id).filter(x => x.id !== s.id);
       const load = aboard.map(x => ({ unit: unitOf(army, x), count: x.models.length }))
         .filter(x => x.unit);
       const before = window.DZC.loadCheck(tu, load, t.models.length);
@@ -1669,7 +1671,7 @@
       const t = findSquad(army, carrierSquadId);
       const tu = t && carrierOf(army, t);
       const g = groupOf(army, squadId);
-      const aboard = t && g ? g.squads.filter(x => x.carriedBy === t.id && x.id !== s.id) : [];
+      const aboard = t && g ? cargoOf(army, g, t.id).filter(x => x.id !== s.id) : [];
       if (tu && !canShare(tu, t, aboard)) {
         return { ok: false,
           reason: `${aboard.length + 1} Squads may only share ONE Transport, and this is a Squad of ${t.models.length} (3.2.4.1).` };
@@ -1763,7 +1765,7 @@
       g.squads.slice().forEach(t => {
         const tu = carrierOf(army, t);
         if (!tu || tu.category !== 'Transport') return;
-        const riders = g.squads.filter(x => x.carriedBy === t.id);
+        const riders = cargoOf(army, g, t.id);
         /* Nothing aboard means there is nothing to size it against, it does
          * NOT mean delete it.
          *
@@ -1837,6 +1839,128 @@
   }
 
   function gateSquad(army, squad) { return isGate(unitOf(army, squad)); }
+
+  /* CLING, which is a ride that ignores the symbols entirely.
+   *
+   *   "One Squad with Cling may be chosen Embarked aboard any Aircraft without
+   *    the Cling special rule, including non-Transports, with the same or more
+   *    initial DP than this Squad's combined DP -- Transport Symbols are
+   *    ignored. This Squad joins that Aircraft's Group."
+   *
+   * Asked for by a player through Jet, 2026-08-21: "is there a way to add
+   * Vampires to an Aircraft using cling?" There was not. Every carrying
+   * relationship in this app is symbol-based -- canCarry compares a hollow
+   * symbol against a solid one -- and the Vampire prints no solid symbol at
+   * all, correctly, because its own rule says symbols do not apply. So the
+   * Transport button offered nothing, the carry panel was empty, and the one
+   * legal list you could not build was also reported illegal: the Vampires and
+   * the Aircraft sat side by side as two tops of one Group.
+   *
+   * It rides on carriedBy like everything else, so the nesting, the printed
+   * sheet, drag-between-Groups, the share link and the one-top rule all work
+   * without knowing what Cling is. What they must NOT do is measure it: a
+   * Squad that fills nothing would fail loadCheck against any Transport it
+   * clung to and drag isFull down with it. cargoOf is the one place that
+   * decides what counts as cargo, and it takes clingers out.
+   *
+   * Read off the printed rule like Gate and Subterranean, so a second Unit
+   * with Cling needs no code. Today the Vampire is the only one in the game. */
+  function hasCling(unit) {
+    return !!unit && String(unit.special || '').split(',')
+      .some(t => t.trim() === 'Cling');
+  }
+
+  function clings(army, squad) {
+    return !!(squad && squad.carriedBy) && hasCling(unitOf(army, squad));
+  }
+
+  /* What is genuinely ABOARD a carrier, for every question about capacity.
+   * A clinging Squad is in the Group and on the model, and it is not cargo:
+   * "Transport Symbols are ignored" cuts both ways, so it neither needs room
+   * nor fills any. */
+  function cargoOf(army, group, carrierId, ignoreCling) {
+    return (group.squads || []).filter(x => x.carriedBy === carrierId
+      && !(ignoreCling !== false && clings(army, x)));
+  }
+
+  // A Squad's combined DP, which is what the rule measures a carrier against.
+  function squadDp(army, squad) {
+    const u = unitOf(army, squad);
+    const dp = u ? parseInt(String((u.stats || {}).DP || '0'), 10) : 0;
+    return (dp > 0 ? dp : 0) * squad.models.length;
+  }
+
+  function unitDp(unit) {
+    const dp = unit ? parseInt(String((unit.stats || {}).DP || '0'), 10) : 0;
+    return dp > 0 ? dp : 0;
+  }
+
+  /* Every Aircraft in the ARMY this Squad may cling to, not just the ones in
+   * its own Group: "This Squad joins that Aircraft's Group", so choosing one
+   * somewhere else is a legal choice that moves the Squad, and making the
+   * player drag it there first would be asking them to build the illegal state
+   * on the way to the legal one. */
+  function clingOptions(army, squadId) {
+    const s = findSquad(army, squadId);
+    const u = s && unitOf(army, s);
+    if (!u || !hasCling(u)) return [];
+    const need = squadDp(army, s);
+    const out = [];
+    (army.groups || []).forEach(g => g.squads.forEach(t => {
+      if (t.id === s.id) return;
+      const tu = unitOf(army, t);
+      if (!tu || tu.type !== 'Aircraft' || hasCling(tu)) return;
+      if (unitDp(tu) < need) return;
+      // "One Squad with Cling" -- one per Aircraft, so an Aircraft that has
+      // another one on it already is not on offer.
+      if (g.squads.some(x => x.id !== s.id && x.carriedBy === t.id && clings(army, x))) return;
+      out.push({ squad: t, unit: tu, group: g, dp: unitDp(tu), need: need });
+    }));
+    return out;
+  }
+
+  function setCling(army, squadId, carrierSquadId) {
+    const s = findSquad(army, squadId);
+    if (!s) return { ok: false, reason: 'Unknown Squad.' };
+    const u = unitOf(army, s);
+    if (!hasCling(u)) {
+      return { ok: false, reason: `${u ? u.name : 'This Unit'} does not have Cling.` };
+    }
+    if (!carrierSquadId) { s.carriedBy = null; touch(army); return { ok: true, reason: null }; }
+
+    const opt = clingOptions(army, squadId).find(o => o.squad.id === carrierSquadId);
+    if (!opt) {
+      /* Which of the rule's three conditions refused it, in the rule's own
+       * terms. "That cannot carry this" is the sentence a symbol-based
+       * Transport gets, and it is the wrong one here -- nothing about this is
+       * about room. */
+      const t = findSquad(army, carrierSquadId);
+      const tu = t && unitOf(army, t);
+      if (!tu) return { ok: false, reason: 'Unknown Squad.' };
+      if (tu.type !== 'Aircraft') {
+        return { ok: false, reason: `${tu.name} is not an Aircraft. Cling is aboard an Aircraft (Cling).` };
+      }
+      if (hasCling(tu)) {
+        return { ok: false, reason: `${tu.name} has Cling itself, so nothing may cling to it (Cling).` };
+      }
+      if (unitDp(tu) < squadDp(army, s)) {
+        return { ok: false,
+          reason: `${tu.name} has ${unitDp(tu)} DP and this Squad is ${squadDp(army, s)}. `
+            + `Cling needs an Aircraft with the same or more initial DP.` };
+      }
+      return { ok: false, reason: `${tu.name} already has a Squad clinging to it (Cling).` };
+    }
+
+    // "This Squad joins that Aircraft's Group."
+    const from = groupOf(army, squadId);
+    if (from && from.id !== opt.group.id) {
+      from.squads = from.squads.filter(x => x.id !== s.id);
+      opt.group.squads.push(s);
+    }
+    s.carriedBy = opt.squad.id;
+    touch(army);
+    return { ok: true, reason: null };
+  }
 
   /* SUBTERRANEAN, which is the Gate rule wearing a Resistance coat.
    *
@@ -2393,6 +2517,38 @@
             msg: `${u.name}: a Subterranean Unit is not taken with any Units aboard. A Squad starts in Holding instead.` });
         }
       });
+
+      /* A cling that has since stopped being legal. setCling refuses an
+       * illegal one, but the Squad can GROW after it is made -- two Vampires
+       * on a Scourge Gunship is 2 DP against 2 and legal, and the third
+       * Vampire makes it 3 against 2. Nothing about adding a model knows what
+       * it is stuck to, so this is where it is caught. Also the route every
+       * army the app did not build arrives by: a share link, a backup. */
+      g.squads.forEach(x => {
+        if (!clings(army, x)) return;
+        const xu = unitOf(army, x);
+        const t = g.squads.find(y => y.id === x.carriedBy)
+          || (army.groups.find(o => o.squads.some(y => y.id === x.carriedBy)) || { squads: [] })
+            .squads.find(y => y.id === x.carriedBy);
+        const tu = t && unitOf(army, t);
+        if (!tu) return;                       // orphaned, and not this rule's business
+        if (tu.type !== 'Aircraft' || hasCling(tu)) {
+          errors.push({ rule: 'Cling', group: g.id,
+            msg: `${xu.name}: Cling is aboard an Aircraft without Cling, and ${tu.name} is not one.` });
+          return;
+        }
+        if (unitDp(tu) < squadDp(army, x)) {
+          errors.push({ rule: 'Cling', group: g.id,
+            msg: `${xu.name}: ${squadDp(army, x)} DP clinging to ${unitDp(tu)} DP of ${tu.name}. `
+              + `Cling needs an Aircraft with the same or more initial DP.` });
+        }
+        // "One Squad with Cling", so two on the same Aircraft is one too many.
+        const others = g.squads.filter(y => y.id !== x.id && y.carriedBy === t.id && clings(army, y));
+        if (others.length && g.squads.indexOf(x) < g.squads.indexOf(others[0])) {
+          errors.push({ rule: 'Cling', group: g.id,
+            msg: `${tu.name} has ${others.length + 1} Squads clinging to it. One Squad with Cling may be chosen aboard an Aircraft.` });
+        }
+      });
     });
 
     /* Two Squads split across a Transport SQUAD. 3.2.4.1 shares ONE Transport
@@ -2503,7 +2659,7 @@
          * correct and only way to take it, and "carries nothing" was a
          * permanent error printed on every properly built Shaltari list. */
         if (isGate(u)) return;
-        const cargo = g.squads.filter(x => x.carriedBy === s.id)
+        const cargo = cargoOf(army, g, s.id)
           .map(x => ({ unit: unitOf(army, x), count: x.models.length }))
           .filter(x => x.unit);
         if (!cargo.length) {
@@ -2525,7 +2681,7 @@
       g.squads.forEach(s => {
         const u = carrierOf(army, s);
         if (!u || u.category === 'Transport' || !u.auxiliaryTransport) return;
-        const cargo = g.squads.filter(x => x.carriedBy === s.id)
+        const cargo = cargoOf(army, g, s.id)
           .map(x => ({ unit: unitOf(army, x), count: x.models.length }))
           .filter(x => x.unit);
         if (cargo.length) {
@@ -2741,6 +2897,8 @@
     modelCost, squadCost, groupCost, groupCompositionCost, armyCost, categorySpend, validate,
     // Raw Materials (Genitor X)
     genitorCap, rmOf, rmCost, setRm, RM_POINTS,
+    // Cling (Scourge Unit Special Rules)
+    hasCling, clings, clingOptions, setCling, squadDp, unitDp,
     // Shaltari Gates (Gate, Shaltari Unit Special Rules)
     isGate, gateSquad, gateHome,
     // Subterranean (Resistance Unit Special Rules)

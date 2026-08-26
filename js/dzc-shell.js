@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 467;
+  const BUILD = 468;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -585,6 +585,11 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-22', title: 'Vampires can be given an Aircraft to cling to', items: [
+      'Cling is built now. A Vampire Squad’s row has “Cling to”, and it lists every Aircraft in the Army with the same or more initial DP than the Squad — 2 Vampires need 2 DP, so a Scourge Gunship will do; 4 need a Harbinger, a Marauder will not. Picking one moves the Squad into that Aircraft’s Group, which is what the rule says happens.',
+      'Transport Symbols are ignored, in both directions: the Vampires need no room and take none, so a Harbinger with three Battle Beetles inside still reads as full with four Vampires on the outside. An Aircraft that already has a Squad clinging to it is not offered a second, and a Vampire Squad is never offered another Vampire Squad.',
+      'The list was unbuildable before this, and reported illegal for being unbuildable: the Vampires and their Aircraft sat side by side as two tops of one Group. Grow a clinging Squad past its Aircraft’s DP and it says so, with both numbers.'
+    ] },
     { date: '2026-08-22', title: 'A Group has one Squad at the top of it', items: [
       'Two Squads, each in its own dropship, in one Group is two Groups — and the app called it legal. The check counted only the Squads with nothing carrying them, which is the same question on two Squads standing side by side and blind to two Squads that are each aboard something. It counts the Squads nothing else in the Group is carrying now: every one of the five Groups printed on page 10 has exactly one, and a Group with two is named as the two Groups it is.',
       'The way out it offers is one your faction has. Shaltari Transports are Gates, a Gate is never part of another Group and is never taken with anything aboard — so "give one a Transport" was advice the faction cannot take, and the real answer, a Group each, was third in a list of three. Where no Transport can carry either Squad the sentence no longer mentions one, and it no longer suggests putting one aboard the other where nothing in the game allows it.',

@@ -1993,6 +1993,10 @@
     // A Transport already in the Group may have room even when the faction
     // offers none to buy, so the control has to appear for that case too.
     const board = window.DZCArmy.boardOptions(a, s.id);
+    /* And the Aircraft a Cling Squad may be chosen aboard, which is neither of
+     * those: no symbol matches, no room is spent, and the Aircraft may be in
+     * another Group -- "This Squad joins that Aircraft's Group". */
+    const cling = window.DZCArmy.clingOptions(a, s.id);
     /* NO BAR. Jet, 2026-08-07: "sell me on this card. I think we can remove
      * it." It could not be sold. A full-width strip on every Squad in the army
      * carrying the word TRANSPORT and, on most of them, "Walks on" -- which is
@@ -2040,16 +2044,23 @@
      * is also how a Squad already aboard something rides a different one, and
      * on that press nothing is added. The noun covers both; the verb lies on
      * half of them. */
-    const transportPicker = (opts.length || board.length) ? `${carrierUnit
-      ? `<button type="button" class="dzc-sq-btn" title="Walks on instead"
-                 onclick="DZCBuilder.assignTransport('${s.id}','')"
-                 aria-label="Take ${esc(u.name)} out of its Transport"
-                 >${window.DZCIcon('stat_mv_infantry', { size: 15 })}Take out</button>` : ''}
+    // A Squad with Cling is never IN anything -- it is stuck to the outside of
+    // an Aircraft -- so "Take out" is the wrong verb and "Let go" is the one
+    // the picture already shows.
+    const clinger = window.DZCArmy.hasCling(u);
+    const transportPicker = (opts.length || board.length || cling.length) ? `${carrierUnit
+      ? `<button type="button" class="dzc-sq-btn" title="${clinger ? 'Fly on its own' : 'Walks on instead'}"
+                 onclick="DZCBuilder.${clinger ? 'setCling' : 'assignTransport'}('${s.id}','')"
+                 aria-label="${clinger ? 'Let go' : 'Take'} ${esc(u.name)} ${clinger ? 'of' : 'out of'} its ${clinger ? 'Aircraft' : 'Transport'}"
+                 >${window.DZCIcon('stat_mv_infantry', { size: 15 })}${clinger ? 'Let go' : 'Take out'}</button>` : ''}
       <button type="button" class="dzc-sq-btn dzc-carry-btn"
               onclick="DZCBuilder.openCarry('${s.id}')"
-              aria-label="${carrierUnit ? 'Ride something else' : 'Choose a Transport'} for ${esc(u.name)}"
-              title="${carrierUnit ? 'Ride something else' : 'Choose a Transport'}"
-              >${window.DZCIcon('link', { size: 15 })}Linked transport</button>` : '';
+              aria-label="${clinger ? 'Choose an Aircraft to cling to'
+                : carrierUnit ? 'Ride something else' : 'Choose a Transport'} for ${esc(u.name)}"
+              title="${clinger ? 'Cling to an Aircraft'
+                : carrierUnit ? 'Ride something else' : 'Choose a Transport'}"
+              >${window.DZCIcon('link', { size: 15 })}${
+        clinger ? 'Cling to' : 'Linked transport'}</button>` : '';
 
     /* A Squad in your army reads exactly as the unit does when you open it:
      * art, the capacity symbol at size beside the name, the meta line, every
@@ -2997,6 +3008,47 @@
         : `${window.DZCIcon('warning', { size: 14 })}${o.room - o.after} still spare`}</span>
     </button>`;
 
+    /* CLING IS ITS OWN LIST, and it is the whole panel when the Squad has it.
+     *
+     * Nothing here is a Transport: the Aircraft is chosen for its DP, it spends
+     * no capacity, and it may be in another Group -- picking it moves the Squad
+     * there, which is what the rule says happens. So the symbol line at the top
+     * and the Transports below it are both wrong for a Vampire, and the panel
+     * says what it is measuring instead: DP against DP. */
+    const cling = window.DZCArmy.clingOptions(current, squadId);
+    const clinger = window.DZCArmy.hasCling(u);
+    const clingCard = o => `<button type="button" class="dzc-carry-card dzc-carry-here${
+      o.squad.id === s.carriedBy ? ' is-on' : ''}"
+      onclick="DZCBuilder.setCling('${s.id}','${o.squad.id}')">
+      ${o.unit.art ? `<img src="${esc(o.unit.art)}" alt="" loading="lazy" onerror="this.remove()">`
+                   : '<span class="dzc-carry-noart"></span>'}
+      <span class="dzc-carry-name">${esc(o.unit.name)}</span>
+      <span class="dzc-carry-caps">${esc(window.DZCArmy.groupName(current, o.group))}</span>
+      <!-- Its DP, and nothing about whether that is enough. The line at the top
+           of the panel is the bar and every card below it clears one. -->
+      <span class="dzc-carry-sum"><b>${o.dp}</b><i>DP</i></span>
+    </button>`;
+
+    if (clinger) {
+      document.getElementById('dzc-carry-body').innerHTML = `
+        <p class="dzc-carry-for">${esc(u.name)} <span>clings to an Aircraft of</span> ${
+          window.DZCArmy.squadDp(current, s)} DP or more</p>
+        <div class="dzc-carry-grid">
+          <button type="button" class="dzc-carry-card dzc-carry-walk${s.carriedBy ? '' : ' is-on'}"
+                  onclick="DZCBuilder.setCling('${s.id}','')">
+            <span class="dzc-carry-noart">${window.DZCIcon('stat_mv_infantry', { size: 34 })}</span>
+            <span class="dzc-carry-name">Flies on its own</span>
+            <span class="dzc-carry-fit">Not clinging</span>
+          </button>
+          ${cling.map(clingCard).join('')}
+        </div>
+        ${cling.length ? '' : `<p class="dzc-empty">No Aircraft in this Army has ${
+          window.DZCArmy.squadDp(current, s)} DP.</p>`}`;
+      document.querySelector('#dzc-carry .modal-title').textContent = `Cling for ${u.name}`;
+      document.getElementById('dzc-carry').classList.add('active');
+      return;
+    }
+
     document.getElementById('dzc-carry-body').innerHTML = `
       <p class="dzc-carry-for">${esc(u.name)} <span>fills</span> ${U.transportHtml(u)}</p>
       ${board.length ? `<p class="dzc-carry-head">Already in this Group</p>
@@ -3933,6 +3985,18 @@
     selectGroup: id => { selectedGroup = id; drilled = true; refresh(); },
     backToGroups: () => { drilled = false; refresh(); },
     openCarry, closeCarry,
+    /* Cling. Same shape as boardTransport: the model owns the rule and this
+       speaks whatever it refuses. It can move the Squad into another Group --
+       "This Squad joins that Aircraft's Group" -- so the refresh has to follow
+       it there or the press looks like it did nothing. */
+    setCling: (id, carrierId) => {
+      const r = window.DZCArmy.setCling(current, id, carrierId);
+      if (!r.ok) return say(r.reason);
+      closeCarry();
+      const g = window.DZCArmy.groupOf(current, id);
+      if (g) selectedGroup = g.id;
+      refresh();
+    },
     boardTransport: (id, carrierId) => {
       const r = window.DZCArmy.boardTransport(current, id, carrierId);
       closeCarry();

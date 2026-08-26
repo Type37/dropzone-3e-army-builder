@@ -1388,6 +1388,155 @@ console.log('\nthe five Groups on p.10, and the one that is two Groups');
   [g1, g2, g3, g5, bad].forEach(x => A.remove(x.id));
 }
 
+/* CLING (Scourge Unit Special Rules).
+ *
+ * Asked for by a player through Jet, 2026-08-21: "is there a way to add
+ * Vampires to an Aircraft using cling?" There was not -- every ride in this
+ * app is symbol-based and the Vampire prints no solid symbol, because its own
+ * rule says symbols do not apply.
+ *
+ *   "One Squad with Cling may be chosen Embarked aboard any Aircraft without
+ *    the Cling special rule, including non-Transports, with the same or more
+ *    initial DP than this Squad's combined DP -- Transport Symbols are
+ *    ignored. This Squad joins that Aircraft's Group."
+ *
+ * The Vampire is the only Unit in the game with it: 10pts, Rare, Squad 2-4,
+ * 1 DP each, and an Aircraft itself. */
+console.log('\nCling: a ride that ignores the symbols');
+{
+  await DZC.loadFaction('scourge');
+  const a = A.create('scourge', 'Cling', 2000);
+  const g = A.addGroup(a);
+  const gun = A.addSquad(a, g.id, 'scourge-gunship', 1);
+  const v = A.addSquad(a, g.id, 'vampire', 2);
+  ok(A.hasCling(A.unitOf(a, v)), 'the Vampire has Cling');
+  ok(!A.hasCling(A.unitOf(a, gun)), 'the Gunship does not');
+
+  // The symbol machinery must still say no: this is not a Transport question.
+  eq(A.transportOptions(a, v.id).length, 0, 'no Transport can carry it by symbol');
+  eq(A.boardOptions(a, v.id).length, 0, 'and nothing in the Group can either');
+
+  const opts = A.clingOptions(a, v.id);
+  ok(opts.some(o => o.squad.id === gun.id),
+     'but the Gunship is offered: 2 DP against this Squad’s 2',
+     JSON.stringify(opts.map(o => o.unit.name + ' ' + o.dp)));
+  ok(A.setCling(a, v.id, gun.id).ok, 'and the cling is made');
+  eq(v.carriedBy, gun.id, 'the Vampires are on the Gunship');
+
+  /* THE GROUP IS NOW LEGAL, which is the half of this that was reported as a
+   * fault: before Cling existed here the two sat side by side as two tops. */
+  ok(!A.validate(a).errors.some(e => /is \d+ Groups/.test(e.msg)),
+     'and the Group has one top again',
+     JSON.stringify(A.validate(a).errors.map(e => e.msg)));
+  ok(!A.validate(a).errors.some(e => e.rule === 'Cling'), 'with nothing to say about the cling');
+  A.remove(a.id);
+}
+
+{
+  // DP is the whole test, and it is the SQUAD's combined DP against ONE
+  // Aircraft's. Three Vampires are 3 DP and a Gunship is 2.
+  const a = A.create('scourge', 'DP', 2000);
+  const g = A.addGroup(a);
+  const gun = A.addSquad(a, g.id, 'scourge-gunship', 1);
+  const v = A.addSquad(a, g.id, 'vampire', 3);
+  eq(A.squadDp(a, v), 3, 'three Vampires are 3 DP');
+  eq(A.unitDp(A.unitOf(a, gun)), 2, 'a Scourge Gunship is 2');
+  ok(!A.clingOptions(a, v.id).some(o => o.squad.id === gun.id), 'so it is not offered');
+  const r = A.setCling(a, v.id, gun.id);
+  eq(r.ok, false, 'and it is refused');
+  ok(/same or more initial DP/.test(r.reason || ''), 'quoting the rule', r.reason);
+
+  // A Marauder Dropship is 3 DP and takes them.
+  const mar = A.addSquad(a, A.addGroup(a).id, 'marauder-dropship', 1);
+  ok(A.setCling(a, v.id, mar.id).ok, 'a 3 DP Marauder Dropship takes all three');
+  // "This Squad joins that Aircraft's Group."
+  eq(A.groupOf(a, v.id).id, A.groupOf(a, mar.id).id, 'and the Squad joined its Group');
+  A.remove(a.id);
+}
+
+{
+  // A Squad that GROWS past its Aircraft is caught by validate, because
+  // nothing about adding a model knows what it is stuck to.
+  const a = A.create('scourge', 'Grew', 2000);
+  const g = A.addGroup(a);
+  const gun = A.addSquad(a, g.id, 'scourge-gunship', 1);
+  const v = A.addSquad(a, g.id, 'vampire', 2);
+  ok(A.setCling(a, v.id, gun.id).ok, 'two Vampires cling to a 2 DP Gunship');
+  eq(A.validate(a).errors.filter(e => e.rule === 'Cling').length, 0, 'legal at two');
+  A.setModelCount(a, v.id, 3);
+  const e = A.validate(a).errors.find(x => x.rule === 'Cling');
+  ok(!!e, 'a third Vampire makes it 3 DP against 2, and that is reported');
+  ok(/3 DP clinging to 2 DP/.test(e ? e.msg : ''), 'with both numbers in it', e && e.msg);
+  A.remove(a.id);
+}
+
+{
+  // "any Aircraft WITHOUT the Cling special rule" -- Vampires may not cling to
+  // Vampires, however much DP a big Squad of them adds up to.
+  const a = A.create('scourge', 'No stacking', 2000);
+  const g = A.addGroup(a);
+  const host = A.addSquad(a, g.id, 'vampire', 4);
+  const v = A.addSquad(a, g.id, 'vampire', 2);
+  ok(!A.clingOptions(a, v.id).some(o => o.squad.id === host.id), 'a Vampire Squad is never offered');
+  const r = A.setCling(a, v.id, host.id);
+  eq(r.ok, false, 'and is refused');
+  ok(/has Cling itself/.test(r.reason || ''), 'saying which rule', r.reason);
+  A.remove(a.id);
+}
+
+{
+  // "Including non-Transports" is the point of the rule, but a Transport is an
+  // Aircraft too -- and the Squad it is actually carrying must not have the
+  // clingers counted against its capacity. Transport Symbols are ignored.
+  const a = A.create('scourge', 'On a Dropship', 2000);
+  const g = A.addGroup(a);
+  const beetles = A.addSquad(a, g.id, 'scourge-battle-beetle', 3);
+  A.assignTransport(a, beetles.id, 'harbinger-dropship');
+  const harb = g.squads.find(s => s.unitId === 'harbinger-dropship');
+  const before = A.validate(a).errors.map(e => e.msg);
+  const v = A.addSquad(a, g.id, 'vampire', 4);
+  ok(A.setCling(a, v.id, harb.id).ok, 'four Vampires cling to a 4 DP Harbinger Dropship');
+  const after = A.validate(a).errors.map(e => e.msg);
+  eq(after.filter(m => /Harbinger/.test(m)).length, before.filter(m => /Harbinger/.test(m)).length,
+     'and the Dropship’s own capacity is untouched by them', JSON.stringify(after));
+  ok(!after.some(m => /Vampire cannot be carried/.test(m)),
+     'nothing tries to fit them through a Transport Symbol', JSON.stringify(after));
+  // And the Beetles can still be measured into it.
+  ok(!after.some(m => /is \d+ Groups/.test(m)), 'the Group still has one top', JSON.stringify(after));
+  A.remove(a.id);
+}
+
+{
+  // "ONE Squad with Cling", so a second one on the same Aircraft is refused.
+  const a = A.create('scourge', 'One only', 2000);
+  const g = A.addGroup(a);
+  const barge = A.addSquad(a, g.id, 'scourge-command-barge', 1);
+  const v1 = A.addSquad(a, g.id, 'vampire', 2);
+  const v2 = A.addSquad(a, g.id, 'vampire', 2);
+  ok(A.setCling(a, v1.id, barge.id).ok, 'the first Squad clings to a 7 DP Command Barge');
+  ok(!A.clingOptions(a, v2.id).some(o => o.squad.id === barge.id), 'the second is not offered it');
+  const r = A.setCling(a, v2.id, barge.id);
+  eq(r.ok, false, 'and is refused');
+  ok(/already has a Squad clinging/.test(r.reason || ''), 'saying why', r.reason);
+  A.remove(a.id);
+}
+
+{
+  // Letting go puts it back on its own, and only a Cling Squad may be clung.
+  const a = A.create('scourge', 'Let go', 2000);
+  const g = A.addGroup(a);
+  const gun = A.addSquad(a, g.id, 'scourge-gunship', 1);
+  const v = A.addSquad(a, g.id, 'vampire', 2);
+  A.setCling(a, v.id, gun.id);
+  ok(A.setCling(a, v.id, '').ok, 'a clinging Squad lets go');
+  eq(v.carriedBy, null, 'and is on its own again');
+  const beetles = A.addSquad(a, A.addGroup(a).id, 'scourge-battle-beetle', 3);
+  const r = A.setCling(a, beetles.id, gun.id);
+  eq(r.ok, false, 'a Squad without Cling cannot be clung to anything');
+  ok(/does not have Cling/.test(r.reason || ''), 'and is told so', r.reason);
+  A.remove(a.id);
+}
+
 /* A FIX THE FACTION CAN ACTUALLY CARRY OUT.
  *
  * Jet, 2026-08-21: "it keeps telling me that my Shaltari groups aren't legal
