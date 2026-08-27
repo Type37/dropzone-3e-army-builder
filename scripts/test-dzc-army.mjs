@@ -1557,39 +1557,108 @@ console.log('\nCling: a ride that ignores the symbols');
   A.remove(a.id);
 }
 
-/* A FIX THE FACTION CAN ACTUALLY CARRY OUT.
+/* SHALTARI BUILD THEIR GROUPS ANOTHER WAY, and the app did not know it.
  *
- * Jet, 2026-08-21: "it keeps telling me that my Shaltari groups aren't legal
- * because they don't have transports... it can be confusing to someone who
- * dives into list building without reading the rules several times first."
+ * The last section of the Shaltari card, under "Shaltari Special Rules":
  *
- * Shaltari Transports are Gates, and a Gate is never part of another Group and
- * never taken with anything aboard, so "give one a Transport" is advice their
- * faction cannot take. */
-console.log('\nthe way out named is one this faction has');
+ *   "Two or more non-Gate, non-Aircraft Squads within a Shaltari Army may form
+ *    Groups if their combined points cost does not exceed 250pts."
+ *
+ * Raised through Jet by a new player, 2026-08-22: "I keep getting the notice
+ * that my units are not in correct groups even though it's a shaltari list and
+ * they have a different force org setup." He was right. Their Transports are
+ * Gates and a Gate is never part of a Group, so without this rule a Shaltari
+ * Army is one Squad per Group forever -- and every list they built was being
+ * reported illegal.
+ *
+ * The cap is read out of the rule text rather than typed into the code, so
+ * these tests assert against the number the DATA carries. */
+console.log('\nShaltari Groups form on cost, not on a Transport');
 {
   await DZC.loadFaction('shaltari');
-  const a = A.create('shaltari', 'Shaltari', 1500);
-  const g = A.addGroup(a);
   const f = DZC.faction('shaltari');
-  const std = f.units.filter(u => u.category === 'Standard' && u.selectable !== false);
-  A.addSquad(a, g.id, std[0].id, std[0].squadMin || 1);
-  A.addSquad(a, g.id, std[1].id, std[1].squadMin || 1);
-  const e = A.validate(a).errors.find(x => /is \d+ Groups/.test(x.msg));
-  ok(!!e, 'two Shaltari Squads in one Group is still an error');
-  ok(/Move one to a Group of its own\./.test(e.msg),
-     'and the only fix offered is the one that exists', e.msg);
-  ok(!/give one a Transport/.test(e.msg),
-     'it does not send a Shaltari player looking for a Transport', e.msg);
-  A.remove(a.id);
+  const rule = (DZC.rules.byFaction.shaltari || [])
+    .find(r => /may form Groups/i.test(r.text || ''));
+  ok(!!rule, 'the rule is in the glossary, off the faction card');
+  const cap = rule ? parseInt((rule.text.match(/exceed\s*(\d+)\s*pts/i) || [])[1], 10) : 0;
+  ok(cap > 0, 'and it carries the cap', String(cap));
 
-  // A faction that HAS one is still told about it.
+  const twoTops = a => A.validate(a).errors.filter(x => /is \d+ Groups/.test(x.msg));
+  const overCap = a => A.validate(a).errors.filter(x => x.rule === 'Shaltari Special Rules');
+
+  // Two cheap Squads standing together: the ordinary Shaltari Group.
+  const a = A.create('shaltari', 'Under', 2000);
+  const g = A.addGroup(a);
+  A.addSquad(a, g.id, 'brave-warsuits', 2);
+  A.addSquad(a, g.id, 'pungari', 2);
+  eq(twoTops(a).length, 0, 'two Squads in one Group is legal', JSON.stringify(twoTops(a).map(e => e.msg)));
+  eq(overCap(a).length, 0, 'and under the cap there is nothing to say');
+  ok(A.groupCompositionCost(a, g) <= cap, 'the fixture really is under it',
+     String(A.groupCompositionCost(a, g)));
+
+  // Over the cap, the fault is the COST -- not a Group with two tops, which
+  // would send a Shaltari player looking for a Transport they do not have.
+  while (A.groupCompositionCost(a, g) <= cap) {
+    const added = A.addSquad(a, g.id, 'shaltari-battlestrider', 1);
+    if (!added) break;
+  }
+  const over = overCap(a);
+  eq(over.length, 1, 'over it, the cost is reported', JSON.stringify(A.validate(a).errors.map(e => e.msg)));
+  ok(/does not exceed 250pts/.test(over[0] ? over[0].msg : ''), 'quoting the cap', over[0] && over[0].msg);
+  eq(twoTops(a).length, 0, 'and never as a Group with two tops');
+  A.remove(a.id);
+}
+
+{
+  // "non-Gate, non-AIRCRAFT". A Shaltari Group holding an Aircraft is not one
+  // this rule forms, so it answers to 3.2.4 like everyone else's.
+  const a = A.create('shaltari', 'With an Aircraft', 2000);
+  const g = A.addGroup(a);
+  A.addSquad(a, g.id, 'brave-warsuits', 2);
+  const air = DZC.faction('shaltari').units
+    .find(u => u.type === 'Aircraft' && u.selectable !== false && u.category !== 'Transport');
+  ok(!!air, 'the faction has a non-Transport Aircraft to test with');
+  if (air) {
+    A.addSquad(a, g.id, air.id, air.squadMin || 1);
+    const e = A.validate(a).errors.find(x => /is \d+ Groups/.test(x.msg));
+    ok(!!e, 'a Group with an Aircraft in it is two tops again',
+       JSON.stringify(A.validate(a).errors.map(x => x.msg)));
+  }
+  A.remove(a.id);
+}
+
+{
+  // A Gate is never part of another Group, and that rule still owns the case:
+  // a Gate beside a Squad is reported by its own name, not by the cost cap.
+  const a = A.create('shaltari', 'With a Gate', 2000);
+  const g = A.addGroup(a);
+  A.addSquad(a, g.id, 'brave-warsuits', 2);
+  const gate = DZC.faction('shaltari').units
+    .find(u => (u.special || '').split(',').some(t => t.trim() === 'Gate') && u.selectable !== false);
+  if (gate) {
+    // canAddUnit refuses it at the door -- "a Gate is never part of another
+    // Group" can never come good by adding something else -- so the cost cap
+    // never gets the chance to have an opinion about it.
+    const can = A.canAddUnit(a, g.id, gate.id);
+    eq(can.ok, false, 'a Gate is refused entry to a Group that has Squads in it');
+    ok(/Gate/.test(can.reason || ''), 'by name', can.reason);
+    eq(A.addSquad(a, g.id, gate.id, 1), null, 'and nothing is added');
+    ok(!A.validate(a).errors.some(x => x.rule === 'Shaltari Special Rules'),
+       'so the cost cap has nothing to say either');
+  }
+  A.remove(a.id);
+}
+
+{
+  // No other faction has such a rule, so nothing changes for them: two Squads
+  // side by side is still two Groups (3.2.4).
   await DZC.loadFaction('phr');
   const b = A.create('phr', 'PHR', 2000);
   const g2 = A.addGroup(b);
   A.addSquad(b, g2.id, 'medusa', 1);
   A.addSquad(b, g2.id, 'type-9-frontier-walker', 1);
   const e2 = A.validate(b).errors.find(x => /is \d+ Groups/.test(x.msg));
+  ok(!!e2, 'a PHR Group with two tops is still an error');
   ok(!!e2 && /Give one a Transport/.test(e2.msg),
      'where Transports exist, that way out is still offered', e2 && e2.msg);
   A.remove(b.id);

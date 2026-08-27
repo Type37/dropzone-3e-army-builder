@@ -2499,6 +2499,52 @@
     }, 0);
   }
 
+  /* A FACTION THAT BUILDS ITS GROUPS DIFFERENTLY.
+   *
+   * The Shaltari card's last section, under "Shaltari Special Rules":
+   *
+   *   "Two or more non-Gate, non-Aircraft Squads within a Shaltari Army may
+   *    form Groups if their combined points cost does not exceed 250pts."
+   *
+   * So a Shaltari Group is not one Squad and its Transports. Several Squads
+   * may simply stand together under a price cap, and the whole faction is
+   * built that way -- their Transports are Gates, which are never part of a
+   * Group at all, so without this rule a Shaltari Army is one Squad per Group
+   * forever. Raised through Jet by a new player, 2026-08-22: "I keep getting
+   * the notice that my units are not in correct groups even though it's a
+   * shaltari list and they have a different force org setup." He was right and
+   * the app was wrong.
+   *
+   * THE CAP IS READ OUT OF THE RULE, not typed in here. scan_rulebook now
+   * carries that sentence into rules.json (it was being dropped: the section
+   * has no bold heading, and a rule started at a bold heading), so if TTCombat
+   * moves 250 the app follows on the next scan and no constant here is stale.
+   * A faction with no such rule gets no exemption, which is the other five. */
+  const GROUP_FORM_RE =
+    /may form Groups if their combined points cost does not exceed\s*(\d+)\s*pts/i;
+
+  function groupFormCap(factionId) {
+    const rules = window.DZC.rules;
+    const pool = (rules && rules.byFaction && rules.byFaction[factionId]) || [];
+    for (const r of pool) {
+      const m = GROUP_FORM_RE.exec(r.text || '');
+      if (m) return parseInt(m[1], 10);
+    }
+    return 0;
+  }
+
+  /* Which Squads that rule is open to. "non-Gate, non-Aircraft" is the whole
+   * test, and it is read off the Unit rather than a list of ids. An Aux Gate
+   * is a Gate for this: it is a Gate in everything but how it activates, and
+   * its own rule says it uses the same rules "except they are taken as non-Gate
+   * Squads" -- which is about Group membership, not about this cap. Left as the
+   * printed word: isGate already refuses to match "Aux Gate", so an Aux Gate is
+   * eligible unless it is an Aircraft, and three of the five Aux Gates are. */
+  function mayFormGroup(army, squad) {
+    const u = unitOf(army, squad);
+    return !!u && !isGate(u) && u.type !== 'Aircraft';
+  }
+
   function armyCost(army) {
     return army.groups.reduce((t, g) => t + groupCost(army, g), 0) + commandersCost(army);
   }
@@ -2811,6 +2857,25 @@
        * above already polices. */
       const loose = g.squads.every(s => gateSquad(army, s))
         ? [] : g.squads.filter(s => !s.carriedBy && unitOf(army, s));
+
+      /* UNLESS THE FACTION BUILDS ITS GROUPS ANOTHER WAY.
+       *
+       * Shaltari may put two or more non-Gate, non-Aircraft Squads in a Group
+       * under a points cap, and that is the ordinary way their Army is built --
+       * see groupFormCap. Where the Group qualifies there is nothing to report;
+       * where it is over the cap the fault is the COST, so it is reported as
+       * that rather than as a Group with two tops, which would send a player
+       * looking for a Transport their faction does not have. */
+      const cap = loose.length > 1 ? groupFormCap(army.faction) : 0;
+      const formsByCost = !!cap && g.squads.every(s => mayFormGroup(army, s));
+      if (formsByCost) {
+        const spend = groupCompositionCost(army, g);
+        if (spend > cap) {
+          errors.push({ rule: 'Shaltari Special Rules', group: g.id,
+            msg: `“${groupName(army, g)}” is ${spend}pts. Two or more Squads may `
+              + `form a Group if their combined cost does not exceed ${cap}pts.` });
+        }
+      }
       /* AND IT SAYS WHAT TO DO ABOUT IT.
        *
        * This is the message Grotwurks hit in the 2026-08-09 thread. He added a
@@ -2833,7 +2898,7 @@
        * It stays an ERROR. 3.2.4 makes the list illegal and a legality check
        * that goes quiet to feel friendlier is worth nothing at a table. What
        * was wrong was a message that read as a fault in the app. */
-      if (loose.length > 1) {
+      if (loose.length > 1 && !formsByCost) {
         /* AND IT ONLY OFFERS A FIX THAT EXISTS.
          *
          * "give one a Transport" was in this sentence unconditionally, and

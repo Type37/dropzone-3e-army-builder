@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 469;
+  const BUILD = 470;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -585,6 +585,10 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-23', title: 'Shaltari build their Groups on cost, and the app now knows it', items: [
+      'Two or more non-Gate, non-Aircraft Shaltari Squads may form a Group if their combined cost does not exceed 250pts — the last section of their own card, and the reason a Shaltari army is not one Squad per Group. The builder did not know it and reported every list that used it as “not in correct Groups”. It knows now: under the cap the Group is legal, over it the cost is what is named, and a Group holding an Aircraft answers to 3.2.4 like everyone else’s.',
+      'The rule was missing from the glossary too, and for the same reason it was missing from the builder: a rule on those pages starts at a bold heading, and this one is a section heading with a bare sentence under it, so the scanner dropped it. A Bioficer rule about Generated Squads embarking into Genitor Units was going the same way. Both are in the app now, and the 250 is read out of the rule text rather than typed into the code.'
+    ] },
     { date: '2026-08-22', title: 'Your own exported list imports back as the army it was', items: [
       'Share writes the text list with a heading per Group and cargo indented under its carrier, and says that text is what Import reads. Import read neither: every line became a Group of its own with nothing linked, so pasting your own export back turned Legionnaires in a Bear APC into two Groups, one of them an empty Transport — an illegal army it then reported at you. It reads both now, three levels deep, and a clinging Squad with them. A list pasted from anywhere else has no Group headings and no indentation, and is still read flat rather than having nesting invented for it.',
       'The Commander comes back with it. Every line of that block is written commented out so the parser cannot mistake it for a unit, and nothing then read it — so a 1000pt list returned as 910pts with “You haven’t added a Commander” on it. Its level, the Squad it rides with and a name you typed all survive. Measured on 108 generated armies: every one now comes back at the same cost with the same verdict.',

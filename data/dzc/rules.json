@@ -1013,6 +1013,19 @@
    "page": 1
   },
   {
+   "id": "bioficer-special-rules",
+   "faction": "bioficer",
+   "source": "faction cards",
+   "section": "Bioficer Special Rules",
+   "chapter": "Bioficer Special Rules",
+   "name": "Bioficer Special Rules",
+   "alias": null,
+   "parameterised": false,
+   "match": "^\\s*Bioficer[\\s:/\\-]*Special[\\s:/\\-]*Rules\\s*$",
+   "text": "Any number of Generated Squads, even if they are Living Weapons, may Embark into any Genitor Unit/s and may do so in either’s activation. Embark/Disembark limits are ignored for this. When a Squad does, remove it from the game and place X RM tokens for each Embarking Unit aboard those Genitor Unit/s, or half X for Units with half or fewer of their DP remaining. Any Objects a Unit was carrying are passed to that Genitor Unit, even if it’s an Aircraft. Generated Units are worth 5pts multiplied by X in game—shown with a red icon with thier points cost on their stats sheet.",
+   "page": 1
+  },
+  {
    "id": "bioficer-advanced-genitor-generated",
    "faction": "bioficer",
    "source": "faction cards",
@@ -1270,6 +1283,19 @@
    "parameterised": false,
    "match": "^\\s*Aux[\\s:/\\-]*Gate\\s*$",
    "text": "These are always Auxiliary Transports. They use the same rules as Gates except they are taken as non-Gate Squads and must be activated normally—they cannot be activated together with another non-Gate Group. Other Squads can still Embark/Disembark from them outside of that Aux Gate’s activation. Aux Gates cannot attack in the same round as Embarking/Disembarking. Command Cards which target Gates cannot target these.",
+   "page": 1
+  },
+  {
+   "id": "shaltari-special-rules",
+   "faction": "shaltari",
+   "source": "faction cards",
+   "section": "Shaltari Special Rules",
+   "chapter": "Shaltari Special Rules",
+   "name": "Shaltari Special Rules",
+   "alias": null,
+   "parameterised": false,
+   "match": "^\\s*Shaltari[\\s:/\\-]*Special[\\s:/\\-]*Rules\\s*$",
+   "text": "Two or more non-Gate, non-Aircraft Squads within a Shaltari Army may form Groups if their combined points cost does not exceed 250pts.",
    "page": 1
   },
   {

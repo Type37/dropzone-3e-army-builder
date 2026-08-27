@@ -502,6 +502,32 @@ def parse_front_matter(doc):
                     cur = (tidy(txt), "")
             elif font == body_font and cur:
                 cur = (cur[0], (cur[1] + " " + txt) if cur[1] else txt)
+            elif font == body_font and section and tidy(txt):
+                # A SECTION WHOSE BODY HAS NO BOLD HEADING WAS BEING DROPPED.
+                #
+                # A rule here starts at a bold name, and every rule on these
+                # pages has one -- except the last section of the Shaltari card,
+                # which is a heading and then a sentence:
+                #
+                #     Shaltari Special Rules
+                #     Two or more non-Gate, non-Aircraft Squads within a
+                #     Shaltari Army may form Groups if their combined points
+                #     cost does not exceed 250pts.
+                #
+                # With no bold span there is no `cur` to hang the body on, so it
+                # fell through every branch and vanished. It is the only
+                # Shaltari ARMY BUILDING rule there is: the builder was
+                # reporting lists that obey it as illegal, and nothing in the
+                # app carried the text either. Raised through Jet by a new
+                # player, 2026-08-22 -- "I keep getting the notice that my units
+                # are not in correct groups even though it's a shaltari list and
+                # they have a different force org setup."
+                #
+                # The SECTION is the rule when no bold name claims the body.
+                # Checked across all six faction cards: only Shaltari has one.
+                # The other five print the heading with nothing under it, and a
+                # heading with no body still yields nothing.
+                cur = (section, txt)
     if cur:
         out.append((section, cur[0], cur[1]))
     return out
@@ -644,8 +670,15 @@ def main():
             if not name or not tidy(text):
                 continue
             head, alias = split_alias(name)
+            # Ids are namespaced by faction, and a rule NAMED after its faction
+            # would otherwise say it twice: "shaltari-shaltari-special-rules".
+            # The printed name keeps the word, because that is what the card
+            # prints; only the lookup key drops the repeat.
+            key = slug(head)
+            if key.startswith(fac + "-"):
+                key = key[len(fac) + 1:]
             out.append({
-                "id": f"{fac}-{slug(head)}",
+                "id": f"{fac}-{key}",
                 "faction": fac,
                 "source": "faction cards",
                 "section": tidy(section or ""),
