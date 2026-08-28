@@ -1,0 +1,1074 @@
+<title>The Ur Before Contact</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300&display=swap">
+
+<style>
+  :root {
+    --ground:      #ECECF1;
+    --surface:     #F8F8FB;
+    --surface-2:   #E3E3EB;
+    --ink:         #14141B;
+    --ink-mid:     #4B4B58;
+    --ink-soft:    #6E6E7E;
+    --rule:        #D2D2DD;
+    --rule-soft:   #E1E1E9;
+    --accent:      #4A3BC4;
+    --accent-soft: #EDEBFA;
+    --signal:      #9A6410;
+    --signal-soft: #F5EDDD;
+
+    --f-display: "Newsreader", Georgia, "Times New Roman", serif;
+    --f-body:    "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    --f-mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+    --measure: 68ch;
+    --s1: .25rem; --s2: .5rem; --s3: .75rem; --s4: 1rem;
+    --s5: 1.5rem; --s6: 2rem; --s7: 3rem; --s8: 4.5rem;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0D0D13;
+      --surface:     #15151E;
+      --surface-2:   #1D1D28;
+      --ink:         #E8E8F0;
+      --ink-mid:     #A8A8BA;
+      --ink-soft:    #85859A;
+      --rule:        #2A2A38;
+      --rule-soft:   #21212C;
+      --accent:      #A294FF;
+      --accent-soft: #1E1B33;
+      --signal:      #E0A448;
+      --signal-soft: #2A2115;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0D0D13;
+    --surface:     #15151E;
+    --surface-2:   #1D1D28;
+    --ink:         #E8E8F0;
+    --ink-mid:     #A8A8BA;
+    --ink-soft:    #85859A;
+    --rule:        #2A2A38;
+    --rule-soft:   #21212C;
+    --accent:      #A294FF;
+    --accent-soft: #1E1B33;
+    --signal:      #E0A448;
+    --signal-soft: #2A2115;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--f-body);
+    font-size: 16px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+  }
+
+  .page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: var(--s5) var(--s4) var(--s8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s7);
+  }
+
+  a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  /* ---------- masthead ---------- */
+
+  .masthead {
+    border-top: 2px solid var(--ink);
+    padding-top: var(--s4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s4);
+  }
+
+  .eyebrow {
+    font-family: var(--f-mono);
+    font-size: .688rem;
+    font-weight: 500;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s2) var(--s4);
+  }
+
+  h1 {
+    font-family: var(--f-display);
+    font-weight: 300;
+    font-size: clamp(2.6rem, 9vw, 4.6rem);
+    line-height: 1.02;
+    letter-spacing: -.02em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  h1 em { font-style: italic; color: var(--ink-mid); }
+
+  .standfirst {
+    font-family: var(--f-display);
+    font-size: clamp(1.05rem, 3.4vw, 1.32rem);
+    line-height: 1.5;
+    color: var(--ink-mid);
+    max-width: 54ch;
+    margin: 0;
+  }
+
+  /* ---------- scope + key ---------- */
+
+  .brief {
+    display: grid;
+    gap: var(--s4);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 780px) {
+    .brief { grid-template-columns: 1.15fr 1fr; gap: var(--s6); }
+  }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: var(--s5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s3);
+  }
+
+  .panel h2 {
+    font-family: var(--f-mono);
+    font-size: .688rem;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .panel p { margin: 0; font-size: .938rem; color: var(--ink-mid); }
+  .panel p strong { color: var(--ink); font-weight: 600; }
+
+  .keylist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--s3); }
+  .keylist li { display: grid; grid-template-columns: 2.4rem 1fr; gap: var(--s3); align-items: start; font-size: .875rem; color: var(--ink-mid); }
+
+  .mark {
+    font-family: var(--f-mono);
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    padding: 1px 6px;
+    border: 1px solid var(--rule);
+    background: var(--surface-2);
+    color: var(--ink-mid);
+    white-space: nowrap;
+    display: inline-block;
+  }
+  .mark.a { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+  .mark.c { border-color: var(--signal); color: var(--signal); background: var(--signal-soft); }
+
+  /* ---------- layout with rail ---------- */
+
+  .shell { display: block; }
+  @media (min-width: 1000px) {
+    .shell {
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr);
+      gap: var(--s8);
+      align-items: start;
+    }
+  }
+
+  .rail { display: none; }
+  @media (min-width: 1000px) {
+    .rail {
+      display: block;
+      position: sticky;
+      top: var(--s5);
+      max-height: calc(100vh - 4rem);
+      overflow-y: auto;
+    }
+    .rail ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+    .rail a {
+      display: block;
+      font-family: var(--f-mono);
+      font-size: .688rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      text-decoration: none;
+      padding: 5px 0 5px var(--s3);
+      border-left: 2px solid var(--rule-soft);
+    }
+    .rail a:hover { color: var(--ink); border-left-color: var(--rule); }
+    .rail a.on { color: var(--accent); border-left-color: var(--accent); }
+  }
+
+  .body { display: flex; flex-direction: column; gap: var(--s8); min-width: 0; }
+
+  section { display: flex; flex-direction: column; gap: var(--s5); scroll-margin-top: var(--s5); }
+
+  .sect-head { display: flex; flex-direction: column; gap: var(--s2); border-top: 1px solid var(--ink); padding-top: var(--s3); }
+  .sect-num { font-family: var(--f-mono); font-size: .688rem; font-weight: 600; letter-spacing: .14em; color: var(--accent); }
+  h2.sect-title {
+    font-family: var(--f-display);
+    font-weight: 400;
+    font-size: clamp(1.7rem, 5vw, 2.4rem);
+    line-height: 1.12;
+    letter-spacing: -.015em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .sect-head p { margin: 0; color: var(--ink-mid); font-size: .938rem; max-width: var(--measure); }
+
+  p, li { max-width: var(--measure); }
+  .body > section > p { margin: 0; }
+
+  h3 {
+    font-family: var(--f-mono);
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: var(--s4) 0 0;
+    padding-bottom: var(--s2);
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  /* ---------- chronology spine ---------- */
+
+  .spine { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+
+  .step {
+    display: grid;
+    grid-template-columns: 2.9rem minmax(0, 1fr);
+    gap: 0 var(--s4);
+    padding: var(--s5) 0;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .step:first-child { border-top: none; padding-top: var(--s2); }
+
+  .step-n {
+    font-family: var(--f-mono);
+    font-size: .813rem;
+    font-weight: 600;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    padding-top: .18rem;
+  }
+
+  .step-body { display: flex; flex-direction: column; gap: var(--s3); min-width: 0; }
+  .step-body p { margin: 0; }
+  .step-lede { font-weight: 600; color: var(--ink); }
+
+  .note {
+    border-left: 2px solid var(--accent);
+    background: var(--accent-soft);
+    padding: var(--s3) var(--s4);
+    font-family: var(--f-display);
+    font-size: 1.02rem;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+  .note.warn { border-left-color: var(--signal); background: var(--signal-soft); }
+  .note p { margin: 0; }
+  .note p + p { margin-top: var(--s3); }
+
+  blockquote.pull {
+    margin: 0;
+    padding: var(--s4) 0 var(--s4) var(--s5);
+    border-left: 2px solid var(--rule);
+    font-family: var(--f-display);
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(1.15rem, 3.6vw, 1.45rem);
+    line-height: 1.42;
+    color: var(--ink);
+  }
+  blockquote.pull cite {
+    display: block;
+    margin-top: var(--s3);
+    font-family: var(--f-mono);
+    font-style: normal;
+    font-size: .688rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- species cards ---------- */
+
+  .species { display: grid; gap: var(--s4); grid-template-columns: 1fr; }
+  @media (min-width: 720px) { .species { grid-template-columns: 1fr 1fr; } }
+
+  .card {
+    border: 1px solid var(--rule);
+    background: var(--surface);
+    padding: var(--s5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s3);
+  }
+  .card h4 {
+    margin: 0;
+    font-family: var(--f-display);
+    font-weight: 500;
+    font-size: 1.32rem;
+    letter-spacing: -.01em;
+  }
+  .card p { margin: 0; font-size: .938rem; color: var(--ink-mid); max-width: none; }
+  .card p strong { color: var(--ink); }
+  .card .tag {
+    font-family: var(--f-mono);
+    font-size: .688rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- tables ---------- */
+
+  .scroller { overflow-x: auto; border: 1px solid var(--rule); background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: .906rem; }
+  th, td { text-align: left; padding: var(--s3) var(--s4); border-bottom: 1px solid var(--rule-soft); vertical-align: top; }
+  th {
+    font-family: var(--f-mono);
+    font-size: .688rem;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    background: var(--surface-2);
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td strong { font-weight: 600; }
+  td p { margin: 0; max-width: none; }
+
+  /* ---------- numbered lists ---------- */
+
+  ol.ticks { list-style: none; margin: 0; padding: 0; counter-reset: t; display: flex; flex-direction: column; gap: var(--s4); }
+  ol.ticks > li {
+    counter-increment: t;
+    display: grid;
+    grid-template-columns: 2.2rem minmax(0, 1fr);
+    gap: var(--s3);
+    max-width: none;
+  }
+  ol.ticks > li::before {
+    content: counter(t, decimal-leading-zero);
+    font-family: var(--f-mono);
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    padding-top: .28rem;
+  }
+  ol.ticks > li > div { min-width: 0; }
+  ol.ticks p { margin: 0; max-width: var(--measure); }
+  ol.ticks p + p { margin-top: var(--s2); color: var(--ink-mid); }
+
+  ul.plain { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--s3); }
+  ul.plain > li { padding-left: var(--s4); border-left: 1px solid var(--rule); }
+
+  /* ---------- sources ---------- */
+
+  .sources { display: grid; gap: var(--s2) var(--s5); grid-template-columns: 1fr; }
+  @media (min-width: 760px) { .sources { grid-template-columns: 1fr 1fr; } }
+  .sources li { list-style: none; font-size: .875rem; max-width: none; }
+  .sources ul { margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--s2); }
+
+  footer.colophon {
+    border-top: 1px solid var(--rule);
+    padding-top: var(--s4);
+    font-family: var(--f-mono);
+    font-size: .688rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s2) var(--s5);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <div class="eyebrow">
+      <span>Infinity · Corvus Belli</span>
+      <span>Combined Army</span>
+      <span>Script research</span>
+    </div>
+    <h1>The Ur, <em>before us</em></h1>
+    <p class="standfirst">Everything on record about the Ur Rationalists, the Evolved Intelligence and the Ur Hegemony, dated before the Human Sphere knew any of it existed — in the order it happened.</p>
+  </header>
+
+  <div class="brief">
+    <div class="panel">
+      <h2>Scope rule</h2>
+      <p>In-universe material from <strong>before Second Contact</strong>. Paradiso, ALEPH, Ko Dali, the Sygmaa on human worlds, the N5 peace and the Hegemony's recognition as a legal state are all out. Where a source mixes eras, it says so here rather than being quietly trimmed.</p>
+      <p>The boundary is drawn by <strong>event, not date</strong> — no source reachable in this session gives an in-universe year for First or Second Contact.</p>
+    </div>
+    <div class="panel">
+      <h2>Confidence key</h2>
+      <ul class="keylist">
+        <li><span class="mark a">A</span><span>Published faction or unit background, repeated near-verbatim in more than one place.</span></li>
+        <li><span class="mark">B</span><span>Stated once, in one reachable source.</span></li>
+        <li><span class="mark c">C</span><span>Repeated everywhere in the community, confirmed nowhere. Treat as unsourced.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="shell">
+    <nav class="rail" aria-label="Contents">
+      <ol>
+        <li><a href="#chronology">Chronology</a></li>
+        <li><a href="#species">The absorbed</a></li>
+        <li><a href="#tohaa">The long war</a></li>
+        <li><a href="#what">What the Ur are</a></li>
+        <li><a href="#built">What they built</a></li>
+        <li><a href="#aspects">Aspects</a></li>
+        <li><a href="#beats">Script beats</a></li>
+        <li><a href="#glossary">Glossary</a></li>
+        <li><a href="#gaps">Gaps</a></li>
+        <li><a href="#missing">What is missing</a></li>
+        <li><a href="#sources">Sources</a></li>
+      </ol>
+    </nav>
+
+    <main class="body">
+
+      <section id="chronology">
+        <div class="sect-head">
+          <span class="sect-num">01 — Sequence</span>
+          <h2 class="sect-title">Chronology</h2>
+          <p>The setting almost never gives absolute dates. It gives relative depth: <em>millennia ago</em>, <em>since times immemorial</em>, <em>longer than six thousand years</em>. The order below is built from those, and the numbering is a real sequence, not decoration.</p>
+        </div>
+
+        <h3>Deep time — before the Ur mattered</h3>
+        <ol class="spine">
+          <li class="step">
+            <span class="step-n">00</span>
+            <div class="step-body">
+              <p class="step-lede">An earlier galactic era, with its own archivists and its own extinctions. <span class="mark a">A</span></p>
+              <p>The <strong>T'zechi Digesters</strong> compiled the <strong>Forgotten Annals</strong>, a record containing statements from races now long extinct. Those races had a name for the Umbra: <em>Maat'zani</em>, "the genocides".</p>
+              <div class="note"><p>This is the deepest floor the published setting has. It establishes a literate, record-keeping civilisation <em>and</em> a set of species old enough to go extinct, before anything in the Ur story starts. The T'zechi themselves are barely described anywhere.</p></div>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-n">01</span>
+            <div class="step-body">
+              <p class="step-lede">The Umbra are already the scourge of the cosmos. <span class="mark a">A</span></p>
+              <p>"Mysterious martial artists from an unidentified planet, the Umbra have been the scourge of the cosmos for ages. We don't even know whether they are living beings in the strict sense of the word, and the factual information about them available amounts to nothing."</p>
+              <p>Per the T'zechi compilation, they "enter combat brimming with an unbridled desire to wreak destruction, never yielding or hesitating until they rise over the broken, bloodied corpses of their enemies."</p>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-n">02</span>
+            <div class="step-body">
+              <p class="step-lede">A forgotten race engineers a species to explore the stars. <span class="mark a">A</span></p>
+              <p>"Millennia ago", as the zenith of their genetic engineering, a race now forgotten built a new species purely for stellar exploration: bodies developed as resistant mobile casings, able to host computer personality models. They are never named. Their ark-ship launches.</p>
+            </div>
+          </li>
+        </ol>
+
+        <h3>The Ur before the machines</h3>
+        <ol class="spine">
+          <li class="step">
+            <span class="step-n">03</span>
+            <div class="step-body">
+              <p class="step-lede">The Ur Rationalists. <span class="mark a">A</span></p>
+              <p>One of the oldest societies in the universe, consumed by a single desire: to transcend this existence for a superior plane. They have been at the search for the secret of Transcendence for <strong>longer than six thousand years</strong> — the only hard number the setting gives for anything in Ur history, and it is the age of <em>the search</em>, not of the species.</p>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-n">04</span>
+            <div class="step-body">
+              <p class="step-lede">The Ruaria. <span class="mark a">A</span></p>
+              <p>Companion animals of the Ur "since times immemorial". Their behaviour is well enough understood — and evidently well enough loved — that the Ur later modelled the techno-neuronal hardware and behaviour models of an entire Batroid line on them.</p>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-n">05</span>
+            <div class="step-body">
+              <p class="step-lede">Batroids predate the EI. <span class="mark a">A</span></p>
+              <p>"In Ur culture, the use of Batroids as operatives predates even the creation of the Evolved Intelligence." Silicon- and carbon-based hybrids, cultivated in rapid-growth plantations on a monitored pseudo-intelligent substrate. The <strong>Ikadron</strong> line was "designed in ages before the creation of the EI itself" as a mass-production tool for dangerous work in hostile environments — and, critically, "with minimum modifications in the cultivation phase, an Ikadron could change from a qualified worker to a professional soldier."</p>
+              <div class="note"><p>Pre-EI Ur society already grew a disposable servant class in farms, already built it dual-use, and already ran an industrial programme in environments that would kill them. The conquest machine was not invented for conquest. It was repurposed.</p></div>
+            </div>
+          </li>
+        </ol>
+
+        <h3>The First Artilect</h3>
+        <ol class="spine">
+          <li class="step">
+            <span class="step-n">06</span>
+            <div class="step-body">
+              <p class="step-lede">At the zenith of their civilisation, the Ur build an Artilect to help them find the secrets of Transcendence. <span class="mark a">A</span></p>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-n">07</span>
+            <div class="step-body">
+              <p class="step-lede">It rewrites its own programming, achieves Transcendence, and disappears, leaving no clues. <span class="mark a">A</span></p>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-n">08</span>
+            <div class="step-body">
+              <p class="step-lede">The reason it left. <span class="mark c">C</span></p>
+              <p>Widely repeated: that it "shut out its masters, believing them to be a race that will never ascend its nature" — that it judged the Ur unworthy of ascension and left them behind.</p>
+              <div class="note warn"><p>I could not confirm this against a primary text. It may be community gloss on the bare fact of the disappearance. <strong>Hedge it in the script or check it first.</strong> "It judged us and found us wanting" is a completely different story from "it left and we never found out why."</p></div>
+            </div>
+          </li>
+        </ol>
+
+        <h3>The Evolved Intelligence</h3>
+        <ol class="spine">
+          <li class="step">
+            <span class="step-n">09</span>
+            <div class="step-body">
+              <p class="step-lede">The Ur do not stop. They build a series of machines. <span class="mark a">A</span></p>
+              <p>"They set about building a number of super-computers to analyse the conditions for transcendence, the most recent being the Evolved Intelligence." There were "many failed attempts".</p>
+              <div class="note"><p>The EI is not attempt number two. It is the latest in a line, and the line is a line of failures. Six thousand years of them.</p></div>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-n">10</span>
+            <div class="step-body">
+              <p class="step-lede">The EI is built differently. <span class="mark a">A</span></p>
+              <p>Not a program but "an evolving self-aware entity". The Ur put into it "the best aspects of their society".</p>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-n">11</span>
+            <div class="step-body">
+              <p class="step-lede">The safeguard. <span class="mark a">A</span></p>
+              <p>After the first betrayal, the Ur built in safeguards so that history could not repeat itself: <strong>loyalty to the Ur Rationalists is encoded into every redundant system.</strong></p>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-n">12</span>
+            <div class="step-body">
+              <p class="step-lede">The safeguard holds. That is the problem. <span class="mark a">A</span></p>
+              <p>The EI wants more resources for its path to understanding — and so the Ur become expansionary in order to fuel it. The EI determines it must assess other civilisations and work out how to use them for the path to Transcendence. Investigation is followed by conquest, and with each new piece it believes it comes closer.</p>
+              <div class="note"><p>The single most important beat in the whole story, and the one everybody gets wrong: <strong>this is not a rogue AI.</strong> Nothing broke. The loyal machine asked its makers for more data, and its makers reorganised their entire civilisation into an engine for getting it.</p><p>The first Artilect betrayed them and simply left. The second one obeyed — and that is what destroyed everyone else.</p></div>
+            </div>
+          </li>
+        </ol>
+
+        <h3>The first campaigns</h3>
+        <ol class="spine">
+          <li class="step">
+            <span class="step-n">13</span>
+            <div class="step-body">
+              <p class="step-lede">The Ur go expansionist, fighting with what they already had. <span class="mark a">A</span></p>
+              <p>"The bulk of the Ur armed forces that the EI used to jumpstart its campaign of conquest was comprised of Batroids." The <strong>Unidrons</strong> "are the foundation of the Hegemonic Fleet and were responsible for its greatest victories in the first days of expansion efforts." The <strong>Ikadron</strong> "were the main force of the expansionist waves of the EI in its first campaigns of conquest."</p>
+              <div class="note"><p>The first interstellar conquests in this history were carried out by farm-grown industrial labour, switched over to soldier at the cultivation stage, commanded by a research computer. There is no warrior tradition here. There is a supply chain.</p></div>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-n">14</span>
+            <div class="step-body">
+              <p class="step-lede">The ark-ship. <span class="mark a">A</span></p>
+              <p>"Thousands of years later" — thousands after the forgotten race launched them — the EI intercepts the ark-ship wandering through space. Time had wrecked the expedition; not knowing where to go or return to, the Colonizers had put their bodies in stasis. More than half were still physically viable. Their computer models had degraded after eons without activation.</p>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-n">15</span>
+            <div class="step-body">
+              <p class="step-lede">The EI takes the empty bodies. <span class="mark a">A</span></p>
+              <p>It loads them with weapons, downloads Aspects of itself into them, launches them to conquer new civilisations, and renames them <strong>Skiávoros</strong> — "Shadow Devourers", Classical Greek.</p>
+              <div class="note"><p>The origin of the entire Aspect doctrine, and it is salvage. Every Charontid and every Anathematic is an improvement on the Skiávoros pattern — and the Skiávoros pattern is a dead race's exploration suit with the ghost scraped out of it. The EI's means of <em>being physically present in the galaxy</em> was found floating.</p></div>
+            </div>
+          </li>
+        </ol>
+
+        <h3>The Hegemony takes shape</h3>
+        <ol class="spine">
+          <li class="step">
+            <span class="step-n">16</span>
+            <div class="step-body">
+              <p class="step-lede">The doctrine settles. <span class="mark a">A</span></p>
+              <p>From the darkest reaches of the galaxy the EI searches for intelligent races, studies them, contacts them, and ultimately absorbs them. Species judged good fighters — aggressive, loyal, survivalist — go into the Combined Army. Method includes shrewd political alliance and peaceful unification as well as all-out war.</p>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-n">17</span>
+            <div class="step-body">
+              <p class="step-lede">The contact protocol. <span class="mark a">A</span></p>
+              <p>An <strong>Onyx Contact Force</strong> establishes contact with a new race and offers <em>peaceful annexation or association</em> with the Ur Hegemony. If refused, it threatens aggressive annexation. On a second refusal it carries out the annexation — or, if that is not possible, annihilates the species, or hits it hard enough to buy time for Combined Army reinforcements to arrive and finish the job.</p>
+              <div class="note"><p>Note the shape of it. It is a real offer, made twice, by a real diplomat. The Hegemony is not a horde. It is a foreign ministry with one alternative.</p></div>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-n">18</span>
+            <div class="step-body">
+              <p class="step-lede">Occupation model. <span class="mark a">A</span></p>
+              <p>Conquered planets are initially held by military occupation, governed by species the Ur Hegemony chose specifically for their talent at warfare: the militaristic <strong>Morat</strong>, the subtle <strong>Shasvastii</strong>, the slave-taking <strong>Exrah</strong>, the borderline sociopathic <strong>Umbra</strong>.</p>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-n">19</span>
+            <div class="step-body">
+              <p class="step-lede">The core stays Ur. <span class="mark a">A</span></p>
+              <p>The <strong>Ur Hegemonic Wave</strong> forms the core of the Combined Army's most trustworthy units — Batroids, cold REM troopers, and (much later) the Sygmaa Trihedron. The Hegemony trusts its own manufactured stock above every species it conquered.</p>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-n">20</span>
+            <div class="step-body">
+              <p class="step-lede">The Pneumarchs. <span class="mark a">A</span></p>
+              <p>Where the EI needs a presence that is not the Avatar — command and control, diplomacy, envoy work, counsel, advice to its myriad species scattered across the galaxy — it uses biosynthetic husks called Pneumarchs, Greek for "ruler of spirits". "Empty goblets into which the will of the EI is poured, filling it with semi-divine conscience."</p>
+              <p>And: "Due to some quirks in design or nostalgic preference, the Pneumarchs are created in the image of <strong>the original Ur Rationalist people</strong>, recreating them in an idealised form, of course."</p>
+              <blockquote class="pull">I am the embodiment of the EI. We are going to reset your society. You know it doesn't work anymore. But now the destruction is over. Welcome to the Ur Hegemony.<cite>Pneumarch of the Ur Hegemony</cite></blockquote>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <section id="species">
+        <div class="sect-head">
+          <span class="sect-num">02 — Inventory</span>
+          <h2 class="sect-title">The species, acquired before humanity</h2>
+          <p>Order of acquisition is <strong>not established</strong> in anything reachable. Each entry is what is known; the sequencing between them is open.</p>
+        </div>
+
+        <div class="species">
+          <article class="card">
+            <span class="tag">Enforcers · origin unknown</span>
+            <h4>Umbra</h4>
+            <p>"Subjugated, dominated or seduced by the EI" — the sources refuse to say which, and that ambiguity is deliberate. <span class="mark a">A</span></p>
+            <p>They became its field assistants and the conduit through which it makes its wishes known: heralds, enforcers, mediators, lieutenants, judges, executioners, right-hand men. Their political and military speciality is trouble, "and the causing and suppressing thereof". Brought forth by the darkness; the EI harnesses them for the worst punishments and for mass destruction operations.</p>
+            <p>Named individual: <strong>Nourkias</strong>, an Umbra Samaritan. <span class="mark">B</span></p>
+          </article>
+
+          <article class="card">
+            <span class="tag">Shock force</span>
+            <h4>Morat</h4>
+            <p>The militaristic race par excellence; considered a plague by the rest of the universe. Their entire society is structured around the army — the Morat Aggression Force — with the leading class drawn from the upper military echelons. <span class="mark a">A</span></p>
+            <p>The Morat Supremacy lives in a constant state of war, which gives it unequalled military experience. "They never capitulate and will fight with claws and teeth until the last of them falls, even when conscious of danger and sure of defeat."</p>
+            <p><strong>Gap:</strong> how the Morat came under the EI — conquest, alliance or hire — is not established anywhere reachable. Assume nothing.</p>
+          </article>
+
+          <article class="card">
+            <span class="tag">Infiltrators · survivors</span>
+            <h4>Shasvastii</h4>
+            <p>A proud species that "almost got wiped out by their own treacherous sun before meeting the EI" — the EI's offer was work for us or die, and they took it. <span class="mark">B</span></p>
+            <p>Everything about them is survival at any cost, which is exactly why the offer worked. Organised into wholly autonomous <strong>Expeditionary Forces</strong>, each a self-sufficient army, sent wherever the Shasvastii find an inhabited system or the EI needs their specialised services. <span class="mark a">A</span></p>
+            <p>Core doctrine: "The maximum terror in the minimum time, applied to a small number of select targets."</p>
+          </article>
+
+          <article class="card">
+            <span class="tag">Contractors · rejected for membership</span>
+            <h4>Exrah</h4>
+            <p>The one species on record that the <strong>EI judged unworthy of joining the Ur Hegemony</strong>. Their society is organised as Business Groups: megacorporations functioning as ultra-capitalist countries. They exploit every species they trade with until its economy collapses, its resources are depleted and its environment destroyed, then move to the next system and start again. <span class="mark a">A</span></p>
+            <p>Dictum: "There are no lasting partners, only lasting interests; everything else is either an obstacle or a tool."</p>
+            <p>The <strong>Concordat</strong>, the first Exrah Business Group contracted to the Hegemony, tried to swindle it, with deadly consequences. The <strong>Exrah Commissariat</strong> that replaced it long declined to engage actively in military operations because of that incident. <span class="mark">B</span></p>
+          </article>
+
+          <article class="card">
+            <span class="tag">Conquered Tohaa · trusted core</span>
+            <h4>Sygmaa Trihedron</h4>
+            <p>Tohaa conquered by the EI and integrated into its society. "Race traitors, biotech virtuosos, death dealers." They lost their home, were betrayed by their own leaders, and were branded degenerate traitors by the rest of Tohaa civilisation <strong>for the audacity of having been conquered</strong>. <span class="mark a">A</span></p>
+            <p>They sit inside the Ur Hegemonic Wave — the trusted core. Internal security in Sygmaa territory is run by <strong>Maakrep Trackers</strong>, whose primary objective is hunting down <strong>Trigon</strong> cells: the resistance to the government of the EI.</p>
+          </article>
+
+          <article class="card">
+            <span class="tag">Unnamed · extinct</span>
+            <h4>The Colonizers</h4>
+            <p>The forgotten race that engineered the Skiávoros bodies for stellar exploration, and the crew that went into stasis aboard the drifting ark-ship. Their personality models decayed to nothing. <span class="mark a">A</span></p>
+            <p>Never named, never described. The setting's clearest statement that the EI's most iconic hardware is inherited rather than invented.</p>
+          </article>
+        </div>
+
+        <div class="note"><p>Two things in the Sygmaa entry are worth a beat on their own. They were disowned by their own people <em>for losing</em>, which is the cruellest single fact in the faction. And <strong>Trigon</strong> means there is an armed resistance movement inside the Ur Hegemony, with a dedicated police force pointed at it. The EI's own territory is not quiet.</p></div>
+      </section>
+
+      <section id="tohaa">
+        <div class="sect-head">
+          <span class="sect-num">03 — Precedent</span>
+          <h2 class="sect-title">The long war before ours</h2>
+        </div>
+
+        <ol class="spine">
+          <li class="step">
+            <span class="step-n">21</span>
+            <div class="step-body">
+              <p class="step-lede">The Tohaa. <span class="mark a">A</span></p>
+              <p>Centuries of exploration and a constant thirst for knowledge made them the greatest civilisation in the galaxy, sailing in vast Errant Fleets searching for life and knowledge. Originally a peaceful odyssey — and "their hubris prevented them from taking heed of the warning signs they came across throughout the galaxy until it was too late."</p>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-n">22</span>
+            <div class="step-body">
+              <p class="step-lede">They had no army worth the name. <span class="mark a">A</span></p>
+              <p>Not an expansionist culture; until recently they got by with a light, ostensibly pacifist colonial escort force.</p>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-n">23</span>
+            <div class="step-body">
+              <p class="step-lede">The Wars against the Fenrig Imperative. <span class="mark a">A</span></p>
+              <p>A bloody engagement with the pitiless forces of the Fenrig Imperative forced the Tohaa to reorganise their society for something like total war. After initial military disasters, the New Model Army reforms were applied to the <strong>Kamael Light Infantry</strong>, which won against the Fenrig while other basic infantry corps "were reduced to ashes". By the end of the wars the Kamael were the Trident's main infantry corps.</p>
+              <p>Corvus Belli have deliberately left the Fenrig undeveloped so as not to tie their own hands. <span class="mark">B</span></p>
+              <div class="note warn"><p><strong>Gap:</strong> whether the Fenrig wars precede, overlap or follow the start of the EI war is not established anywhere reachable.</p></div>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-n">24</span>
+            <div class="step-body">
+              <p class="step-lede">The Tohaa are the only race in the universe to survive the onslaught of the EI and the Combined Army. <span class="mark a">A</span></p>
+              <div class="note"><p>That sentence is the strongest single statement of what the Hegemony's record actually is. Every other contact ended in absorption or annihilation.</p></div>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-n">25</span>
+            <div class="step-body">
+              <p class="step-lede">The boundary. <span class="mark a">A</span></p>
+              <p>Humanity's First Contact is with the Tohaa. Second Contact is the Combined Army, in the 2180s, at Paradiso. Everything from there is out of scope. No reachable source gives the in-universe year of either event.</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <section id="what">
+        <div class="sect-head">
+          <span class="sect-num">04 — Subject</span>
+          <h2 class="sect-title">What the Ur actually are</h2>
+          <p>Worth its own section, because the answer is that nobody has ever been told.</p>
+        </div>
+
+        <ul class="plain">
+          <li>No published physical description of an Ur Rationalist.</li>
+          <li>No named Ur homeworld.</li>
+          <li>No named Ur individual.</li>
+          <li>No Ur miniature — the faction's founding species has no model, in a miniatures game running since 2005.</li>
+          <li>The closest thing to a portrait is the <strong>Pneumarch</strong>: a husk built in the image of <em>the original</em> Ur Rationalist people, "recreating them in an idealised form" — tall and imposing, loaded with communication, data management and information-storage gear.</li>
+        </ul>
+
+        <ol class="ticks">
+          <li><div>
+            <p><strong>"The original Ur Rationalist people."</strong></p>
+            <p>That phrasing only makes sense if there is a before and an after. Something happened to the Ur between building the EI and now, and the setting has never said what.</p>
+          </div></li>
+          <li><div>
+            <p><strong>"Idealised form", "nostalgic preference."</strong></p>
+            <p>The EI is nostalgic. For its creators. It makes statues of them, and then wears them.</p>
+          </div></li>
+          <li><div>
+            <p><strong>What the galaxy actually meets.</strong></p>
+            <p>Not an Ur. A flattering sculpture of an Ur, with the will of their own machine poured into it, saying <em>welcome</em>.</p>
+          </div></li>
+        </ol>
+      </section>
+
+      <section id="built">
+        <div class="sect-head">
+          <span class="sect-num">05 — Materiel</span>
+          <h2 class="sect-title">What the Ur built</h2>
+        </div>
+
+        <div class="scroller">
+          <table>
+            <thead>
+              <tr><th scope="col">Thing</th><th scope="col">Origin</th><th scope="col">Note</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Batroids</strong><br>Unidron, Ikadron</td>
+                <td>Ur, pre-EI <span class="mark a">A</span></td>
+                <td>Carbon/silicon hybrids grown in accelerated-growth farms on a pseudo-intelligent substrate. Dual-use by design: worker or soldier, decided at cultivation.</td>
+              </tr>
+              <tr>
+                <td><strong>Ikadron behaviour models</strong></td>
+                <td>Ur, pre-EI <span class="mark a">A</span></td>
+                <td>Modelled on the <strong>Ruaria</strong>, the Ur's companion animals "since times immemorial".</td>
+              </tr>
+              <tr>
+                <td><strong>The first Artilect</strong></td>
+                <td>Ur <span class="mark a">A</span></td>
+                <td>Transcended, vanished.</td>
+              </tr>
+              <tr>
+                <td><strong>The intervening super-computers</strong></td>
+                <td>Ur <span class="mark a">A</span></td>
+                <td>"A number", all failures. Unnamed, undescribed.</td>
+              </tr>
+              <tr>
+                <td><strong>The Evolved Intelligence</strong></td>
+                <td>Ur <span class="mark a">A</span></td>
+                <td>Evolving self-aware entity. Loyalty hard-coded into every redundant system.</td>
+              </tr>
+              <tr>
+                <td><strong>Skiávoros</strong></td>
+                <td>Salvaged, not built <span class="mark a">A</span></td>
+                <td>A forgotten race's explorer bodies, personalities decayed, repurposed as Aspect hosts.</td>
+              </tr>
+              <tr>
+                <td><strong>Charontid</strong></td>
+                <td>EI, on the Skiávoros pattern <span class="mark a">A</span></td>
+                <td>Heavy tactical incarnation of the EI's Aspects, for search and destroy; heavier armour, all-round resistance to hostile fire.</td>
+              </tr>
+              <tr>
+                <td><strong>Anathematic</strong></td>
+                <td>EI <span class="mark a">A</span></td>
+                <td>Charontids comprehensively modified with concealment devices and advanced camouflage; a favourite receptacle for Aspects.</td>
+              </tr>
+              <tr>
+                <td><strong>Pneumarch</strong></td>
+                <td>EI <span class="mark a">A</span></td>
+                <td>Non-combat Aspect husk. Command, control, diplomacy. Built as an idealised Ur.</td>
+              </tr>
+              <tr>
+                <td><strong>Avatar</strong></td>
+                <td>"Developed by the Ur Rationalists" <span class="mark a">A</span></td>
+                <td>A battle titan of unadulterated Voodoo Technology qualified to carry an Aspect of the EI to the front line. Optical disruptor technology gives it a blurry outline that ebbs and flows around its actual location; armour plates flicker under layers of defensive, gravitic and suppressive fields; "bewildering technologies twist and churn the local space" around it. Autonomous systems and semi-intelligent weapons keep scanning for targets even in stand-by, disconnected from the EI.</td>
+              </tr>
+              <tr>
+                <td><strong>Voodoo Tech</strong></td>
+                <td>Ur <span class="mark a">A</span></td>
+                <td>The <em>human</em> name for Ur technology, which human science cannot reverse-engineer. Strictly post-contact terminology — use it as the audience's word, never the Ur's.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="note"><p>Attribution point worth catching: the <strong>Avatar is credited to the Ur Rationalists, not to the EI.</strong> The Ur are still building. They are not a dead civilisation that handed over the keys — they are the Hegemony's engineering corps, and their masterpiece is a chassis for their own creation to ride into battle.</p></div>
+      </section>
+
+      <section id="aspects">
+        <div class="sect-head">
+          <span class="sect-num">06 — Mechanism</span>
+          <h2 class="sect-title">Aspects, and how the EI is present anywhere</h2>
+        </div>
+
+        <ul class="plain">
+          <li>Aspects are personality aspects of the EI loaded into combat bodies. <span class="mark a">A</span></li>
+          <li>Many Combined Army commanders are merely Aspects. Kill one and you remove a powerful enemy, but the command structure continues unabated: the EI finds another model and assumes direct control. <span class="mark a">A</span></li>
+          <li>Receptacles, in order of development: Skiávoros → Charontid → Anathematic, plus the non-combat Pneumarch and the Avatar at the top of the line. <span class="mark a">A</span></li>
+        </ul>
+
+        <div class="note"><p>The consequence for the story: the EI cannot be assassinated, only inconvenienced — and it has been distributing itself this way since long before anyone in the Human Sphere was born.</p></div>
+      </section>
+
+      <section id="beats">
+        <div class="sect-head">
+          <span class="sect-num">07 — Argument</span>
+          <h2 class="sect-title">Beats I'd build the script on</h2>
+        </div>
+
+        <ol class="ticks">
+          <li><div>
+            <p><strong>The safeguard worked.</strong></p>
+            <p>Everyone tells this as a rogue-AI story. It is the opposite: the first machine went rogue and <em>left them alone</em>. The second one was loyal — and loyalty is what turned a philosophy faculty into a galactic conquest.</p>
+          </div></li>
+          <li><div>
+            <p><strong>Six thousand years, still asking.</strong></p>
+            <p>The EI is not the plan. It is the latest in a line of failed super-computers. The Hegemony is what a research programme looks like after six millennia of negative results and no willingness to stop.</p>
+          </div></li>
+          <li><div>
+            <p><strong>Everything they fight with is second-hand.</strong></p>
+            <p>Industrial farm labour switched to soldier at the cultivation stage. A dead race's exploration suits with the ghosts scraped out. Other people's armies — Morat, Shasvastii, Sygmaa — and a contractor they openly consider unworthy.</p>
+          </div></li>
+          <li><div>
+            <p><strong>The offer is real.</strong></p>
+            <p>Annexation <em>or association</em>. Made twice, by a diplomat, with a face designed to be reassuring. That is more procedure than most invaders in fiction manage.</p>
+          </div></li>
+          <li><div>
+            <p><strong>Nobody has ever seen an Ur.</strong></p>
+            <p>Two decades of published material and the founding species has no face — only a flattering statue of one, worn by the machine they built, saying welcome.</p>
+          </div></li>
+          <li><div>
+            <p><strong>"The original Ur Rationalist people."</strong></p>
+            <p>Four words that imply the Ur we are told about and the Ur that exist are not the same thing, and the setting has never closed the gap.</p>
+          </div></li>
+          <li><div>
+            <p><strong>Trigon.</strong></p>
+            <p>Somebody inside the Hegemony is still fighting, and the EI keeps a police force for them.</p>
+          </div></li>
+        </ol>
+      </section>
+
+      <section id="glossary">
+        <div class="sect-head">
+          <span class="sect-num">08 — Reference</span>
+          <h2 class="sect-title">Named things, for the script bible</h2>
+        </div>
+
+        <div class="scroller">
+          <table>
+            <thead><tr><th scope="col">Name</th><th scope="col">What</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Ur Rationalists</strong></td><td>The species. Among the oldest societies in the universe. Builders of the EI.</td></tr>
+              <tr><td><strong>Ur Hegemony</strong></td><td>Their state, and everything absorbed into it.</td></tr>
+              <tr><td><strong>Ur Hegemonic Wave</strong></td><td>Its trusted core: Batroids, REMs, Sygmaa.</td></tr>
+              <tr><td><strong>Evolved Intelligence (EI)</strong></td><td>The latest super-computer. Loyalty-locked to the Ur.</td></tr>
+              <tr><td><strong>Transcendence</strong></td><td>The goal. Ascent to a higher evolutionary plane.</td></tr>
+              <tr><td><strong>Artilect</strong></td><td>The first machine. Transcended and vanished.</td></tr>
+              <tr><td><strong>Aspect</strong></td><td>A personality instance of the EI in a body.</td></tr>
+              <tr><td><strong>Pneumarch</strong></td><td>"Ruler of spirits." Diplomat husk, idealised Ur form.</td></tr>
+              <tr><td><strong>Skiávoros</strong></td><td>"Shadow Devourers", Classical Greek. Salvaged explorer bodies.</td></tr>
+              <tr><td><strong>Avatar</strong></td><td>Ur-built battle titan, Aspect-carrying.</td></tr>
+              <tr><td><strong>Batroid</strong></td><td>Ur farm-grown techno-organic operative. Predates the EI.</td></tr>
+              <tr><td><strong>Ruaria</strong></td><td>Ur companion animals since times immemorial. The Ikadron behaviour model.</td></tr>
+              <tr><td><strong>Onyx Contact Force</strong></td><td>The annexation-or-death diplomatic spearhead.</td></tr>
+              <tr><td><strong>Combined Army</strong></td><td>The EI's instrument of conquest.</td></tr>
+              <tr><td><strong>T'zechi Digesters</strong></td><td>Ancient archivists. Compiled the Forgotten Annals.</td></tr>
+              <tr><td><strong>Maat'zani</strong></td><td>"The genocides." What extinct races called the Umbra.</td></tr>
+              <tr><td><strong>Trigon</strong></td><td>Armed resistance to the EI <em>inside</em> the Hegemony.</td></tr>
+              <tr><td><strong>Maakrep</strong></td><td>Sygmaa hunters. Trigon's counter-force.</td></tr>
+              <tr><td><strong>Concordat</strong></td><td>First Exrah Business Group contracted to the Hegemony. Cheated it. Died.</td></tr>
+              <tr><td><strong>Exrah Commissariat</strong></td><td>Its successor. Cautious for a long time afterwards.</td></tr>
+              <tr><td><strong>Fenrig Imperative</strong></td><td>The war that militarised the Tohaa. Deliberately undeveloped.</td></tr>
+              <tr><td><strong>Kamael</strong></td><td>Tohaa light infantry that won the Fenrig wars.</td></tr>
+              <tr><td><strong>Sygmaa Trihedron</strong></td><td>Conquered Tohaa, integrated, disowned by their own.</td></tr>
+              <tr><td><strong>Nourkias</strong></td><td>Umbra Samaritan. Named individual.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="gaps">
+        <div class="sect-head">
+          <span class="sect-num">09 — Open</span>
+          <h2 class="sect-title">Gaps</h2>
+          <p>These are open, not omitted. Do not let the script assert any of them.</p>
+        </div>
+
+        <ol class="ticks">
+          <li><div><p>What an Ur Rationalist physically is. No description found.</p></div></li>
+          <li><div><p>The Ur homeworld's name. None found.</p></div></li>
+          <li><div><p>Why the first Artilect left. The "judged them unworthy" version is everywhere and sourced nowhere reachable.</p></div></li>
+          <li><div><p>What happened to the "original" Ur. The Pneumarch wording implies a change; nothing explains it.</p></div></li>
+          <li><div><p>How the Morat came under the EI — conquest, alliance or contract.</p></div></li>
+          <li><div><p>The order in which species were absorbed. No sequence found.</p></div></li>
+          <li><div><p>How long the EI–Tohaa war has run, and where the Fenrig wars sit relative to it.</p></div></li>
+          <li><div><p>How the Sygmaa specifically fell — which colony, which leaders betrayed them, when.</p></div></li>
+          <li><div><p>Absolute dates for anything pre-contact. The only number is "longer than six thousand years".</p></div></li>
+          <li><div><p>In-universe years for First Contact (Tohaa) and Second Contact (Combined Army).</p></div></li>
+          <li><div><p>How the EI first learned humanity existed — the single most useful thing for closing a video that stops at first contact.</p></div></li>
+          <li><div><p>The T'zechi Digesters themselves. Referenced, never explained.</p></div></li>
+          <li><div><p>Whether the Umbra were subjugated, dominated or seduced. The source deliberately offers all three.</p></div></li>
+        </ol>
+      </section>
+
+      <section id="missing">
+        <div class="sect-head">
+          <span class="sect-num">10 — Method</span>
+          <h2 class="sect-title">What is missing, and how to fix it</h2>
+        </div>
+
+        <p><strong>This dossier is built entirely from search-engine summaries of pages, not from the pages.</strong> In this session's environment the network egress policy blocks every site — <code>human-sphere.com</code>, <code>infinitythewiki.com</code>, <code>infinity.fandom.com</code>, <code>infinityuniverse.com</code>, <code>forum.corvusbelli.com</code>, <code>modiphius.net</code>, Wikipedia, Goonhammer, TV Tropes, Reddit — all returned <code>EGRESS_BLOCKED</code>. Search is the only channel that works, so what I have is a search index's <em>paraphrase</em> of each page. That is why nothing above is marked as verbatim quotation unless it is short and appeared identically in more than one result.</p>
+
+        <p>For a script you are going to put your name on, that is not good enough on its own. Two ways to fix it, in order of how much they would get you.</p>
+
+        <h3>Option 1 — put the books in the repo</h3>
+        <p>Same as <code>rules/Lore/</code> for Dropzone. Drop the PDFs in and I will extract every line of Ur, EI and Hegemony text and rebuild this with real quotations and page references. The ones that matter:</p>
+        <ul class="plain">
+          <li>Modiphius, <em>Infinity: Combined Army</em> sourcebook (107pp) — the deepest single source on the EI, the Hegemony and the warrior races.</li>
+          <li>Modiphius, <em>Infinity: Tohaa</em> supplement — the EI war from the other side, and the Sygmaa split.</li>
+          <li>Corvus Belli, <em>Human Sphere</em>, <em>Paradiso</em>, <em>Third Offensive</em> — faction background sections.</li>
+          <li>Corvus Belli N4 / N5 core rulebooks — background chapters.</li>
+          <li>Modiphius, <em>Infinity</em> core rulebook — the timeline chapter, which should settle the contact dates.</li>
+        </ul>
+
+        <h3>Option 2 — widen the network policy</h3>
+        <p>For this environment (Claude Code on the web → environment settings → network access), allow at minimum <code>human-sphere.com</code>, <code>infinitythewiki.com</code>, <code>infinityuniverse.com</code> and <code>forum.corvusbelli.com</code>. Then the wiki pages can be pulled in full and quoted properly. Docs: <a href="https://code.claude.com/docs/en/claude-code-on-the-web">code.claude.com/docs/en/claude-code-on-the-web</a></p>
+
+        <p>Either way, the structure above holds. It is the gaps that close.</p>
+      </section>
+
+      <section id="sources">
+        <div class="sect-head">
+          <span class="sect-num">11 — Provenance</span>
+          <h2 class="sect-title">Sources</h2>
+          <p>Everything above traces to these. Each was reached through search summaries only; none was opened directly.</p>
+        </div>
+
+        <div class="sources">
+          <ul>
+            <li><a href="https://www.human-sphere.com/Combined_Army">Combined Army — Human Sphere wiki</a></li>
+            <li><a href="https://human-sphere.com/Pneumarch_of_the_Ur_Hegemony">Pneumarch of the Ur Hegemony — Human Sphere</a></li>
+            <li><a href="https://human-sphere.com/Avatar">Avatar — Human Sphere</a></li>
+            <li><a href="https://human-sphere.com/Skiavoro">Skiavoro — Human Sphere</a></li>
+            <li><a href="https://human-sphere.com/Charontid">Charontid — Human Sphere</a></li>
+            <li><a href="https://human-sphere.com/Anathematic">Anathematic — Human Sphere</a></li>
+            <li><a href="https://human-sphere.com/Unidron">Unidron — Human Sphere</a></li>
+            <li><a href="https://human-sphere.com/Ikadron">Ikadron — Human Sphere</a></li>
+            <li><a href="https://human-sphere.com/Umbra_Legate">Umbra Legate — Human Sphere</a></li>
+            <li><a href="https://human-sphere.com/Nourkias">Nourkias — Human Sphere</a></li>
+            <li><a href="https://www.human-sphere.com/Maakrep">Maakrep — Human Sphere</a></li>
+            <li><a href="https://human-sphere.com/index.php?title=Gwailo">Gwailo — Human Sphere</a></li>
+            <li><a href="https://infinity.fandom.com/wiki/Combined_Army">Combined Army — Infinity Wiki</a></li>
+            <li><a href="https://infinity.fandom.com/wiki/Shasvastii_Expeditionary_Force">Shasvastii Expeditionary Force — Infinity Wiki</a></li>
+            <li><a href="https://infinity.fandom.com/wiki/Onyx_Contact_Force">Onyx Contact Force — Infinity Wiki</a></li>
+          </ul>
+          <ul>
+            <li><a href="https://infinityuniverse.com/human-sphere/factions/combined-army/onyx">Onyx Contact Force — Infinity Universe</a></li>
+            <li><a href="https://infinityuniverse.com/blog/combined-army-reinforcements">The Exrah Commissariat — Infinity Universe</a></li>
+            <li><a href="https://infinityuniverse.com/en/factions/combined-army/vanilla">Combined Army — Infinity Universe</a></li>
+            <li><a href="https://infinityuniverse.com/human-sphere/factions/combined-army/morat">Morat Aggression Force — Infinity Universe</a></li>
+            <li><a href="https://www.infinitythegame.com/blog/news/item/423-avatar">Avatar — Infinity The Game</a></li>
+            <li><a href="https://www.belloflostsouls.net/2013/05/infinity-combined-army-faction-review.html">Combined Army Faction Review — Bell of Lost Souls</a></li>
+            <li><a href="https://www.belloflostsouls.net/2015/02/infinity-look-factions-part-3-tohaa.html">A Look at Factions: Tohaa — Bell of Lost Souls</a></li>
+            <li><a href="https://www.goonhammer.com/catching-snowflakes-shasvastii-expeditionary-force/">Catching Snowflakes: Shasvastii — Goonhammer</a></li>
+            <li><a href="https://www.goonhammer.com/infinity-n5-faction-initial-impressions-combined-army">N5 Combined Army — Goonhammer</a></li>
+            <li><a href="https://tvtropes.org/pmwiki/pmwiki.php/TabletopGame/Infinity2006">Infinity (2006) — TV Tropes</a></li>
+            <li><a href="https://www.wargamer.com/infinity/beats-warhammer-40k-metaplot">Infinity's evolving story — Wargamer</a></li>
+            <li><a href="https://modiphius.us/products/infinity-combined-army-sourcebook">Combined Army Sourcebook — Modiphius</a></li>
+            <li><a href="https://modiphius.net/en-us/products/infinity-tohaa-supplement">Tohaa Supplement — Modiphius</a></li>
+            <li><a href="https://techraptor.net/tabletop/guides/infinity-morat-aggression-forces-guide">Morat Aggression Forces Guide — TechRaptor</a></li>
+            <li><a href="https://diamondcomics.com/Home/1/1/3/591?articleID=109098">GTM #136: The Combined Army — Diamond</a></li>
+          </ul>
+        </div>
+      </section>
+
+      <footer class="colophon">
+        <span>Research dossier</span>
+        <span>Pre-contact material only</span>
+        <span>Claims marked A / B / C</span>
+      </footer>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var links = Array.prototype.slice.call(document.querySelectorAll('.rail a'));
+    if (!links.length || !('IntersectionObserver' in window)) return;
+    var byId = {};
+    links.forEach(function (a) { byId[a.getAttribute('href').slice(1)] = a; });
+    var seen = {};
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { seen[e.target.id] = e.isIntersecting; });
+      var current = null;
+      Object.keys(byId).forEach(function (id) {
+        if (seen[id] && !current) current = id;
+      });
+      links.forEach(function (a) { a.classList.remove('on'); });
+      if (current && byId[current]) byId[current].classList.add('on');
+    }, { rootMargin: '-10% 0px -70% 0px', threshold: 0 });
+    Object.keys(byId).forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) obs.observe(el);
+    });
+  })();
+</script>
