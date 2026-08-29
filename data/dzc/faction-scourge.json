@@ -1,8 +1,8 @@
 {
   "faction": "scourge",
   "name": "Scourge",
-  "sourcePdf": "DZC_Scourge_Stat_Cards_260804.pdf",
-  "version": "260804",
+  "sourcePdf": "DZC_Scourge_Stat_Cards_260821.pdf",
+  "version": "260821",
   "units": [
     {
       "id": "despot-command-walker",
@@ -134,10 +134,6 @@
           "name": "Stalker",
           "points": 25,
           "art": "assets/units/variants/scourge-battle-beetle--stalker.webp"
-        },
-        {
-          "name": "Slasher",
-          "points": 25
         }
       ],
       "specialVariants": [],
@@ -161,27 +157,9 @@
           "ac": "2+",
           "e": "8",
           "special": "Ineffective: Zones",
-          "box": "variant",
+          "box": "all",
           "variants": [
             "Stalker"
-          ],
-          "upgradePoints": null,
-          "exclusive": false,
-          "capacityDelta": [],
-          "boxUnresolved": false
-        },
-        {
-          "name": "Electroclaws",
-          "arc": "-",
-          "ma": "Full",
-          "r": "CC",
-          "att": "2",
-          "ac": "3+",
-          "e": "5",
-          "special": "Assault, Ineffective: Zones, Suppress",
-          "box": "variant",
-          "variants": [
-            "Slasher"
           ],
           "upgradePoints": null,
           "exclusive": false,
@@ -222,7 +200,7 @@
       "squadMin": 3,
       "squadMax": 9,
       "points": null,
-      "pointsRaw": "30pts (Killer, Bringer), 35pts (Hunter), 40pts (Reaper)",
+      "pointsRaw": "35pts (Hunter), 40pts (Reaper)",
       "rare": false,
       "unique": false,
       "type": "Vehicle",
@@ -234,14 +212,6 @@
       },
       "special": "Ev2, Skimmer",
       "variants": [
-        {
-          "name": "Killer",
-          "points": 30
-        },
-        {
-          "name": "Bringer",
-          "points": 30
-        },
         {
           "name": "Hunter",
           "points": 35,
@@ -284,24 +254,6 @@
           "boxUnresolved": false
         },
         {
-          "name": "Plasma Cluster",
-          "arc": "F/S/R",
-          "ma": "Full",
-          "r": "4”",
-          "att": "3",
-          "ac": "2+",
-          "e": "5",
-          "special": "Dissipate 1, Strafe",
-          "box": "variant",
-          "variants": [
-            "Killer"
-          ],
-          "upgradePoints": null,
-          "exclusive": false,
-          "capacityDelta": [],
-          "boxUnresolved": false
-        },
-        {
           "name": "Arc Caster",
           "arc": "F/S/R",
           "ma": "Full",
@@ -313,24 +265,6 @@
           "box": "variant",
           "variants": [
             "Reaper"
-          ],
-          "upgradePoints": null,
-          "exclusive": false,
-          "capacityDelta": [],
-          "boxUnresolved": false
-        },
-        {
-          "name": "Hatchling Hive",
-          "arc": "F/S/R",
-          "ma": "Full",
-          "r": "6”",
-          "att": "5",
-          "ac": "2+",
-          "e": "S2",
-          "special": "Seeker",
-          "box": "variant",
-          "variants": [
-            "Bringer"
           ],
           "upgradePoints": null,
           "exclusive": false,
@@ -619,6 +553,88 @@
       "art": "assets/units/oppressor-command-arthropod.webp"
     },
     {
+      "id": "ravager-aa-beetle",
+      "faction": null,
+      "name": "Ravager AA Beetle",
+      "category": "Support",
+      "squadMin": 3,
+      "squadMax": 6,
+      "points": 40,
+      "pointsRaw": "40pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "base": null,
+      "stats": {
+        "Mv": "6”",
+        "A": "5",
+        "DP": "2"
+      },
+      "special": "Infliltrate 8”, Resilient",
+      "variants": [
+        {
+          "name": "Ravager",
+          "points": 40,
+          "art": "assets/units/variants/ravager-aa-beetle--ravager.webp"
+        }
+      ],
+      "specialVariants": [],
+      "transport": {
+        "capacity": [],
+        "capacityMode": null,
+        "fills": [
+          {
+            "shape": "diamond",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Shard Flak Cannons",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "48/18”",
+          "att": "4",
+          "ac": "3+",
+          "e": "2",
+          "special": "AA, Strafe",
+          "box": "all",
+          "variants": [
+            "Ravager"
+          ],
+          "upgradePoints": null,
+          "exclusive": false,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Cutting Claws",
+          "arc": "-",
+          "ma": "Full",
+          "r": "CC",
+          "att": "1",
+          "ac": "2+",
+          "e": "6",
+          "special": "Assault, Demo 0",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "exclusive": false,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        }
+      ],
+      "upgradeNote": null,
+      "swaps": [],
+      "groupEquivalent": null,
+      "gear": [],
+      "page": 8,
+      "auxiliaryTransport": false,
+      "selectable": true,
+      "art": "assets/units/ravager-aa-beetle.webp"
+    },
+    {
       "id": "scourge-command-barge",
       "faction": null,
       "name": "Scourge Command Barge",
@@ -722,7 +738,7 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 8,
+      "page": 9,
       "auxiliaryTransport": false,
       "selectable": true,
       "art": "assets/units/scourge-command-barge.webp"
@@ -840,121 +856,10 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 9,
-      "auxiliaryTransport": false,
-      "selectable": true,
-      "art": "assets/units/scourge-gunship.webp"
-    },
-    {
-      "id": "scourge-support-beetle",
-      "faction": null,
-      "name": "Scourge Support Beetle",
-      "category": "Support",
-      "squadMin": 3,
-      "squadMax": 6,
-      "points": null,
-      "pointsRaw": "35pts (Weaver), 40pts (Ravager)",
-      "rare": false,
-      "unique": false,
-      "type": "Vehicle",
-      "base": null,
-      "stats": {
-        "Mv": "6”",
-        "A": "5",
-        "DP": "2"
-      },
-      "special": "Infliltrate 8”, Resilient (All), Obscurer 4” (Weaver)",
-      "variants": [
-        {
-          "name": "Weaver",
-          "points": 35
-        },
-        {
-          "name": "Ravager",
-          "points": 40,
-          "art": "assets/units/variants/scourge-support-beetle--ravager.webp"
-        }
-      ],
-      "specialVariants": [
-        {
-          "rule": "Obscurer 4”",
-          "variants": [
-            "Weaver"
-          ]
-        }
-      ],
-      "transport": {
-        "capacity": [],
-        "capacityMode": null,
-        "fills": [
-          {
-            "shape": "diamond",
-            "n": 1
-          }
-        ]
-      },
-      "weapons": [
-        {
-          "name": "Shard Flak Cannons",
-          "arc": "F/S",
-          "ma": "Full",
-          "r": "48/18”",
-          "att": "4",
-          "ac": "3+",
-          "e": "2",
-          "special": "AA, Strafe",
-          "box": "variant",
-          "variants": [
-            "Ravager"
-          ],
-          "upgradePoints": null,
-          "exclusive": false,
-          "capacityDelta": [],
-          "boxUnresolved": false
-        },
-        {
-          "name": "Filament Cloudweaver",
-          "arc": "F/S",
-          "ma": "Full",
-          "r": "6”",
-          "att": "1",
-          "ac": "2+",
-          "e": "0",
-          "special": "AA, Concussion",
-          "box": "variant",
-          "variants": [
-            "Weaver"
-          ],
-          "upgradePoints": null,
-          "exclusive": false,
-          "capacityDelta": [],
-          "boxUnresolved": false
-        },
-        {
-          "name": "Cutting Claws",
-          "arc": "-",
-          "ma": "Full",
-          "r": "CC",
-          "att": "1",
-          "ac": "2+",
-          "e": "6",
-          "special": "Assault, Demo 0",
-          "box": "all",
-          "variants": [],
-          "upgradePoints": null,
-          "exclusive": false,
-          "capacityDelta": [],
-          "boxUnresolved": false
-        }
-      ],
-      "upgradeNote": null,
-      "swaps": [],
-      "groupEquivalent": null,
-      "gear": [],
       "page": 10,
       "auxiliaryTransport": false,
       "selectable": true,
-      "art": "assets/units/scourge-support-beetle.webp"
+      "art": "assets/units/scourge-gunship.webp"
     },
     {
       "id": "scourge-support-crawler",

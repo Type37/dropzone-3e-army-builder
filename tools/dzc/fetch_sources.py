@@ -27,6 +27,7 @@ import argparse
 import os
 import re
 import sys
+import urllib.error
 import urllib.request
 
 PAGE = "https://ttcombat.com/pages/dropzone-commander-resources"
@@ -38,20 +39,36 @@ DEST = os.path.join("rules")
 # freely otherwise -- the Bioficer file was "Stat_Sheets" in July and
 # "Stat_Cards" in August, which is exactly the sort of change a hardcoded name
 # would have turned into a silent "no PDF for Bioficer".
+# A PATTERN per source, not a prefix, because the EDITION POINT moves and it
+# sits in the MIDDLE of the name. 3.01 became 3.02 on 2026-08-21: the rulebook
+# and the errata were both renamed and a third document appeared beside them.
+# A stem of "A5_Dropzone_3.01_Rulebook" then matched nothing, and --check
+# reported "the resources page no longer offers anything matching" -- which
+# reads as a page that has dropped a file, not as the one release you least
+# want to miss. The version is a wildcard now, so whichever point release the
+# page is serving is the one taken.
+#
+# `key` is what identifies the file on disk: two documents that differ only by
+# version are the same source at different ages, and only the newest is kept.
 SOURCES = [
-    ("DZC_UCM_Stat", "scan_statcards"),
-    ("DZC_Scourge_Stat", "scan_statcards"),
-    ("DZC_PHR_Stat", "scan_statcards"),
-    ("DZC_Shaltari_Stat", "scan_statcards"),
-    ("DZC_Resistance_Stat", "scan_statcards"),
-    ("DZC_Bioficer_Stat", "scan_statcards"),
-    ("Behemoth_Rules_Stats", "scan_behemoths"),
-    ("A5_Dropzone_3.01_Rulebook", "scan_rulebook"),
-    ("DZC_Errata_3.01", "reference"),
+    ("ucm-cards", r"^DZC_UCM_Stat", "scan_statcards"),
+    ("scourge-cards", r"^DZC_Scourge_Stat", "scan_statcards"),
+    ("phr-cards", r"^DZC_PHR_Stat", "scan_statcards"),
+    ("shaltari-cards", r"^DZC_Shaltari_Stat", "scan_statcards"),
+    ("resistance-cards", r"^DZC_Resistance_Stat", "scan_statcards"),
+    ("bioficer-cards", r"^DZC_Bioficer_Stat", "scan_statcards"),
+    ("behemoths", r"^Behemoth_Rules_Stats", "scan_behemoths"),
+    ("rulebook", r"^A5_Dropzone_[\d.]+_Rulebook", "scan_rulebook"),
+    ("errata", r"^(?:DZC_Errata|Dropzone_Commander_[\d.]+_Errata)", "reference"),
+    # New with 3.02, and the only document that says what the errata CHANGED
+    # per faction rather than in the core rules.
+    ("faction-errata", r"Faction_Errata", "reference"),
 ]
 
 PDF_RE = re.compile(r"https://cdn\.shopify\.com/[^\"'>\s]+\.pdf(?:\?[^\"'>\s]*)?")
 DATE_RE = re.compile(r"_(\d{6})(?:\.pdf)?$")
+# The edition point in a rulebook or errata name: "A5_Dropzone_3.02_Rulebook".
+POINT_RE = re.compile(r"_(\d+(?:\.\d+)+)_")
 
 
 def stamp(name: str) -> str:
@@ -65,33 +82,94 @@ def stamp(name: str) -> str:
 
 
 def published(html: str) -> dict[str, tuple[str, str]]:
-    """{stem: (filename, url)} for the newest file the page offers per stem."""
+    """{key: (filename, url)} for the newest file the page offers per source."""
     out: dict[str, tuple[str, str]] = {}
     for url in sorted(set(PDF_RE.findall(html))):
         name = url.split("/")[-1].split("?")[0]
-        for stem, _ in SOURCES:
-            if not name.startswith(stem):
+        for key, pattern, _ in SOURCES:
+            if not re.search(pattern, name):
                 continue
-            have = out.get(stem)
-            if have is None or stamp(name) > stamp(have[0]):
-                out[stem] = (name, url)
+            have = out.get(key)
+            if have is None or version_of(name) > version_of(have[0]):
+                out[key] = (name, url)
     return out
 
 
-def on_disk(stem: str) -> str | None:
-    """The newest file we already hold for a stem."""
+def version_of(name: str) -> tuple[str, str]:
+    """What makes one release of a source newer than another.
+
+    Two numbers can move and they are not the same number: the stat cards carry
+    a YYMMDD stamp, and the rulebook carries an edition point (3.01 -> 3.02)
+    with no date at all. Sorted on the pair, so a document with only one of them
+    still orders correctly against its own older self.
+
+    Sorting whole filenames instead is the trap: "Stat_Sheets_260730" sorts
+    ABOVE "Stat_Cards_260804" on the S, which would pin the scanner to the older
+    file for as long as both were on disk."""
+    stem = os.path.splitext(name)[0]
+    m = POINT_RE.search(stem)
+    point = m.group(1) if m else ""
+    # Zero-padded so "3.10" sorts above "3.9" rather than below it.
+    if point:
+        point = ".".join(p.zfill(3) for p in point.split("."))
+    return (point, stamp(name))
+
+
+def on_disk(key: str, pattern: str) -> str | None:
+    """The newest file we already hold for a source."""
     if not os.path.isdir(DEST):
         return None
-    got = [f for f in os.listdir(DEST) if f.startswith(stem) and f.endswith(".pdf")]
-    return max(got, key=stamp) if got else None
+    got = [f for f in os.listdir(DEST)
+           if f.endswith(".pdf") and re.search(pattern, f)]
+    return max(got, key=version_of) if got else None
 
 
-def fetch(url: str, path: str) -> int:
+def get(url: str) -> bytes:
     req = urllib.request.Request(url, headers={"User-Agent": "dzc-builder/1.0"})
-    with urllib.request.urlopen(req, timeout=180) as r, open(path, "wb") as fh:
-        data = r.read()
-        fh.write(data)
-    return len(data)
+    with urllib.request.urlopen(req, timeout=180) as r:
+        return r.read()
+
+
+# A stamp of the wrong LENGTH is a typo in the link, not a date.
+TYPO_STAMP_RE = re.compile(r"_(\d{7,8})(?=\.pdf$)")
+
+
+def fetch(url: str, path: str) -> tuple[int, str]:
+    """Download one source. Returns (bytes, the name it actually arrived as).
+
+    THE PAGE CAN LINK A FILE THAT IS NOT THERE. On 2026-08-21 the Scourge cards
+    went up as "DZC_Scourge_Stat_Cards_2608021.pdf" -- seven digits where the
+    stamp is six -- and that URL 404s, while the same file with the stamp typed
+    correctly serves fine. Every other faction updated that day, so taking the
+    404 at face value would have left one faction a release behind with nothing
+    but a line in a log to say so.
+
+    So a 404 is retried ONCE against the corrected stamp, and the file is saved
+    under the name that worked. Anything else, or a second failure, is raised:
+    this is a workaround for one malformed link, not a URL guesser."""
+    try:
+        data = get(url)
+        with open(path, "wb") as fh:
+            fh.write(data)
+        return len(data), os.path.basename(path)
+    except urllib.error.HTTPError as exc:
+        if exc.code != 404:
+            raise
+        name = os.path.basename(path)
+        m = TYPO_STAMP_RE.search(name)
+        if not m:
+            raise
+        # 2608021 -> 260821: the digit that does not belong is the one that
+        # makes it seven, and it is not the year.
+        digits = m.group(1)
+        fixed_name = name.replace(digits, digits[:4] + digits[-2:], 1)
+        fixed_url = url.replace(name, fixed_name, 1)
+        print(f"  !! {name} is a broken link on the page; trying {fixed_name}")
+        data = get(fixed_url)
+        path = os.path.join(os.path.dirname(path), fixed_name)
+        with open(path, "wb") as fh:
+            fh.write(data)
+        return len(data), fixed_name
 
 
 def main() -> int:
@@ -104,7 +182,7 @@ def main() -> int:
     html = urllib.request.urlopen(req, timeout=120).read().decode("utf-8", "replace")
     live = published(html)
 
-    missing = [stem for stem, _ in SOURCES if stem not in live]
+    missing = [key for key, _, _ in SOURCES if key not in live]
     for stem in missing:
         # Not a warning. Every stem here is something the pipeline reads, so one
         # the page has stopped offering means either a rename we must follow or
@@ -112,11 +190,11 @@ def main() -> int:
         print(f"  !! the resources page no longer offers anything matching {stem!r}")
 
     stale, fresh = [], []
-    for stem, feeds in SOURCES:
-        if stem not in live:
+    for key, pattern, feeds in SOURCES:
+        if key not in live:
             continue
-        name, url = live[stem]
-        have = on_disk(stem)
+        name, url = live[key]
+        have = on_disk(key, pattern)
         if have == name:
             fresh.append(name)
         else:
@@ -140,7 +218,7 @@ def main() -> int:
     for have, name, url, _feeds in stale:
         path = os.path.join(DEST, name)
         try:
-            n = fetch(url, path)
+            n, name = fetch(url, path)
         except Exception as exc:                            # noqa: BLE001
             print(f"  FAILED   {name}: {exc}")
             failed += 1

@@ -896,7 +896,7 @@
         "A": "5",
         "DP": "7"
       },
-      "special": "Command Centre, Drone Base 4: Starsprites",
+      "special": "Command Centre, Drone Base 4: Starsprites, Large",
       "variants": [],
       "specialVariants": [],
       "transport": {
@@ -1036,6 +1036,22 @@
           "ac": "3+",
           "e": "5",
           "special": "Alt 1, Pen 6+, Strafe",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "exclusive": false,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        },
+        {
+          "name": "Twin UM-5 Gatling",
+          "arc": "F/S",
+          "ma": "Full",
+          "r": "24/12”",
+          "att": "5",
+          "ac": "3+",
+          "e": "S2",
+          "special": "",
           "box": "all",
           "variants": [],
           "upgradePoints": null,
@@ -1480,7 +1496,7 @@
         "A": "3",
         "DP": "5"
       },
-      "special": "Fast Mover",
+      "special": "Fast Mover, Large",
       "variants": [],
       "specialVariants": [],
       "transport": {
@@ -2102,7 +2118,7 @@
         "A": "3",
         "DP": "9"
       },
-      "special": "AWACS 18” (All), Command Centre, Scanner (Phoenix)",
+      "special": "AWACS 18” (All), Command Centre, Scanner (Phoenix), Large",
       "variants": [
         {
           "name": "Phoenix",

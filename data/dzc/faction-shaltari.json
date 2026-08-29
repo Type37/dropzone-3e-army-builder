@@ -1,8 +1,8 @@
 {
   "faction": "shaltari",
   "name": "Shaltari",
-  "sourcePdf": "DZC_Shaltari_Stat_Cards_260805.pdf",
-  "version": "260805",
+  "sourcePdf": "DZC_Shaltari_Stat_Cards_260821.pdf",
+  "version": "260821",
   "units": [
     {
       "id": "brave-warsuits",
@@ -146,7 +146,7 @@
       "name": "Shaltari Battlestrider",
       "category": "Standard",
       "squadMin": 2,
-      "squadMax": 4,
+      "squadMax": 6,
       "points": 50,
       "pointsRaw": "50pts",
       "rare": false,
@@ -251,7 +251,7 @@
       "name": "Shaltari Main Grav-tank",
       "category": "Standard",
       "squadMin": 3,
-      "squadMax": 6,
+      "squadMax": 9,
       "points": null,
       "pointsRaw": "30pts (Tomahawk), 40pts (Kukri)",
       "rare": false,
@@ -1469,7 +1469,7 @@
           "att": "1",
           "ac": "2+",
           "e": "10",
-          "special": "Critical 1, Demo 3, Devastator 1, Particle, T2",
+          "special": "Critical 1, Demo 2, Devastator 1, Particle, T2",
           "box": "variant",
           "variants": [
             "Ocelot"
@@ -1557,7 +1557,7 @@
           "r": "∞”",
           "att": "1",
           "ac": "2+",
-          "e": "8",
+          "e": "10",
           "special": "Critical 1, Demo 2, Devastator 1, Particle, T2",
           "box": "variant",
           "variants": [
@@ -2021,7 +2021,7 @@
       "name": "Shaltari Scoutstrider",
       "category": "Vanguard",
       "squadMin": 2,
-      "squadMax": 4,
+      "squadMax": 6,
       "points": null,
       "pointsRaw": "45pts (Widow), 55pts (Recluse)",
       "rare": false,

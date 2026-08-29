@@ -1,8 +1,8 @@
 {
   "faction": "phr",
   "name": "PHR",
-  "sourcePdf": "DZC_PHR_Stat_Cards_260804.pdf",
-  "version": "260804",
+  "sourcePdf": "DZC_PHR_Stat_Cards_260821.pdf",
+  "version": "260821",
   "units": [
     {
       "id": "angelos-jetskimmer",
@@ -665,7 +665,7 @@
         "A": "5",
         "DP": "1"
       },
-      "special": "Ev2, Skimmer (All), Shield friendly Vehicles 3” 5+ (Aurora)",
+      "special": "Ev2, Skimmer (All), Shield: Friendly Vehicles 3” 5+ (Aurora)",
       "variants": [
         {
           "name": "Diana",
@@ -680,7 +680,7 @@
       ],
       "specialVariants": [
         {
-          "rule": "Shield friendly Vehicles 3” 5+",
+          "rule": "Shield: Friendly Vehicles 3” 5+",
           "variants": [
             "Aurora"
           ]
@@ -1173,9 +1173,9 @@
           "name": "RX-13 Cannon, Seeker Submunitions",
           "arc": "F/S",
           "ma": "Full",
-          "r": "36/12”",
-          "att": "4",
-          "ac": "2+",
+          "r": "24/12”",
+          "att": "3",
+          "ac": "3+",
           "e": "S1",
           "special": "Alt-1, Concussion, Seeker",
           "box": "variant",

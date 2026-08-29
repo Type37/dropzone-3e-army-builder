@@ -1458,6 +1458,90 @@ def parse_gear(page) -> list[Gear]:
     return out
 
 
+# ---------------------------------------------------------------- faction errata
+
+# WHAT THE ERRATA SAYS AND THE CARD DOES NOT.
+#
+# TTCombat reissued five of the six faction card sets on 2026-08-21 alongside
+# the 3.02 errata, and every change in that document for those five arrived in
+# the cards. UCM's cards were NOT reissued -- they are still the 260805 file --
+# so for four UCM Units the only current source is
+# "Dropzone_Commander_3.02_Faction_Errata_Updates.pdf", which says:
+#
+#     UCM Units
+#     Ferrum Dronebase        Add Large to Special.
+#     Osprey Gunship          Add the following weapon:
+#                             Twin UM-5 Gatling, Arc F/S, MA Full, R 24/12",
+#                             Att 5, Ac 3+, E S2, Special -
+#     Dominion Heavy Bomber   Add Large to Special.
+#     UCM Super Gunship       Add Large to Special.
+#
+# This is the one place the app knowingly holds something a card does not
+# print, so the bar is the same as KNOWN_PRINTED_SPECIAL's: a published TTCombat
+# document says it in as many words, nothing is invented, and every entry names
+# where it came from. Large is not cosmetic -- 10.1.18 governs how a Weapon
+# gets into range against it -- and a missing gun is a Unit that cannot fight.
+#
+# Every patch is IDEMPOTENT and checks first, so the day UCM's cards are
+# reissued this quietly becomes a no-op instead of adding "Large, Large" or a
+# second Gatling. --errata-report says which entries actually did anything, so
+# a table that has gone stale is visible rather than silent.
+ERRATA_SOURCE = "Dropzone_Commander_3.02_Faction_Errata_Updates.pdf"
+
+ERRATA_SPECIAL = {
+    # faction: {unit name: [rules to add to Special if absent]}
+    "ucm": {
+        "Ferrum Drone Base": ["Large"],
+        "Dominion Heavy Bomber": ["Large"],
+        "UCM Super Gunship": ["Large"],
+    },
+}
+
+ERRATA_WEAPONS = {
+    "ucm": {
+        "Osprey Gunship": [{
+            "name": "Twin UM-5 Gatling",
+            "arc": "F/S",
+            "ma": "Full",
+            "r": "24/12”",
+            "att": "5",
+            "ac": "3+",
+            "e": "S2",
+            "special": "",
+            "box": "all",
+            "variants": [],
+            "upgradePoints": None,
+            "exclusive": False,
+            "capacityDelta": [],
+            "boxUnresolved": False,
+        }],
+    },
+}
+
+
+def apply_errata(unit, faction_id) -> list[str]:
+    """Bring one Unit up to the current errata. Returns what it changed."""
+    done = []
+    name = (unit.get("name") or "").strip()
+
+    for rule in ERRATA_SPECIAL.get(faction_id, {}).get(name, []):
+        have = [t.strip() for t in (unit.get("special") or "").split(",")]
+        if rule in have:
+            continue
+        # "-" is how a card prints an empty Special cell, and the scanner keeps
+        # it as an empty string; either way the rule becomes the whole cell.
+        unit["special"] = f"{unit['special']}, {rule}" if unit.get("special") else rule
+        done.append(f"{name}: +Special {rule}")
+
+    for spec in ERRATA_WEAPONS.get(faction_id, {}).get(name, []):
+        if any((w.get("name") or "").strip() == spec["name"] for w in unit["weapons"]):
+            continue
+        unit["weapons"].append(dict(spec))
+        done.append(f"{name}: +Weapon {spec['name']}")
+
+    return done
+
+
 # A Special line that is WRONG ON THE CARD, keyed by Unit name, with what it
 # should have said.
 #
@@ -1884,6 +1968,14 @@ def scan(pdf_path, faction_id, faction_name,
             units.append(u)
         elif "Squad Size" in page.get_text():
             skipped.append(((page.number or 0) + 1, "has Squad Size but did not parse"))
+    # After every page, so a Unit is complete before the errata is laid on top.
+    errata: list[str] = []
+    for u in units:
+        errata.extend(apply_errata(u, faction_id))
+    if errata:
+        print(f"    errata ({ERRATA_SOURCE}):")
+        for line in errata:
+            print(f"      {line}")
     ver = re.search(r"_(\d{6})\.pdf$", os.path.basename(pdf_path))
     data: FactionFile = {
         "faction": faction_id,

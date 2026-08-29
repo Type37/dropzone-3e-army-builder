@@ -1,8 +1,8 @@
 {
   "faction": "resistance",
   "name": "Resistance",
-  "sourcePdf": "DZC_Resistance_Stat_Cards_260804.pdf",
-  "version": "260804",
+  "sourcePdf": "DZC_Resistance_Stat_Cards_260821.pdf",
+  "version": "260821",
   "units": [
     {
       "id": "mcclellan-command-bunker",
@@ -1779,7 +1779,7 @@
           "att": "1",
           "ac": "2+",
           "e": "4",
-          "special": "AA, Critical-1, L1, T2",
+          "special": "AA, Critical 1, L1, T2",
           "box": "all",
           "variants": [],
           "upgradePoints": null,
@@ -1795,7 +1795,7 @@
           "att": "1",
           "ac": "2+",
           "e": "4",
-          "special": "AA, Critical-1, L1, T2",
+          "special": "AA, Critical 1, L1, T2",
           "box": "all",
           "variants": [],
           "upgradePoints": null,

@@ -1,8 +1,9 @@
 {
   "game": "Dropzone Commander",
   "edition": "3rd Edition",
-  "rulebook": "3.01",
+  "rulebook": "3.02",
   "note": "Force-construction constants, transcribed from the rulebook rather than scanned: these are prose tables, not stat cards, and they change only with an edition. Every entry cites its section so it can be re-checked against a new printing.",
+  "checkedAgainst": "A5_Dropzone_3.02_Rulebook.pdf (21 August 2026). Chapter 3 was diffed page by page against 3.01 when the point release landed: the only difference is the capitalisation of 'Standard' in the category table, so every number below still stands. 3.02's changes are in play — initiative, embarking, zones, and the rule glossary — none of which is army construction.",
 
   "gameSizes": [
     { "id": "skirmish",   "label": "Skirmish",   "min": 501,  "max": 1000, "maxGroups": 9,  "source": "3.1" },

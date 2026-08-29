@@ -1,5 +1,5 @@
 {
- "source": "A5_Dropzone_3.01_Rulebook_Compressed.pdf",
+ "source": "A5_Dropzone_3.02_Rulebook.pdf",
  "chapters": {
   "10. Unit Special Rules": [
    44,
@@ -47,7 +47,7 @@
    "alias": null,
    "parameterised": true,
    "match": "^\\s*AWACS[\\s:/\\-]*([^\\s]+?)[”″\\\"]?\\s*$",
-   "text": "Enemy Aircraft within X” of this Unit may be attacked with a +1Ac bonus.",
+   "text": "Enemy Aircraft within X” of one or more Units with this rule may be attacked with +1Ac bonus.",
    "page": 44
   },
   {
@@ -177,7 +177,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Flying[\\s:/\\-]*High\\s*$",
-   "text": "A Fast Mover Squad can elect to fly high at the end of its move, before pivoting– indicate this with a token. High-fliers can pivot up to 180 degrees. High-fliers can only target and be targeted by other Fast Movers flying high. Nothing blocks Line of Sight to high-fliers. A high-flier can end its move in illegitimate places, including over Zones— remove it from its flight stand/substitute if for a token if it can’t stand up. The Squad remains flying high until it leaves the Table or elects to return to normal height. It may do this at the end of its move, before pivoting.",
+   "text": "A Fast Mover Squad can elect to fly high at the end of its move, before pivoting– indicate this with a token. High-fliers can pivot up to 180 degrees. High-fliers can only target and be targeted by other Fast Movers flying high. Nothing blocks Line of Sight to high-fliers. A high-flier can end its move in illegitimate places, including over Zones - remove it from its flight stand/substitute a token for it if it can’t stand up. The Squad remains flying high until it leaves the Table or elects to return to normal height. It may do this at the end of its move, before pivoting.",
    "page": 45
   },
   {
@@ -229,7 +229,7 @@
    "alias": null,
    "parameterised": true,
    "match": "^\\s*Infiltrate[\\s:/\\-]*([^\\s]+?)[”″\\\"]?\\s*$",
-   "text": "This Unit may always Deploy up to X” from their Territory. Infiltrating Infantry may Deploy as Occupiers in a Zone, but that Zone must be wholly within X” of their Territory. Transports of Squads with Infiltrate that choose to Infiltrate must begin Ready— they are allowed to start empty. Otherwise, Units cannot Infiltrate if part of a Group containing Units without Infiltrate. A Transport with Infiltrate confers Infiltrate to all Units aboard.",
+   "text": "This Unit may always Deploy up to X” from their Territory. Infiltrating Infantry may Deploy as Occupiers in a Zone, but that Zone must be wholly within X” of their Territory. Non-Auxiliary Transports of Squads with Infiltrate that choose to Infiltrate must begin Ready—they are allowed to start empty. Otherwise, Units cannot Infiltrate if part of a Group containing Units without Infiltrate. A Transport with Infiltrate confers Infiltrate to all Units aboard.",
    "page": 45
   },
   {
@@ -437,7 +437,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Strong\\s*$",
-   "text": "Per Squad with two or more Strong Units in a CQB, one enemy Squad of your choosing suffers -1DF for that CQB, assigned at the start of step 1 of that CQB.",
+   "text": "Per Squad with two or more Strong Units in a CQB, one enemy Squad of your choosing suffers -1DF for that CQB, assigned at the start of step 1 of that CQB. If both players have Strong Units involved, the player without the Initiative chooses an enemy Squad(s) to affect first.",
    "page": 47
   },
   {
@@ -450,7 +450,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Surveyor\\s*$",
-   "text": "If one or more Vehicles with Surveyor are within 1” of a Zone with friendly Occupiers at the end of the Round, you may place one Mapping Token on that Zone. When Searching for an Objective, you may spend two Mapping Tokens on that Zone to find the Objective on a 2+. If you have no Vehicles with Surveyor within 1” of a Zone at the end of any activation (yours or your opponent’s), remove all your Mapping Tokens from it.",
+   "text": "If one or more friendly Units with Surveyor are within 1” of a Zone with friendly Occupiers at the end of the Round, you may place one Mapping Token on that Zone. When Searching for an Objective, you may spend two Mapping Tokens on that Zone to find the Objective on a 2+. If you have no friendly Units with Surveyor within 1” of a Zone at the end of any activation (yours or your opponent’s), remove all your Mapping Tokens from it.",
    "page": 47
   },
   {
@@ -567,7 +567,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Assault\\s*$",
-   "text": "This weapon may attack on the same round as Disembarking and/or entering a Zone. If it does so it suffers -2Ac, or -1Ac if it has a R of CC. If a Unit with an Assault Weapon Disembarks then moves 0”, it counts as having moved 1” for attacking purposes.",
+   "text": "This Weapon may attack on the same round as Disembarking from a Transport, and/or entering or exiting a Zone. If it does any of these it suffers -2 Ac, or -1 Ac if it has a R of CC. It still may not attack in the same Round as Embarking into a Transport. If a Unit with an Assault Weapon Disembarks then moves 0”, it counts as having moved 1” for attacking purposes.",
    "page": 48
   },
   {
@@ -697,7 +697,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Field\\s*$",
-   "text": "This Weapon does not target anything. Instead, each Zone, Vehicle, and Infantry Unit within its R are assigned attacks equal to its Att. If its R exceeds 6”, Units within half its R are assigned attacks equal to twice its Att. Since it does not target anything, Line of Sight is not needed and friendlies may be hit. Units within this Weapon’s Squad are not damaged by it and cannot receive Concussed, Jammed, or Suppressed Status Tokens from it. If this Weapon has AA, you may assign its attacks only to Aircraft instead of Zones, Vehicles, and Infantry. If this Weapon places Status Tokens, place one on every Squad within its R that could receive the Token. This counts as placing one of that Token.",
+   "text": "This Weapon does not target anything. Instead, each Zone, Vehicle, and Infantry Unit within its R are assigned attacks equal to its Att. Since it does not target anything, Line of Sight is not needed and friendlies may be hit. Units within this Weapon’s Squad are not damaged by it and cannot receive Concussed, Jammed, or Suppressed Status Tokens from it. If this Weapon has AA, its attacks are assigned to Aircraft instead of Zones, Vehicles, and Infantry. If this Weapon places Status Tokens, place one on every Squad within its R that could receive the Token. This counts as placing one of that Token.",
    "page": 49
   },
   {
@@ -762,7 +762,7 @@
    "alias": null,
    "parameterised": true,
    "match": "^\\s*Incendiary[\\s:/\\-]*(.+?)\\s*$",
-   "text": "Each hit from this Weapon that inflicts 1 or more damage against a Building inflicts X additional Collateral Damage hits. Each hit that inflicts 1 or more damage against an Area inflicts 2x X additional Collateral Damage hits",
+   "text": "Each hit from this Weapon that inflicts 1 or more damage against a Building inflicts X additional Collateral Damage hits. Each hit that inflicts 1 or more damage against an Area inflicts 2x X additional Collateral Damage hits.",
    "page": 49
   },
   {
@@ -944,7 +944,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Strafe\\s*$",
-   "text": "This Weapon may freely split its attacks against targets within 3” of at least one other Unit it targets. This must be a single chain of targets.",
+   "text": "When attacking during its Unit’s activation, this Weapon may freely split its attacks between Units within 3” of at least one other Unit it targets.. This must be a single chain of targets.",
    "page": 50
   },
   {
@@ -1126,7 +1126,7 @@
    "alias": null,
    "parameterised": true,
    "match": "^\\s*Bikes[\\s:/\\-]*(.+?)\\s*$",
-   "text": "When outside a Zone, this Infantry Unit is treated as a Vehicle with an A value of X, although Blast Weapons still inflict D6 hits against them. In addition, Bikes have Resilient. Small Arms Weapons always treat units with Bikes as Infantry, meaning they cannot combine attacks and inflict 1 DP per hit. Bikes units outside Zones may always roll their DF against Small Arms hits, even if not Obscured. They may still enter Zones. Bikes lose any Ev and Weapons while Occupying.",
+   "text": "When outside a Zone, this Infantry Unit is treated as a Vehicle with an A value of X, although Blast Weapons still inflict D6 hits against them. In addition, Bikes have Resilient and are not affected by Devastator, and are still treated as Infantry for RM tokens placed by enemy Decon weapons (see Bioficer Weapon Special Rules). Small Arms Weapons always treat units with Bikes as Infantry, meaning they cannot combine attacks and inflict 1 DP per hit. Bikes units outside Zones may always roll their DF against Small Arms hits, even if not Obscured. They may still enter Zones. Bikes lose any Ev and Weapons while Occupying.",
    "page": 1
   },
   {
@@ -1178,7 +1178,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Subterranean\\s*$",
-   "text": "If your Army contains Subterranean Units, any of your Squads may start the game in Holding. Unarmed Subterranean Units do not count against your number of allowed Groups. Subterranean Units with a Transport Symbol are not taken with any Units aboard. When a Subterranean Squad enters from Ready, it may be placed on Good or Exceptional Ground anywhere on the Table. From then on, unarmed Subterranean Squads cannot be activated. Squads in Holding may Disembark from ANY Subterranean Unit/s providing their Transport Symbols match. Squads which Embark into Subterranean Units are placed into Holding. Any Objects carried by Units Embarking into it leave the Table. Any Units which Embark cannot re-enter the Table that Round or next Round. Squads may Embark or Disembark into or from a Subterranean Unit outside of that Subterranean Unit’s activation. All other Embarking/Disembarking rules and restrictions still apply. Additionally, Subterranean Units may not Embark/ Disembark more than their Symbol indicates per Round, but they may do both. For example, one with could Embark , then Disembark . Units may still Embark/Disembark into/from Subterranean Transports if enemy Vehicles are within 3” of them.",
+   "text": "If your Army contains Subterranean Units, any of your Groups may start the game in Holding. The entire Group, including its transports, must be able to disembark from the Subterranean Units in your army, or be embarked in Transports capable of doing so. Unarmed Subterranean Units do not count against your number of allowed Groups. Subterranean Units with a Transport Symbol are not taken with any Units aboard. When a Subterranean Squad enters from Ready, it may be placed on Good or Exceptional Ground anywhere on the Table. If it is unarmed, it cannot activate from then on. Squads in Holding may Disembark from ANY Subterranean Unit(s) providing their Transport Symbols match. Squads which Embark into Subterranean Units are placed into Holding. Any Objects carried by Units Embarking into it leave the Table. Any Units which Embark cannot re-enter the Table that Round or next Round. Squads may Embark or Disembark into or from a Subterranean Unit outside of that Subterranean Unit’s activation. All other Embarking/Disembarking rules and restrictions still apply. Additionally, Subterranean Units may not Embark/ Disembark more than their Symbol indicates per Round, but they may do both. For example, one with could Embark , then Disembark . Units in Holding at the end of the game only count as destroyed if you have no Units which could return them to the Table if there were another Round.",
    "page": 1
   },
   {
@@ -1243,7 +1243,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Razorworm[\\s:/\\-]*Pod\\s*$",
-   "text": "This Weapon may only target Zones. For each DP it inflicts, place 1 Unit of Razorworms in that Zone. All Razorworms placed in a Zone by Razorworm Pods form one Squad at the end of their Group’s attacks, within that Group. These Razorworms count as having Embarked into that Zone and may do nothing further that Round except fight in a CQB.",
+   "text": "This Weapon may only target Zones. For each DP it inflicts, place 1 Unit of Razorworms in that Zone. All Razorworms placed in a Zone by Razorworm Pods form one Squad at the end of their Group’s attacks, within that Group. These Razorworms count as having Embarked into that Zone and may do nothing further that Round except fight in a CQB. Razorworms created via Razorworm Pods do not grant KP or otherwise count for Scoring, but do Contest or Control Zones as normal.",
    "page": 1
   },
   {
@@ -1269,7 +1269,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Gate\\s*$",
-   "text": "If your Army contains Gates, any of your Squads may start the game in Holding. Gates are always Transports but are not taken with any Units aboard. Gates do not count against your number of allowed Groups. For Direct Deployment, each Gate is treated as a Group. A Gate is never part of another Group, but any number of them which have not yet been activated that Round may be activated together with any non-Gate Group. They then complete that activation as if they were a Group. Gates can only be activated this way except during in the Orphaned Transport Activations step of the Activation Phase, where any un-activated Gates must activate together. Squads in Holding may Disembark from ANY Gate/s providing their Transport Symbols match. Squads which Embark into Gates are placed into Holding. Any Objects they are carrying are passed to the Gate, even if it’s an Aircraft. Squads may Embark or Disembark into or from a Gate outside of that Gate’s activation. All other Embarking/Disembarking rules and restrictions still apply. Additionally, Gates may not Embark/Disembark more than their Symbol indicates per Round, but they may do both. For example, a Gate with could Embark , then Disembark .",
+   "text": "If your Army contains Gates, any of your Squads may start the game in Holding. Gates are always Transports but are not taken with any Units aboard. Gates do not count against your number of allowed Groups. For Direct Deployment, each Gate is treated as a Group. A Gate is never part of another Group, but any number of them which have not yet been activated that Round may be activated together with any non-Gate Group. They then complete that activation as if they were a Group. Gates can only be activated this way except during in the Orphaned Transport Activations step of the Activation Phase, where any un-activated Gates must activate together. Squads in Holding may Disembark from ANY Gate/s providing their Transport Symbols match. Squads which Embark into Gates are placed into Holding. Any Objects they are carrying are passed to the Gate, even if it’s an Aircraft. Squads may Embark or Disembark into or from a Gate during their own Activation, even if the Gate is not a part of that Activation. All other Embarking/Disembarking rules and restrictions still apply. Additionally, Gates may not Embark/Disembark more than their Symbol indicates per Round, but they may do both. For example, a Gate with could Embark , then Disembark . Units in Holding at the end of the game only count as destroyed if you have no Units which could return them to the Table if there were another Round.",
    "page": 1
   },
   {
@@ -1464,7 +1464,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Exceptions\\s*$",
-   "text": "Behemoths are so huge that several things cannot affect them: 1. Command Cards cannot target Behemoths. Cards which target ‘all’ of anything which include a Behemoth (e.g. all friendly Units) do not affect the Behemoth directly. 2. Command Abilities cannot target Behemoths. 3. Behemoths cannot receive Status tokens. 4. Behemoths cannot be Obscured, even by special rules. 5. Behemoths cannot carry Objects. 6. Friendly Shield and Repair special rules cannot affect Behemoths. 7. Passive Countermeasures on Behemoths are unmodified by E9 and E10 sources. 1.3 Power & Activating Behemoths Behemoths activate differently from normal Groups, and often multiple times per Round. What is possible is governed by their Power stat. Behemoths begin each Round with a number of Power tokens (PT) equal to their Power. When you may activate a normal Group, you may instead activate a Behemoth with PT remaining. It must then complete one Action from the Power Table: PT Cost Action Reposition Move up to half Mv Advance Move up to full Mv Fire Attack with 1 Weapon Volley Attack with 2 Weapons Charge Add 1 to this Behemoth's Power next Round Discharge None Use Gear Varies Use one Gear. See ‘Gear’ You may move each Behemoth up to twice per Round, up to its full Mv each time. Normal Mv limits for Embarking/Disembarking are ignored for Behemoths, but they may only Embark/Disembark Units on Reposition. You may use each Gear once per Round. Each Weapon may attack once per Round. Normal MA limits apply—the total distance from both allowed moves is used.",
+   "text": "Behemoths are so huge that several things cannot affect them: 1. Command Cards cannot target Behemoths. Cards which target ‘all’ of anything which include a Behemoth (e.g. all friendly Units) do not affect the Behemoth directly. 2. Command Abilities cannot target Behemoths. 3. Behemoths cannot receive Status tokens. 4. Behemoths cannot be Obscured, even by special rules. 5. Behemoths cannot carry Objects. 6. Friendly Shield and Repair special rules cannot affect Behemoths. 7. Passive Countermeasures on Behemoths are unmodified by E9 and E10 sources. 8. Criticals on Behemoths with Resilient do not inflict any additional damage, regardless of the Energy of the Weapon. 1.3 Power & Activating Behemoths Behemoths activate differently from normal Groups, and often multiple times per Round. What is possible is governed by their Power stat. Behemoths begin each Round with a number of Power tokens (PT) equal to their Power. When you may activate a normal Group, you may instead activate a Behemoth with PT remaining. It must then complete one Action from the Power Table: PT Cost Action Reposition Move up to half Mv Advance Move up to full Mv Fire Attack with 1 Weapon Volley Attack with 2 Weapons Charge Add 1 to this Behemoth's Power next Round Discharge None Use Gear Varies Use one Gear. See ‘Gear’ You may move each Behemoth up to twice per Round, up to its full Mv each time. Normal Mv limits for Embarking/Disembarking are ignored for Behemoths, but they may only Embark/Disembark Units on Reposition. You may use each Gear once per Round. Each Weapon may attack once per Round. Normal MA limits apply—the total distance from both allowed moves is used.",
    "page": 1
   },
   {
@@ -1620,7 +1620,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Systems[\\s:/\\-]*Damage\\s*$",
-   "text": "If an enemy Behemoth begins a friendly activation Intact, you may roll one D3 against the Systems Damage Table at the end of that activation for every 3 damage it takes directly from non-CC Weapon attacks during that activation. Roll for each 3 damage and apply the effect before rolling again (e.g. if 6 damage was dealt). If it was Degraded at the beginning of that activation, roll 2D3 instead. If it was Crippled at the beginning of that activation, roll 3D3 instead. Result Effect ACM Offline 0-1 Weapons may use their 1st R value against this this Round. Power Fluctuations -1 PT. Cannot use Advance or Charge next Round. Cannot move again this Round. Can only move once next Drive Destabilised Round. Gear Destroyed Cannot use one random Gear (permanent). Drive Damaged Reposition and Advance cost +1PT (permanent). Cell Destroyed -1 PT. Suffers -1 Power (permanent). All Weapons suffer -1Ac. Cannot aim for Systems Damage Optics Damaged (permanent). Internal Explosion Takes D3 damage. One random non-Secondary Weapon* cannot attack Weapon Destroyed (permanent). Armour Cracked Suffers -1A (permanent). Core Rupture Remove all PT. Suffers -2PT and -1A (permanent). Heart Shot Behemoth destroyed. For results 6 and 9, if an already destroyed System/Weapon is chosen, apply results 5 and 8 instead, respectively. Otherwise, duplicate results are cumulative. * For this roll, Weapons with the same Alt value count as a single Weapon. 1.5.6.1 Aiming for Systems Damage Immediately before declaring targets when attacking, you may declare you are aiming for Systems Damage against one or more enemy Behemoths. For that activation, your non-CC Weapons suffer -1 to the roll required to hit that Behemoth. For that activation, you may modify any Systems Damage result against it by up to three, and you choose which System/Weapon is destroyed for results 6 and 9.",
+   "text": "If an enemy Behemoth begins a friendly activation Intact, you may roll one D3 against the Systems Damage Table at the end of that activation for every 3 damage it takes directly from non-CC Weapon attacks during that activation. Roll for each 3 damage and apply the effect before rolling again (e.g. if 6 damage was dealt). If it was Degraded at the beginning of that activation, roll 2D3 instead. If it was Crippled at the beginning of that activation, roll 3D3 instead. Result Effect ACM Offline 0-1 Weapons may use their 1st R value against this this Round. Power Fluctuations -1 PT. Cannot use Advance or Charge next Round. Cannot move again this Round. Can only move once next Drive Destabilised Round. Gear Destroyed Cannot use one random Gear (permanent). Drive Damaged Reposition and Advance cost +1PT (permanent). Cell Destroyed -1 PT. Suffers -1 Power (permanent). All Weapons suffer -1Ac. Cannot aim for Systems Damage Optics Damaged (permanent). Internal Explosion Takes D3 damage. One random non-Secondary Weapon* cannot attack Weapon Destroyed (permanent). Armour Cracked Suffers -1A (permanent). Core Rupture Remove all PT. Suffers -2PT and -1A (permanent). Heart Shot Behemoth destroyed. For results 4 and 9, if an already destroyed System/Weapon is chosen, apply results 5 and 8 instead, respectively. Otherwise, duplicate results are cumulative. * For this roll, Weapons with the same Alt value count as a single Weapon. 1.5.6.1 Aiming for Systems Damage Immediately before declaring targets when attacking, you may declare you are aiming for Systems Damage against one or more enemy Behemoths. For that activation, your non-CC Weapons suffer -1 to the roll required to hit that Behemoth. For that activation, you may modify any Systems Damage result against it by up to three, and you choose which System/Weapon is destroyed for results 4 and 9.",
    "page": 5
   },
   {

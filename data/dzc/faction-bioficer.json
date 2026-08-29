@@ -1,8 +1,8 @@
 {
   "faction": "bioficer",
   "name": "Bioficer",
-  "sourcePdf": "DZC_Bioficer_Stat_Cards_260804.pdf",
-  "version": "260804",
+  "sourcePdf": "DZC_Bioficer_Stat_Cards_260821.pdf",
+  "version": "260821",
   "units": [
     {
       "id": "grievance-genitor-ark",
@@ -344,7 +344,7 @@
       "rare": false,
       "unique": false,
       "type": "Aircraft",
-      "base": "30mm",
+      "base": null,
       "stats": {
         "Mv": "15”",
         "A": "3",
@@ -385,12 +385,12 @@
           "ac": "5+",
           "e": "6",
           "special": "Decon, Precision 2",
-          "box": "variant",
+          "box": "all",
           "variants": [],
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": true
+          "boxUnresolved": false
         },
         {
           "name": "Decon Cannon Pair",

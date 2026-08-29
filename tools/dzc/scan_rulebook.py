@@ -141,6 +141,24 @@ def _newest_behemoth(cards_dir):
     return os.path.join(cards_dir, max(got, key=stamp)) if got else None
 
 
+def _newest_rulebook(cards_dir):
+    """The newest rulebook in cards_dir, by its EDITION POINT.
+
+    Named rather than defaulted, because the default was
+    "A5_Dropzone_3.01_Rulebook_Compressed.pdf" and it went on being read after
+    3.02 landed beside it: the faction cards updated, the glossary did not, and
+    nothing said so. The version is the whole point of the filename here, so it
+    is what the newest is decided on -- "3.10" sorts above "3.9" because each
+    part is padded before comparing."""
+    def point(f):
+        m = re.search(r"_(\d+(?:\.\d+)+)_", f)
+        return tuple(int(p) for p in m.group(1).split(".")) if m else ()
+
+    got = [f for f in os.listdir(cards_dir)
+           if re.match(r"A5_Dropzone_[\d.]+_Rulebook", f) and f.endswith(".pdf")]
+    return os.path.join(cards_dir, max(got, key=point)) if got else None
+
+
 def faction_pdfs(cards_dir):
     """Map faction id -> its stat-card PDF. Bioficers ship 'Stat_Sheets'."""
     out = {}
@@ -456,6 +474,13 @@ def parse(doc, pages):
     return rules
 
 
+# A section's own rule reads as a SENTENCE. The tail of a rule that wrapped
+# across a page break does not -- "attack, this Weapon's Unit loses 1DP on a
+# 4+." -- and the two are otherwise indistinguishable once the heading it
+# belonged to is on the page before. Both real ones start with a capital.
+STARTS_SENTENCE = re.compile(r"^[A-Z]")
+
+
 def parse_front_matter(doc):
     """
     Read a faction stat-card PDF's leading rules pages.
@@ -476,9 +501,14 @@ def parse_front_matter(doc):
         return []
     body_font = weight.most_common(1)[0][0]
 
-    out = []
-    section = None
-    cur = None
+    out: list[tuple[str, str, str]] = []
+    section: str | None = None
+    cur: tuple[str, str, str] | None = None
+    # Whether a bold rule name has been seen since this SECTION began. Body
+    # text before the first one belongs to the section; body text after it is
+    # the tail of a rule whose heading was on the page or column before, and
+    # claiming that as a section rule invents a rule out of half a sentence.
+    named_here = False
     for pno in range(doc.page_count):
         spans = spans_in_order(doc[pno])
         if not any(s["font"] == body_font or (s["flags"] & BOLD_FLAG) for s in spans):
@@ -486,36 +516,41 @@ def parse_front_matter(doc):
         for sp in spans:
             font, txt, bold = sp["font"], sp["text"], bool(sp["flags"] & BOLD_FLAG)
             if not bold and font != body_font and sp["size"] >= 12.5:
-                if cur:
-                    out.append((section, cur[0], cur[1]))
-                    cur = None
+                # A SECTION HEADING DOES NOT CLOSE THE RULE ABOVE IT.
+                #
+                # It used to, and on the Resistance card that lost a line: the
+                # heading "Resistance Special Rules" is laid out BEFORE the last
+                # line of the Ram rule that precedes it, so closing here left
+                # Ram ending "Directly after the" and the rest orphaned. The
+                # rule carries the section it began in instead, and is emitted
+                # under that whenever it does end.
                 section = tidy(txt)
+                named_here = False
             elif bold or tidy(txt) in FORCE_HEADING:
                 # Headings wrap here too, but a wrapped heading continues the
                 # CURRENT rule rather than starting a new one -- only a heading
                 # that follows body text is a new rule.
-                if cur and not cur[1]:
-                    cur = (tidy(cur[0] + " " + txt), "")
+                if cur and not cur[2]:
+                    cur = (cur[0], tidy(cur[1] + " " + txt), "")
                 else:
                     if cur:
-                        out.append((section, cur[0], cur[1]))
-                    cur = (tidy(txt), "")
-            elif font == body_font and cur:
-                cur = (cur[0], (cur[1] + " " + txt) if cur[1] else txt)
-            elif font == body_font and section and tidy(txt):
+                        out.append(cur)
+                    cur = (section or "", tidy(txt), "")
+                named_here = True
+            elif font == body_font and tidy(txt):
                 # A SECTION WHOSE BODY HAS NO BOLD HEADING WAS BEING DROPPED.
                 #
-                # A rule here starts at a bold name, and every rule on these
-                # pages has one -- except the last section of the Shaltari card,
-                # which is a heading and then a sentence:
+                # A rule here starts at a bold name, and nearly every rule on
+                # these pages has one -- except the last section of the Shaltari
+                # card, which is a heading and then a sentence:
                 #
                 #     Shaltari Special Rules
                 #     Two or more non-Gate, non-Aircraft Squads within a
                 #     Shaltari Army may form Groups if their combined points
                 #     cost does not exceed 250pts.
                 #
-                # With no bold span there is no `cur` to hang the body on, so it
-                # fell through every branch and vanished. It is the only
+                # With no bold span there was no `cur` to hang the body on, so
+                # it fell through every branch and vanished. It is the only
                 # Shaltari ARMY BUILDING rule there is: the builder was
                 # reporting lists that obey it as illegal, and nothing in the
                 # app carried the text either. Raised through Jet by a new
@@ -523,13 +558,31 @@ def parse_front_matter(doc):
                 # are not in correct groups even though it's a shaltari list and
                 # they have a different force org setup."
                 #
-                # The SECTION is the rule when no bold name claims the body.
-                # Checked across all six faction cards: only Shaltari has one.
-                # The other five print the heading with nothing under it, and a
-                # heading with no body still yields nothing.
-                cur = (section, txt)
+                # TWO TESTS SEPARATE IT FROM A WRAPPED TAIL, and both are needed
+                # because on the page they look identical once the heading the
+                # tail belonged to is behind it:
+                #
+                #   nothing bold has been seen since this section began, and
+                #   the text reads as a SENTENCE.
+                #
+                # The Ram tail -- "attack, this Weapon's Unit loses 1DP on a
+                # 4+." -- fails the second and goes back onto Ram, where it
+                # belongs. Checked across all six faction cards: Shaltari and
+                # Bioficer have a real section rule, the other four print the
+                # heading with nothing under it, and a heading with no body
+                # still yields nothing.
+                own = bool(section and not named_here
+                           and (cur is None or cur[0] != section)
+                           and STARTS_SENTENCE.match(tidy(txt)))
+                if own and section:
+                    if cur:
+                        out.append(cur)
+                    cur = (section, section, txt)
+                    named_here = True
+                elif cur:
+                    cur = (cur[0], cur[1], (cur[2] + " " + txt) if cur[2] else txt)
     if cur:
-        out.append((section, cur[0], cur[1]))
+        out.append(cur)
     return out
 
 
@@ -603,7 +656,8 @@ def parse_behemoth_rules(doc, pages) -> list[Rule]:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--pdf", default="rules/A5_Dropzone_3.01_Rulebook_Compressed.pdf")
+    ap.add_argument("--pdf", default=None,
+                    help="the rulebook; defaults to the newest in --cards-dir")
     ap.add_argument("--cards-dir", default="rules",
                     help="directory holding the six faction stat-card PDFs")
     ap.add_argument("--behemoth-pdf", default=None,
@@ -611,8 +665,10 @@ def main():
     ap.add_argument("--out", default="data/dzc/rules.json")
     args = ap.parse_args()
 
-    if not os.path.exists(args.pdf):
-        raise SystemExit(f"rulebook not found: {args.pdf}")
+    args.pdf = args.pdf or _newest_rulebook(args.cards_dir)
+    if not args.pdf or not os.path.exists(args.pdf):
+        raise SystemExit(f"rulebook not found: {args.pdf or args.cards_dir}")
+    print(f"  rulebook   {os.path.basename(args.pdf)}")
 
     doc = fitz.open(args.pdf)
     chapters = chapter_pages(doc)

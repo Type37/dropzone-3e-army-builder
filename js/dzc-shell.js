@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 470;
+  const BUILD = 471;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -585,6 +585,12 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-29', title: 'Rulebook 3.02, and every stat card TTCombat have reissued', items: [
+      'The app is on the 3.02 rulebook and the 21 August cards. Chapter 3 is untouched by the point release — it was diffed page by page, and the only difference is a capital letter — so nothing about building a list has moved. What changed is in play: Assault, AWACS, Field, Infiltrate, Strafe, Strong, Surveyor, Subterranean and seven more carry their 3.02 wording now.',
+      'Scourge changed the most. The Support Beetle is gone and a Ravager AA Beetle stands in its place at 40pts; the Battle Skimmer lost Killer and Bringer, and the Battle Beetle lost Slasher. Shaltari squads grew — Battlestrider and Scoutstrider to 2-6, Main and Support Grav-tanks to 3-9 — and the Gunstrider’s Demo dropped to 2 while the Heavy Grav-tank’s Particle Cannon went to E10. PHR’s Type-3 EM Walker and one Behemoth gun moved too.',
+      'An army holding something TTCombat have withdrawn now says so. A Squad whose Unit is gone used to cost nothing, count for nothing, be checked by no rule and still read “This army is legal” — 80pts of models the printed sheet did not mention. A model still set to a withdrawn Variant was quietly re-priced to the cheapest one left while going on calling itself the old one. Both are errors now, naming what they cannot find.',
+      'UCM’s cards were NOT reissued, so their four errata changes come from the errata document instead: Large on the Ferrum Drone Base, the Dominion Heavy Bomber and the Super Gunship, and the Twin UM-5 Gatling the Osprey Gunship was missing.'
+    ] },
     { date: '2026-08-23', title: 'Shaltari build their Groups on cost, and the app now knows it', items: [
       'Two or more non-Gate, non-Aircraft Shaltari Squads may form a Group if their combined cost does not exceed 250pts — the last section of their own card, and the reason a Shaltari army is not one Squad per Group. The builder did not know it and reported every list that used it as “not in correct Groups”. It knows now: under the cap the Group is legal, over it the cost is what is named, and a Group holding an Aircraft answers to 3.2.4 like everyone else’s.',
       'The rule was missing from the glossary too, and for the same reason it was missing from the builder: a rule on those pages starts at a bold heading, and this one is a section heading with a bare sentence under it, so the scanner dropped it. A Bioficer rule about Generated Squads embarking into Genitor Units was going the same way. Both are in the app now, and the 250 is read out of the rule text rather than typed into the code.'

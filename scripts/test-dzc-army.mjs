@@ -1557,6 +1557,82 @@ console.log('\nCling: a ride that ignores the symbols');
   A.remove(a.id);
 }
 
+/* WHEN TTCOMBAT WITHDRAW SOMETHING, THE ARMY THAT HAS IT MUST SAY SO.
+ *
+ * The 260821 Scourge cards dropped the Support Beetle for a Ravager AA Beetle,
+ * and took the Battle Skimmer's Killer and Bringer and the Battle Beetle's
+ * Slasher with them. Both losses were silent in a saved army:
+ *
+ *   a Unit that is gone   unitOf returns undefined, modelCost returns 0, so
+ *                         the Squad costs nothing, spends nothing against its
+ *                         category, is checked by no rule -- and the army
+ *                         still drew "This army is legal".
+ *
+ *   a Variant that is gone  modelCost falls back to the Unit's own price and
+ *                           then to its CHEAPEST variant, so a Squad of
+ *                           Killers quietly re-priced itself to a Hunter and
+ *                           went on calling itself a Killer.
+ *
+ * Neither is a rulebook rule, which is why they are `rule: 'data'`. Both make
+ * the list unplayable from the sheet, so both are errors. */
+console.log('\na Unit or Variant the data no longer has');
+{
+  await DZC.loadFaction('scourge');
+  const a = A.create('scourge', 'Withdrawn', 2000);
+  const g = A.addGroup(a);
+  const real = A.addSquad(a, g.id, 'scourge-battle-beetle', 3);
+  const realCost = A.squadCost(a, real);
+
+  // A Squad saved before the Unit was withdrawn. Pushed in directly because
+  // addSquad refuses a Unit the data does not have, which is the point.
+  g.squads.push({
+    id: 'ghost-unit', unitId: 'scourge-support-beetle',
+    models: [{ variant: 'Ravager' }, { variant: 'Ravager' }],
+    carriedBy: null, commander: null
+  });
+  eq(A.unitOf(a, g.squads[1]), undefined, 'the Unit really is gone from the data');
+  eq(A.squadCost(a, g.squads[1]), 0, 'and it really does cost nothing');
+  eq(A.armyCost(a), realCost, 'so the army is quietly short its points');
+
+  const e = A.validate(a).errors.find(x => x.rule === 'data');
+  ok(!!e, 'which is now reported');
+  ok(/scourge-support-beetle/.test(e ? e.msg : ''), 'naming what it cannot find', e && e.msg);
+  ok(!A.validate(a).ok, 'and the army is not legal while it is in there');
+  A.remove(a.id);
+}
+
+{
+  // A Variant that went. The Battle Skimmer kept Hunter and Reaper; Killer and
+  // Bringer were withdrawn on 2026-08-21.
+  const a = A.create('scourge', 'Old variant', 2000);
+  const g = A.addGroup(a);
+  const s = A.addSquad(a, g.id, 'scourge-battle-skimmer', 2);
+  const u = A.unitOf(a, s);
+  const known = (u.variants || []).map(v => v.name);
+  ok(known.length > 0, 'the Unit is variant-priced', known.join(', '));
+  ok(known.indexOf('Killer') === -1, 'and Killer is not one of them any more', known.join(', '));
+
+  s.models[0].variant = 'Killer';
+  const errs = A.validate(a).errors.filter(x => x.rule === 'data');
+  eq(errs.length, 1, 'one message for the Squad, not one per model',
+     JSON.stringify(errs.map(x => x.msg)));
+  ok(/Killer is not a Variant this Unit has any more/.test(errs[0] ? errs[0].msg : ''),
+     'naming the Variant', errs[0] && errs[0].msg);
+  ok(/priced as \d+pts/.test(errs[0] ? errs[0].msg : ''),
+     'and what it is being charged instead', errs[0] && errs[0].msg);
+
+  // Two models on the same dead Variant is still one message.
+  s.models[1].variant = 'Killer';
+  eq(A.validate(a).errors.filter(x => x.rule === 'data').length, 1,
+     'still one message with two models on it');
+  // Putting it back clears it.
+  s.models[0].variant = known[0];
+  s.models[1].variant = known[0];
+  eq(A.validate(a).errors.filter(x => x.rule === 'data').length, 0,
+     'and choosing one the card prints clears it');
+  A.remove(a.id);
+}
+
 /* SHALTARI BUILD THEIR GROUPS ANOTHER WAY, and the app did not know it.
  *
  * The last section of the Shaltari card, under "Shaltari Special Rules":

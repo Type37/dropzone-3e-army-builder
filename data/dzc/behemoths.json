@@ -1,8 +1,8 @@
 {
   "faction": "behemoth",
   "name": "Behemoths",
-  "sourcePdf": "Behemoth_Rules_Stats_260805.pdf",
-  "version": "260805",
+  "sourcePdf": "Behemoth_Rules_Stats_260821.pdf",
+  "version": "260821",
   "units": [
     {
       "id": "ucm-heavy-battle-mech",
@@ -951,7 +951,7 @@
           "arc": "F",
           "ma": "Full",
           "r": "∞",
-          "att": "2",
+          "att": "1",
           "ac": "2+",
           "e": "6",
           "special": "Alt 2, Blast, LT 6\", Macro, Strafe, Capacitors: +1 Att",

@@ -2743,6 +2743,55 @@
       }
     });
 
+    /* A SQUAD WHOSE UNIT IS NO LONGER IN THE DATA.
+     *
+     * TTCombat withdraw Units. The 260821 Scourge cards dropped the Support
+     * Beetle and print a Ravager AA Beetle in its place, so every saved army
+     * holding one now names a Unit this app cannot find -- and nothing said
+     * so. unitOf returns undefined, modelCost returns 0, and the Squad then
+     * costs nothing, spends nothing against its category, is checked by no
+     * rule, and still draws "This army is legal": 80pts of models that the
+     * sheet you print will not mention.
+     *
+     * It is an ERROR because the list cannot be played from. It is NOT
+     * migrated to the Unit that replaced it -- a rename we inferred could
+     * change what you own for you, and the points and the Variants moved with
+     * this one. Naming it is the app's job; choosing the replacement is not.
+     *
+     * Every other check below reads unitOf and returns quietly when it is
+     * missing, which is right: one message per Squad, from here. */
+    army.groups.forEach(g => g.squads.forEach(s => {
+      if (unitOf(army, s)) return;
+      errors.push({ rule: 'data', group: g.id,
+        msg: `A Squad here is a Unit this app no longer has (${s.unitId}). `
+          + `It costs nothing and no rule can check it. Remove it and add what replaced it.` });
+    }));
+
+    /* AND A MODEL SET TO A VARIANT THE CARD NO LONGER PRINTS.
+     *
+     * The same release that withdrew the Support Beetle took the Battle
+     * Skimmer's Killer and Bringer and the Battle Beetle's Slasher with it.
+     * modelCost falls back to the Unit's own price and then to its CHEAPEST
+     * variant, so a Squad of Killers did not break -- it quietly re-priced
+     * itself to a Hunter and went on calling itself a Killer. A list whose
+     * cost moves on its own, while the card in your hand says something else,
+     * is worse than one that refuses to load.
+     *
+     * Named per variant rather than per model, because a Squad of four is one
+     * decision and four identical sentences are not four problems. */
+    army.groups.forEach(g => g.squads.forEach(s => {
+      const u = unitOf(army, s);
+      if (!u || !(u.variants || []).length) return;
+      const known = (u.variants || []).map(v => v.name);
+      const gone = [...new Set(s.models.map(m => m.variant)
+        .filter(v => v && known.indexOf(v) === -1))];
+      gone.forEach(v => {
+        errors.push({ rule: 'data', group: g.id,
+          msg: `${u.name}: ${v} is not a Variant this Unit has any more. `
+            + `It is being priced as ${modelCost(u, { variant: v })}pts. Pick one the card prints.` });
+      });
+    }));
+
     // Squad sizes. Transports have none by design, so a missing size is only
     // reported for units that should have one.
     army.groups.forEach(g => g.squads.forEach(s => {

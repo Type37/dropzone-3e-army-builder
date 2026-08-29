@@ -131,9 +131,18 @@ ok(/suffer -1 Ac/.test(DZC.ruleText('Ev1', 'bioficer')),
    'Ev1 substitutes with the space closed up', DZC.ruleText('Ev1', 'bioficer'));
 ok(/only attack 1 times/.test(DZC.ruleText('L1', 'phr')),
    'a placeholder attached to the name still substitutes', DZC.ruleText('L1', 'phr'));
-ok(/within 12” of this Unit/.test(DZC.ruleText('AWACS 12” (Lynx)', 'ucm')),
-   'the variant bracket is stripped before the value is read',
-   DZC.ruleText('AWACS 12” (Lynx)', 'ucm'));
+/* Asserted on the SUBSTITUTION, not on the sentence around it. This read
+   "within 12” of this Unit" until 3.02 reworded AWACS to "within X” of one or
+   more Units with this rule" -- the test then failed for a change in TTCombat's
+   prose while the thing it exists to check, that "(Lynx)" is stripped off
+   before the 12 is read, still worked perfectly. */
+{
+  const awacs = DZC.ruleText('AWACS 12” (Lynx)', 'ucm');
+  ok(/within 12”/.test(awacs),
+     'the variant bracket is stripped before the value is read', awacs);
+  ok(!/X”/.test(awacs), 'and no placeholder is left in the sentence', awacs);
+  ok(!/Lynx/.test(awacs), 'and the variant name is not printed into it', awacs);
+}
 // A word suffix substitutes exactly as a number does.
 ok(/of the type Zones/.test(DZC.ruleText('Ineffective: Zones', 'ucm')),
    'a word suffix substitutes too', DZC.ruleText('Ineffective: Zones', 'ucm'));
