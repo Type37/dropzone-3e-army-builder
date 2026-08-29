@@ -42,12 +42,20 @@ one does not.
 
 When to run it
 --------------
-By hand, after a re-scan brings in new units -- rebuild.py deliberately does
+By hand, after a re-scan brings in NEW units -- rebuild.py deliberately does
 not call this, and neither does CI. It reads the five
 *_Stat_Cards_250912.pdf files in Pics/, which are gitignored and exist only on
 Jet's machine, so GitHub Actions can never do this and a fresh clone cannot
 either. That is not a fault to fix; it is why this is the one step still done
 locally.
+
+A re-scan no longer LOSES what is already here, which is a different thing and
+was the actual hazard. scan_statcards rewrites a faction file from the card,
+and a variant photo is not on the card, so every scan used to delete all 155 of
+them -- three times in one working session on 2026-08-29, each time silently.
+carry_variant_art in that scanner now moves them across a rewrite, matched on
+(unit id, variant name). So this script is needed when a release ADDS a variant
+that the old gallery has a photo of, not merely because a scan ran.
 
     python tools/dzc/scan_variant_art.py --pdf-dir Pics
 

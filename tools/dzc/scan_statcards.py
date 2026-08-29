@@ -30,7 +30,7 @@ import os
 import re
 import sys
 from collections import Counter, defaultdict
-from typing import TypedDict
+from typing import NotRequired, TypedDict
 
 from PIL import Image
 
@@ -141,6 +141,12 @@ class Weapon(TypedDict):
 class Variant(TypedDict):
     name: str
     points: int | None
+    # Written by scan_variant_art.py, not by this scanner: a 3E card carries one
+    # image, so a per-variant photo can only come from the previous edition's
+    # contents gallery. Declared here because carry_variant_art moves it across
+    # a re-scan, and a key this file cannot name is a key it would drop. Not
+    # required, because most variants have none.
+    art: NotRequired[str]
 
 
 class SpecialVariant(TypedDict):
@@ -1976,6 +1982,16 @@ def scan(pdf_path, faction_id, faction_name,
         print(f"    errata ({ERRATA_SOURCE}):")
         for line in errata:
             print(f"      {line}")
+    # AND SAY WHEN THE TABLE HAS OUTLIVED ITS REASON.
+    #
+    # Every entry exists because UCM's cards were not reissued with the errata.
+    # The day they are, each patch stops changing anything and quietly becomes
+    # dead weight that nobody re-reads -- which is how a table like this drifts
+    # into contradicting a card. A patch that finds nothing to do is the signal
+    # that its card has caught up, and it is printed rather than left silent.
+    elif faction_id in ERRATA_SPECIAL or faction_id in ERRATA_WEAPONS:
+        print(f"    !! every {faction_id} errata entry is already on the card "
+              f"({os.path.basename(pdf_path)}). The table can go.")
     ver = re.search(r"_(\d{6})\.pdf$", os.path.basename(pdf_path))
     data: FactionFile = {
         "faction": faction_id,
@@ -2102,6 +2118,52 @@ def scan_behemoths(args) -> None:
         print(f"      skipped p{pg}: {why}")
 
 
+def carry_variant_art(data: FactionFile, out_path: str) -> int:
+    """Keep the variant photographs a card scan cannot know about.
+
+    A VARIANT'S PHOTO IS NOT ON THE CARD. Every 3E card carries exactly one
+    image, so the 155 per-variant photos come from the PREVIOUS edition's
+    contents gallery via scan_variant_art.py -- a separate pass, over PDFs in a
+    gitignored directory, that rebuild.py deliberately does not run.
+
+    Which meant every card scan silently deleted all of them. The docstring on
+    scan_variant_art.py says to run it afterwards, and in one working session
+    that instruction was missed three times: a Scourge re-scan, a full rebuild,
+    and a one-faction UCM re-scan, each quietly dropping every variant photo it
+    touched. An instruction that has to be remembered every time is not a
+    pipeline, it is a trap with a note beside it.
+
+    So the scan carries them across itself. Matched on (unit id, variant name)
+    -- a renamed variant is a different variant and correctly loses its photo,
+    which is the safe direction: a wrong photo is worse than a general one, and
+    that is the same reasoning scan_variant_art applies when it declines to
+    guess. Re-running scan_variant_art is still how photos are ADDED; this only
+    stops them being lost.
+    """
+    try:
+        with open(out_path, encoding="utf-8") as fh:
+            old = json.load(fh)
+    except (OSError, ValueError):
+        return 0
+
+    art = {}
+    for u in old.get("units", []):
+        for v in u.get("variants", []):
+            if v.get("art"):
+                art[(u.get("id"), v.get("name"))] = v["art"]
+    if not art:
+        return 0
+
+    kept = 0
+    for u in data["units"]:
+        for v in u.get("variants", []):
+            got = art.get((u.get("id"), v.get("name")))
+            if got and not v.get("art"):
+                v["art"] = got
+                kept += 1
+    return kept
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--pdf-dir", default=".")
@@ -2134,8 +2196,11 @@ def main():
         path = os.path.join(args.pdf_dir, max(matches, key=pdf_stamp))
         data, skipped = scan(path, fid, fname, args.art)
         out = os.path.join(args.out, f"faction-{fid}.json")
+        kept = carry_variant_art(data, out)
         with open(out, "w", encoding="utf-8") as fh:
             json.dump(data, fh, indent=2, ensure_ascii=False)
+        if kept:
+            print(f"      kept {kept} variant photo{'' if kept == 1 else 's'}")
         grand += len(data["units"])
         print(f"  {fname:11s} {len(data['units']):3d} units -> {out}")
         for pg, why in skipped:

@@ -1633,6 +1633,41 @@ console.log('\na Unit or Variant the data no longer has');
   A.remove(a.id);
 }
 
+{
+  /* The third way a release moves under a saved army: an upgrade the card has
+   * stopped offering. upgradeCost only counts what the Unit offers today, so
+   * the purchase sits in the file costing nothing and drawing nothing.
+   *
+   * A weapon that has GAINED a variant bracket is NOT withdrawn -- hasUpgrade
+   * honours a purchase recorded under '*' at whatever scopes the weapon names
+   * now -- so the two cases are checked apart. */
+  await DZC.loadFaction('ucm');
+  const a = A.create('ucm', 'Withdrawn upgrade', 2000);
+  const g = A.addGroup(a);
+  const v = A.addSquad(a, g.id, 'vulture-dropship', 1);
+  const u = A.unitOf(a, v);
+  const real = (u.weapons || []).find(w => w.upgradePoints != null);
+  ok(!!real, 'the Vulture has a paid upgrade to buy', (u.weapons || []).map(w => w.name).join(', '));
+
+  ok(A.toggleUpgrade(a, v.id, '*', real.name).ok, 'it is bought');
+  eq(A.validate(a).errors.filter(e => e.rule === 'data').length, 0,
+     'and an upgrade the card still offers says nothing');
+
+  // The same Squad holding a purchase for a gun this Unit does not print.
+  A.toggleUpgrade(a, v.id, '*', 'A Gun That Was Withdrawn');
+  const e = A.validate(a).errors.find(x => x.rule === 'data');
+  ok(!!e, 'an upgrade the card no longer offers is reported',
+     JSON.stringify(A.validate(a).errors.map(x => x.msg)));
+  ok(/A Gun That Was Withdrawn/.test(e ? e.msg : ''), 'naming it', e && e.msg);
+  ok(/costing nothing/.test(e ? e.msg : ''), 'and saying what that means', e && e.msg);
+
+  // Taking it off clears it, and the real one is still bought.
+  A.toggleUpgrade(a, v.id, '*', 'A Gun That Was Withdrawn');
+  eq(A.validate(a).errors.filter(x => x.rule === 'data').length, 0, 'taking it off clears it');
+  ok(A.hasUpgrade(v, '*', real.name), 'and the real purchase is untouched');
+  A.remove(a.id);
+}
+
 /* SHALTARI BUILD THEIR GROUPS ANOTHER WAY, and the app did not know it.
  *
  * The last section of the Shaltari card, under "Shaltari Special Rules":

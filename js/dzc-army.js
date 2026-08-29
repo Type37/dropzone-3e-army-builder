@@ -2792,6 +2792,37 @@
       });
     }));
 
+    /* AND AN UPGRADE THE CARD HAS STOPPED OFFERING.
+     *
+     * The third way a release can move under a saved army, and the quietest:
+     * upgradeCost only counts what upgradesFor offers TODAY, so a gun that has
+     * been withdrawn stops being charged for and stops being drawn, while the
+     * purchase sits in the file. The list gets cheaper on its own.
+     *
+     * Nothing in the 260821 release does this -- the three weapons it withdrew
+     * were variant-restricted guns, not paid upgrades -- so this is the check
+     * that fires the next time rather than this time. It is here because the
+     * other two were written the day a release proved they were needed, and
+     * this is the same fault with a different noun.
+     *
+     * A weapon that has GAINED a variant bracket is not withdrawn: hasUpgrade
+     * deliberately honours a purchase recorded under '*' at whatever scopes the
+     * weapon names now (see its comment on the Foeslayer), so the test is
+     * whether the Unit still prints a paid weapon of that name at all. */
+    army.groups.forEach(g => g.squads.forEach(s => {
+      const u = unitOf(army, s);
+      if (!u || !s.upgrades) return;
+      const priced = (u.weapons || [])
+        .filter(w => w.upgradePoints != null).map(w => w.name);
+      const bought = [...new Set(Object.keys(s.upgrades)
+        .reduce((all, scope) => all.concat(Object.keys(s.upgrades[scope] || {})), []))];
+      bought.filter(n => priced.indexOf(n) === -1).forEach(n => {
+        errors.push({ rule: 'data', group: g.id,
+          msg: `${u.name}: ${n} is bought on this Squad and is not an upgrade the card offers `
+            + `any more. It is costing nothing. Take it off.` });
+      });
+    }));
+
     // Squad sizes. Transports have none by design, so a missing size is only
     // reported for units that should have one.
     army.groups.forEach(g => g.squads.forEach(s => {
