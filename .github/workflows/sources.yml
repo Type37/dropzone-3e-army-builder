@@ -68,11 +68,18 @@ jobs:
         if: steps.week.outputs.run == 'true' && steps.check.outputs.changed != '0'
         run: |
           uv run python tools/dzc/fetch_sources.py
-          # The whole pipeline: scan both PDF sets, then all four audits. The
+          # The whole pipeline: scan both PDF sets, then all six audits. The
           # audits are the gate. They are what caught the 260805 release
           # renaming a Type cell from "Aircraft" to "Aircraft (40mm)", which
           # silently dropped every Aircraft card in the game — UCM came back
           # with 20 units instead of 36 and no dropships at all.
+          #
+          # scan_variant_art is NOT run here and cannot be: it reads the
+          # previous edition's cards out of Pics/, which is gitignored and
+          # exists on one machine. That used to mean an unattended re-scan
+          # deleted all 155 variant photographs; scan_statcards carries them
+          # across a rewrite itself now, so the photos survive a run that
+          # cannot regenerate them.
           uv run python tools/dzc/rebuild.py
 
       # A new PDF does not always mean new data — TTCombat reissue files that
@@ -129,8 +136,10 @@ jobs:
           pipeline. Committed only because every audit and all of
           scripts/test-all.mjs passed against the result.
 
-          The superseded PDFs are kept: they are the only record of what the
-          previous data was built from.
+          The superseded PDFs are dropped rather than kept beside the new
+          ones -- rules/ is already hundreds of MB of committed PDF, and git
+          history is the record of what the previous data was built from:
+          `git show HEAD~1:rules/<old>.pdf` recovers one.
 
           No changelog entry. Nobody read this diff — what changed in the
           points is still to be written up by hand.

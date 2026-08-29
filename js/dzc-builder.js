@@ -2426,9 +2426,15 @@
     if (!list.length) return '';
     return `<div class="dzc-issues dzc-issues--${kind}">
       <p class="dzc-issues-head">${list.length} ${list.length === 1 ? one : many}</p>
+      <!-- "(rule 3.2.4)" is a citation and earns its place; "(rule data)"
+           is not one. The three data-drift messages -- a Unit, a Variant or an
+           upgrade TTCombat have withdrawn since the list was saved -- answer to
+           no rulebook section, so they cite nothing rather than citing a word
+           that looks like a section and is not. -->
       <ul>${list.map(e =>
         `<li>${e.n > 1 ? `<b class="dzc-issue-n">${e.n} ×</b> ` : ''}${esc(e.msg)
-          } <span class="dzc-rulecite">(rule ${esc(e.rule)})</span></li>`).join('')}</ul>
+          }${e.rule === 'data' ? ''
+            : ` <span class="dzc-rulecite">(rule ${esc(e.rule)})</span>`}</li>`).join('')}</ul>
     </div>`;
   }
 
