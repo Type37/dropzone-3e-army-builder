@@ -67,6 +67,8 @@ SOURCES = [
 
 PDF_RE = re.compile(r"https://cdn\.shopify\.com/[^\"'>\s]+\.pdf(?:\?[^\"'>\s]*)?")
 DATE_RE = re.compile(r"_(\d{6})(?:\.pdf)?$")
+# A stamp of the wrong LENGTH is a typo in the link, not a date.
+TYPO_STAMP_RE = re.compile(r"_(\d{7,8})(?=\.pdf$)")
 # The edition point in a rulebook or errata name: "A5_Dropzone_3.02_Rulebook".
 POINT_RE = re.compile(r"_(\d+(?:\.\d+)+)_")
 
@@ -76,9 +78,22 @@ def stamp(name: str) -> str:
 
     Sorting whole filenames instead of this is the trap: "Stat_Sheets_260730"
     sorts ABOVE "Stat_Cards_260804" on the S, so a rename would have pinned the
-    scanner to the older file for as long as both were on disk."""
+    scanner to the older file for as long as both were on disk.
+
+    A stamp of the WRONG LENGTH is read as the date it was meant to be. The
+    Scourge cards went up as "..._2608021.pdf" and the file behind that link is
+    the 260821 release with a digit fat-fingered into the name; without this,
+    the page's name never equals the name on disk, so --check reported "1 newer"
+    on every run forever and the scheduled job re-downloaded the same file each
+    fortnight to prove it."""
     m = DATE_RE.search(os.path.splitext(name)[0] + "")
-    return m.group(1) if m else ""
+    if m:
+        return m.group(1)
+    m = TYPO_STAMP_RE.search(name)
+    if m:
+        d = m.group(1)
+        return d[:4] + d[-2:]
+    return ""
 
 
 def published(html: str) -> dict[str, tuple[str, str]]:
@@ -129,9 +144,6 @@ def get(url: str) -> bytes:
     with urllib.request.urlopen(req, timeout=180) as r:
         return r.read()
 
-
-# A stamp of the wrong LENGTH is a typo in the link, not a date.
-TYPO_STAMP_RE = re.compile(r"_(\d{7,8})(?=\.pdf$)")
 
 
 def fetch(url: str, path: str) -> tuple[int, str]:
@@ -195,8 +207,14 @@ def main() -> int:
             continue
         name, url = live[key]
         have = on_disk(key, pattern)
-        if have == name:
-            fresh.append(name)
+        # Compared on VERSION, not on the filename. The Scourge cards are
+        # linked as "..._2608021.pdf" and saved under the stamp that actually
+        # serves, "..._260821.pdf", so a name-equality test called the same
+        # release newer on every run -- one permanent false positive, which on
+        # a scheduled job is a re-download every fortnight and an exit code
+        # nobody can trust.
+        if have and version_of(have) == version_of(name):
+            fresh.append(have)
         else:
             stale.append((have, name, url, feeds))
 

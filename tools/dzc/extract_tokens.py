@@ -64,7 +64,21 @@ import fitz
 from PIL import Image, ImageChops
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-RULEBOOK = ROOT / "rules" / "A5_Dropzone_3.01_Rulebook_Compressed.pdf"
+# The newest rulebook on disk, by edition point -- not a pinned filename.
+# 3.01 became 3.02 on 2026-08-21 and a pinned path is how the glossary
+# scanner quietly went on reading last month's book after the update.
+def _newest_rulebook() -> pathlib.Path:
+    def point(p: pathlib.Path) -> tuple[int, ...]:
+        m = re.search(r"_(\d+(?:\.\d+)+)_", p.name)
+        return tuple(int(x) for x in m.group(1).split(".")) if m else ()
+
+    got = sorted((ROOT / "rules").glob("A5_Dropzone_*_Rulebook*.pdf"), key=point)
+    if not got:
+        raise SystemExit("no A5_Dropzone_*_Rulebook*.pdf in rules/")
+    return got[-1]
+
+
+RULEBOOK = _newest_rulebook()
 
 # 600dpi against a 419x595pt A5 page puts a 36pt token at ~300px: four times the
 # largest size the app ever draws one, with room to crop in.

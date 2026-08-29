@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Extract the rules glossary from the Dropzone Commander 3.01 rulebook.
+Extract the rules glossary from the Dropzone Commander rulebook.
 
 Chapter 10 (Unit Special Rules) and chapter 11 (Weapon Special Rules) hold the
 verbatim text for every keyword a stat card can print. The cards themselves
@@ -22,9 +22,13 @@ Chapter 12 is deliberately NOT read: it is a token icon legend, not rules text
 a card can reference.
 
 Usage:
-    python tools/dzc/scan_rulebook.py \
-        --pdf rules/A5_Dropzone_3.01_Rulebook_Compressed.pdf \
-        --out data/dzc/rules.json
+    python tools/dzc/scan_rulebook.py --out data/dzc/rules.json
+
+The rulebook is whichever A5_Dropzone_<point>_Rulebook*.pdf in rules/ carries
+the highest edition point, and the run prints which one it read. It used to be
+a default path with 3.01 typed into it, and when 3.02 landed beside it a full
+rebuild updated every stat card and left the glossary a version behind with
+nothing on screen or in the log to say so.
 """
 
 import argparse
