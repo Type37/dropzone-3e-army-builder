@@ -15,6 +15,7 @@ a bad glossary would silently leave rule keywords dead on the page.
     ...--behemoths               -> data/dzc/behemoths.json
     scan_rulebook    PDFs        -> data/dzc/rules.json
     gen-offline-manifest         -> data/offline-manifest.json
+    audit_construction  chapter 3 and the faction Group rules, against the PDFs
     audit_data       shape, categories, weapon boxes
     audit_transport  symbol shapes and the carrier/passenger lineages
     audit_art        every unit has art and every art file has a unit
@@ -55,6 +56,16 @@ SCANS = [
 ]
 
 AUDITS = [
+    # FIRST, because it is the only one that reads the RULEBOOK rather than the
+    # scan's own output. Every audit below checks that the data is consistent
+    # with itself, which is why all six could pass while the app enforced a
+    # previous edition's construction rules: nothing looked at chapter 3.
+    #
+    # That gap did not matter while a person read each release. It started to
+    # matter the day the pipeline learned to follow a new rulebook version on
+    # its own and push the result. If the construction constants have moved,
+    # nothing else this run reports is worth acting on.
+    ("audit: construction", ["audit_construction.py"]),
     ("audit: data", ["audit_data.py"]),
     ("audit: transport", ["audit_transport.py"]),
     ("audit: art", ["audit_art.py"]),

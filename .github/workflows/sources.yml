@@ -68,7 +68,15 @@ jobs:
         if: steps.week.outputs.run == 'true' && steps.check.outputs.changed != '0'
         run: |
           uv run python tools/dzc/fetch_sources.py
-          # The whole pipeline: scan both PDF sets, then all six audits. The
+          # The whole pipeline: scan both PDF sets, then all seven audits. The
+          # audits are the gate, and audit_construction is the one that can
+          # stop THIS job doing harm: every other audit checks the scan against
+          # itself, so a point release that moved a force-construction rule
+          # would pass them all while the builder went on enforcing the last
+          # edition's. It reads chapter 3 out of the rulebook and fails the
+          # run, which is what should happen -- a moved construction rule needs
+          # a person, not a re-scan.
+          #
           # audits are the gate. They are what caught the 260805 release
           # renaming a Type cell from "Aircraft" to "Aircraft (40mm)", which
           # silently dropped every Aircraft card in the game — UCM came back
