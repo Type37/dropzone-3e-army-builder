@@ -292,6 +292,12 @@
       ],
       "specialVariants": [
         {
+          "rule": "Aegis 6”",
+          "variants": [
+            "Constantine"
+          ]
+        },
+        {
           "rule": "Scanner",
           "variants": [
             "Constantine"
@@ -2482,6 +2488,12 @@
         }
       ],
       "specialVariants": [
+        {
+          "rule": "Scanner",
+          "variants": [
+            "Recon ATVs"
+          ]
+        },
         {
           "rule": "Scout",
           "variants": [

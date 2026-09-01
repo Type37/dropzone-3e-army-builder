@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 475;
+  const BUILD = 476;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -585,6 +585,12 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-08-31', title: 'Compact view hid every upgrade in the app', items: [
+      'Buying an upgrade happens on the weapon card — the price IS the button — and compact view hides weapon cards. So with compact on there was no way to buy a Vulture’s Defence pods, choose between a Triton’s three missile options or give a Menchit its Foeslayer, and nothing on screen to say the offers existed. Compact now carries the offers as a strip: the name, the Variant it belongs to, and the same button. It still takes away the guns, which is what it is for.',
+      'A Squad with one Variant’s upgrade drew a live button in the OTHER Variant’s block. One Menchit and no Styx put a +5pts Foeslayer under Styx, and pressing it bought the Menchit’s — both then reading “Bought”. Offers are matched to the block they belong to now, and a block for a model you do not field shows the printed price instead of a control.',
+      'Taking the Harrier Gunship’s free option — remove one UM-117 Cannons, gain Scanner and Scout — put a red data error on the army the moment you took it. The check that finds withdrawn upgrades knew only weapon names and read the option’s key as one, so the app reported its own feature as corruption.',
+      'A bracket on a stat card scopes every rule since the last bracket, not just the one in front of it. The UCM Heavy Buggy prints “AWACS 12”, Command Centre, Surveyor (Fox)” and the Wolf, Jackal and Dingo were being handed the first two. Ten Units were wrong the same way, including a PHR Type-2 and a Shaltari Warstrider that were carrying both P5+ and P3+ at once. Reported by Jet.',
+    ] },
     { date: '2026-08-29', title: 'Rulebook 3.02, and every stat card TTCombat have reissued', items: [
       'The app is on the 3.02 rulebook and the 21 August cards. Chapter 3 is untouched by the point release — it was diffed page by page, and the only difference is a capital letter — so nothing about building a list has moved. What changed is in play: Assault, AWACS, Field, Infiltrate, Strafe, Strong, Surveyor, Subterranean and seven more carry their 3.02 wording now.',
       'Scourge changed the most. The Support Beetle is gone and a Ravager AA Beetle stands in its place at 40pts; the Battle Skimmer lost Killer and Bringer, and the Battle Beetle lost Slasher. Shaltari squads grew — Battlestrider and Scoutstrider to 2-6, Main and Support Grav-tanks to 3-9 — and the Gunstrider’s Demo dropped to 2 while the Heavy Grav-tank’s Particle Cannon went to E10. PHR’s Type-3 EM Walker and one Behemoth gun moved too.',

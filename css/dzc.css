@@ -1835,6 +1835,37 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   background: var(--ink, #24201c); border-color: var(--ink, #24201c); color: var(--surface-2, #fff);
 }
 
+/* THE PURCHASES, WITH THE GUNS HIDDEN.
+
+   Compact view drops the weapon cards, and the price button lives on one, so
+   until now it dropped every upgrade in the app with them. The strip is the
+   two things a purchase needs and nothing else: what it is, and the same
+   button that buys it. Square like every other panel here, one row per offer,
+   the row growing tall rather than clipping a long weapon name. */
+.dzc-ups { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.dzc-upr {
+  position: relative; display: flex; align-items: center; gap: 8px;
+  justify-content: space-between; min-height: 36px; padding: 2px 2px 2px 6px;
+  border: 1px solid var(--line, #d8d0c0); margin-top: -1px;
+  background: var(--surface-2, #fff);
+}
+.dzc-upr-n {
+  font: 700 13px/1.2 var(--font-ui, 'Jost', system-ui, sans-serif);
+  color: var(--ink, #24201c); overflow-wrap: anywhere; min-width: 0;
+}
+/* Which model it is for, on the row, because compact has no Variant block to
+   put the row under. Same chip the weapon card uses beside a gun's name. */
+.dzc-upr-v {
+  display: inline-block; margin-left: 5px; padding: 0 5px;
+  border: 1px solid var(--variant, #f15d38);
+  color: var(--variant-ink, var(--variant, #f15d38));
+  font: 600 10px/16px var(--font-ui, 'Jost', system-ui, sans-serif);
+  font-style: normal; vertical-align: 1px;
+}
+/* In flow here, not pinned: a row has one control and nothing above it to
+   mount to. It keeps its own width so buying never resizes the row. */
+.dzc-ups .dzc-buy { position: static; flex: none; }
+
 /* ── TURNING ON AND OFF ──
 
    Jet, 2026-08-07: "I want ANIMATIONS FOR THINGS TURNING ON OR OFF across da

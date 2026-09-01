@@ -314,36 +314,70 @@ def special_variant_map(special, variants):
     rule and nobody else's, and a Sabre printing it is the card being read
     wrongly.
 
-    The bracket alone does not decide it. A Special column is full of brackets
-    that are not variants -- "Infiltrate 10" (All)" is a qualifier, "(+10pts)"
-    is a cost, and a rule may simply carry a parenthetical. The test is whether
-    EVERY name inside resolves to a Variant this unit actually has, which is
-    the same test collect_variants applies when building the roster.
+    A BRACKET SCOPES THE WHOLE RUN OF RULES IN FRONT OF IT, back to the
+    previous bracket. Not one rule -- every rule since the last tag.
 
-    Returns [{"rule": <text as printed, without the bracket>,
-              "variants": [<canonical names>]}].
+    This read the previous COMMA instead until 2026-08-31, so a card that
+    restricts three rules with one bracket gave two of them to the whole Squad.
+    Reported by Jet on the UCM Heavy Buggy, whose cell is
+
+        AWACS 12", Command Centre, Surveyor (Fox)
+
+    and whose Wolf, Jackal and Dingo were being handed AWACS and a Command
+    Centre the card never gave them. His reading is the card's own convention:
+    "If you look at the UCM Armoured Command Vehicle, or any unit with a mix of
+    abilities depending on variant, they will list abilities followed by (All)
+    to note they apply to all variants then list any variant specific options.
+    For the Heavy Buggies, there is no 'All' specification, so the abilities
+    listed only apply to the variant mentioned."
+
+    The PHR Type-2 Heavy Battle Walker proves it on its own:
+
+        P5+ (All), P3+, Command Centre, AWACS 12" (Zeus)
+
+    Under the old reading P5+ and P3+ were BOTH everyone's, which is a Unit
+    with two different Passive Countermeasures. Under this one the Zeus trades
+    P5+ for P3+ and gains the other two, which is what a command variant is.
+
+    So "(All)" is not a rule's qualifier, it is a RUN TERMINATOR: it says the
+    run in front of it is the whole card's and the next run starts here. It
+    produces no entry of its own -- unrestricted is the default.
+
+    The bracket alone still does not decide it. Every name inside must resolve
+    to a Variant this unit actually has, which is the same test
+    collect_variants applies when building the roster.
+
+    Returns [{"rule": <one rule, as printed, without the bracket>,
+              "variants": [<canonical names>]}], one entry per rule in the run
+    -- because the renderer filters one keyword at a time, and a run stored
+    whole would match none of them.
     """
     out = []
     if not special or not variants:
         return out
     canon = {norm_variant(v["name"]): v["name"] for v in variants}
+    # Where the last run ended: the start of the string, or just past the
+    # bracket that closed the run before this one.
+    start = 0
     for m in re.finditer(r"\(([^)]+)\)", special):
+        if re.fullmatch(r"\s*all\s*", m.group(1), re.I):
+            start = m.end()
+            continue
         names = split_variant_list(m.group(1))
         if not names or not all(norm_variant(n) in canon for n in names):
+            # Not a variant tag and not "(All)" -- a parenthetical belonging to
+            # the rule it sits on. It closes nothing.
             continue
-        # The rule is everything back to the previous comma. Rules that span a
-        # comma -- "Ineffective: Friendlies, Zones" -- keep only their tail
-        # here, which is why the renderer matches on "ends with" rather than on
-        # equality: the tail is unique within one card either way.
-        head = special[: m.start()]
-        cut = head.rfind(",")
-        text = head[cut + 1:].strip()
-        if not text:
-            continue
-        out.append({
-            "rule": text,
-            "variants": [canon[norm_variant(n)] for n in names],
-        })
+        run, start = special[start:m.start()], m.end()
+        vs = [canon[norm_variant(n)] for n in names]
+        # Split on commas. A rule that CONTAINS one -- "Ineffective:
+        # Friendlies, Zones" -- would be stored as a head that matches nothing
+        # and a tail that does, which is harmless here because the renderer
+        # matches on "ends with": the tail still finds the whole keyword. No
+        # card in the game currently restricts one to a Variant.
+        for text in (t.strip() for t in run.split(",")):
+            if text:
+                out.append({"rule": text, "variants": vs})
     return out
 
 

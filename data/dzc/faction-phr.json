@@ -1325,6 +1325,18 @@
       ],
       "specialVariants": [
         {
+          "rule": "P3+",
+          "variants": [
+            "Zeus"
+          ]
+        },
+        {
+          "rule": "Command Centre",
+          "variants": [
+            "Zeus"
+          ]
+        },
+        {
           "rule": "AWACS 12”",
           "variants": [
             "Zeus"
@@ -2437,6 +2449,18 @@
         }
       ],
       "specialVariants": [
+        {
+          "rule": "Command Centre",
+          "variants": [
+            "Hera"
+          ]
+        },
+        {
+          "rule": "Ev1",
+          "variants": [
+            "Hera"
+          ]
+        },
         {
           "rule": "Resilient",
           "variants": [

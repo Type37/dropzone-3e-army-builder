@@ -324,6 +324,18 @@
       ],
       "specialVariants": [
         {
+          "rule": "AWACS 12”",
+          "variants": [
+            "Fox"
+          ]
+        },
+        {
+          "rule": "Command Centre",
+          "variants": [
+            "Fox"
+          ]
+        },
+        {
           "rule": "Surveyor",
           "variants": [
             "Fox"
@@ -626,6 +638,12 @@
         }
       ],
       "specialVariants": [
+        {
+          "rule": "Command Centre",
+          "variants": [
+            "Greave"
+          ]
+        },
         {
           "rule": "Scanner",
           "variants": [
@@ -2132,6 +2150,12 @@
         }
       ],
       "specialVariants": [
+        {
+          "rule": "Command Centre",
+          "variants": [
+            "Phoenix"
+          ]
+        },
         {
           "rule": "Scanner",
           "variants": [

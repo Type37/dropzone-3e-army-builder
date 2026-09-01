@@ -375,6 +375,18 @@
       ],
       "specialVariants": [
         {
+          "rule": "P3+",
+          "variants": [
+            "Lynx"
+          ]
+        },
+        {
+          "rule": "Command Centre",
+          "variants": [
+            "Lynx"
+          ]
+        },
+        {
           "rule": "AWACS 12”",
           "variants": [
             "Lynx"
@@ -1209,6 +1221,12 @@
         }
       ],
       "specialVariants": [
+        {
+          "rule": "Command Centre",
+          "variants": [
+            "Daimyo"
+          ]
+        },
         {
           "rule": "Microgate",
           "variants": [
@@ -2047,6 +2065,12 @@
         }
       ],
       "specialVariants": [
+        {
+          "rule": "Ev1",
+          "variants": [
+            "Recluse"
+          ]
+        },
         {
           "rule": "Stealth",
           "variants": [

@@ -2814,13 +2814,29 @@
       if (!u || !s.upgrades) return;
       const priced = (u.weapons || [])
         .filter(w => w.upgradePoints != null).map(w => w.name);
+      /* AND THE CARD OPTIONS, WHICH ARE NOT WEAPON NAMES.
+       *
+       * A swap that grants no gun -- the Harrier Gunship's "May remove one
+       * UM-117 Cannons and gain Scanner and Scout" -- is stored in the same
+       * bag under its own key, "option:Scanner+Scout" (see optionKey). This
+       * check knew only weapon names, so taking that option put a red data
+       * error on the army the moment it was taken: the app reporting its own
+       * feature as corruption, on the only card in the game that has one.
+       *
+       * Checked against the swaps the card still prints, for the same reason
+       * the weapons are: an option withdrawn by a release should be caught. */
+      const options = (u.swaps || [])
+        .filter(sw => !sw.grants && (sw.grantsRules || []).length).map(optionKey);
       const bought = [...new Set(Object.keys(s.upgrades)
         .reduce((all, scope) => all.concat(Object.keys(s.upgrades[scope] || {})), []))];
-      bought.filter(n => priced.indexOf(n) === -1).forEach(n => {
-        errors.push({ rule: 'data', group: g.id,
-          msg: `${u.name}: ${n} is bought on this Squad and is not an upgrade the card offers `
-            + `any more. It is costing nothing. Take it off.` });
-      });
+      bought.filter(n => priced.indexOf(n) === -1 && options.indexOf(n) === -1)
+        .forEach(n => {
+          errors.push({ rule: 'data', group: g.id,
+            msg: `${u.name}: ${n.indexOf('option:') === 0
+              ? `the option granting ${n.slice(7).split('+').join(' and ')}`
+              : n} is bought on this Squad and is not an upgrade the card offers `
+              + `any more. It is costing nothing. Take it off.` });
+        });
     }));
 
     // Squad sizes. Transports have none by design, so a missing size is only

@@ -1612,6 +1612,53 @@
    * and the variant switcher over the reference table already used it.
    *
    * A Unit with no Variants keeps the plain list; there is nothing to split. */
+  /* An upgrade is stored per VARIANT (3.2.3), and '*' is the whole Squad. */
+  const ALL_VARIANTS = '*';
+
+  /* Does this offer belong in the block headed `lens`?
+   *
+   * upgradesFor and optionsFor both return one entry PER SCOPE, and buyButton
+   * matched them on the weapon's name alone -- so a Type-1 Battle Walker Squad
+   * holding one Menchit and no Styx drew a live +5pts button in the STYX
+   * block too, and pressing it bought the Menchit's Foeslayer from a block
+   * about a model the Squad does not own. Both then read "Bought", because the
+   * on-state was read at the scope the entry carried rather than the scope the
+   * block is about.
+   *
+   * A '*' offer belongs everywhere: the Vulture's Defence pods are not any one
+   * Variant's, so they hang on every block that prints the gun. */
+  const inScope = (scope, lens) => !lens || scope === lens || scope === ALL_VARIANTS;
+
+  /* THE TWO TOGGLES, WRITTEN ONCE.
+   *
+   * Both hang on a weapon card in the full view and on a row of the strip in
+   * compact, and a purchase that behaved differently depending on which view
+   * was open would be the same bug twice. Everything that decides what happens
+   * -- the index into upgradesFor/optionsFor, the flip key, the on-state --
+   * lives here and nowhere else. */
+  function upgradeBtn(s, i, o) {
+    const on = window.DZCArmy.hasUpgrade(s, o.scope, o.weapon.name);
+    return `<button type="button" class="dzc-buy${on ? ' is-on' : ''}${
+      flip('buy|' + s.id + '|' + o.scope + '|' + o.weapon.name, on)}"
+      aria-pressed="${on}"
+      aria-label="${on ? 'Remove' : 'Buy'} ${esc(o.weapon.name)}, ${o.points} points"
+      onclick="DZCBuilder.toggleUpgrade('${s.id}',${i})"
+      >${on ? 'Bought' : '+' + o.points + 'pts'}</button>`;
+  }
+
+  function optionBtn(s, oi, o) {
+    const on = window.DZCArmy.hasOption(s, o.swap);
+    const drops = ((o.swap.removes || [])[0] || {}).weapon || '';
+    return `<button type="button" class="dzc-buy dzc-buy--drop${on ? ' is-on' : ''}${
+      flip('opt|' + s.id + '|' + o.key, on)}"
+      aria-pressed="${on}"
+      aria-label="${on ? 'Put back' : 'Remove'} one ${esc(drops)}, gaining ${
+        esc((o.swap.grantsRules || []).join(' and '))}"
+      title="${esc(o.swap.note || '')}"
+      onclick="DZCBuilder.toggleOption('${s.id}',${oi})"
+      >${on ? 'Removed' : 'Remove'}</button>`;
+  }
+
   /* The price, as the control that buys it. "The upgrade can be represented
    * by a nice visible button you can tap/click that says +10pts" -- Jet,
    * 2026-08-07, on a Condor printing its Missile Pod twice: once as a weapon
@@ -1619,10 +1666,10 @@
    * fields both times.
    *
    * Addressed by index into upgradesFor, which is what toggleUpgrade takes,
-   * and looked up by weapon name because that is what the card has. A weapon
-   * this Squad cannot buy at all gets the plain price back rather than a
-   * button that would refuse. */
-  function buyButton(a, s) {
+   * and looked up by weapon name AND by the Variant the block is about. A
+   * weapon this Squad cannot buy at all gets the plain price back rather than
+   * a button that would refuse. */
+  function buyButton(a, s, lens) {
     const list = window.DZCArmy.upgradesFor(a, s) || [];
     /* A card option that buys no gun goes on the row of the gun it DROPS,
      * which is where the choice is: "May remove one UM-117 Cannons and gain
@@ -1639,35 +1686,57 @@
      * Harrier B block gets its own button rather than none. */
     const shown = new Set();
     return w => {
-      const oi = opts.findIndex(o => (o.swap.removes || []).some(r => r.weapon === w.name));
+      const oi = opts.findIndex(o => inScope(o.scope, lens)
+        && (o.swap.removes || []).some(r => r.weapon === w.name));
       if (oi !== -1 && !shown.has(opts[oi].key)) {
         shown.add(opts[oi].key);
-        const o = opts[oi];
-        const on = window.DZCArmy.hasOption(s, o.swap);
-        return `<button type="button" class="dzc-buy dzc-buy--drop${on ? ' is-on' : ''}${
-          flip('opt|' + s.id + '|' + o.key, on)}"
-          aria-pressed="${on}"
-          aria-label="${on ? 'Put back' : 'Remove'} one ${esc(w.name)}, gaining ${
-            esc((o.swap.grantsRules || []).join(' and '))}"
-          title="${esc(o.swap.note || '')}"
-          onclick="DZCBuilder.toggleOption('${s.id}',${oi})"
-          >${on ? 'Removed' : 'Remove'}</button>`;
+        return optionBtn(s, oi, opts[oi]);
       }
-      const i = list.findIndex(o => o.weapon.name === w.name);
+      const i = list.findIndex(o => o.weapon.name === w.name && inScope(o.scope, lens));
       // Nothing to buy and nothing to drop: the row keeps its printed price,
       // or nothing at all if it never had one.
       if (i === -1) {
         return w.upgradePoints == null ? ''
           : `<span class="dzc-wpn-up">+${w.upgradePoints}pts</span>`;
       }
-      const on = window.DZCArmy.hasUpgrade(s, list[i].scope, w.name);
-      return `<button type="button" class="dzc-buy${on ? ' is-on' : ''}${
-        flip('buy|' + s.id + '|' + list[i].scope + '|' + w.name, on)}"
-        aria-pressed="${on}"
-        aria-label="${on ? 'Remove' : 'Buy'} ${esc(w.name)}, ${w.upgradePoints} points"
-        onclick="DZCBuilder.toggleUpgrade('${s.id}',${i})"
-        >${on ? 'Bought' : '+' + w.upgradePoints + 'pts'}</button>`;
+      return upgradeBtn(s, i, list[i]);
     };
+  }
+
+  /* COMPACT VIEW STILL SELLS YOU THINGS.
+   *
+   * "It takes away no CONTROL: every stepper, every upgrade and the Transport
+   * chooser are all still there" is what the comment on `compact` below has
+   * said since it was written, and it stopped being true the day the upgrade
+   * table was deleted and the price became a button ON THE WEAPON CARD
+   * (f7b3d47). Compact hides the weapon cards. So it hid every purchase in the
+   * app with them: a Vulture in compact view has no way to buy its Defence
+   * pods, a Triton no way to choose between its three missile options, and
+   * nothing on screen to say either offer exists.
+   *
+   * This is not the old table coming back. That printed the whole weapon a
+   * second time -- eight fields, once as a card and once as a row -- next to
+   * the card it duplicated. Here there is no card to duplicate: the name and
+   * the control are the only two things left, and they are the two things a
+   * purchase needs. In the full view this renders nothing at all. */
+  function upgradeStrip(a, s) {
+    const A = window.DZCArmy;
+    const ups = A.upgradesFor(a, s) || [];
+    const opts = A.optionsFor(a, s) || [];
+    if (!ups.length && !opts.length) return '';
+    // Which Variant an offer belongs to, where the Squad has more than one and
+    // the offer is not the whole Squad's. Compact has no per-Variant blocks to
+    // stand it under, so it is said on the row.
+    const scope = sc => sc === ALL_VARIANTS ? ''
+      : `<i class="dzc-upr-v">${esc(sc)}</i>`;
+    const rows = ups.map((o, i) => `<li class="dzc-upr">
+        <span class="dzc-upr-n">${esc(o.weapon.name)}${scope(o.scope)}</span>
+        ${upgradeBtn(s, i, o)}</li>`)
+      .concat(opts.map((o, i) => `<li class="dzc-upr">
+        <span class="dzc-upr-n">${esc(((o.swap.removes || [])[0] || {}).weapon || '')}${
+          scope(o.scope)}</span>
+        ${optionBtn(s, i, o)}</li>`));
+    return `<ul class="dzc-ups">${rows.join('')}</ul>`;
   }
 
   /* Which variants this Squad had last time we drew it, keyed by Squad and
@@ -1712,7 +1781,7 @@
     return vs.map((v, i) => {
       const n = s.models.filter(m => m.variant === v.name).length;
       const opts = Object.assign({}, squadGuns(s), {
-        lens: v.name, key: s.id + '|' + v.name, buy: buyButton(a, s)
+        lens: v.name, key: s.id + '|' + v.name, buy: buyButton(a, s, v.name)
       });
       /* The line draws on the moment the variant becomes yours. Jet,
        * 2026-08-07: "when you click on, the line should like, draw on."
@@ -2196,7 +2265,10 @@
           ${u.special ? (r => r ? `<div class="dzc-sq-rules">${r}</div>` : '')(
             U.rulesHtml(u.special, u.faction || a.faction, U.variantRuleFilter(u, null))) : ''}
         </div>
-        ${compact ? '' : `<div class="dzc-sq-wpn">${variantGuns(a, s, u)}</div>`}
+        ${compact
+          // The guns go; the purchases stay. See upgradeStrip.
+          ? upgradeStrip(a, s)
+          : `<div class="dzc-sq-wpn">${variantGuns(a, s, u)}</div>`}
       </div>
       <!-- The Variant list that used to sit here is the blocks above now:
            name, count and the guns that Variant fires, in one place instead of
