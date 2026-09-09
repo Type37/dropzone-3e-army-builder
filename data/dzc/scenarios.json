@@ -1,0 +1,1318 @@
+{
+ "source": "Dropzone Commander 3.02 rulebook pp.34-43; Fauna Rules & Scenarios 260901 pp.9-12",
+ "scenarios": [
+  {
+   "id": "battle-royale",
+   "name": "Battle Royale",
+   "source": "rulebook",
+   "page": 38,
+   "map": "assets/scenarios/battle-royale.webp",
+   "legend": [
+    {
+     "colour": "green",
+     "rgb": [
+      0.492,
+      0.704,
+      0.554
+     ],
+     "lines": [
+      "3 Medium Zones"
+     ]
+    },
+    {
+     "colour": "red",
+     "rgb": [
+      0.601,
+      0.106,
+      0.145
+     ],
+     "lines": [
+      "2 Medium Zones",
+      "Only use in Clash, Battle & Reconquest"
+     ]
+    },
+    {
+     "colour": "brown",
+     "rgb": [
+      0.693,
+      0.398,
+      0.06
+     ],
+     "lines": [
+      "Heavy Cannon Turret"
+     ]
+    },
+    {
+     "colour": "yellow",
+     "rgb": [
+      0.914,
+      0.91,
+      0.339
+     ],
+     "lines": [
+      "Railgun Turrets"
+     ]
+    },
+    {
+     "colour": "orange",
+     "rgb": [
+      0.975,
+      0.608,
+      0.109
+     ],
+     "lines": [
+      "Flak Turret"
+     ]
+    },
+    {
+     "colour": "cyan",
+     "rgb": [
+      0.146,
+      0.767,
+      0.924
+     ],
+     "lines": [
+      "Excellent Vantage (All Buildings)"
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Attrition for 2 VP."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Entry: Ready or Reserved."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 1: The red and green Zones gain",
+      "Power Core."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 2: The game only ends when your",
+      "opponent\u2019s Army is wiped out or your",
+      "opponent concedes."
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bunker-complex",
+   "name": "Bunker Complex",
+   "source": "rulebook",
+   "page": 38,
+   "map": "assets/scenarios/bunker-complex.webp",
+   "legend": [
+    {
+     "colour": "green",
+     "rgb": [
+      0.501,
+      0.704,
+      0.546
+     ],
+     "lines": [
+      "3 Bunker Entrances"
+     ]
+    },
+    {
+     "colour": "red",
+     "rgb": [
+      0.601,
+      0.106,
+      0.145
+     ],
+     "lines": [
+      "2 Bunker Entrances",
+      "Only use in Clash, Battle &",
+      "Reconquest"
+     ]
+    },
+    {
+     "colour": "green",
+     "rgb": [
+      0.52,
+      0.721,
+      0.561
+     ],
+     "lines": [
+      "Secure these Bunker Entrances for",
+      "3/1 VP. Score on Round 4 and game",
+      "end."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Occupy all Bunker Entrances for 3/1",
+      "VP. Score on Round 4 and game end."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Entry: Ready or Reserved."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 1: All Bunker Entrances have Missile",
+      "Turrets."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 2: All Bunker Entrances have",
+      "Automated Sentries."
+     ]
+    }
+   ]
+  },
+  {
+   "id": "castles",
+   "name": "Castles",
+   "source": "rulebook",
+   "page": 39,
+   "map": "assets/scenarios/castles.webp",
+   "legend": [
+    {
+     "colour": "green",
+     "rgb": [
+      0.551,
+      0.712,
+      0.509
+     ],
+     "lines": [
+      "4 Hardened Large Zones"
+     ]
+    },
+    {
+     "colour": "red",
+     "rgb": [
+      0.601,
+      0.106,
+      0.145
+     ],
+     "lines": [
+      "2 Hardened Large Zones",
+      "Only use in Clash, Battle & Reconquest"
+     ]
+    },
+    {
+     "colour": "blue",
+     "rgb": [
+      0.373,
+      0.773,
+      0.746
+     ],
+     "lines": [
+      "ACM Package. These only function",
+      "with Occupiers present.",
+      "All Infantry without Living Weapons",
+      "and/or Bloodthirsty gain Demo",
+      "Charges 4+."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Protect Red and Green Zones in your Table",
+      "half for 3/1 VP. Score on game end."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Dominate Each table half for 3/1 VP. You",
+      "cannot Dominate your opponent\u2019s Table",
+      "half, but can Challenge it. Score on game",
+      "end."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Entry: Ready or Reserved."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 1: You cannot Dominate your",
+      "own Table half, but can Dominate your",
+      "opponent\u2019s instead."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 2: The Green and Red Zones gain",
+      "Laser Turrets."
+     ]
+    }
+   ]
+  },
+  {
+   "id": "command-and-control",
+   "name": "Command and Control",
+   "source": "rulebook",
+   "page": 39,
+   "map": "assets/scenarios/command-and-control.webp",
+   "legend": [
+    {
+     "colour": "green",
+     "rgb": [
+      0.445,
+      0.659,
+      0.516
+     ],
+     "lines": [
+      "2 Large Zones",
+      "Each contains 1 Object"
+     ]
+    },
+    {
+     "colour": "yellow",
+     "rgb": [
+      0.919,
+      0.781,
+      0.581
+     ],
+     "lines": [
+      "1 Large Zone",
+      "Contains 1 Object",
+      "Only use in Clash, Battle & Reconquest"
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Secure these points for 3/1 VP.",
+      "Score on Round 4 and game end."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Extract these Objects from Friendly",
+      "Lines for 4/2 VP."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Entry: Ready or Reserved."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 1: Change Extraction to Extraction",
+      "Point. That Point is Secure point in your",
+      "table half."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 2: Remove Objects.",
+      "Instead, Occupy the yellow and green",
+      "Zones. for 4/2 VP. Score on Round 4 and",
+      "game end.",
+      "39"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crucible",
+   "name": "Crucible",
+   "source": "rulebook",
+   "page": 40,
+   "map": "assets/scenarios/crucible.webp",
+   "legend": [
+    {
+     "colour": "green",
+     "rgb": [
+      0.441,
+      0.658,
+      0.518
+     ],
+     "lines": [
+      "2 Large Zones",
+      "Each contains 1 Object"
+     ]
+    },
+    {
+     "colour": "yellow",
+     "rgb": [
+      0.919,
+      0.781,
+      0.581
+     ],
+     "lines": [
+      "2 Medium Zones",
+      "Each contains 1 Object",
+      "Only use in Clash, Battle & Reconquest"
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Secure these points for 6/2 VP.",
+      "Score on Round 4 and game end."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Attrition for 2 VP."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Extract these Objects from Friendly",
+      "Lines for 3/1 VP."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Entry: Ready or Reserved."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 1: Replace Extraction Type with",
+      "Hold."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 2: Make yellow Zones Large. Raze",
+      "the one in your opponent\u2019s table half for 4/2",
+      "VP."
+     ]
+    }
+   ]
+  },
+  {
+   "id": "demolish",
+   "name": "Demolish",
+   "source": "rulebook",
+   "page": 40,
+   "map": "assets/scenarios/demolish.webp",
+   "legend": [
+    {
+     "colour": "green",
+     "rgb": [
+      0.518,
+      0.718,
+      0.558
+     ],
+     "lines": [
+      "6 Hardened Medium Zones"
+     ]
+    },
+    {
+     "colour": "red",
+     "rgb": [
+      0.788,
+      0.311,
+      0.256
+     ],
+     "lines": [
+      "4 Medium Zones",
+      "Only use in Clash, Battle & Reconquest"
+     ]
+    },
+    {
+     "colour": "brown",
+     "rgb": [
+      0.693,
+      0.398,
+      0.06
+     ],
+     "lines": [
+      "Heavy Cannon Turret",
+      "ACM Package",
+      "All infantry without Living Weapon and/",
+      "or Bloodthirsty gain Demo Charges 4+."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Raze the red and green Zones in your",
+      "opponent\u2019s table half for 3/1 VP."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Dominate each table half for 3/1 VP.",
+      "Score on game end."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Entry: Ready or Reserved."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 1: The red and green Zones gain",
+      "Internal Flaw."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 2: Add a central, hardened Medium",
+      "Zone with a Superlaser Turret."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Raze not apply to this Zone."
+     ]
+    }
+   ]
+  },
+  {
+   "id": "domination",
+   "name": "Domination",
+   "source": "rulebook",
+   "page": 41,
+   "map": "assets/scenarios/domination.webp",
+   "legend": [
+    {
+     "colour": "green",
+     "rgb": [
+      0.389,
+      0.598,
+      0.475
+     ],
+     "lines": [
+      "2 Large Zones",
+      "Each contains 1 Object with",
+      "Remaining Intel"
+     ]
+    },
+    {
+     "colour": "red",
+     "rgb": [
+      0.788,
+      0.311,
+      0.256
+     ],
+     "lines": [
+      "2 Large Zones",
+      "Each contains 1 Object with",
+      "Remaining Intel",
+      "Only use in Clash, Battle & Reconquest"
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Dominate each table quarter for 2/1 VP.",
+      "Score on Round 4 and game end."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Displace within the table quarter",
+      "containing your opponent\u2019s Territory",
+      "for 1 VP."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Extract these Objects from Friendly",
+      "Lines for 3/1 VP."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Entry: Up to 2 Groups may Deploy. Otherwise",
+      "Ready or Reserved."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 1: Change Extraction to Enemy Lines."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 2: Remove Objects and instead"
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Occupy the green and red Zones for 4/2 VP.",
+      "Score on Round 4 and game end."
+     ]
+    }
+   ]
+  },
+  {
+   "id": "encroach",
+   "name": "Encroach",
+   "source": "rulebook",
+   "page": 41,
+   "map": "assets/scenarios/encroach.webp",
+   "legend": [
+    {
+     "colour": "green",
+     "rgb": [
+      0.519,
+      0.715,
+      0.553
+     ],
+     "lines": [
+      "2 Large Zones",
+      "Each contains 1 Object"
+     ]
+    },
+    {
+     "colour": "red",
+     "rgb": [
+      0.054,
+      0.335,
+      0.096
+     ],
+     "lines": [
+      "Shield Generator"
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Secure this point for 2/1 VP. Score on",
+      "Round 2, 4 and 6. When a player scores",
+      "2VP for this point, move this point 12\u201d",
+      "towards their opponent\u2019s Table Edge. It",
+      "cannot be moved off the Table, but may",
+      "be placed on top of Zones or Impassable",
+      "Ground."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Extract these Objects from Friendly",
+      "Lines for 3/1 VP."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Entry: Ready or Reserved."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 1: Each player may place 2 Railgun",
+      "Turrets in different, non-green Zones."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 2: Also Explore non-green Zones in",
+      "your opponent\u2019s Table half for 1VP.",
+      "41"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ground-control",
+   "name": "Ground Control",
+   "source": "rulebook",
+   "page": 42,
+   "map": "assets/scenarios/ground-control.webp",
+   "legend": [
+    {
+     "colour": "green",
+     "rgb": [
+      0.518,
+      0.715,
+      0.557
+     ],
+     "lines": [
+      "4 Large Zones",
+      "Each has Excellent Vantage"
+     ]
+    },
+    {
+     "colour": "yellow",
+     "rgb": [
+      0.914,
+      0.91,
+      0.339
+     ],
+     "lines": [
+      "Railgun Turret"
+     ]
+    },
+    {
+     "colour": "blue",
+     "rgb": [
+      0.44,
+      0.641,
+      0.844
+     ],
+     "lines": [
+      "Comms Uplink"
+     ]
+    },
+    {
+     "colour": "cyan",
+     "rgb": [
+      0.146,
+      0.767,
+      0.924
+     ],
+     "lines": [
+      "Excellent Vantage"
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Dominate each table quarter for 4/2",
+      "VP. Score on Round 4 and game end.",
+      "Infantry (including Infantry in Zones)",
+      "count toward points thresholds."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Displace within the table quarter",
+      "containing your opponent\u2019s Territory",
+      "for 1VP."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Entry: All Groups may Deploy. Otherwise",
+      "Ready or Reserved."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 1: All green Zones gain Flak Turrets."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 2: Also Secure these Zones for 1/2 VP.",
+      "Score on game end."
+     ]
+    }
+   ]
+  },
+  {
+   "id": "kill-box",
+   "name": "Kill Box",
+   "source": "rulebook",
+   "page": 42,
+   "map": "assets/scenarios/kill-box.webp",
+   "legend": [
+    {
+     "colour": "green",
+     "rgb": [
+      0.394,
+      0.551,
+      0.449
+     ],
+     "lines": [
+      "2 Large Zones",
+      "Each contains 1 Object"
+     ]
+    },
+    {
+     "colour": "yellow",
+     "rgb": [
+      0.919,
+      0.781,
+      0.581
+     ],
+     "lines": [
+      "2 Large Zones",
+      "Each contains 1 Object",
+      "Only use in Clash, Battle & Reconquest"
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Secure this point for 4/2 VP.",
+      "Score on Round 4 and game end."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Extract these Objects from Friendly",
+      "Lines for 4/2 VP."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Entry: Ready or Reserved."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 1: The green and yellow Zones gain",
+      "Railgun Turrets."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 2: The green and yellow Zones gain",
+      "Seal."
+     ]
+    }
+   ]
+  },
+  {
+   "id": "strategic-points",
+   "name": "Strategic Points",
+   "source": "rulebook",
+   "page": 43,
+   "map": "assets/scenarios/strategic-points.webp",
+   "legend": [
+    {
+     "colour": "green",
+     "rgb": [
+      0.453,
+      0.673,
+      0.532
+     ],
+     "lines": [
+      "2 Hardened Large Zones",
+      "Comms Uplink",
+      "Shield Generator"
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Secure this point for 6/2 VP. Score on",
+      "game end."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Secure this point for 3/1 VP. Score on",
+      "game end."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Secure this point for 3/1 VP. Score on",
+      "game end.",
+      "Only use in Clash, Battle, & Reconquest."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Attrition for 1 VP."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Entry: Ready or Reserved."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 1: Make all secure points Medium",
+      "Zones. Occupy these for 3/1 VP as well as"
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Secure. Score on Game end."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 2: Remove Attrition and add"
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Dominate these table quarters for 3/1 VP. Score",
+      "on game end for 1 VP."
+     ]
+    }
+   ]
+  },
+  {
+   "id": "targets-of-opportunity",
+   "name": "Targets of Opportunity",
+   "source": "rulebook",
+   "page": 43,
+   "map": "assets/scenarios/targets-of-opportunity.webp",
+   "legend": [
+    {
+     "colour": "green",
+     "rgb": [
+      0.493,
+      0.699,
+      0.546
+     ],
+     "lines": [
+      "3 Large Zones",
+      "Each contains 1 Object"
+     ]
+    },
+    {
+     "colour": "red",
+     "rgb": [
+      0.714,
+      0.301,
+      0.247
+     ],
+     "lines": [
+      "2 Medium Zones",
+      "Each contains 1 Object Only use in",
+      "Clash, Battle & Reconquest"
+     ]
+    },
+    {
+     "colour": "yellow",
+     "rgb": [
+      0.931,
+      0.796,
+      0.599
+     ],
+     "lines": [
+      "2 Medium Zones",
+      "Each contains 1 Object Only use in",
+      "Battle & Reconquest"
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Secure these Zones for 2/1 VP. Score on",
+      "Round 4 and game end."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Extract these Objects from Friendly",
+      "Lines for 4/2 VP."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Entry: Ready or Reserved."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 1: All Objects gain Data Download."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Variant 2: All objects gain Remaining Intel.",
+      "43"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "pest-control",
+   "name": "Pest Control",
+   "source": "fauna",
+   "page": 9,
+   "map": "assets/scenarios/pest-control.webp",
+   "legend": [
+    {
+     "colour": "red",
+     "rgb": [
+      0.747,
+      0.118,
+      0.176
+     ],
+     "lines": [
+      "3 Medium Zones",
+      "Each contains 1 Object."
+     ]
+    },
+    {
+     "colour": "green",
+     "rgb": [
+      0.251,
+      0.68,
+      0.286
+     ],
+     "lines": [
+      "2 Medium Zones",
+      "Each contains 1 Object",
+      "Only use in Clash, Battle &",
+      "Reconquest"
+     ]
+    },
+    {
+     "colour": "yellow",
+     "rgb": [
+      0.918,
+      0.839,
+      0.267
+     ],
+     "lines": [
+      "2 Medium Zones",
+      "Each contains 1 Object",
+      "Only use in Battle & Reconquest"
+     ]
+    },
+    {
+     "colour": "red",
+     "rgb": [
+      0.502,
+      0.275,
+      0.125
+     ],
+     "lines": [
+      "X Hive. Each Hive starts the game",
+      "with X not defined."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Extract these Objects from Friendly",
+      "Lines for 2/1 VP."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Attrition for 1VP. Destroyed Fauna",
+      "count for this Objective."
+     ]
+    }
+   ],
+   "notes": [
+    "Entry: Ready or Reserved",
+    "The first time a Hive Activates or the first time an Infantry Squad enters the Zone containing the Hive, roll 1d6. On a 1-2, remove the Hive. On a 3-4, it becomes a Feral Vampires Hive for the rest of the game. On a 5-6, it becomes a Daggers Hive for the rest of the game.",
+    "Variant: Remove all Hives other than those in the Red Zones. Those Hives become Mauler Hives. At the start of the game, deploy three squads of Maulers. Each Red Zone is a Mauler Nest"
+   ]
+  },
+  {
+   "id": "death-from-below",
+   "name": "Death From Below",
+   "source": "fauna",
+   "page": 10,
+   "map": "assets/scenarios/death-from-below.webp",
+   "legend": [
+    {
+     "colour": "red",
+     "rgb": [
+      0.747,
+      0.118,
+      0.176
+     ],
+     "lines": [
+      "3 medium Zones",
+      "Each contains 1 Object"
+     ]
+    },
+    {
+     "colour": "red",
+     "rgb": [
+      0.054,
+      0.335,
+      0.096
+     ],
+     "lines": [
+      "Shield Generator. These only",
+      "function with Occupiers present.",
+      "1 Gorgon Queen in Holding."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Extract these Objects from Friendly",
+      "Lines for 3/1 VP."
+     ]
+    },
+    {
+     "colour": "red",
+     "rgb": [
+      0.725,
+      0.243,
+      0.569
+     ],
+     "lines": [
+      "Secure these Points for 2/1 VP. Score",
+      "on Round 4 and game end."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Entry: Ready or Reserved."
+     ]
+    }
+   ],
+   "notes": [
+    "When the Gorgon Queen is destroyed, leave its model in place. It becomes an Area with A4 and 10DP. It contains an Object that is worth the same VP for Extract as the other Objects.",
+    "While any Shield Generators are functioning, the Gorgon Queen\u2019s Burrowing Token can only be placed within 6\u201d of a Zone with a functioning Shield Generator. If there are no Shield Generators functioning, it can be placed as normal.",
+    "Variant 1: Remove the Secure points. Add two more Gorgon Queens.",
+    "Variant 2: Every time a Squad disembarks from a transport within 18\u201d of a Burrowing Token, move that Token 1d6+3\u201d directly toward the Squad and reduce the Gorgon Queen\u2019s Activation Dice by 1."
+   ]
+  },
+  {
+   "id": "hunting-grounds-nest",
+   "name": "Hunting Grounds (Nest)",
+   "source": "fauna",
+   "page": 11,
+   "map": "assets/scenarios/hunting-grounds-nest.webp",
+   "legend": [
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "2 Large Zones",
+      "Excellent Vantage"
+     ]
+    },
+    {
+     "colour": "red",
+     "rgb": [
+      0.502,
+      0.275,
+      0.125
+     ],
+     "lines": [
+      "1 full strength Fauna Squad, and +1",
+      "full strength Fauna Squad per full",
+      "500pts of game size.",
+      "Centre line of Table."
+     ]
+    },
+    {
+     "colour": "green",
+     "rgb": [
+      0.251,
+      0.68,
+      0.286
+     ],
+     "lines": [
+      "Occupy these Zones for 3/1 VP. Score",
+      "on Round 4 and game end."
+     ]
+    },
+    {
+     "colour": "red",
+     "rgb": [
+      0.747,
+      0.118,
+      0.176
+     ],
+     "lines": [
+      "Secure these Points for 2/1 VP. Score",
+      "on Round 4 and game end."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Entry: Ready or Reserved."
+     ]
+    }
+   ],
+   "notes": [
+    "Units within 6\u201d of a Secure Point are considered to be half the distance from all Fauna that they actually are when that Fauna Squad is Selecting Prey.",
+    "Variant: Remove Occupy. Add Attrition, with all Fauna counting as double their points for KP."
+   ]
+  },
+  {
+   "id": "hunting-grounds-typhon",
+   "name": "Hunting Grounds (Typhon)",
+   "source": "fauna",
+   "page": 12,
+   "map": "assets/scenarios/hunting-grounds-typhon.webp",
+   "legend": [
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "3 Medium Hardened Areas",
+      "ACM Package",
+      "Shield Generator",
+      "1 Typhon"
+     ]
+    },
+    {
+     "colour": "green",
+     "rgb": [
+      0.251,
+      0.68,
+      0.286
+     ],
+     "lines": [
+      "Secure these Zones for 3/1 VP. Score",
+      "on Round 2, 4, and game end."
+     ]
+    },
+    {
+     "colour": "green",
+     "rgb": [
+      0.251,
+      0.68,
+      0.286
+     ],
+     "lines": [
+      "Explore these Zones for 1 VP."
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Dominate each table half (measured",
+      "diagonally top left to bottom right)",
+      "for 3/1 VP. Score on round 2, 4, and",
+      "game end"
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Entry: Ready or Reserved."
+     ]
+    }
+   ],
+   "notes": [
+    "The Typhon treats all fo the green Areas as its Nest. While it is 6\u201d or more from all green Areas it has Aggressive and Frenzied.",
+    "Variant: Add a second Typhon. Both always treat the other Typhon as an Enemy Unit and Preferred Prey."
+   ]
+  }
+ ]
+}
