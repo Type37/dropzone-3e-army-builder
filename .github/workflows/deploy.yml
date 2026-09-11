@@ -88,7 +88,7 @@ jobs:
         run: |
           mkdir -p _site
           cp -r index.html favicon.ico manifest.webmanifest sw.js \
-                css js data assets \
+                css js data assets scenarios \
                 _site/
           echo "--- staged: $(du -sh _site | cut -f1) ---"
           du -sh _site/* | sort -h

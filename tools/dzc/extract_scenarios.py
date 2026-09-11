@@ -23,6 +23,7 @@ import json
 import re
 import sys
 from pathlib import Path
+from typing import Any
 
 import fitz
 from PIL import Image
@@ -86,7 +87,7 @@ def colour_name(fill):
     best, dist = None, None
     for name, refs in PALETTE.items():
         for ref in refs:
-            d = sum((a - b) ** 2 for a, b in zip(ref, fill))
+            d = sum((a - b) ** 2 for a, b in zip(ref, fill, strict=False))
             if dist is None or d < dist:
                 best, dist = name, d
     return best
@@ -156,7 +157,9 @@ def legend(page, x_min, y_range):
                 lines.append((y0, y1, text))
     lines.sort()
 
-    entries, current, unused = [], None, list(swatches)
+    entries: list[dict[str, Any]] = []
+    current: dict[str, Any] | None = None
+    unused = list(swatches)
     for y0, y1, text in lines:
         # Legend text is set top-aligned against its swatch, so a swatch is
         # matched on its TOP edge rather than its centre -- a swatch is taller
@@ -180,6 +183,7 @@ def legend(page, x_min, y_range):
                 "lines": [],
             }
             entries.append(current)
+        assert current is not None
         current["lines"].append(text)
     return entries
 
@@ -210,7 +214,7 @@ def main():
         if len(found) != 2:
             problems.append(f"p{pageno}: {len(found)} maps, expected 2")
             continue
-        for info, name in zip(found, names):
+        for info, name in zip(found, names, strict=False):
             key = slug(name)
             size = save_map(book, info, OUT_ART / f"{key}.webp")
             mid = page.rect.height / 2
