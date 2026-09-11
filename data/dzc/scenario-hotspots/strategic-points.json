@@ -41,14 +41,16 @@
   "x": 75.0,
   "y": 25.0,
   "r": 3.7,
-  "legend": 3
+  "legend": 3,
+  "size": "clash"
  },
  {
   "t": "point",
   "x": 25.0,
   "y": 75.0,
   "r": 3.7,
-  "legend": 3
+  "legend": 3,
+  "size": "clash"
  },
  {
   "t": "token",

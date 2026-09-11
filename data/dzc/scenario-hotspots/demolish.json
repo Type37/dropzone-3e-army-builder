@@ -8,12 +8,30 @@
   "h": 8.3
  },
  {
+  "t": "token",
+  "token": "internal-flaw",
+  "x": 20.8,
+  "y": 20.8,
+  "r": 2.3,
+  "v": "1"
+ },
+ {
   "t": "zone",
   "legend": 1,
   "x": 50.0,
   "y": 20.8,
   "w": 8.3,
-  "h": 8.3
+  "h": 8.3,
+  "size": "clash"
+ },
+ {
+  "t": "token",
+  "token": "internal-flaw",
+  "x": 50.0,
+  "y": 20.8,
+  "r": 2.3,
+  "size": "clash",
+  "v": "1"
  },
  {
   "t": "zone",
@@ -24,6 +42,14 @@
   "h": 8.3
  },
  {
+  "t": "token",
+  "token": "internal-flaw",
+  "x": 79.2,
+  "y": 20.8,
+  "r": 2.3,
+  "v": "1"
+ },
+ {
   "t": "zone",
   "legend": 0,
   "x": 37.5,
@@ -32,12 +58,30 @@
   "h": 8.3
  },
  {
+  "t": "token",
+  "token": "internal-flaw",
+  "x": 37.5,
+  "y": 37.5,
+  "r": 2.3,
+  "v": "1"
+ },
+ {
   "t": "zone",
   "legend": 1,
   "x": 62.5,
   "y": 37.5,
   "w": 8.3,
-  "h": 8.3
+  "h": 8.3,
+  "size": "clash"
+ },
+ {
+  "t": "token",
+  "token": "internal-flaw",
+  "x": 62.5,
+  "y": 37.5,
+  "r": 2.3,
+  "size": "clash",
+  "v": "1"
  },
  {
   "t": "zone",
@@ -45,7 +89,17 @@
   "x": 37.5,
   "y": 62.5,
   "w": 8.3,
-  "h": 8.3
+  "h": 8.3,
+  "size": "clash"
+ },
+ {
+  "t": "token",
+  "token": "internal-flaw",
+  "x": 37.5,
+  "y": 62.5,
+  "r": 2.3,
+  "size": "clash",
+  "v": "1"
  },
  {
   "t": "zone",
@@ -54,6 +108,14 @@
   "y": 62.5,
   "w": 8.3,
   "h": 8.3
+ },
+ {
+  "t": "token",
+  "token": "internal-flaw",
+  "x": 62.5,
+  "y": 62.5,
+  "r": 2.3,
+  "v": "1"
  },
  {
   "t": "zone",
@@ -64,12 +126,30 @@
   "h": 8.3
  },
  {
+  "t": "token",
+  "token": "internal-flaw",
+  "x": 20.8,
+  "y": 79.2,
+  "r": 2.3,
+  "v": "1"
+ },
+ {
   "t": "zone",
   "legend": 1,
   "x": 50.0,
   "y": 79.2,
   "w": 8.3,
-  "h": 8.3
+  "h": 8.3,
+  "size": "clash"
+ },
+ {
+  "t": "token",
+  "token": "internal-flaw",
+  "x": 50.0,
+  "y": 79.2,
+  "r": 2.3,
+  "size": "clash",
+  "v": "1"
  },
  {
   "t": "zone",
@@ -78,6 +158,31 @@
   "y": 79.2,
   "w": 8.3,
   "h": 8.3
+ },
+ {
+  "t": "token",
+  "token": "internal-flaw",
+  "x": 79.2,
+  "y": 79.2,
+  "r": 2.3,
+  "v": "1"
+ },
+ {
+  "t": "zone",
+  "legend": 0,
+  "x": 50.0,
+  "y": 50.0,
+  "w": 8.3,
+  "h": 8.3,
+  "v": "2"
+ },
+ {
+  "t": "token",
+  "token": "super-laser",
+  "x": 50.0,
+  "y": 50.0,
+  "r": 2.3,
+  "v": "2"
  },
  {
   "t": "token",

@@ -33,6 +33,15 @@ pack). Each is described in data/dzc/scenario-maps/<id>.json, in inches on the
                a token placed on its own
   arrows       [{"x1", "y1", "x2", "y2", "label", "lx"?, "ly"?}]
                measurements; lx/ly place the label
+  variants     {"1": {"zone_features": [{"legend": [n], "add"|"remove": token}],
+                      "zones": [...], "tokens": [...], "hide": ["objects", "points:n"],
+                      "strike": ["Extract"], "objective"?: true}}
+               what turning a Variant on does: map changes, drawn as layers the page
+               shows or hides, and the Scenario Objectives it strikes or adds to
+
+A legend entry printed "Only use in Clash, Battle & Reconquest" tags its Zones,
+points, and anything inside them with the smallest game size they are used in,
+so the page can take them off the map for a Skirmish.
 
 Images and compares go to the system temp folder.
 """
@@ -41,6 +50,7 @@ import base64
 import io
 import json
 import os
+import re
 import sys
 import tempfile
 
@@ -82,6 +92,55 @@ def legend_rgb(scen, i):
     if not entry.get("rgb"):
         raise SystemExit(f"{scen['id']}: legend {i} has no colour")
     return "rgb({})".format(",".join(str(round(v * 255)) for v in entry["rgb"]))
+
+
+def legend_size(scen, i):
+    """The smallest game size a legend entry is used in, from "Only use in Clash, Battle & ..."."""
+    text = " ".join(scen["legend"][i]["lines"])
+    m = re.search(r"Only use in ([^.]*)", text)
+    if not m:
+        return None
+    return "clash" if "Clash" in m.group(1) else "battle"
+
+
+def attrs(size=None, v=None, hide=None):
+    """SVG attributes for a layer: its game size, the Variant that adds it, the ones that hide it.
+    A Variant's layer is display="none" in the file, so the map as a picture is the book's map."""
+    out = ""
+    if size:
+        out += f' data-size="{size}"'
+    if v:
+        out += f' data-v="{v}" display="none"'
+    if hide:
+        out += ' data-hide-v="{}"'.format(" ".join(hide))
+    return out
+
+
+def tag(spot, size=None, v=None, hide=None):
+    if size:
+        spot["size"] = size
+    if v:
+        spot["v"] = v
+    if hide:
+        spot["hideV"] = " ".join(hide)
+    return spot
+
+
+def feature_slots(z, count, centre_taken):
+    """Where a Zone's tokens go: a lone token is centred unless an Object sits there; two or more
+    go in the corners (top right, bottom left, top left, bottom right) as the book draws them."""
+    w, h = z["w"] * U, z["h"] * U
+    x0, y0 = z["x"] * U - w / 2, z["y"] * U - h / 2
+    side, pad = TOKEN_SIDE * U, 0.35 * U
+    if count == 1 and not centre_taken:
+        return [(z["x"] * U - side / 2, z["y"] * U - side / 2)]
+    corners = [
+        (x0 + w - side - pad, y0 + pad),
+        (x0 + pad, y0 + h - side - pad),
+        (x0 + pad, y0 + pad),
+        (x0 + w - side - pad, y0 + h - side - pad),
+    ]
+    return [corners[i % len(corners)] for i in range(count)]
 
 
 _token_cache = {}
@@ -157,7 +216,29 @@ def draw(sid, scen):
         else:
             raise SystemExit("{}: unknown territory shape {}".format(sid, t["shape"]))
     out.append("</g>")
-    for z in spec.get("zones", []):
+    variants = spec.get("variants", {})
+    zones = spec.get("zones", [])
+    objects = spec.get("objects", [])
+    side = TOKEN_SIDE * U
+
+    def size_at(x, y):
+        """Anything inside a Zone is on the table only when that Zone is."""
+        for z in zones:
+            if abs(x - z["x"]) <= z["w"] / 2 + 0.01 and abs(y - z["y"]) <= z["h"] / 2 + 0.01:
+                return legend_size(scen, z["legend"])
+        return None
+
+    def hidden_by(what):
+        return [vn for vn, var in variants.items() if what in var.get("hide", [])]
+
+    def image(name, fx, fy, s):
+        return (
+            f'<image href="{token_uri(name)}" x="{n(fx)}" y="{n(fy)}" '
+            f'width="{n(s)}" height="{n(s)}"/>'
+        )
+
+    def zone_svg(z, v=None):
+        size = legend_size(scen, z["legend"])
         w, h = z["w"] * U, z["h"] * U
         x0, y0 = z["x"] * U - w / 2, z["y"] * U - h / 2
         border = (
@@ -165,86 +246,129 @@ def draw(sid, scen):
             if z.get("border") == "solid"
             else 'stroke-width=".9" stroke-dasharray="2.4,1.6"'
         )
-        out.append(
+        parts = [
             (
                 '<rect x="{}" y="{}" width="{}" height="{}" fill="{}" fill-opacity=".85" '
                 'stroke="#1C1A17" {}/>'
             ).format(n(x0), n(y0), n(w), n(h), legend_rgb(scen, z["legend"]), border)
-        )
+        ]
         # a Zone the scenario also marks, e.g. "Secure these Zones", is ringed in that colour
         if z.get("outline"):
-            out.append(
+            parts.append(
                 (
                     '<rect x="{}" y="{}" width="{}" height="{}" fill="none" stroke="{}" '
                     'stroke-width="2.2"/>'
                 ).format(n(x0 - 1), n(y0 - 1), n(w + 2), n(h + 2), POINT[z["outline"]])
             )
         spots.append(
-            {
-                "t": "zone",
-                "legend": z["legend"],
-                "x": round(z["x"] / 48 * 100, 1),
-                "y": round(z["y"] / 48 * 100, 1),
-                "w": round(z["w"] / 48 * 100, 1),
-                "h": round(z["h"] / 48 * 100, 1),
-            }
-        )
-        side = TOKEN_SIDE * U
-        pad = 0.35 * U
-        feats = z.get("features", [])
-        # the rulebook centres a lone token; with two or more they go to the corners
-        corners = (
-            [(z["x"] * U - side / 2, z["y"] * U - side / 2)]
-            if len(feats) == 1
-            else [
-                (x0 + w - side - pad, y0 + pad),
-                (x0 + pad, y0 + h - side - pad),
-                (x0 + pad, y0 + pad),
-                (x0 + w - side - pad, y0 + h - side - pad),
-            ]
-        )
-        for i, feat in enumerate(feats):
-            fx, fy = corners[i % len(corners)]
-            out.append(
-                f'<image href="{token_uri(feat)}" x="{n(fx)}" y="{n(fy)}" '
-                f'width="{n(side)}" height="{n(side)}"/>'
+            tag(
+                {
+                    "t": "zone",
+                    "legend": z["legend"],
+                    "x": round(z["x"] / 48 * 100, 1),
+                    "y": round(z["y"] / 48 * 100, 1),
+                    "w": round(z["w"] / 48 * 100, 1),
+                    "h": round(z["h"] / 48 * 100, 1),
+                },
+                size,
+                v,
             )
-            spots.append(
+        )
+        base = z.get("features", [])
+        centre_taken = any(
+            abs(o["x"] - z["x"]) < 0.5 and abs(o["y"] - z["y"]) < 0.5 for o in objects
+        )
+        base_placed = list(zip(base, feature_slots(z, len(base), centre_taken), strict=True))
+        # the Variants that change what this Zone holds, and what it holds under each
+        changed = {}
+        for vn, var in variants.items() if v is None else []:
+            feats = list(base)
+            for zf in var.get("zone_features", []):
+                if z["legend"] in zf["legend"]:
+                    if "add" in zf:
+                        feats.append(zf["add"])
+                    if "remove" in zf:
+                        feats = [f for f in feats if f != zf["remove"]]
+            if feats != base:
+                changed[vn] = feats
+
+        def feats_svg(placed, vv=None, hide=None):
+            out_ = []
+            for feat, (fx, fy) in placed:
+                out_.append(image(feat, fx, fy, side))
+                spots.append(
+                    tag(
+                        {
+                            "t": "token",
+                            "token": feat,
+                            "x": round((fx + side / 2) / 2, 1),
+                            "y": round((fy + side / 2) / 2, 1),
+                            "r": round(side / 2 / 2, 1),
+                        },
+                        size,
+                        vv,
+                        hide,
+                    )
+                )
+            return "".join(out_)
+
+        hide = list(changed)
+        base_svg = feats_svg(base_placed, v, hide)
+        parts.append(f"<g{attrs(hide=hide)}>{base_svg}</g>" if hide and base_svg else base_svg)
+        for vn, feats in changed.items():
+            if all(f in base for f in feats):
+                # only removals: what is left stays where it was
+                placed = [(f, at) for f, at in base_placed if f in feats]
+            else:
+                placed = list(zip(feats, feature_slots(z, len(feats), centre_taken), strict=True))
+            parts.append(f"<g{attrs(v=vn)}>{feats_svg(placed, vn)}</g>")
+        inner = "".join(parts)
+        return f"<g{attrs(size=size)}>{inner}</g>" if size else inner
+
+    for z in zones:
+        out.append(zone_svg(z))
+    for vn, var in variants.items():
+        if var.get("zones"):
+            out.append(
+                f"<g{attrs(v=vn)}>" + "".join(zone_svg(z, vn) for z in var["zones"]) + "</g>"
+            )
+
+    # Objects use the rulebook's Object token (the 401px maps only show them as dots)
+    hide_objects = hidden_by("objects")
+    objs = []
+    for o in objects:
+        size = size_at(o["x"], o["y"])
+        img = image("object", o["x"] * U - side / 2, o["y"] * U - side / 2, side)
+        objs.append(f"<g{attrs(size=size)}>{img}</g>" if size else img)
+        spots.append(
+            tag(
                 {
                     "t": "token",
-                    "token": feat,
-                    "x": round((fx + side / 2) / 2, 1),
-                    "y": round((fy + side / 2) / 2, 1),
-                    "r": round(side / 2 / 2, 1),
-                }
+                    "token": "object",
+                    "x": round(o["x"] / 48 * 100, 1),
+                    "y": round(o["y"] / 48 * 100, 1),
+                    "r": round(side / 4, 1),
+                },
+                size,
+                None,
+                hide_objects,
             )
-    # Objects use the rulebook's Object token (the 401px maps only show them as dots)
-    for o in spec.get("objects", []):
-        side = TOKEN_SIDE * U
-        fx, fy = o["x"] * U - side / 2, o["y"] * U - side / 2
+        )
+    if objs:
         out.append(
-            '<image href="{}" x="{}" y="{}" width="{}" height="{}"/>'.format(
-                token_uri("object"), n(fx), n(fy), n(side), n(side)
-            )
+            f"<g{attrs(hide=hide_objects)}>{''.join(objs)}</g>" if hide_objects else "".join(objs)
         )
-        spots.append(
-            {
-                "t": "token",
-                "token": "object",
-                "x": round(o["x"] / 48 * 100, 1),
-                "y": round(o["y"] / 48 * 100, 1),
-                "r": round(side / 4, 1),
-            }
-        )
+
     # marked points are coloured discs, as the book prints them
     for p in spec.get("points", []):
         r = p.get("d", 2.0) / 2 * U
         dash = ' stroke-dasharray="1.6,1"' if p.get("dashed") else ""
-        out.append(
-            (
-                '<circle cx="{}" cy="{}" r="{}" fill="{}" stroke="#1C1A17" stroke-width=".7"{}/>'
-            ).format(n(p["x"] * U), n(p["y"] * U), n(r), POINT[p.get("colour", "magenta")], dash)
-        )
+        size = legend_size(scen, p["legend"]) if "legend" in p else size_at(p["x"], p["y"])
+        hide = hidden_by("points:{}".format(p["legend"])) if "legend" in p else []
+        disc = (
+            '<circle cx="{}" cy="{}" r="{}" fill="{}" stroke="#1C1A17" stroke-width=".7"{}/>'
+        ).format(n(p["x"] * U), n(p["y"] * U), n(r), POINT[p.get("colour", "magenta")], dash)
+        out.append(f"<g{attrs(size=size, hide=hide)}>{disc}</g>" if size or hide else disc)
         spot = {
             "t": "point",
             "x": round(p["x"] / 48 * 100, 1),
@@ -253,24 +377,34 @@ def draw(sid, scen):
         }
         if "legend" in p:
             spot["legend"] = p["legend"]
-        spots.append(spot)
-    for t in spec.get("tokens", []):
-        side = t.get("size", TOKEN_SIDE) * U
-        fx, fy = t["x"] * U - side / 2, t["y"] * U - side / 2
-        out.append(
-            '<image href="{}" x="{}" y="{}" width="{}" height="{}"/>'.format(
-                token_uri(t["token"]), n(fx), n(fy), n(side), n(side)
+        spots.append(tag(spot, size, None, hide))
+
+    def token_svg(t, v=None):
+        s = t.get("size", TOKEN_SIDE) * U
+        size = size_at(t["x"], t["y"])
+        img = image(t["token"], t["x"] * U - s / 2, t["y"] * U - s / 2, s)
+        spots.append(
+            tag(
+                {
+                    "t": "token",
+                    "token": t["token"],
+                    "x": round(t["x"] / 48 * 100, 1),
+                    "y": round(t["y"] / 48 * 100, 1),
+                    "r": round(s / 4, 1),
+                },
+                size,
+                v,
             )
         )
-        spots.append(
-            {
-                "t": "token",
-                "token": t["token"],
-                "x": round(t["x"] / 48 * 100, 1),
-                "y": round(t["y"] / 48 * 100, 1),
-                "r": round(side / 4, 1),
-            }
-        )
+        return f"<g{attrs(size=size)}>{img}</g>" if size else img
+
+    for t in spec.get("tokens", []):
+        out.append(token_svg(t))
+    for vn, var in variants.items():
+        if var.get("tokens"):
+            out.append(
+                f"<g{attrs(v=vn)}>" + "".join(token_svg(t, vn) for t in var["tokens"]) + "</g>"
+            )
     for a in spec.get("arrows", []):
         x1, y1, x2, y2 = a["x1"] * U, a["y1"] * U, a["x2"] * U, a["y2"] * U
         out.append(
@@ -411,16 +545,23 @@ def main():
     cmd, sid = sys.argv[1], sys.argv[2]
     scens = load_scenarios()
     if cmd == "draw" and sid == "all":
-        bundle = {}
+        bundle, effects = {}, {}
         for f in sorted(os.listdir(SPECS)):
             if f.endswith(".json"):
                 _, spots = draw(f[:-5], scens[f[:-5]])
                 bundle[f[:-5]] = spots
+                with open(os.path.join(SPECS, f), encoding="utf-8") as fh:
+                    variants = json.load(fh).get("variants", {})
+                effects[f[:-5]] = {
+                    vn: {k: var[k] for k in ("strike", "objective") if k in var}
+                    for vn, var in variants.items()
+                }
                 print(f"{f[:-5]:<24} {len(spots)} spots")
         # the scenarios page reads every redrawn map's spots from one file
         js = (
             "// Generated by tools/dzc/draw_scenario_maps.py draw all. Do not edit by hand.\n"
             "const DZ_MAP_SPOTS={};\n".format(json.dumps(bundle, separators=(",", ":")))
+            + "const DZ_MAP_VARIANTS={};\n".format(json.dumps(effects, separators=(",", ":")))
         )
         bundle_path = os.path.join(ROOT, "scenarios", "dzc-scenario-hotspots.js")
         with open(bundle_path, "w", encoding="utf-8", newline="\n") as fh:

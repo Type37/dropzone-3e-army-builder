@@ -148,5 +148,19 @@
    "lx": 4.5,
    "ly": 41.9
   }
- ]
+ ],
+ "variants": {
+  "1": {
+   "objective": true
+  },
+  "2": {
+   "hide": [
+    "objects"
+   ],
+   "strike": [
+    "Extract"
+   ],
+   "objective": true
+  }
+ }
 }

@@ -141,5 +141,29 @@
    "lx": 44.1,
    "ly": 45.8
   }
- ]
+ ],
+ "variants": {
+  "1": {
+   "zone_features": [
+    {
+     "legend": [
+      0,
+      1
+     ],
+     "add": "railgun-turret"
+    }
+   ]
+  },
+  "2": {
+   "zone_features": [
+    {
+     "legend": [
+      0,
+      1
+     ],
+     "add": "seal"
+    }
+   ]
+  }
+ }
 }

@@ -86,6 +86,18 @@ def main():
     terms = {}
 
     terms["territory"] = paras(need(s, "9.2"))
+    # 9.5: the one sentence a game size changes about a scenario
+    skirmish = next(
+        (
+            m.group(0)
+            for p in paras(need(s, "9.5"))
+            if (m := re.search(r"Any points[^.]*Skirmish[^.]*\.", p))
+        ),
+        None,
+    )
+    if not skirmish:
+        sys.exit("9.5 no longer halves points for Skirmish")
+    terms["skirmish"] = skirmish
     terms["entry"] = {
         need(s, n)["heading"]: paras(s[n]) for n in ("9.4.1", "9.4.2", "9.4.3", "9.4.4")
     }

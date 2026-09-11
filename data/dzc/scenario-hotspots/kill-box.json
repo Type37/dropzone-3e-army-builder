@@ -5,7 +5,26 @@
   "x": 31.2,
   "y": 31.2,
   "w": 12.5,
-  "h": 12.5
+  "h": 12.5,
+  "size": "clash"
+ },
+ {
+  "t": "token",
+  "token": "railgun-turret",
+  "x": 34.5,
+  "y": 28.0,
+  "r": 2.3,
+  "size": "clash",
+  "v": "1"
+ },
+ {
+  "t": "token",
+  "token": "seal",
+  "x": 34.5,
+  "y": 28.0,
+  "r": 2.3,
+  "size": "clash",
+  "v": "2"
  },
  {
   "t": "zone",
@@ -16,12 +35,44 @@
   "h": 12.5
  },
  {
+  "t": "token",
+  "token": "railgun-turret",
+  "x": 72.0,
+  "y": 28.0,
+  "r": 2.3,
+  "v": "1"
+ },
+ {
+  "t": "token",
+  "token": "seal",
+  "x": 72.0,
+  "y": 28.0,
+  "r": 2.3,
+  "v": "2"
+ },
+ {
   "t": "zone",
   "legend": 0,
   "x": 31.2,
   "y": 68.8,
   "w": 12.5,
   "h": 12.5
+ },
+ {
+  "t": "token",
+  "token": "railgun-turret",
+  "x": 34.5,
+  "y": 65.5,
+  "r": 2.3,
+  "v": "1"
+ },
+ {
+  "t": "token",
+  "token": "seal",
+  "x": 34.5,
+  "y": 65.5,
+  "r": 2.3,
+  "v": "2"
  },
  {
   "t": "zone",
@@ -29,14 +80,34 @@
   "x": 68.8,
   "y": 68.8,
   "w": 12.5,
-  "h": 12.5
+  "h": 12.5,
+  "size": "clash"
+ },
+ {
+  "t": "token",
+  "token": "railgun-turret",
+  "x": 72.0,
+  "y": 65.5,
+  "r": 2.3,
+  "size": "clash",
+  "v": "1"
+ },
+ {
+  "t": "token",
+  "token": "seal",
+  "x": 72.0,
+  "y": 65.5,
+  "r": 2.3,
+  "size": "clash",
+  "v": "2"
  },
  {
   "t": "token",
   "token": "object",
   "x": 31.2,
   "y": 31.2,
-  "r": 2.3
+  "r": 2.3,
+  "size": "clash"
  },
  {
   "t": "token",
@@ -57,7 +128,8 @@
   "token": "object",
   "x": 68.8,
   "y": 68.8,
-  "r": 2.3
+  "r": 2.3,
+  "size": "clash"
  },
  {
   "t": "point",

@@ -12,7 +12,24 @@
   "token": "railgun-turret",
   "x": 25.0,
   "y": 25.0,
-  "r": 2.3
+  "r": 2.3,
+  "hideV": "1"
+ },
+ {
+  "t": "token",
+  "token": "railgun-turret",
+  "x": 28.2,
+  "y": 21.8,
+  "r": 2.3,
+  "v": "1"
+ },
+ {
+  "t": "token",
+  "token": "power-core",
+  "x": 21.8,
+  "y": 28.2,
+  "r": 2.3,
+  "v": "1"
  },
  {
   "t": "zone",
@@ -20,14 +37,35 @@
   "x": 75.0,
   "y": 25.0,
   "w": 12.5,
-  "h": 12.5
+  "h": 12.5,
+  "size": "clash"
  },
  {
   "t": "token",
   "token": "flak-turret",
   "x": 75.0,
   "y": 25.0,
-  "r": 2.3
+  "r": 2.3,
+  "size": "clash",
+  "hideV": "1"
+ },
+ {
+  "t": "token",
+  "token": "flak-turret",
+  "x": 78.2,
+  "y": 21.8,
+  "r": 2.3,
+  "size": "clash",
+  "v": "1"
+ },
+ {
+  "t": "token",
+  "token": "power-core",
+  "x": 71.8,
+  "y": 28.2,
+  "r": 2.3,
+  "size": "clash",
+  "v": "1"
  },
  {
   "t": "zone",
@@ -42,7 +80,24 @@
   "token": "heavy-cannon",
   "x": 50.0,
   "y": 50.0,
-  "r": 2.3
+  "r": 2.3,
+  "hideV": "1"
+ },
+ {
+  "t": "token",
+  "token": "heavy-cannon",
+  "x": 53.2,
+  "y": 46.8,
+  "r": 2.3,
+  "v": "1"
+ },
+ {
+  "t": "token",
+  "token": "power-core",
+  "x": 46.8,
+  "y": 53.2,
+  "r": 2.3,
+  "v": "1"
  },
  {
   "t": "zone",
@@ -50,14 +105,35 @@
   "x": 25.0,
   "y": 75.0,
   "w": 12.5,
-  "h": 12.5
+  "h": 12.5,
+  "size": "clash"
  },
  {
   "t": "token",
   "token": "flak-turret",
   "x": 25.0,
   "y": 75.0,
-  "r": 2.3
+  "r": 2.3,
+  "size": "clash",
+  "hideV": "1"
+ },
+ {
+  "t": "token",
+  "token": "flak-turret",
+  "x": 28.2,
+  "y": 71.8,
+  "r": 2.3,
+  "size": "clash",
+  "v": "1"
+ },
+ {
+  "t": "token",
+  "token": "power-core",
+  "x": 21.8,
+  "y": 78.2,
+  "r": 2.3,
+  "size": "clash",
+  "v": "1"
  },
  {
   "t": "zone",
@@ -72,6 +148,23 @@
   "token": "railgun-turret",
   "x": 75.0,
   "y": 75.0,
-  "r": 2.3
+  "r": 2.3,
+  "hideV": "1"
+ },
+ {
+  "t": "token",
+  "token": "railgun-turret",
+  "x": 78.2,
+  "y": 71.8,
+  "r": 2.3,
+  "v": "1"
+ },
+ {
+  "t": "token",
+  "token": "power-core",
+  "x": 71.8,
+  "y": 78.2,
+  "r": 2.3,
+  "v": "1"
  }
 ]

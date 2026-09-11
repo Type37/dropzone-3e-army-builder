@@ -121,5 +121,19 @@
    "lx": 44.1,
    "ly": 46.1
   }
- ]
+ ],
+ "variants": {
+  "1": {
+   "objective": true
+  },
+  "2": {
+   "hide": [
+    "objects"
+   ],
+   "strike": [
+    "Extract"
+   ],
+   "objective": true
+  }
+ }
 }

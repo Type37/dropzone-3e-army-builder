@@ -5,21 +5,35 @@
   "x": 25.0,
   "y": 25.0,
   "w": 12.5,
-  "h": 12.5
+  "h": 12.5,
+  "size": "clash"
  },
  {
   "t": "token",
   "token": "object",
   "x": 28.2,
   "y": 21.8,
-  "r": 2.3
+  "r": 2.3,
+  "size": "clash",
+  "hideV": "1"
  },
  {
   "t": "token",
   "token": "hive",
   "x": 21.8,
   "y": 28.2,
-  "r": 2.3
+  "r": 2.3,
+  "size": "clash",
+  "hideV": "1"
+ },
+ {
+  "t": "token",
+  "token": "object",
+  "x": 28.2,
+  "y": 21.8,
+  "r": 2.3,
+  "size": "clash",
+  "v": "1"
  },
  {
   "t": "zone",
@@ -27,21 +41,35 @@
   "x": 75.0,
   "y": 25.0,
   "w": 12.5,
-  "h": 12.5
+  "h": 12.5,
+  "size": "battle"
  },
  {
   "t": "token",
   "token": "object",
   "x": 78.2,
   "y": 21.8,
-  "r": 2.3
+  "r": 2.3,
+  "size": "battle",
+  "hideV": "1"
  },
  {
   "t": "token",
   "token": "hive",
   "x": 71.8,
   "y": 28.2,
-  "r": 2.3
+  "r": 2.3,
+  "size": "battle",
+  "hideV": "1"
+ },
+ {
+  "t": "token",
+  "token": "object",
+  "x": 78.2,
+  "y": 21.8,
+  "r": 2.3,
+  "size": "battle",
+  "v": "1"
  },
  {
   "t": "zone",
@@ -115,21 +143,35 @@
   "x": 25.0,
   "y": 75.0,
   "w": 12.5,
-  "h": 12.5
+  "h": 12.5,
+  "size": "battle"
  },
  {
   "t": "token",
   "token": "object",
   "x": 28.2,
   "y": 71.8,
-  "r": 2.3
+  "r": 2.3,
+  "size": "battle",
+  "hideV": "1"
  },
  {
   "t": "token",
   "token": "hive",
   "x": 21.8,
   "y": 78.2,
-  "r": 2.3
+  "r": 2.3,
+  "size": "battle",
+  "hideV": "1"
+ },
+ {
+  "t": "token",
+  "token": "object",
+  "x": 28.2,
+  "y": 71.8,
+  "r": 2.3,
+  "size": "battle",
+  "v": "1"
  },
  {
   "t": "zone",
@@ -137,20 +179,34 @@
   "x": 75.0,
   "y": 75.0,
   "w": 12.5,
-  "h": 12.5
+  "h": 12.5,
+  "size": "clash"
  },
  {
   "t": "token",
   "token": "object",
   "x": 78.2,
   "y": 71.8,
-  "r": 2.3
+  "r": 2.3,
+  "size": "clash",
+  "hideV": "1"
  },
  {
   "t": "token",
   "token": "hive",
   "x": 71.8,
   "y": 78.2,
-  "r": 2.3
+  "r": 2.3,
+  "size": "clash",
+  "hideV": "1"
+ },
+ {
+  "t": "token",
+  "token": "object",
+  "x": 78.2,
+  "y": 71.8,
+  "r": 2.3,
+  "size": "clash",
+  "v": "1"
  }
 ]

@@ -152,5 +152,38 @@
    "y": 38.35,
    "size": 3.4
   }
- ]
+ ],
+ "variants": {
+  "1": {
+   "tokens": [
+    {
+     "token": "flak-turret",
+     "x": 13.7,
+     "y": 13.9,
+     "size": 3.4
+    },
+    {
+     "token": "flak-turret",
+     "x": 37.7,
+     "y": 10.3,
+     "size": 3.4
+    },
+    {
+     "token": "flak-turret",
+     "x": 13.9,
+     "y": 34.3,
+     "size": 3.4
+    },
+    {
+     "token": "flak-turret",
+     "x": 38.2,
+     "y": 34.2,
+     "size": 3.4
+    }
+   ]
+  },
+  "2": {
+   "objective": true
+  }
+ }
 }

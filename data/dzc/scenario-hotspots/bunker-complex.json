@@ -8,12 +8,47 @@
   "h": 8.3
  },
  {
+  "t": "token",
+  "token": "missile-turret",
+  "x": 25.0,
+  "y": 25.0,
+  "r": 2.3,
+  "v": "1"
+ },
+ {
+  "t": "token",
+  "token": "automated-sentries",
+  "x": 25.0,
+  "y": 25.0,
+  "r": 2.3,
+  "v": "2"
+ },
+ {
   "t": "zone",
   "legend": 1,
   "x": 70.8,
   "y": 29.2,
   "w": 8.3,
-  "h": 8.3
+  "h": 8.3,
+  "size": "clash"
+ },
+ {
+  "t": "token",
+  "token": "missile-turret",
+  "x": 70.8,
+  "y": 29.2,
+  "r": 2.3,
+  "size": "clash",
+  "v": "1"
+ },
+ {
+  "t": "token",
+  "token": "automated-sentries",
+  "x": 70.8,
+  "y": 29.2,
+  "r": 2.3,
+  "size": "clash",
+  "v": "2"
  },
  {
   "t": "zone",
@@ -24,12 +59,47 @@
   "h": 8.3
  },
  {
+  "t": "token",
+  "token": "missile-turret",
+  "x": 50.0,
+  "y": 50.0,
+  "r": 2.3,
+  "v": "1"
+ },
+ {
+  "t": "token",
+  "token": "automated-sentries",
+  "x": 50.0,
+  "y": 50.0,
+  "r": 2.3,
+  "v": "2"
+ },
+ {
   "t": "zone",
   "legend": 1,
   "x": 29.2,
   "y": 70.8,
   "w": 8.3,
-  "h": 8.3
+  "h": 8.3,
+  "size": "clash"
+ },
+ {
+  "t": "token",
+  "token": "missile-turret",
+  "x": 29.2,
+  "y": 70.8,
+  "r": 2.3,
+  "size": "clash",
+  "v": "1"
+ },
+ {
+  "t": "token",
+  "token": "automated-sentries",
+  "x": 29.2,
+  "y": 70.8,
+  "r": 2.3,
+  "size": "clash",
+  "v": "2"
  },
  {
   "t": "zone",
@@ -38,5 +108,21 @@
   "y": 75.0,
   "w": 8.3,
   "h": 8.3
+ },
+ {
+  "t": "token",
+  "token": "missile-turret",
+  "x": 75.0,
+  "y": 75.0,
+  "r": 2.3,
+  "v": "1"
+ },
+ {
+  "t": "token",
+  "token": "automated-sentries",
+  "x": 75.0,
+  "y": 75.0,
+  "r": 2.3,
+  "v": "2"
  }
 ]

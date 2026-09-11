@@ -5,7 +5,8 @@
   "x": 18.8,
   "y": 18.8,
   "w": 12.5,
-  "h": 12.5
+  "h": 12.5,
+  "size": "clash"
  },
  {
   "t": "zone",
@@ -29,34 +30,41 @@
   "x": 81.2,
   "y": 81.2,
   "w": 12.5,
-  "h": 12.5
+  "h": 12.5,
+  "size": "clash"
  },
  {
   "t": "token",
   "token": "object",
   "x": 18.8,
   "y": 18.8,
-  "r": 2.3
+  "r": 2.3,
+  "size": "clash",
+  "hideV": "2"
  },
  {
   "t": "token",
   "token": "object",
   "x": 60.4,
   "y": 39.6,
-  "r": 2.3
+  "r": 2.3,
+  "hideV": "2"
  },
  {
   "t": "token",
   "token": "object",
   "x": 39.6,
   "y": 60.4,
-  "r": 2.3
+  "r": 2.3,
+  "hideV": "2"
  },
  {
   "t": "token",
   "token": "object",
   "x": 81.2,
   "y": 81.2,
-  "r": 2.3
+  "r": 2.3,
+  "size": "clash",
+  "hideV": "2"
  }
 ]

@@ -140,5 +140,29 @@
    "y2": 47,
    "label": ""
   }
- ]
+ ],
+ "variants": {
+  "1": {
+   "zone_features": [
+    {
+     "legend": [
+      0,
+      1
+     ],
+     "add": "missile-turret"
+    }
+   ]
+  },
+  "2": {
+   "zone_features": [
+    {
+     "legend": [
+      0,
+      1
+     ],
+     "add": "automated-sentries"
+    }
+   ]
+  }
+ }
 }

@@ -176,5 +176,13 @@
    "lx": 42.3,
    "ly": 44
   }
- ]
+ ],
+ "variants": {
+  "1": {
+   "strike": [
+    "Occupy"
+   ],
+   "objective": true
+  }
+ }
 }

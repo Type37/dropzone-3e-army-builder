@@ -206,5 +206,33 @@
    "lx": 44,
    "ly": 45.8
   }
- ]
+ ],
+ "variants": {
+  "1": {
+   "zone_features": [
+    {
+     "legend": [
+      0,
+      1
+     ],
+     "add": "internal-flaw"
+    }
+   ]
+  },
+  "2": {
+   "zones": [
+    {
+     "legend": 0,
+     "x": 24,
+     "y": 24,
+     "w": 4,
+     "h": 4,
+     "features": [
+      "super-laser"
+     ]
+    }
+   ],
+   "objective": true
+  }
+ }
 }

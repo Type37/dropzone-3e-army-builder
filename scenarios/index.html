@@ -47,6 +47,26 @@
 .dz-tbl td{padding:4px 10px 4px 0;vertical-align:top;}
 .dz-tbl tbody tr:nth-child(odd){background:rgba(184,149,47,.09);}
 .dz-tbl td:first-child{font-weight:600;white-space:nowrap;}
+/* Game size and Variants: buttons set data-size and data-v on the card; the map's layers and the lists follow */
+.dz-opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:3mm;}
+.seg{display:inline-flex;flex-wrap:wrap;border:1.5px solid var(--action);}
+.seg button,.dz-vbtn{font-family:'Jost',system-ui,sans-serif;font-size:14px;font-weight:600;background:transparent;color:var(--action-dk);border:0;cursor:pointer;}
+.seg button{padding:6px 12px;}
+.seg button+button{border-left:1.5px solid var(--action);}
+.dz-vbtn{padding:2px 10px;border:1.5px solid var(--action);white-space:nowrap;align-self:start;}
+.seg button[aria-pressed="true"],.dz-vbtn[aria-pressed="true"]{background:var(--action);color:#fff;}
+@media (hover:hover){.seg button:not([aria-pressed="true"]):hover,.dz-vbtn:not([aria-pressed="true"]):hover{background:var(--hover);}}
+.seg button:focus-visible,.dz-vbtn:focus-visible{outline:2px solid var(--focus);outline-offset:2px;}
+.dz-list.dz-vlist li{grid-template-columns:auto minmax(0,1fr);}
+.dz-svg{aspect-ratio:1;}
+.dz-svg svg,.dz-svg img{display:block;width:100%;height:auto;}
+.dz[data-size="skirmish"] [data-size],.dz[data-size="clash"] [data-size="battle"]{display:none;}
+.dz:not([data-size="skirmish"]) [data-only="skirmish"]{display:none;}
+.dz:not([data-v="1"]) :is(li,.hs)[data-v="1"],.dz:not([data-v="2"]) :is(li,.hs)[data-v="2"]{display:none;}
+.dz[data-v="1"] svg [data-v="1"],.dz[data-v="2"] svg [data-v="2"]{display:inline;}
+.dz[data-v="1"] [data-hide-v~="1"],.dz[data-v="2"] [data-hide-v~="2"]{display:none;}
+.dz[data-v="1"] [data-strike-v~="1"]>span:last-child,.dz[data-v="2"] [data-strike-v~="2"]>span:last-child{text-decoration:line-through;color:var(--muted);}
+@media print{.seg{border:0;}.seg button:not([aria-pressed="true"]){display:none;}.seg button[aria-pressed="true"]{background:none;color:var(--ink);padding:0;}}
 @media (max-width:760px){
   .dz{grid-template-columns:1fr;padding:4mm 3mm;}
   .dz-map{order:-1;grid-row:2;}
@@ -107,8 +127,10 @@ function keyLines(lines){
     return out+(newFact&&!/^[a-z]/.test(l)?'<br>':' ')+l;
   },'').trim();
 }
+// "Only use in Clash, Battle & Reconquest": the smallest game size an entry is on the table in
+const sizeOf=t=>{const m=t.match(/Only use in ([^.]*)/);return m?(/Clash/.test(m[1])?'clash':'battle'):'';};
 function parse(s){
-  const key=[], objectives=[], variants=[];
+  const key=[], objectives=[], variants=[], rules=[];
   let entry='';
   for(const L of s.legend){
     const text=sentence(L.lines);
@@ -118,13 +140,20 @@ function parse(s){
     else if(/^Variant \d/.test(text)) variants.push(text);
     // Variants close every legend; a line after one is that variant running on ("Remove Attrition and add" / "Dominate these...")
     else if(variants.length&&!L.rgb) variants[variants.length-1]+=' '+text;
-    else if(OBJECTIVES.some(o=>text.startsWith(o))) objectives.push({text,swatch});
-    else key.push({text:keyLines(L.lines),swatch});
+    else if(OBJECTIVES.some(o=>text.startsWith(o))) objectives.push({text,swatch,size:sizeOf(text)});
+    else key.push({text:keyLines(L.lines),swatch,size:sizeOf(text)});
   }
-  return {key,objectives,entry,variants};
+  // The Fauna pack sets Entry, its special rules and its Variants under the map
+  for(const note of s.notes||[]){
+    if(/^Entry:/.test(note)) entry=entry||note.replace(/^Entry:\s*/,'');
+    else if(/^Variant( \d)?:/.test(note)) variants.push(note);
+    else rules.push(note);
+  }
+  return {key,objectives,entry,variants,rules};
 }
 const objectiveNames=s=>parse(s).objectives.map(x=>OBJECTIVES.find(o=>x.text.startsWith(o))).filter((o,i,a)=>a.indexOf(o)===i);
-const item=({text,swatch})=>`<li><span class="dz-sw${swatch?'':' none'}"${swatch?` style="background:${swatch}"`:''}></span><span>${text}</span></li>`;
+// data-size: the game sizes it is used in; data-strike-v: the Variants that remove it; data-v: the Variant that adds it
+const item=({text,swatch,size,strike,v})=>`<li${size?` data-size="${size}"`:''}${strike?` data-strike-v="${strike}"`:''}${v?` data-v="${v}"`:''}><span class="dz-sw${swatch?'':' none'}"${swatch?` style="background:${swatch}"`:''}></span><span>${text}</span></li>`;
 const section=(title,body)=>body?`<section class="dz-sec"><h3>${DIAMOND}${title}</h3>${body}</section>`:'';
 
 /* ── Explanations: every rule a scenario names, word for word from the rulebook (dzc-scenario-terms.js) ── */
@@ -174,9 +203,21 @@ function mapHTML(s){
   const html=spots.map(p=>{
     const box=p.t==='zone'?`left:${p.x-p.w/2}%;top:${p.y-p.h/2}%;width:${p.w}%;height:${p.h}%`:`left:${p.x-p.r}%;top:${p.y-p.r}%;width:${2*p.r}%;height:${2*p.r}%;border-radius:50%`;
     const key=(p.t==='zone'||(p.t==='point'&&p.legend!==undefined))?`dzz:${p.legend}`:TOKEN_RULE[p.token]?`dzf:${TOKEN_RULE[p.token]}`:p.token==='object'?'dzo:Objects':p.token==='secure-point'?'dzo:Secure':p.token==='bunker-entrance'?'dzo:Bunker Entrances':'';
-    return key?`<span class="hs" tabindex="0" data-tip="${key}" style="${box}"></span>`:'';
+    const layer=`${p.size?` data-size="${p.size}"`:''}${p.v?` data-v="${p.v}"`:''}${p.hideV?` data-hide-v="${p.hideV}"`:''}`;
+    return key?`<span class="hs" tabindex="0" data-tip="${key}"${layer} style="${box}"></span>`:'';
   }).join('');
-  return `<div class="dz-frame"><img src="${mapSrc(s)}" alt="${s.name} map">${html}</div>`;
+  // A redrawn map is inlined once fetched, so its size and Variant layers can follow the buttons
+  return `<div class="dz-frame"><div class="dz-svg"${spots.length?` data-src="${mapSrc(s)}"`:''}><img src="${mapSrc(s)}" alt="${s.name} map"></div>${html}</div>`;
+}
+const SVG_TEXT={};
+async function inlineMaps(){
+  for(const el of document.querySelectorAll('.dz-svg[data-src]')){
+    const src=el.dataset.src, alt=el.querySelector('img').alt;
+    el.removeAttribute('data-src');
+    try{ SVG_TEXT[src]=SVG_TEXT[src]||await fetch(src).then(r=>{ if(!r.ok) throw new Error(r.status); return r.text(); }); }
+    catch(e){ continue; }
+    el.innerHTML=SVG_TEXT[src].replace('<svg ',`<svg role="img" aria-label="${alt}" `);
+  }
 }
 
 function tipHTML(key){
@@ -208,19 +249,51 @@ function d66(core){
   return `<div class="dz d66-wrap"><div class="dz-head"><h2 class="dz-name">d66 chart</h2></div><table class="d66"><thead>${head}</thead><tbody>${rows}</tbody></table></div>`;
 }
 
+/* ── Game size and Variants: one size for every scenario, one Variant at a time per scenario ── */
+const SIZES=['Skirmish','Clash','Battle','Reconquest'];
+// The objectives 9.6 gives a points or KP requirement, which 9.5 halves for a Skirmish
+const HALVED=Object.entries(T.objectives).filter(([,o])=>/\d\s?(pts|KP)\b/.test(o.body.join(' '))).map(([n])=>n);
+const store={get(k){try{return localStorage.getItem(k);}catch(e){return null;}},set(k,v){try{localStorage.setItem(k,v);}catch(e){}}};
+const SIZE_KEY='dzc-scenario-size', variantKey=id=>`dzc-scenario-variant:${id}`;
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-set-size],[data-set-v]'), card=b&&b.closest('.dz');
+  if(!card) return;
+  if(b.dataset.setSize){
+    card.dataset.size=b.dataset.setSize;
+    store.set(SIZE_KEY,b.dataset.setSize);
+    card.querySelectorAll('[data-set-size]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+  }else{
+    const v=card.dataset.v===b.dataset.setV?'0':b.dataset.setV;
+    card.dataset.v=v;
+    store.set(variantKey(card.dataset.scn),v);
+    card.querySelectorAll('[data-set-v]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.setV===v)));
+  }
+});
+
 function render(s){
   const p=parse(s), src=SOURCES[s.source], shown=new Set();
   const plain=t=>t.replace(/<br>/g,' ');
-  const objectives=p.objectives.length?`<ul class="dz-list">${p.objectives.map(item).join('')}</ul>${explain(p.objectives.map(o=>o.text).join(' '),shown)}`:'';
+  const effects=(typeof DZ_MAP_VARIANTS!=='undefined'&&DZ_MAP_VARIANTS[s.id])||{};
+  const vs=p.variants.map((v,i)=>{ const m=v.match(/^(Variant(?: (\d))?):\s*/); return {n:m&&m[2]?m[2]:String(i+1),label:m?m[1]:`Variant ${i+1}`,text:m?v.slice(m[0].length):v}; });
+  const savedV=store.get(variantKey(s.id)), on=vs.some(v=>v.n===savedV)?savedV:'0';
+  const sized=p.key.some(k=>k.size)||p.objectives.some(o=>o.size)||objectiveNames(s).some(o=>HALVED.includes(o));
+  const savedSize=store.get(SIZE_KEY), size=SIZES.some(z=>z.toLowerCase()===savedSize)?savedSize:'battle';
+  const struckBy=o=>Object.entries(effects).filter(([,e])=>(e.strike||[]).some(x=>o.text.startsWith(x))).map(([n])=>n).join(' ');
+  const added=vs.filter(v=>effects[v.n]&&effects[v.n].objective).map(v=>item({text:`<span class="dz-variant"><b>${v.label}:</b> ${v.text}</span>`,swatch:'',v:v.n}));
+  const objectives=p.objectives.length?`<ul class="dz-list">${p.objectives.map(o=>item({...o,strike:struckBy(o)})).join('')}${added.join('')}</ul>${sized?`<p class="dz-term" data-only="skirmish">${T.skirmish}</p>`:''}${explain(p.objectives.map(o=>o.text).join(' '),shown)}`:'';
   const entry=p.entry?`<ul class="dz-list">${item({text:p.entry,swatch:''})}</ul>${explain(p.entry,shown)}`:'';
   const key=p.key.length?`<ul class="dz-list">${p.key.map(item).join('')}</ul>${explain(p.key.map(k=>plain(k.text)).join(' '),shown)}`:'';
-  const variants=p.variants.length?`<ul class="dz-list">${p.variants.map(v=>{const m=v.match(/^(Variant \d):\s*(.*)$/);return item({text:m?`<span class="dz-variant"><b>${m[1]}:</b> ${m[2]}</span>`:v,swatch:''});}).join('')}</ul>${explain(p.variants.join(' '),shown)}`:'';
-  return `<div class="dz">
-    <div class="dz-head"><h2 class="dz-name">${s.name}</h2><div class="dz-src">${src.book}, page ${s.page}</div></div>
+  const rules=p.rules.length?`<div class="dz-terms">${p.rules.map(r=>`<p class="dz-term">${r}</p>`).join('')}</div>${explain(p.rules.join(' '),shown)}`:'';
+  const variants=vs.length?`<ul class="dz-list dz-vlist">${vs.map(v=>`<li><button type="button" class="dz-vbtn" data-set-v="${v.n}" aria-pressed="${v.n===on}">${v.label}</button><span>${v.text}</span></li>`).join('')}</ul>${explain(p.variants.join(' '),shown)}`:'';
+  const sizes=sized?`<div class="dz-opts"><div class="seg" role="group" aria-label="Game size">${SIZES.map(z=>`<button type="button" data-set-size="${z.toLowerCase()}" aria-pressed="${z.toLowerCase()===size}">${z}</button>`).join('')}</div></div>`:'';
+  setTimeout(inlineMaps);
+  return `<div class="dz" data-scn="${s.id}" data-size="${sized?size:'battle'}" data-v="${on}">
+    <div class="dz-head"><h2 class="dz-name">${s.name}</h2><div class="dz-src">${src.book}, page ${s.page}</div>${sizes}</div>
     <div class="dz-rules">
       ${section('Objectives',objectives)}
       ${section('Entry',entry)}
       ${section('Map key',key)}
+      ${section('Special rules',rules)}
       ${section('Variants',variants)}
     </div>
     <div class="dz-map">${mapHTML(s)}</div>

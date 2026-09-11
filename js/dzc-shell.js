@@ -585,6 +585,13 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-09-11', title: 'Scenarios: game size and Variants change the map', items: [
+      'Every scenario from the rulebook and the Fauna pack has its own page: the map redrawn, every rule it names explained word for word, and a round and VP tracker.',
+      'Pick Skirmish, Clash, Battle or Reconquest and the map drops the Zones that are only used in bigger games. A Skirmish also shows that points and KP requirements are halved.',
+      'Turn a Variant on and the map changes with it: turrets and Features appear in their Zones, removed Objects and points go, and struck objectives are crossed out with the Variant’s own objective added.',
+      'The Fauna scenarios now show their Entry, special rules and Variant, which were missing.',
+      'A d66 chart for the twelve rulebook scenarios.',
+    ] },
     { date: '2026-08-31', title: 'Compact view hid every upgrade in the app', items: [
       'Buying an upgrade happens on the weapon card — the price IS the button — and compact view hides weapon cards. So with compact on there was no way to buy a Vulture’s Defence pods, choose between a Triton’s three missile options or give a Menchit its Foeslayer, and nothing on screen to say the offers existed. Compact now carries the offers as a strip: the name, the Variant it belongs to, and the same button. It still takes away the guns, which is what it is for.',
       'A Squad with one Variant’s upgrade drew a live button in the OTHER Variant’s block. One Menchit and no Styx put a +5pts Foeslayer under Styx, and pressing it bought the Menchit’s — both then reading “Bought”. Offers are matched to the block they belong to now, and a block for a model you do not field shows the printed price instead of a control.',

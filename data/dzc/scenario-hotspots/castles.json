@@ -12,7 +12,24 @@
   "token": "acm-package",
   "x": 20.8,
   "y": 25.0,
-  "r": 2.3
+  "r": 2.3,
+  "hideV": "2"
+ },
+ {
+  "t": "token",
+  "token": "acm-package",
+  "x": 22.0,
+  "y": 23.9,
+  "r": 2.3,
+  "v": "2"
+ },
+ {
+  "t": "token",
+  "token": "laser-turret",
+  "x": 19.7,
+  "y": 26.1,
+  "r": 2.3,
+  "v": "2"
  },
  {
   "t": "zone",
@@ -20,14 +37,35 @@
   "x": 50.0,
   "y": 25.0,
   "w": 8.3,
-  "h": 8.3
+  "h": 8.3,
+  "size": "clash"
  },
  {
   "t": "token",
   "token": "acm-package",
   "x": 50.0,
   "y": 25.0,
-  "r": 2.3
+  "r": 2.3,
+  "size": "clash",
+  "hideV": "2"
+ },
+ {
+  "t": "token",
+  "token": "acm-package",
+  "x": 51.1,
+  "y": 23.9,
+  "r": 2.3,
+  "size": "clash",
+  "v": "2"
+ },
+ {
+  "t": "token",
+  "token": "laser-turret",
+  "x": 48.9,
+  "y": 26.1,
+  "r": 2.3,
+  "size": "clash",
+  "v": "2"
  },
  {
   "t": "zone",
@@ -42,7 +80,24 @@
   "token": "acm-package",
   "x": 79.2,
   "y": 25.0,
-  "r": 2.3
+  "r": 2.3,
+  "hideV": "2"
+ },
+ {
+  "t": "token",
+  "token": "acm-package",
+  "x": 80.3,
+  "y": 23.9,
+  "r": 2.3,
+  "v": "2"
+ },
+ {
+  "t": "token",
+  "token": "laser-turret",
+  "x": 78.0,
+  "y": 26.1,
+  "r": 2.3,
+  "v": "2"
  },
  {
   "t": "zone",
@@ -57,7 +112,24 @@
   "token": "acm-package",
   "x": 20.8,
   "y": 75.0,
-  "r": 2.3
+  "r": 2.3,
+  "hideV": "2"
+ },
+ {
+  "t": "token",
+  "token": "acm-package",
+  "x": 22.0,
+  "y": 73.9,
+  "r": 2.3,
+  "v": "2"
+ },
+ {
+  "t": "token",
+  "token": "laser-turret",
+  "x": 19.7,
+  "y": 76.1,
+  "r": 2.3,
+  "v": "2"
  },
  {
   "t": "zone",
@@ -65,14 +137,35 @@
   "x": 50.0,
   "y": 75.0,
   "w": 8.3,
-  "h": 8.3
+  "h": 8.3,
+  "size": "clash"
  },
  {
   "t": "token",
   "token": "acm-package",
   "x": 50.0,
   "y": 75.0,
-  "r": 2.3
+  "r": 2.3,
+  "size": "clash",
+  "hideV": "2"
+ },
+ {
+  "t": "token",
+  "token": "acm-package",
+  "x": 51.1,
+  "y": 73.9,
+  "r": 2.3,
+  "size": "clash",
+  "v": "2"
+ },
+ {
+  "t": "token",
+  "token": "laser-turret",
+  "x": 48.9,
+  "y": 76.1,
+  "r": 2.3,
+  "size": "clash",
+  "v": "2"
  },
  {
   "t": "zone",
@@ -87,6 +180,23 @@
   "token": "acm-package",
   "x": 79.2,
   "y": 75.0,
-  "r": 2.3
+  "r": 2.3,
+  "hideV": "2"
+ },
+ {
+  "t": "token",
+  "token": "acm-package",
+  "x": 80.3,
+  "y": 73.9,
+  "r": 2.3,
+  "v": "2"
+ },
+ {
+  "t": "token",
+  "token": "laser-turret",
+  "x": 78.0,
+  "y": 76.1,
+  "r": 2.3,
+  "v": "2"
  }
 ]

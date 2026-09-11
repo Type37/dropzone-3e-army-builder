@@ -1,22 +1,134 @@
 {
  "territories": [
-  {"colour": "blue", "shape": "rect", "x": 0, "y": 0, "w": 48, "h": 2},
-  {"colour": "blue", "shape": "rect", "x": 0, "y": 46, "w": 48, "h": 2}
+  {
+   "colour": "blue",
+   "shape": "rect",
+   "x": 0,
+   "y": 0,
+   "w": 48,
+   "h": 2
+  },
+  {
+   "colour": "blue",
+   "shape": "rect",
+   "x": 0,
+   "y": 46,
+   "w": 48,
+   "h": 2
+  }
  ],
  "lines": [
-  {"x1": 24, "y1": 0, "x2": 24, "y2": 48, "style": "dashed"},
-  {"x1": 0, "y1": 24, "x2": 48, "y2": 24, "style": "dashed"}
+  {
+   "x1": 24,
+   "y1": 0,
+   "x2": 24,
+   "y2": 48,
+   "style": "dashed"
+  },
+  {
+   "x1": 0,
+   "y1": 24,
+   "x2": 48,
+   "y2": 24,
+   "style": "dashed"
+  }
  ],
  "zones": [
-  {"legend": 0, "x": 10, "y": 12, "w": 4, "h": 4, "features": ["acm-package"]},
-  {"legend": 1, "x": 24, "y": 12, "w": 4, "h": 4, "features": ["acm-package"]},
-  {"legend": 0, "x": 38, "y": 12, "w": 4, "h": 4, "features": ["acm-package"]},
-  {"legend": 0, "x": 10, "y": 36, "w": 4, "h": 4, "features": ["acm-package"]},
-  {"legend": 1, "x": 24, "y": 36, "w": 4, "h": 4, "features": ["acm-package"]},
-  {"legend": 0, "x": 38, "y": 36, "w": 4, "h": 4, "features": ["acm-package"]}
+  {
+   "legend": 0,
+   "x": 10,
+   "y": 12,
+   "w": 4,
+   "h": 4,
+   "features": [
+    "acm-package"
+   ]
+  },
+  {
+   "legend": 1,
+   "x": 24,
+   "y": 12,
+   "w": 4,
+   "h": 4,
+   "features": [
+    "acm-package"
+   ]
+  },
+  {
+   "legend": 0,
+   "x": 38,
+   "y": 12,
+   "w": 4,
+   "h": 4,
+   "features": [
+    "acm-package"
+   ]
+  },
+  {
+   "legend": 0,
+   "x": 10,
+   "y": 36,
+   "w": 4,
+   "h": 4,
+   "features": [
+    "acm-package"
+   ]
+  },
+  {
+   "legend": 1,
+   "x": 24,
+   "y": 36,
+   "w": 4,
+   "h": 4,
+   "features": [
+    "acm-package"
+   ]
+  },
+  {
+   "legend": 0,
+   "x": 38,
+   "y": 36,
+   "w": 4,
+   "h": 4,
+   "features": [
+    "acm-package"
+   ]
+  }
  ],
  "arrows": [
-  {"x1": 1, "y1": 1.5, "x2": 1, "y2": 47, "label": "48\"", "lx": 4.25, "ly": 4.2},
-  {"x1": 1, "y1": 47, "x2": 47, "y2": 47, "label": "48\"", "lx": 44.1, "ly": 46.1}
- ]
+  {
+   "x1": 1,
+   "y1": 1.5,
+   "x2": 1,
+   "y2": 47,
+   "label": "48\"",
+   "lx": 4.25,
+   "ly": 4.2
+  },
+  {
+   "x1": 1,
+   "y1": 47,
+   "x2": 47,
+   "y2": 47,
+   "label": "48\"",
+   "lx": 44.1,
+   "ly": 46.1
+  }
+ ],
+ "variants": {
+  "1": {
+   "objective": true
+  },
+  "2": {
+   "zone_features": [
+    {
+     "legend": [
+      0,
+      1
+     ],
+     "add": "laser-turret"
+    }
+   ]
+  }
+ }
 }
