@@ -44,7 +44,7 @@ import os
 import sys
 import tempfile
 
-from PIL import Image
+from PIL import Image, ImageChops, ImageStat
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SPECS = os.path.join(ROOT, "data", "dzc", "scenario-maps")
@@ -327,11 +327,8 @@ def printed(scen):
     if os.path.exists(path):
         return path
     import fitz
-    import numpy as np
 
-    want = np.asarray(
-        Image.open(os.path.join(ROOT, scen["map"])).convert("RGB").resize((48, 48)), dtype=float
-    )
+    want = Image.open(os.path.join(ROOT, scen["map"])).convert("RGB").resize((48, 48))
     best = None
     doc = fitz.open(PDFS[scen["source"]])
     for page in doc:
@@ -342,18 +339,8 @@ def printed(scen):
             pic = fitz.Pixmap(doc, info["xref"])
             if pic.alpha or pic.n > 3:
                 pic = fitz.Pixmap(fitz.csRGB, pic)
-            err = (
-                (
-                    np.asarray(
-                        Image.frombytes("RGB", (pic.width, pic.height), pic.samples).resize(
-                            (48, 48)
-                        ),
-                        dtype=float,
-                    )
-                    - want
-                )
-                ** 2
-            ).mean()
+            got = Image.frombytes("RGB", (pic.width, pic.height), pic.samples).resize((48, 48))
+            err = sum(v * v for v in ImageStat.Stat(ImageChops.difference(got, want)).rms)
             if best is None or err < best[0]:
                 best = (err, page, r)
     if best is None:
