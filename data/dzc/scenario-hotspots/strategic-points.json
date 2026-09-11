@@ -1,0 +1,81 @@
+[
+ {
+  "t": "zone",
+  "legend": 0,
+  "x": 6.2,
+  "y": 6.2,
+  "w": 12.5,
+  "h": 12.5
+ },
+ {
+  "t": "zone",
+  "legend": 0,
+  "x": 93.8,
+  "y": 93.8,
+  "w": 12.5,
+  "h": 12.5
+ },
+ {
+  "t": "point",
+  "x": 50.0,
+  "y": 50.0,
+  "r": 3.7,
+  "legend": 1
+ },
+ {
+  "t": "point",
+  "x": 25.0,
+  "y": 25.0,
+  "r": 3.7,
+  "legend": 2
+ },
+ {
+  "t": "point",
+  "x": 75.0,
+  "y": 75.0,
+  "r": 3.7,
+  "legend": 2
+ },
+ {
+  "t": "point",
+  "x": 75.0,
+  "y": 25.0,
+  "r": 3.7,
+  "legend": 3
+ },
+ {
+  "t": "point",
+  "x": 25.0,
+  "y": 75.0,
+  "r": 3.7,
+  "legend": 3
+ },
+ {
+  "t": "token",
+  "token": "shield-generator",
+  "x": 14.7,
+  "y": 6.9,
+  "r": 3.3
+ },
+ {
+  "t": "token",
+  "token": "comms-uplink-tower",
+  "x": 6.9,
+  "y": 14.7,
+  "r": 3.2
+ },
+ {
+  "t": "token",
+  "token": "comms-uplink-tower",
+  "x": 93.8,
+  "y": 85.3,
+  "r": 3.5
+ },
+ {
+  "t": "token",
+  "token": "shield-generator",
+  "x": 85.2,
+  "y": 92.8,
+  "r": 3.6
+ }
+]

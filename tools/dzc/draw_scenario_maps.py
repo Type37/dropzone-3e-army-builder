@@ -11,13 +11,15 @@ pack). Each is described in data/dzc/scenario-maps/<id>.json, in inches on the
 
   territories  [{"colour": "blue"|"red", "shape": "rect", "x", "y", "w", "h"}
                 | {"colour", "shape": "circle", "cx", "cy", "r"}]      circles are clipped to the table
-  lines        [{"x1", "y1", "x2", "y2", "style": "dashed"|"solid", "colour"?}]   centre lines, diagonals
-  zones        [{"legend": n, "x", "y", "w", "h", "features": ["railgun-turret", ...]}]
+  lines        [{"x1", "y1", "x2", "y2", "style": "dashed"|"solid", "colour"?, "weight"?: "faint"}]
+               centre lines, quarter lines (faint), diagonals
+  zones        [{"legend": n, "x", "y", "w", "h", "features": ["railgun-turret", ...], "border"?: "solid", "outline"?: colour}]
                x, y the Zone's centre; legend = index of its entry in scenarios.json, which gives
-               its colour; features are token names from assets/tokens, drawn in the Zone's corners
-               (top right, bottom left, top left, bottom right) as the book draws them
+               its colour; features are token names from assets/tokens: one is centred, two or more
+               go in the corners (top right, bottom left, top left, bottom right) as the book draws them
   objects      [{"x", "y"}]                                         Object tokens
-  points       [{"x", "y", "colour": "magenta"|..., "legend"?: n}]  marked points
+  points       [{"x", "y", "colour": "magenta"|"orange"|"yellow"|"red"|"pink", "d"?: 2, "dashed"?, "legend"?: n}]
+               marked points, drawn as coloured discs d inches across
   tokens       [{"token", "x", "y", "size"?}]                       a token placed on its own
   arrows       [{"x1", "y1", "x2", "y2", "label", "lx"?, "ly"?}]     measurements; lx/ly place the label
 
@@ -42,7 +44,7 @@ TMP = os.path.join(tempfile.gettempdir(), 'dzc-maps')
 
 U = 200 / 48          # SVG units per inch on a 200-unit table
 TERRITORY = {'blue': '#6FB0E8', 'red': '#E06A6A', 'green': '#6CCB6C', 'yellow': '#E8D35A'}
-POINT = {'magenta': '#E052C8', 'red': '#D83A3A', 'green': '#3E9E4E', 'yellow': '#D9B020', 'blue': '#2F7FD0'}
+POINT = {'magenta': '#D6348F', 'red': '#D83A3A', 'green': '#3E9E4E', 'yellow': '#F2E23A', 'blue': '#2F7FD0', 'orange': '#E8765C', 'pink': '#D98A96'}
 TOKEN_SIDE = 2.2      # inches, a Feature token in a Zone corner
 
 
@@ -55,6 +57,7 @@ def load_scenarios():
 
 
 def legend_rgb(scen, i):
+    """A Zone's fill is its legend colour, which is the colour the book prints the Zone in."""
     L = scen['legend'][i]
     if not L.get('rgb'):
         raise SystemExit('%s: legend %d has no colour' % (scen['id'], i))
@@ -90,6 +93,14 @@ def draw(sid, scen):
     spec = json.load(io.open(os.path.join(SPECS, sid + '.json'), encoding='utf-8'))
     out, spots = [], []
     out.append('<rect width="200" height="200" fill="#f4efe8"/>')
+    # lines first: the book's Territories sit over them
+    for ln in spec.get('lines', []):
+        dash = ' stroke-dasharray="4,3"' if ln.get('style', 'dashed') == 'dashed' else ''
+        col = ln.get('colour', '#6b6660')
+        width = '.35' if ln.get('weight') == 'faint' else ('.6' if dash else '.8')
+        opacity = ' stroke-opacity=".6"' if ln.get('weight') == 'faint' else ''
+        out.append('<line x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s" stroke-width="%s"%s%s/>' % (
+            n(ln['x1'] * U), n(ln['y1'] * U), n(ln['x2'] * U), n(ln['y2'] * U), col, width, dash, opacity))
     out.append('<clipPath id="tbl"><rect width="200" height="200"/></clipPath><g clip-path="url(#tbl)">')
     for t in spec.get('territories', []):
         fill = TERRITORY[t['colour']]
@@ -101,35 +112,41 @@ def draw(sid, scen):
         else:
             raise SystemExit('%s: unknown territory shape %s' % (sid, t['shape']))
     out.append('</g>')
-    for ln in spec.get('lines', []):
-        dash = ' stroke-dasharray="4,3"' if ln.get('style', 'dashed') == 'dashed' else ''
-        col = ln.get('colour', '#6b6660')
-        out.append('<line x1="%s" y1="%s" x2="%s" y2="%s" stroke="%s" stroke-width="%s"%s/>' % (
-            n(ln['x1'] * U), n(ln['y1'] * U), n(ln['x2'] * U), n(ln['y2'] * U), col, '.6' if dash else '.8', dash))
     for z in spec.get('zones', []):
         w, h = z['w'] * U, z['h'] * U
         x0, y0 = z['x'] * U - w / 2, z['y'] * U - h / 2
-        out.append('<rect x="%s" y="%s" width="%s" height="%s" fill="%s" fill-opacity=".85" stroke="#1C1A17" stroke-width=".9" stroke-dasharray="2.4,1.6"/>' % (
-            n(x0), n(y0), n(w), n(h), legend_rgb(scen, z['legend'])))
+        border = 'stroke-width="1.4"' if z.get('border') == 'solid' else 'stroke-width=".9" stroke-dasharray="2.4,1.6"'
+        out.append('<rect x="%s" y="%s" width="%s" height="%s" fill="%s" fill-opacity=".85" stroke="#1C1A17" %s/>' % (
+            n(x0), n(y0), n(w), n(h), legend_rgb(scen, z['legend']), border))
+        if z.get('outline'):   # a Zone the scenario also marks, e.g. "Secure these Zones", ringed in that colour
+            out.append('<rect x="%s" y="%s" width="%s" height="%s" fill="none" stroke="%s" stroke-width="2.2"/>' % (n(x0 - 1), n(y0 - 1), n(w + 2), n(h + 2), POINT[z['outline']]))
         spots.append({'t': 'zone', 'legend': z['legend'], 'x': round(z['x'] / 48 * 100, 1), 'y': round(z['y'] / 48 * 100, 1),
                       'w': round(z['w'] / 48 * 100, 1), 'h': round(z['h'] / 48 * 100, 1)})
         side = TOKEN_SIDE * U
         pad = .35 * U
-        corners = [(x0 + w - side - pad, y0 + pad), (x0 + pad, y0 + h - side - pad), (x0 + pad, y0 + pad), (x0 + w - side - pad, y0 + h - side - pad)]
-        for i, feat in enumerate(z.get('features', [])):
-            fx, fy = corners[i % 4]
+        feats = z.get('features', [])
+        # the rulebook centres a lone token; with two or more they go to the corners
+        corners = ([(z['x'] * U - side / 2, z['y'] * U - side / 2)] if len(feats) == 1 else
+                   [(x0 + w - side - pad, y0 + pad), (x0 + pad, y0 + h - side - pad), (x0 + pad, y0 + pad), (x0 + w - side - pad, y0 + h - side - pad)])
+        for i, feat in enumerate(feats):
+            fx, fy = corners[i % len(corners)]
             out.append('<image href="%s" x="%s" y="%s" width="%s" height="%s"/>' % (token_uri(feat), n(fx), n(fy), n(side), n(side)))
             spots.append({'t': 'token', 'token': feat, 'x': round((fx + side / 2) / 2, 1), 'y': round((fy + side / 2) / 2, 1), 'r': round(side / 2 / 2, 1)})
-    # Objects and marked points use the rulebook's own tokens (the 401px maps only show them as dots)
-    for kind, tok in (('objects', 'object'), ('points', 'secure-point')):
-        for o in spec.get(kind, []):
-            side = TOKEN_SIDE * U
-            fx, fy = o['x'] * U - side / 2, o['y'] * U - side / 2
-            out.append('<image href="%s" x="%s" y="%s" width="%s" height="%s"/>' % (token_uri(tok), n(fx), n(fy), n(side), n(side)))
-            spot = {'t': 'token', 'token': tok, 'x': round(o['x'] / 48 * 100, 1), 'y': round(o['y'] / 48 * 100, 1), 'r': round(side / 4, 1)}
-            if 'legend' in o:
-                spot['legend'] = o['legend']
-            spots.append(spot)
+    # Objects use the rulebook's Object token (the 401px maps only show them as dots)
+    for o in spec.get('objects', []):
+        side = TOKEN_SIDE * U
+        fx, fy = o['x'] * U - side / 2, o['y'] * U - side / 2
+        out.append('<image href="%s" x="%s" y="%s" width="%s" height="%s"/>' % (token_uri('object'), n(fx), n(fy), n(side), n(side)))
+        spots.append({'t': 'token', 'token': 'object', 'x': round(o['x'] / 48 * 100, 1), 'y': round(o['y'] / 48 * 100, 1), 'r': round(side / 4, 1)})
+    # marked points are coloured discs, as the book prints them
+    for p in spec.get('points', []):
+        r = p.get('d', 2.0) / 2 * U
+        dash = ' stroke-dasharray="1.6,1"' if p.get('dashed') else ''
+        out.append('<circle cx="%s" cy="%s" r="%s" fill="%s" stroke="#1C1A17" stroke-width=".7"%s/>' % (n(p['x'] * U), n(p['y'] * U), n(r), POINT[p.get('colour', 'magenta')], dash))
+        spot = {'t': 'point', 'x': round(p['x'] / 48 * 100, 1), 'y': round(p['y'] / 48 * 100, 1), 'r': round(r / 2 + .6, 1)}
+        if 'legend' in p:
+            spot['legend'] = p['legend']
+        spots.append(spot)
     for t in spec.get('tokens', []):
         side = t.get('size', TOKEN_SIDE) * U
         fx, fy = t['x'] * U - side / 2, t['y'] * U - side / 2
@@ -155,8 +172,41 @@ def draw(sid, scen):
     return svg, spots
 
 
+PDFS = {'rulebook': os.path.join(ROOT, 'rules', 'A5_Dropzone_3.02_Rulebook.pdf'),
+        'fauna': os.path.join(ROOT, 'rules', 'Extra-Rules', 'Fauna_Rules_Scenarios_260901.pdf')}
+
+
+def printed(scen):
+    """The map as the book prints it: its picture plus the vector Zones, tokens and points drawn over it.
+    The extracted picture alone (assets/scenarios/<id>.webp) lacks those, so checks run against this."""
+    path = os.path.join(TMP, 'book-%s.png' % scen['id'])
+    if os.path.exists(path):
+        return path
+    import fitz
+    import numpy as np
+    want = np.asarray(Image.open(os.path.join(ROOT, scen['map'])).convert('RGB').resize((48, 48)), dtype=float)
+    best = None
+    doc = fitz.open(PDFS[scen['source']])
+    for page in doc:
+        for info in page.get_image_info(xrefs=True):
+            r = fitz.Rect(info['bbox'])
+            if abs(r.width - r.height) >= 3 or not 150 < r.width < 400:
+                continue
+            pic = fitz.Pixmap(doc, info['xref'])
+            if pic.alpha or pic.n > 3:
+                pic = fitz.Pixmap(fitz.csRGB, pic)
+            err = ((np.asarray(Image.frombytes('RGB', (pic.width, pic.height), pic.samples).resize((48, 48)), dtype=float) - want) ** 2).mean()
+            if best is None or err < best[0]:
+                best = (err, page, r)
+    _, page, r = best
+    pix = page.get_pixmap(clip=r, matrix=fitz.Matrix(1000 / r.width, 1000 / r.width))
+    os.makedirs(TMP, exist_ok=True)
+    Image.frombytes('RGB', (pix.width, pix.height), pix.samples).resize((1000, 1000)).save(path)
+    return path
+
+
 def raster(scen, size):
-    return Image.open(os.path.join(ROOT, scen['map'])).convert('RGB').resize((size, size), Image.LANCZOS)
+    return Image.open(printed(scen)).convert('RGB').resize((size, size), Image.LANCZOS)
 
 
 def render_svg(svg, size):

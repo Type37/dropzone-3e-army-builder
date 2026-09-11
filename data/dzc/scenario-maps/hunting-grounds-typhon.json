@@ -1,0 +1,27 @@
+{
+ "territories": [
+  {"colour": "blue", "shape": "circle", "cx": 48, "cy": 0, "r": 12},
+  {"colour": "blue", "shape": "circle", "cx": 0, "cy": 48, "r": 12}
+ ],
+ "lines": [
+  {"x1": 24, "y1": 0, "x2": 24, "y2": 48, "style": "dashed"},
+  {"x1": 0, "y1": 24, "x2": 48, "y2": 24, "style": "dashed"},
+  {"x1": 0, "y1": 0, "x2": 48, "y2": 48, "style": "solid"},
+  {"x1": 0, "y1": 48, "x2": 48, "y2": 0, "style": "solid"}
+ ],
+ "zones": [
+  {"legend": 1, "x": 12, "y": 12, "w": 6, "h": 6, "features": ["shield-generator", "acm-package"]},
+  {"legend": 1, "x": 24, "y": 24, "w": 6, "h": 6, "features": ["shield-generator", "acm-package"]},
+  {"legend": 1, "x": 36, "y": 36, "w": 6, "h": 6, "features": ["shield-generator", "acm-package"]}
+ ],
+ "arrows": [
+  {"x1": 1, "y1": 1.1, "x2": 1, "y2": 47, "label": "48\"", "lx": 4.1, "ly": 4.05},
+  {"x1": 1.1, "y1": 47, "x2": 46.9, "y2": 47, "label": "48\"", "lx": 44.1, "ly": 45},
+  {"x1": 16, "y1": 1.1, "x2": 16, "y2": 11.9, "label": "12\"", "lx": 18.3, "ly": 7.05},
+  {"x1": 1.1, "y1": 16, "x2": 11.9, "y2": 16, "label": "12\"", "lx": 5.3, "ly": 15.05},
+  {"x1": 40.05, "y1": 7.95, "x2": 47.75, "y2": 0.25, "label": "12\"", "lx": 44.3, "ly": 7.05},
+  {"x1": 0.25, "y1": 47.75, "x2": 7.95, "y2": 40.05, "label": "12\"", "lx": 7.3, "ly": 45},
+  {"x1": 36.1, "y1": 32, "x2": 46.9, "y2": 32, "label": "12\"", "lx": 41.3, "ly": 31},
+  {"x1": 32, "y1": 36.1, "x2": 32, "y2": 46.9, "label": "12\"", "lx": 35.3, "ly": 43}
+ ]
+}

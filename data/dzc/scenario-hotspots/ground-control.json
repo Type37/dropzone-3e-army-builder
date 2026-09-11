@@ -1,0 +1,90 @@
+[
+ {
+  "t": "zone",
+  "legend": 0,
+  "x": 25.0,
+  "y": 25.0,
+  "w": 12.5,
+  "h": 12.5
+ },
+ {
+  "t": "zone",
+  "legend": 0,
+  "x": 75.0,
+  "y": 25.0,
+  "w": 12.5,
+  "h": 12.5
+ },
+ {
+  "t": "zone",
+  "legend": 0,
+  "x": 25.0,
+  "y": 75.0,
+  "w": 12.5,
+  "h": 12.5
+ },
+ {
+  "t": "zone",
+  "legend": 0,
+  "x": 75.0,
+  "y": 75.0,
+  "w": 12.5,
+  "h": 12.5
+ },
+ {
+  "t": "token",
+  "token": "comms-uplink-tower",
+  "x": 28.3,
+  "y": 21.5,
+  "r": 3.5
+ },
+ {
+  "t": "token",
+  "token": "excellent-vantage",
+  "x": 20.7,
+  "y": 28.5,
+  "r": 3.5
+ },
+ {
+  "t": "token",
+  "token": "excellent-vantage",
+  "x": 70.7,
+  "y": 21.4,
+  "r": 3.5
+ },
+ {
+  "t": "token",
+  "token": "railgun-turret",
+  "x": 78.2,
+  "y": 29.2,
+  "r": 3.5
+ },
+ {
+  "t": "token",
+  "token": "railgun-turret",
+  "x": 20.7,
+  "y": 71.5,
+  "r": 3.5
+ },
+ {
+  "t": "token",
+  "token": "excellent-vantage",
+  "x": 29.5,
+  "y": 79.5,
+  "r": 3.5
+ },
+ {
+  "t": "token",
+  "token": "comms-uplink-tower",
+  "x": 69.9,
+  "y": 71.2,
+  "r": 3.5
+ },
+ {
+  "t": "token",
+  "token": "excellent-vantage",
+  "x": 79.7,
+  "y": 79.9,
+  "r": 3.5
+ }
+]

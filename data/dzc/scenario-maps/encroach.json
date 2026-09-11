@@ -1,0 +1,151 @@
+{
+ "territories": [
+  {
+   "colour": "blue",
+   "shape": "rect",
+   "x": 0,
+   "y": 0,
+   "w": 48,
+   "h": 2
+  },
+  {
+   "colour": "blue",
+   "shape": "rect",
+   "x": 0,
+   "y": 46,
+   "w": 48,
+   "h": 2
+  }
+ ],
+ "lines": [
+  {
+   "x1": 24,
+   "y1": 2,
+   "x2": 24,
+   "y2": 46,
+   "style": "dashed"
+  },
+  {
+   "x1": 0,
+   "y1": 24,
+   "x2": 48,
+   "y2": 24,
+   "style": "dashed"
+  },
+  {
+   "x1": 12,
+   "y1": 2,
+   "x2": 12,
+   "y2": 46,
+   "style": "dashed",
+   "weight": "faint"
+  },
+  {
+   "x1": 36,
+   "y1": 2,
+   "x2": 36,
+   "y2": 46,
+   "style": "dashed",
+   "weight": "faint"
+  },
+  {
+   "x1": 0,
+   "y1": 12,
+   "x2": 48,
+   "y2": 12,
+   "style": "dashed",
+   "weight": "faint"
+  },
+  {
+   "x1": 0,
+   "y1": 36,
+   "x2": 48,
+   "y2": 36,
+   "style": "dashed",
+   "weight": "faint"
+  }
+ ],
+ "zones": [
+  {
+   "legend": 0,
+   "x": 44,
+   "y": 22,
+   "w": 4,
+   "h": 4
+  },
+  {
+   "legend": 0,
+   "x": 4,
+   "y": 26,
+   "w": 4,
+   "h": 4
+  }
+ ],
+ "objects": [
+  {
+   "x": 44,
+   "y": 22
+  },
+  {
+   "x": 4,
+   "y": 26
+  }
+ ],
+ "tokens": [
+  {
+   "token": "shield-generator",
+   "x": 42,
+   "y": 20,
+   "size": 3.0
+  },
+  {
+   "token": "shield-generator",
+   "x": 6,
+   "y": 28,
+   "size": 3.0
+  }
+ ],
+ "points": [
+  {
+   "x": 12,
+   "y": 12,
+   "colour": "orange",
+   "legend": 2,
+   "d": 3.0
+  },
+  {
+   "x": 24,
+   "y": 24,
+   "colour": "orange",
+   "legend": 2,
+   "d": 3.0
+  },
+  {
+   "x": 36,
+   "y": 36,
+   "colour": "orange",
+   "legend": 2,
+   "d": 3.0
+  }
+ ],
+ "arrows": [
+  {
+   "x1": 1,
+   "y1": 1.1,
+   "x2": 1,
+   "y2": 46.8,
+   "label": "48\"",
+   "lx": 4.1,
+   "ly": 4.1
+  },
+  {
+   "x1": 1.1,
+   "y1": 47,
+   "x2": 46.9,
+   "y2": 47,
+   "label": "48\"",
+   "lx": 44.1,
+   "ly": 45
+  }
+ ]
+}

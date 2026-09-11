@@ -165,7 +165,7 @@ function mapHTML(s){
   const spots=redrawn(s)||[];
   const html=spots.map(p=>{
     const box=p.t==='zone'?`left:${p.x-p.w/2}%;top:${p.y-p.h/2}%;width:${p.w}%;height:${p.h}%`:`left:${p.x-p.r}%;top:${p.y-p.r}%;width:${2*p.r}%;height:${2*p.r}%;border-radius:50%`;
-    const key=p.t==='zone'?`dzz:${p.legend}`:TOKEN_RULE[p.token]?`dzf:${TOKEN_RULE[p.token]}`:p.token==='object'?'dzo:Objects':p.token==='secure-point'?'dzo:Secure':p.token==='bunker-entrance'?'dzo:Bunker Entrances':'';
+    const key=(p.t==='zone'||(p.t==='point'&&p.legend!==undefined))?`dzz:${p.legend}`:TOKEN_RULE[p.token]?`dzf:${TOKEN_RULE[p.token]}`:p.token==='object'?'dzo:Objects':p.token==='secure-point'?'dzo:Secure':p.token==='bunker-entrance'?'dzo:Bunker Entrances':'';
     return key?`<span class="hs" tabindex="0" data-tip="${key}" style="${box}"></span>`:'';
   }).join('');
   return `<div class="dz-frame"><img src="${mapSrc(s)}" alt="${s.name} map">${html}</div>`;

@@ -1,0 +1,156 @@
+{
+ "territories": [
+  {
+   "colour": "blue",
+   "shape": "circle",
+   "cx": 48,
+   "cy": 0,
+   "r": 12
+  },
+  {
+   "colour": "blue",
+   "shape": "circle",
+   "cx": 0,
+   "cy": 48,
+   "r": 12
+  }
+ ],
+ "lines": [
+  {
+   "x1": 24,
+   "y1": 0,
+   "x2": 24,
+   "y2": 48,
+   "style": "dashed"
+  },
+  {
+   "x1": 0,
+   "y1": 24,
+   "x2": 48,
+   "y2": 24,
+   "style": "dashed"
+  }
+ ],
+ "zones": [
+  {
+   "legend": 0,
+   "x": 12,
+   "y": 12,
+   "w": 6,
+   "h": 6,
+   "border": "solid"
+  },
+  {
+   "legend": 0,
+   "x": 36,
+   "y": 12,
+   "w": 6,
+   "h": 6,
+   "border": "solid"
+  },
+  {
+   "legend": 0,
+   "x": 12,
+   "y": 36,
+   "w": 6,
+   "h": 6,
+   "border": "solid"
+  },
+  {
+   "legend": 0,
+   "x": 36,
+   "y": 36,
+   "w": 6,
+   "h": 6,
+   "border": "solid"
+  }
+ ],
+ "arrows": [
+  {
+   "x1": 1,
+   "y1": 1.1,
+   "x2": 1,
+   "y2": 46.8,
+   "label": "48\"",
+   "lx": 4.1,
+   "ly": 4.1
+  },
+  {
+   "x1": 1.1,
+   "y1": 47,
+   "x2": 46.9,
+   "y2": 47,
+   "label": "48\"",
+   "lx": 44.1,
+   "ly": 45.9
+  },
+  {
+   "x1": 47,
+   "y1": 1.1,
+   "x2": 39.6,
+   "y2": 8.4,
+   "label": "12\"",
+   "lx": 45.4,
+   "ly": 7.1
+  },
+  {
+   "x1": 2.1,
+   "y1": 45.9,
+   "x2": 8.4,
+   "y2": 39.75,
+   "label": "12\"",
+   "lx": 4.5,
+   "ly": 41.9
+  }
+ ],
+ "tokens": [
+  {
+   "token": "comms-uplink-tower",
+   "x": 13.6,
+   "y": 10.3,
+   "size": 3.4
+  },
+  {
+   "token": "excellent-vantage",
+   "x": 9.95,
+   "y": 13.7,
+   "size": 3.4
+  },
+  {
+   "token": "excellent-vantage",
+   "x": 33.95,
+   "y": 10.25,
+   "size": 3.4
+  },
+  {
+   "token": "railgun-turret",
+   "x": 37.55,
+   "y": 14.0,
+   "size": 3.4
+  },
+  {
+   "token": "railgun-turret",
+   "x": 9.95,
+   "y": 34.3,
+   "size": 3.4
+  },
+  {
+   "token": "excellent-vantage",
+   "x": 14.15,
+   "y": 38.15,
+   "size": 3.4
+  },
+  {
+   "token": "comms-uplink-tower",
+   "x": 33.55,
+   "y": 34.2,
+   "size": 3.4
+  },
+  {
+   "token": "excellent-vantage",
+   "x": 38.25,
+   "y": 38.35,
+   "size": 3.4
+  }
+ ]
+}

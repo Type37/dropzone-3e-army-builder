@@ -18,9 +18,14 @@
 - **Dropzone page, first cut:** the sixteen scenarios from `data/dzc/scenarios.json`,
   each with objectives, entry, colour-keyed map key and variants, read from the
   legend as printed, beside the extracted map. Index columns: Objectives, Entry.
-- **Next on the Dropzone side:** redraw the maps as SVG (settled below), explain
-  each objective and feature from `data/dzc/rules-wiki.json`, hover stats on map
-  symbols, and a roller.
+- **Done on the Dropzone side (2026-09-11):** all sixteen maps redrawn as SVG
+  from specs in inches (`data/dzc/scenario-maps/`, `tools/dzc/draw_scenario_maps.py`),
+  checked against the PRINTED page: the rulebook prints its Zones, tokens and
+  points as vector shapes over the map picture, so the extracted `.webp` alone
+  is incomplete. Every objective, entry type, Object rule, Feature and turret a
+  scenario names is explained verbatim (`tools/dzc/build_scenario_terms.py`).
+  Hover a Zone for its map key entry, a token for its rule. Random picks from
+  all sixteen, Fauna included.
 
 Handoff note. Written from the Dropzone side on 2026-09-09 for whoever picks
 this up in `D:\wargaming\Web Apps\Dropfleet-Builder`. Read it end to end before

@@ -1,0 +1,109 @@
+{
+ "territories": [
+  {
+   "colour": "blue",
+   "shape": "rect",
+   "x": 0,
+   "y": 0,
+   "w": 48,
+   "h": 2
+  },
+  {
+   "colour": "blue",
+   "shape": "rect",
+   "x": 0,
+   "y": 46,
+   "w": 48,
+   "h": 2
+  }
+ ],
+ "lines": [
+  {
+   "x1": 24,
+   "y1": 0,
+   "x2": 24,
+   "y2": 48,
+   "style": "dashed"
+  },
+  {
+   "x1": 0,
+   "y1": 24,
+   "x2": 48,
+   "y2": 24,
+   "style": "dashed"
+  }
+ ],
+ "zones": [
+  {
+   "legend": 0,
+   "x": 12,
+   "y": 24,
+   "w": 6,
+   "h": 6,
+   "features": [
+    "object",
+    "shield-generator"
+   ]
+  },
+  {
+   "legend": 0,
+   "x": 24,
+   "y": 24,
+   "w": 6,
+   "h": 6,
+   "features": [
+    "object",
+    "shield-generator"
+   ]
+  },
+  {
+   "legend": 0,
+   "x": 36,
+   "y": 24,
+   "w": 6,
+   "h": 6,
+   "features": [
+    "object",
+    "shield-generator"
+   ]
+  }
+ ],
+ "points": [
+  {
+   "x": 24,
+   "y": 12,
+   "colour": "pink",
+   "legend": 3,
+   "d": 2.2,
+   "dashed": true
+  },
+  {
+   "x": 24,
+   "y": 36,
+   "colour": "pink",
+   "legend": 3,
+   "d": 2.2,
+   "dashed": true
+  }
+ ],
+ "arrows": [
+  {
+   "x1": 1,
+   "y1": 1.1,
+   "x2": 1,
+   "y2": 47,
+   "label": "48\"",
+   "lx": 3.8,
+   "ly": 4.05
+  },
+  {
+   "x1": 1.1,
+   "y1": 47,
+   "x2": 46.9,
+   "y2": 47,
+   "label": "48\"",
+   "lx": 43.8,
+   "ly": 45
+  }
+ ]
+}

@@ -1,0 +1,68 @@
+[
+ {
+  "t": "zone",
+  "legend": 1,
+  "x": 25.0,
+  "y": 25.0,
+  "w": 12.5,
+  "h": 12.5
+ },
+ {
+  "t": "token",
+  "token": "shield-generator",
+  "x": 28.2,
+  "y": 21.8,
+  "r": 2.3
+ },
+ {
+  "t": "token",
+  "token": "acm-package",
+  "x": 21.8,
+  "y": 28.2,
+  "r": 2.3
+ },
+ {
+  "t": "zone",
+  "legend": 1,
+  "x": 50.0,
+  "y": 50.0,
+  "w": 12.5,
+  "h": 12.5
+ },
+ {
+  "t": "token",
+  "token": "shield-generator",
+  "x": 53.2,
+  "y": 46.8,
+  "r": 2.3
+ },
+ {
+  "t": "token",
+  "token": "acm-package",
+  "x": 46.8,
+  "y": 53.2,
+  "r": 2.3
+ },
+ {
+  "t": "zone",
+  "legend": 1,
+  "x": 75.0,
+  "y": 75.0,
+  "w": 12.5,
+  "h": 12.5
+ },
+ {
+  "t": "token",
+  "token": "shield-generator",
+  "x": 78.2,
+  "y": 71.8,
+  "r": 2.3
+ },
+ {
+  "t": "token",
+  "token": "acm-package",
+  "x": 71.8,
+  "y": 78.2,
+  "r": 2.3
+ }
+]
