@@ -30,6 +30,14 @@
 #scn-tip .dz-sw{width:14px;height:14px;flex:0 0 14px;margin:0;}
 @media print{.dz-frame .hs{display:none;}}
 .dz-variant b{font-weight:600;}
+.d66-wrap{grid-template-columns:1fr;}
+.d66{border-collapse:collapse;width:100%;max-width:760px;font-size:16px;}
+.d66 th{font-family:'Roboto Slab',Georgia,serif;font-weight:700;font-size:16px;padding:8px 10px;text-align:center;color:var(--ink);}
+.d66 tbody th{width:44px;}
+.d66 td{padding:12px 14px;text-align:center;font-family:'Roboto Slab',Georgia,serif;font-weight:600;}
+.d66 tbody tr:nth-child(odd) td{background:rgba(184,149,47,.09);}
+.d66 td a{color:var(--ink);text-decoration:none;}
+.d66 td a:hover{text-decoration:underline;}
 .dz-terms{display:flex;flex-direction:column;gap:2mm;margin-top:3mm;}
 .dz-term{font-size:14px;line-height:1.5;color:var(--ink);}
 .dz-term b{font-weight:700;}
@@ -188,6 +196,18 @@ function tipHTML(key){
   return '';
 }
 
+/* The printed d66 chart: the twelve rulebook scenarios in book order, three results each (11-13, 14-16, 21-23 ...).
+   Fauna scenarios stay off it; Random on the index picks from all sixteen. */
+function d66(core){
+  const head=`<tr><th scope="col"></th>${[1,2,3,4,5,6].map(d=>`<th scope="col">${d}</th>`).join('')}</tr>`;
+  const rows=[1,2,3,4,5,6].map(d1=>{
+    const a=core[(d1-1)*2], b=core[(d1-1)*2+1];
+    const cell=s=>`<td colspan="3"><a href="#${s.id}">${s.name}</a></td>`;
+    return `<tr><th scope="row">${d1}</th>${cell(a)}${cell(b)}</tr>`;
+  }).join('');
+  return `<div class="dz d66-wrap"><div class="dz-head"><h2 class="dz-name">d66 chart</h2></div><table class="d66"><thead>${head}</thead><tbody>${rows}</tbody></table></div>`;
+}
+
 function render(s){
   const p=parse(s), src=SOURCES[s.source], shown=new Set();
   const plain=t=>t.replace(/<br>/g,' ');
@@ -223,6 +243,7 @@ fetch('../data/dzc/scenarios.json').then(r=>r.json()).then(data=>{
       {label:'Entry',values:s=>{const e=parse(s).entry;return e?[e]:[];}},
     ],
     render,
+    views:{d66:{label:'d66 chart',title:'d66 chart',render:()=>d66(list.filter(s=>s.source==='rulebook'))}},
     // The rounds a scenario's objectives score on
     markRound:(s,r)=>parse(s).objectives.some(o=>new RegExp('Round[^.]*\\b'+r+'\\b').test(o.text)),
   });
