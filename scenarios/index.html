@@ -24,6 +24,15 @@
 .dz-map{min-width:0;}
 .dz-map img{display:block;width:100%;height:auto;border:1.5px solid #B8952F;}
 .dz-variant b{font-weight:600;}
+.dz-terms{display:flex;flex-direction:column;gap:2mm;margin-top:3mm;}
+.dz-term{font-size:14px;line-height:1.5;color:var(--ink);}
+.dz-term b{font-weight:700;}
+.dz-tbl-wrap{overflow-x:auto;}
+.dz-tbl{border-collapse:collapse;font-size:14px;width:100%;}
+.dz-tbl th{font-size:12px;font-weight:500;color:var(--muted);text-align:left;padding:2px 10px 2px 0;white-space:nowrap;}
+.dz-tbl td{padding:4px 10px 4px 0;vertical-align:top;}
+.dz-tbl tbody tr:nth-child(odd){background:rgba(184,149,47,.09);}
+.dz-tbl td:first-child{font-weight:600;white-space:nowrap;}
 @media (max-width:760px){
   .dz{grid-template-columns:1fr;padding:4mm 3mm;}
   .dz-map{order:-1;grid-row:2;}
@@ -57,6 +66,7 @@
   </div>
 </footer>
 
+<script src="dzc-scenario-terms.js"></script>
 <script src="shared/tooltip.js"></script>
 <script src="shared/shell.js"></script>
 <script>
@@ -102,15 +112,66 @@ const objectiveNames=s=>parse(s).objectives.map(x=>OBJECTIVES.find(o=>x.text.sta
 const item=({text,swatch})=>`<li><span class="dz-sw${swatch?'':' none'}"${swatch?` style="background:${swatch}"`:''}></span><span>${text}</span></li>`;
 const section=(title,body)=>body?`<section class="dz-sec"><h3>${DIAMOND}${title}</h3>${body}</section>`:'';
 
+/* ── Explanations: every rule a scenario names, word for word from the rulebook (dzc-scenario-terms.js) ── */
+const T=DZ_TERMS;
+const wordRe=(n,plural)=>new RegExp('\\b'+n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+(plural?'s?':'')+'\\b',plural?'i':'');
+const words=n=>wordRe(n,true);
+const firstAt=(text,list)=>list.map(([name,re,run])=>({name,run,m:text.match(re)})).filter(x=>x.m).sort((a,b)=>a.m.index-b.m.index);
+const term=(name,html)=>`<p class="dz-term"><b>${name}:</b> ${html}</p>`;
+const ruleTip=name=>T.specialRules[name]?`<span class="tip-t" tabindex="0" data-tip="dzr:${name}">${name}</span>`:name;
+// Turret specials ("Demo 1", "AA-S", "Destroyer 5+, Demo 5") open their weapon rule on hover
+const specials=txt=>txt.split(/,\s*/).map(part=>{const m=part.match(/^([A-Za-z-]+(?: [A-Z][a-z]+)?)(.*)$/);return m&&T.specialRules[m[1]]?ruleTip(m[1])+m[2]:part;}).join(', ');
+function weaponTable(names){
+  return `<div class="dz-tbl-wrap"><table class="dz-tbl"><thead><tr><th>Weapon</th><th>Arc</th><th>Range</th><th>Attacks</th><th>Accuracy</th><th>Energy</th><th>Special</th></tr></thead><tbody>${names.map(n=>{const w=T.weaponFeatures.weapons[n];return `<tr><td><span class="tip-t" tabindex="0" data-tip="dzf:${n}">${n}</span></td><td>${w.arc}</td><td>${w.range}</td><td>${w.attacks}</td><td>${w.accuracy}</td><td>${w.energy}</td><td>${w.special==='-'?'-':specials(w.special)}</td></tr>`;}).join('')}</tbody></table></div>`;
+}
+/* The terms a piece of text names, in the order it names them; each is explained only once per card */
+function explain(text,shown){
+  const out=[], weapons=[];
+  const once=(key,fn)=>{ if(shown.has(key)) return; shown.add(key); fn(); };
+  const list=[
+    ...Object.entries(T.objectives).map(([n,o])=>[n,wordRe(n),()=>once('o:'+n,()=>out.push(term(o.heading,o.body.join(' '))))]),
+    ['Territory',/\bTerritor/,()=>once('territory',()=>out.push(term('Territory',T.territory.join(' '))))],
+    ...Object.entries(T.entry).map(([n,b])=>[n,n==='Deployed'?/\bDeploy/:wordRe(n),()=>once('e:'+n,()=>out.push(term(n,b.join(' '))))]),
+    ...Object.entries(T.extraction).map(([n,b])=>[n,wordRe(n),()=>once('x:'+n,()=>out.push(term(n,b)))]),
+    ['Object',/\bObjects?\b/,()=>once('objects',()=>{ out.push(term('Objects',T.objects.Objects.join(' '))); out.push(term('Finding Objects',T.objects['Finding Objects'].join(' '))); out.push(term('Carrying Objects',T.objects['Carrying Objects'].join(' '))); })],
+    ...Object.entries(T.variantObjects).map(([n,b])=>[n,wordRe(n),()=>once('v:'+n,()=>out.push(term(n,b.join(' '))))]),
+    ['Bunker Entrance',/\bBunker Entrances?\b/,()=>once('bunker',()=>out.push(term('Bunker Entrances',T.bunkerEntrances.join(' '))))],
+    ...Object.keys(T.weaponFeatures.weapons).map(n=>[n,words(n),()=>once('w:'+n,()=>weapons.push(n))]),
+    ...Object.entries(T.features).map(([n,f])=>[n,words(n),()=>once('f:'+n,()=>out.push(term(`<span class="tip-t" tabindex="0" data-tip="dzf:${n}">${n}</span>`,f.text)))]),
+    // unit rules the map keys name
+    ...['Demo Charges','Living Weapons','Bloodthirsty'].map(n=>[n,words(n.replace(/s$/,'')),()=>once('r:'+n,()=>out.push(term(T.specialRules[n].heading,T.specialRules[n].body.join(' '))))]),
+  ];
+  firstAt(text,list).forEach(x=>x.run());
+  let html=out.join('');
+  if(weapons.length) html+=weaponTable(weapons)+(shown.has('weaponRules')?'':(shown.add('weaponRules'),`<p class="dz-term">${T.weaponFeatures.rules.join(' ')}</p>`));
+  return html?`<div class="dz-terms">${html}</div>`:'';
+}
+
+function tipHTML(key){
+  const i=key.indexOf(':'), kind=key.slice(0,i), id=key.slice(i+1);
+  if(kind==='dzr'){ const r=T.specialRules[id]; return r?`<div class="scn-tip-h"><b>${r.heading}</b></div><div>${r.body.join(' ')}</div>`:''; }
+  if(kind==='dzf'){
+    const w=T.weaponFeatures.weapons[id];
+    if(w) return `<div class="scn-tip-h"><b>${id}</b></div><div>Arc ${w.arc}, Range ${w.range}, Attacks ${w.attacks}, Accuracy ${w.accuracy}, Energy ${w.energy}${w.special!=='-'?`, ${w.special}`:''}</div>`;
+    const f=T.features[id]; return f?`<div class="scn-tip-h"><b>${id}</b></div><div>${f.text}</div>`:'';
+  }
+  return '';
+}
+
 function render(s){
-  const p=parse(s), src=SOURCES[s.source];
+  const p=parse(s), src=SOURCES[s.source], shown=new Set();
+  const plain=t=>t.replace(/<br>/g,' ');
+  const objectives=p.objectives.length?`<ul class="dz-list">${p.objectives.map(item).join('')}</ul>${explain(p.objectives.map(o=>o.text).join(' '),shown)}`:'';
+  const entry=p.entry?`<ul class="dz-list">${item({text:p.entry,swatch:''})}</ul>${explain(p.entry,shown)}`:'';
+  const key=p.key.length?`<ul class="dz-list">${p.key.map(item).join('')}</ul>${explain(p.key.map(k=>plain(k.text)).join(' '),shown)}`:'';
+  const variants=p.variants.length?`<ul class="dz-list">${p.variants.map(v=>{const m=v.match(/^(Variant \d):\s*(.*)$/);return item({text:m?`<span class="dz-variant"><b>${m[1]}:</b> ${m[2]}</span>`:v,swatch:''});}).join('')}</ul>${explain(p.variants.join(' '),shown)}`:'';
   return `<div class="dz">
     <div class="dz-head"><h2 class="dz-name">${s.name}</h2><div class="dz-src">${src.book}, page ${s.page}</div></div>
     <div class="dz-rules">
-      ${section('Objectives',p.objectives.length?`<ul class="dz-list">${p.objectives.map(item).join('')}</ul>`:'')}
-      ${section('Entry',p.entry?`<ul class="dz-list">${item({text:p.entry,swatch:''})}</ul>`:'')}
-      ${section('Map key',p.key.length?`<ul class="dz-list">${p.key.map(item).join('')}</ul>`:'')}
-      ${section('Variants',p.variants.length?`<ul class="dz-list">${p.variants.map(v=>{const m=v.match(/^(Variant \d):\s*(.*)$/);return item({text:m?`<span class="dz-variant"><b>${m[1]}:</b> ${m[2]}</span>`:v,swatch:''});}).join('')}</ul>`:'')}
+      ${section('Objectives',objectives)}
+      ${section('Entry',entry)}
+      ${section('Map key',key)}
+      ${section('Variants',variants)}
     </div>
     <div class="dz-map"><img src="../${s.map}" alt="${s.name} map"></div>
   </div>`;
