@@ -199,10 +199,10 @@ function tipHTML(key){
 /* The printed d66 chart: the twelve rulebook scenarios in book order, three results each (11-13, 14-16, 21-23 ...).
    Fauna scenarios stay off it; Random on the index picks from all sixteen. */
 function d66(core){
-  const head=`<tr><th scope="col"></th>${[1,2,3,4,5,6].map(d=>`<th scope="col">${d}</th>`).join('')}</tr>`;
+  const head=`<tr><th scope="col"></th><th scope="col">1-3</th><th scope="col">4-6</th></tr>`;
   const rows=[1,2,3,4,5,6].map(d1=>{
     const a=core[(d1-1)*2], b=core[(d1-1)*2+1];
-    const cell=s=>`<td colspan="3"><a href="#${s.id}">${s.name}</a></td>`;
+    const cell=s=>`<td><a href="#${s.id}">${s.name}</a></td>`;
     return `<tr><th scope="row">${d1}</th>${cell(a)}${cell(b)}</tr>`;
   }).join('');
   return `<div class="dz d66-wrap"><div class="dz-head"><h2 class="dz-name">d66 chart</h2></div><table class="d66"><thead>${head}</thead><tbody>${rows}</tbody></table></div>`;
