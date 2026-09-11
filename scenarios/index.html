@@ -22,7 +22,13 @@
 .dz-sw{width:16px;height:16px;margin-top:4px;border:1px solid rgba(14,12,8,.35);}
 .dz-sw.none{border:0;}
 .dz-map{min-width:0;}
-.dz-map img{display:block;width:100%;height:auto;border:1.5px solid #B8952F;}
+.dz-frame{position:relative;border:1.5px solid #B8952F;}
+.dz-frame img{display:block;width:100%;height:auto;}
+.dz-frame .hs{position:absolute;cursor:help;z-index:2;}
+@media (hover:hover){.dz-frame .hs:hover{box-shadow:0 0 0 2px #B8952F,0 0 0 4px rgba(255,255,255,.7);}}
+.dz-frame .hs:focus-visible{outline:2px solid var(--focus);outline-offset:1px;}
+#scn-tip .dz-sw{width:14px;height:14px;flex:0 0 14px;margin:0;}
+@media print{.dz-frame .hs{display:none;}}
 .dz-variant b{font-weight:600;}
 .dz-terms{display:flex;flex-direction:column;gap:2mm;margin-top:3mm;}
 .dz-term{font-size:14px;line-height:1.5;color:var(--ink);}
@@ -67,6 +73,7 @@
 </footer>
 
 <script src="dzc-scenario-terms.js"></script>
+<script src="dzc-scenario-hotspots.js"></script>
 <script src="shared/tooltip.js"></script>
 <script src="shared/shell.js"></script>
 <script>
@@ -147,8 +154,31 @@ function explain(text,shown){
   return html?`<div class="dz-terms">${html}</div>`:'';
 }
 
+/* ── The map: a redrawn SVG when there is one (tools/dzc/draw_scenario_maps.py), else the book's picture ── */
+const redrawn=s=>typeof DZ_MAP_SPOTS!=='undefined'&&DZ_MAP_SPOTS[s.id];
+const mapSrc=s=>redrawn(s)?`../assets/scenarios/${s.id}.svg`:'../'+s.map;
+// The tokens on a map and the rule each one is
+const TOKEN_RULE={'heavy-cannon':'Heavy Cannon Turret','railgun-turret':'Railgun Turret','flak-turret':'Flak Turret','missile-turret':'Missile Turret','laser-turret':'Laser Turret','super-laser':'Superlaser Turret','excellent-vantage':'Excellent Vantage','acm-package':'ACM Package','shield-generator':'Shield Generator','comms-uplink-tower':'Comms Uplink','power-core':'Power Core','internal-flaw':'Internal Flaw','seal':'Seal','automated-sentries':'Automated Sentries','jamming-device':'Jamming Device','shimmer-field':'Shimmer Field','basement':'Basement','secret-entrance':'Secret Entrance'};
+let CURRENT=null;
+function mapHTML(s){
+  CURRENT=s;
+  const spots=redrawn(s)||[];
+  const html=spots.map(p=>{
+    const box=p.t==='zone'?`left:${p.x-p.w/2}%;top:${p.y-p.h/2}%;width:${p.w}%;height:${p.h}%`:`left:${p.x-p.r}%;top:${p.y-p.r}%;width:${2*p.r}%;height:${2*p.r}%;border-radius:50%`;
+    const key=p.t==='zone'?`dzz:${p.legend}`:TOKEN_RULE[p.token]?`dzf:${TOKEN_RULE[p.token]}`:p.token==='object'?'dzo:Objects':p.token==='secure-point'?'dzo:Secure':p.token==='bunker-entrance'?'dzo:Bunker Entrances':'';
+    return key?`<span class="hs" tabindex="0" data-tip="${key}" style="${box}"></span>`:'';
+  }).join('');
+  return `<div class="dz-frame"><img src="${mapSrc(s)}" alt="${s.name} map">${html}</div>`;
+}
+
 function tipHTML(key){
   const i=key.indexOf(':'), kind=key.slice(0,i), id=key.slice(i+1);
+  if(kind==='dzz'&&CURRENT){ const L=CURRENT.legend[+id]; if(!L) return ''; const sw=L.rgb?`<span class="dz-sw" style="background:rgb(${L.rgb.map(v=>Math.round(v*255)).join(',')})"></span>`:''; return `<div class="scn-tip-h">${sw}<b>${keyLines(L.lines)}</b></div>`; }
+  if(kind==='dzo'){
+    if(id==='Objects') return `<div class="scn-tip-h"><b>Objects</b></div><div>${T.objects.Objects.join(' ')}</div>`;
+    if(id==='Bunker Entrances') return `<div class="scn-tip-h"><b>Bunker Entrances</b></div><div>${T.bunkerEntrances.join(' ')}</div>`;
+    const o=T.objectives[id]; return o?`<div class="scn-tip-h"><b>${o.heading}</b></div><div>${o.body.join(' ')}</div>`:'';
+  }
   if(kind==='dzr'){ const r=T.specialRules[id]; return r?`<div class="scn-tip-h"><b>${r.heading}</b></div><div>${r.body.join(' ')}</div>`:''; }
   if(kind==='dzf'){
     const w=T.weaponFeatures.weapons[id];
@@ -173,7 +203,7 @@ function render(s){
       ${section('Map key',key)}
       ${section('Variants',variants)}
     </div>
-    <div class="dz-map"><img src="../${s.map}" alt="${s.name} map"></div>
+    <div class="dz-map">${mapHTML(s)}</div>
   </div>`;
 }
 
@@ -187,7 +217,7 @@ fetch('../data/dzc/scenarios.json').then(r=>r.json()).then(data=>{
     groups:Object.entries(SOURCES).map(([k,v])=>({name:v.group,items:list.filter(s=>s.source===k)})),
     id:s=>s.id,
     name:s=>s.name,
-    thumb:s=>'../'+s.map,
+    thumb:mapSrc,
     columns:[
       {label:'Objectives',values:objectiveNames},
       {label:'Entry',values:s=>{const e=parse(s).entry;return e?[e]:[];}},
