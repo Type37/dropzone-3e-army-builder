@@ -199,7 +199,7 @@ function tipHTML(key){
 /* The printed d66 chart: the twelve rulebook scenarios in book order, three results each (11-13, 14-16, 21-23 ...).
    Fauna scenarios stay off it; Random on the index picks from all sixteen. */
 function d66(core){
-  const head=`<tr><th scope="col"></th><th scope="col">1-3</th><th scope="col">4-6</th></tr>`;
+  const head=`<tr><th></th><th scope="colgroup" colspan="2">Second die</th></tr><tr><th scope="col">First die</th><th scope="col">1-3</th><th scope="col">4-6</th></tr>`;
   const rows=[1,2,3,4,5,6].map(d1=>{
     const a=core[(d1-1)*2], b=core[(d1-1)*2+1];
     const cell=s=>`<td><a href="#${s.id}">${s.name}</a></td>`;
