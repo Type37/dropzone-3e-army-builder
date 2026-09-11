@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dropzone Commander: Scenarios</title>
+<link rel="icon" href="../favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Libre+Baskerville:ital@0;1&family=Roboto+Slab:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared/shell.css">
+<style>
+@font-face{font-family:'Terminal Grotesque Open';src:url('../assets/fonts/terminal-grotesque-open.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;}
+/* The Dropzone scenario card: map beside the key, objectives and entry under the title */
+.dz{display:grid;grid-template-columns:minmax(0,1fr) 46%;gap:6mm;padding:6mm 14mm 4mm;container-type:inline-size;}
+.dz-head{grid-column:1/-1;}
+.dz-name{font-family:'Roboto Slab',Georgia,serif;font-weight:700;font-size:1.9rem;line-height:1.15;}
+.dz-src{font-size:.95rem;color:var(--muted);margin-top:2px;}
+.dz-rules{display:flex;flex-direction:column;gap:5mm;min-width:0;}
+.dz-sec h3{display:flex;align-items:center;gap:7px;font-family:'Roboto Slab',Georgia,serif;font-weight:700;font-size:1.1rem;margin-bottom:2mm;}
+.dz-sec h3 svg{width:13px;height:13px;flex:0 0 13px;}
+.dz-list{list-style:none;display:flex;flex-direction:column;gap:2mm;}
+.dz-list li{display:grid;grid-template-columns:16px minmax(0,1fr);gap:9px;align-items:start;font-size:1rem;line-height:1.5;}
+.dz-sw{width:16px;height:16px;margin-top:4px;border:1px solid rgba(14,12,8,.35);}
+.dz-sw.none{border:0;}
+.dz-map{min-width:0;}
+.dz-map img{display:block;width:100%;height:auto;border:1.5px solid #B8952F;}
+.dz-variant b{font-weight:600;}
+@media (max-width:760px){
+  .dz{grid-template-columns:1fr;padding:4mm 3mm;}
+  .dz-map{order:-1;grid-row:2;}
+  .dz-head{grid-row:1;}
+}
+@media print{
+  .dz{padding:0;gap:4mm;}
+  .dz-name{font-size:18pt;}
+  .dz-list li{font-size:9.5pt;}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <a href="../index.html">← Army Builder</a>
+    <a class="top-logo" href="#"><img src="../assets/logos/dzc_logo_white.webp" alt="Dropzone Commander scenarios"></a>
+    <nav class="top-links">
+      <span class="game-switch"><a href="/dropfleet-builder/scenarios/dropfleet/">Dropfleet</a><a href="./" aria-current="page">Dropzone</a></span>
+    </nav>
+  </div>
+</header>
+<main id="app"></main>
+<footer class="foot">
+  <div class="foot-in">
+    <b>Dropzone Commander</b>
+    <span>by <a href="https://ttcombat.com/collections/dropzone-commander" target="_blank" rel="noopener">TTCombat</a></span>
+    <a href="../index.html">Army Builder</a>
+    <span class="foot-by">Scenarios by <a class="warlore-mark" href="https://linktr.ee/warlore" target="_blank" rel="noopener" title="WarLore">War<span>Lore</span></a></span>
+    <a href="https://github.com/Type37/dropzone-3e-army-builder" target="_blank" rel="noopener">Source on GitHub</a>
+  </div>
+</footer>
+
+<script src="shared/tooltip.js"></script>
+<script src="shared/shell.js"></script>
+<script>
+const DIAMOND='<svg viewBox="0 0 16 16" aria-hidden="true"><polygon points="8,1 15,8 8,15 1,8" fill="none" stroke="#B8952F" stroke-width="1.5"/><polygon points="8,5 11,8 8,11 5,8" fill="#B8952F" opacity="0.28"/></svg>';
+const SOURCES={rulebook:{group:'Rulebook',book:'Rulebook'},fauna:{group:'Fauna Rules & Scenarios',book:'Fauna Rules & Scenarios'}};
+// The objectives the rulebook names, in the order a scenario lists them
+const OBJECTIVES=['Attrition','Secure','Occupy','Extract','Protect','Dominate','Displace','Raze','Explore'];
+
+/* The legend comes out of the PDF a printed line at a time. Join each entry's
+   lines back into its sentence, and drop the page numbers that ride along. */
+function sentence(lines){
+  return lines.filter(l=>!/^\d{1,2}$/.test(l.trim())).reduce((out,l)=>!out?l:out.endsWith('/')?out+l:out+' '+l,'').trim();
+}
+/* A map key entry stacks separate facts ("2 Hardened Large Zones", "Comms Uplink"); keep each on its own
+   line, joining only where a sentence wraps onto a line that starts in lower case. */
+function keyLines(lines){
+  return lines.filter(l=>!/^\d{1,2}$/.test(l.trim())).reduce((out,l)=>{
+    if(!out) return l;
+    if(out.endsWith('/')) return out+l;
+    const prev=out.split('<br>').pop();
+    const fact=prev.split(' ').every(w=>/^[A-Z0-9(]/.test(w));          // "2 Hardened Large Zones", "Comms Uplink"
+    const newFact=prev.endsWith('.')||fact||/^(Only use|Each )/.test(l);
+    return out+(newFact&&!/^[a-z]/.test(l)?'<br>':' ')+l;
+  },'').trim();
+}
+function parse(s){
+  const key=[], objectives=[], variants=[];
+  let entry='';
+  for(const L of s.legend){
+    const text=sentence(L.lines);
+    if(!text) continue;
+    const swatch=L.rgb?`rgb(${L.rgb.map(v=>Math.round(v*255)).join(',')})`:'';
+    if(/^Entry:/.test(text)) entry=text.replace(/^Entry:\s*/,'');
+    else if(/^Variant \d/.test(text)) variants.push(text);
+    // Variants close every legend; a line after one is that variant running on ("Remove Attrition and add" / "Dominate these...")
+    else if(variants.length&&!L.rgb) variants[variants.length-1]+=' '+text;
+    else if(OBJECTIVES.some(o=>text.startsWith(o))) objectives.push({text,swatch});
+    else key.push({text:keyLines(L.lines),swatch});
+  }
+  return {key,objectives,entry,variants};
+}
+const objectiveNames=s=>parse(s).objectives.map(x=>OBJECTIVES.find(o=>x.text.startsWith(o))).filter((o,i,a)=>a.indexOf(o)===i);
+const item=({text,swatch})=>`<li><span class="dz-sw${swatch?'':' none'}"${swatch?` style="background:${swatch}"`:''}></span><span>${text}</span></li>`;
+const section=(title,body)=>body?`<section class="dz-sec"><h3>${DIAMOND}${title}</h3>${body}</section>`:'';
+
+function render(s){
+  const p=parse(s), src=SOURCES[s.source];
+  return `<div class="dz">
+    <div class="dz-head"><h2 class="dz-name">${s.name}</h2><div class="dz-src">${src.book}, page ${s.page}</div></div>
+    <div class="dz-rules">
+      ${section('Objectives',p.objectives.length?`<ul class="dz-list">${p.objectives.map(item).join('')}</ul>`:'')}
+      ${section('Entry',p.entry?`<ul class="dz-list">${item({text:p.entry,swatch:''})}</ul>`:'')}
+      ${section('Map key',p.key.length?`<ul class="dz-list">${p.key.map(item).join('')}</ul>`:'')}
+      ${section('Variants',p.variants.length?`<ul class="dz-list">${p.variants.map(v=>{const m=v.match(/^(Variant \d):\s*(.*)$/);return item({text:m?`<span class="dz-variant"><b>${m[1]}:</b> ${m[2]}</span>`:v,swatch:''});}).join('')}</ul>`:'')}
+    </div>
+    <div class="dz-map"><img src="../${s.map}" alt="${s.name} map"></div>
+  </div>`;
+}
+
+fetch('../data/dzc/scenarios.json').then(r=>r.json()).then(data=>{
+  const list=data.scenarios;
+  ScenarioShell.start({
+    storageKey:'dzc',
+    titleSuffix:'Dropzone Commander Scenarios',
+    indexDocTitle:'Dropzone Commander: Scenarios',
+    indexTitle:'Scenarios',
+    groups:Object.entries(SOURCES).map(([k,v])=>({name:v.group,items:list.filter(s=>s.source===k)})),
+    id:s=>s.id,
+    name:s=>s.name,
+    thumb:s=>'../'+s.map,
+    columns:[
+      {label:'Objectives',values:objectiveNames},
+      {label:'Entry',values:s=>{const e=parse(s).entry;return e?[e]:[];}},
+    ],
+    render,
+    // The rounds a scenario's objectives score on
+    markRound:(s,r)=>parse(s).objectives.some(o=>new RegExp('Round[^.]*\\b'+r+'\\b').test(o.text)),
+  });
+});
+</script>
+</body>
+</html>

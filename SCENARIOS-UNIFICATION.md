@@ -1,5 +1,27 @@
 # Unifying the scenario tools — Dropzone and Dropfleet
 
+## Status, 2026-09-11 (supersedes the "Open" list below)
+
+- **Both tools live on type37.github.io.** Dropfleet: scenario reference at
+  `/dropfleet-builder/scenarios/dropfleet/` (every published scenario, browse),
+  generator at `.../generator/` (roll). The Neocities Mission Maker redirects to
+  the generator. Dropzone: `/dropzone-3e-army-builder/scenarios/`.
+- **Shared code lives in the Dropfleet repo** at `scenarios/shared/`:
+  `shell.js` + `shell.css` (header with the Dropfleet/Dropzone switch, grouped
+  index with search, Random and fact columns, scenario bar with round/VP
+  tracker, share, print) and `tooltip.js` (hover/tap/focus stats). Each page
+  calls `ScenarioShell.start(game)` with its own scenarios, columns and card
+  renderer. Dropzone copies the three files in with
+  `tools/dzc/sync_scenario_shell.py`; edit them on the Dropfleet side.
+- **Dropfleet has browse mode after all**: 35 published scenarios with maps,
+  verbatim explanations and hover stats on the map symbols.
+- **Dropzone page, first cut:** the sixteen scenarios from `data/dzc/scenarios.json`,
+  each with objectives, entry, colour-keyed map key and variants, read from the
+  legend as printed, beside the extracted map. Index columns: Objectives, Entry.
+- **Next on the Dropzone side:** redraw the maps as SVG (settled below), explain
+  each objective and feature from `data/dzc/rules-wiki.json`, hover stats on map
+  symbols, and a roller.
+
 Handoff note. Written from the Dropzone side on 2026-09-09 for whoever picks
 this up in `D:\wargaming\Web Apps\Dropfleet-Builder`. Read it end to end before
 touching either repo.
