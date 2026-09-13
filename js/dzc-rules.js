@@ -368,7 +368,19 @@
     if (!built) { build(el); built = true; }
     // Straight away, not on the next frame: the book is already in the DOM,
     // and a frame never comes in a tab that is not in front.
-    if (param) jump(decodeURIComponent(param));
+    if (!param) return;
+    const id = decodeURIComponent(param);
+    jump(id);
+    /* A cold deep link lands before the web fonts arrive, and the swap reflows
+       thirty thousand pixels of book above the target, which carried a link
+       to 8.7 three screens past it. Land again once fonts and the page have
+       loaded, unless the reader has started scrolling by then. */
+    let moved = false;
+    const stop = () => { moved = true; };
+    ['wheel', 'touchmove', 'keydown'].forEach(ev => window.addEventListener(ev, stop, { once: true, passive: true }));
+    const again = () => { if (!moved && location.hash === '#rules/' + param) jump(id); };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(again);
+    if (document.readyState !== 'complete') window.addEventListener('load', again, { once: true });
   }
 
   // Lazy figures below the fold would print as empty boxes.
