@@ -20,14 +20,18 @@ SRC = os.path.join(os.path.dirname(ROOT), "Dropfleet-Builder", "scenarios", "sha
 DEST = os.path.join(ROOT, "scenarios", "shared")
 FILES = ["score.js", "shell.css", "shell.js", "tooltip.js"]
 # The scenario card's type system and layout, so both games' cards look the same
-CARD = (os.path.join(os.path.dirname(SRC), "dropfleet", "scenario-card.css"), os.path.join(ROOT, "scenarios", "scenario-card.css"))
+CARD = (
+    os.path.join(os.path.dirname(SRC), "dropfleet", "scenario-card.css"),
+    os.path.join(ROOT, "scenarios", "scenario-card.css"),
+)
 
 
 def main():
     if not os.path.isdir(SRC):
         sys.exit(f"Dropfleet builder not found at {SRC}")
     os.makedirs(DEST, exist_ok=True)
-    pairs = [(n, os.path.join(SRC, n), os.path.join(DEST, n)) for n in FILES] + [("scenario-card.css", *CARD)]
+    pairs = [(n, os.path.join(SRC, n), os.path.join(DEST, n)) for n in FILES]
+    pairs.append(("scenario-card.css", *CARD))
     for name, src, dest in pairs:
         same = os.path.exists(dest) and filecmp.cmp(src, dest, shallow=False)
         if not same:

@@ -22,34 +22,48 @@ Placement (rulebook p.42). Run after extract_scenarios.py; running twice is safe
 
 import json
 from pathlib import Path
+from typing import NotRequired, TypedDict
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data" / "dzc" / "scenarios.json"
 
 
-def tok(at, name):
+class Key(TypedDict):
+    """One printed line's key: the line index, and at most one picture for it."""
+
+    at: int
+    token: NotRequired[str]
+    square: NotRequired[list[float]]
+    circle: NotRequired[list[float]]
+    outline: NotRequired[list[float]]
+    line: NotRequired[list[float]]
+
+
+def tok(at: int, name: str) -> Key:
     return {"at": at, "token": name}
 
 
-def sq(at, rgb):
+def sq(at: int, rgb: list[float]) -> Key:
     return {"at": at, "square": rgb}
 
 
-def disc(at, rgb):
+def disc(at: int, rgb: list[float]) -> Key:
     return {"at": at, "circle": rgb}
 
 
-def plain(at):
+def plain(at: int) -> Key:
     return {"at": at}
 
 
 # The printed key's fill, read from the page's vector data
 MAGENTA = [0.93, 0.0, 0.55]
 OBJECT = "object"
-FAUNA = "hive"  # the Fauna pack prints one brown Fauna icon for Hives, the Gorgon Queen, Fauna Squads and the Typhon
+# the Fauna pack prints one brown Fauna icon for Hives, the Gorgon Queen, Fauna Squads
+# and the Typhon
+FAUNA = "hive"
 
 # scenario id -> {legend entry index -> keys}. An entry is found by its first line, checked below.
-FIXES = {
+FIXES: dict[str, dict[str, list[Key]]] = {
     "battle-royale": {
         "Heavy Cannon Turret": [tok(0, "heavy-cannon")],
         "Railgun Turrets": [tok(0, "railgun-turret")],
@@ -87,7 +101,11 @@ FIXES = {
         "Extract these Objects from Friendly": [tok(0, OBJECT)],
     },
     "strategic-points": {
-        "2 Hardened Large Zones": [sq(0, [0.45, 0.67, 0.53]), tok(1, "comms-uplink-tower"), tok(2, "shield-generator")],
+        "2 Hardened Large Zones": [
+            sq(0, [0.45, 0.67, 0.53]),
+            tok(1, "comms-uplink-tower"),
+            tok(2, "shield-generator"),
+        ],
         "Secure this point for 6/2 VP. Score on": [disc(0, MAGENTA)],
         "Secure this point for 3/1 VP. Score on": [disc(0, [1.0, 0.95, 0.0])],
         "Secure this point for 3/1 VP. Score on#2": [disc(0, [0.82, 0.14, 0.16])],
@@ -107,16 +125,26 @@ FIXES = {
     },
     "hunting-grounds-nest": {
         "2 Large Zones": [sq(0, [0.25, 0.68, 0.29]), tok(1, "excellent-vantage")],
-        "1 full strength Fauna Squad, and +1": [tok(0, FAUNA), {"at": 3, "line": [0.91, 0.34, 0.06]}],
+        "1 full strength Fauna Squad, and +1": [
+            tok(0, FAUNA),
+            {"at": 3, "line": [0.91, 0.34, 0.06]},
+        ],
         "Secure these Points for 2/1 VP. Score": [disc(0, [0.75, 0.12, 0.18])],
     },
     "hunting-grounds-typhon": {
-        "3 Medium Hardened Areas": [sq(0, [0.25, 0.68, 0.29]), tok(1, "acm-package"), tok(2, "shield-generator"), tok(3, FAUNA)],
+        "3 Medium Hardened Areas": [
+            sq(0, [0.25, 0.68, 0.29]),
+            tok(1, "acm-package"),
+            tok(2, "shield-generator"),
+            tok(3, FAUNA),
+        ],
     },
 }
 
 NOTES = {
-    "ground-control": "Zone Placement: Zones should not be placed overlapping multiple table quarters.",
+    "ground-control": (
+        "Zone Placement: Zones should not be placed overlapping multiple table quarters."
+    ),
 }
 
 
@@ -135,7 +163,8 @@ def main():
                 if max(k["at"] for k in keys) >= len(entry["lines"]):
                     raise SystemExit(f"{sid}: {name!r} has {len(entry['lines'])} lines")
                 entry["keys"] = keys
-        missing = set(fixes) - {k for k in fixes if any(e.get("keys") is fixes[k] for e in s["legend"])}
+        placed = {k for k in fixes if any(e.get("keys") is fixes[k] for e in s["legend"])}
+        missing = set(fixes) - placed
         if missing:
             raise SystemExit(f"{sid}: no legend entry for {sorted(missing)}")
     for sid, note in NOTES.items():
