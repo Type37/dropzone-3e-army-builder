@@ -199,8 +199,8 @@ function explain(text,shown){
     ['Bunker Entrance',/\bBunker Entrances?\b/,()=>once('bunker',()=>out.push(runIn('Bunker Entrances',T.bunkerEntrances.join(' '))))],
     ...Object.keys(T.weaponFeatures.weapons).map(n=>[n,words(n),()=>once('w:'+n,()=>weapons.push(n))]),
     ...Object.entries(T.features).map(([n,f])=>[n,words(n),()=>once('f:'+n,()=>out.push(runIn(tipName('dzf',n),f.text)))]),
-    // unit rules the map keys name
-    ...['Demo Charges','Living Weapons','Bloodthirsty'].map(n=>[n,words(n.replace(/s$/,'')),()=>once('r:'+n,()=>out.push(runIn(T.specialRules[n].heading,T.specialRules[n].body.join(' '))))]),
+    // unit rules the map keys name (Living Weapons and Bloodthirsty stay unexplained, Jet's call: players know their Fauna)
+    ...['Demo Charges'].map(n=>[n,words(n.replace(/s$/,'')),()=>once('r:'+n,()=>out.push(runIn(T.specialRules[n].heading,T.specialRules[n].body.join(' '))))]),
   ];
   firstAt(text,list).forEach(x=>x.run());
   let html=out.join('');

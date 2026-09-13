@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 489;
+  const BUILD = 490;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -610,6 +610,9 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-09-13', title: 'Scenarios: Living Weapons and Bloodthirsty go unexplained', items: [
+      'The Fauna scenarios name Living Weapons and Bloodthirsty without writing out their rules.',
+    ] },
     { date: '2026-09-13', title: 'Scenarios: laid out like the Dropfleet scenario pages', items: [
       'Each scenario reads Entry, Objectives, Variants and Special Rules down the left, with the game size switch, the map and its Map Key on the right. Every objective has its own heading with the rulebook’s rule under the scenario’s line, and every term they name is explained under it.',
       'The Map Key shows what the book prints beside each line: turret and Feature tokens, the Object token beside Extract, the coloured disc beside each Secure point, and the Centre line. Strategic Points, Demolish, Death From Below and both Hunting Grounds list each keyed thing on its own line.',
