@@ -102,6 +102,7 @@
 <script src="dzc-scenario-terms.js"></script>
 <script src="dzc-scenario-hotspots.js"></script>
 <script src="shared/tooltip.js"></script>
+<script src="shared/score.js"></script>
 <script src="shared/shell.js"></script>
 <script>
 const SOURCES={rulebook:{group:'Rulebook',book:'Rulebook'},fauna:{group:'Fauna Rules & Scenarios',book:'Fauna Rules & Scenarios'}};
@@ -266,7 +267,25 @@ document.addEventListener('click',e=>{
     store.set(variantKey(card.dataset.scn),v);
     card.querySelectorAll('[data-set-v]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.setV===v)));
   }
+  ScenarioShell.rescore();
 });
+
+/* ── Score sheet rows (shared/score.js): each objective's X/Y VP, named as its rule names them ── */
+const SCORE_LABELS={Attrition:['per 200 KP'],Displace:['per 200pts'],Explore:['Explored'],Secure:['Secure','Challenge'],Dominate:['Dominate','Challenge'],Occupy:['Controlling','Contesting'],Extract:['Extracting','Carrying'],Protect:['Not Compromised','Not destroyed'],Raze:['Destroyed','Compromised']};
+function scoreRows(s){
+  const p=parse(s), effects=(typeof DZ_MAP_VARIANTS!=='undefined'&&DZ_MAP_VARIANTS[s.id])||{};
+  const size=store.get(SIZE_KEY)||'battle', v=store.get(variantKey(s.id))||'0';
+  const inPlay=o=>!(o.size&&(size==='skirmish'||(size==='clash'&&o.size==='battle')));
+  const struck=o=>((effects[v]||{}).strike||[]).some(x=>o.text.startsWith(x));
+  const texts=p.objectives.filter(o=>inPlay(o)&&!struck(o)).map(o=>o.text);
+  if(effects[v]&&effects[v].objective){ const vt=p.variants.find((t,i)=>{const m=t.match(/^Variant(?: (\d))?:/);return (m&&m[1]?m[1]:String(i+1))===v;}); if(vt) texts.push(vt.replace(/^Variant(?: \d)?:\s*/,'')); }
+  return texts.map(text=>{
+    const m=text.match(/for (\d+)(?:\/(\d+))? ?VP/); if(!m) return null;
+    const name=OBJECTIVES.map(o=>({o,i:text.lastIndexOf(o,m.index)})).filter(x=>x.i>=0).sort((a,b)=>b.i-a.i)[0];
+    const labels=SCORE_LABELS[name?name.o:'']||[];
+    return {text,parts:[{kind:'count',vp:+m[1],label:labels[0]||''},...(m[2]?[{kind:'count',vp:+m[2],label:labels[1]||''}]:[])]};
+  }).filter(Boolean);
+}
 
 function render(s){
   const p=parse(s), src=SOURCES[s.source], shown=new Set();
@@ -314,6 +333,7 @@ fetch('../data/dzc/scenarios.json').then(r=>r.json()).then(data=>{
       {label:'Entry',values:s=>{const e=parse(s).entry;return e?[e]:[];}},
     ],
     render,
+    scoreRows,
     views:{d66:{label:'d66 chart',title:'d66 chart',render:()=>d66(list.filter(s=>s.source==='rulebook'))}},
     // The rounds a scenario's objectives score on
     markRound:(s,r)=>parse(s).objectives.some(o=>new RegExp('Round[^.]*\\b'+r+'\\b').test(o.text)),

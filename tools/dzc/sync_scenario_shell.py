@@ -18,7 +18,7 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC = os.path.join(os.path.dirname(ROOT), "Dropfleet-Builder", "scenarios", "shared")
 DEST = os.path.join(ROOT, "scenarios", "shared")
-FILES = ["shell.css", "shell.js", "tooltip.js"]
+FILES = ["score.js", "shell.css", "shell.js", "tooltip.js"]
 
 
 def main():

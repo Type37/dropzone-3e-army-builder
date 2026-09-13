@@ -592,6 +592,7 @@ const App = (() => {
       'The Fauna scenarios now show their Entry, special rules and Variant, which were missing.',
       'A d66 chart for the twelve rulebook scenarios.',
       'Scenario section headings and the index drop their gold diamonds.',
+      'A score sheet replaces the round and VP bar: each objective has counters for its VP as the scenario prints it (Secure and Challenge, Control and Contest, and so on), following the game size and Variant, with rounds, players and a running total.',
     ] },
     { date: '2026-08-31', title: 'Compact view hid every upgrade in the app', items: [
       'Buying an upgrade happens on the weapon card — the price IS the button — and compact view hides weapon cards. So with compact on there was no way to buy a Vulture’s Defence pods, choose between a Triton’s three missile options or give a Menchit its Foeslayer, and nothing on screen to say the offers existed. Compact now carries the offers as a strip: the name, the Variant it belongs to, and the same button. It still takes away the guns, which is what it is for.',
