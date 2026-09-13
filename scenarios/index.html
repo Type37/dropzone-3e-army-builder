@@ -16,7 +16,6 @@
 .dz-src{font-size:.95rem;color:var(--muted);margin-top:2px;}
 .dz-rules{display:flex;flex-direction:column;gap:5mm;min-width:0;}
 .dz-sec h3{display:flex;align-items:center;gap:7px;font-family:'Roboto Slab',Georgia,serif;font-weight:700;font-size:1.1rem;margin-bottom:2mm;}
-.dz-sec h3 svg{width:13px;height:13px;flex:0 0 13px;}
 .dz-list{list-style:none;display:flex;flex-direction:column;gap:2mm;}
 .dz-list li{display:grid;grid-template-columns:16px minmax(0,1fr);gap:9px;align-items:start;font-size:1rem;line-height:1.5;}
 .dz-sw{width:16px;height:16px;margin-top:4px;border:1px solid rgba(14,12,8,.35);}
@@ -105,7 +104,6 @@
 <script src="shared/tooltip.js"></script>
 <script src="shared/shell.js"></script>
 <script>
-const DIAMOND='<svg viewBox="0 0 16 16" aria-hidden="true"><polygon points="8,1 15,8 8,15 1,8" fill="none" stroke="#B8952F" stroke-width="1.5"/><polygon points="8,5 11,8 8,11 5,8" fill="#B8952F" opacity="0.28"/></svg>';
 const SOURCES={rulebook:{group:'Rulebook',book:'Rulebook'},fauna:{group:'Fauna Rules & Scenarios',book:'Fauna Rules & Scenarios'}};
 // The objectives the rulebook names, in the order a scenario lists them
 const OBJECTIVES=['Attrition','Secure','Occupy','Extract','Protect','Dominate','Displace','Raze','Explore'];
@@ -154,7 +152,7 @@ function parse(s){
 const objectiveNames=s=>parse(s).objectives.map(x=>OBJECTIVES.find(o=>x.text.startsWith(o))).filter((o,i,a)=>a.indexOf(o)===i);
 // data-size: the game sizes it is used in; data-strike-v: the Variants that remove it; data-v: the Variant that adds it
 const item=({text,swatch,size,strike,v})=>`<li${size?` data-size="${size}"`:''}${strike?` data-strike-v="${strike}"`:''}${v?` data-v="${v}"`:''}><span class="dz-sw${swatch?'':' none'}"${swatch?` style="background:${swatch}"`:''}></span><span>${text}</span></li>`;
-const section=(title,body)=>body?`<section class="dz-sec"><h3>${DIAMOND}${title}</h3>${body}</section>`:'';
+const section=(title,body)=>body?`<section class="dz-sec"><h3>${title}</h3>${body}</section>`:'';
 
 /* ── Explanations: every rule a scenario names, word for word from the rulebook (dzc-scenario-terms.js) ── */
 const T=DZ_TERMS;
