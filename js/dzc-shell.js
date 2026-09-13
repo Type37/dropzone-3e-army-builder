@@ -585,11 +585,8 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
-    { date: '2026-09-12', title: 'Scenario Generator', items: [
-      'A Scenario Generator page of its own, beside the Scenario Reference, built like the Dropfleet one: pick a game size, then roll or choose the scenario and its Variant.',
-      'The d66 chart is the scenario picker. Generate rolls two dice, shows them next to the name and outlines the result on the chart. Tick Fauna to roll from all sixteen instead.',
-      'The card is the reference card with your game size and Variant already applied, so it prints or saves as an image ready for the table.',
-      'The d66 chart moved off the Scenario Reference into the generator. The reference and the generator link to each other, and the Dropfleet/Dropzone switch goes generator to generator.',
+    { date: '2026-09-12', title: 'Scenarios: d66 chart removed', items: [
+      'The d66 chart is gone, along with the short-lived Scenario Generator built on it. The rulebook has no such chart: players choose the Scenario (3.3), its game size and its Variant. The Scenario Reference is the one Dropzone scenario page.',
     ] },
     { date: '2026-09-11', title: 'Scenarios: game size and Variants change the map', items: [
       'Every scenario from the rulebook and the Fauna pack has its own page: the map redrawn, every rule it names explained word for word, and a round and VP tracker.',

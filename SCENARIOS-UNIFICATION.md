@@ -134,11 +134,11 @@ same origin.
 
 ## Settled
 
-- **The d66 chart does not survive contact with Dropzone.** 36 cells, twelve
-  core scenarios, three cells each — fine. Add the Fauna four and sixteen does
-  not divide into thirty-six. So the printed chart is core-only at three cells
-  per scenario, and the roller handles any mix including Fauna. Jet has agreed
-  to this.
+- **No d66 chart, no Dropzone scenario roller.** An earlier version of this
+  note proposed a d66 chart and said Jet had agreed; Jet had not, and the
+  rulebook has no such chart. Players choose the Scenario (3.3), the game size
+  (3.1) and the Variant. A d66 chart and a Dropzone generator were built on that
+  note and removed on 2026-09-12. Dropzone has the Scenario Reference only.
 - **Dropzone maps get redrawn as SVG.** The extracted rasters are the reference
   to draw against and the fallback until each one is replaced. This is also
   what makes them theme-aware and printable, and it is how the Dropfleet
