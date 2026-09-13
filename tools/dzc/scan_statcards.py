@@ -1024,6 +1024,13 @@ def read_special_cell(lines, header_i, type_k, cols, rules):
         words = [w for w in ln if (w[0] + w[2]) / 2 > edge]
         if not words:
             continue
+        # A wrapped Special line holds nothing left of the edge. A line that
+        # does is the lore paragraph, which on a card with no weapon table
+        # starts right under the stat row: the Epsilon (260911) read
+        # "Puppeteer 1” more than a floating bio-printer, an Epsilon is no
+        # threat by", the tail of its first line of flavour text.
+        if ln is not row and len(words) < len(ln):
+            continue
         out.append(" ".join(w[4] for w in sorted(words, key=lambda w: w[0])))
         bottom = max(bottom, max(w[3] for w in words))
     return " ".join(out).strip(), bottom
