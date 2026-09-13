@@ -53,6 +53,9 @@
 .dz-svg svg,.dz-svg img{display:block;width:100%;height:auto;}
 .dz[data-size="skirmish"] [data-size],.dz[data-size="clash"] [data-size="battle"]{display:none;}
 .dz:not([data-size="skirmish"]) [data-only="skirmish"]{display:none;}
+.hv-half{display:none;}
+.dz[data-size="skirmish"] .hv-full,.hv-on .hv-full{text-decoration:line-through;opacity:.7;}
+.dz[data-size="skirmish"] .hv-half,.hv-on .hv-half{display:inline;font-weight:700;margin-left:.25em;}
 .dz:not([data-v="1"]) :is(li,.hs)[data-v="1"],.dz:not([data-v="2"]) :is(li,.hs)[data-v="2"]{display:none;}
 .dz[data-v="1"] svg [data-v="1"],.dz[data-v="2"] svg [data-v="2"]{display:inline;}
 .dz[data-v="1"] [data-hide-v~="1"],.dz[data-v="2"] [data-hide-v~="2"]{display:none;}
@@ -164,7 +167,7 @@ function explain(text,shown){
   const out=[], weapons=[];
   const once=(key,fn)=>{ if(shown.has(key)) return; shown.add(key); fn(); };
   const list=[
-    ...Object.entries(T.objectives).map(([n,o])=>[n,wordRe(n),()=>once('o:'+n,()=>out.push(term(o.heading,o.body.join(' '))))]),
+    ...Object.entries(T.objectives).map(([n,o])=>[n,wordRe(n),()=>once('o:'+n,()=>out.push(term(o.heading,halvable(o.body.join(' ')))))]),
     ['Territory',/\bTerritor/,()=>once('territory',()=>out.push(term('Territory',T.territory.join(' '))))],
     ...Object.entries(T.entry).map(([n,b])=>[n,n==='Deployed'?/\bDeploy/:wordRe(n),()=>once('e:'+n,()=>out.push(term(n,b.join(' '))))]),
     ...Object.entries(T.extraction).map(([n,b])=>[n,wordRe(n),()=>once('x:'+n,()=>out.push(term(n,b)))]),
@@ -217,7 +220,7 @@ function tipHTML(key){
   if(kind==='dzo'){
     if(id==='Objects') return `<div class="scn-tip-h"><b>Objects</b></div><div>${T.objects.Objects.join(' ')}</div>`;
     if(id==='Bunker Entrances') return `<div class="scn-tip-h"><b>Bunker Entrances</b></div><div>${T.bunkerEntrances.join(' ')}</div>`;
-    const o=T.objectives[id]; return o?`<div class="scn-tip-h"><b>${o.heading}</b></div><div>${o.body.join(' ')}</div>`:'';
+    const o=T.objectives[id]; return o?`<div class="scn-tip-h"><b>${o.heading}</b></div><div${store.get(SIZE_KEY)==='skirmish'?' class="hv-on"':''}>${halvable(o.body.join(' '))}</div>`:'';
   }
   if(kind==='dzr'){ const r=T.specialRules[id]; return r?`<div class="scn-tip-h"><b>${r.heading}</b></div><div>${r.body.join(' ')}</div>`:''; }
   if(kind==='dzf'){
@@ -232,6 +235,8 @@ function tipHTML(key){
 /* ── Game size and Variants: one size for every scenario, one Variant at a time per scenario ── */
 const SIZES=['Skirmish','Clash','Battle','Reconquest'];
 // The objectives 9.6 gives a points or KP requirement, which 9.5 halves for a Skirmish
+/* 9.5: a Skirmish halves the points and KP an objective asks for. The rule's number stays, struck, with half beside it */
+function halvable(text){ return text.replace(/\b(\d+)(\s?)(pts|KP)\b/g,(m,n,sp,u)=>`<span class="hv"><span class="hv-full">${n}</span><span class="hv-half">${n/2}</span></span>${sp}${u}`); }
 const HALVED=Object.entries(T.objectives).filter(([,o])=>/\d\s?(pts|KP)\b/.test(o.body.join(' '))).map(([n])=>n);
 const store={get(k){try{return localStorage.getItem(k);}catch(e){return null;}},set(k,v){try{localStorage.setItem(k,v);}catch(e){}}};
 const SIZE_KEY='dzc-scenario-size', variantKey=id=>`dzc-scenario-variant:${id}`;
@@ -263,7 +268,7 @@ function scoreRows(s){
   return texts.map(text=>{
     const m=text.match(/for (\d+)(?:\/(\d+))? ?VP/); if(!m) return null;
     const name=OBJECTIVES.map(o=>({o,i:text.lastIndexOf(o,m.index)})).filter(x=>x.i>=0).sort((a,b)=>b.i-a.i)[0];
-    const labels=SCORE_LABELS[name?name.o:'']||[];
+    const labels=(SCORE_LABELS[name?name.o:'']||[]).map(l=>size==='skirmish'?l.replace(/\d+/,n=>n/2):l);
     return {text,parts:[{kind:'count',vp:+m[1],label:labels[0]||''},...(m[2]?[{kind:'count',vp:+m[2],label:labels[1]||''}]:[])]};
   }).filter(Boolean);
 }
