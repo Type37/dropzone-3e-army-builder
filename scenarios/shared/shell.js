@@ -74,7 +74,7 @@ const ScenarioShell = (() => {
     document.title = `${G.name(s)}: ${G.titleSuffix}`;
     app.innerHTML = `<div class="bar"><div class="bar-in">
         <a class="bar-back" href="#">← All scenarios</a>
-        <span></span>
+        ${(src => src ? `<a class="bar-src" href="${src.url}" target="_blank" rel="noopener">Source: ${src.title}</a>` : '<span></span>')(G.source && G.source(s))}
         <div class="acts">
           <button class="icon-btn" id="share" aria-label="Share">${ICON.share}</button>
           <button class="icon-btn" id="print" aria-label="Print">${ICON.print}</button>
