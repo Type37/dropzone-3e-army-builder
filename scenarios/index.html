@@ -31,6 +31,8 @@
 /* The credits footer rides the bottom of the screen until the WarLore footer
    arrives, as on Dropfleet. On a phone with the tracker bar up it rides just above it. */
 .foot{position:sticky;bottom:0;z-index:20;}
+/* shared/shell.css asks for 360px columns, wider than a 320px phone. Never wider than the list. */
+.scn-list{grid-template-columns:repeat(auto-fill,minmax(min(360px,100%),1fr));}
 @media (max-width:700px){body.has-trk .foot{bottom:var(--trk-h,64px);}}
 .dz-variant b{font-weight:600;}
 .dz-terms{display:flex;flex-direction:column;gap:2mm;margin-top:3mm;}
