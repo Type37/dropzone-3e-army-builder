@@ -1,8 +1,8 @@
 {
   "faction": "bioficer",
   "name": "Bioficer",
-  "sourcePdf": "DZC_Bioficer_Stat_Cards_260821.pdf",
-  "version": "260821",
+  "sourcePdf": "DZC_Bioficer_Stat_Cards_260911.pdf",
+  "version": "260911",
   "units": [
     {
       "id": "grievance-genitor-ark",
@@ -1059,6 +1059,97 @@
       "art": "assets/units/drones.webp"
     },
     {
+      "id": "epsilon",
+      "faction": null,
+      "name": "Epsilon",
+      "category": "Generated",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 30,
+      "pointsRaw": "30pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "base": null,
+      "stats": {
+        "Mv": "2”",
+        "OF": "1",
+        "DF": "2+",
+        "B": "2+",
+        "DP": "3"
+      },
+      "special": "Delayed, Grubsinger, Hardy 3+, Puppeteer 1”",
+      "variants": [],
+      "specialVariants": [],
+      "transport": {
+        "capacity": [
+          {
+            "shape": "square",
+            "n": 3
+          }
+        ],
+        "capacityMode": null,
+        "fills": [
+          {
+            "shape": "square",
+            "n": 6
+          }
+        ]
+      },
+      "weapons": [],
+      "upgradeNote": null,
+      "swaps": [],
+      "groupEquivalent": null,
+      "gear": [],
+      "page": 15,
+      "auxiliaryTransport": true,
+      "selectable": false,
+      "art": "assets/units/epsilon.webp"
+    },
+    {
+      "id": "grubs",
+      "faction": null,
+      "name": "Grubs",
+      "category": "Generated",
+      "squadMin": 1,
+      "squadMax": 3,
+      "points": 5,
+      "pointsRaw": "5pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "base": null,
+      "stats": {
+        "Mv": "2”",
+        "OF": "2",
+        "DF": "6+",
+        "B": "A",
+        "DP": "2"
+      },
+      "special": "Living Weapons",
+      "variants": [],
+      "specialVariants": [],
+      "transport": {
+        "capacity": [],
+        "capacityMode": null,
+        "fills": [
+          {
+            "shape": "square",
+            "n": 1
+          }
+        ]
+      },
+      "weapons": [],
+      "upgradeNote": null,
+      "swaps": [],
+      "groupEquivalent": null,
+      "gear": [],
+      "page": 16,
+      "auxiliaryTransport": false,
+      "selectable": false,
+      "art": "assets/units/grubs.webp"
+    },
+    {
       "id": "hulks",
       "faction": null,
       "name": "Hulks",
@@ -1113,10 +1204,70 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 15,
+      "page": 17,
       "auxiliaryTransport": false,
       "selectable": false,
       "art": "assets/units/hulks.webp"
+    },
+    {
+      "id": "hulk-blades",
+      "faction": null,
+      "name": "Hulk Blades",
+      "category": "Generated",
+      "squadMin": 2,
+      "squadMax": 2,
+      "points": 30,
+      "pointsRaw": "30pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "base": null,
+      "stats": {
+        "Mv": "2”",
+        "OF": "4",
+        "DF": "3+",
+        "B": "A",
+        "DP": "3"
+      },
+      "special": "Breachers D3, Hardy 4+, Lethal, Puppet, Strong",
+      "variants": [],
+      "specialVariants": [],
+      "transport": {
+        "capacity": [],
+        "capacityMode": null,
+        "fills": [
+          {
+            "shape": "square",
+            "n": 6
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Decon Blades",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "CC",
+          "att": "3",
+          "ac": "3+",
+          "e": "6",
+          "special": "Assault, Decon",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "exclusive": false,
+          "capacityDelta": [],
+          "boxUnresolved": false
+        }
+      ],
+      "upgradeNote": null,
+      "swaps": [],
+      "groupEquivalent": null,
+      "gear": [],
+      "page": 18,
+      "auxiliaryTransport": false,
+      "selectable": false,
+      "art": "assets/units/hulk-blades.webp"
     }
   ]
 }

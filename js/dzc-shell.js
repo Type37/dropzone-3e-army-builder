@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 481;
+  const BUILD = 482;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -585,6 +585,10 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-09-12', title: 'Bioficer: Epsilon, Grubs and Hulk Blades', items: [
+      'TTCombat’s 260911 Bioficer stat cards add three Generated Units. The Epsilon, 30pts, a floating bio-printer with Delayed, Grubsinger, Hardy 3+ and Puppeteer 1”. Grubs, 5pts, Squads of 1-3 with Living Weapons. Hulk Blades, 30pts, Hulks with Decon Blades in place of the Winnow Carbines.',
+      'Nothing else on the Bioficer cards changed.',
+    ] },
     { date: '2026-09-12', title: 'Scenarios: Skirmish halves points and KP', items: [
       'Pick Skirmish and every points or KP requirement an objective sets is halved where you read it: Attrition every 200 KP shows 200 struck and 100 beside it, and the same for Displace, Dominate and Secure, on the card, in the hover explanations and on the score sheet (rulebook 9.5).',
     ] },

@@ -22,7 +22,7 @@
     { "id": "transport", "label": "Transport", "selectable": true,  "cappedByStandard": false,
       "note": "May only be taken alongside a Squad it can carry, and must be taken full (3.2.4)." },
     { "id": "generated", "label": "Generated", "selectable": false, "cappedByStandard": false,
-      "note": "Bioficer Drones and Hulks. Produced in play, never chosen when building." }
+      "note": "Bioficer Drones, Hulks, Hulk Blades, Epsilons and Grubs. Produced in play, never chosen when building." }
   ],
 
   "armyRules": {
