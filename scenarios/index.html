@@ -28,6 +28,10 @@
 .dz-frame .hs:focus-visible{outline:2px solid var(--focus);outline-offset:1px;}
 #scn-tip .dz-sw{width:14px;height:14px;flex:0 0 14px;margin:0;}
 @media print{.dz-frame .hs{display:none;}}
+/* The credits footer rides the bottom of the screen until the WarLore footer
+   arrives, as on Dropfleet. On a phone with the tracker bar up it rides just above it. */
+.foot{position:sticky;bottom:0;z-index:20;}
+@media (max-width:700px){body.has-trk .foot{bottom:var(--trk-h,64px);}}
 .dz-variant b{font-weight:600;}
 .dz-terms{display:flex;flex-direction:column;gap:2mm;margin-top:3mm;}
 .dz-term{font-size:14px;line-height:1.5;color:var(--ink);}
