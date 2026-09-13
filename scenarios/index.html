@@ -66,6 +66,17 @@
 @media (hover:hover){.seg button:not([aria-pressed="true"]):hover,.dz-vbtn:not([aria-pressed="true"]):hover{background:var(--hover);}}
 .seg button:focus-visible,.dz-vbtn:focus-visible{outline:2px solid var(--focus);outline-offset:2px;}
 .dz-list.dz-vlist li{grid-template-columns:auto minmax(0,1fr);}
+/* Game size, as on the Dropfleet scenario pages: selected is filled black with a tick, each shows its points */
+.dz-size{display:flex;flex-wrap:wrap;gap:6px;}
+.dz-size button{flex:1 1 0;min-width:110px;display:grid;grid-template-columns:auto 1fr;column-gap:6px;align-items:center;text-align:left;font-family:'Jost',system-ui,sans-serif;padding:7px 10px;background:#fff;color:#3a3530;border:1.5px solid #b9ae9a;cursor:pointer;}
+.dz-size-tick{grid-row:1 / span 2;width:16px;height:16px;visibility:hidden;}
+.dz-size-name{font-size:16px;font-weight:600;line-height:1.2;}
+.dz-size-pts{grid-column:2;font-size:14px;line-height:1.2;}
+.dz-size button[aria-pressed="true"]{background:#0E0C08;border-color:#0E0C08;color:#fff;}
+.dz-size button[aria-pressed="true"] .dz-size-tick{visibility:visible;}
+@media (hover:hover){.dz-size button:not([aria-pressed="true"]):hover{border-color:#0E0C08;}}
+.dz-size button:focus-visible{outline:2px solid var(--focus);outline-offset:2px;}
+@media print{.dz-size button:not([aria-pressed="true"]){display:none;}.dz-size button[aria-pressed="true"]{background:none;color:inherit;border:0;padding:0;}.dz-size-tick{display:none;}}
 .dz-svg{aspect-ratio:1;}
 .dz-svg svg,.dz-svg img{display:block;width:100%;height:auto;}
 .dz[data-size="skirmish"] [data-size],.dz[data-size="clash"] [data-size="battle"]{display:none;}
@@ -251,6 +262,9 @@ function tipHTML(key){
 
 /* ── Game size and Variants: one size for every scenario, one Variant at a time per scenario ── */
 const SIZES=['Skirmish','Clash','Battle','Reconquest'];
+// Points for each game size, rulebook 3.1 (data/dzc/index.json gameSizes)
+const SIZE_PTS={Skirmish:'501-1000',Clash:'1001-2000',Battle:'2001-3000',Reconquest:'3001+'};
+const TICK='<svg class="dz-size-tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 // The objectives 9.6 gives a points or KP requirement, which 9.5 halves for a Skirmish
 /* 9.5: a Skirmish halves the points and KP an objective asks for. The rule's number stays, struck, with half beside it */
 function halvable(text){ return text.replace(/\b(\d+)(\s?)(pts|KP)\b/g,(m,n,sp,u)=>`<span class="hv"><span class="hv-full">${n}</span><span class="hv-half">${n/2}</span></span>${sp}${u}`); }
@@ -305,7 +319,7 @@ function render(s){
   const key=p.key.length?`<ul class="dz-list">${p.key.map(item).join('')}</ul>${explain(p.key.map(k=>plain(k.text)).join(' '),shown)}`:'';
   const rules=p.rules.length?`<div class="dz-terms">${p.rules.map(r=>`<p class="dz-term">${r}</p>`).join('')}</div>${explain(p.rules.join(' '),shown)}`:'';
   const variants=vs.length?`<ul class="dz-list dz-vlist">${vs.map(v=>`<li><button type="button" class="dz-vbtn" data-set-v="${v.n}" aria-pressed="${v.n===on}">${v.label}</button><span>${v.text}</span></li>`).join('')}</ul>${explain(p.variants.join(' '),shown)}`:'';
-  const sizes=sized?`<div class="dz-opts"><div class="seg" role="group" aria-label="Game size">${SIZES.map(z=>`<button type="button" data-set-size="${z.toLowerCase()}" aria-pressed="${z.toLowerCase()===size}">${z}</button>`).join('')}</div></div>`:'';
+  const sizes=sized?`<div class="dz-opts"><div class="dz-size" role="group" aria-label="Game size">${SIZES.map(z=>`<button type="button" data-set-size="${z.toLowerCase()}" aria-pressed="${z.toLowerCase()===size}">${TICK}<span class="dz-size-name">${z}</span><span class="dz-size-pts">${SIZE_PTS[z]} pts</span></button>`).join('')}</div></div>`:'';
   setTimeout(inlineMaps);
   return `<div class="dz" data-scn="${s.id}" data-size="${sized?size:'battle'}" data-v="${on}">
     <div class="dz-head"><h2 class="dz-name">${s.name}</h2><div class="dz-src">${src.book}, page ${s.page}</div>${sizes}</div>
