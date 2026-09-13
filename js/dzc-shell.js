@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 490;
+  const BUILD = 491;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -149,7 +149,7 @@ const App = (() => {
 
   // ---------------------------------------------------------------- routing
 
-  const VIEWS = ['view-landing', 'view-armies', 'view-army', 'view-units', 'view-play', 'view-collection'];
+  const VIEWS = ['view-landing', 'view-armies', 'view-army', 'view-units', 'view-play', 'view-collection', 'view-rules'];
 
   function show(id) {
     VIEWS.forEach(v => { const el = $(v); if (el) el.classList.add('hidden'); });
@@ -222,6 +222,13 @@ const App = (() => {
         show('view-units');
         ctx.innerHTML = back('landing', 'Unit Reference');
         if (window.DZCUnits) DZCUnits.open();
+        break;
+      // The rulebook. A deep link is #rules/<section id>, and an id can carry
+      // dots and a slash ("9/kill-box"), so the whole rest of the hash is it.
+      case 'rules':
+        show('view-rules');
+        ctx.innerHTML = back('landing', 'Interactive Rules');
+        if (window.DZCRules) DZCRules.open(param);
         break;
       // A shared army arrives whole in the URL: import it, then land on it.
       case 'share':
@@ -610,6 +617,12 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-09-13', title: 'Interactive Rules: the whole rulebook, on one page', items: [
+      'Interactive Rules is on the home screen: the Dropzone Commander 3.02 rulebook, word for word and with its bold, as one linked page. Rule names, section names and the book’s “see page” references are links, and Back returns you to where you were.',
+      'The contents down the side nest each chapter’s sections under it, the way a book’s contents page does, so 4 Game Rounds holds the Initiation, Activation and End Phases.',
+      'Every table in the book is a real table, Energy vs Armour and both stats bars included. The diagrams are cut from the PDF, tokens sit beside the rules that use them, and each of the twelve scenarios opens in the Scenario Reference.',
+      'The rulebook errata are in. AWACS reads “with a +1Ac bonus”, Strafe loses its doubled full stop, and 7.1 ends its sentence. The rest were already in the 3.02 printing.',
+    ]},
     { date: '2026-09-13', title: 'Scenarios: Living Weapons and Bloodthirsty go unexplained', items: [
       'The Fauna scenarios name Living Weapons and Bloodthirsty without writing out their rules.',
     ] },

@@ -1,0 +1,170 @@
+/* Interactive Rules (js/dzc-rules.js).
+ *
+ * Ported from the Dropfleet builder's .rules-* styles (its css/app.css) so the
+ * two books read as one design: the contents rail, the 34px capitals chapter
+ * title on a navy bar, the 26px navy section with its own bar, 21px
+ * subsections, bold navy labels below that, 18px body, black table heads.
+ *
+ * Changed on purpose, per this app's own rules: no letter-spacing anywhere,
+ * square panels (callouts, figures, scenario buttons), and the rail nests
+ * each chapter's sections under it like a book's contents page. */
+
+.rules-view { max-width: 1360px; margin: 0 auto; padding: var(--sp-xl) var(--sp-lg) var(--sp-4xl); }
+.rules-intro { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-md); flex-wrap: wrap; }
+.rules-intro p { margin: 0; color: var(--ink-soft); max-width: 60ch; }
+
+/* ── Rail + document ─────────────────────────────────────────────────────── */
+.rules-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 74ch) minmax(0, 1fr); gap: var(--sp-4xl); align-items: start; }
+
+.rules-nav { justify-self: start; width: min(260px, 100%); position: sticky; top: calc(var(--topbar-h) + var(--sp-sm)); max-height: calc(100vh - var(--topbar-h) - var(--sp-xl)); overflow-y: auto; display: flex; flex-direction: column; gap: 1px; padding-right: var(--sp-sm); border-right: 1px solid var(--stroke); }
+.rules-nav-item { display: flex; align-items: baseline; gap: 8px; width: 100%; text-align: left; padding: 7px 10px; border-radius: var(--radius-md); color: var(--ink-soft); font-size: 16px; line-height: 1.3; text-decoration: none; }
+.rules-nav-item:hover { background: var(--paper); color: var(--ink); }
+.rules-nav-item.active { background: var(--paper); color: var(--navy); font-weight: 600; box-shadow: inset 3px 0 0 var(--navy); }
+.rules-nav-n { flex: 0 0 1.4em; text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-faint); font-weight: 600; }
+.rules-nav-item.active .rules-nav-n { color: var(--navy); }
+.rules-nav-t { flex: 1; }
+/* A chapter's sections, set in under it. */
+.rules-nav-sub { display: flex; flex-direction: column; gap: 1px; margin: 0 0 var(--sp-xs) 1.4em; }
+.rules-nav-item--sub { font-size: 15px; padding: 4px 10px; }
+.rules-nav-item--sub .rules-nav-n { flex-basis: 2.3em; text-align: left; font-weight: 400; }
+.rules-nav-item--sub.active { font-weight: 600; }
+
+.rules-doc { min-width: 0; display: flex; flex-direction: column; gap: var(--sp-xl); max-width: 74ch; }
+.rules-chapter { scroll-margin-top: calc(var(--topbar-h) + var(--sp-md)); }
+.rules-chapter-title { display: flex; align-items: baseline; gap: var(--sp-md); font-family: var(--font-display); font-weight: 800; font-size: 34px; line-height: 1.12; text-transform: uppercase; letter-spacing: normal; color: var(--ink); margin: 0 0 var(--sp-lg); padding-bottom: var(--sp-sm); border-bottom: 4px solid var(--navy); overflow-wrap: break-word; }
+.rules-chapter-n { font-size: var(--text-lg); color: var(--navy); font-weight: 800; font-variant-numeric: tabular-nums; }
+
+/* ── Heading ladder ─────────────────────────────────────────────────────── */
+.rules-sub { scroll-margin-top: calc(var(--topbar-h) + var(--sp-md)); margin-top: var(--sp-lg); }
+.rules-sub-d2, .rules-sub-d3, .rules-sub-d4 { margin-left: var(--sp-sm); padding-left: var(--sp-md); }
+.rules-h { display: flex; align-items: baseline; gap: var(--sp-sm); font-family: var(--font-display); font-weight: 700; color: var(--ink); line-height: 1.2; letter-spacing: normal; }
+h3.rules-h { font-size: 26px; color: var(--navy); margin: var(--sp-3xl) 0 var(--sp-md); padding-bottom: 5px; border-bottom: 2px solid var(--navy); }
+h4.rules-h { font-size: 21px; font-weight: 800; margin: var(--sp-xl) 0 var(--sp-sm); }
+h5.rules-h, h6.rules-h { font-size: 15px; font-family: var(--font-body); font-weight: 700; text-transform: uppercase; color: var(--navy); margin: var(--sp-xl) 0 var(--sp-xs); }
+.rules-h-n { font-variant-numeric: tabular-nums; color: var(--navy); font-weight: 800; font-size: .86em; }
+
+/* ── Text ───────────────────────────────────────────────────────────────── */
+.rules-p { margin: 0 0 var(--sp-lg); font-size: 18px; line-height: 1.7; color: var(--ink-soft); }
+.rules-p strong, .rules-ol strong { color: var(--ink); font-weight: 700; }
+.rules-ol { margin: 0 0 var(--sp-lg); padding-left: 1.6em; }
+.rules-ol li { margin: 0 0 8px; font-size: 18px; line-height: 1.6; color: var(--ink-soft); padding-left: 4px; }
+.rules-ol li::marker { color: var(--navy); font-weight: 700; }
+.rules-ol li p { margin: var(--sp-sm) 0 0; }
+/* A worked example or a diagram's caption: a soft tint and italic. */
+.rules-eg { font-style: italic; font-size: 16px; color: var(--ink-muted); background: var(--navy-wash); padding: var(--sp-md) var(--sp-lg); }
+.rules-eg strong { font-style: normal; }
+.rules-sym { display: inline-block; vertical-align: -2px; margin: 0 1px; }
+
+.rules-xref { color: inherit; text-decoration: underline; text-decoration-style: dotted; text-decoration-color: var(--navy); text-underline-offset: 2px; }
+.rules-xref:hover { color: var(--navy); text-decoration-style: solid; }
+@keyframes rules-hit { from { background: var(--gold-subtle); } to { background: transparent; } }
+.rules-hit { animation: rules-hit 1.4s ease-out; }
+
+/* A Zone Feature beside its counter, as the book sets them. */
+.rules-feat { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: var(--sp-md); align-items: start; }
+.rules-feat img { width: 40px; height: 40px; margin-top: 4px; }
+
+.rules-search { width: 100%; padding: 8px 12px; margin: 0 0 var(--sp-md); border: 1px solid var(--stroke); border-radius: var(--radius-md); background: var(--paper); color: var(--ink); font-size: var(--text-sm); font-family: var(--font-body); }
+
+/* ── Tables ─────────────────────────────────────────────────────────────── */
+.rules-table-wrap { margin: 0 0 var(--sp-lg); }
+.rules-table { border-collapse: collapse; width: 100%; font-size: var(--text-sm); border: 1px solid var(--ink); }
+.rules-table th, .rules-table td { border: 1px solid var(--stroke); padding: 7px 10px; text-align: left; vertical-align: top; color: var(--ink-soft); overflow-wrap: break-word; }
+.rules-table thead th { background: var(--ink); color: var(--paper); font-family: var(--font-display); font-weight: 700; text-transform: uppercase; letter-spacing: normal; font-size: .86em; text-align: center; border-color: var(--ink); }
+.rules-table thead th:first-child { text-align: left; }
+.rules-table tbody th { color: var(--ink); font-weight: 700; }
+.rules-table td:not(:first-child):not(:last-child) { text-align: center; }
+.rules-table tbody tr:nth-child(even) > td { background: var(--paper); }
+.rules-tbl-tok { vertical-align: -7px; margin-right: 7px; }
+/* A stats bar: name, size and points over the stat names and values. */
+.rules-table--statbar td { text-align: center; }
+.rules-table--statbar tbody td:first-child { text-align: left; }
+/* Energy vs Armour: every cell a number, the impossible ones solid. */
+.rules-table--energy th, .rules-table--energy td, .rules-table--energy thead th:first-child { text-align: center; padding: 5px 2px; font-variant-numeric: tabular-nums; }
+.rules-table--energy tbody th { background: var(--paper-alt); }
+.rules-table--energy .rules-td-none { background: var(--ink) !important; }
+.rules-th-vert { writing-mode: vertical-rl; transform: rotate(180deg); vertical-align: middle; white-space: nowrap; font-family: var(--font-display); text-transform: uppercase; font-size: .86em; }
+
+/* ── Figures ────────────────────────────────────────────────────────────── */
+.rules-fig { margin: var(--sp-md) 0 var(--sp-lg); }
+.rules-fig img { display: block; max-width: 100%; height: auto; background: #fff; border: 1px solid var(--stroke); }
+
+/* ── Tokens ─────────────────────────────────────────────────────────────── */
+.rules-tok-inline { margin: var(--sp-md) 0 var(--sp-lg); }
+.rules-tok-grp { margin: 0 0 var(--sp-lg); }
+.rules-tok-head { font-family: var(--font-display); font-size: 21px; font-weight: 800; color: var(--ink); margin: var(--sp-xl) 0 var(--sp-sm); }
+.rules-tok-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: var(--sp-md); }
+.rules-tok { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+.rules-tok img { width: 40px; height: 40px; display: block; object-fit: contain; }
+.rules-tok-nm { font-size: var(--text-sm); line-height: 1.3; color: var(--ink-soft); }
+.rules-tok-list--play img { width: auto; height: 40px; }
+
+/* ── Scenario buttons ───────────────────────────────────────────────────── */
+.rules-scn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--sp-md); margin: var(--sp-3xl) 0 var(--sp-lg); }
+.rules-scn-btn { display: flex; flex-direction: column; gap: var(--sp-sm); padding: var(--sp-lg); background: var(--paper-alt); border: 1px solid var(--stroke); text-decoration: none; color: var(--ink); scroll-margin-top: calc(var(--topbar-h) + var(--sp-md)); transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out); }
+.rules-scn-btn:hover { border-color: var(--navy); box-shadow: var(--shadow-md); }
+.rules-scn-btn:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+.rules-scn-btn-nm { display: flex; align-items: center; gap: var(--sp-sm); font-family: var(--font-display); font-weight: 800; font-size: var(--text-xl); color: var(--navy); }
+.rules-scn-btn-nm svg { margin-left: auto; flex-shrink: 0; }
+.rsb-rows { display: flex; flex-direction: column; gap: 4px; font-size: var(--text-sm); line-height: 1.45; color: var(--ink-soft); }
+.rsb-row b { color: var(--ink); font-weight: 700; }
+
+/* ── Narrow screens ─────────────────────────────────────────────────────── */
+@media (max-width: 860px) {
+  .rules-layout { grid-template-columns: minmax(0, 1fr); gap: var(--sp-md); }
+  /* The rail becomes the chapter list, wrapping onto rows above the book.
+     A section is reached from its chapter; seventy of them would bury it. */
+  .rules-nav { width: auto; justify-self: stretch; position: static; flex-direction: row; flex-wrap: wrap; max-height: none; overflow: visible; padding: 0 0 var(--sp-sm); border-right: 0; }
+  .rules-nav-sub { display: none; }
+  .rules-nav-item { width: auto; }
+  .rules-nav-item.active { box-shadow: inset 0 -3px 0 var(--navy); }
+  .rules-doc { max-width: none; }
+}
+@media (max-width: 700px) {
+  .rules-view { padding: var(--sp-lg) var(--sp-md) var(--sp-3xl); }
+  .rules-chapter-title { font-size: 26px; }
+  h3.rules-h { font-size: 22px; }
+  h4.rules-h { font-size: 19px; }
+  .rules-p, .rules-ol li { font-size: 17px; }
+  .rules-sub-d2, .rules-sub-d3, .rules-sub-d4 { margin-left: 0; padding-left: var(--sp-sm); }
+  .rules-table th, .rules-table td { padding: 5px 4px; overflow-wrap: anywhere; }
+  .rules-scn-grid { grid-template-columns: minmax(0, 1fr); }
+  /* Seven or more plain columns: each row folds into a wrapping grid, head
+     and body alike, so the cells stay under their names. */
+  .rules-table:not(.rules-table--energy):not(.rules-table--statbar):has(tr > :nth-child(7)),
+  .rules-table:not(.rules-table--energy):not(.rules-table--statbar):has(tr > :nth-child(7)) :is(thead, tbody) { display: block; }
+  .rules-table:not(.rules-table--energy):not(.rules-table--statbar):has(tr > :nth-child(7)) tr { display: grid; grid-template-columns: repeat(auto-fill, minmax(4.5rem, 1fr)); }
+  .rules-table--energy { font-size: 13px; }
+  .rules-table--energy th, .rules-table--energy td { padding: 4px 0; }
+}
+
+/* ── Print ──────────────────────────────────────────────────────────────── */
+@media print {
+  body[data-view="rules"] > :not(.app-shell),
+  body[data-view="rules"] .rules-nav,
+  body[data-view="rules"] .rules-intro .btn,
+  body[data-view="rules"] .rules-search { display: none !important; }
+  body[data-view="rules"] .app-shell { padding: 0 !important; margin: 0 !important; }
+  .rules-view { padding: 0; max-width: none; }
+  .rules-layout { display: block; }
+  .rules-doc { max-width: none; gap: 0; }
+  .rules-intro p { font-size: 9pt; color: #000; margin-bottom: 6pt; }
+  .rules-chapter + .rules-chapter { break-before: page; }
+  .rules-chapter-title { font-size: 20pt; border-bottom-width: 2pt; color: #000; }
+  h3.rules-h { font-size: 14pt; margin: 14pt 0 5pt; border-bottom-width: 1pt; }
+  h4.rules-h { font-size: 12pt; margin: 10pt 0 3pt; }
+  h5.rules-h, h6.rules-h { font-size: 10pt; margin: 8pt 0 2pt; }
+  .rules-h, .rules-chapter-title, .rules-tok-head { break-after: avoid; }
+  .rules-p, .rules-ol li { font-size: 10pt; line-height: 1.45; color: #000; margin-bottom: 5pt; }
+  .rules-eg { font-size: 9.5pt; padding: 4pt 8pt; color: #000; }
+  .rules-xref { text-decoration: none; color: inherit; }
+  .rules-table-wrap, .rules-fig, .rules-scn-btn, .rules-feat, .rules-tok-list, .rules-ol li { break-inside: avoid; }
+  .rules-table { font-size: 8.5pt; }
+  .rules-table th, .rules-table td { padding: 2pt 4pt; color: #000; }
+  .rules-table thead th, .rules-table--energy .rules-td-none { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .rules-fig img { max-height: 90mm; width: auto !important; border: 0; }
+  .rules-scn-grid { grid-template-columns: 1fr 1fr; }
+  .rules-scn-btn { padding: 6pt; }
+  .rules-hit { animation: none; }
+  .rules-sub[hidden] { display: block !important; }
+}

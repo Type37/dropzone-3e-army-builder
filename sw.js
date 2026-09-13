@@ -3,7 +3,7 @@
 // populating the cache as resources are fetched.
 // Bump this on every deploy so existing clients purge the old cache on activate
 // (the app updates frequently — stale assets must not survive a new build).
-const CACHE = 'dzc-cache-v490';
+const CACHE = 'dzc-cache-v491';
 // Same-origin code/data that MUST be fresh when online. Network-first alone is
 // not enough: fetch() still consults the browser HTTP cache, so a client can
 // keep running a stale app.js for as long as GitHub Pages' cache headers allow.
@@ -38,8 +38,11 @@ const CORE = [
   './js/dzc-play.js',
   './js/dzc-collection.js',
   './js/dzc-shell.js',
+  './js/dzc-rules.js',
+  './css/dzc-rules.css',
   './data/dzc/index.json',
   './data/dzc/rules.json',
+  './data/dzc/rules-book.json',
   // The four Status Tokens Play Mode draws. Controls, not decoration: the
   // buttons carry no text, so without these a Squad shows four empty boxes --
   // and Play Mode is the screen most likely to be open with no signal, stood

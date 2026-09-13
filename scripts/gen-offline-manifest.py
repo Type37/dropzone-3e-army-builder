@@ -57,6 +57,8 @@ def core_files() -> list[str]:
 DIR_GROUPS = [
     ('core', 'data/dzc', ('.json',)),
     ('core', 'assets/logos', ('.png', '.webp', '.svg', '.ico')),
+    # Interactive Rules diagrams, cut from the rulebook by tools/dzc/build_rules_book.py.
+    ('core', 'assets/rules', ('.webp',)),
     # Dropzone UNIT photos. assets/art/* is Dropfleet SHIP art -- 58 MB for a
     # different game -- and is neither deployed nor downloadable any more.
     ('art', 'assets/units', ('.webp',)),

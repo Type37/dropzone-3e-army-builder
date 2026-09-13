@@ -54,7 +54,7 @@ const WIDTHS = q.get("widths") ? q.get("widths").split(",").map(Number)
 const TARGET = q.get("url") || "../index.html";
 // Cold-loadable views, in the router's own words (js/dzc-shell.js showView).
 // `army` and `play` need an army id, which seedArmy() below supplies.
-const ROUTES = (q.get("routes") || "landing,armies,units,collection,army,play").split(",");
+const ROUTES = (q.get("routes") || "landing,armies,units,collection,rules,army,play").split(",");
 const out = document.getElementById("out");
 const results = [];
 
