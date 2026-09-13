@@ -1618,14 +1618,61 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ── 12. Landing Page ────────────────────────────────────────── */
 .landing {
-  /* Sized so the hero + tool cards + the site footer all fit one screen without
-     scrolling. No forced 100vh (that pushed the footer below the fold). */
+  /* Fills the screen above the sticky credits footer, blank space below the
+     tiles, so the big WarLore footer starts below the fold on first load
+     (Jet, 2026-09-13). On a phone 100vh is the tallest viewport, which only
+     pushes the WarLore footer further down. */
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  min-height: calc(100vh - var(--topbar-h) - var(--footer-h));
   padding: var(--sp-xl) var(--sp-2xl);
   background: var(--paper);
+}
+
+/* Interactive Rules pointer (index.html #dfc-rules-tip). A square panel, like
+   every other panel here; fixed, so it never moves the landing. */
+.dfc-rules-tip {
+  position: fixed;
+  top: calc(var(--topbar-h) + var(--sp-md));
+  right: var(--sp-md);
+  z-index: var(--z-toast);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-sm);
+  max-width: min(360px, calc(100vw - 2 * var(--sp-md)));
+  padding: var(--sp-md) var(--sp-sm) var(--sp-md) var(--sp-lg);
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--stroke-strong);
+  border-radius: 0;
+  box-shadow: var(--shadow-lg);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+  animation: slideUp var(--duration-slow) var(--ease-out);
+}
+.dfc-rules-tip[hidden],
+body:not([data-view="landing"]) .dfc-rules-tip { display: none; }
+.dfc-rules-tip-text { margin: 0; }
+.dfc-rules-tip a { color: var(--navy); text-decoration: underline; text-underline-offset: 2px; }
+.dfc-rules-tip-close {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin-top: -8px;
+  background: none;
+  border: 0;
+  border-radius: var(--radius-md);
+  color: var(--ink-muted);
+}
+.dfc-rules-tip-close:hover { background: var(--paper-alt); color: var(--ink); }
+.dfc-rules-tip a:focus-visible,
+.dfc-rules-tip-close:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+@media (max-width: 600px) {
+  .dfc-rules-tip { top: calc(var(--topbar-h) + var(--sp-sm)); left: var(--sp-sm); right: var(--sp-sm); max-width: none; }
 }
 
 .landing-hero {

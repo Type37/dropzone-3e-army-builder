@@ -307,6 +307,15 @@
   </div>
 </div>
 
+<!-- Once-per-device pointer to the Dropfleet builder's Interactive Rules, shown
+     on the landing screen only (js/dzc-shell.js showRulesTip). Body level so
+     position:fixed is not re-anchored by a transformed ancestor. Wording is
+     Jet's, verbatim. -->
+<aside class="dfc-rules-tip" id="dfc-rules-tip" role="status" aria-live="polite" hidden>
+  <p class="dfc-rules-tip-text">Did you know that the <a href="https://type37.github.io/dropfleet-builder/#rules" target="_blank" rel="noopener"><b>Interactive Rules</b></a> are also available here? Easier to read than a PDF with lots of tappable and clickable links.</p>
+  <button type="button" class="dfc-rules-tip-close" aria-label="Close"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+</aside>
+
 <!-- ═══ Site Footer (uniform across WarLore builders) ═══ -->
 <footer class="game-info-footer">
   <div class="gif-inner">

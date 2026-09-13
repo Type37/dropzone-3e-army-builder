@@ -244,7 +244,32 @@ const App = (() => {
          * than twice. The wordmark is directly to the left; naming the app
          * beside its own logo was never telling anyone anything. */
         ctx.textContent = '';
+        showRulesTip();
     }
+  }
+
+  /* The Interactive Rules pointer (index.html #dfc-rules-tip). Shown on the
+   * landing screen until closed or followed, once per device; CSS hides it on
+   * every other view. Storage can throw (private mode, blocked site data), in
+   * which case it simply shows again next visit. */
+  const RULES_TIP_KEY = 'dzc_rules_tip_dismissed';
+  function showRulesTip() {
+    const el = $('dfc-rules-tip');
+    if (!el) return;
+    let dismissed = false;
+    try { dismissed = localStorage.getItem(RULES_TIP_KEY) === '1'; } catch (e) { /* show it */ }
+    if (dismissed) { el.hidden = true; return; }
+    if (!el.dataset.wired) {
+      el.dataset.wired = '1';
+      const dismiss = () => {
+        el.hidden = true;
+        try { localStorage.setItem(RULES_TIP_KEY, '1'); } catch (e) { /* session only */ }
+      };
+      el.querySelector('.dfc-rules-tip-close').addEventListener('click', dismiss);
+      el.querySelector('a').addEventListener('click', dismiss);
+      el.addEventListener('keydown', e => { if (e.key === 'Escape') dismiss(); });
+    }
+    el.hidden = false;
   }
 
   function route() {
@@ -585,6 +610,10 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-09-13', title: 'Interactive Rules, and room below the landing', items: [
+      'The landing screen points once to the Dropfleet builder’s Interactive Rules. Close it and it stays closed on that device.',
+      'The landing screen fills the window, so the WarLore footer starts below the fold.',
+    ] },
     { date: '2026-09-13', title: 'Nothing scrolls sideways', items: [
       'New Army: on a 320px phone the six factions sit two across instead of pushing the dialog sideways.',
       'Scenarios: on a phone each turret weapon is its name over a grid of Arc, Range, Attacks, Accuracy, Energy and Special, instead of a table you had to scroll sideways.',
