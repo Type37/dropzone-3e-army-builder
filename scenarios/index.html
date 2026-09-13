@@ -12,10 +12,11 @@
 /* The Dropzone scenario card: map beside the key, objectives and entry under the title */
 .dz{display:grid;grid-template-columns:minmax(0,1fr) 46%;gap:6mm;padding:6mm 14mm 4mm;container-type:inline-size;}
 .dz-head{grid-column:1/-1;}
-.dz-name{font-family:'Roboto Slab',Georgia,serif;font-weight:700;font-size:1.9rem;line-height:1.15;}
-.dz-src{font-size:.95rem;color:var(--muted);margin-top:2px;}
+/* Type, as the Dropfleet scenario pages: Title 36 Slab, H1 28 Slab, body 16, labels 14; Jost 400/600 */
+.dz-name{font-family:'Roboto Slab',Georgia,serif;font-weight:700;font-size:2.25rem;line-height:1.12;}
+.dz-src{font-size:1rem;color:var(--muted);margin-top:2px;}
 .dz-rules{display:flex;flex-direction:column;gap:5mm;min-width:0;}
-.dz-sec h3{display:flex;align-items:center;gap:7px;font-family:'Roboto Slab',Georgia,serif;font-weight:700;font-size:1.1rem;margin-bottom:2mm;}
+.dz-sec h3{display:flex;align-items:center;gap:7px;font-family:'Roboto Slab',Georgia,serif;font-weight:700;font-size:1.75rem;line-height:1.2;margin-bottom:2mm;}
 .dz-list{list-style:none;display:flex;flex-direction:column;gap:2mm;}
 .dz-list li{display:grid;grid-template-columns:16px minmax(0,1fr);gap:9px;align-items:start;font-size:1rem;line-height:1.5;}
 .dz-sw{width:16px;height:16px;margin-top:4px;border:1px solid rgba(14,12,8,.35);}
@@ -36,18 +37,18 @@
 @media (max-width:700px){body.has-trk .foot{bottom:var(--trk-h,64px);}}
 .dz-variant b{font-weight:600;}
 .dz-terms{display:flex;flex-direction:column;gap:2mm;margin-top:3mm;}
-.dz-term{font-size:14px;line-height:1.5;color:var(--ink);}
-.dz-term b{font-weight:700;}
+.dz-term{font-size:16px;line-height:1.5;color:var(--ink);}
+.dz-term b{font-weight:600;}
 .dz-tbl-wrap{overflow-x:auto;}
-.dz-tbl{border-collapse:collapse;font-size:14px;width:100%;}
-.dz-tbl th{font-size:12px;font-weight:500;color:var(--muted);text-align:left;padding:2px 10px 2px 0;white-space:nowrap;}
+.dz-tbl{border-collapse:collapse;font-size:16px;width:100%;}
+.dz-tbl th{font-size:14px;font-weight:400;color:var(--muted);text-align:left;padding:2px 10px 2px 0;white-space:nowrap;}
 .dz-tbl td{padding:4px 10px 4px 0;vertical-align:top;}
 .dz-tbl tbody tr:nth-child(odd){background:rgba(184,149,47,.09);}
 .dz-tbl td:first-child{font-weight:600;white-space:nowrap;}
 /* Game size and Variants: buttons set data-size and data-v on the card; the map's layers and the lists follow */
 .dz-opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:3mm;}
 .seg{display:inline-flex;flex-wrap:wrap;border:1.5px solid var(--action);}
-.seg button,.dz-vbtn{font-family:'Jost',system-ui,sans-serif;font-size:14px;font-weight:600;background:transparent;color:var(--action-dk);border:0;cursor:pointer;}
+.seg button,.dz-vbtn{font-family:'Jost',system-ui,sans-serif;font-size:16px;font-weight:600;background:transparent;color:var(--action-dk);border:0;cursor:pointer;}
 .seg button{padding:6px 12px;}
 .seg button+button{border-left:1.5px solid var(--action);}
 .dz-vbtn{padding:2px 10px;border:1.5px solid var(--action);white-space:nowrap;align-self:start;}
@@ -61,7 +62,7 @@
 .dz:not([data-size="skirmish"]) [data-only="skirmish"]{display:none;}
 .hv-half{display:none;}
 .dz[data-size="skirmish"] .hv-full,.hv-on .hv-full{text-decoration:line-through;opacity:.7;}
-.dz[data-size="skirmish"] .hv-half,.hv-on .hv-half{display:inline;font-weight:700;margin-left:.25em;}
+.dz[data-size="skirmish"] .hv-half,.hv-on .hv-half{display:inline;font-weight:600;margin-left:.25em;}
 .dz:not([data-v="1"]) :is(li,.hs)[data-v="1"],.dz:not([data-v="2"]) :is(li,.hs)[data-v="2"]{display:none;}
 .dz[data-v="1"] svg [data-v="1"],.dz[data-v="2"] svg [data-v="2"]{display:inline;}
 .dz[data-v="1"] [data-hide-v~="1"],.dz[data-v="2"] [data-hide-v~="2"]{display:none;}
