@@ -45,6 +45,16 @@
 .dz-tbl td{padding:4px 10px 4px 0;vertical-align:top;}
 .dz-tbl tbody tr:nth-child(odd){background:rgba(184,149,47,.09);}
 .dz-tbl td:first-child{font-weight:600;white-space:nowrap;}
+/* Too narrow for seven columns: each weapon becomes its name over a 3 x 2 grid of labelled stats */
+.dz-tbl-wrap{container-type:inline-size;}
+@media screen{@container (max-width:459px){
+  .dz-tbl,.dz-tbl tbody,.dz-tbl tr,.dz-tbl td{display:block;}
+  .dz-tbl thead{display:none;}
+  .dz-tbl tbody tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px 10px;padding:6px 6px 8px;}
+  .dz-tbl td{padding:0;overflow-wrap:anywhere;}
+  .dz-tbl td:first-child{grid-column:1/-1;white-space:normal;padding-bottom:2px;}
+  .dz-tbl td[data-l]::before{content:attr(data-l);display:block;font-size:12px;font-weight:500;color:var(--muted);}
+}}
 /* Game size and Variants: buttons set data-size and data-v on the card; the map's layers and the lists follow */
 .dz-opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:3mm;}
 .seg{display:inline-flex;flex-wrap:wrap;border:1.5px solid var(--action);}
@@ -167,7 +177,7 @@ const ruleTip=name=>T.specialRules[name]?`<span class="tip-t" tabindex="0" data-
 // Turret specials ("Demo 1", "AA-S", "Destroyer 5+, Demo 5") open their weapon rule on hover
 const specials=txt=>txt.split(/,\s*/).map(part=>{const m=part.match(/^([A-Za-z-]+(?: [A-Z][a-z]+)?)(.*)$/);return m&&T.specialRules[m[1]]?ruleTip(m[1])+m[2]:part;}).join(', ');
 function weaponTable(names){
-  return `<div class="dz-tbl-wrap"><table class="dz-tbl"><thead><tr><th>Weapon</th><th>Arc</th><th>Range</th><th>Attacks</th><th>Accuracy</th><th>Energy</th><th>Special</th></tr></thead><tbody>${names.map(n=>{const w=T.weaponFeatures.weapons[n];return `<tr><td><span class="tip-t" tabindex="0" data-tip="dzf:${n}">${n}</span></td><td>${w.arc}</td><td>${w.range}</td><td>${w.attacks}</td><td>${w.accuracy}</td><td>${w.energy}</td><td>${w.special==='-'?'-':specials(w.special)}</td></tr>`;}).join('')}</tbody></table></div>`;
+  return `<div class="dz-tbl-wrap"><table class="dz-tbl"><thead><tr><th>Weapon</th><th>Arc</th><th>Range</th><th>Attacks</th><th>Accuracy</th><th>Energy</th><th>Special</th></tr></thead><tbody>${names.map(n=>{const w=T.weaponFeatures.weapons[n];return `<tr><td><span class="tip-t" tabindex="0" data-tip="dzf:${n}">${n}</span></td><td data-l="Arc">${w.arc}</td><td data-l="Range">${w.range}</td><td data-l="Attacks">${w.attacks}</td><td data-l="Accuracy">${w.accuracy}</td><td data-l="Energy">${w.energy}</td><td data-l="Special">${w.special==='-'?'-':specials(w.special)}</td></tr>`;}).join('')}</tbody></table></div>`;
 }
 /* The terms a piece of text names, in the order it names them; each is explained only once per card */
 function explain(text,shown){

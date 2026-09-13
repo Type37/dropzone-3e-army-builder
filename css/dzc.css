@@ -3220,6 +3220,8 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
    Faction as a grid of accented buttons; game size as cards that state what
    each one buys, because "Clash" alone does not tell you the Group cap. */
 .dzc-faction-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+/* Three across needs 322px; a 320px phone has 278. */
+@media (max-width: 359px) { .dzc-faction-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .dzc-faction-btn {
   display: flex; align-items: center; gap: 7px; padding: 9px 10px; cursor: pointer;
   border: 1px solid var(--line, #d8d0c0); border-radius: 6px; background: var(--surface-2, #fff);

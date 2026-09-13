@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 486;
+  const BUILD = 487;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -585,6 +585,10 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-09-13', title: 'Nothing scrolls sideways', items: [
+      'New Army: on a 320px phone the six factions sit two across instead of pushing the dialog sideways.',
+      'Scenarios: on a phone each turret weapon is its name over a grid of Arc, Range, Attacks, Accuracy, Energy and Special, instead of a table you had to scroll sideways.',
+    ] },
     { date: '2026-09-13', title: 'WarLore footer', items: [
       'The shared WarLore footer, with every WarLore tool, sits at the bottom of the landing screen, the armies list, the Unit Reference and the Scenarios page.',
     ] },

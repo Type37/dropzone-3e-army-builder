@@ -47,8 +47,10 @@
    860px and 1100px breakpoints where the panes are still panes but there is no
    longer room for them; 1100 is the edge itself. Testing four phone widths and
    nothing else is how a broken desktop window passed clean. */
-const WIDTHS = [320, 375, 414, 768, 900, 1024, 1100];
 const q = new URLSearchParams(location.search);
+// ?widths=320,360,375 overrides the default set for a one-off sweep.
+const WIDTHS = q.get("widths") ? q.get("widths").split(",").map(Number)
+  : [320, 375, 414, 768, 900, 1024, 1100];
 const TARGET = q.get("url") || "../index.html";
 // Cold-loadable views, in the router's own words (js/dzc-shell.js showView).
 // `army` and `play` need an army id, which seedArmy() below supplies.
@@ -295,6 +297,8 @@ function audit(doc, win, width, route, overlay) {
     if (scrollerOf(n)) continue;
     const cs = win.getComputedStyle(n);
     if (cs.overflowX === "auto" || cs.overflowX === "scroll") continue;
+    // Visually hidden screen-reader text (1px, clipped) is meant to be that size.
+    if (cs.position === "absolute" && (cs.clip !== "auto" || cs.clipPath !== "none")) continue;
     const b = n.getBoundingClientRect();
     if (!b.width && !b.height) continue;
     const range = doc.createRange();
@@ -311,6 +315,19 @@ function audit(doc, win, width, route, overlay) {
     }
   }
 
+  /* Inner containers that DO scroll sideways. Not a failure on their own (a
+     wide weapon table may be one by design), but listed so each can be judged. */
+  const sideScrollers = [];
+  for (const n of doc.querySelectorAll("body *")) {
+    const ox = win.getComputedStyle(n).overflowX;
+    if ((ox === "auto" || ox === "scroll") && n.clientWidth > 0 && n.scrollWidth > n.clientWidth + 1) {
+      sideScrollers.push((n.tagName.toLowerCase() + (n.id ? "#" + n.id : "") +
+        (n.className && typeof n.className === "string"
+          ? "." + n.className.trim().split(/\s+/).slice(0, 2).join(".") : "")) +
+        " " + n.clientWidth + "/" + n.scrollWidth);
+    }
+  }
+
   // de-dupe: report the outermost offender per selector
   const seen = new Set();
   const uniq = bad.filter((b) => !seen.has(b.sel) && seen.add(b.sel));
@@ -324,7 +341,9 @@ function audit(doc, win, width, route, overlay) {
     // times and report it as coverage.
     routeOk: (doc.body.dataset.view || "landing") === (route || "landing"),
     pageScrollWidth: de.scrollWidth,
-    horizontalScroll: de.scrollWidth > width + 1,
+    bodyScrollWidth: doc.body.scrollWidth,
+    horizontalScroll: de.scrollWidth > width + 1 || doc.body.scrollWidth > width + 1,
+    sideScrollers,
     offendersTotal: bad.length,
     offenders: uniq.slice(0, 12),
     clippedTotal: clipped.length,
