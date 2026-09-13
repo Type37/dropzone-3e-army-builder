@@ -4,101 +4,74 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dropzone Commander: Scenarios</title>
+<meta name="description" content="Scenario reference for Dropzone Commander 3rd Edition, with all the core book scenarios and the Fauna scenarios. Also has game tracking tools!">
+<meta property="og:description" content="Scenario reference for Dropzone Commander 3rd Edition, with all the core book scenarios and the Fauna scenarios. Also has game tracking tools!">
+<meta name="twitter:description" content="Scenario reference for Dropzone Commander 3rd Edition, with all the core book scenarios and the Fauna scenarios. Also has game tracking tools!">
 <link rel="icon" href="../favicon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Libre+Baskerville:ital@0;1&family=Roboto+Slab:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared/shell.css">
+<!-- The Dropfleet scenario card (type system, map column, size switch, Variants), copied in by tools/dzc/sync_scenario_shell.py -->
+<link rel="stylesheet" href="scenario-card.css">
 <style>
 @font-face{font-family:'Terminal Grotesque Open';src:url('../assets/fonts/terminal-grotesque-open.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;}
-/* The Dropzone scenario card: map beside the key, objectives and entry under the title */
-.dz{display:grid;grid-template-columns:minmax(0,1fr) 46%;gap:6mm;padding:6mm 14mm 4mm;container-type:inline-size;}
-.dz-head{grid-column:1/-1;}
-/* Type, as the Dropfleet scenario pages: Title 36 Slab 800 caps, H1 28 Slab 600, body 16, labels 14; Jost 400/600 */
-.dz-name{font-family:'Roboto Slab',Georgia,serif;font-weight:800;font-size:2.25rem;line-height:1.12;text-transform:uppercase;}
-.dz-src{font-size:1rem;color:var(--muted);margin-top:2px;}
-.dz-rules{display:flex;flex-direction:column;gap:5mm;min-width:0;}
-.dz-sec h3{display:flex;align-items:center;gap:7px;font-family:'Roboto Slab',Georgia,serif;font-weight:600;font-size:1.75rem;line-height:1.2;margin-bottom:2mm;}
-.dz-list{list-style:none;display:flex;flex-direction:column;gap:2mm;}
-.dz-list li{display:grid;grid-template-columns:16px minmax(0,1fr);gap:9px;align-items:start;font-size:1rem;line-height:1.5;}
-.dz-sw{width:16px;height:16px;margin-top:4px;border:1px solid rgba(14,12,8,.35);}
-.dz-sw.none{border:0;}
-.dz-map{min-width:0;}
-.dz-frame{position:relative;border:1.5px solid #B8952F;}
-.dz-frame img{display:block;width:100%;height:auto;}
-.dz-frame .hs{position:absolute;cursor:help;z-index:2;}
-@media (hover:hover){.dz-frame .hs:hover{box-shadow:0 0 0 2px #B8952F,0 0 0 4px rgba(255,255,255,.7);}}
-.dz-frame .hs:focus-visible{outline:2px solid var(--focus);outline-offset:1px;}
-#scn-tip .dz-sw{width:14px;height:14px;flex:0 0 14px;margin:0;}
-@media print{.dz-frame .hs{display:none;}}
 /* The credits footer rides the bottom of the screen until the WarLore footer
    arrives, as on Dropfleet. On a phone with the tracker bar up it rides just above it. */
 .foot{position:sticky;bottom:0;z-index:20;}
 /* shared/shell.css asks for 360px columns, wider than a 320px phone. Never wider than the list. */
 .scn-list{grid-template-columns:repeat(auto-fill,minmax(min(360px,100%),1fr));}
 @media (max-width:700px){body.has-trk .foot{bottom:var(--trk-h,64px);}}
-.dz-variant b{font-weight:600;}
-.dz-terms{display:flex;flex-direction:column;gap:2mm;margin-top:3mm;}
-.dz-term{font-size:16px;line-height:1.5;color:var(--ink);}
-.dz-term b{font-weight:600;}
-.dz-tbl-wrap{overflow-x:auto;}
-.dz-tbl{border-collapse:collapse;font-size:16px;width:100%;}
-.dz-tbl th{font-size:14px;font-weight:400;color:var(--muted);text-align:left;padding:2px 10px 2px 0;white-space:nowrap;}
+
+/* The book's key beside a line: its colour square, disc, outline, line or token */
+.dz-ico{display:inline-block;width:22px;height:22px;flex:0 0 22px;vertical-align:-5px;margin-right:8px;box-sizing:border-box;}
+.dz-ico.sq{border:1px solid rgba(14,12,8,.35);}
+.dz-ico.disc{border-radius:50%;border:1px solid rgba(14,12,8,.35);}
+.dz-ico.outline{border:2.5px solid;}
+.dz-ico.line{height:5px;vertical-align:4px;}
+img.dz-ico{object-fit:contain;}
+.dz-key{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2mm;}
+.dz-key li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;align-items:start;}
+.dz-key li .dz-ico{margin:1px 0 0;}
+.dz-key li .dz-ico.line{margin-top:10px;}
+/* An objective's lines, rule and terms, and a Variant's, spaced as the section body spaces its own */
+.dz-group,.pub-vlist li>div{display:flex;flex-direction:column;gap:2.4mm;min-width:0;}
+/* Four game sizes: two by two, so each keeps its points on one line */
+.pub-opts .seg.pub-size{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));}
+.pub-opts .seg.pub-size .pub-size-pts{white-space:nowrap;}
+/* Map spots: Zones are square, tokens and points round */
+.map-frame .hs.hs-zone{border-radius:0;}
+.map-svg svg{height:auto;}
+#scn-tip .dz-ico{width:16px;height:16px;flex:0 0 16px;margin:0;}
+
+/* Turret weapons */
+.dz-tbl-wrap{overflow-x:auto;container-type:inline-size;}
+.dz-tbl{border-collapse:collapse;font-family:'Jost',system-ui,sans-serif;font-size:var(--fs-body);width:100%;color:var(--ch);}
+.dz-tbl th{font-size:var(--fs-small);font-weight:400;color:#5d5850;text-align:left;padding:2px 10px 2px 0;white-space:nowrap;}
 .dz-tbl td{padding:4px 10px 4px 0;vertical-align:top;}
 .dz-tbl tbody tr:nth-child(odd){background:rgba(184,149,47,.09);}
 .dz-tbl td:first-child{font-weight:600;white-space:nowrap;}
 /* Too narrow for seven columns: each weapon becomes its name over a 3 x 2 grid of labelled stats */
-.dz-tbl-wrap{container-type:inline-size;}
 @media screen{@container (max-width:459px){
   .dz-tbl,.dz-tbl tbody,.dz-tbl tr,.dz-tbl td{display:block;}
   .dz-tbl thead{display:none;}
   .dz-tbl tbody tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px 10px;padding:6px 6px 8px;}
   .dz-tbl td{padding:0;overflow-wrap:anywhere;}
   .dz-tbl td:first-child{grid-column:1/-1;white-space:normal;padding-bottom:2px;}
-  .dz-tbl td[data-l]::before{content:attr(data-l);display:block;font-size:12px;font-weight:500;color:var(--muted);}
+  .dz-tbl td[data-l]::before{content:attr(data-l);display:block;font-size:var(--fs-small);font-weight:400;color:#5d5850;}
 }}
-/* Game size and Variants: buttons set data-size and data-v on the card; the map's layers and the lists follow */
-.dz-opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:3mm;}
-.seg{display:inline-flex;flex-wrap:wrap;border:1.5px solid var(--action);}
-.seg button,.dz-vbtn{font-family:'Jost',system-ui,sans-serif;font-size:16px;font-weight:600;background:transparent;color:var(--action-dk);border:0;cursor:pointer;}
-.seg button{padding:6px 12px;}
-.seg button+button{border-left:1.5px solid var(--action);}
-.dz-vbtn{padding:2px 10px;border:1.5px solid var(--action);white-space:nowrap;align-self:start;}
-.seg button[aria-pressed="true"],.dz-vbtn[aria-pressed="true"]{background:var(--action);color:#fff;}
-@media (hover:hover){.seg button:not([aria-pressed="true"]):hover,.dz-vbtn:not([aria-pressed="true"]):hover{background:var(--hover);}}
-.seg button:focus-visible,.dz-vbtn:focus-visible{outline:2px solid var(--focus);outline-offset:2px;}
-.dz-list.dz-vlist li{grid-template-columns:auto minmax(0,1fr);}
-/* Game size, as on the Dropfleet scenario pages: selected is filled black with a tick, each shows its points */
-.dz-size{display:flex;flex-wrap:wrap;gap:6px;}
-.dz-size button{flex:1 1 0;min-width:110px;display:grid;grid-template-columns:auto 1fr;column-gap:6px;align-items:center;text-align:left;font-family:'Jost',system-ui,sans-serif;padding:7px 10px;background:#fff;color:#3a3530;border:1.5px solid #b9ae9a;cursor:pointer;}
-.dz-size-tick{grid-row:1 / span 2;width:16px;height:16px;visibility:hidden;}
-.dz-size-name{font-size:16px;font-weight:600;line-height:1.2;}
-.dz-size-pts{grid-column:2;font-size:14px;line-height:1.2;}
-.dz-size button[aria-pressed="true"]{background:#0E0C08;border-color:#0E0C08;color:#fff;}
-.dz-size button[aria-pressed="true"] .dz-size-tick{visibility:visible;}
-@media (hover:hover){.dz-size button:not([aria-pressed="true"]):hover{border-color:#0E0C08;}}
-.dz-size button:focus-visible{outline:2px solid var(--focus);outline-offset:2px;}
-@media print{.dz-size button:not([aria-pressed="true"]){display:none;}.dz-size button[aria-pressed="true"]{background:none;color:inherit;border:0;padding:0;}.dz-size-tick{display:none;}}
-.dz-svg{aspect-ratio:1;}
-.dz-svg svg,.dz-svg img{display:block;width:100%;height:auto;}
-.dz[data-size="skirmish"] [data-size],.dz[data-size="clash"] [data-size="battle"]{display:none;}
-.dz:not([data-size="skirmish"]) [data-only="skirmish"]{display:none;}
+@media print{.dz-tbl-wrap{overflow:visible;}.dz-tbl{font-size:7.5pt;}.dz-tbl th{font-size:7pt;}.dz-ico{width:11px;height:11px;flex-basis:11px;margin-right:4px;vertical-align:-2px;}.dz-key li{grid-template-columns:11px minmax(0,1fr);gap:4px;}}
+
+/* Game size (rulebook 3.1): the map's layers and anything only used in bigger games follow the switch */
+.scenario.pub:not([data-size="skirmish"]) [data-only="skirmish"]{display:none;}
+/* 9.5: in a Skirmish an objective's points and KP stay printed, struck, with half beside them */
 .hv-half{display:none;}
-.dz[data-size="skirmish"] .hv-full,.hv-on .hv-full{text-decoration:line-through;opacity:.7;}
-.dz[data-size="skirmish"] .hv-half,.hv-on .hv-half{display:inline;font-weight:600;margin-left:.25em;}
-.dz:not([data-v="1"]) :is(li,.hs)[data-v="1"],.dz:not([data-v="2"]) :is(li,.hs)[data-v="2"]{display:none;}
-.dz[data-v="1"] svg [data-v="1"],.dz[data-v="2"] svg [data-v="2"]{display:inline;}
-.dz[data-v="1"] [data-hide-v~="1"],.dz[data-v="2"] [data-hide-v~="2"]{display:none;}
-.dz[data-v="1"] [data-strike-v~="1"]>span:last-child,.dz[data-v="2"] [data-strike-v~="2"]>span:last-child{text-decoration:line-through;color:var(--muted);}
-@media print{.seg{border:0;}.seg button:not([aria-pressed="true"]){display:none;}.seg button[aria-pressed="true"]{background:none;color:var(--ink);padding:0;}}
-@media (max-width:760px){
-  .dz{grid-template-columns:1fr;padding:4mm 3mm;}
-  .dz-map{order:-1;grid-row:2;}
-  .dz-head{grid-row:1;}
-}
-@media print{
-  .dz{padding:0;gap:4mm;}
-  .dz-name{font-size:18pt;}
-  .dz-list li{font-size:9.5pt;}
-}
+.scenario.pub[data-size="skirmish"] .hv-full,.hv-on .hv-full{text-decoration:line-through;}
+.scenario.pub[data-size="skirmish"] .hv-half,.hv-on .hv-half{display:inline;font-weight:600;margin-left:.25em;}
+/* Two Variants a scenario (the card's stylesheet covers one) */
+.scenario.pub:not([data-v="2"]) .hs[data-v="2"]{display:none;}
+.scenario.pub[data-v="2"] svg [data-v="2"]{display:inline;}
+.scenario.pub[data-v="2"] [data-hide-v~="2"]{display:none;}
+/* An objective a Variant removes stays on the card, struck through */
+.scenario.pub[data-v="1"] [data-strike-v~="1"] :is(.rule-text,.spill),.scenario.pub[data-v="2"] [data-strike-v~="2"] :is(.rule-text,.spill){text-decoration:line-through;color:#5d5850;}
 </style>
 </head>
 <body>
@@ -124,27 +97,31 @@
 
 <script src="dzc-scenario-terms.js"></script>
 <script src="dzc-scenario-hotspots.js"></script>
+<script src="dzc-scenario-sheets.js"></script>
 <script src="shared/tooltip.js"></script>
 <script src="shared/score.js"></script>
 <script src="shared/shell.js"></script>
 <script>
 const SOURCES={rulebook:{group:'Rulebook',book:'Rulebook'},fauna:{group:'Fauna Rules & Scenarios',book:'Fauna Rules & Scenarios'}};
-// The objectives the rulebook names, in the order a scenario lists them
+// Both books are on TTCombat's Dropzone resources page
+const SOURCE_URL='https://ttcombat.com/pages/dropzone-commander-resources';
+// The objectives the rulebook names (9.6), in the order a scenario lists them
 const OBJECTIVES=['Attrition','Secure','Occupy','Extract','Protect','Dominate','Displace','Raze','Explore'];
+const T=DZ_TERMS;
 
 /* The legend comes out of the PDF a printed line at a time. Join each entry's
    lines back into its sentence, and drop the page numbers that ride along. */
 function sentence(lines){
   return lines.filter(l=>!/^\d{1,2}$/.test(l.trim())).reduce((out,l)=>!out?l:out.endsWith('/')?out+l:out+' '+l,'').trim();
 }
-/* A map key entry stacks separate facts ("2 Hardened Large Zones", "Comms Uplink"); keep each on its own
+/* A map key entry stacks separate facts ("2 Hardened Large Zones", "Only use in..."); keep each on its own
    line, joining only where a sentence wraps onto a line that starts in lower case. */
 function keyLines(lines){
   return lines.filter(l=>!/^\d{1,2}$/.test(l.trim())).reduce((out,l)=>{
     if(!out) return l;
     if(out.endsWith('/')) return out+l;
     const prev=out.split('<br>').pop();
-    const fact=prev.split(' ').every(w=>/^[A-Z0-9(]/.test(w));          // "2 Hardened Large Zones", "Comms Uplink"
+    const fact=prev.split(' ').every(w=>/^[A-Z0-9(]/.test(w));
     const newFact=prev.endsWith('.')||fact||/^(Only use|Each )/.test(l);
     return out+(newFact&&!/^[a-z]/.test(l)?'<br>':' ')+l;
   },'').trim();
@@ -157,83 +134,99 @@ function parse(s){
   for(const L of s.legend){
     const text=sentence(L.lines);
     if(!text) continue;
-    const swatch=L.rgb?`rgb(${L.rgb.map(v=>Math.round(v*255)).join(',')})`:'';
     if(/^Entry:/.test(text)) entry=text.replace(/^Entry:\s*/,'');
     else if(/^Variant \d/.test(text)) variants.push(text);
     // Variants close every legend; a line after one is that variant running on ("Remove Attrition and add" / "Dominate these...")
-    else if(variants.length&&!L.rgb) variants[variants.length-1]+=' '+text;
-    else if(OBJECTIVES.some(o=>text.startsWith(o))) objectives.push({text,swatch,size:sizeOf(text)});
-    else key.push({text:keyLines(L.lines),swatch,size:sizeOf(text)});
+    else if(variants.length&&!L.rgb&&!L.keys) variants[variants.length-1]+=' '+text;
+    else if(OBJECTIVES.some(o=>text.startsWith(o))) objectives.push({L,text,size:sizeOf(text),name:OBJECTIVES.find(o=>text.startsWith(o))});
+    else key.push({L,size:sizeOf(text)});
   }
-  // The Fauna pack sets Entry, its special rules and its Variants under the map
+  // The Fauna pack sets Entry, its special rules and its Variants under the map; Ground Control's Zone Placement too
   for(const note of s.notes||[]){
     if(/^Entry:/.test(note)) entry=entry||note.replace(/^Entry:\s*/,'');
     else if(/^Variant( \d)?:/.test(note)) variants.push(note);
     else rules.push(note);
   }
-  return {key,objectives,entry,variants,rules};
+  const vs=variants.map((v,i)=>{ const m=v.match(/^(Variant(?: (\d))?):\s*/); return {n:m&&m[2]?m[2]:String(i+1),label:m?m[1]:`Variant ${i+1}`,text:m?v.slice(m[0].length):v}; });
+  return {key,objectives,entry,variants:vs,rules};
 }
-const objectiveNames=s=>parse(s).objectives.map(x=>OBJECTIVES.find(o=>x.text.startsWith(o))).filter((o,i,a)=>a.indexOf(o)===i);
-// data-size: the game sizes it is used in; data-strike-v: the Variants that remove it; data-v: the Variant that adds it
-const item=({text,swatch,size,strike,v})=>`<li${size?` data-size="${size}"`:''}${strike?` data-strike-v="${strike}"`:''}${v?` data-v="${v}"`:''}><span class="dz-sw${swatch?'':' none'}"${swatch?` style="background:${swatch}"`:''}></span><span>${text}</span></li>`;
-const section=(title,body)=>body?`<section class="dz-sec"><h3>${title}</h3>${body}</section>`:'';
+const objectiveNames=s=>parse(s).objectives.map(o=>o.name).filter((o,i,a)=>a.indexOf(o)===i);
 
-/* ── Explanations: every rule a scenario names, word for word from the rulebook (dzc-scenario-terms.js) ── */
-const T=DZ_TERMS;
+/* ── The book's keys: a legend entry's lines, split where the book prints a new key beside a line ── */
+const rgbCss=a=>`rgb(${a.map(v=>Math.round(v*255)).join(',')})`;
+function keyIcon(k){
+  if(!k) return '';
+  if(k.token) return `<img class="dz-ico" src="../assets/tokens/${k.token}.${k.token==='hive'?'svg':'webp'}" alt="">`;
+  if(k.square) return `<span class="dz-ico sq" style="background:${rgbCss(k.square)}"></span>`;
+  if(k.circle) return `<span class="dz-ico disc" style="background:${rgbCss(k.circle)}"></span>`;
+  if(k.outline) return `<span class="dz-ico outline" style="border-color:${rgbCss(k.outline)}"></span>`;
+  if(k.line) return `<span class="dz-ico line" style="background:${rgbCss(k.line)}"></span>`;
+  return '';
+}
+function segments(L){
+  const keys=L.keys||[L.rgb?{at:0,square:L.rgb}:{at:0}];
+  return keys.map((k,i)=>({icon:keyIcon(k),lines:L.lines.slice(k.at,i+1<keys.length?keys[i+1].at:undefined)}));
+}
+
+/* ── Explanations: every rule a scenario names, word for word from the rulebook (dzc-scenario-terms.js),
+   written under the named term as a bold run-in, as the Dropfleet pages do ── */
 const wordRe=(n,plural)=>new RegExp('\\b'+n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+(plural?'s?':'')+'\\b',plural?'i':'');
 const words=n=>wordRe(n,true);
 const firstAt=(text,list)=>list.map(([name,re,run])=>({name,run,m:text.match(re)})).filter(x=>x.m).sort((a,b)=>a.m.index-b.m.index);
-const term=(name,html)=>`<p class="dz-term"><b>${name}:</b> ${html}</p>`;
-const ruleTip=name=>T.specialRules[name]?`<span class="tip-t" tabindex="0" data-tip="dzr:${name}">${name}</span>`:name;
+const para=html=>`<p class="rule-text">${html}</p>`;
+const runIn=(name,html)=>para(`<b class="run-in">${name}.</b> ${html}`);
+const tipName=(kind,n)=>`<span class="tip-t" tabindex="0" data-tip="${kind}:${n}">${n}</span>`;
+const ruleTip=name=>T.specialRules[name]?tipName('dzr',name):name;
 // Turret specials ("Demo 1", "AA-S", "Destroyer 5+, Demo 5") open their weapon rule on hover
 const specials=txt=>txt.split(/,\s*/).map(part=>{const m=part.match(/^([A-Za-z-]+(?: [A-Z][a-z]+)?)(.*)$/);return m&&T.specialRules[m[1]]?ruleTip(m[1])+m[2]:part;}).join(', ');
 function weaponTable(names){
-  return `<div class="dz-tbl-wrap"><table class="dz-tbl"><thead><tr><th>Weapon</th><th>Arc</th><th>Range</th><th>Attacks</th><th>Accuracy</th><th>Energy</th><th>Special</th></tr></thead><tbody>${names.map(n=>{const w=T.weaponFeatures.weapons[n];return `<tr><td><span class="tip-t" tabindex="0" data-tip="dzf:${n}">${n}</span></td><td data-l="Arc">${w.arc}</td><td data-l="Range">${w.range}</td><td data-l="Attacks">${w.attacks}</td><td data-l="Accuracy">${w.accuracy}</td><td data-l="Energy">${w.energy}</td><td data-l="Special">${w.special==='-'?'-':specials(w.special)}</td></tr>`;}).join('')}</tbody></table></div>`;
+  return `<div class="dz-tbl-wrap"><table class="dz-tbl"><thead><tr><th>Weapon</th><th>Arc</th><th>Range</th><th>Attacks</th><th>Accuracy</th><th>Energy</th><th>Special</th></tr></thead><tbody>${names.map(n=>{const w=T.weaponFeatures.weapons[n];return `<tr><td>${tipName('dzf',n)}</td><td data-l="Arc">${w.arc}</td><td data-l="Range">${w.range}</td><td data-l="Attacks">${w.attacks}</td><td data-l="Accuracy">${w.accuracy}</td><td data-l="Energy">${w.energy}</td><td data-l="Special">${w.special==='-'?'-':specials(w.special)}</td></tr>`;}).join('')}</tbody></table></div>`;
 }
+/* 9.5: a Skirmish halves the points and KP an objective asks for. The rule's number stays, struck, with half beside it */
+function halvable(text){ return text.replace(/\b(\d+)(\s?)(pts|KP)\b/g,(m,n,sp,u)=>`<span class="hv"><span class="hv-full">${n}</span><span class="hv-half">${n/2}</span></span>${sp}${u}`); }
+const HALVED=Object.entries(T.objectives).filter(([,o])=>/\d\s?(pts|KP)\b/.test(o.body.join(' '))).map(([n])=>n);
 /* The terms a piece of text names, in the order it names them; each is explained only once per card */
 function explain(text,shown){
   const out=[], weapons=[];
   const once=(key,fn)=>{ if(shown.has(key)) return; shown.add(key); fn(); };
   const list=[
-    ...Object.entries(T.objectives).map(([n,o])=>[n,wordRe(n),()=>once('o:'+n,()=>out.push(term(o.heading,halvable(o.body.join(' ')))))]),
-    ['Territory',/\bTerritor/,()=>once('territory',()=>out.push(term('Territory',T.territory.join(' '))))],
-    ...Object.entries(T.entry).map(([n,b])=>[n,n==='Deployed'?/\bDeploy/:wordRe(n),()=>once('e:'+n,()=>out.push(term(n,b.join(' '))))]),
-    ...Object.entries(T.extraction).map(([n,b])=>[n,wordRe(n),()=>once('x:'+n,()=>out.push(term(n,b)))]),
-    ['Object',/\bObjects?\b/,()=>once('objects',()=>{ out.push(term('Objects',T.objects.Objects.join(' '))); out.push(term('Finding Objects',T.objects['Finding Objects'].join(' '))); out.push(term('Carrying Objects',T.objects['Carrying Objects'].join(' '))); })],
-    ...Object.entries(T.variantObjects).map(([n,b])=>[n,wordRe(n),()=>once('v:'+n,()=>out.push(term(n,b.join(' '))))]),
-    ['Bunker Entrance',/\bBunker Entrances?\b/,()=>once('bunker',()=>out.push(term('Bunker Entrances',T.bunkerEntrances.join(' '))))],
+    ...Object.entries(T.objectives).map(([n,o])=>[n,wordRe(n),()=>once('o:'+n,()=>out.push(runIn(o.heading,halvable(o.body.join(' ')))))]),
+    ['Territory',/\bTerritor/,()=>once('territory',()=>out.push(runIn('Territory',T.territory.join(' '))))],
+    ...Object.entries(T.entry).map(([n,b])=>[n,n==='Deployed'?/\bDeploy/:wordRe(n),()=>once('e:'+n,()=>out.push(runIn(n,b.join(' '))))]),
+    ...Object.entries(T.extraction).map(([n,b])=>[n,wordRe(n),()=>once('x:'+n,()=>out.push(runIn(n,b)))]),
+    ['Object',/\bObjects?\b/,()=>once('objects',()=>['Objects','Finding Objects','Carrying Objects'].forEach(n=>out.push(runIn(n,T.objects[n].join(' ')))))],
+    ...Object.entries(T.variantObjects).map(([n,b])=>[n,wordRe(n),()=>once('v:'+n,()=>out.push(runIn(n,b.join(' '))))]),
+    ['Bunker Entrance',/\bBunker Entrances?\b/,()=>once('bunker',()=>out.push(runIn('Bunker Entrances',T.bunkerEntrances.join(' '))))],
     ...Object.keys(T.weaponFeatures.weapons).map(n=>[n,words(n),()=>once('w:'+n,()=>weapons.push(n))]),
-    ...Object.entries(T.features).map(([n,f])=>[n,words(n),()=>once('f:'+n,()=>out.push(term(`<span class="tip-t" tabindex="0" data-tip="dzf:${n}">${n}</span>`,f.text)))]),
+    ...Object.entries(T.features).map(([n,f])=>[n,words(n),()=>once('f:'+n,()=>out.push(runIn(tipName('dzf',n),f.text)))]),
     // unit rules the map keys name
-    ...['Demo Charges','Living Weapons','Bloodthirsty'].map(n=>[n,words(n.replace(/s$/,'')),()=>once('r:'+n,()=>out.push(term(T.specialRules[n].heading,T.specialRules[n].body.join(' '))))]),
+    ...['Demo Charges','Living Weapons','Bloodthirsty'].map(n=>[n,words(n.replace(/s$/,'')),()=>once('r:'+n,()=>out.push(runIn(T.specialRules[n].heading,T.specialRules[n].body.join(' '))))]),
   ];
   firstAt(text,list).forEach(x=>x.run());
   let html=out.join('');
-  if(weapons.length) html+=weaponTable(weapons)+(shown.has('weaponRules')?'':(shown.add('weaponRules'),`<p class="dz-term">${T.weaponFeatures.rules.join(' ')}</p>`));
-  return html?`<div class="dz-terms">${html}</div>`:'';
+  if(weapons.length) html+=weaponTable(weapons)+(shown.has('weaponRules')?'':(shown.add('weaponRules'),para(T.weaponFeatures.rules.join(' '))));
+  return html;
 }
 
-/* ── The map: a redrawn SVG when there is one (tools/dzc/draw_scenario_maps.py), else the book's picture ── */
+/* ── The map: redrawn as SVG (tools/dzc/draw_scenario_maps.py) ── */
 const redrawn=s=>typeof DZ_MAP_SPOTS!=='undefined'&&DZ_MAP_SPOTS[s.id];
 const mapSrc=s=>redrawn(s)?`../assets/scenarios/${s.id}.svg`:'../'+s.map;
 // The tokens on a map and the rule each one is
 const TOKEN_RULE={'heavy-cannon':'Heavy Cannon Turret','railgun-turret':'Railgun Turret','flak-turret':'Flak Turret','missile-turret':'Missile Turret','laser-turret':'Laser Turret','super-laser':'Superlaser Turret','excellent-vantage':'Excellent Vantage','acm-package':'ACM Package','shield-generator':'Shield Generator','comms-uplink-tower':'Comms Uplink','power-core':'Power Core','internal-flaw':'Internal Flaw','seal':'Seal','automated-sentries':'Automated Sentries','jamming-device':'Jamming Device','shimmer-field':'Shimmer Field','basement':'Basement','secret-entrance':'Secret Entrance'};
 let CURRENT=null;
-function mapHTML(s){
-  CURRENT=s;
-  const spots=redrawn(s)||[];
-  const html=spots.map(p=>{
-    const box=p.t==='zone'?`left:${p.x-p.w/2}%;top:${p.y-p.h/2}%;width:${p.w}%;height:${p.h}%`:`left:${p.x-p.r}%;top:${p.y-p.r}%;width:${2*p.r}%;height:${2*p.r}%;border-radius:50%`;
-    const key=(p.t==='zone'||(p.t==='point'&&p.legend!==undefined))?`dzz:${p.legend}`:TOKEN_RULE[p.token]?`dzf:${TOKEN_RULE[p.token]}`:p.token==='object'?'dzo:Objects':p.token==='secure-point'?'dzo:Secure':p.token==='bunker-entrance'?'dzo:Bunker Entrances':'';
+function spotsHTML(s){
+  return (redrawn(s)||[]).map(p=>{
+    const zone=p.t==='zone';
+    const box=zone?`left:${p.x-p.w/2}%;top:${p.y-p.h/2}%;width:${p.w}%;height:${p.h}%`:`left:${p.x-p.r}%;top:${p.y-p.r}%;width:${2*p.r}%;height:${2*p.r}%`;
+    const key=(zone||(p.t==='point'&&p.legend!==undefined))?`dzz:${p.legend}`:TOKEN_RULE[p.token]?`dzf:${TOKEN_RULE[p.token]}`:p.token==='object'?'dzo:Objects':p.token==='secure-point'?'dzo:Secure':p.token==='bunker-entrance'?'dzo:Bunker Entrances':'';
     const layer=`${p.size?` data-size="${p.size}"`:''}${p.v?` data-v="${p.v}"`:''}${p.hideV?` data-hide-v="${p.hideV}"`:''}`;
-    return key?`<span class="hs" tabindex="0" data-tip="${key}"${layer} style="${box}"></span>`:'';
+    return key?`<span class="hs${zone?' hs-zone':''}" tabindex="0" data-tip="${key}"${layer} style="${box}"></span>`:'';
   }).join('');
-  // A redrawn map is inlined once fetched, so its size and Variant layers can follow the buttons
-  return `<div class="dz-frame"><div class="dz-svg"${spots.length?` data-src="${mapSrc(s)}"`:''}><img src="${mapSrc(s)}" alt="${s.name} map"></div>${html}</div>`;
 }
 const SVG_TEXT={};
+// A redrawn map is inlined once fetched, so its size and Variant layers can follow the buttons
 async function inlineMaps(){
-  for(const el of document.querySelectorAll('.dz-svg[data-src]')){
+  for(const el of document.querySelectorAll('.map-svg[data-src]')){
     const src=el.dataset.src, alt=el.querySelector('img').alt;
     el.removeAttribute('data-src');
     try{ SVG_TEXT[src]=SVG_TEXT[src]||await fetch(src).then(r=>{ if(!r.ok) throw new Error(r.status); return r.text(); }); }
@@ -244,11 +237,11 @@ async function inlineMaps(){
 
 function tipHTML(key){
   const i=key.indexOf(':'), kind=key.slice(0,i), id=key.slice(i+1);
-  if(kind==='dzz'&&CURRENT){ const L=CURRENT.legend[+id]; if(!L) return ''; const sw=L.rgb?`<span class="dz-sw" style="background:rgb(${L.rgb.map(v=>Math.round(v*255)).join(',')})"></span>`:''; return `<div class="scn-tip-h">${sw}<b>${keyLines(L.lines)}</b></div>`; }
+  if(kind==='dzz'&&CURRENT){ const L=CURRENT.legend[+id]; if(!L) return ''; const seg=segments(L)[0]; return `<div class="scn-tip-h">${seg.icon}<b>${keyLines(L.lines)}</b></div>`; }
   if(kind==='dzo'){
     if(id==='Objects') return `<div class="scn-tip-h"><b>Objects</b></div><div>${T.objects.Objects.join(' ')}</div>`;
     if(id==='Bunker Entrances') return `<div class="scn-tip-h"><b>Bunker Entrances</b></div><div>${T.bunkerEntrances.join(' ')}</div>`;
-    const o=T.objectives[id]; return o?`<div class="scn-tip-h"><b>${o.heading}</b></div><div${store.get(SIZE_KEY)==='skirmish'?' class="hv-on"':''}>${halvable(o.body.join(' '))}</div>`:'';
+    const o=T.objectives[id]; return o?`<div class="scn-tip-h"><b>${o.heading}</b></div><div${sizeNow()==='skirmish'?' class="hv-on"':''}>${halvable(o.body.join(' '))}</div>`:'';
   }
   if(kind==='dzr'){ const r=T.specialRules[id]; return r?`<div class="scn-tip-h"><b>${r.heading}</b></div><div>${r.body.join(' ')}</div>`:''; }
   if(kind==='dzf'){
@@ -259,20 +252,20 @@ function tipHTML(key){
   return '';
 }
 
-
 /* ── Game size and Variants: one size for every scenario, one Variant at a time per scenario ── */
 const SIZES=['Skirmish','Clash','Battle','Reconquest'];
 // Points for each game size, rulebook 3.1 (data/dzc/index.json gameSizes)
 const SIZE_PTS={Skirmish:'501-1000',Clash:'1001-2000',Battle:'2001-3000',Reconquest:'3001+'};
-const TICK='<svg class="dz-size-tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-// The objectives 9.6 gives a points or KP requirement, which 9.5 halves for a Skirmish
-/* 9.5: a Skirmish halves the points and KP an objective asks for. The rule's number stays, struck, with half beside it */
-function halvable(text){ return text.replace(/\b(\d+)(\s?)(pts|KP)\b/g,(m,n,sp,u)=>`<span class="hv"><span class="hv-full">${n}</span><span class="hv-half">${n/2}</span></span>${sp}${u}`); }
-const HALVED=Object.entries(T.objectives).filter(([,o])=>/\d\s?(pts|KP)\b/.test(o.body.join(' '))).map(([n])=>n);
+const TICK='<svg class="pub-size-tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const store={get(k){try{return localStorage.getItem(k);}catch(e){return null;}},set(k,v){try{localStorage.setItem(k,v);}catch(e){}}};
 const SIZE_KEY='dzc-scenario-size', variantKey=id=>`dzc-scenario-variant:${id}`;
+const sizeNow=()=>{ const z=store.get(SIZE_KEY); return SIZES.some(x=>x.toLowerCase()===z)?z:'battle'; };
+// A scenario shows the size switch when its Zones change with size or an objective asks for points or KP
+const sized=s=>{ const p=parse(s); return p.key.some(k=>k.size)||p.objectives.some(o=>o.size)||p.objectives.some(o=>HALVED.includes(o.name)); };
+const sizeFor=s=>sized(s)?sizeNow():'battle';
+const variantFor=s=>{ const v=store.get(variantKey(s.id)); return parse(s).variants.some(x=>x.n===v)?v:'0'; };
 document.addEventListener('click',e=>{
-  const b=e.target.closest('[data-set-size],[data-set-v]'), card=b&&b.closest('.dz');
+  const b=e.target.closest('[data-set-size],[data-set-v]'), card=b&&b.closest('.scenario.pub');
   if(!card) return;
   if(b.dataset.setSize){
     card.dataset.size=b.dataset.setSize;
@@ -287,50 +280,65 @@ document.addEventListener('click',e=>{
   ScenarioShell.rescore();
 });
 
-/* ── Score sheet rows (shared/score.js): each objective's X/Y VP, named as its rule names them ── */
-const SCORE_LABELS={Attrition:['per 200 KP'],Displace:['per 200pts'],Explore:['Explored'],Secure:['Secure','Challenge'],Dominate:['Dominate','Challenge'],Occupy:['Controlling','Contesting'],Extract:['Extracting','Carrying'],Protect:['Not Compromised','Not destroyed'],Raze:['Destroyed','Compromised']};
-function scoreRows(s){
-  const p=parse(s), effects=(typeof DZ_MAP_VARIANTS!=='undefined'&&DZ_MAP_VARIANTS[s.id])||{};
-  const size=store.get(SIZE_KEY)||'battle', v=store.get(variantKey(s.id))||'0';
-  const inPlay=o=>!(o.size&&(size==='skirmish'||(size==='clash'&&o.size==='battle')));
-  const struck=o=>((effects[v]||{}).strike||[]).some(x=>o.text.startsWith(x));
-  const texts=p.objectives.filter(o=>inPlay(o)&&!struck(o)).map(o=>o.text);
-  if(effects[v]&&effects[v].objective){ const vt=p.variants.find((t,i)=>{const m=t.match(/^Variant(?: (\d))?:/);return (m&&m[1]?m[1]:String(i+1))===v;}); if(vt) texts.push(vt.replace(/^Variant(?: \d)?:\s*/,'')); }
-  return texts.map(text=>{
-    const m=text.match(/for (\d+)(?:\/(\d+))? ?VP/); if(!m) return null;
-    const name=OBJECTIVES.map(o=>({o,i:text.lastIndexOf(o,m.index)})).filter(x=>x.i>=0).sort((a,b)=>b.i-a.i)[0];
-    const labels=(SCORE_LABELS[name?name.o:'']||[]).map(l=>size==='skirmish'?l.replace(/\d+/,n=>n/2):l);
-    return {text,parts:[{kind:'count',vp:+m[1],label:labels[0]||''},...(m[2]?[{kind:'count',vp:+m[2],label:labels[1]||''}]:[])]};
-  }).filter(Boolean);
-}
+/* ── Score sheet (shared/score.js): written out per scenario in dzc-scenario-sheets.js ── */
+const scoreRows=s=>DZ_SHEETS[s.id]?DZ_SHEETS[s.id]({size:sizeFor(s),v:variantFor(s)}):[];
+// A Round is marked when something still in play scores on it
+const markRound=(s,r)=>scoreRows(s).some(x=>x.rounds&&x.rounds.includes(r));
+
+/* ── The card, laid out as the Dropfleet scenario pages lay theirs out ── */
+const sec=(label,html)=>html?`<div class="sec"><div class="sh"><h3 class="sl">${label}</h3></div><div class="sec-body">${html}</div></div>`:'';
+const pill=label=>`<div class="spill-row"><span class="spill">${label}</span></div>`;
+const attrs=o=>Object.entries(o).filter(([,v])=>v).map(([k,v])=>` data-${k}="${v}"`).join('');
+// The book sets an objective's name in bold at the start of its line
+const boldLead=(text,name)=>text.startsWith(name)?`<b>${name}</b>${text.slice(name.length)}`:text;
 
 function render(s){
-  const p=parse(s), src=SOURCES[s.source], shown=new Set();
-  const plain=t=>t.replace(/<br>/g,' ');
+  CURRENT=s;
+  const p=parse(s), shown=new Set();
   const effects=(typeof DZ_MAP_VARIANTS!=='undefined'&&DZ_MAP_VARIANTS[s.id])||{};
-  const vs=p.variants.map((v,i)=>{ const m=v.match(/^(Variant(?: (\d))?):\s*/); return {n:m&&m[2]?m[2]:String(i+1),label:m?m[1]:`Variant ${i+1}`,text:m?v.slice(m[0].length):v}; });
-  const savedV=store.get(variantKey(s.id)), on=vs.some(v=>v.n===savedV)?savedV:'0';
-  const sized=p.key.some(k=>k.size)||p.objectives.some(o=>o.size)||objectiveNames(s).some(o=>HALVED.includes(o));
-  const savedSize=store.get(SIZE_KEY), size=SIZES.some(z=>z.toLowerCase()===savedSize)?savedSize:'battle';
-  const struckBy=o=>Object.entries(effects).filter(([,e])=>(e.strike||[]).some(x=>o.text.startsWith(x))).map(([n])=>n).join(' ');
-  const added=vs.filter(v=>effects[v.n]&&effects[v.n].objective).map(v=>item({text:`<span class="dz-variant"><b>${v.label}:</b> ${v.text}</span>`,swatch:'',v:v.n}));
-  const objectives=p.objectives.length?`<ul class="dz-list">${p.objectives.map(o=>item({...o,strike:struckBy(o)})).join('')}${added.join('')}</ul>${sized?`<p class="dz-term" data-only="skirmish">${T.skirmish}</p>`:''}${explain(p.objectives.map(o=>o.text).join(' '),shown)}`:'';
-  const entry=p.entry?`<ul class="dz-list">${item({text:p.entry,swatch:''})}</ul>${explain(p.entry,shown)}`:'';
-  const key=p.key.length?`<ul class="dz-list">${p.key.map(item).join('')}</ul>${explain(p.key.map(k=>plain(k.text)).join(' '),shown)}`:'';
-  const rules=p.rules.length?`<div class="dz-terms">${p.rules.map(r=>`<p class="dz-term">${r}</p>`).join('')}</div>${explain(p.rules.join(' '),shown)}`:'';
-  const variants=vs.length?`<ul class="dz-list dz-vlist">${vs.map(v=>`<li><button type="button" class="dz-vbtn" data-set-v="${v.n}" aria-pressed="${v.n===on}">${v.label}</button><span>${v.text}</span></li>`).join('')}</ul>${explain(p.variants.join(' '),shown)}`:'';
-  const sizes=sized?`<div class="dz-opts"><div class="dz-size" role="group" aria-label="Game size">${SIZES.map(z=>`<button type="button" data-set-size="${z.toLowerCase()}" aria-pressed="${z.toLowerCase()===size}">${TICK}<span class="dz-size-name">${z}</span><span class="dz-size-pts">${SIZE_PTS[z]} pts</span></button>`).join('')}</div></div>`:'';
-  setTimeout(inlineMaps);
-  return `<div class="dz" data-scn="${s.id}" data-size="${sized?size:'battle'}" data-v="${on}">
-    <div class="dz-head"><h2 class="dz-name">${s.name}</h2><div class="dz-src">${src.book}, page ${s.page}</div>${sizes}</div>
-    <div class="dz-rules">
-      ${section('Objectives',objectives)}
-      ${section('Entry',entry)}
-      ${section('Map key',key)}
-      ${section('Special rules',rules)}
-      ${section('Variants',variants)}
+  const on=variantFor(s), size=sizeFor(s);
+
+  // The Map Key is explained first, so what sits on the map (Objects, Features, turrets) is written out beside it
+  // in the map column, and the two columns run to similar lengths
+  const keyList=p.key.length?`<ul class="dz-key">${p.key.map(k=>segments(k.L).map(seg=>`<li${attrs({size:k.size})}>${seg.icon||'<span></span>'}<span class="rule-text">${keyLines(seg.lines)}</span></li>`).join('')).join('')}</ul>`:'';
+  const key=keyList?keyList+explain(p.key.map(k=>sentence(k.L.lines)).join(' '),shown):'';
+
+  const entry=p.entry?para(p.entry)+explain(p.entry,shown):'';
+
+  // One H2 per objective, named as 9.6 names it: the scenario's own lines, then the rule word for word, then the terms they name
+  const groups=[];
+  p.objectives.forEach(o=>{ let g=groups.find(x=>x.name===o.name); if(!g) groups.push(g={name:o.name,items:[]}); g.items.push(o); });
+  const objectives=groups.map(g=>{
+    const O=T.objectives[g.name];
+    const strike=Object.entries(effects).filter(([,e])=>(e.strike||[]).includes(g.name)).map(([v])=>v).join(' ');
+    const lines=g.items.map(o=>`<p class="rule-text"${attrs({size:o.size})}>${segments(o.L)[0].icon}${boldLead(o.text,o.name)}</p>`).join('');
+    shown.add('o:'+g.name);
+    const rule=O.body.map(b=>para(halvable(b))).join('');
+    return `<div class="dz-group"${attrs({'strike-v':strike})}>${pill(O.heading)}${lines}${rule}${explain(g.items.map(o=>o.text).join(' '),shown)}</div>`;
+  }).join('')+(sized(s)?`<p class="rule-text" data-only="skirmish">${T.skirmish}</p>`:'');
+
+  const variants=p.variants.length?`<ul class="pub-vlist">${p.variants.map(v=>`<li><button type="button" class="pub-vbtn" data-set-v="${v.n}" aria-pressed="${v.n===on}">${v.label}</button><div>${para(v.text)}${explain(v.text,shown)}</div></li>`).join('')}</ul>`:'';
+
+  // A short label before a colon ("Zone Placement:") is bold, as printed
+  const special=p.rules.length?`<ul class="rule-bullets">${p.rules.map(r=>`<li>${r.replace(/^([A-Z][A-Za-z]*(?: [A-Z][A-Za-z]*){0,2}):/,'<b>$1:</b>')}</li>`).join('')}</ul>${explain(p.rules.join(' '),shown)}`:'';
+
+  const sizes=sized(s)?`<div class="pub-opts"><div class="seg pub-size" role="group" aria-label="Game size">${SIZES.map(z=>`<button type="button" data-set-size="${z.toLowerCase()}" aria-pressed="${z.toLowerCase()===size}">${TICK}<span class="pub-size-name">${z}</span><span class="pub-size-pts">${SIZE_PTS[z]} pts</span></button>`).join('')}</div></div>`:'';
+  const src=mapSrc(s), img=`<img src="${src}" alt="${s.name} map">`;
+  if(redrawn(s)) setTimeout(inlineMaps);
+
+  return `<div class="scenario pub" data-scn="${s.id}" data-v="${on}" data-size="${size}">
+    <div class="rules-col">
+      <div class="sc-header"><h2 class="sc-name">${s.name}</h2></div>
+      ${sec('Entry',entry)}
+      ${sec('Objectives',objectives)}
+      ${sec('Variants',variants)}
+      ${sec('Special Rules',special)}
     </div>
-    <div class="dz-map">${mapHTML(s)}</div>
+    <div class="map-col">
+      ${sizes}
+      <div class="map-frame">${redrawn(s)?`<div class="map-svg" data-src="${src}">${img}</div>`:img}${spotsHTML(s)}</div>
+      ${sec('Map Key',key)}
+    </div>
   </div>`;
 }
 
@@ -341,18 +349,21 @@ fetch('../data/dzc/scenarios.json').then(r=>r.json()).then(data=>{
     titleSuffix:'Dropzone Commander Scenarios',
     indexDocTitle:'Dropzone Commander: Scenarios',
     indexTitle:'Scenarios',
-    groups:Object.entries(SOURCES).map(([k,v])=>({name:v.group,items:list.filter(s=>s.source===k)})),
+    // The Rulebook keeps the book's order; the Fauna pack reads A to Z, as the Dropfleet pages sort theirs
+    groups:Object.entries(SOURCES).map(([k,v])=>(items=>({name:v.group,items:k==='rulebook'?items:items.slice().sort((a,b)=>a.name.localeCompare(b.name))}))(list.filter(s=>s.source===k))),
     id:s=>s.id,
     name:s=>s.name,
+    // No roller: the rulebook has players choose a Scenario (3.3)
+    random:false,
     thumb:mapSrc,
     columns:[
       {label:'Objectives',values:objectiveNames},
       {label:'Entry',values:s=>{const e=parse(s).entry;return e?[e]:[];}},
     ],
     render,
+    source:s=>({url:SOURCE_URL,title:`${SOURCES[s.source].book}, page ${s.page}`}),
     scoreRows,
-    // The rounds a scenario's objectives score on
-    markRound:(s,r)=>parse(s).objectives.some(o=>new RegExp('Round[^.]*\\b'+r+'\\b').test(o.text)),
+    markRound,
   });
 });
 </script>

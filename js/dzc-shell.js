@@ -610,6 +610,12 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-09-13', title: 'Scenarios: laid out like the Dropfleet scenario pages', items: [
+      'Each scenario reads Entry, Objectives, Variants and Special Rules down the left, with the game size switch, the map and its Map Key on the right. Every objective has its own heading with the rulebook’s rule under the scenario’s line, and every term they name is explained under it.',
+      'The Map Key shows what the book prints beside each line: turret and Feature tokens, the Object token beside Extract, the coloured disc beside each Secure point, and the Centre line. Strategic Points, Demolish, Death From Below and both Hunting Grounds list each keyed thing on its own line.',
+      'Score sheets are written out for all sixteen scenarios and follow the game size and Variant: Crucible’s Hold Variant scores only carried Objects, its Raze line is gone in a Skirmish, Targets of Opportunity’s Data Download gets its own counter, and Death From Below’s first Variant no longer marks Round 4. Protect counts a Zone once: not Compromised, or Compromised but not destroyed.',
+      'Ground Control lists its Zone Placement rule. The Source link above each scenario opens TTCombat’s Dropzone resources page, and the list has no Random button, since players choose a Scenario (3.3).',
+    ] },
     { date: '2026-09-13', title: 'Interactive Rules, and room below the landing', items: [
       'The landing screen points once to the Dropfleet builder’s Interactive Rules. Close it and it stays closed on that device.',
       'The landing screen fills the window, so the WarLore footer starts below the fold.',
