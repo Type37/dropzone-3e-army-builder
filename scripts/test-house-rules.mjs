@@ -100,10 +100,15 @@ if (offenders.length) console.error('        ' + offenders.join('\n        '));
  * loads successfully looks exactly like a script tag that is needed.
  *
  * The analytics counter is not an exception: data-goatcounter names a remote
- * endpoint, but the script itself is js/count.js and ships with the app. */
+ * endpoint, but the script itself is js/count.js and ships with the app.
+ *
+ * One exception, by name: the shared WarLore footer (Jet, 2026-09-13). It is
+ * the same footer on every WarLore tool, deferred, and offline it just does
+ * not appear. Nothing in the app waits on it. */
 console.log('\nnothing off-site');
+const ALLOWED_OFFSITE = ['https://type37.github.io/warlore-footer/footer.js'];
 const srcs = [...markup.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["']/g)].map(m => m[1]);
-const offsite = srcs.filter(s => /^(https?:)?\/\//.test(s));
+const offsite = srcs.filter(s => /^(https?:)?\/\//.test(s) && !ALLOWED_OFFSITE.includes(s));
 ok(srcs.length > 0, 'the script tags were actually found', `matched ${srcs.length}`);
 eq(offsite.length, 0, 'every script the page loads ships with the app');
 if (offsite.length) console.error('        ' + offsite.join('\n        '));

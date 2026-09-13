@@ -7223,6 +7223,20 @@ h1, h2, h3, h4, h5, h6 {
   font-size: var(--text-xs);
   color: var(--ink-muted);
 }
+/* The shared WarLore footer (type37.github.io/warlore-footer) shows on the
+   landing screen, the armies list and the Unit Reference. Everywhere else is
+   work: an army, Play Mode, Collection, a share link. A route with no rule here
+   is hidden until it is added, which includes the moment before routing runs. */
+body:not([data-view="landing"]):not([data-view="armies"]):not([data-view="units"]) .wlf { display: none; }
+/* Where it shows, the credits footer rides the bottom of the screen until the
+   WarLore footer arrives, as on Dropfleet. */
+body[data-view="landing"] .game-info-footer,
+body[data-view="armies"] .game-info-footer,
+body[data-view="units"] .game-info-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: var(--z-topbar);
+}
 /* On the builder the three sticky panels already fill 100vh - topbar. Pin the
    footer to the very bottom of the viewport so it's always visible without any
    page scroll. Panels are shortened by --footer-h (see above) so they don't
