@@ -1,0 +1,361 @@
+/* Dropfleet Commander scenario card, shared by the references page and the generator. */
+:root{--gold:#B8952F;--glt:#C9A94A;--gdk:#5A4710;--ch:#0E0C08;--wg:#3D3834;
+  /* Screen type scale: Title, H1, H2, body (H3 = bold run-in), labels. Print keeps its own point sizes. */
+  /* rem, so text follows the reader's browser font size */
+  --fs-display:2.25rem;  /* 36px  Title: scenario name (Roboto Slab 700) */
+  --fs-section:1.75rem;  /* 28px  H1: section headings, Scoring, Deployment (Roboto Slab 700) */
+  --fs-heading:1.25rem;  /* 20px  H2: Standard Scoring, Features, ship names (Jost 600 on a highlight) */
+  --fs-body:1rem;        /* 16px  body; H3 is this size in bold, run in at the start of its paragraph */
+  --fs-small:.875rem;    /* 14px  labels: table headers, Rounds 4 & 6, chips. The floor */
+  --fs-label:var(--fs-small); /* one small size, not 12 and 13 */
+}
+/* A VP amount stays in the sentence's own face, just bold */
+vp{font-family:inherit;font-weight:600;font-size:inherit;color:inherit;}
+
+/* ── CARD INTERIOR (unchanged) ─────────────────────────────────────────── */
+
+.scenario{display:flex;flex-direction:row;position:relative;z-index:5;padding:5mm 13mm 3mm 13mm;gap:6mm;}
+.rules-col{flex:1;display:flex;flex-direction:column;gap:1.5mm;min-width:0;}
+.sc-header{flex-shrink:0;margin-bottom:.3mm;}
+.sc-num{font-family:'Roboto Slab',Georgia,serif;font-size:7pt;font-weight:400;color:var(--glt);display:block;}
+.sc-name{font-family:'Roboto Slab',Georgia,serif;font-size:10pt;font-weight:700;color:var(--ch);line-height:1.2;margin:0;}
+
+.sec{display:flex;flex-direction:column;gap:.7mm;flex-shrink:0;}
+.sh{display:flex;align-items:center;gap:1.5mm;}
+.sl{font-family:'Roboto Slab',Georgia,serif;font-size:8.5pt;font-weight:700;color:var(--ch);line-height:1.2;margin:0;text-transform:uppercase;}
+
+.spill-row{display:flex;align-items:center;gap:1.5mm;margin-top:1.5mm;margin-bottom:.4mm;}
+.si{font-size:6pt;color:var(--gold);flex-shrink:0;line-height:1;}
+.spill{font-family:'Jost',system-ui,sans-serif;font-size:7pt;font-weight:700;color:#fff;padding:.5mm 3mm;}
+.sp-std{background:#2C3140;}.sp-surv{background:#1A4A5E;}.sp-raze{background:#5A1A1A;}
+.sp-att{background:#2A3050;}.sp-prot{background:#3A2050;}.sp-ext{background:#2A4A2A;}
+.sp-brk{background:#4A2A2A;}
+.sp-close{background:#1A3A5A;}.sp-dist{background:#2A3828;}.sp-dir{background:#4A2A00;}
+
+/* Standard Scoring banner (booklet style) */
+.spill-row:has(.sp-std){margin-top:.5mm;margin-bottom:.5mm;gap:0;}
+/* .si removed from pill() */
+.spill.sp-std{}
+.spill-sub{font-weight:400;margin-left:2mm;}
+.sec-body{padding-left:0;display:flex;flex-direction:column;gap:1.2mm;}
+.rule-text{font-family:'Jost',system-ui,sans-serif;font-size:8pt;color:var(--ch);line-height:1.48;}
+.rule-text b{font-weight:700;color:inherit;}
+.rule-bullets{list-style:none;display:flex;flex-direction:column;gap:.7mm;}
+.rule-bullets li{font-family:'Jost',system-ui,sans-serif;font-size:8pt;color:var(--ch);line-height:1.42;padding-left:3.5mm;position:relative;}
+/* a drawn dot, so its size doesn't depend on the font's bullet glyph (Jost's is tiny) */
+.rule-bullets li::before{content:'';position:absolute;left:.1em;top:.62em;width:.36em;height:.36em;border-radius:50%;background:var(--ch);}
+.rule-bullets li b{font-weight:700;color:inherit;}
+.sside{display:flex;gap:3mm;align-items:flex-start;}
+.stbl-w{flex-shrink:0;}.sdefs{flex:1;min-width:0;}
+.stbl{border-collapse:collapse;font-family:'Jost',system-ui,sans-serif;font-size:7.5pt;}
+.stbl th{font-family:'Jost',system-ui,sans-serif;font-size:7.5pt;font-weight:400;color:var(--ch);padding:.25mm 3mm;text-align:center;}
+.stbl th:first-child{text-align:left;}
+.stbl td{padding:.2mm 3mm;text-align:center;color:var(--ch);font-weight:500;}
+.stbl td:first-child{text-align:left;font-weight:600;}
+.terms{display:flex;flex-direction:column;gap:.4mm;}
+.term{font-family:'Jost',system-ui,sans-serif;font-size:7.5pt;color:var(--ch);line-height:1.35;}
+.term b{font-weight:700;color:inherit;}
+.sc-wrap{display:flex;flex-direction:column;gap:.8mm;}
+.sc-def{font-family:'Jost',system-ui,sans-serif;font-size:9pt;color:var(--ch);line-height:1.45;}
+.sc-def b{font-weight:700;color:inherit;}
+.sc-flavor{font-style:italic;color:var(--wg);font-size:8pt;font-family:'Libre Baskerville',Georgia,serif;}
+.sc-note{font-family:'Jost',system-ui,sans-serif;font-size:8pt;color:var(--ch);line-height:1.45;margin-bottom:1.5mm;}
+.sbox{background:none;border:none;padding:0;}
+.sbox p{font-family:'Jost',system-ui,sans-serif;font-size:7.5pt;color:var(--ch);line-height:1.42;}
+.sbox p b{font-weight:700;color:inherit;}
+.map-col{flex:0 0 2.36in;display:flex;flex-direction:column;gap:1mm;}
+.map-frame{width:2.36in;height:2.36in;flex-shrink:0;border:.35mm solid var(--gold);overflow:hidden;position:relative;}
+.map-frame::after{content:'';position:absolute;inset:.8mm;border:.12mm solid rgba(184,149,47,.28);z-index:2;pointer-events:none;}
+.map-frame svg{width:100%;height:100%;display:block;}
+.leg{padding:1mm 0;display:flex;flex-direction:column;gap:.4mm;}
+.lhdr{font-family:'Jost',system-ui,sans-serif;font-size:8pt;font-weight:700;color:var(--gdk);margin-top:.5mm;}
+.lhdr:first-child{margin-top:0;}
+.lds-list{list-style:none;padding:0;display:flex;flex-direction:column;gap:.35mm;}
+.lds{display:block;font-family:'Jost',system-ui,sans-serif;font-size:8pt;color:var(--ch);line-height:1.3;flex-wrap:wrap;}
+.ds-st{display:inline-flex;flex-wrap:wrap;align-items:center;gap:.3mm;margin-left:.5mm;}
+.lf-list{list-style:none;padding:0;display:flex;flex-direction:column;gap:.5mm;}
+.lf{font-family:'Jost',system-ui,sans-serif;font-size:9pt;color:var(--ch);line-height:1.4;display:flex;flex-direction:column;gap:.15mm;}
+.fh{display:flex;align-items:center;gap:1.5mm;font-weight:700;font-size:9pt;flex-wrap:wrap;}
+.fh b{font-weight:600;}
+.fb{padding-left:11px;color:var(--wg);font-size:8pt;line-height:1.45;}
+.fb b{font-weight:700;color:var(--ch);}
+.ico-stat{width:11px;height:11px;display:inline-block;vertical-align:middle;}
+.ico-ds{width:15px;height:15px;display:inline-block;vertical-align:middle;flex-shrink:0;}
+.ico-feat{width:18px;height:18px;display:inline-block;vertical-align:middle;flex-shrink:0;}
+.sv-e{color:#7A6200;font-weight:700;font-size:8pt;}
+.sv-k{color:#6B6B6B;font-weight:700;font-size:7pt;}
+.roll-tag{font-family:'Jost',system-ui,sans-serif;font-size:7.5pt;color:#6b6660;margin-left:4px;text-transform:none;letter-spacing:normal;font-weight:400;}
+.pg-footer{padding:2mm 13mm;display:flex;justify-content:space-between;align-items:center;}
+.pg-fl{font-family:'Jost',system-ui,sans-serif;font-size:7.5pt;font-weight:700;color:var(--wg);}
+.pg-fr{font-family:'Jost',system-ui,sans-serif;font-size:7.5pt;color:var(--gold);text-decoration:none;}
+
+
+/* Published scenarios: the card's layout with the book's map. No caps, no rules. */
+.scenario.pub .sc-name,.scenario.pub .sl{font-family:'Roboto Slab',Georgia,serif;text-transform:none;}
+.scenario.pub .sc-name::after{display:none;}
+.scenario.pub .sl{white-space:normal;}
+.scenario.pub .sr{display:none;}
+.pub-src{font-family:'Jost',system-ui,sans-serif;font-size:10pt;color:#5d5850;margin-top:1mm;}
+.pub-intro{font-size:10pt;line-height:1.5;margin:1mm 0 1.5mm;font-family:'Libre Baskerville',Georgia,serif;}
+.pub-body p{font-family:'Jost',system-ui,sans-serif;font-size:10.5pt;line-height:1.5;color:var(--ch);margin:0 0 1.4mm;}
+.pub-body p:last-child{margin-bottom:0;}
+.pub-body b{color:inherit;}
+.pub-tbl-wrap{overflow-x:auto;margin-top:1mm;}
+/* Print: tables never scroll or clip, and the references use the page's own (narrow) margins */
+@media print{.pub-tbl-wrap{overflow:visible;}.pub-tbl{width:100%;}.pub-tbl th,.pub-tbl td{padding-right:2.5mm;}.scenario.pub{padding:1mm 0 0;}}
+.pub-tbl{border-collapse:collapse;font-family:'Jost',system-ui,sans-serif;font-size:10pt;}
+.pub-tbl th{text-align:left;font-weight:700;color:var(--gdk);padding:.6mm 4mm .6mm 0;}
+.pub-tbl td{padding:.6mm 4mm .6mm 0;color:var(--ch);}
+
+/* Weapon table modelled on the builder's: a bordered list, header row, arc,
+   attack-with-die, crit-on note, colour-coded damage type, special-rule chips.
+   Free to run wider than the capped stat strip above it. */
+/* Columns size to their content (subgrid keeps them aligned across rows), so a table is only as wide as it needs */
+.pw-list{display:grid;grid-template-columns:minmax(0,max-content) repeat(4,max-content) minmax(0,max-content);column-gap:4mm;width:max-content;max-width:100%;border:1px solid #E1D6BE;border-radius:1.4mm;overflow:hidden;margin-top:1mm;font-family:'Jost',system-ui,sans-serif;}
+.pw-row{grid-column:1/-1;display:grid;grid-template-columns:subgrid;align-items:baseline;padding:.7mm 2.4mm;background:#FCF8EE;border-bottom:1px solid #EFE7D4;font-size:10pt;line-height:1.35;}
+@media (min-width:761px){ .pw-list .pw-name{white-space:nowrap;} }
+.pw-chip.tip-t{cursor:pointer;}
+.pw-chip.tip-t:hover,.pw-chip.tip-t:focus-visible{border-color:var(--gdk);color:var(--ch);}
+.pw-row:last-child{border-bottom:none;}
+.pw-head{background:#EFE7D4;font-family:'Jost',sans-serif;font-size:7pt;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6C6456;padding:.6mm 2.4mm;}
+.pw-c{white-space:nowrap;color:var(--ch);}
+.pw-head .pw-c{color:#6C6456;}
+.pw-name{white-space:normal;overflow-wrap:anywhere;font-family:'Jost',system-ui,sans-serif;font-weight:600;font-size:9pt;}
+.pw-arc{text-align:center;font-weight:600;color:var(--gdk);}
+.pw-att,.pw-lock,.pw-dmg{text-align:center;font-weight:700;}
+.pw-die{width:.8em;height:.8em;vertical-align:-.08em;margin-left:.6px;opacity:.55;}
+.pw-crit{display:block;font-size:6.5pt;font-weight:700;color:var(--gdk);line-height:1;margin-top:.3mm;}
+.pw-dt{font-weight:700;font-size:.82em;margin-left:.6px;}
+.pw-dt-K{color:#0057A3;}.pw-dt-E{color:#8A5000;}.pw-dt-C{color:#B23A2E;}
+.pw-special{display:flex;flex-wrap:wrap;gap:1mm;padding-left:1mm;}
+.pw-chip{display:inline-block;padding:.2mm 1.6mm;border-radius:1mm;font-family:'Jost',sans-serif;font-size:6.8pt;font-weight:600;background:#F3ECDC;color:#5A5245;border:.5px solid #DFD3B8;white-space:nowrap;}
+.scenario.pub .map-col{flex:0 0 46%;}
+.scenario.pub .map-frame{width:100%;height:auto;aspect-ratio:1/1;}
+.scenario.pub .map-frame img{display:block;width:100%;height:100%;}
+@container scn (max-width: 720px){
+  .scenario.pub{flex-direction:column;padding:4mm 3mm;}
+  .scenario.pub .map-col{flex:none;width:100%;}
+}
+
+/* Explained scenarios: pills and tables in the card's own style, no caps, no rules */
+.scenario.pub .spill,.scenario.pub .lhdr,.scenario.pub .roll-tag{text-transform:none;letter-spacing:.02em;}
+.scenario.pub .sbox{border-left:0;}
+.scenario.pub .stbl th,.scenario.pub .stbl td{border-bottom:0;}
+.scenario.pub .leg{border-top:0;border-bottom:0;}
+.sp-imm{background:#4A2A5A;}.sp-back{background:#1F4A4A;}.sp-stag{background:#5A3A12;}
+.scenario.pub .sec-body{gap:1.6mm;}
+.scenario.pub .map-col{display:flex;flex-direction:column;gap:3mm;}
+.pub-term b{color:inherit;}
+.pub-fauna{align-self:flex-start;margin-top:2mm;}
+.pub-ships .sl{font-family:'Roboto Slab',Georgia,serif;text-transform:none;white-space:normal;}
+.pub-ships .sr{display:none;}
+.pub-fauna{text-transform:none;letter-spacing:.02em;}
+.pub-ships{max-width:1180px;margin:0 auto;padding:0 14mm 8mm;display:flex;flex-direction:column;gap:2mm;}
+.pub-ship-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:6mm;}
+.pub-ship{display:grid;grid-template-columns:110px minmax(0,1fr);gap:4mm;align-items:start;}
+.pub-ship-art{width:110px;height:auto;display:block;}
+.pub-ship-body{display:flex;flex-direction:column;gap:1.2mm;min-width:0;}
+.pub-ship-h{display:flex;flex-wrap:wrap;gap:1mm 4mm;align-items:baseline;font-family:'Roboto Slab',Georgia,serif;font-size:12pt;}
+.pub-ship-h span{font-family:'Jost',sans-serif;font-size:9.5pt;color:#5d5850;}
+/* Ship stat datasheet strip: a row of segmented cells (label over icon+value)
+   that reflows to fit -- one row on a wide card, three or four on a narrow one.
+   The 1px grid gap over a warm ground draws hairline dividers between cells; the
+   three saves carry a coloured top accent so the defence cluster reads at a
+   glance without another table. */
+.pub-ship-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;max-width:96mm;background:#E1D6BE;border:1px solid #E1D6BE;border-radius:1.4mm;overflow:hidden;margin:.3mm 0 .6mm;}
+.pss-cell{display:flex;flex-direction:column;align-items:center;gap:.5mm;padding:1.4mm .6mm 1.3mm;background:#FCF8EE;}
+.pss-l{font-family:'Jost',sans-serif;font-size:7pt;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6C6456;line-height:1;}
+.pss-row{display:flex;align-items:center;gap:1.1mm;}
+.pss-row .ico-stat{flex-shrink:0;opacity:.85;}
+.pss-v{font-family:'Jost',system-ui,sans-serif;font-weight:700;font-size:11pt;line-height:1;color:var(--ch);font-variant-numeric:tabular-nums lining-nums;}
+.pss-es{box-shadow:inset 0 2.2px 0 #7A6200;} .pss-es .pss-v{color:#7A6200;}
+.pss-ks{box-shadow:inset 0 2.2px 0 var(--navy,#2B4A6F);} .pss-ks .pss-v{color:var(--navy,#2B4A6F);}
+.pss-bs{box-shadow:inset 0 2.2px 0 var(--gold);} .pss-bs .pss-v{color:var(--gdk);}
+.pss-none .pss-v{opacity:.4;}
+.pub-lev-special{display:flex;flex-wrap:wrap;gap:1mm;}
+/* Lore as the fleet builder shows it: the text, then the named ships as an italic list */
+.pub-lev-lore{margin:0;font-family:'Libre Baskerville',Georgia,serif;font-size:var(--fs-body,15px);line-height:1.6;color:var(--wg);}
+.pub-lev-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.5mm;}
+.pub-lev-list li{position:relative;padding-left:1.1em;font-family:'Libre Baskerville',Georgia,serif;font-style:italic;font-size:var(--fs-body,15px);line-height:1.5;color:var(--ch);}
+.pub-lev-list li::before{content:'';position:absolute;left:.1em;top:.62em;width:.32em;height:.32em;border-radius:50%;background:var(--ch);}
+.pub-lev-top{display:grid;grid-template-columns:minmax(0,96mm) minmax(0,1fr);gap:4mm;align-items:start;}
+.pub-lev-top .pub-ship-stats{margin:0;}
+.pub-lev-top .pw-list{margin-top:0;}
+@media (max-width:900px){.pub-lev-top{grid-template-columns:minmax(0,1fr);}}
+.pub-note{font-family:'Jost',system-ui,sans-serif;font-size:10pt;line-height:1.45;color:var(--ch);margin:1mm 0 0;}
+.pub-note a{color:inherit;text-decoration:underline;}
+.pub-lev-famous{font-family:'Jost',system-ui,sans-serif;font-size:10pt;color:var(--ch);margin-top:2mm;}
+.pub-lev-famous i{font-style:italic;}
+.pub-key{display:block;width:100%;max-width:300px;height:auto;margin-top:3mm;}
+@media (max-width:760px){.pub-lev{grid-template-columns:minmax(0,1fr);}.pub-lev-art{max-width:220px;}}
+@media (max-width:760px){.pub-ships{padding:0 3mm 6mm;}.pub-ship{grid-template-columns:80px minmax(0,1fr);}.pub-ship-art{width:80px;}}
+
+/* A narrow card (phone, or beside the generator's panel): title, then map, then rules */
+.card,.sheet{container:scn / inline-size;}
+@container scn (max-width: 720px){
+  .scenario,.scenario.pub{flex-direction:column;padding:4mm 3mm;gap:2mm;}
+  .rules-col{display:contents;}
+  .rules-col > :first-child{order:-2;}
+  .map-col,.scenario.pub .map-col{flex:none;width:100%;order:-1;}
+  .map-frame{width:100%;height:auto;aspect-ratio:1/1;}
+}
+
+/* Symbols with stats behind them (tooltip styles in ../shared/tooltip.js) */
+@media screen{ .map-frame [data-tip]{cursor:help;} }
+
+/* Stat tables: Features and Dropsite Reference. Banded rows, no rules. */
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
+.st{width:100%;border-collapse:collapse;font-family:'Jost',system-ui,sans-serif;font-size:8pt;color:var(--ch);line-height:1.3;}
+.st th,.st td{padding:.6mm 1.2mm;text-align:left;vertical-align:middle;font-weight:400;}
+.st thead th{font-size:7pt;color:#5d5850;font-weight:500;padding-bottom:.4mm;}
+.st .c{text-align:center;white-space:nowrap;}
+.st td.c{font-family:'Jost',system-ui,sans-serif;font-weight:600;font-size:9pt;}
+.st thead .tip-t{justify-content:center;}
+.st-name{display:inline-flex;align-items:center;gap:1.5mm;font-weight:600;}
+.st-ds tbody tr:nth-child(odd),.st-feat tr.st-main{background:rgba(184,149,47,.09);}
+.st-feat tr.st-more > td{padding:.4mm 1.2mm 1.6mm;}
+.st-sub{font-size:7.5pt;}
+.st-sub thead th{font-size:6.5pt;}
+.st-sub td.c{font-size:8.5pt;}
+.st-rule,.st-note{font-size:8pt;line-height:1.4;color:var(--ch);}
+.st-note{font-size:7pt;color:#5d5850;margin-top:.4mm;}
+.st-rule b,.st-sub b{font-weight:700;color:inherit;}
+.st-sub td.st-spec{padding-top:0;}
+.st-spec-l{color:#5d5850;margin-right:1mm;}
+.leg .st{margin:.4mm 0 1.6mm;}
+@media print{
+  .st th,.st td{padding:.12mm .8mm;}
+  .st thead th{padding-bottom:0;}
+  .st-feat tr.st-more > td{padding:0 .8mm .8mm;}
+  .leg .st{margin:.2mm 0 .8mm;}
+  .st{font-size:6.5pt;}
+  .st td.c{font-size:7pt;}
+  .st-sub,.st-rule{font-size:6.5pt;}
+  .st-note{font-size:6pt;}
+  .st .ico-feat{width:11px;height:11px;}
+  .st .ico-ds{width:11px;height:11px;}
+}
+
+/* Spots over a published map's symbols */
+.map-frame .hs{position:absolute;border-radius:50%;cursor:help;z-index:3;}
+@media (hover:hover){ .map-frame .hs:hover{box-shadow:0 0 0 2px #B8952F,0 0 0 4px rgba(255,255,255,.7);} }
+.map-frame .hs:focus-visible{outline:2px solid #B86C0A;outline-offset:1px;}
+@media print{ .map-frame .hs{display:none;} }
+
+/* ── SCREEN TYPE SCALE ──────────────────────────────────────────────
+   Four steps, driven by the --fs-* tokens in :root (display / heading / body /
+   label). Print keeps its own point sizes. Last in the file so it wins. */
+@media screen {
+  .scenario { padding: 6mm 14mm 4mm 14mm; gap: 7mm; }
+  .rules-col { gap: 5mm; }
+  .sec { gap: 2mm; }
+  .sec-body { gap: 2.4mm; }
+  .sc-name { font-size: var(--fs-display); line-height: 1.12; }
+  .pub-src { font-size: var(--fs-body); }
+  .sh { gap: 8px; }
+  .sl, .lhdr { font-family: 'Roboto Slab', Georgia, serif; font-weight: 700; color: var(--ch); line-height: 1.25; }
+  .sl { font-size: var(--fs-section); }
+  .lhdr { font-size: var(--fs-heading); margin-top: 3mm; }
+  .roll-tag { font-family: 'Jost', system-ui, sans-serif; font-size: var(--fs-label); font-weight: 400; }
+  .rule-text, .rule-bullets li, .sbox p, .sc-def, .sc-note, .term, .lds, .pub-body p, .st, .st-rule, .st-sub { font-size: var(--fs-body); line-height: 1.5; }
+  .rule-text b, .rule-bullets li b { font-size: inherit; }
+  .sc-flavor, .pub-intro { font-size: var(--fs-body); line-height: 1.5; }
+  .spill { font-size: var(--fs-label); font-weight: 600; padding: 2px 8px; }
+  .stbl th, .st thead th, .st-sub thead th { font-size: var(--fs-small); }
+  .stbl td, .st td.c, .st-sub td.c, .pub-tbl { font-size: var(--fs-body); }
+  .st-note, .st-spec-l, .pub-ship-h span { font-size: var(--fs-small); }
+  .pub-ship-h { font-size: var(--fs-heading); }
+  /* Ship cards and weapon lists were still at their print sizes (9-11px) */
+  .pub-note, .pub-lev-famous, .pw-row, .pss-v { font-size: var(--fs-body); }
+  .pw-name { font-size: inherit; }
+  .pw-head, .pss-l, .pw-chip, .pw-crit { font-size: var(--fs-label); letter-spacing: normal; text-transform: none; }
+  .pw-dt { font-size: var(--fs-label); }
+  .scenario.pub .spill, .scenario.pub .lhdr { letter-spacing: normal; }
+  .map-col { flex: 0 0 46%; min-width: 0; }
+  .map-frame { width: 100%; height: auto; aspect-ratio: 1 / 1; }
+  .ico-stat { width: 14px; height: 14px; }
+  .ico-feat, .st .ico-feat { width: 22px; height: 22px; }
+  .ico-ds, .st .ico-ds { width: 18px; height: 18px; }
+  .sv-e, .sv-k { font-size: var(--fs-body); }
+}
+
+/* A named rule leads its paragraph in bold, as on the Dropzone pages. Not a filled label:
+   its colour meant nothing, and printing drops the fill and leaves pale text. */
+.scenario .spill-row{margin:1mm 0 0;}
+/* The middle step: an objective or arrival mode heads its own rules in Roboto Slab, between the
+   section heading and the bold term labels in the text */
+.scenario .spill{background:none;color:var(--ch);padding:0;font-family:'Roboto Slab',Georgia,serif;font-size:inherit;font-weight:700;letter-spacing:0;}
+.scenario .spill-sub{font-family:'Jost',system-ui,sans-serif;font-weight:400;color:#5d5850;margin-left:8px;}
+@media screen{ .scenario .spill{font-size:var(--fs-heading);} .scenario .spill-sub{font-size:var(--fs-small);} .scenario .spill-row{margin-top:3mm;} }
+/* ── Type system (Jet, 2026-09-13) ──────────────────────────────────────────
+   Title   Roboto Slab 800, 36px, caps  the scenario name
+   H1      Roboto Slab 600, 28px        Scoring, Deployment, Scenery
+   H2      Jost 600, 20px, highlighted  Standard Scoring, Focal Points, Features, a ship's name
+   H3      Jost 600, body size, run in  "Staggered." at the start of its own paragraph
+   Body    Jost 400, 16px
+   Labels  Jost 400/600, 14px           table headers, Rounds 4 & 6, chips
+   Jost has two weights, 400 and 600. Libre Baskerville italic stays for flavour text. */
+@media screen{
+  .sc-name, .scenario.pub .sc-name { font-size: var(--fs-display); font-weight: 800; text-transform: uppercase; letter-spacing: normal; }
+  .sl, .pub-ships .sl { font-family: 'Roboto Slab', Georgia, serif; font-weight: 600; font-size: var(--fs-section); line-height: 1.2; text-transform: none; }
+  .lhdr, .scenario .spill, .pub-ship-h b { font-family: 'Jost', system-ui, sans-serif; font-weight: 600; font-size: var(--fs-heading); line-height: 1.3; color: var(--ch); letter-spacing: normal; }
+  .lhdr { display: table; margin-top: 5mm; }
+  .lhdr, .scenario .spill, .pub-ship-h b { background: linear-gradient(transparent 45%, #f1dc92 45%, #f1dc92 92%, transparent 92%); padding: 0 4px; margin-left: -4px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  .scenario .spill-row { margin-top: 5mm; gap: 8px; align-items: baseline; }
+  .scenario .spill-sub, .pub-ship-h span, .roll-tag { font-size: var(--fs-small); font-weight: 400; color: #5d5850; }
+  .run-in { font-weight: 600; }
+  .rule-text, .rule-bullets li, .sbox p, .sc-def, .sc-note, .term, .lds, .pub-body p, .st, .st-rule, .st-sub, .pub-note, .pub-lev-famous, .pw-row, .pss-v, .pub-src, .pub-tbl, .stbl td, .st td.c, .st-sub td.c, .sv-e, .sv-k { font-size: var(--fs-body); }
+  .stbl th, .st thead th, .st-sub thead th, .pub-tbl th, .st-note, .st-spec-l, .pw-head, .pss-l, .pw-chip, .pw-crit, .pw-dt { font-size: var(--fs-small); font-weight: 400; letter-spacing: normal; text-transform: none; }
+  .stbl th, .st thead th, .st-sub thead th, .pub-tbl th, .st-note, .st-spec-l { color: #5d5850; }
+  .pw-chip, .pw-dt, .pw-crit { font-weight: 600; }
+  .stbl td, .st td.c, .st-sub td.c, .pw-att, .pw-lock, .pw-dmg, .pss-v, .pw-name, .pw-arc { font-weight: 600; }
+  .scenario b, .scenario strong, .pub-ships b, .pub-ships strong, vp { font-weight: 600; }
+  .pub-vbtn { font-size: var(--fs-body); }
+}
+/* The rolled die beside a heading */
+.sh-die{width:1.1em;height:1.1em;vertical-align:-.18em;color:#5d5850;}
+/* A table keeps its own width; stretched to the column it spread three columns across the card */
+.stbl{align-self:flex-start;}
+
+/* Variants: a toggle beside each, and the map layers it shows or hides (as on the Dropzone pages) */
+.map-svg,.map-svg svg,.map-svg img{display:block;width:100%;height:100%;}
+.scenario.pub:not([data-v="1"]) .hs[data-v="1"]{display:none;}
+.scenario.pub[data-v="1"] svg [data-v="1"]{display:inline;}
+.scenario.pub[data-v="1"] [data-hide-v~="1"]{display:none;}
+.scenario.pub:not([data-v="1"]) .pub-v-only{display:none;}
+/* Players and game size, side by side above the map */
+.pub-opts{display:flex;flex-wrap:wrap;align-items:stretch;gap:6px;margin-bottom:2mm;}
+.pub-opts .seg.pub-size{margin-bottom:0;flex:1 1 auto;}
+.pub-opts .pub-players{flex:0 1 auto;}
+.pub-opts .pub-players button{min-width:0;grid-template-columns:auto auto;}
+.pub-players-n{display:inline-flex;align-items:center;padding:7px 12px;font-family:'Jost',system-ui,sans-serif;font-size:16px;font-weight:600;border:1.5px solid #0E0C08;}
+/* Sides: red and blue words, run-in labels and objective highlights, in the map's deployment colours */
+.side{font-weight:600;}
+.side-red{color:#B23A1C;}
+.side-blue{color:#1A6A94;}
+@media screen{
+  .scenario .spill.side-red{color:var(--ch);background:linear-gradient(transparent 45%,#f4c4b3 45%,#f4c4b3 92%,transparent 92%);}
+  .scenario .spill.side-blue{color:var(--ch);background:linear-gradient(transparent 45%,#c2dcec 45%,#c2dcec 92%,transparent 92%);}
+}
+/* Beside a Variant button the weapon list is narrow: names wrap rather than run under the next column */
+.pub-vlist .pw-list .pw-name{white-space:normal;}
+.pub-vlist .pw-list{width:auto;}
+/* Game size: Dropsites only used in bigger games hide with the size switch */
+.scenario.pub[data-size="skirmish"] [data-size],.scenario.pub[data-size="clash"] [data-size="battle"]{display:none;}
+/* Selected: solid dark fill, white text, tick. Unselected: plain outline, no tick. */
+.seg.pub-size{display:flex;flex-wrap:wrap;gap:6px;align-self:stretch;margin-bottom:2mm;}
+.seg.pub-size button{flex:1 1 0;min-width:96px;display:grid;grid-template-columns:auto 1fr;column-gap:6px;align-items:center;text-align:left;font-family:'Jost',system-ui,sans-serif;padding:7px 10px;background:#fff;color:#3a3530;border:1.5px solid #b9ae9a;cursor:pointer;}
+.seg.pub-size .pub-size-tick{grid-row:1 / span 2;width:16px;height:16px;visibility:hidden;}
+.seg.pub-size .pub-size-name{font-size:16px;font-weight:600;line-height:1.2;}
+.seg.pub-size .pub-size-pts{grid-column:2;font-size:14px;line-height:1.2;}
+.seg.pub-size button[aria-pressed="true"]{background:#0E0C08;border-color:#0E0C08;color:#fff;}
+.seg.pub-size button[aria-pressed="true"] .pub-size-tick{visibility:visible;}
+@media (hover:hover){.seg.pub-size button:not([aria-pressed="true"]):hover{border-color:#0E0C08;}}
+.seg.pub-size button:focus-visible{outline:2px solid #B86C0A;outline-offset:2px;}
+@media print{.seg.pub-size button:not([aria-pressed="true"]){display:none;}.seg.pub-size button[aria-pressed="true"]{background:none;color:inherit;border:0;padding:0;}.seg.pub-size .pub-size-tick{display:none;}}
+.pub-vlist{list-style:none;display:flex;flex-direction:column;gap:2mm;}
+.pub-vlist li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:9px;align-items:start;}
+.pub-vbtn{font-family:'Jost',system-ui,sans-serif;font-size:14px;font-weight:600;padding:2px 10px;border:1.5px solid var(--action,#0072a8);background:transparent;color:var(--action-dk,#005b85);cursor:pointer;white-space:nowrap;}
+.pub-vbtn[aria-pressed="true"]{background:var(--action,#0072a8);color:#fff;}
+@media (hover:hover){ .pub-vbtn:not([aria-pressed="true"]):hover{background:var(--hover,#efe9dc);} }
+.pub-vbtn:focus-visible{outline:2px solid #B86C0A;outline-offset:2px;}
