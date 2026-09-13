@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dropzone Commander: Scenario Generator</title>
+<link rel="icon" href="../../favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Libre+Baskerville:ital@0;1&family=Roboto+Slab:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+<style>
+@font-face{font-family:'Terminal Grotesque Open';src:url('../../assets/fonts/terminal-grotesque-open.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;}
+/* The Dropzone twin of the Dropfleet scenario generator (dropfleet-builder/scenarios/dropfleet/generator/):
+   the same control panel on the left, the scenario card on the right. */
+:root{
+  --navy:#0a1e2e;--navy-ink:#c9d6de;--page:#fbf9f4;--hover:#efe9dc;
+  --ink:#0E0C08;--muted:#5d5850;--action:#0072a8;--action-dk:#005b85;--focus:#B86C0A;
+  --cobalt:#009fe3;--cobalt-dk:#007ab8;--nc:#5f7480;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Jost',system-ui,sans-serif;color:var(--ink);background:var(--navy);display:flex;flex-direction:column;}
+.app-row{display:flex;flex:1;min-height:0;}
+
+/* ── Control panel ── */
+.ctrl{width:380px;min-width:380px;flex-shrink:0;overflow-y:auto;overflow-x:hidden;background:var(--navy);display:flex;flex-direction:column;border-right:2px solid var(--cobalt-dk);}
+.ctrl-inner{padding:16px 18px 12px;flex-shrink:0;}
+.ctrl-back{display:block;text-align:center;font-size:14px;color:#8fa6b4;text-decoration:none;padding:0 0 10px;}
+.ctrl-back:hover{color:var(--cobalt);}
+.ctrl-lockup{display:flex;flex-direction:column;align-items:center;}
+.ctrl-logo{height:48px;width:auto;display:block;margin:0 auto;}
+.ctrl-sub{font-weight:600;font-size:13px;text-transform:uppercase;color:#a9c0ce;margin-top:9px;}
+.ctrl-switch{display:flex;justify-content:center;margin-top:10px;}
+.game-switch{display:inline-flex;border:1.5px solid #3a5568;}
+.game-switch a{padding:4px 10px;font-size:13px;color:var(--navy-ink);text-decoration:none;}
+.game-switch a:hover{color:#fff;}
+.game-switch a[aria-current="page"]{background:var(--navy-ink);color:var(--navy);font-weight:600;}
+
+.ctrl-tray{background:#fff;flex:1;padding:14px 16px 16px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;}
+.ctrl-gen-row{position:sticky;top:0;z-index:20;background:#fff;margin:-14px -16px 0;padding:14px 16px 10px;border-bottom:1px solid #e6e0d5;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
+.gbtn{font:600 16px 'Jost',system-ui,sans-serif;color:#fff;background:var(--action);border:2px solid var(--action);padding:11px 32px;cursor:pointer;transition:background .15s,transform .1s;display:inline-flex;align-items:center;gap:9px;}
+.gbtn:hover{background:var(--action-dk);}
+.gbtn:active{transform:scale(.97);}
+.gdie{width:18px;height:18px;flex:0 0 18px;}
+.gbtn.rolling .gdie{animation:gdtumble .5s cubic-bezier(.34,1.3,.5,1);}
+@keyframes gdtumble{0%{transform:rotate(0)}40%{transform:rotate(200deg) scale(1.15)}100%{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.gbtn.rolling .gdie{animation:none;}}
+.abtn{font:14px 'Jost',system-ui,sans-serif;color:var(--cobalt-dk);background:transparent;border:1.5px solid var(--cobalt-dk);padding:7px 12px;cursor:pointer;transition:all .15s;}
+.abtn:hover:not([disabled]){background:var(--action);color:#fff;border-color:var(--action);}
+.abtn[disabled]{color:var(--nc);border-color:#b9c3c9;cursor:not-allowed;}
+.comp-lbl{font-size:14px;color:var(--cobalt-dk);display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;}
+.comp-lbl input[type=checkbox]{width:17px;height:17px;margin:0;accent-color:var(--action);}
+.ctrl-scen-row{display:flex;justify-content:center;}
+.scen-ref-link{font-size:14px;font-weight:600;color:var(--action);text-decoration:underline;text-underline-offset:3px;padding:4px 2px;}
+
+/* Picks: one section per choice, Random beside the section name */
+.picks{display:flex;flex-direction:column;gap:12px;}
+.pick-section{display:flex;flex-direction:column;gap:5px;}
+.pick-section-lbl{font-size:13px;font-weight:700;text-transform:uppercase;color:var(--navy);}
+.pick-sub{font-size:12px;font-weight:600;color:var(--muted);margin-top:4px;}
+.pick-head{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.pick-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px;}
+#row-v{grid-template-columns:repeat(3,minmax(0,1fr));}
+.pick-tile{position:relative;display:block;cursor:pointer;}
+.pick-tile input[type=radio]{position:absolute;opacity:0;width:0;height:0;}
+.tile-inner{font-size:14px;color:var(--cobalt-dk);padding:6px 8px;transition:background .12s,color .12s;display:flex;align-items:center;gap:8px;min-height:36px;line-height:1.2;}
+.pick-tile input:checked + .tile-inner{background:#e3eff6;color:var(--navy);font-weight:600;}
+.pick-tile:hover .tile-inner{background:rgba(0,114,168,.08);}
+.pick-tile.rolled .tile-inner{box-shadow:inset 0 0 0 2px var(--action);color:var(--navy);font-weight:600;}
+.pick-tile input:disabled + .tile-inner{color:var(--nc);text-decoration:line-through;cursor:not-allowed;background:none;}
+.pick-head .tile-inner{min-height:30px;padding:3px 8px;}
+.tile-die{width:18px;height:18px;flex:0 0 18px;color:#5d7a8c;}
+.pick-tile input:checked + .tile-inner .tile-die{color:var(--action);}
+/* The d66 chart as the scenario picker: a row per first die, a column per half of the second */
+.d66-pick{display:grid;grid-template-columns:26px minmax(0,1fr) minmax(0,1fr);gap:2px;align-items:stretch;}
+.d66-ch{font-size:12px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:4px;padding:0 8px;}
+.d66-ch .tile-die{width:14px;height:14px;flex-basis:14px;}
+.d66-rh{display:flex;align-items:center;justify-content:center;}
+.pick-tile input:focus-visible + .tile-inner,.comp-lbl input:focus-visible,.gbtn:focus-visible,.abtn:focus-visible,.ctrl a:focus-visible{outline:2px solid var(--focus);outline-offset:2px;}
+
+/* ── Scenario card ── */
+.wrap{flex:1;overflow-y:auto;padding:20px;background:var(--page);}
+.card{background:var(--page);width:100%;max-width:1180px;margin:0 auto;}
+.dz{display:grid;grid-template-columns:minmax(0,1fr) 46%;gap:6mm;padding:6mm 8mm 4mm;container-type:inline-size;}
+.dz-head{grid-column:1/-1;}
+.dz-name{font-family:'Roboto Slab',Georgia,serif;font-weight:700;font-size:1.9rem;line-height:1.15;display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;}
+.dz-roll{display:inline-flex;gap:3px;color:var(--action);}
+.dz-roll svg{width:26px;height:26px;}
+.dz-src{font-size:.95rem;color:var(--muted);margin-top:2px;}
+.dz-rules{display:flex;flex-direction:column;gap:5mm;min-width:0;}
+.dz-sec h3{font-family:'Roboto Slab',Georgia,serif;font-weight:700;font-size:1.1rem;margin-bottom:2mm;}
+.dz-list{list-style:none;display:flex;flex-direction:column;gap:2mm;}
+.dz-list li{display:grid;grid-template-columns:16px minmax(0,1fr);gap:9px;align-items:start;font-size:1rem;line-height:1.5;}
+.dz-sw{width:16px;height:16px;margin-top:4px;border:1px solid rgba(14,12,8,.35);}
+.dz-sw.none{border:0;}
+.dz-map{min-width:0;}
+.dz-frame{position:relative;border:1.5px solid #B8952F;}
+.dz-frame .hs{position:absolute;cursor:help;z-index:2;}
+@media (hover:hover){.dz-frame .hs:hover{box-shadow:0 0 0 2px #B8952F,0 0 0 4px rgba(255,255,255,.7);}}
+.dz-frame .hs:focus-visible{outline:2px solid var(--focus);outline-offset:1px;}
+#scn-tip .dz-sw{width:14px;height:14px;flex:0 0 14px;margin:0;}
+#scn-tip .tt-map{display:block;width:180px;height:180px;margin-top:4px;background:#f4efe8;}
+.dz-variant b{font-weight:600;}
+.dz-terms{display:flex;flex-direction:column;gap:2mm;margin-top:3mm;}
+.dz-term{font-size:14px;line-height:1.5;color:var(--ink);}
+.dz-term b{font-weight:700;}
+.dz-tbl-wrap{overflow-x:auto;}
+.dz-tbl{border-collapse:collapse;font-size:14px;width:100%;}
+.dz-tbl th{font-size:12px;font-weight:500;color:var(--muted);text-align:left;padding:2px 10px 2px 0;white-space:nowrap;}
+.dz-tbl td{padding:4px 10px 4px 0;vertical-align:top;}
+.dz-tbl tbody tr:nth-child(odd){background:rgba(184,149,47,.09);}
+.dz-tbl td:first-child{font-weight:600;white-space:nowrap;}
+.dz-svg{aspect-ratio:1;}
+.dz-svg svg,.dz-svg img{display:block;width:100%;height:auto;}
+.dz[data-size="skirmish"] [data-size],.dz[data-size="clash"] [data-size="battle"]{display:none;}
+.dz:not([data-size="skirmish"]) [data-only="skirmish"]{display:none;}
+.dz:not([data-v="1"]) :is(li,.hs)[data-v="1"],.dz:not([data-v="2"]) :is(li,.hs)[data-v="2"]{display:none;}
+.dz[data-v="1"] svg [data-v="1"],.dz[data-v="2"] svg [data-v="2"]{display:inline;}
+.dz[data-v="1"] [data-hide-v~="1"],.dz[data-v="2"] [data-hide-v~="2"]{display:none;}
+.dz[data-v="1"] [data-strike-v~="1"]>span:last-child,.dz[data-v="2"] [data-strike-v~="2"]>span:last-child{text-decoration:line-through;color:var(--muted);}
+
+/* ── Footer ── */
+.foot{flex-shrink:0;background:#f3f1ec;padding:10px 20px;font-size:12px;color:#5d5850;}
+.foot-in{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;max-width:1180px;margin:0 auto;}
+.foot b{font-weight:700;color:#3a3834;}
+.foot a{color:#1b3a5c;text-decoration:none;}
+.foot a:hover{text-decoration:underline;}
+.foot a:focus-visible{outline:2px solid var(--focus);outline-offset:2px;}
+.foot-by{margin-left:auto;}
+.warlore-mark{display:inline-block;font-family:'Terminal Grotesque Open','Roboto Slab',serif;font-size:15px;line-height:1.3;padding:1px 6px;text-decoration:none;color:#FFCC00 !important;background:#000;}
+.warlore-mark:hover{color:#000 !important;background:#FFCC00;text-decoration:none !important;}
+
+/* Phones: panel above the scenario instead of beside it */
+@media screen and (max-width:800px){
+  html,body{height:auto;overflow:visible;}
+  .app-row{flex-direction:column;}
+  .ctrl{width:100%;min-width:0;border-right:0;overflow:visible;}
+  .ctrl-tray{overflow:visible;}
+  .wrap{overflow:visible;padding:0;}
+  .dz{grid-template-columns:1fr;padding:4mm 3mm;}
+  .dz-map{order:-1;grid-row:2;}
+  .dz-head{grid-row:1;}
+  .foot-by{margin-left:0;}
+}
+@media print{
+  @page{size:letter;margin:10mm;}
+  html,body{height:auto;overflow:visible;display:block;background:#fff !important;}
+  .ctrl,.foot{display:none !important;}
+  .app-row{display:block;}
+  .wrap{height:auto;overflow:visible;padding:0;background:#fff;}
+  .card{background:#fff;max-width:none;}
+  .dz{padding:0;gap:4mm;}
+  .dz-name{font-size:18pt;}
+  .dz-list li{font-size:9.5pt;}
+  .dz-frame .hs{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="app-row">
+<div class="ctrl">
+  <div class="ctrl-inner">
+    <a class="ctrl-back" href="../../index.html">← Army Builder</a>
+    <div class="ctrl-lockup">
+      <img class="ctrl-logo" src="../../assets/logos/dzc_logo_white.webp" alt="Dropzone Commander">
+      <h1 class="ctrl-sub">Scenario Generator</h1>
+    </div>
+    <div class="ctrl-switch"><span class="game-switch"><a href="/dropfleet-builder/scenarios/dropfleet/generator/">Dropfleet</a><a href="./" aria-current="page">Dropzone</a></span></div>
+  </div>
+  <div class="ctrl-tray">
+    <div class="ctrl-gen-row">
+      <button class="gbtn" id="gbtn" type="button"><svg class="gdie" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17"/><circle cx="8.3" cy="8.3" r="1.5" fill="currentColor" stroke="none"/><circle cx="15.7" cy="8.3" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="8.3" cy="15.7" r="1.5" fill="currentColor" stroke="none"/><circle cx="15.7" cy="15.7" r="1.5" fill="currentColor" stroke="none"/></svg>Generate Scenario</button>
+      <label class="comp-lbl"><input type="checkbox" id="fauna">Fauna</label>
+      <button class="abtn" id="pb" type="button" disabled>Print / PDF</button>
+      <button class="abtn" id="sb" type="button" disabled>Save Image</button>
+    </div>
+    <div class="ctrl-scen-row"><a class="scen-ref-link" href="../">Scenario Reference</a></div>
+    <div class="picks" id="picks-root"></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="card" id="card" hidden><div id="content"></div></div>
+</div>
+</div>
+
+<footer class="foot">
+  <div class="foot-in">
+    <b>Dropzone Commander</b>
+    <span>by <a href="https://ttcombat.com/collections/dropzone-commander" target="_blank" rel="noopener">TTCombat</a></span>
+    <a href="../../index.html">Army Builder</a>
+    <a href="../">Scenario Reference</a>
+    <span class="foot-by">Scenario generator by <a class="warlore-mark" href="https://linktr.ee/warlore" target="_blank" rel="noopener" title="WarLore">War<span>Lore</span></a></span>
+    <a href="https://github.com/Type37/dropzone-3e-army-builder" target="_blank" rel="noopener">Source on GitHub</a>
+  </div>
+</footer>
+
+<script src="../dzc-scenario-terms.js"></script>
+<script src="../dzc-scenario-hotspots.js"></script>
+<script src="../shared/tooltip.js"></script>
+<script>
+const ROOT='../../';
+const SOURCES={rulebook:{group:'Rulebook',book:'Rulebook'},fauna:{group:'Fauna Rules & Scenarios',book:'Fauna Rules & Scenarios'}};
+// The objectives the rulebook names, in the order a scenario lists them
+const OBJECTIVES=['Attrition','Secure','Occupy','Extract','Protect','Dominate','Displace','Raze','Explore'];
+
+/* ── The card. Parsing, explanations and the map are the Scenario Reference's (scenarios/index.html);
+   keep the two in step until they move into one shared file. ── */
+function sentence(lines){
+  return lines.filter(l=>!/^\d{1,2}$/.test(l.trim())).reduce((out,l)=>!out?l:out.endsWith('/')?out+l:out+' '+l,'').trim();
+}
+function keyLines(lines){
+  return lines.filter(l=>!/^\d{1,2}$/.test(l.trim())).reduce((out,l)=>{
+    if(!out) return l;
+    if(out.endsWith('/')) return out+l;
+    const prev=out.split('<br>').pop();
+    const fact=prev.split(' ').every(w=>/^[A-Z0-9(]/.test(w));
+    const newFact=prev.endsWith('.')||fact||/^(Only use|Each )/.test(l);
+    return out+(newFact&&!/^[a-z]/.test(l)?'<br>':' ')+l;
+  },'').trim();
+}
+const sizeOf=t=>{const m=t.match(/Only use in ([^.]*)/);return m?(/Clash/.test(m[1])?'clash':'battle'):'';};
+function parse(s){
+  const key=[], objectives=[], variants=[], rules=[];
+  let entry='';
+  for(const L of s.legend){
+    const text=sentence(L.lines);
+    if(!text) continue;
+    const swatch=L.rgb?`rgb(${L.rgb.map(v=>Math.round(v*255)).join(',')})`:'';
+    if(/^Entry:/.test(text)) entry=text.replace(/^Entry:\s*/,'');
+    else if(/^Variant \d/.test(text)) variants.push(text);
+    else if(variants.length&&!L.rgb) variants[variants.length-1]+=' '+text;
+    else if(OBJECTIVES.some(o=>text.startsWith(o))) objectives.push({text,swatch,size:sizeOf(text)});
+    else key.push({text:keyLines(L.lines),swatch,size:sizeOf(text)});
+  }
+  for(const note of s.notes||[]){
+    if(/^Entry:/.test(note)) entry=entry||note.replace(/^Entry:\s*/,'');
+    else if(/^Variant( \d)?:/.test(note)) variants.push(note);
+    else rules.push(note);
+  }
+  return {key,objectives,entry,variants,rules};
+}
+const objectiveNames=s=>parse(s).objectives.map(x=>OBJECTIVES.find(o=>x.text.startsWith(o))).filter((o,i,a)=>a.indexOf(o)===i);
+const variantsOf=s=>parse(s).variants.map((v,i)=>{ const m=v.match(/^(Variant(?: (\d))?):\s*/); return {n:m&&m[2]?m[2]:String(i+1),label:m?m[1]:`Variant ${i+1}`,text:m?v.slice(m[0].length):v}; });
+const item=({text,swatch,size,strike,v})=>`<li${size?` data-size="${size}"`:''}${strike?` data-strike-v="${strike}"`:''}${v?` data-v="${v}"`:''}><span class="dz-sw${swatch?'':' none'}"${swatch?` style="background:${swatch}"`:''}></span><span>${text}</span></li>`;
+const section=(title,body)=>body?`<section class="dz-sec"><h3>${title}</h3>${body}</section>`:'';
+
+const T=DZ_TERMS;
+const wordRe=(n,plural)=>new RegExp('\\b'+n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+(plural?'s?':'')+'\\b',plural?'i':'');
+const words=n=>wordRe(n,true);
+const firstAt=(text,list)=>list.map(([name,re,run])=>({name,run,m:text.match(re)})).filter(x=>x.m).sort((a,b)=>a.m.index-b.m.index);
+const term=(name,html)=>`<p class="dz-term"><b>${name}:</b> ${html}</p>`;
+const ruleTip=name=>T.specialRules[name]?`<span class="tip-t" tabindex="0" data-tip="dzr:${name}">${name}</span>`:name;
+const specials=txt=>txt.split(/,\s*/).map(part=>{const m=part.match(/^([A-Za-z-]+(?: [A-Z][a-z]+)?)(.*)$/);return m&&T.specialRules[m[1]]?ruleTip(m[1])+m[2]:part;}).join(', ');
+function weaponTable(names){
+  return `<div class="dz-tbl-wrap"><table class="dz-tbl"><thead><tr><th>Weapon</th><th>Arc</th><th>Range</th><th>Attacks</th><th>Accuracy</th><th>Energy</th><th>Special</th></tr></thead><tbody>${names.map(n=>{const w=T.weaponFeatures.weapons[n];return `<tr><td><span class="tip-t" tabindex="0" data-tip="dzf:${n}">${n}</span></td><td>${w.arc}</td><td>${w.range}</td><td>${w.attacks}</td><td>${w.accuracy}</td><td>${w.energy}</td><td>${w.special==='-'?'-':specials(w.special)}</td></tr>`;}).join('')}</tbody></table></div>`;
+}
+function explain(text,shown){
+  const out=[], weapons=[];
+  const once=(key,fn)=>{ if(shown.has(key)) return; shown.add(key); fn(); };
+  const list=[
+    ...Object.entries(T.objectives).map(([n,o])=>[n,wordRe(n),()=>once('o:'+n,()=>out.push(term(o.heading,o.body.join(' '))))]),
+    ['Territory',/\bTerritor/,()=>once('territory',()=>out.push(term('Territory',T.territory.join(' '))))],
+    ...Object.entries(T.entry).map(([n,b])=>[n,n==='Deployed'?/\bDeploy/:wordRe(n),()=>once('e:'+n,()=>out.push(term(n,b.join(' '))))]),
+    ...Object.entries(T.extraction).map(([n,b])=>[n,wordRe(n),()=>once('x:'+n,()=>out.push(term(n,b)))]),
+    ['Object',/\bObjects?\b/,()=>once('objects',()=>{ out.push(term('Objects',T.objects.Objects.join(' '))); out.push(term('Finding Objects',T.objects['Finding Objects'].join(' '))); out.push(term('Carrying Objects',T.objects['Carrying Objects'].join(' '))); })],
+    ...Object.entries(T.variantObjects).map(([n,b])=>[n,wordRe(n),()=>once('v:'+n,()=>out.push(term(n,b.join(' '))))]),
+    ['Bunker Entrance',/\bBunker Entrances?\b/,()=>once('bunker',()=>out.push(term('Bunker Entrances',T.bunkerEntrances.join(' '))))],
+    ...Object.keys(T.weaponFeatures.weapons).map(n=>[n,words(n),()=>once('w:'+n,()=>weapons.push(n))]),
+    ...Object.entries(T.features).map(([n,f])=>[n,words(n),()=>once('f:'+n,()=>out.push(term(`<span class="tip-t" tabindex="0" data-tip="dzf:${n}">${n}</span>`,f.text)))]),
+    ...['Demo Charges','Living Weapons','Bloodthirsty'].map(n=>[n,words(n.replace(/s$/,'')),()=>once('r:'+n,()=>out.push(term(T.specialRules[n].heading,T.specialRules[n].body.join(' '))))]),
+  ];
+  firstAt(text,list).forEach(x=>x.run());
+  let html=out.join('');
+  if(weapons.length) html+=weaponTable(weapons)+(shown.has('weaponRules')?'':(shown.add('weaponRules'),`<p class="dz-term">${T.weaponFeatures.rules.join(' ')}</p>`));
+  return html?`<div class="dz-terms">${html}</div>`:'';
+}
+
+const redrawn=s=>typeof DZ_MAP_SPOTS!=='undefined'&&DZ_MAP_SPOTS[s.id];
+const mapSrc=s=>redrawn(s)?`${ROOT}assets/scenarios/${s.id}.svg`:ROOT+s.map;
+const TOKEN_RULE={'heavy-cannon':'Heavy Cannon Turret','railgun-turret':'Railgun Turret','flak-turret':'Flak Turret','missile-turret':'Missile Turret','laser-turret':'Laser Turret','super-laser':'Superlaser Turret','excellent-vantage':'Excellent Vantage','acm-package':'ACM Package','shield-generator':'Shield Generator','comms-uplink-tower':'Comms Uplink','power-core':'Power Core','internal-flaw':'Internal Flaw','seal':'Seal','automated-sentries':'Automated Sentries','jamming-device':'Jamming Device','shimmer-field':'Shimmer Field','basement':'Basement','secret-entrance':'Secret Entrance'};
+let CURRENT=null;
+function mapHTML(s){
+  CURRENT=s;
+  const spots=redrawn(s)||[];
+  const html=spots.map(p=>{
+    const box=p.t==='zone'?`left:${p.x-p.w/2}%;top:${p.y-p.h/2}%;width:${p.w}%;height:${p.h}%`:`left:${p.x-p.r}%;top:${p.y-p.r}%;width:${2*p.r}%;height:${2*p.r}%;border-radius:50%`;
+    const key=(p.t==='zone'||(p.t==='point'&&p.legend!==undefined))?`dzz:${p.legend}`:TOKEN_RULE[p.token]?`dzf:${TOKEN_RULE[p.token]}`:p.token==='object'?'dzo:Objects':p.token==='secure-point'?'dzo:Secure':p.token==='bunker-entrance'?'dzo:Bunker Entrances':'';
+    const layer=`${p.size?` data-size="${p.size}"`:''}${p.v?` data-v="${p.v}"`:''}${p.hideV?` data-hide-v="${p.hideV}"`:''}`;
+    return key?`<span class="hs" tabindex="0" data-tip="${key}"${layer} style="${box}"></span>`:'';
+  }).join('');
+  return `<div class="dz-frame"><div class="dz-svg"${spots.length?` data-src="${mapSrc(s)}"`:''}><img src="${mapSrc(s)}" alt="${s.name} map"></div>${html}</div>`;
+}
+const SVG_TEXT={};
+async function inlineMaps(){
+  for(const el of document.querySelectorAll('.dz-svg[data-src]')){
+    const src=el.dataset.src, alt=el.querySelector('img').alt;
+    el.removeAttribute('data-src');
+    try{ SVG_TEXT[src]=SVG_TEXT[src]||await fetch(src).then(r=>{ if(!r.ok) throw new Error(r.status); return r.text(); }); }
+    catch(e){ continue; }
+    el.innerHTML=SVG_TEXT[src].replace('<svg ',`<svg role="img" aria-label="${alt}" `);
+  }
+}
+
+function tipHTML(key){
+  const i=key.indexOf(':'), kind=key.slice(0,i), id=key.slice(i+1);
+  if(kind==='map'){ const s=LIST.find(x=>x.id===id); return s?`<div class="scn-tip-h"><b>${s.name}</b></div><img class="tt-map" src="${mapSrc(s)}" alt="">`:''; }
+  if(kind==='dzz'&&CURRENT){ const L=CURRENT.legend[+id]; if(!L) return ''; const sw=L.rgb?`<span class="dz-sw" style="background:rgb(${L.rgb.map(v=>Math.round(v*255)).join(',')})"></span>`:''; return `<div class="scn-tip-h">${sw}<b>${keyLines(L.lines)}</b></div>`; }
+  if(kind==='dzo'){
+    if(id==='Objects') return `<div class="scn-tip-h"><b>Objects</b></div><div>${T.objects.Objects.join(' ')}</div>`;
+    if(id==='Bunker Entrances') return `<div class="scn-tip-h"><b>Bunker Entrances</b></div><div>${T.bunkerEntrances.join(' ')}</div>`;
+    const o=T.objectives[id]; return o?`<div class="scn-tip-h"><b>${o.heading}</b></div><div>${o.body.join(' ')}</div>`:'';
+  }
+  if(kind==='dzr'){ const r=T.specialRules[id]; return r?`<div class="scn-tip-h"><b>${r.heading}</b></div><div>${r.body.join(' ')}</div>`:''; }
+  if(kind==='dzf'){
+    const w=T.weaponFeatures.weapons[id];
+    if(w) return `<div class="scn-tip-h"><b>${id}</b></div><div>Arc ${w.arc}, Range ${w.range}, Attacks ${w.attacks}, Accuracy ${w.accuracy}, Energy ${w.energy}${w.special!=='-'?`, ${w.special}`:''}</div>`;
+    const f=T.features[id]; return f?`<div class="scn-tip-h"><b>${id}</b></div><div>${f.text}</div>`:'';
+  }
+  return '';
+}
+
+// Dice faces and shuffle: Tabler Icons (MIT, github.com/tabler/tabler-icons), as in the Dropfleet generator
+const DIE_PIPS=['M11.5 12a.5.5 0 1 0 1 0a.5.5 0 1 0-1 0','M9 9.5a.5.5 0 1 0 1 0a.5.5 0 1 0-1 0m5 5a.5.5 0 1 0 1 0a.5.5 0 1 0-1 0','M8 8.5a.5.5 0 1 0 1 0a.5.5 0 1 0-1 0m7 7a.5.5 0 1 0 1 0a.5.5 0 1 0-1 0M11.5 12a.5.5 0 1 0 1 0a.5.5 0 1 0-1 0','M8 8.5a.5.5 0 1 0 1 0a.5.5 0 1 0-1 0m7 0a.5.5 0 1 0 1 0a.5.5 0 1 0-1 0m0 7a.5.5 0 1 0 1 0a.5.5 0 1 0-1 0m-7 0a.5.5 0 1 0 1 0a.5.5 0 1 0-1 0','M8 8.5a.5.5 0 1 0 1 0a.5.5 0 1 0-1 0m7 0a.5.5 0 1 0 1 0a.5.5 0 1 0-1 0m0 7a.5.5 0 1 0 1 0a.5.5 0 1 0-1 0m-7 0a.5.5 0 1 0 1 0a.5.5 0 1 0-1 0m3.5-3.5a.5.5 0 1 0 1 0a.5.5 0 1 0-1 0','M8 7.5a.5.5 0 1 0 1 0a.5.5 0 1 0-1 0m7 0a.5.5 0 1 0 1 0a.5.5 0 1 0-1 0M8 12a.5.5 0 1 0 1 0a.5.5 0 1 0-1 0m7 0a.5.5 0 1 0 1 0a.5.5 0 1 0-1 0m0 4.5a.5.5 0 1 0 1 0a.5.5 0 1 0-1 0m-7 0a.5.5 0 1 0 1 0a.5.5 0 1 0-1 0'];
+const tablerIcon=(cls,paths,label)=>`<svg class="${cls}" viewBox="0 0 24 24" ${label?`role="img" aria-label="${label}"`:'aria-hidden="true"'}><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">${paths}</g></svg>`;
+const dieIcon=(n,cls,label)=>tablerIcon(cls,`<path d="M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path fill="currentColor" d="${DIE_PIPS[n-1]}"/>`,label);
+const shuffleIcon=cls=>tablerIcon(cls,'<path d="m18 4l3 3l-3 3m0 10l3-3l-3-3"/><path d="M3 7h3a5 5 0 0 1 5 5a5 5 0 0 0 5 5h5m0-10h-5a4.98 4.98 0 0 0-3 1m-4 8a5 5 0 0 1-3 1H3"/>');
+
+/* ── Game size and one Variant, fixed by the panel rather than toggled on the card ── */
+const SIZES=['Skirmish','Clash','Battle','Reconquest'];
+const HALVED=Object.entries(T.objectives).filter(([,o])=>/\d\s?(pts|KP)\b/.test(o.body.join(' '))).map(([n])=>n);
+function render(s,o){
+  const p=parse(s), src=SOURCES[s.source], shown=new Set();
+  const plain=t=>t.replace(/<br>/g,' ');
+  const effects=(typeof DZ_MAP_VARIANTS!=='undefined'&&DZ_MAP_VARIANTS[s.id])||{};
+  const v=variantsOf(s).find(x=>x.n===o.v);
+  const sized=p.key.some(k=>k.size)||p.objectives.some(x=>x.size)||objectiveNames(s).some(x=>HALVED.includes(x));
+  const struckBy=x=>Object.entries(effects).filter(([,e])=>(e.strike||[]).some(t=>x.text.startsWith(t))).map(([n])=>n).join(' ');
+  const added=v&&effects[v.n]&&effects[v.n].objective?item({text:`<span class="dz-variant"><b>${v.label}:</b> ${v.text}</span>`,swatch:'',v:v.n}):'';
+  const objectives=p.objectives.length?`<ul class="dz-list">${p.objectives.map(x=>item({...x,strike:struckBy(x)})).join('')}${added}</ul>${sized?`<p class="dz-term" data-only="skirmish">${T.skirmish}</p>`:''}${explain(p.objectives.map(x=>x.text).join(' '),shown)}`:'';
+  const entry=p.entry?`<ul class="dz-list">${item({text:p.entry,swatch:''})}</ul>${explain(p.entry,shown)}`:'';
+  const key=p.key.length?`<ul class="dz-list">${p.key.map(item).join('')}</ul>${explain(p.key.map(k=>plain(k.text)).join(' '),shown)}`:'';
+  const rules=p.rules.length?`<div class="dz-terms">${p.rules.map(r=>`<p class="dz-term">${r}</p>`).join('')}</div>${explain(p.rules.join(' '),shown)}`:'';
+  const variant=v?`<ul class="dz-list">${item({text:v.text,swatch:''})}</ul>${explain(v.text,shown)}`:'';
+  const roll=o.roll?`<span class="dz-roll">${dieIcon(o.roll[0],'',`First die ${o.roll[0]}`)}${dieIcon(o.roll[1],'',`Second die ${o.roll[1]}`)}</span>`:'';
+  setTimeout(inlineMaps);
+  return `<div class="dz" data-scn="${s.id}" data-size="${sized?o.size:'battle'}" data-v="${v?v.n:'0'}">
+    <div class="dz-head"><h2 class="dz-name">${s.name}${roll}</h2><div class="dz-src">${SIZES.find(z=>z.toLowerCase()===o.size)}</div><div class="dz-src">${src.book}, page ${s.page}</div></div>
+    <div class="dz-rules">
+      ${section('Objectives',objectives)}
+      ${section('Entry',entry)}
+      ${section('Map key',key)}
+      ${section('Special rules',rules)}
+      ${v?section(v.label,variant):''}
+    </div>
+    <div class="dz-map">${mapHTML(s)}</div>
+  </div>`;
+}
+
+/* ── The panel ── */
+const store={get(k){try{return localStorage.getItem(k);}catch(e){return null;}},set(k,v){try{localStorage.setItem(k,v);}catch(e){}}};
+const SIZE_KEY='dzc-scenario-size', FAUNA_KEY='dzc-generator-fauna';
+let LIST=[], CORE=[];
+const pickVal=name=>{const el=document.querySelector(`input[name=${name}]:checked`);return el?el.value:'';};
+const tile=(name,value,label,{checked,tip,icon}={})=>`<label class="pick-tile"${tip?` data-tip="${tip}"`:''}><input type="radio" name="${name}" value="${value}"${checked?' checked':''}><span class="tile-inner">${icon||''}${label}</span></label>`;
+
+function buildPicks(){
+  const size=SIZES.map(z=>z.toLowerCase()).includes(store.get(SIZE_KEY))?store.get(SIZE_KEY):'battle';
+  const random=name=>tile(name,'','Random',{checked:true,icon:shuffleIcon('tile-die')});
+  // The d66 chart: the twelve rulebook scenarios in book order, three results each (11-13, 14-16, 21-23 ...)
+  const chart=[1,2,3,4,5,6].map(d1=>`<span class="d66-rh">${dieIcon(d1,'tile-die',`First die ${d1}`)}</span>${[0,1].map(h=>{const s=CORE[(d1-1)*2+h];return tile('scn',s.id,s.name,{tip:`map:${s.id}`});}).join('')}`).join('');
+  const halves=[[1,3],[4,6]].map(([a,b])=>`<span class="d66-ch">${dieIcon(a,'tile-die')}-${dieIcon(b,'tile-die')}</span>`).join('');
+  const fauna=LIST.filter(s=>s.source==='fauna');
+  document.getElementById('picks-root').innerHTML=`
+    <div class="pick-section">
+      <div class="pick-head"><span class="pick-section-lbl">Game Size</span></div>
+      <div class="pick-row">${SIZES.map(z=>tile('size',z.toLowerCase(),z,{checked:z.toLowerCase()===size})).join('')}</div>
+    </div>
+    <div class="pick-section">
+      <div class="pick-head"><span class="pick-section-lbl">Scenario</span>${random('scn')}</div>
+      <div class="d66-pick"><span></span>${halves}${chart}</div>
+      <div class="pick-sub">${SOURCES.fauna.group}</div>
+      <div class="pick-row">${fauna.map(s=>tile('scn',s.id,s.name,{tip:`map:${s.id}`})).join('')}</div>
+    </div>
+    <div class="pick-section">
+      <div class="pick-head"><span class="pick-section-lbl">Variant</span>${random('v')}</div>
+      <div class="pick-row" id="row-v">${tile('v','0','None')}${tile('v','1','Variant 1')}${tile('v','2','Variant 2')}</div>
+    </div>`;
+}
+
+const r6=()=>Math.floor(Math.random()*6)+1;
+let LAST=null;
+// keep: 'scenario' keeps the scenario and its roll, 'all' also keeps the Variant
+function gen(keep){
+  const size=pickVal('size')||'battle';
+  let scn, roll=null, v;
+  if(keep&&LAST){ ({scn,roll}=LAST); }
+  else{
+    const chosen=pickVal('scn');
+    if(chosen) scn=LIST.find(s=>s.id===chosen);
+    else if(document.getElementById('fauna').checked) scn=LIST[Math.floor(Math.random()*LIST.length)];
+    else{ roll=[r6(),r6()]; scn=CORE[(roll[0]-1)*2+(roll[1]>3?1:0)]; }
+  }
+  const ns=variantsOf(scn).map(x=>x.n);
+  // Variant tiles the scenario does not have are struck off; a Fauna scenario with one Variant calls it Variant 1
+  document.querySelectorAll('input[name=v]').forEach(r=>{ r.disabled=/^[12]$/.test(r.value)&&!ns.includes(r.value); });
+  const vPick=pickVal('v');
+  if(keep==='all'&&LAST) v=LAST.v;
+  else if(vPick==='') { const opts=['0',...ns]; v=opts[Math.floor(Math.random()*opts.length)]; }
+  else v=ns.includes(vPick)?vPick:'0';
+  LAST={scn,roll,v};
+  document.querySelectorAll('.pick-tile.rolled').forEach(t=>t.classList.remove('rolled'));
+  if(!pickVal('scn')){ const t=document.querySelector(`input[name=scn][value="${scn.id}"]`); if(t) t.closest('.pick-tile').classList.add('rolled'); }
+  if(vPick===''){ const t=document.querySelector(`input[name=v][value="${v}"]`); if(t) t.closest('.pick-tile').classList.add('rolled'); }
+  document.getElementById('content').innerHTML=render(scn,{size,v,roll});
+  document.getElementById('card').hidden=false;
+  document.getElementById('pb').disabled=false;
+  document.getElementById('sb').disabled=false;
+  document.title=`${scn.name}: Dropzone Commander Scenario Generator`;
+}
+
+function savePNG(){
+  const el=document.getElementById('card'), b=document.getElementById('sb'), scale=2.5;
+  b.textContent='Capturing\u2026'; b.disabled=true;
+  const prev={w:el.style.width,mw:el.style.maxWidth};
+  el.style.width='1000px'; el.style.maxWidth='none';
+  const w=el.scrollWidth, h=el.scrollHeight;
+  const done=label=>{ el.style.width=prev.w; el.style.maxWidth=prev.mw; b.textContent=label; b.disabled=false; };
+  domtoimage.toPng(el,{width:w*scale,height:h*scale,bgcolor:'#fff',style:{transform:`scale(${scale})`,transformOrigin:'top left',width:w+'px',height:h+'px',maxWidth:'none'}}).then(url=>{
+    done('Save Image');
+    if(/iPad|iPhone|iPod/.test(navigator.userAgent)) window.open(url,'_blank');
+    else{ const a=document.createElement('a'); a.href=url; a.download=`dropzone-${LAST.scn.id}.png`; document.body.appendChild(a); a.click(); a.remove(); }
+  }).catch(err=>{ console.error('PNG capture failed:',err); done('Save Image \u2717'); });
+}
+
+fetch(ROOT+'data/dzc/scenarios.json').then(r=>r.json()).then(data=>{
+  LIST=data.scenarios;
+  CORE=LIST.filter(s=>s.source==='rulebook');
+  buildPicks();
+  const fauna=document.getElementById('fauna');
+  fauna.checked=store.get(FAUNA_KEY)==='1';
+  fauna.addEventListener('change',()=>store.set(FAUNA_KEY,fauna.checked?'1':'0'));
+  document.getElementById('picks-root').addEventListener('change',e=>{
+    const n=e.target.name;
+    if(n==='size'){ store.set(SIZE_KEY,e.target.value); gen('all'); }
+    else if(n==='v') gen('scenario');
+    else gen();
+  });
+  document.getElementById('gbtn').addEventListener('click',e=>{
+    const b=e.currentTarget; b.classList.remove('rolling'); void b.offsetWidth; b.classList.add('rolling');
+    gen();
+    if(matchMedia('(max-width:800px)').matches) document.getElementById('card').scrollIntoView({block:'start'});
+  });
+  document.getElementById('pb').addEventListener('click',()=>window.print());
+  document.getElementById('sb').addEventListener('click',savePNG);
+  gen();
+});
+</script>
+</body>
+</html>
