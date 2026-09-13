@@ -40,6 +40,12 @@
      ],
      "lines": [
       "Heavy Cannon Turret"
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "token": "heavy-cannon"
+      }
      ]
     },
     {
@@ -51,6 +57,12 @@
      ],
      "lines": [
       "Railgun Turrets"
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "token": "railgun-turret"
+      }
      ]
     },
     {
@@ -62,6 +74,12 @@
      ],
      "lines": [
       "Flak Turret"
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "token": "flak-turret"
+      }
      ]
     },
     {
@@ -73,6 +91,12 @@
      ],
      "lines": [
       "Excellent Vantage (All Buildings)"
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "token": "excellent-vantage"
+      }
      ]
     },
     {
@@ -228,6 +252,15 @@
       "All Infantry without Living Weapons",
       "and/or Bloodthirsty gain Demo",
       "Charges 4+."
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "token": "acm-package"
+      },
+      {
+       "at": 2
+      }
      ]
     },
     {
@@ -312,6 +345,16 @@
      "lines": [
       "Secure these points for 3/1 VP.",
       "Score on Round 4 and game end."
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "circle": [
+        0.79,
+        0.16,
+        0.46
+       ]
+      }
      ]
     },
     {
@@ -320,6 +363,12 @@
      "lines": [
       "Extract these Objects from Friendly",
       "Lines for 4/2 VP."
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "token": "object"
+      }
      ]
     },
     {
@@ -389,6 +438,16 @@
      "lines": [
       "Secure these points for 6/2 VP.",
       "Score on Round 4 and game end."
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "circle": [
+        0.89,
+        0.47,
+        0.39
+       ]
+      }
      ]
     },
     {
@@ -404,6 +463,12 @@
      "lines": [
       "Extract these Objects from Friendly",
       "Lines for 3/1 VP."
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "token": "object"
+      }
      ]
     },
     {
@@ -474,6 +539,19 @@
       "ACM Package",
       "All infantry without Living Weapon and/",
       "or Bloodthirsty gain Demo Charges 4+."
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "token": "heavy-cannon"
+      },
+      {
+       "at": 1,
+       "token": "acm-package"
+      },
+      {
+       "at": 2
+      }
      ]
     },
     {
@@ -581,6 +659,12 @@
      "lines": [
       "Extract these Objects from Friendly",
       "Lines for 3/1 VP."
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "token": "object"
+      }
      ]
     },
     {
@@ -643,6 +727,12 @@
      ],
      "lines": [
       "Shield Generator"
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "token": "shield-generator"
+      }
      ]
     },
     {
@@ -656,6 +746,16 @@
       "cannot be moved off the Table, but may",
       "be placed on top of Zones or Impassable",
       "Ground."
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "circle": [
+        0.89,
+        0.47,
+        0.39
+       ]
+      }
      ]
     },
     {
@@ -720,6 +820,12 @@
      ],
      "lines": [
       "Railgun Turret"
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "token": "railgun-turret"
+      }
      ]
     },
     {
@@ -731,6 +837,12 @@
      ],
      "lines": [
       "Comms Uplink"
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "token": "comms-uplink-tower"
+      }
      ]
     },
     {
@@ -742,6 +854,12 @@
      ],
      "lines": [
       "Excellent Vantage"
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "token": "excellent-vantage"
+      }
      ]
     },
     {
@@ -786,6 +904,9 @@
       "Score on game end."
      ]
     }
+   ],
+   "notes": [
+    "Zone Placement: Zones should not be placed overlapping multiple table quarters."
    ]
   },
   {
@@ -826,6 +947,16 @@
      "lines": [
       "Secure this point for 4/2 VP.",
       "Score on Round 4 and game end."
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "circle": [
+        0.93,
+        0.0,
+        0.55
+       ]
+      }
      ]
     },
     {
@@ -834,6 +965,12 @@
      "lines": [
       "Extract these Objects from Friendly",
       "Lines for 4/2 VP."
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "token": "object"
+      }
      ]
     },
     {
@@ -879,6 +1016,24 @@
       "2 Hardened Large Zones",
       "Comms Uplink",
       "Shield Generator"
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "square": [
+        0.45,
+        0.67,
+        0.53
+       ]
+      },
+      {
+       "at": 1,
+       "token": "comms-uplink-tower"
+      },
+      {
+       "at": 2,
+       "token": "shield-generator"
+      }
      ]
     },
     {
@@ -887,6 +1042,16 @@
      "lines": [
       "Secure this point for 6/2 VP. Score on",
       "game end."
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "circle": [
+        0.93,
+        0.0,
+        0.55
+       ]
+      }
      ]
     },
     {
@@ -895,6 +1060,16 @@
      "lines": [
       "Secure this point for 3/1 VP. Score on",
       "game end."
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "circle": [
+        1.0,
+        0.95,
+        0.0
+       ]
+      }
      ]
     },
     {
@@ -904,6 +1079,16 @@
       "Secure this point for 3/1 VP. Score on",
       "game end.",
       "Only use in Clash, Battle, & Reconquest."
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "circle": [
+        0.82,
+        0.14,
+        0.16
+       ]
+      }
      ]
     },
     {
@@ -1003,6 +1188,16 @@
      "lines": [
       "Secure these Zones for 2/1 VP. Score on",
       "Round 4 and game end."
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "outline": [
+        0.93,
+        0.0,
+        0.55
+       ]
+      }
      ]
     },
     {
@@ -1011,6 +1206,12 @@
      "lines": [
       "Extract these Objects from Friendly",
       "Lines for 4/2 VP."
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "token": "object"
+      }
      ]
     },
     {
@@ -1093,6 +1294,12 @@
      "lines": [
       "X Hive. Each Hive starts the game",
       "with X not defined."
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "token": "hive"
+      }
      ]
     },
     {
@@ -1101,6 +1308,12 @@
      "lines": [
       "Extract these Objects from Friendly",
       "Lines for 2/1 VP."
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "token": "object"
+      }
      ]
     },
     {
@@ -1148,6 +1361,16 @@
       "Shield Generator. These only",
       "function with Occupiers present.",
       "1 Gorgon Queen in Holding."
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "token": "shield-generator"
+      },
+      {
+       "at": 2,
+       "token": "hive"
+      }
      ]
     },
     {
@@ -1156,6 +1379,12 @@
      "lines": [
       "Extract these Objects from Friendly",
       "Lines for 3/1 VP."
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "token": "object"
+      }
      ]
     },
     {
@@ -1168,6 +1397,16 @@
      "lines": [
       "Secure these Points for 2/1 VP. Score",
       "on Round 4 and game end."
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "circle": [
+        0.73,
+        0.24,
+        0.57
+       ]
+      }
      ]
     },
     {
@@ -1198,6 +1437,20 @@
      "lines": [
       "2 Large Zones",
       "Excellent Vantage"
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "square": [
+        0.25,
+        0.68,
+        0.29
+       ]
+      },
+      {
+       "at": 1,
+       "token": "excellent-vantage"
+      }
      ]
     },
     {
@@ -1212,6 +1465,20 @@
       "full strength Fauna Squad per full",
       "500pts of game size.",
       "Centre line of Table."
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "token": "hive"
+      },
+      {
+       "at": 3,
+       "line": [
+        0.91,
+        0.34,
+        0.06
+       ]
+      }
      ]
     },
     {
@@ -1236,6 +1503,16 @@
      "lines": [
       "Secure these Points for 2/1 VP. Score",
       "on Round 4 and game end."
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "circle": [
+        0.75,
+        0.12,
+        0.18
+       ]
+      }
      ]
     },
     {
@@ -1266,6 +1543,28 @@
       "ACM Package",
       "Shield Generator",
       "1 Typhon"
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "square": [
+        0.25,
+        0.68,
+        0.29
+       ]
+      },
+      {
+       "at": 1,
+       "token": "acm-package"
+      },
+      {
+       "at": 2,
+       "token": "shield-generator"
+      },
+      {
+       "at": 3,
+       "token": "hive"
+      }
      ]
     },
     {

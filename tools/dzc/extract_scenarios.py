@@ -266,6 +266,11 @@ def main():
         encoding="utf-8",
     )
     print(f"\n{len(scenarios)} scenarios -> {OUT_DATA.relative_to(ROOT)}")
+    # the keys the book prints as pictures, which reading the squares above misses
+    sys.path.insert(0, str(Path(__file__).parent))
+    import fix_scenario_legends
+
+    fix_scenario_legends.main()
     for p in problems:
         print("  !", p)
     return 1 if problems else 0
