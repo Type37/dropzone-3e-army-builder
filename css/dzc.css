@@ -3100,6 +3100,17 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
   margin-left: 4px;
 }
 .dzc-play-name { font-weight: 600; font-size: 13.5px; overflow-wrap: anywhere; }
+/* Mv and Armour on a Vehicle, Mv/OF/DF/B on Infantry: the numbers a game asks
+   you for, which Play Mode printed nowhere. DP and Power are not here -- they
+   are the steppers and the dot track below, live.
+   auto-FILL rather than the picker's fixed 2 or 3 columns, and rather than
+   auto-fit: the empty tracks stay, so a Vehicle's two cells are the same width
+   as the first two of an Infantry Squad's four and the numbers line up down a
+   Group instead of resizing per card. Capped rather than stretched -- a Squad
+   row is as wide as the screen, and two stats spread over 900px of it read as
+   two unrelated numbers. */
+.dzc-play-stats { margin-top: 5px; max-width: 340px; }
+.dzc-play-stats .dzc-stats { grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); }
 .dzc-play-alive { margin-left: auto; font-size: 12px; font-weight: 700; }
 .dzc-play-models { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
 /* The guns this Squad fires, at a table. Scrolls sideways in its own box like

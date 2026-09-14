@@ -1008,6 +1008,46 @@ console.log('\nevery screen renders');
     A.remove(ba.id);
   }
 
+  /* THE SQUAD'S OWN STATS, on the card you play off.
+   *
+   * reddeth_38, build 476: "the Mv/A on vehicles and Mv/OF/DF/B on infantry
+   * are not being displayed. Only the trackable damage and power are." Play
+   * Mode printed every number a game CHANGES and none of the numbers a game
+   * ASKS FOR, so "how far does it move" meant leaving the screen you are
+   * playing off.
+   *
+   * DP and Power stay out, and that is the half worth asserting: both have a
+   * live tracker directly underneath, and a starting number printed beside a
+   * tracker that disagrees with it is worse than no number at all. */
+  {
+    const P = win.DZCPlay;
+    const sa = A.create('ucm', 'Stats at the table', 3000);
+    A.addSquad(sa, A.addGroup(sa).id, 'legionnaires', 3);
+    A.addSquad(sa, A.addGroup(sa).id, 'ucm-main-battle-tank', 2);
+    A.addSquad(sa, A.addGroup(sa).id, 'ucm-heavy-battle-mech', 1);
+    await P.open(sa.id);
+
+    const cells = {};
+    els['view-play'].innerHTML.replace(
+      /<span class="dzc-stat-v">([^<]*)<\/span>\s*<span class="dzc-stat-k">([^<]*)<\/span>/g,
+      (_, v, k) => { (cells[k] = cells[k] || []).push(v); return ''; });
+    const stats = id => win.DZC.faction('ucm').byId[id].stats;
+
+    const inf = stats('legionnaires');
+    eq((cells.Mv || []).indexOf(inf.Mv) !== -1, true, 'Infantry print their Move in Play mode');
+    eq((cells.OF || [])[0], inf.OF, 'and their Offence');
+    eq((cells.DF || [])[0], inf.DF, 'and their Defence');
+    eq((cells.B || [])[0], inf.B, 'and their Bravery');
+
+    const veh = stats('ucm-main-battle-tank');
+    eq((cells.A || []).indexOf(veh.A) !== -1, true, 'a Vehicle prints its Armour');
+    eq((cells.Mv || []).indexOf(veh.Mv) !== -1, true, 'and its own Move beside it');
+
+    eq(cells.DP, undefined, 'Damage Points are the stepper, not a stat cell');
+    eq(cells.Power, undefined, 'and Power is the dot track');
+    A.remove(sa.id);
+  }
+
   /* And the builder's own Group meter, which is measured against an allowance
    * counted in Groups, so it has to be counted in Groups too. It was counting
    * cards, which put the rail and validate's own error on different numbers

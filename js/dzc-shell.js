@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 493;
+  const BUILD = 494;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -617,6 +617,10 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-09-14', title: 'Play mode: a Squad’s own stats, on its card', items: [
+      'Every Squad on the Play screen carries the stats you are asked for across the table: Move and Armour on a Vehicle, Move, Offence, Defence and Bravery on Infantry. Reported by reddeth_38.',
+      'Damage Points and Power stay out of that row. Both change during a game and both already have a live tracker directly under it.',
+    ] },
     { date: '2026-09-13', title: 'Landing tip opens this app’s Interactive Rules', items: [
       'The landing screen’s Interactive Rules tip now opens Dropzone’s own rules instead of the Dropfleet builder’s.',
     ] },

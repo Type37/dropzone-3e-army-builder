@@ -612,6 +612,33 @@
     </div>`;
   }
 
+  /* WHAT THE SQUAD IS, above what has happened to it.
+   *
+   * reddeth_38, build 476: "the Mv/A on vehicles and Mv/OF/DF/B on infantry
+   * are not being displayed. Only the trackable damage and power are." Play
+   * Mode printed every number a game CHANGES and not one of the numbers a game
+   * ASKS FOR, so the answer to "how far does it move" was to leave the screen
+   * you are playing off and go and find the Squad in the builder.
+   *
+   * DP and Power come out deliberately. They are the two stats that are not
+   * facts about the Unit once the game starts -- they are the steppers and the
+   * dot track directly below, at their live values. Printing the starting
+   * numbers beside a tracker that disagrees with them is worse than printing
+   * nothing: at 3 of 6 DP the card would read "Damage Points 6".
+   *
+   * statsHtml is the builder's own renderer, compact, so a stat reads the same
+   * everywhere in the app and no variant of this block can drift from it. The
+   * unit's stats and not the variant's: across all six factions 218 variants
+   * change a gun and a price and not one changes a stat. */
+  const PLAY_HIDDEN_STATS = ['DP', 'Power'];
+  function statsHtml(u) {
+    const stats = Object.assign({}, u.stats || {});
+    PLAY_HIDDEN_STATS.forEach(k => { delete stats[k]; });
+    const html = window.DZCUnits.statsHtml(
+      Object.assign({}, u, { stats }), { compact: true });
+    return html ? `<div class="dzc-play-stats">${html}</div>` : '';
+  }
+
   function squadHtml(army, s) {
     const u = window.DZCArmy.unitOf(army, s);
     if (!u) return '';
@@ -650,6 +677,7 @@
   }).join('')}</span>
         <span class="dzc-play-alive" data-alive>${val.alive(s)}</span>
       </div>
+      ${statsHtml(u)}
       ${ptHtml(s, u)}
       ${rmHtml(army, s)}
       ${(t => threshold(u, maxDp(u))
