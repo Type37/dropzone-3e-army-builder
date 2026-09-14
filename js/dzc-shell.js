@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 492;
+  const BUILD = 493;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -617,6 +617,9 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-09-13', title: 'Landing tip opens this app’s Interactive Rules', items: [
+      'The landing screen’s Interactive Rules tip now opens Dropzone’s own rules instead of the Dropfleet builder’s.',
+    ] },
     { date: '2026-09-13', title: 'Interactive Rules: the whole rulebook, on one page', items: [
       'Interactive Rules is on the home screen: the Dropzone Commander 3.02 rulebook, word for word and with its bold, as one linked page. Rule names, section names and the book’s “see page” references are links, and Back returns you to where you were.',
       'The contents down the side nest each chapter’s sections under it, the way a book’s contents page does, so 4 Game Rounds holds the Initiation, Activation and End Phases.',
