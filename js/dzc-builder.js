@@ -178,11 +178,11 @@
         </div>
         <h3 class="dzc-army-name">${esc(a.name)}</h3>
         ${a.description ? `<p class="dzc-army-desc">${esc(a.description)}</p>` : ''}
-        <p class="dzc-army-pts"><b>${cost}</b><i>/ ${a.pointsLimit} pts</i>
-          <span>${size ? esc(size.label) : 'Below minimum'}, ${a.groups.length} group${
+        <p class="dzc-army-pts"><b>${cost}</b><i>${a.collection ? '' : `/ ${a.pointsLimit} `}pts</i>
+          <span>${a.collection ? 'Collection' : size ? esc(size.label) : 'Below minimum'}, ${a.groups.length} group${
             a.groups.length === 1 ? '' : 's'}${models ? `, ${models} model${models === 1 ? '' : 's'}` : ''}</span></p>
-        <div class="dzc-army-bar"><i class="${cost > a.pointsLimit ? 'is-over' : pct > 85 ? 'is-near' : ''}"
-          style="width:${pct}%"></i></div>
+        ${a.collection ? '' : `<div class="dzc-army-bar"><i class="${cost > a.pointsLimit ? 'is-over' : pct > 85 ? 'is-near' : ''}"
+          style="width:${pct}%"></i></div>`}
         ${armyStrip(a)}
         ${a.updatedAt ? `<p class="dzc-army-time">${esc(timeAgo(a.updatedAt))}</p>` : ''}
       </article>`;
@@ -296,6 +296,22 @@
     </div>`;
   }
 
+  /* The last card is not a game size. It is everything you own, priced, with
+   * none of the composition rules applied (DZCArmy.create). It sits with the
+   * sizes because that is the choice it replaces: how big, or no size at all. */
+  function collectionCardHtml() {
+    const on = picked.size === 'collection';
+    return `<div class="game-size-option${on ? ' selected' : ''}"
+                 data-size="collection" role="radio" tabindex="0" aria-checked="${on}"
+                 onclick="DZCBuilder.pickSize('collection')"
+                 onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();DZCBuilder.pickSize('collection')}">
+      <div class="game-size-info">
+        <div class="game-size-name">Collection</div>
+        <div class="game-size-details">No limits</div>
+      </div>
+    </div>`;
+  }
+
   function openNew() {
     const sizes = window.DZC.index.gameSizes;
     const def = sizes.find(s => s.id === picked.size) || sizes[1];
@@ -335,9 +351,9 @@
         <div class="form-group">
           <label class="form-label">Game size</label>
           <div class="size-grid" id="dzc-size-picker" role="radiogroup" aria-label="Game size">
-            ${sizes.map(sizeCardHtml).join('')}
+            ${sizes.map(sizeCardHtml).join('')}${collectionCardHtml()}
           </div>
-          <div class="dzc-points-row float-field">
+          <div class="dzc-points-row float-field${picked.size === 'collection' ? ' hidden' : ''}">
             <input class="form-input" id="dzc-new-points" type="number" min="501" step="50"
                    placeholder=" " value="${picked.points}" oninput="DZCBuilder.pointsChanged(this.value)">
             <label class="float-label" for="dzc-new-points">Points limit</label>
@@ -346,6 +362,12 @@
         </div>
       </div>`;
     updatePointsNote();
+    // A random list is built to a size, and a Collection has none.
+    const sb = document.getElementById('dzc-surprise-btn');
+    if (sb) {
+      sb.disabled = picked.size === 'collection';
+      sb.title = sb.disabled ? 'A Collection is what you own, not a random list' : '';
+    }
     document.getElementById('dzc-new').classList.add('active');
   }
 
@@ -356,6 +378,7 @@
   function updatePointsNote() {
     const el = document.getElementById('dzc-points-note');
     if (!el) return;
+    if (picked.size === 'collection') { el.textContent = ''; return; }
     const n = picked.points;
     const size = window.DZC.gameSizeFor(n);
     if (!size) {
@@ -407,7 +430,8 @@
       try {
         await window.DZC.loadFaction(picked.faction);
       } catch (e) { /* offline or a bad fetch: fall through and let the view report it */ }
-      const a = window.DZCArmy.create(picked.faction, name, picked.points, picked.description);
+      const a = window.DZCArmy.create(picked.faction, name, picked.points, picked.description,
+        picked.size === 'collection');
       location.hash = '#army/' + a.id;
       await renderBuilder(a.id);
       document.getElementById('dzc-new').classList.remove('active');
@@ -526,10 +550,15 @@
      *
      * Spend with no Standard at all is a full red track rather than an empty
      * one: it is the most broken this can be, and an empty bar reads as fine. */
+    /* A Collection is held to no ratio, so it gets the four spends side by
+     * side, each track measured against the largest, and nothing in red. */
+    const top = Math.max(std, spend.vanguard || 0, spend.heavy || 0, spend.support || 0);
+    const stdPct = a.collection && top ? Math.round((std / top) * 100) : 100;
     const ratio = ['vanguard', 'heavy', 'support'].map(c => {
       const val = spend[c] || 0;
-      const over = val > std;
-      const pct = std ? Math.min(100, Math.round((val / std) * 100)) : (val ? 100 : 0);
+      const over = !a.collection && val > std;
+      const pct = a.collection ? (top ? Math.round((val / top) * 100) : 0)
+        : std ? Math.min(100, Math.round((val / std) * 100)) : (val ? 100 : 0);
       return `<div class="dzc-ratio${over ? ' is-over' : ''}" style="--cat:${CAT_INK[c[0].toUpperCase() + c.slice(1)]}">
         <span>${c[0].toUpperCase() + c.slice(1)}</span>
         <!-- "110/495", not "110 of 495". Jet, 2026-08-17. Four of these stack
@@ -537,7 +566,7 @@
              cell it had to fit in -- which is why it was running under the
              track to its right. It is a ratio, and a slash is what a ratio is
              written with. -->
-        <span class="dzc-ratio-n"><b>${val}</b><i>/${std}</i></span>
+        <span class="dzc-ratio-n"><b>${val}</b>${a.collection ? '' : `<i>/${std}</i>`}</span>
         <span class="dzc-ratio-track"><i style="width:${pct}%"></i></span></div>`;
     }).join('');
 
@@ -620,13 +649,14 @@
                same outcome without a gesture. -->
           <button type="button" class="dzc-rail-peek" aria-expanded="${railOpen}"
                   aria-controls="dzc-rail-body" onclick="DZCBuilder.toggleRail()">
-            <b>${cost}</b><span>/ ${a.pointsLimit}pts</span>
-            <i${gTitle}>${gUsed}/${maxG || '—'} Groups</i>
+            <b>${cost}</b><span>${a.collection ? '' : `/ ${a.pointsLimit}`}pts</span>
+            <i${gTitle}>${a.collection ? gUsed : `${gUsed}/${maxG || '—'}`} Groups</i>
             <span class="dzc-rail-models">${modelLine}</span>
             ${(() => {
               // The SAME count the list under it prints. A peek line saying
               // "4 to fix" over a list of two is the peek line lying.
               const e = dedupeAlerts(v.errors).length, w = dedupeAlerts(v.warnings).length;
+              if (a.collection) return '';
               return e ? `<em class="is-err">${e} to fix</em>`
                 : w ? `<em>${w} note${w === 1 ? '' : 's'}</em>`
                 : '<em class="is-ok">legal</em>';
@@ -640,29 +670,29 @@
                  looking, and Dropfleet hangs the same popover off the same
                  badge (openGameSizeChanger, app.js:1369). -->
             <p class="dzc-b-sub"><span>${esc((FACTIONS.find(f => f.id === a.faction) || {}).name)}</span>
-              <button type="button" class="dzc-b-size" title="Change the agreed points limit"
+              ${a.collection ? '<span>Collection</span>' : `<button type="button" class="dzc-b-size" title="Change the agreed points limit"
                       onclick="DZCBuilder.sizeChanger(event)"
-                >${size ? esc(size.label) : 'Below the 501pt minimum'}</button></p>
+                >${size ? esc(size.label) : 'Below the 501pt minimum'}</button>`}</p>
             <!-- Jet, 2026-08-09: "there's a bar that shows how much you've
                  spent, and then a smaller number showing how much remains
                  somewhere. but it's a more obvious like 900/2000 or
                  something." Then: "remove the points left." Spent-over-limit
                  plus the bar is the whole picture; a second number saying the
                  same fact the other way was the redundant one. -->
-            <div class="dzc-rail-pts ${cost > a.pointsLimit ? 'is-over' : ''}">
-              <b>${cost}</b><span>/ ${a.pointsLimit}pts</span>
+            <div class="dzc-rail-pts ${!a.collection && cost > a.pointsLimit ? 'is-over' : ''}">
+              <b>${cost}</b><span>${a.collection ? '' : `/ ${a.pointsLimit}`}pts</span>
             </div>
-            <div class="dzc-rail-track"><i style="width:${pct}%"></i></div>
-            <p class="dzc-rail-line"${gTitle}>${gUsed}/${maxG || '—'} Groups<span
+            ${a.collection ? '' : `<div class="dzc-rail-track"><i style="width:${pct}%"></i></div>`}
+            <p class="dzc-rail-line"${gTitle}>${a.collection ? gUsed : `${gUsed}/${maxG || '—'}`} Groups<span
                class="dzc-rail-models">${modelLine}</span></p>
           </div>
 
           <div class="dzc-rail-card">
             <div class="dzc-rail-title">Category spend</div>
-            <div class="dzc-ratios" title="Vanguard, Heavy and Support may each not exceed Standard spend (3.2)">
+            <div class="dzc-ratios"${a.collection ? '' : ' title="Vanguard, Heavy and Support may each not exceed Standard spend (3.2)"'}>
               <div class="dzc-ratio is-std" style="--cat:${CAT_INK.Standard}"><span>Standard</span>
                 <span class="dzc-ratio-n"><b>${std}</b></span>
-                <span class="dzc-ratio-track"><i style="width:100%"></i></span></div>${ratio}
+                <span class="dzc-ratio-track"><i style="width:${stdPct}%"></i></span></div>${ratio}
             </div>
           </div>
 
@@ -675,7 +705,7 @@
                Group to sit on. -->
           ${alertList(v.errors.filter(e => !e.group), 'err', 'issue to fix', 'issues to fix')}
           ${alertList(v.warnings.filter(e => !e.group), 'warn', 'note', 'notes')}
-          ${v.ok && a.groups.length ? `<p class="dzc-legal">${window.DZCIcon('check_circle', { size: 15 })}This army is legal.</p>` : ''}
+          ${v.ok && a.groups.length && !a.collection ? `<p class="dzc-legal">${window.DZCIcon('check_circle', { size: 15 })}This army is legal.</p>` : ''}
           ${shortfallHtml(a)}
           </div>
         </aside>
@@ -1138,7 +1168,7 @@
     // itself. The Group's true cost, Commander included, is what the
     // share export and the printed sheet carry.
     const cost = window.DZCArmy.groupCompositionCost(a, g);
-    const cap = window.DZC.maxGroupCost(a.pointsLimit);
+    const cap = a.collection ? Infinity : window.DZC.maxGroupCost(a.pointsLimit);
     const models = g.squads.reduce((n, s) => n + s.models.length, 0);
     const U = window.DZCUnits;
     const space = window.DZCArmy.groupSpace(a, g).map(sp =>
@@ -1187,7 +1217,7 @@
             >${window.DZCIcon('drag_dots', { size: 18 })}</span>
       <button type="button" class="dzc-bb-select" onclick="DZCBuilder.selectGroup('${g.id}')">
         <span class="dzc-bb-head"><b>${name}</b>
-          <i>${cost}<s>/${cap}</s></i></span>
+          <i>${cost}${a.collection ? '' : `<s>/${cap}</s>`}</i></span>
         <span class="dzc-bb-meta">${g.squads.length} Squad${g.squads.length === 1 ? '' : 's'}${
           models ? `, ${models} model${models === 1 ? '' : 's'}` : ''}</span>
         ${carriers ? `<span class="dzc-bb-carriers">${carriers}</span>` : ''}
@@ -1277,7 +1307,7 @@
     // itself. The Group's true cost, Commander included, is what the
     // share export and the printed sheet carry.
     const cost = window.DZCArmy.groupCompositionCost(a, g);
-    const cap = window.DZC.maxGroupCost(a.pointsLimit);
+    const cap = a.collection ? Infinity : window.DZC.maxGroupCost(a.pointsLimit);
     const models = g.squads.reduce((t, s) => t + s.models.length, 0);
     const squads = g.squads.length;
 
@@ -1286,7 +1316,7 @@
      * beside the name instead of taking a band of their own under it. */
     return `<span class="dzc-g-meters">
       <span class="dzc-meter${cost > cap ? ' is-over' : ''}">
-        ${window.DZCIcon('calculate', { size: 12 })}<b>${cost}</b><i>of ${cap}pts</i></span>
+        ${window.DZCIcon('calculate', { size: 12 })}<b>${cost}</b><i>${a.collection ? '' : `of ${cap}`}pts</i></span>
       <span class="dzc-meter">
         ${window.DZCIcon('groups', { size: 12 })}<b>${squads}</b><i>Squad${squads === 1 ? '' : 's'}</i></span>
       <span class="dzc-meter">
@@ -1351,7 +1381,7 @@
     // itself. The Group's true cost, Commander included, is what the
     // share export and the printed sheet carry.
     const cost = window.DZCArmy.groupCompositionCost(a, g);
-    const cap = window.DZC.maxGroupCost(a.pointsLimit);
+    const cap = a.collection ? Infinity : window.DZC.maxGroupCost(a.pointsLimit);
     // Carriers first, then whatever they carry, indented beneath them. The
     // nesting IS the deployment plan, so it is drawn rather than described.
     const top = carryOrder(a, g.squads.filter(s => !s.carriedBy));
@@ -2405,7 +2435,8 @@
     const size = window.DZC.gameSizeFor(a.pointsLimit);
     const sizes = (window.DZC.index || {}).gameSizes || [];
     const all = (((window.DZC.index || {}).armyRules || {}).commanders || {}).levels || [];
-    const allowed = window.DZC.commanderLevels((size || {}).id || 'skirmish').map(l => l.level);
+    const allowed = a.collection ? all.map(l => l.level)
+      : window.DZC.commanderLevels((size || {}).id || 'skirmish').map(l => l.level);
     const rows = all.map(l => {
       const ok = allowed.indexOf(l.level) !== -1;
       // The size that DOES allow it, named the way the printable reference
@@ -3450,9 +3481,9 @@
       <div class="pr-head" style="${window.DZC.accentStyle(accentOf(a.faction))}">
         <h1 class="pr-title">${esc(a.name)}</h1>
         <p class="pr-sub"><span>${esc((FACTIONS.find(f => f.id === a.faction) || {}).name || a.faction)}</span>
-          <span>${size ? esc(size.label) : ''}</span>
+          <span>${a.collection ? 'Collection' : size ? esc(size.label) : ''}</span>
           <span>${sheetGroups(a)}</span>
-          <span><b>${window.DZCArmy.armyCost(a)}</b> / ${a.pointsLimit}pts</span></p>
+          <span><b>${window.DZCArmy.armyCost(a)}</b>${a.collection ? '' : ` / ${a.pointsLimit}`}pts</span></p>
         <!-- The notes you wrote on the army. They print because this is the
              sheet you hand across the table, and "the UCM half of the starter
              set" is the sort of thing you write there to say what the list IS. -->
@@ -3866,6 +3897,7 @@
      * the agreed limit is what the rules actually key off. The per-Group cap
      * is a quarter of IT, not a quarter of the band (3.2). */
     pickSize: id => {
+      if (id === 'collection') { picked.size = id; openNew(); return; }
       const g = window.DZC.index.gameSizes.find(s => s.id === id);
       if (!g) return;
       picked.size = id;

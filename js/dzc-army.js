@@ -90,7 +90,7 @@
   function all() { return armies; }
   function get(id) { return armies.find(a => a.id === id) || null; }
 
-  function create(faction, name, pointsLimit, description) {
+  function create(faction, name, pointsLimit, description, collection) {
     const a = {
       id: uid(),
       name: name || 'New Army',
@@ -106,6 +106,14 @@
       pointsLimit: pointsLimit || 2000,
       groups: [],
       created: Date.now(),
+      /* A COLLECTION: everything you own, built like an army so it can be
+       * priced, and held to none of the composition rules. Asked for by a
+       * player with 7000pts of PHR, 2026-09-21: more Rare Squads than any
+       * size allows and more Groups than he has dropships for. The army
+       * rules do not apply to a shelf, so validate() and every refusal that
+       * is a 3.1/3.2 composition rule steps aside. What a Unit IS (its squad
+       * size, what a Transport can carry) still holds. */
+      collection: !!collection,
       updatedAt: Date.now()
     };
     armies.unshift(a);
@@ -144,6 +152,7 @@
       description: typeof raw.description === 'string' ? raw.description.trim() : '',
       faction: raw.faction,
       pointsLimit: Number(raw.pointsLimit) > 0 ? Math.round(Number(raw.pointsLimit)) : 2000,
+      collection: !!raw.collection,
       groups: [],
       created: Number(raw.created) || Date.now(),
       updatedAt: Date.now(),
@@ -693,6 +702,7 @@
    * Duplicate buttons ask this: a Group and a Squad are the same question at
    * different sizes. */
   function roomForCopies(army, units) {
+    if (army.collection) return { ok: true, reason: null };
     const size = window.DZC.gameSizeFor(army.pointsLimit);
     const adding = new Map();
     (units || []).forEach(u => { if (u) adding.set(u, (adding.get(u) || 0) + 1); });
@@ -733,7 +743,7 @@
     if (!g) return { ok: false, reason: 'Unknown Group.' };
 
     const size = window.DZC.gameSizeFor(army.pointsLimit);
-    const maxG = size ? window.DZC.maxGroups(size, army.pointsLimit) : 0;
+    const maxG = size && !army.collection ? window.DZC.maxGroups(size, army.pointsLimit) : 0;
     if (maxG && groupsUsed(army) >= maxG) {
       return { ok: false, reason: `${size.label} allows ${maxG} Groups (3.1).` };
     }
@@ -1120,7 +1130,7 @@
     const boarded = ride && boardTransport(army, head.id, ride).ok;
     if (!boarded) {
       const size = window.DZC.gameSizeFor(army.pointsLimit);
-      const maxG = size ? window.DZC.maxGroups(size, army.pointsLimit) : 0;
+      const maxG = size && !army.collection ? window.DZC.maxGroups(size, army.pointsLimit) : 0;
       if (maxG && groupsUsed(army) >= maxG) {
         // Put the Group back as it was before saying no.
         g.squads = g.squads.filter(x => copies.indexOf(x) === -1);
@@ -1280,7 +1290,7 @@
   function addCommander(army, level) {
     const size = window.DZC.gameSizeFor(army.pointsLimit);
     const allowed = size ? window.DZC.commanderLevels(size.id).map(l => l.level) : [];
-    if (allowed.indexOf(level) === -1) {
+    if (!army.collection && allowed.indexOf(level) === -1) {
       return { ok: false, reason: `A Level ${level} Commander is not allowed in ${size ? size.label : 'this game size'} (3.2.5).` };
     }
     const c = { id: uid(), level: level, squadId: null, name: null };
@@ -1455,6 +1465,7 @@
       }
     }
 
+    if (army.collection) return { ok: true, reason: null };
     const taken = squadsNamed(army, u.name);
     if (u.unique && taken >= 1) {
       return { ok: false, reason: `${u.name} is Unique: one per Army (3.2.1).` };
@@ -2577,7 +2588,7 @@
     const errors = [];
     const warnings = [];
     const idx = window.DZC.index;
-    if (!idx) return { errors, warnings, ok: true };
+    if (!idx || army.collection) return { errors, warnings, ok: true };
 
     const limit = army.pointsLimit;
     const size = window.DZC.gameSizeFor(limit);

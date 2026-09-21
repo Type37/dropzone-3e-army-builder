@@ -2752,5 +2752,34 @@ console.log('\na Commander is ignored by the quarter cap (3.2.5)');
   A.remove(a.id);
 }
 
+// A Collection: everything you own, priced, with no composition rule applied.
+// Asked for by a player with 7000pts of PHR and more Rare Squads than any
+// size allows.
+{
+  await DZC.loadFaction('ucm');
+  const rare = (DZC.faction('ucm').units || []).find(u => u.rare && u.selectable !== false);
+  const a = A.create('ucm', 'Shelf', null, '', true);
+  ok(a.collection === true, 'a Collection is marked as one');
+  for (let i = 0; i < 3; i++) {
+    const g = A.addGroup(a);
+    ok(A.canAddUnit(a, g.id, rare.id).ok, `Rare ${rare.name} number ${i + 1} is allowed in a Collection`);
+    A.addSquad(a, g.id, rare.id, rare.squadMin || 1);
+  }
+  for (let i = 0; i < 20; i++) A.addSquad(a, A.addGroup(a).id, 'ucm-main-battle-tank', 3);
+  ok(A.duplicateGroup(a, a.groups[0].id).ok, 'a Group past every size cap still duplicates');
+  ok(A.addCommander(a, 7).ok, 'any Commander level may be added');
+  const v = A.validate(a);
+  eq(v.errors.length + v.warnings.length, 0, 'validate reports nothing on a Collection');
+  ok(A.armyCost(a) > 0, 'and it is still priced');
+  const r = A.importArmies(JSON.stringify([a]));
+  const back = r.added.length && A.get(r.added[0].id);
+  ok(back && back.collection === true, 'a backup restores as a Collection');
+
+  const b = A.create('ucm', 'Game', 1000);
+  A.addSquad(b, A.addGroup(b).id, rare.id, rare.squadMin || 1);
+  ok(!A.canAddUnit(b, A.addGroup(b).id, rare.id).ok, 'an ordinary army still refuses the second Rare');
+  [a, b, back].forEach(x => x && A.remove(x.id));
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

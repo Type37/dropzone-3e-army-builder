@@ -31,6 +31,7 @@
       // that already has a practical length limit.
       d: army.description || undefined,
       p: army.pointsLimit,
+      c: army.collection ? 1 : undefined,
       // Assigned Commanders still travel as `k` on their Squad, so a link made
       // today still opens in a build from before they moved to the army. `u`
       // carries the ones not yet with a Squad, which had nowhere to live.
@@ -87,7 +88,7 @@
     const uid = () => 'a' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
     const army = {
       id: uid(), name: data.n || 'Shared Army', description: data.d || '', faction: data.f,
-      pointsLimit: data.p || 2000, groups: [],
+      pointsLimit: data.p || 2000, collection: !!data.c, groups: [],
       created: Date.now(), updatedAt: Date.now()
     };
     (data.g || []).forEach(gr => {
@@ -212,10 +213,11 @@
     const size = D.gameSizeFor(army.pointsLimit);
     const cost = A.armyCost(army);
     const out = [
-      `# ${army.name} [${army.pointsLimit}pts]`,
+      `# ${army.name}${army.collection ? '' : ` [${army.pointsLimit}pts]`}`,
       army.description ? `# ${army.description}` : '',
-      `# ${army.faction.toUpperCase()}, ${size ? size.label : 'below the minimum'}`
-        + `, ${cost} of ${army.pointsLimit}pts, ${army.groups.length} Group`
+      `# ${army.faction.toUpperCase()}, ${army.collection ? 'Collection'
+        : size ? size.label : 'below the minimum'}`
+        + `, ${army.collection ? `${cost}pts` : `${cost} of ${army.pointsLimit}pts`}, ${army.groups.length} Group`
         + `${army.groups.length === 1 ? '' : 's'}`,
       ''
     ];
