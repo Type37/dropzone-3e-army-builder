@@ -50,7 +50,7 @@ SCANS = [
     # a scan that adds or drops one leaves it describing a set that no longer
     # exists. A path that 404s is not a small loss: Cache.addAll rejects the
     # WHOLE batch on one bad URL, so a single removed photo takes the entire
-    # offline download down with it -- on the unattended fortnightly re-scan,
+    # offline download down with it -- on the unattended weekly re-scan,
     # for everyone, silently. Regenerated here so it cannot drift.
     ("offline manifest", ["../../scripts/gen-offline-manifest.py"]),
 ]

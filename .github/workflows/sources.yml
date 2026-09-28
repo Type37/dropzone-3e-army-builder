@@ -1,19 +1,10 @@
 name: Watch TTCombat for new PDFs
 
-# Every second Monday at 09:00 UTC, and on demand.
-#
-# Cron has no "fortnightly", so this runs weekly and the job itself skips the
-# odd weeks. A schedule that lies about its interval is worse than one that
-# runs twice as often and says so.
+# Every Monday at 09:00 UTC, and on demand.
 on:
   schedule:
     - cron: "0 9 * * 1"
   workflow_dispatch:
-    inputs:
-      force:
-        description: "Run even on an off week"
-        type: boolean
-        default: false
 
 permissions:
   contents: write
@@ -29,25 +20,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Is this the fortnight?
-        id: week
-        run: |
-          WEEK=$(date -u +%V)
-          if [ "${{ inputs.force }}" = "true" ] || [ $((10#$WEEK % 2)) -eq 0 ]; then
-            echo "run=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "run=false" >> "$GITHUB_OUTPUT"
-            echo "ISO week $WEEK is an odd week — skipping."
-          fi
-
       - name: Node
-        if: steps.week.outputs.run == 'true'
         uses: actions/setup-node@v7
         with:
           node-version: "22"
 
       - name: Install uv
-        if: steps.week.outputs.run == 'true'
         uses: astral-sh/setup-uv@v9.0.0
         with:
           enable-cache: true
@@ -57,7 +35,6 @@ jobs:
       # and exits 1 when anything has moved. continue-on-error because "there
       # is a new release" is the interesting outcome, not a failure.
       - name: What is TTCombat publishing?
-        if: steps.week.outputs.run == 'true'
         id: check
         continue-on-error: true
         run: |
@@ -65,7 +42,7 @@ jobs:
           echo "changed=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
 
       - name: Download and re-scan
-        if: steps.week.outputs.run == 'true' && steps.check.outputs.changed != '0'
+        if: steps.check.outputs.changed != '0'
         run: |
           uv run python tools/dzc/fetch_sources.py
           # The whole pipeline: scan both PDF sets, then all seven audits. The
@@ -100,7 +77,7 @@ jobs:
       # unit arrives as an untracked file in assets/units, which a diff of
       # tracked files does not see.
       - name: Did the data actually change?
-        if: steps.week.outputs.run == 'true' && steps.check.outputs.changed != '0'
+        if: steps.check.outputs.changed != '0'
         id: data
         run: |
           if [ -z "$(git status --porcelain -- data assets/units)" ]; then
@@ -115,11 +92,11 @@ jobs:
       # sees: sw.js precaches data/dzc/index.json and rules.json, so an
       # installed app keeps serving the old points with nothing to say so.
       - name: Raise the build number
-        if: steps.week.outputs.run == 'true' && steps.data.outputs.changed == 'true'
+        if: steps.data.outputs.changed == 'true'
         run: node scripts/bump-build.mjs
 
       - name: Prove it
-        if: steps.week.outputs.run == 'true' && steps.check.outputs.changed != '0'
+        if: steps.check.outputs.changed != '0'
         run: node scripts/test-all.mjs
 
       # Only reached when the scan AND every audit AND the whole suite passed,
@@ -127,7 +104,7 @@ jobs:
       # that basis and not on any weaker one — this is the file every number in
       # the app comes out of.
       - name: Commit the new data
-        if: steps.week.outputs.run == 'true' && steps.check.outputs.changed != '0'
+        if: steps.check.outputs.changed != '0'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -155,7 +132,6 @@ jobs:
           git push
 
       - name: Say what happened
-        if: steps.week.outputs.run == 'true'
         run: |
           if [ "${{ steps.check.outputs.changed }}" = "0" ]; then
             echo "### rules/ matches the resources page" >> "$GITHUB_STEP_SUMMARY"

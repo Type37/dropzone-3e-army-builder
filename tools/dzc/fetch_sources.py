@@ -85,7 +85,7 @@ def stamp(name: str) -> str:
     the 260821 release with a digit fat-fingered into the name; without this,
     the page's name never equals the name on disk, so --check reported "1 newer"
     on every run forever and the scheduled job re-downloaded the same file each
-    fortnight to prove it."""
+    week to prove it."""
     m = DATE_RE.search(os.path.splitext(name)[0] + "")
     if m:
         return m.group(1)
@@ -211,7 +211,7 @@ def main() -> int:
         # linked as "..._2608021.pdf" and saved under the stamp that actually
         # serves, "..._260821.pdf", so a name-equality test called the same
         # release newer on every run -- one permanent false positive, which on
-        # a scheduled job is a re-download every fortnight and an exit code
+        # a scheduled job is a re-download every week and an exit code
         # nobody can trust.
         if have and version_of(have) == version_of(name):
             fresh.append(have)
