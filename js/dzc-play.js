@@ -222,12 +222,40 @@
    *
    * Dead models do not hold the Group open: the same rule that drops a wiped
    * Group out of activeGroups drops its weight with it. */
+  /* And a Behemoth's cargo is a Group of its own: "all Squads aboard a
+   * Behemoth at the start of the game form a single Group" (Behemoth rules
+   * 1.6), Director excepted. The builder counts it +1 (groupsUsed); Play
+   * counted an Explorator with Squads aboard as 4 where the builder said 5.
+   * The cargo's Group lives as long as any of it does, whatever became of
+   * the Behemoth. */
+  /* How many RM tokens this Squad may hold during a game. A Genitor's is its
+   * hollow green square (genitorCap). A Collector's is its rule: "Collector X
+   * -- This Unit may hold up to X RM Tokens", and a Decon kill may place
+   * tokens on "1 Genitor or Collector Unit" (Bioficer rules). Only Genitors
+   * start with any; a Collector begins empty, so this is Play's question,
+   * not the builder's. */
+  function rmCap(army, s) {
+    const g = window.DZCArmy.genitorCap(army, s);
+    if (g) return g;
+    const u = window.DZCArmy.unitOf(army, s);
+    const m = String((u && u.special) || '').match(/\bCollector\s*(\d+)/i);
+    return m ? Number(m[1]) * s.models.length : 0;
+  }
+
   function groupWeight(army, g) {
-    const ge = (g.squads || []).filter(s => aliveIn(s) > 0).map(s => {
-      const u = window.DZCArmy.unitOf(army, s);
-      return (u && u.groupEquivalent) || 0;
-    }).filter(Boolean);
-    return ge.length ? Math.max.apply(null, ge) : 1;
+    const squads = g.squads || [];
+    const unit = s => window.DZCArmy.unitOf(army, s);
+    const hosts = new Set(squads.filter(s => {
+      const u = unit(s);
+      return u && u.groupEquivalent
+        && !(u.gear || []).some(x => /^Director\b/.test(String(x.name || '')));
+    }).map(s => s.id));
+    const alive = squads.filter(s => aliveIn(s) > 0);
+    const cargo = alive.filter(s => hosts.has(s.carriedBy));
+    const rest = alive.filter(s => !hosts.has(s.carriedBy));
+    const ge = rest.map(s => (unit(s) || {}).groupEquivalent || 0).filter(Boolean);
+    const own = ge.length ? Math.max.apply(null, ge) : (rest.length ? 1 : 0);
+    return own + (cargo.length ? 1 : 0);
   }
 
   function groupsOnTable(army) {
@@ -274,7 +302,7 @@
     dp: (sid, i) => String(((state.models[sid] || [])[i] || {}).dp),
     pt: (s, u) => Math.max(0, Math.min(power(u), (state.squads[s.id] || {}).pt || 0)),
     rm: (army, s) => String(Math.max(0,
-      Math.min(window.DZCArmy.genitorCap(army, s), (state.squads[s.id] || {}).rm || 0))),
+      Math.min(rmCap(army, s), (state.squads[s.id] || {}).rm || 0))),
     // A Behemoth's condition, from the damage it has taken (1.5.5). Degraded
     // cannot Advance; Crippled cannot Advance or Charge and is worth half its
     // points. Which is worth knowing without counting.
@@ -605,7 +633,7 @@
    * Same shape as the Power track above it, without the dots: Power is 5 at
    * most and reads as pips, RM goes to 12 and would be a row of confetti. */
   function rmHtml(army, s) {
-    const cap = window.DZCArmy.genitorCap(army, s);
+    const cap = rmCap(army, s);
     if (!cap) return '';
     return `<div class="dzc-play-rm" data-rm="${esc(s.id)}">
       <button type="button" class="dzc-press" data-step="down" onclick="DZCPlay.rm(this,'${esc(s.id)}',-1)" aria-label="Spend an RM token">−</button>
@@ -804,7 +832,7 @@
           const have = +val.rm(army, s);
           setText(q('[data-rm-n]', rm), String(have));
           setNil(q('[data-step="down"]', rm), have <= 0);
-          setNil(q('[data-step="up"]', rm), have >= window.DZCArmy.genitorCap(army, s));
+          setNil(q('[data-step="up"]', rm), have >= rmCap(army, s));
         }
         const cond = q('[data-cond]', el);
         if (cond) {
@@ -1011,7 +1039,7 @@
       const was = q.rm || 0;
       // Clamped at the cap, not refused: "any above X are discarded" is the
       // rule, so the token simply does not go aboard.
-      q.rm = Math.max(0, Math.min(window.DZCArmy.genitorCap(a, s), was + d));
+      q.rm = Math.max(0, Math.min(rmCap(a, s), was + d));
       float(el, q.rm === was ? (d > 0 ? 'At its cap' : 'None aboard')
         : d > 0 ? '+1 RM' : '−1 RM', q.rm === was ? 'nil' : d > 0 ? 'good' : 'bad');
       commit();

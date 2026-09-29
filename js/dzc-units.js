@@ -918,7 +918,8 @@
                writes it and the audits read it. -->
           <p class="dzc-detail-meta"><span class="dzc-cat" data-cat="${esc(u.category)}">${esc(u.category)}</span> <span>${esc(u.type || '')}</span>
             <span>${pointsHtml(u)}</span> <span>${sizeHtml(u)}</span>
-            ${u.rare ? '<span class="dzc-flag dzc-flag--rare">Rare</span>' : ''}${u.unique ? '<span class="dzc-flag dzc-flag--unique">Unique</span>' : ''}</p>
+            ${u.rare ? '<span class="dzc-flag dzc-flag--rare">Rare</span>' : ''}${u.unique ? '<span class="dzc-flag dzc-flag--unique">Unique</span>' : ''}${
+              u.auxiliaryTransport ? '<span class="dzc-flag">Aux Transport</span>' : ''}</p>
           <div class="dzc-card-stats">${statsHtml(u)}</div>
         </div>
       </div>

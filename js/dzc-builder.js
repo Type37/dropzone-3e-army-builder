@@ -2790,7 +2790,8 @@
     { key: 'unique',   label: 'Unique',   test: u => !!u.unique },
     { key: 'variants', label: 'Variants', test: u => (u.variants || []).length > 0 },
     { key: 'carries',  label: 'Carries',  test: u => totalCapacity(u) > 0 },
-    { key: 'aux',      label: 'Auxiliary', test: u => !!u.auxiliaryTransport },
+    // The grid card's word for it, so a filter and the chip it finds agree.
+    { key: 'aux',      label: 'Aux Transport', test: u => !!u.auxiliaryTransport },
     // The sixth gap 24 asked for. A paid weapon upgrade is a green name box
     // with a points cost (3.2.3), and only 18 Units in the game have one, so
     // "what can I spend the last 40 points on" is a real question this answers.
@@ -2943,9 +2944,10 @@
       U.sizeHtml(u) ? `<span>${U.sizeHtml(u)}</span>` : ''
     ].filter(Boolean).join('');
     return `<div class="dzc-pick${chk.ok ? '' : ' is-blocked'}">
-      ${u.rare || u.unique ? `<span class="dzc-pick-flags">${u.rare
+      ${u.rare || u.unique || u.auxiliaryTransport ? `<span class="dzc-pick-flags">${u.rare
         ? '<span class="dzc-flag dzc-flag--rare">Rare</span>' : ''}${u.unique
-        ? '<span class="dzc-flag dzc-flag--unique">Unique</span>' : ''}</span>` : ''}
+        ? '<span class="dzc-flag dzc-flag--unique">Unique</span>' : ''}${u.auxiliaryTransport
+        ? '<span class="dzc-flag">Aux Transport</span>' : ''}</span>` : ''}
       <div class="dzc-pick-open" role="button" tabindex="0"
            title="Stats, weapons and rules"
            onclick="DZCUnits.openDetail('${esc(u.id)}','${esc(a.faction)}')"
