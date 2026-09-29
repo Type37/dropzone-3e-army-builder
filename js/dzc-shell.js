@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 511;
+  const BUILD = 512;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -644,6 +644,12 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-09-29', title: 'Four rules calls, by the rulebook’s wording', items: [
+      'A Commander can be assigned to a Transport Squad. 3.2.5 says a Commander goes on a Unit, and a Transport is one.',
+      'Aux Gates, and the Siegestrider Lion’s Integrated Gate, are not taken with Units aboard, like any Gate. Their passengers start in Holding.',
+      'Cling is one Squad per Aircraft: a Squad of two Gunships takes two clinging Squads.',
+      'The Porphyrion’s hold is full of its Venus Drones (Director), so nothing else boards it.',
+    ] },
     { date: '2026-09-29', title: 'The FAQ in Interactive Rules', items: [
       'TTCombat’s 43 FAQ answers are a chapter of Interactive Rules, in their seven topics and searchable: Transports, Movement, Attacking, Reaction Attacks, CQBs and the rest.',
     ] },

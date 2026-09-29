@@ -1236,14 +1236,14 @@
    * Commander stays on the list, because the select has to be able to show
    * where they already are.
    *
-   * Excluding TRANSPORT Squads is not that rule. 3.2.5 reads, in full, that a
-   * Commander "must be assigned to a Unit when building your Army" and that a
-   * Squad may contain one. A Transport is a Unit and a Transport Squad is a
-   * Squad, so the rules permit it and this refuses it. It is a design decision
-   * and it is marked as one: 3.2.5 also says a Commander is killed with the
-   * Unit they are assigned to, and riding in the Bear APC instead of with the
-   * Legionnaires it carries is strictly the worse place to be. Whether the
-   * builder should still allow it is on the backlog, unsettled. */
+   * TRANSPORT Squads are allowed. 3.2.5 reads, in full, that a Commander
+   * "must be assigned to a Unit when building your Army" and that a Squad may
+   * contain one; a Transport is a Unit and a Transport Squad is a Squad. They
+   * were refused from 2026-07-30 as a design call (a Commander dies with the
+   * Unit they are in, and a Bear APC is a worse place to be than the
+   * Legionnaires it carries), marked unsettled. Settled 2026-09-29 by the
+   * rulebook's wording: a worse choice is still a legal one, and it is the
+   * player's to make. The bans that ARE rules are in NO_COMMANDER below. */
   /* Units no Commander may ever be assigned to, in the rulebook's own words:
    *
    *   10.1.12 Fast Mover     "Commanders may not be assigned to Fast Movers."
@@ -1285,7 +1285,7 @@
     const out = [];
     army.groups.forEach(g => g.squads.forEach(s => {
       const u = unitOf(army, s);
-      if (!u || u.category === 'Transport' || commanderBan(u)) return;
+      if (!u || commanderBan(u)) return;
       const held = commanderFor(army, s.id);
       if (held && held.id !== cmdrId) return;
       out.push({ squad: s, unit: u, group: g });
@@ -1320,9 +1320,6 @@
     const s = findSquad(army, squadId);
     if (!s) return { ok: false, reason: 'Unknown Squad.' };
     const u = unitOf(army, s);
-    if (u && u.category === 'Transport') {
-      return { ok: false, reason: 'A Commander is assigned to a fighting Unit, not to a Transport Squad.' };
-    }
     const ban = commanderBan(u);
     if (ban) return { ok: false, reason: ban.reason };
     const held = commanderFor(army, squadId);
@@ -1784,10 +1781,9 @@
       if (carriesTransitively(army, s.id, t.id)) return false;
       const tu = carrierOf(army, t);
       if (!tu || !(tu.category === 'Transport' || tu.auxiliaryTransport)) return false;
-      // A Gate is never boarded when the list is built, and it is never part
-      // of another Group either -- so it can never be a carrier in here. An
-      // Aux Gate is, and deliberately: it is "taken as a non-Gate Squad".
-      if (isGate(tu)) return false;
+      // A Gate is never boarded when the list is built, and nor is an Aux
+      // Gate or an Integrated Gate: see boardsLikeGate.
+      if (boardsLikeGate(tu, t)) return false;
       // "Subterranean Units with a Transport Symbol are not taken with any
       // Units aboard." Same sentence, same answer: a Squad rides a Splitting
       // Drill during the game, out of Holding, not on the list.
@@ -1858,7 +1854,7 @@
       }
       // Capacity is not why these two refuse, and saying it was sent you off
       // to shrink a Squad that would never have been allowed aboard.
-      if (tu && isGate(tu)) {
+      if (tu && boardsLikeGate(tu, t)) {
         return { ok: false,
           reason: `${tu.name} is a Gate: Gates are not taken with any Units aboard.` };
       }
@@ -2037,6 +2033,26 @@
 
   function gateSquad(army, squad) { return isGate(unitOf(army, squad)); }
 
+  /* Anything that is a Gate for BOARDING, which is more than isGate. "Aux
+   * Gates use the same rules as Gates except they are taken as non-Gate
+   * Squads and must be activated normally" (Shaltari rules), and the Lion's
+   * Integrated Gate "functions as an Auxiliary Gate" (Behemoth rules 2.1.2).
+   * The two exceptions are Group membership and activation; "Gates are not
+   * taken with any Units aboard" is not one of them. So an Aux Gate joins a
+   * Group and counts like any Squad (isGate stays exact for that), and like a
+   * Gate it starts the game empty, its passengers in Holding. Decided
+   * 2026-09-29 on that wording: until then a Firedrake could be listed with
+   * Grav-tanks aboard. The Integrated Gate is the Lion's only (its bracket). */
+  function boardsLikeGate(unit, squad) {
+    if (!unit) return false;
+    const toks = String(unit.special || '').split(',').map(t => t.trim());
+    if (toks.some(t => t === 'Gate' || t === 'Aux Gate')) return true;
+    const ig = toks.find(t => /^Integrated Gate\b/.test(t));
+    if (!ig) return false;
+    const only = (ig.match(/\(([^)]+)\)/) || [])[1];
+    return !only || !squad || squad.models.some(m => m.variant === only);
+  }
+
   /* CLING, which is a ride that ignores the symbols entirely.
    *
    *   "One Squad with Cling may be chosen Embarked aboard any Aircraft without
@@ -2108,9 +2124,12 @@
       const tu = unitOf(army, t);
       if (!tu || tu.type !== 'Aircraft' || hasCling(tu)) return;
       if (unitDp(tu) < need) return;
-      // "One Squad with Cling" -- one per Aircraft, so an Aircraft that has
-      // another one on it already is not on offer.
-      if (g.squads.some(x => x.id !== s.id && x.carriedBy === t.id && clings(army, x))) return;
+      // "One Squad with Cling may be chosen Embarked aboard any Aircraft" --
+      // one per Aircraft, and a Squad of three Scourge Gunships is three
+      // Aircraft. It was one per Aircraft SQUAD until 2026-09-29, which
+      // refused a second Vampire Squad on a Squad of three.
+      const on = g.squads.filter(x => x.id !== s.id && x.carriedBy === t.id && clings(army, x)).length;
+      if (on >= t.models.length) return;
       out.push({ squad: t, unit: tu, group: g, dp: unitDp(tu), need: need });
     }));
     return out;
@@ -2145,7 +2164,7 @@
           reason: `${tu.name} has ${unitDp(tu)} DP and this Squad is ${squadDp(army, s)}. `
             + `Cling needs an Aircraft with the same or more initial DP.` };
       }
-      return { ok: false, reason: `${tu.name} already has a Squad clinging to it (Cling).` };
+      return { ok: false, reason: `Every ${tu.name} already has a Squad clinging to it. One Squad with Cling per Aircraft (Cling).` };
     }
 
     // "This Squad joins that Aircraft's Group."
@@ -2309,6 +2328,17 @@
     /* Capacity one variant has and the others do not: "(Porphyrion)" beside
      * the Type 6 Grand Walker's circle, "(Lion)" beside the Siegestrider's
      * triangle. An Alcyoneus carries nothing. */
+    /* "A Behemoth with Director begins the game with its Transport capacity
+     * filled" by the Units it directs (Behemoth rules 1.7.1): the Porphyrion's
+     * circle 8 is its eight Venus Drones, which are never chosen (Directed).
+     * So there is no room in it for anything else on the list, and the Group
+     * header drew an empty 0/8 hold. Only for the Variant whose Gear it is. */
+    const fieldedV = squad.models.map(m => m.variant);
+    const directs = ((u && u.gear) || []).some(x => /^Director\b/.test(String(x.name || ''))
+      && (!(x.variants || []).length || x.variants.some(v => fieldedV.indexOf(v) !== -1)));
+    if (directs) {
+      return Object.assign({}, u, { transport: Object.assign({}, u.transport, { capacity: [] }) });
+    }
     const cap = (u && u.transport && u.transport.capacity) || [];
     if (!cap.some(c => (c.variants || []).length)) return u;
     const fielded = squad.models.map(m => m.variant);
@@ -2876,11 +2906,12 @@
             msg: `${xu.name}: ${squadDp(army, x)} DP clinging to ${unitDp(tu)} DP of ${tu.name}. `
               + `Cling needs an Aircraft with the same or more initial DP.` });
         }
-        // "One Squad with Cling", so two on the same Aircraft is one too many.
+        // One Squad with Cling per Aircraft, so more than the Squad has
+        // models is too many.
         const others = g.squads.filter(y => y.id !== x.id && y.carriedBy === t.id && clings(army, y));
-        if (others.length && g.squads.indexOf(x) < g.squads.indexOf(others[0])) {
+        if (others.length + 1 > t.models.length && g.squads.indexOf(x) < g.squads.indexOf(others[0])) {
           errors.push({ rule: 'Cling', group: g.id,
-            msg: `${tu.name} has ${others.length + 1} Squads clinging to it. One Squad with Cling may be chosen aboard an Aircraft.` });
+            msg: `${tu.name} has ${others.length + 1} Squads clinging to ${t.models.length} Aircraft. One Squad with Cling may be chosen aboard an Aircraft.` });
         }
       });
     });

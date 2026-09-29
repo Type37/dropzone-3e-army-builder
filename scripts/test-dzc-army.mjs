@@ -880,9 +880,8 @@ console.log('\nCommander levels are gated by game size (3.2.5)');
  * already holding somebody else is not offered, and the Squad holding THIS
  * Commander is, because otherwise the select could not show where they are.
  *
- * Excluding Transport Squads is the app's own decision and not something 3.2.5
- * says; it is pinned here as behaviour, with a question raised on the backlog
- * rather than a rule claimed for it.
+ * Transport Squads are offered too: 3.2.5 says "a Unit", and a Transport is
+ * one. They were refused as a design call until 2026-09-29.
  */
 console.log('\nwhere a Commander may be assigned (3.2.5)');
 {
@@ -895,10 +894,10 @@ console.log('\nwhere a Commander may be assigned (3.2.5)');
 
   const first = A.addCommander(a, 5).commander;
   let ids = A.commanderTargets(a, first.id).map(t => t.squad.id);
-  eq(ids.length, 2, 'both fighting Squads are offered');
-  ok(ids.includes(legion.id) && ids.includes(tank.id), 'and they are the right two');
-  ok(!A.commanderTargets(a, first.id).some(t => (A.unitOf(a, t.squad) || {}).category === 'Transport'),
-     'the Transport Squad is not among them');
+  eq(ids.length, 3, 'both fighting Squads and the Bear APC are offered');
+  ok(ids.includes(legion.id) && ids.includes(tank.id), 'including the right two fighting Squads');
+  ok(A.commanderTargets(a, first.id).some(t => (A.unitOf(a, t.squad) || {}).category === 'Transport'),
+     'and the Transport Squad, which is a Unit (3.2.5)');
 
   A.assignCommander(a, first.id, legion.id);
   ids = A.commanderTargets(a, first.id).map(t => t.squad.id);
@@ -906,8 +905,8 @@ console.log('\nwhere a Commander may be assigned (3.2.5)');
 
   const second = A.addCommander(a, 4).commander;
   ids = A.commanderTargets(a, second.id).map(t => t.squad.id);
-  eq(ids.length, 1, 'a second Commander is offered only the free Squad');
-  eq(ids[0], tank.id, 'and it is the one nobody is aboard');
+  eq(ids.length, 2, 'a second Commander is offered only the free Squads');
+  ok(ids.includes(tank.id) && !ids.includes(legion.id), 'and not the one the first is aboard');
   A.remove(a.id);
 }
 
@@ -2286,18 +2285,58 @@ console.log('\nOne gun either side of an OR (Type 7 Grand Walker)');
   A.remove(a.id);
 }
 
-console.log('\nCapacity one variant has (Type 6 Grand Walker, Porphyrion)');
+console.log('\nCapacity one variant has (Siegestrider, Lion)');
+{
+  await DZC.loadFaction('shaltari');
+  const a = A.create('shaltari', 'Siegestrider', 3000);
+  const g = A.addGroup(a);
+  const s = A.addSquad(a, g.id, 'siegestrider', 1);
+  s.models[0].variant = 'Tiger';
+  eq(A.carrierOf(a, s).transport.capacity.length, 0, 'a Tiger carries nothing');
+  s.models[0].variant = 'Lion';
+  eq((A.carrierOf(a, s).transport.capacity.find(c => c.shape === 'triangle') || {}).n, 8,
+     'a Lion has its 8 triangles');
+  const grav = A.addSquad(a, g.id, 'shaltari-main-grav-tank', 3);
+  eq(A.boardOptions(a, grav.id).length, 0,
+     'but its Integrated Gate is a Gate: nothing is taken aboard it (Behemoth rules 2.1.2)');
+  A.remove(a.id);
+}
+
+console.log('\nA Director hold starts full (Type 6 Grand Walker, Porphyrion)');
 {
   await DZC.loadFaction('phr');
   const a = A.create('phr', 'Type 6', 3000);
-  const g = A.addGroup(a);
-  const s = A.addSquad(a, g.id, 'type-6-grand-walker', 1);
+  const s = A.addSquad(a, A.addGroup(a).id, 'type-6-grand-walker', 1);
   s.models[0].variant = 'Alcyoneus';
   eq(A.carrierOf(a, s).transport.capacity.length, 0, 'an Alcyoneus carries nothing');
   s.models[0].variant = 'Porphyrion';
-  eq(A.carrierOf(a, s).transport.capacity.find(c => c.shape === 'circle').n, 8,
-     'a Porphyrion carries its 8 circles');
+  eq(A.carrierOf(a, s).transport.capacity.length, 0,
+     'and a Porphyrion\'s circles are its Venus Drones, so it has no room either (1.7.1)');
   A.remove(a.id);
+}
+
+console.log('\nAux Gates are Gates for boarding; Cling is per Aircraft');
+{
+  await DZC.loadFaction('shaltari');
+  const a = A.create('shaltari', 'Aux Gate', 2000);
+  const g = A.addGroup(a);
+  A.addSquad(a, g.id, 'firedrake', 1);
+  const grav = A.addSquad(a, g.id, 'shaltari-main-grav-tank', 3);
+  eq(A.boardOptions(a, grav.id).length, 0, 'nothing is taken aboard a Firedrake (Aux Gate)');
+  A.remove(a.id);
+
+  await DZC.loadFaction('scourge');
+  const b = A.create('scourge', 'Cling per Aircraft', 5000);
+  const gb = A.addGroup(b);
+  // Vampires are Rare: three is the most any game size allows.
+  const guns = A.addSquad(b, gb.id, 'scourge-gunship', 2);
+  const v1 = A.addSquad(b, gb.id, 'vampire', 2);
+  const v2 = A.addSquad(b, gb.id, 'vampire', 2);
+  const v3 = A.addSquad(b, gb.id, 'vampire', 2);
+  ok(A.setCling(b, v1.id, guns.id).ok && A.setCling(b, v2.id, guns.id).ok,
+     'two Gunships take two clinging Squads, one each');
+  eq(A.setCling(b, v3.id, guns.id).ok, false, 'and not a third');
+  A.remove(b.id);
 }
 
 console.log('\n12 always, and 6 or 8 (Explorator)');
