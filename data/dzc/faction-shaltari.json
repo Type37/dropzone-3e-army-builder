@@ -52,7 +52,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Gauss Rifle",
@@ -68,7 +69,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -128,7 +130,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -199,7 +202,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin Ion Cannons",
@@ -217,7 +221,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Laser Pod",
@@ -233,7 +238,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -304,7 +310,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin Ion Cannons",
@@ -322,7 +329,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -422,7 +430,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin Ion Cannons",
@@ -441,7 +450,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Dual Heavy Bio-Atomisers, spread -",
@@ -459,7 +469,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Dual Heavy Bio-Atomisers, harmonised -",
@@ -477,7 +488,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Sonic Cannon",
@@ -495,7 +507,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -553,7 +566,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Dragon Cannon",
@@ -569,7 +583,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Concentrated Dragon Beam",
@@ -585,7 +600,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -643,7 +659,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Ion Strike",
@@ -659,7 +676,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -725,7 +743,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Short Gauss Cannon",
@@ -743,7 +762,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -814,7 +834,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Atomic Teleporter, Cyclone",
@@ -832,7 +853,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Atomic Teleporter, Patch",
@@ -850,7 +872,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -926,7 +949,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Concentrated Dragon Beams",
@@ -942,7 +966,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Thermal Lance",
@@ -960,7 +985,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1027,7 +1053,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1057,7 +1084,7 @@
         "A": "5",
         "DP": "4"
       },
-      "special": "Shield: Zones, Friendly Vehicles and Aircraft 6” 5+, P5+",
+      "special": "P5+, Shield: Zones 6” 5+",
       "variants": [],
       "specialVariants": [],
       "transport": {
@@ -1085,7 +1112,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1143,7 +1171,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Gravity Cannon",
@@ -1159,7 +1188,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Charged Atmosphere",
@@ -1175,7 +1205,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1259,7 +1290,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1312,7 +1344,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Disruption Cannon",
@@ -1328,7 +1361,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Dragon Cannon",
@@ -1344,7 +1378,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Concentrated Dragon Beam",
@@ -1360,7 +1395,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1441,7 +1477,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin Super Gravity Cannon",
@@ -1459,7 +1496,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Particle Triad",
@@ -1477,7 +1515,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Strider Particle Cannon",
@@ -1495,7 +1534,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1584,7 +1624,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Microwave Cannon, Harmonised",
@@ -1602,7 +1643,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Microwave Cannon, Spread",
@@ -1620,7 +1662,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Neutron Launchers",
@@ -1638,7 +1681,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Gauss Triad",
@@ -1656,7 +1700,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Laser Pods",
@@ -1674,7 +1719,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Skimcharge Spine",
@@ -1692,7 +1738,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Spine Discharge",
@@ -1710,7 +1757,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1784,7 +1832,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Energy Glave",
@@ -1802,7 +1851,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Bio-Atomiser",
@@ -1820,7 +1870,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1884,7 +1935,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Gauss Cannon",
@@ -1902,7 +1954,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Heavy Bio-Atomiser",
@@ -1920,7 +1973,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2003,7 +2057,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Light Ion Cannon",
@@ -2021,7 +2076,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2105,7 +2161,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Spectra Projectors, Dazzle",
@@ -2123,7 +2180,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Spectra Projectors, Shroud",
@@ -2141,7 +2199,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2199,7 +2258,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2257,7 +2317,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2320,7 +2381,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2378,7 +2440,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2441,7 +2504,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,

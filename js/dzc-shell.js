@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 496;
+  const BUILD = 497;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -617,6 +617,13 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-09-29', title: 'Every stat card checked against the app', items: [
+      'The Type 7 Grand Walker takes its Rotary Cannons or its Incinerators, one of the two, as the card’s OR says. The Incinerators’ range read “OR 9””.',
+      'The Type 6 Grand Walker carries only as a Porphyrion, and the Siegestrider only as a Lion.',
+      'The Explorator carries 12 squares, and 6 triangles or 8 diamonds. The 12 had been one of three alternatives.',
+      'Advanced Genitors and Generated Units show their gold border: the Gauntlet Genitor Circle, Beta, Drake, Gamma, Hand and Gun Hand.',
+      'The Totem Shieldspire’s Shield is Zones 6” 5+, as reprinted. A fix for the old misprint was still adding Friendly Vehicles and Aircraft.',
+    ] },
     { date: '2026-09-28', title: 'Thirteen new Bioficer Units, and the reissued rulebook', items: [
       'The 25 September Bioficer cards: Calculi and Cortex Command Skimmers, Tenor Scout Skimmer, Terror Heavy Battle Skimmer, Tremor Destroyer Skimmer, Fury Interceptor, Gauntlet Genitor Circle, and the Generated Beta, Drake, Gamma, Hand, Gun Hand and Spitters.',
       'The Terror takes exactly one of its six starred guns, as its card says. A Terror with none is refused, and so is a second.',

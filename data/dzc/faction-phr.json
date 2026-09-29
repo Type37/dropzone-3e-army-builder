@@ -68,7 +68,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RX-666 Flamethrower",
@@ -86,7 +87,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -146,7 +148,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RXp-14 Longreach Rifle",
@@ -162,7 +165,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -215,7 +219,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -294,7 +299,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RX-1 Railgun with Targeter",
@@ -312,7 +318,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RX-1R Rail Repeater",
@@ -330,7 +337,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RX-666 Flamethrower",
@@ -348,7 +356,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RXs-70 Styx Autocannons",
@@ -366,7 +375,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin RX-20 Miniguns",
@@ -385,7 +395,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RM-4 Foeslayer Missiles",
@@ -404,7 +415,8 @@
           "upgradePoints": 5,
           "exclusive": true,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": "Menchit and Styx may replace Twin RX-20 Miniguns with RM-4 Foeslayer Missiles.",
@@ -474,7 +486,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Multi-Spectra Package",
@@ -490,7 +503,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -543,7 +557,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin RXE-1200 Starglaives",
@@ -559,7 +574,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -619,7 +635,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "White Nanomachines",
@@ -635,7 +652,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -713,7 +731,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Optical Disruption Beam",
@@ -731,7 +750,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -802,7 +822,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RM-2 Constellation Missile, Penetrator",
@@ -820,7 +841,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RM-2 Constellation Missile, Airburst",
@@ -838,7 +860,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -952,7 +975,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RM-5 Galaxy Missile Launcher",
@@ -970,7 +994,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RM-5 Galaxy Missile Launcher",
@@ -988,7 +1013,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1046,7 +1072,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "X Hive Nanomachines",
@@ -1062,7 +1089,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "X Hive White Nanomachines",
@@ -1078,7 +1106,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1149,7 +1178,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RX-13 Cannon, Slugs",
@@ -1167,7 +1197,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RX-13 Cannon, Seeker Submunitions",
@@ -1185,7 +1216,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1238,7 +1270,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RX-11 Super Heavy Rail Cannon",
@@ -1254,7 +1287,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RM-1 Stealth Missile Battery",
@@ -1270,7 +1304,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1368,7 +1403,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Dual RX-1 Railguns",
@@ -1386,7 +1422,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Dual RXs-120 Smoothbores",
@@ -1404,7 +1441,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RX-1000 Sunspear Laser",
@@ -1422,7 +1460,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RX-1 Railgun",
@@ -1440,7 +1479,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1511,7 +1551,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Nanomachine Swarm",
@@ -1529,7 +1570,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "White Nanomachines",
@@ -1547,7 +1589,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Nanomachine Swarm",
@@ -1563,7 +1606,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "White Nanomachines",
@@ -1579,7 +1623,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RX-30 Heavy Minigun",
@@ -1595,7 +1640,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RX-30 Heavy Minigun",
@@ -1611,7 +1657,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1682,7 +1729,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RXs-300 Vanquisher Cannon",
@@ -1700,7 +1748,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RX1-L Short Railgun",
@@ -1716,7 +1765,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RX1-L Short Railgun",
@@ -1732,7 +1782,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1818,7 +1869,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Hyperkinetic Hammer",
@@ -1836,7 +1888,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RX-1 Railgun",
@@ -1854,7 +1907,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RX-666 Flamethrower",
@@ -1872,7 +1926,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Beastslayer Blade",
@@ -1890,7 +1945,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RXs-70 Styx Autocannons",
@@ -1908,7 +1964,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RM-4 Foeslayer Missiles",
@@ -1926,7 +1983,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Electro Gladius",
@@ -1944,7 +2002,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin RXs-120 Smoothbores",
@@ -1962,7 +2021,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin RX-1000 Sunspear Lasers",
@@ -1980,7 +2040,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2038,7 +2099,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin RX-1R Rail Repeaters",
@@ -2054,7 +2116,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RX-20 Minigun Pair",
@@ -2070,7 +2133,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2171,7 +2235,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2235,7 +2300,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RM-1 Stealth Missile Battery",
@@ -2251,7 +2317,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RN-2 Cloudspear Cruise Missile",
@@ -2269,7 +2336,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RN-1 Shooting Star Missiles",
@@ -2287,7 +2355,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2351,7 +2420,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MM-111 Missile Pod",
@@ -2367,7 +2437,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MC-17 Guns",
@@ -2385,7 +2456,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MF-666 Flamethrower",
@@ -2403,7 +2475,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2495,7 +2568,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RX-1L Short Railgun",
@@ -2513,7 +2587,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RX-13 Cannon, Slugs",
@@ -2531,7 +2606,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RX-13 Cannon, Seeker Submunitions",
@@ -2549,7 +2625,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2618,7 +2695,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RM-1AA Stealth Missiles",
@@ -2636,7 +2714,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Electromagnetic Disruptor",
@@ -2654,7 +2733,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2714,7 +2794,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2790,7 +2871,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin RX-20 Miniguns",
@@ -2808,7 +2890,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2866,7 +2949,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2924,7 +3008,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RM-1H Heavy Stealth Missile Battery",
@@ -2940,7 +3025,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RM-1 Stealth Missile Battery",
@@ -2956,7 +3042,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -3014,7 +3101,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -3072,7 +3160,8 @@
           "upgradePoints": 10,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin RX-20 Miniguns",
@@ -3088,7 +3177,8 @@
           "upgradePoints": 5,
           "exclusive": true,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RM-7 Skyhammer Missiles",
@@ -3104,7 +3194,8 @@
           "upgradePoints": 15,
           "exclusive": true,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": "Only one of these upgrades may be taken.",
@@ -3162,7 +3253,8 @@
           "upgradePoints": 10,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin RX-20 Miniguns",
@@ -3178,7 +3270,8 @@
           "upgradePoints": 5,
           "exclusive": true,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RM-7 Skyhammer Missiles",
@@ -3194,7 +3287,8 @@
           "upgradePoints": 15,
           "exclusive": true,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": "Only one of these upgrades may be taken.",
@@ -3257,7 +3351,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "RX-20 Minigun Pair",
@@ -3273,7 +3368,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,

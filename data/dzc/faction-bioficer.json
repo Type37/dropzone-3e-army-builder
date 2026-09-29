@@ -107,7 +107,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Electro-Bombard",
@@ -125,7 +126,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -198,7 +200,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Lightmaw",
@@ -216,7 +219,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Ghost Circuit, wide",
@@ -234,7 +238,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Ghost Circuit, narrow",
@@ -252,7 +257,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -325,7 +331,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Bisection Organ",
@@ -343,7 +350,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Scythe Battery",
@@ -361,7 +369,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -431,7 +440,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Decon Cannon Pair",
@@ -449,7 +459,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin Scythes Pair",
@@ -467,7 +478,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Heavy Lightmaw Pair",
@@ -485,7 +497,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Ghost Orbit Pair, wide",
@@ -503,7 +516,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Ghost Orbit Pair, narrow",
@@ -521,7 +535,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -594,7 +609,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Barb Spitter",
@@ -612,7 +628,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Quake Howitzer",
@@ -630,7 +647,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -703,7 +721,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Gravitic Drill",
@@ -721,7 +740,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Super Lightmaw",
@@ -739,7 +759,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -808,7 +829,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Hyperscythe",
@@ -826,7 +848,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -863,7 +886,8 @@
         "capacity": [
           {
             "shape": "square",
-            "n": 24
+            "n": 24,
+            "advanced": true
           }
         ],
         "capacityMode": null,
@@ -889,7 +913,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -964,7 +989,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Decon Cannon Pair",
@@ -982,7 +1008,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin Scythes Pair",
@@ -1000,7 +1027,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Heavy Lightmaw Pair",
@@ -1018,7 +1046,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Ghost Orbit Pair, wide",
@@ -1036,7 +1065,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Ghost Orbit Pair, narrow",
@@ -1054,7 +1084,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1123,7 +1154,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Hyperscythe",
@@ -1141,7 +1173,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin Barb Destructor",
@@ -1157,7 +1190,8 @@
           "upgradePoints": 0,
           "exclusive": true,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": true
         },
         {
           "name": "Scythe Battery",
@@ -1173,7 +1207,8 @@
           "upgradePoints": 0,
           "exclusive": true,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": true
         },
         {
           "name": "Bisection Organ",
@@ -1189,7 +1224,8 @@
           "upgradePoints": 0,
           "exclusive": true,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": true
         },
         {
           "name": "Winnow Web",
@@ -1205,7 +1241,8 @@
           "upgradePoints": 0,
           "exclusive": true,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": true
         },
         {
           "name": "Barb Spitter",
@@ -1221,7 +1258,8 @@
           "upgradePoints": 0,
           "exclusive": true,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": true
         },
         {
           "name": "Quake Howitzer",
@@ -1237,7 +1275,8 @@
           "upgradePoints": 0,
           "exclusive": true,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": true
         }
       ],
       "upgradeNote": "Each unit must choose one from the marked selection.",
@@ -1301,7 +1340,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Air-Scythe",
@@ -1319,7 +1359,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Decon Missiles",
@@ -1335,7 +1376,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1393,7 +1435,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1451,7 +1494,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1509,7 +1553,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1567,7 +1612,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1625,7 +1671,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1664,7 +1711,8 @@
         "fills": [
           {
             "shape": "square",
-            "n": 18
+            "n": 18,
+            "advanced": true
           }
         ]
       },
@@ -1683,7 +1731,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Rend",
@@ -1699,7 +1748,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1751,7 +1801,8 @@
         "fills": [
           {
             "shape": "square",
-            "n": 6
+            "n": 6,
+            "advanced": true
           }
         ]
       },
@@ -1772,7 +1823,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Rotary Scythe",
@@ -1790,7 +1842,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Ghost Circuit, wide",
@@ -1808,7 +1861,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Ghost Circuit, narrow",
@@ -1826,7 +1880,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Dive and Stab",
@@ -1842,7 +1897,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1902,7 +1958,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2002,7 +2059,8 @@
         "fills": [
           {
             "shape": "square",
-            "n": 12
+            "n": 12,
+            "advanced": true
           }
         ]
       },
@@ -2023,7 +2081,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Rotary Scythe",
@@ -2041,7 +2100,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Ghost Circuit, wide",
@@ -2059,7 +2119,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Ghost Circuit, narrow",
@@ -2077,7 +2138,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Dive and Pierce",
@@ -2093,7 +2155,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2188,7 +2251,8 @@
         "fills": [
           {
             "shape": "square",
-            "n": 8
+            "n": 8,
+            "advanced": true
           }
         ]
       },
@@ -2209,7 +2273,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Winnow Web",
@@ -2227,7 +2292,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Quake Howitzer",
@@ -2245,7 +2311,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Stomp",
@@ -2261,7 +2328,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2300,7 +2368,8 @@
         "fills": [
           {
             "shape": "square",
-            "n": 5
+            "n": 5,
+            "advanced": true
           }
         ]
       },
@@ -2319,7 +2388,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2379,7 +2449,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2439,7 +2510,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2499,7 +2571,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,

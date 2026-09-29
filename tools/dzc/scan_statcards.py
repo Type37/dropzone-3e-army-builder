@@ -111,6 +111,12 @@ class Badge(TypedDict):
 
     shape: str
     n: int
+    # The gold border (Bioficer Advanced Genitor/ Generated).
+    advanced: NotRequired[bool]
+    # Capacity outside an "either": the Explorator's 12 in "12, 6 / 8".
+    fixed: NotRequired[bool]
+    # Capacity only these variants have: "(Porphyrion)" beside the badge.
+    variants: NotRequired[list[str]]
 
 
 class Transport(TypedDict):
@@ -136,6 +142,10 @@ class Weapon(TypedDict):
     exclusive: bool
     capacityDelta: list[Badge]
     boxUnresolved: bool
+    # One of a set the Unit MUST take exactly one of: the Terror's starred
+    # guns, the Type 7's "OR" pair. `exclusive` already stops a second; this
+    # is what makes none an error too.
+    choice: bool
 
 
 class Variant(TypedDict):
@@ -736,6 +746,7 @@ def parse_transport(page) -> Transport:
     # over it. Reading by position alone yields the template "1" on every card.
     digits = []
     seps = []
+    tags = []
     for blk in page.get_text("dict", clip=panel)["blocks"]:
         for ln in blk.get("lines", []):
             for sp in ln["spans"]:
@@ -745,6 +756,11 @@ def parse_transport(page) -> Transport:
                 elif t in (SEP_BOTH, SEP_EITHER, SEP_FILLS):
                     # Printed between badges; x-order is what links them.
                     seps.append((t, fitz.Rect(sp["bbox"])))
+                elif re.fullmatch(r"\([^()]+\)", t):
+                    # "(Porphyrion)" beside the badge, behind an orange
+                    # variant arrow: that capacity is that variant's alone.
+                    # The Type 6 Grand Walker and the Siegestrider print one.
+                    tags.append((t[1:-1].strip(), fitz.Rect(sp["bbox"])))
     if not digits:
         return {"capacity": [], "capacityMode": None, "fills": []}
     seps.sort(key=lambda s: s[1].x0)
@@ -767,6 +783,13 @@ def parse_transport(page) -> Transport:
         o, i = outer["rect"], inner["rect"]
         return (i.x0 - o.x0 >= 2 and i.y0 - o.y0 >= 2
                 and o.x1 - i.x1 >= 2 and o.y1 - i.y1 >= 2)
+    #
+    # But the frame MEANS something, so it is kept as a fact about the badge
+    # inside it. "Generated Units with a gold border on their Transport Symbol
+    # may only be Spawned by a Genitor Unit with a gold number in its Transport
+    # Symbol" (Advanced Genitor/ Generated, Bioficer rules p.2). The Gauntlet
+    # Genitor Circle's hollow 24 is framed the same way.
+    framed = [g for g in badges if any(frames(o, g) for o in badges)]
     badges = [g for g in badges if not any(frames(g, o) for o in badges)]
 
     capacity, fills, claimed, placed = [], [], [], []
@@ -787,6 +810,8 @@ def parse_transport(page) -> Transport:
         if not shape:
             continue
         entry = {"shape": shape, "n": value}
+        if any(g is f for f in framed):
+            entry["advanced"] = True
         (capacity if badge_is_hollow(page, r) else fills).append(entry)
         placed.append(r)
 
@@ -809,6 +834,24 @@ def parse_transport(page) -> Transport:
         if len(set(between)) > 1:
             raise ValueError(f"mixed capacity separators {between!r}")
         mode = "both" if between[0] == SEP_BOTH else "either"
+        # A "," BETWEEN capacity badges puts what is left of it outside the
+        # choice. The Explorator prints "12, 6 / 8": twelve squares always,
+        # and six triangles or eight diamonds. Read as one "either" across all
+        # three, the twelve became one alternative among three.
+        commas = [sr for t, sr in seps if t == SEP_FILLS
+                  and spans[0].x1 <= sr.x0 and sr.x1 <= spans[len(capacity) - 1].x0]
+        if commas and mode == "either":
+            cut = max(sr.x0 for sr in commas)
+            for entry, r in zip(capacity, spans, strict=True):
+                if r.x1 <= cut:
+                    entry["fixed"] = True
+
+    # A variant tag to the right of the capacity badges scopes all of them.
+    if capacity and tags:
+        right = max(r.x1 for r in placed[:len(capacity)])
+        scoped = [name for name, tr in tags if tr.x0 >= right - 1]
+        for entry in capacity:
+            entry["variants"] = scoped
 
     return {"capacity": capacity, "capacityMode": mode, "fills": fills}
 
@@ -1572,6 +1615,7 @@ ERRATA_WEAPONS = {
             "exclusive": False,
             "capacityDelta": [],
             "boxUnresolved": False,
+            "choice": False,
         }],
     },
 }
@@ -1621,13 +1665,23 @@ KNOWN_PRINTED_SPECIAL = {
     #     "Shield: Friendly Vehicles 6” 4+ (Dreamsnare)"
     # Reassembled, so X is "Zones, Friendly Vehicles and Aircraft", Y is 6 and
     # Z is 5. Nothing added, nothing dropped, one rule instead of two orphans.
-    "Totem Shieldspire":
-        "Shield: Zones, Friendly Vehicles and Aircraft 6” 5+, P5+",
+    #
+    # Keyed on the MISPRINT as well as the name. The 260821 reissue prints the
+    # rule whole -- "P5+, Shield: Zones 6” 5+" -- and an override keyed on the
+    # name alone went on pasting "Friendly Vehicles and Aircraft" over a card
+    # that no longer says it. A repair has to stop the day the card is fixed.
+    "Totem Shieldspire": (
+        "Friendly Vehicles and Aircraft 6” 5+, P5+, Shield: Zones",
+        "Shield: Zones, Friendly Vehicles and Aircraft 6” 5+, P5+"),
 }
 
 
 def fix_printed_special(unit_name, special):
-    return KNOWN_PRINTED_SPECIAL.get((unit_name or "").strip(), special)
+    printed, fixed = KNOWN_PRINTED_SPECIAL.get((unit_name or "").strip(), (None, None))
+
+    def norm(t):
+        return re.sub(r"\s+", " ", (t or "").replace('"', "”")).strip()
+    return fixed if printed and norm(special) == norm(printed) else special
 
 
 def parse_weapons(page, lines) -> tuple[list[Weapon], float]:
@@ -1690,6 +1744,14 @@ def parse_weapons(page, lines) -> tuple[list[Weapon], float]:
              and (lore_y is None or w[3] <= lore_y + 1)]
     if not boxes or not below:
         return [], float(hdr_bottom)
+    # An "OR" row is a divider, not a cell. The Type 7 Grand Walker prints
+    # "Dual R7X-5 Rotary Cannons (+0pts)", a full-width OR, then "Dual R7X-66
+    # Incinerators (+0pts)": one mount, two guns, take one. Left in, the OR
+    # landed in the R column and the Incinerators ranged "OR 9”". Its y is
+    # kept so the two rows either side of it can be tied together below.
+    ors = [w for w in below if w[4] == "OR"
+           and not any(o is not w and abs(o[1] - w[1]) < 3 for o in below)]
+    below = [w for w in below if not any(w is o for o in ors)]
     last_y = max(w[3] for w in below) + 2
     # The page's own dividers first, the document's only where the page draws
     # too few -- the same order parse_stat_table reads them in. Pooled
@@ -1702,6 +1764,7 @@ def parse_weapons(page, lines) -> tuple[list[Weapon], float]:
         rules = sorted(set(rules) | set(doc_rules(page.parent)))
 
     weapons = []
+    rows = []
     # Where one row ENDS and the next begins: the middle of the empty band
     # between two name swatches, not the next swatch's top edge.
     #
@@ -1750,8 +1813,10 @@ def parse_weapons(page, lines) -> tuple[list[Weapon], float]:
             "exclusive": False,
             "capacityDelta": [],
             "boxUnresolved": False,
+            "choice": False,
         }
         weapons.append(weapon)
+        rows.append(rect)
 
     # Pull the trailing brackets out of the name now that wraps are joined.
     #
@@ -1808,12 +1873,20 @@ def parse_weapons(page, lines) -> tuple[list[Weapon], float]:
             w["box"] = "upgrade"
             w["upgradePoints"] = 0
             w["exclusive"] = True
+            w["choice"] = True
         # An orange box means "restricted to the Variant named in brackets"
         # (rulebook 3.2.2). A few cards print orange with NO bracket -- the
         # Bioficer Surge Gunship's Decon Pulse. That is a source-data quirk,
         # not a parse failure. Record it and fall back to all-variants, which
         # is what a player reading the card would do.
         w["boxUnresolved"] = bool(w["box"] == "variant" and not w["variants"])
+    # The two rows either side of an OR are one choice.
+    for o in ors:
+        above = [i for i, r in enumerate(rows) if r.y1 <= o[1]]
+        after = [i for i, r in enumerate(rows) if r.y0 >= o[3]]
+        for i in ([above[-1]] if above else []) + ([after[0]] if after else []):
+            weapons[i]["exclusive"] = True
+            weapons[i]["choice"] = True
     return weapons, float(last_y)
 
 

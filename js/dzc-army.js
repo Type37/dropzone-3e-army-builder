@@ -563,11 +563,10 @@
       if (!canAddUnit(a, g.id, u.id).ok) { removeGroup(a, g.id); continue; }
       const s = addSquad(a, g.id, u.id, u.squadMin || 1);
       if (!s) { removeGroup(a, g.id); continue; }
-      // "Each unit must choose one from the marked selection" (the Terror).
-      if (/must choose one/i.test(u.upgradeNote || '')) {
-        const marked = (u.weapons || []).filter(w => w.box === 'upgrade' && w.exclusive);
-        if (marked.length) toggleUpgrade(a, s.id, ALL_VARIANTS, pick(marked).name);
-      }
+      // A set the card says to take exactly one of: the Terror's starred
+      // guns, the Type 7 Grand Walker's "OR" pair.
+      const choices = (u.weapons || []).filter(w => w.choice);
+      if (choices.length) toggleUpgrade(a, s.id, ALL_VARIANTS, pick(choices).name);
 
       // A Transport, but only where it comes out exact and the Group can still
       // afford it. Roughly half the time, so a generated list is not uniformly
@@ -2196,7 +2195,16 @@
    * Strikehawk that sold its capacity for missiles is a different carrier from
    * the one on the card and both are called "Strikehawk Tilt-Rotor". */
   function carrierOf(army, squad) {
-    return window.DZC.carrierWithUpgrades(unitOf(army, squad), w => hasAnyUpgrade(squad, w.name));
+    const u = window.DZC.carrierWithUpgrades(unitOf(army, squad), w => hasAnyUpgrade(squad, w.name));
+    /* Capacity one variant has and the others do not: "(Porphyrion)" beside
+     * the Type 6 Grand Walker's circle, "(Lion)" beside the Siegestrider's
+     * triangle. An Alcyoneus carries nothing. */
+    const cap = (u && u.transport && u.transport.capacity) || [];
+    if (!cap.some(c => (c.variants || []).length)) return u;
+    const fielded = squad.models.map(m => m.variant);
+    return Object.assign({}, u, { transport: Object.assign({}, u.transport, {
+      capacity: cap.filter(c => !(c.variants || []).length
+        || c.variants.some(v => fielded.indexOf(v) !== -1)) }) });
   }
 
   function hasAnyUpgrade(squad, name) {
@@ -3152,20 +3160,24 @@
      * activated that Round may be activated together with any non-Gate Group"
      * -- so the warning was both wrong and permanent on every Shaltari list
      * that took a Gate at all. */
-    /* "*Each unit must choose one from the marked selection." The Terror
-     * Heavy Battle Skimmer (Bioficer 260925). The scanner reads its starred
-     * guns as free exclusive upgrades, so toggleUpgrade already stops a
-     * second; this is the other half, a Squad that took none. The wording is
-     * the card's own footnote. */
+    /* A set the card says to take exactly one of, marked `choice` by the
+     * scanner: the Terror Heavy Battle Skimmer's starred guns ("*Each unit
+     * must choose one from the marked selection", Bioficer 260925) and the
+     * Type 7 Grand Walker's two guns either side of an "OR". Both are free
+     * exclusive upgrades, so toggleUpgrade already stops a second; this is
+     * the other half, a Squad that took none. The Terror's refusal is its
+     * own footnote; the Type 7 prints none, so its names the two guns. */
     army.groups.forEach(g => g.squads.forEach(s => {
       const u = unitOf(army, s);
-      if (!u || !/must choose one/i.test(u.upgradeNote || '')) return;
-      const marked = (u.weapons || []).filter(w => w.box === 'upgrade' && w.exclusive);
-      const taken = marked.some(w => ((w.variants || []).length ? w.variants : [ALL_VARIANTS])
+      const set = u ? (u.weapons || []).filter(w => w.choice) : [];
+      if (!set.length) return;
+      const taken = set.some(w => ((w.variants || []).length ? w.variants : [ALL_VARIANTS])
         .some(scope => hasUpgrade(s, scope, w.name)));
-      if (marked.length && !taken) {
+      if (!taken) {
         errors.push({ rule: '3.2.3', group: g.id,
-          msg: `${u.name}: each unit must choose one from the marked selection.` });
+          msg: /must choose one/i.test(u.upgradeNote || '')
+            ? `${u.name}: each unit must choose one from the marked selection.`
+            : `${u.name}: takes ${set.map(w => w.name).join(' or ')}.` });
       }
     }));
 

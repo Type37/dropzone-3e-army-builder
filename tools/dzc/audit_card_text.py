@@ -88,6 +88,10 @@ def in_data(u):
             out += words(w.get(k))
         out += words(str(w.get("upgradePoints")))
         out += words(" ".join(w.get("variants") or []))
+    # The Type 7 Grand Walker's full-width "OR" row reached the data as the
+    # `choice` flag on the two guns either side of it, not as text.
+    if any(w.get("choice") for w in u.get("weapons") or []):
+        out.append("or")
     out += words(json.dumps(u.get("swaps") or [], ensure_ascii=False))
     for k in ("squadMin", "squadMax", "groupEquivalent"):
         if u.get(k) is not None:

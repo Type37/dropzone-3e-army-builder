@@ -65,7 +65,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-19 Mortars",
@@ -83,7 +84,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -143,7 +145,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-105 Missile Launcher",
@@ -159,7 +162,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -234,7 +238,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-7 Nemesis Miniguns",
@@ -252,7 +257,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-703 Laser",
@@ -270,7 +276,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -369,7 +376,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Airburst Missile",
@@ -387,7 +395,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-55 Requiter Organ Gun",
@@ -405,7 +414,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UC-19 Hose, reinforce",
@@ -423,7 +433,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UC-19 Hose, encapsulate",
@@ -441,7 +452,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -516,7 +528,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-666 Flamethrower",
@@ -534,7 +547,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-449 Tesla Coils, Strike",
@@ -552,7 +566,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-449 Tesla Coils, Storm",
@@ -570,7 +585,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Smoke Launchers",
@@ -586,7 +602,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -678,7 +695,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-702 Laser",
@@ -696,7 +714,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-28 Gatling, focused",
@@ -714,7 +733,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-28 Gatling, spread",
@@ -732,7 +752,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-18 Machinegun",
@@ -748,7 +769,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -814,7 +836,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-28 Gatlings, spread",
@@ -832,7 +855,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-109 Airburst Missiles",
@@ -850,7 +874,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-109 Penetrator Missiles",
@@ -868,7 +893,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin UM-5 Gatling",
@@ -884,7 +910,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -942,7 +969,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin UM-5 Gatling",
@@ -958,7 +986,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin UM-5 Gatling",
@@ -974,7 +1003,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1027,7 +1057,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-109 Airburst Missile Bank",
@@ -1043,7 +1074,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-109 Penetrator Missile Bank",
@@ -1059,7 +1091,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin UM-5 Gatling",
@@ -1075,7 +1108,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1153,7 +1187,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UC-9 ECM Jammer",
@@ -1171,7 +1206,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1246,7 +1282,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UMX-9 Plasma Mortar",
@@ -1264,7 +1301,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Microsprite Drones",
@@ -1282,7 +1320,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1376,7 +1415,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-31 Smoke Round",
@@ -1394,7 +1434,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-701B Marksman Laser",
@@ -1412,7 +1453,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UMR-6 Ballistic Missile",
@@ -1430,7 +1472,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-371 Organ Gun",
@@ -1448,7 +1491,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-59 Organ-Gun",
@@ -1466,7 +1510,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-004 Jammer",
@@ -1484,7 +1529,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1537,7 +1583,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UF-80 Missiles",
@@ -1553,7 +1600,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin Tailgun",
@@ -1569,7 +1617,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Titanbane Bomb",
@@ -1585,7 +1634,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1658,7 +1708,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin UM-5 Gatling",
@@ -1674,7 +1725,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-909 Missile Block",
@@ -1692,7 +1744,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-909 Missile Block",
@@ -1710,7 +1763,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-117 Cannons",
@@ -1728,7 +1782,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1786,7 +1841,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin UM-5 Gatling",
@@ -1802,7 +1858,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1862,7 +1919,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1926,7 +1984,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UF-2 Heavenfire, spread",
@@ -1942,7 +2001,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UF-85 Bunker Busters",
@@ -1960,7 +2020,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UF-80 Missiles",
@@ -1978,7 +2039,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2054,7 +2116,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-91 Accelerated Mortar",
@@ -2072,7 +2135,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-701 Marksman Laser",
@@ -2090,7 +2154,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin UM-5 Gatling",
@@ -2106,7 +2171,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2183,7 +2249,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-903 Defence pods",
@@ -2199,7 +2266,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-79 Tri-Minigun, Focused",
@@ -2215,7 +2283,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-79 Tri-Minigun, Spread",
@@ -2231,7 +2300,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-79 Tri-Minigun, Focused",
@@ -2247,7 +2317,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-79 Tri-Minigun, Spread",
@@ -2263,7 +2334,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-79 Tri-Minigun, Focused",
@@ -2281,7 +2353,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-79 Tri-Minigun, Spread",
@@ -2299,7 +2372,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-111 HV Missile Pods",
@@ -2317,7 +2391,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2396,7 +2471,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UMX-90 Therma-Lance",
@@ -2414,7 +2490,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-207 Demolition Cannon",
@@ -2432,7 +2509,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-209 Long Cannon",
@@ -2450,7 +2528,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-79 Rotary Cannon",
@@ -2469,7 +2548,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2534,7 +2614,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UF-81 Incendiaries",
@@ -2552,7 +2633,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin UF-5 Gatling",
@@ -2570,7 +2652,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-115 Missile Spread",
@@ -2586,7 +2669,8 @@
           "upgradePoints": 10,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2653,7 +2737,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-117 Cannons",
@@ -2669,7 +2754,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-117 Cannons",
@@ -2687,7 +2773,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-909 Missile Block",
@@ -2705,7 +2792,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-909 Missile Block",
@@ -2723,7 +2811,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-903 Defence pods",
@@ -2739,7 +2828,8 @@
           "upgradePoints": 5,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": "May remove one UM-117 Cannons and gain Scanner and Scout.",
@@ -2816,7 +2906,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2876,7 +2967,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2929,7 +3021,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2993,7 +3086,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MM-111 Missile Pod",
@@ -3009,7 +3103,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MC-17 Guns",
@@ -3027,7 +3122,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MF-666 Flamethrower",
@@ -3045,7 +3141,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -3131,7 +3228,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-108 Missile",
@@ -3149,7 +3247,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -3229,7 +3328,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-105B Missile Launcher",
@@ -3247,7 +3347,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-66 Flamethrower",
@@ -3265,7 +3366,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-18 Mortar, Explosive",
@@ -3283,7 +3385,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-18 Mortar, Smoke",
@@ -3301,7 +3404,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -3359,7 +3463,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin UM-5 Gatling",
@@ -3375,7 +3480,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin UM-5 Gatling",
@@ -3391,7 +3497,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -3454,7 +3561,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -3512,7 +3620,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-111 Missile Pod",
@@ -3528,7 +3637,8 @@
           "upgradePoints": 10,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -3586,7 +3696,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UMX-211 EM Missiles",
@@ -3602,7 +3713,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -3660,7 +3772,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -3718,7 +3831,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -3776,7 +3890,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-903 Defence pods",
@@ -3792,7 +3907,8 @@
           "upgradePoints": 5,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -3850,7 +3966,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "UM-903 Defence pods",
@@ -3866,7 +3983,8 @@
           "upgradePoints": 5,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,

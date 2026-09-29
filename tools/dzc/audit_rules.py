@@ -82,6 +82,7 @@ KNOWN_CARD_QUIRKS: dict[str, str] = {
     #       defect -- the Totem Shieldspire's Shield rule is printed with its
     #       prefix and target list split off the numbers. Repaired by name in
     #       KNOWN_PRINTED_SPECIAL, where every token the card prints survives.
+    #       Only on the card that misprints it: 260821 prints the rule whole.
     #
     #   Razorworm Pod, Nanomachines and Particle were listed while the
     #       Behemoths had no faction. They resolve now that each card knows

@@ -55,7 +55,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -121,7 +122,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MC-180 Vengeance Cannon",
@@ -139,7 +141,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MF-1 Flamethrower",
@@ -157,7 +160,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -217,7 +221,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Homemade RPGs",
@@ -233,7 +238,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -329,7 +335,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MG-3 Machine Gun",
@@ -345,7 +352,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MC-120 Punisher Cannon",
@@ -363,7 +371,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MS-7 Hammer Bombard",
@@ -381,7 +390,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MX-202 Shock Bombard",
@@ -399,7 +409,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MR-32 Rail Cannon",
@@ -417,7 +428,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -488,7 +500,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Heavy Machine Gun",
@@ -506,7 +519,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -575,7 +589,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin Autocannons",
@@ -593,7 +608,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Flamethrower",
@@ -611,7 +627,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -680,7 +697,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Golgotha Missile",
@@ -698,7 +716,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Rocket Rack",
@@ -716,7 +735,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -791,7 +811,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MC-25 Azrael Chainguns",
@@ -809,7 +830,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "ML-18 Wyrmfire Lasers",
@@ -827,7 +849,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MM-2 Hornet Missiles",
@@ -845,7 +868,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MM-70 Beowulf Missile",
@@ -863,7 +887,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -923,7 +948,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -986,7 +1012,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MM-3 Missile Pod",
@@ -1002,7 +1029,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MG-6 Twin Heavy Machineguns",
@@ -1018,7 +1046,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Frag Barrel",
@@ -1036,7 +1065,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MC-20 Chaingun Pair, extended feed",
@@ -1054,7 +1084,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin Autocannons",
@@ -1070,7 +1101,8 @@
           "upgradePoints": 10,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1132,7 +1164,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Power Grabber",
@@ -1148,7 +1181,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1206,7 +1240,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1264,7 +1299,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1334,7 +1370,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MC-32 Quad Short Autocannons",
@@ -1352,7 +1389,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1414,7 +1452,8 @@
           "upgradePoints": 10,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MM-3 Missile Boxes",
@@ -1435,7 +1474,8 @@
               "n": -2
             }
           ],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MC-30 Heavy Gatlings",
@@ -1456,7 +1496,8 @@
               "n": -2
             }
           ],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": "May replace transport capacity of 2 with MM-3 Missile Boxes or MC-30 Heavy Gatlings.",
@@ -1555,7 +1596,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Welding Clamps",
@@ -1573,7 +1615,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MC-45 Anti-Material Cannons",
@@ -1591,7 +1634,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1653,7 +1697,8 @@
           "upgradePoints": 10,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MM-3 Missile Boxes",
@@ -1674,7 +1719,8 @@
               "n": -2
             }
           ],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MC-30 Heavy Gatlings",
@@ -1695,7 +1741,8 @@
               "n": -2
             }
           ],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": "May replace transport capacity of 2 with MM-3 Missile Boxes or MC-30 Heavy Gatlings.",
@@ -1775,7 +1822,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "FM-12 Cobra Missile",
@@ -1791,7 +1839,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "FM-12 Cobra Missile",
@@ -1807,7 +1856,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "FM-4 Asp Missile Pods",
@@ -1823,7 +1873,8 @@
           "upgradePoints": 20,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1883,7 +1934,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Overcharged Plasma Rifles, volley",
@@ -1899,7 +1951,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -1970,7 +2023,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MC-88 Flak Cannon, Slug",
@@ -1988,7 +2042,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Multi-Spectra Projector, Beam",
@@ -2006,7 +2061,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Multi-Spectra Projector, Oscilate",
@@ -2024,7 +2080,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Ram",
@@ -2040,7 +2097,8 @@
           "upgradePoints": 5,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2117,7 +2175,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MC-20 Chaingun",
@@ -2133,7 +2192,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MC-220 Equaliser Cannon",
@@ -2151,7 +2211,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MF-13 Giga-Flamethrower",
@@ -2169,7 +2230,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MX-907 Thermal Ram",
@@ -2187,7 +2249,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MM-7 Maelstrom Launcher",
@@ -2207,7 +2270,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MC-42 Banisher Gatling Cannons",
@@ -2225,7 +2289,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MM-15 Sidearm Missiles",
@@ -2241,7 +2306,8 @@
           "upgradePoints": 0,
           "exclusive": true,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": "May replace both its MC-20 Chainguns with MM-15 Sidearm Missiles.",
@@ -2313,7 +2379,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Overcharged Plasma Cannon",
@@ -2329,7 +2396,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Overcharged Plasma Cannon",
@@ -2345,7 +2413,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Overcharged Plasma Cannon",
@@ -2361,7 +2430,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2528,7 +2598,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Grenade Launchers, Explosive",
@@ -2546,7 +2617,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Grenade Launchers, Incendiary",
@@ -2564,7 +2636,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2624,7 +2697,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Sticky Mines",
@@ -2640,7 +2714,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2704,7 +2779,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2766,7 +2842,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MM-111 Missile Pod",
@@ -2782,7 +2859,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MC-17 Guns",
@@ -2800,7 +2878,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MF-666 Flamethrower",
@@ -2818,7 +2897,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2878,7 +2958,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -2931,7 +3012,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -3000,7 +3082,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MC-25 Azrael Chainguns",
@@ -3018,7 +3101,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MM-97 Deforestation Missiles",
@@ -3036,7 +3120,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -3115,7 +3200,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Heavy Machineguns",
@@ -3133,7 +3219,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Ram",
@@ -3149,7 +3236,8 @@
           "upgradePoints": 5,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -3212,7 +3300,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MM-15 Sidearm Missile",
@@ -3228,7 +3317,8 @@
           "upgradePoints": 5,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -3291,7 +3381,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -3349,7 +3440,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -3420,7 +3512,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin Autocannons",
@@ -3438,7 +3531,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin Autocannons",
@@ -3456,7 +3550,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin Autocannons",
@@ -3474,7 +3569,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin Autocannons",
@@ -3492,7 +3588,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -3550,7 +3647,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MG-6 Twin Heavy Machineguns",
@@ -3566,7 +3664,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Twin Autocannons",
@@ -3582,7 +3681,8 @@
           "upgradePoints": 15,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -3640,7 +3740,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MM-3 Missile Pod",
@@ -3656,7 +3757,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MG-6 Twin Heavy Machineguns",
@@ -3672,7 +3774,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MG-6 Twin Heavy Machineguns",
@@ -3688,7 +3791,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "Flamethrower",
@@ -3704,7 +3808,8 @@
           "upgradePoints": 10,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MC-20 Chaingun Pair",
@@ -3720,7 +3825,8 @@
           "upgradePoints": 10,
           "exclusive": true,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": "May also replace one MM-3 Missile Pod and one MG-6 Twin Heavy Machineguns with a MC-20 Chaingun Pair.",
@@ -3812,7 +3918,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MR-41 Liberator Railgun",
@@ -3830,7 +3937,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MC-37 Autocannons",
@@ -3848,7 +3956,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,
@@ -3906,7 +4015,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         },
         {
           "name": "MG-12 Gatling",
@@ -3922,7 +4032,8 @@
           "upgradePoints": null,
           "exclusive": false,
           "capacityDelta": [],
-          "boxUnresolved": false
+          "boxUnresolved": false,
+          "choice": false
         }
       ],
       "upgradeNote": null,

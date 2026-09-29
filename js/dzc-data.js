@@ -686,9 +686,14 @@
       byShape[best.shape] = (byShape[best.shape] || 0) + best.n * (p.count || 1);
     }
     const used = Object.keys(byShape);
-    if (mode === 'either' && used.length > 1) {
+    /* A "fixed" shape stands outside the choice: the Explorator's "12, 6 / 8"
+     * carries its twelve squares whichever of the other two it takes. */
+    const fixed = ((carrier.transport && carrier.transport.capacity) || [])
+      .filter(c => c.fixed).map(c => c.shape);
+    const chosen = used.filter(s => fixed.indexOf(s) === -1);
+    if (mode === 'either' && chosen.length > 1) {
       return { ok: false, byShape, mode,
-               reason: `${carrier.name} carries either ${used.join(' or ')}, not a mixture` };
+               reason: `${carrier.name} carries either ${chosen.join(' or ')}, not a mixture` };
     }
     for (const shape of used) {
       const room = fleetOf(shape);

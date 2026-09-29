@@ -2127,6 +2127,50 @@ console.log('\nA marked selection (Terror Heavy Battle Skimmer)');
   A.remove(a.id);
 }
 
+console.log('\nOne gun either side of an OR (Type 7 Grand Walker)');
+{
+  await DZC.loadFaction('phr');
+  const a = A.create('phr', 'Type 7', 3000);
+  const g = A.addGroup(a);
+  const s = A.addSquad(a, g.id, 'type-7-grand-walker', 1);
+  const u = A.unitOf(a, s);
+  const inc = u.weapons.find(w => w.name === 'Dual R7X-66 Incinerators');
+  eq(inc.r, '9"', 'the OR row is not read into the range');
+  const must = () => A.validate(a).errors.filter(e => /takes .* or /.test(e.msg)).length;
+  eq(must(), 1, 'a Type 7 with neither gun is refused');
+  eq(A.toggleUpgrade(a, s.id, '*', 'Dual R7X-5 Rotary Cannons').ok, true, 'the cannons can be taken');
+  eq(must(), 0, 'and that settles it');
+  eq(A.toggleUpgrade(a, s.id, '*', 'Dual R7X-66 Incinerators').ok, false, 'the incinerators as well are refused');
+  A.remove(a.id);
+}
+
+console.log('\nCapacity one variant has (Type 6 Grand Walker, Porphyrion)');
+{
+  await DZC.loadFaction('phr');
+  const a = A.create('phr', 'Type 6', 3000);
+  const g = A.addGroup(a);
+  const s = A.addSquad(a, g.id, 'type-6-grand-walker', 1);
+  s.models[0].variant = 'Alcyoneus';
+  eq(A.carrierOf(a, s).transport.capacity.length, 0, 'an Alcyoneus carries nothing');
+  s.models[0].variant = 'Porphyrion';
+  eq(A.carrierOf(a, s).transport.capacity.find(c => c.shape === 'circle').n, 8,
+     'a Porphyrion carries its 8 circles');
+  A.remove(a.id);
+}
+
+console.log('\n12 always, and 6 or 8 (Explorator)');
+{
+  await DZC.loadFaction('resistance');
+  const ex = DZC.faction('resistance').units.find(u => u.id === 'explorator');
+  const sq = ex.transport.capacity.find(c => c.shape === 'square');
+  eq(!!sq.fixed, true, 'the twelve squares stand outside the choice');
+  const passenger = shape => ({ name: shape, transport: { fills: [{ shape, n: 1 }] } });
+  eq(DZC.loadCheck(ex, [{ unit: passenger('square'), count: 12 }, { unit: passenger('triangle'), count: 6 }]).ok,
+     true, 'twelve squares ride with six triangles');
+  eq(DZC.loadCheck(ex, [{ unit: passenger('triangle'), count: 1 }, { unit: passenger('diamond'), count: 1 }]).ok,
+     false, 'triangles and diamonds do not mix');
+}
+
 console.log('\nSurprise me');
 {
   /* The generator has to produce a LEGAL army, which makes it the only test in

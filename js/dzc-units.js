@@ -76,10 +76,14 @@
    * is `position: absolute; inset: 0`, so it takes the box's size whatever its
    * width attribute says, and both badges came out identical.
    */
-  function badge(shape, n, hollow) {
+  /* `advanced` is the gold border (Bioficer, Advanced Genitor/ Generated):
+   * a gold-bordered Generated Unit is Spawned only by a gold-bordered Genitor.
+   * The card says it with the frame alone, so the badge does too. */
+  function badge(shape, n, hollow, advanced) {
     const s = SYMBOL[shape];
     if (!s) return '';
-    const label = `${hollow ? 'Capacity' : 'Cargo'}: ${n} ${shape.replace('-', ' ')}`;
+    const kind = hollow ? 'capacity' : 'cargo';
+    const label = `${advanced ? 'Advanced ' + kind : kind[0].toUpperCase() + kind.slice(1)}: ${n} ${shape.replace('-', ' ')}`;
     // A triangle narrows to a point, so its interior at the centroid height
     // (where the digit sits, see .dzc-badge-triangle in dzc.css) is nowhere
     // near as wide as a square or diamond's. A 2-digit count (12/18/24 appear
@@ -88,7 +92,7 @@
     // follows whatever size the context asked for.
     const tight = (shape === 'triangle' || shape === 'triangle-down') && String(n).length > 1;
     const style = `color:${hollow ? s.ink : '#fff'}${tight ? ';font-size:.78em' : ''}`;
-    return `<span class="dzc-badge dzc-badge-${shape}${hollow ? '' : ' is-cargo'}"
+    return `<span class="dzc-badge dzc-badge-${shape}${hollow ? '' : ' is-cargo'}${advanced ? ' is-advanced' : ''}"
       title="${esc(label)}" aria-label="${esc(label)}">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="${s.path}" fill="${hollow ? 'none' : s.ink}" stroke="${s.ink}" stroke-width="2.5" stroke-linejoin="round"/>
@@ -97,15 +101,22 @@
 
   function transportHtml(u) {
     const t = u.transport || {};
-    const cap = (t.capacity || []).map(c => badge(c.shape, c.n, true));
-    const fills = (t.fills || []).map(c => badge(c.shape, c.n, false));
-    if (!cap.length && !fills.length) return '';
+    const all = t.capacity || [];
+    const cap = all.filter(c => !c.fixed).map(c => badge(c.shape, c.n, true, c.advanced));
+    const fixed = all.filter(c => c.fixed).map(c => badge(c.shape, c.n, true, c.advanced));
+    const fills = (t.fills || []).map(c => badge(c.shape, c.n, false, c.advanced));
+    if (!all.length && !fills.length) return '';
     // "+" carries both shapes at once; "/" is either but never a mixture.
     const joiner = t.capacityMode === 'both' ? '+' : t.capacityMode === 'either' ? '/' : '';
-    const capStr = cap.join(joiner ? `<span class="dzc-sep" title="${
-      t.capacityMode === 'both' ? 'Carries both at once' : 'Either, never mixed'}">${joiner}</span>` : '');
+    const comma = '<span class="dzc-sep">,</span>';
+    // The card's own "(Porphyrion)": capacity that one variant has.
+    const scope = all.map(c => (c.variants || []).join(', ')).find(Boolean);
+    const capStr = (fixed.length ? fixed.join('') + (cap.length ? comma : '') : '')
+      + cap.join(joiner ? `<span class="dzc-sep" title="${
+        t.capacityMode === 'both' ? 'Carries both at once' : 'Either, never mixed'}">${joiner}</span>` : '')
+      + (scope ? `<span class="dzc-wpn-only">${esc(scope)} only</span>` : '');
     return `<span class="dzc-transport">${capStr}${
-      cap.length && fills.length ? '<span class="dzc-sep">,</span>' : ''}${fills.join('')}</span>`;
+      all.length && fills.length ? comma : ''}${fills.join('')}</span>`;
   }
 
   /* Points. 49 of 178 units are priced PER VARIANT ("35pts (Sabre, Greave),
