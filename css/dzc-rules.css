@@ -53,6 +53,9 @@ h5.rules-h, h6.rules-h { font-size: 15px; font-family: var(--font-body); font-we
 /* A worked example or a diagram's caption: a soft tint and italic. */
 .rules-eg { font-style: italic; font-size: 16px; color: var(--ink-muted); background: var(--navy-wash); padding: var(--sp-md) var(--sp-lg); }
 .rules-eg strong { font-style: normal; }
+/* A small editorial NB, set in the muted body colour with a navy label. */
+.rules-nb { margin: calc(-1 * var(--sp-sm)) 0 var(--sp-lg); font-size: 15px; line-height: 1.6; color: var(--ink-muted); }
+.rules-nb b { color: var(--navy); font-weight: 700; }
 .rules-sym { display: inline-block; vertical-align: -2px; margin: 0 1px; }
 
 .rules-xref { color: inherit; text-decoration: underline; text-decoration-style: dotted; text-decoration-color: var(--navy); text-underline-offset: 2px; }
@@ -160,6 +163,7 @@ h5.rules-h, h6.rules-h { font-size: 15px; font-family: var(--font-body); font-we
   .rules-h, .rules-chapter-title, .rules-tok-head { break-after: avoid; }
   .rules-p, .rules-ol li { font-size: 10pt; line-height: 1.45; color: #000; margin-bottom: 5pt; }
   .rules-eg { font-size: 9.5pt; padding: 4pt 8pt; color: #000; }
+  .rules-nb { font-size: 9pt; margin: 0 0 5pt; color: #000; }
   .rules-xref { text-decoration: none; color: inherit; }
   .rules-table-wrap, .rules-fig, .rules-scn-btn, .rules-feat, .rules-tok-list, .rules-ol li { break-inside: avoid; }
   .rules-table { font-size: 8.5pt; }

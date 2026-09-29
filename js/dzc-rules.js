@@ -9,8 +9,9 @@
  * by tools/dzc/build_rules_book.py with the book's bold kept and the errata
  * the 3.02 printing lacks applied.
  *
- * Nothing here writes rules text. Every sentence on the screen is a sentence
- * in that file, and every sentence in that file is one in the PDF.
+ * Nothing here writes rules text, with one exception: the NB notes below,
+ * which are ours and set apart as such. Every other sentence on the screen is
+ * a sentence in that file, and every sentence in that file is one in the PDF.
  */
 (function () {
   'use strict';
@@ -89,6 +90,24 @@
     const keys = SECTION_TOKENS[number];
     if (!keys) return '';
     return `<div class="rules-tok-inline">${tokenList(keys.map(k => ({ src: TOK(k), name: tokenNames[TOK(k)] || '' })))}</div>`;
+  }
+
+  // -------------------------------------------------------------- notes
+  /* Editorial NB notes woven into a section, keyed by its number, as the
+     Dropfleet builder does (SECTION_NOTES in its js/app.js). Each answers a
+     question players keep asking in the DZC Homebase Discord that the book
+     does answer, but not where anyone looks. The rulebook's own numbers
+     only: the Behemoth and faction chapters reuse them. */
+  const SECTION_NOTES = {
+    '1.1.2': ['A 6 always succeeds and a 1 always fails, whatever the modifiers.'],
+    '8.3.1': ['The same Zone. Infantry may exit one Zone and enter a different one in the same Round.'],
+    '8.6': ['Hits on Occupiers do not damage their Zone, except with Blast, which also rolls to hit the Zone once.'],
+    '8.7': ['One CQB per Zone per Round, not per Squad. A Squad that exits after a failed Bravery Test can fight another CQB in a different Zone that Round.'],
+    '11.1.10': ['This works even where the Energy vs Armour table says the hit cannot damage the target.']
+  };
+  function sectionNotes(n) {
+    const notes = !n.book && SECTION_NOTES[n.number];
+    return notes ? notes.map(t => `<p class="rules-nb"><b>NB:</b> ${linkify(esc(t))}</p>`).join('') : '';
   }
 
   // -------------------------------------------------------------- links
@@ -256,7 +275,7 @@
     const kids = (n.children || []).map(c => sectionHtml(c, depth)).join('');
     return `<div class="rules-sub rules-sub-d${depth}" id="rules-sec-${esc(n.id)}">`
       + `<h${lvl} class="rules-h">${num}${esc(n.heading)}</h${lvl}>`
-      + `${bodyHtml(n)}${sectionTokens(n.number)}${kids}</div>`;
+      + `${bodyHtml(n)}${sectionNotes(n)}${sectionTokens(n.number)}${kids}</div>`;
   }
 
   function chapterHtml(ch) {
