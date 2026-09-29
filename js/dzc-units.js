@@ -413,7 +413,7 @@
     const only = o.only !== undefined ? o.only : ((w.variants || []).length ? w.variants.join(', ') : '');
     return `<td class="dzc-wpn-name">${esc(w.name)}
         ${only ? `<span class="dzc-wpn-only">${esc(only)} only</span>` : ''}
-        ${o.price !== false && w.upgradePoints != null ? `<span class="dzc-wpn-up">+${w.upgradePoints}pts</span>` : ''}</td>
+        ${o.price !== false && w.upgradePoints ? `<span class="dzc-wpn-up">+${w.upgradePoints}pts</span>` : ''}</td>
       <td class="dzc-arc-cell">${window.DZCIcon.arc(w.arc)}<span>${esc(w.arc || '')}</span></td>
       <td>${esc(w.ma || '')}</td><td>${esc(w.r || '')}</td>
       <td>${esc(w.att || '')}</td><td>${esc(w.ac || '')}</td><td>${esc(w.e || '')}</td>
@@ -646,7 +646,7 @@
              Gunship's is on the gun it removes. buy() returns '' when a row
              has neither. */
           o.buy ? o.buy(w)
-          : w.upgradePoints == null ? ''
+          : !w.upgradePoints ? ''
           : `<span class="dzc-wpn-up">+${w.upgradePoints}pts</span>`}
       </header>
       <div class="dzc-wc-body">
@@ -1118,7 +1118,7 @@
       const wpns = guns.length ? `<table class="pr-wpn">
         <tr><th>Weapon</th><th>Arc</th><th>Move &amp; Attack</th><th>Range</th><th>Attacks</th><th>Accuracy</th><th>Energy</th><th>Special</th></tr>
         ${guns.map(w => `<tr><td>${esc(w.name)}${(w.variants || []).length
-            ? ` <i>(${esc(w.variants.join(', '))})</i>` : ''}${w.upgradePoints != null
+            ? ` <i>(${esc(w.variants.join(', '))})</i>` : ''}${w.upgradePoints
             ? ` <b>+${w.upgradePoints}pts${w.exclusive ? '*' : ''}</b>` : ''}</td>
           <td class="dzc-arc-cell">${window.DZCIcon.arc(w.arc)}<span>${esc(w.arc || '')}</span></td>
           <td>${esc(w.ma || '')}</td><td>${esc(w.r || '')}</td>

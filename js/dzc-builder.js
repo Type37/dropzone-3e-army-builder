@@ -1668,12 +1668,15 @@
    * lives here and nowhere else. */
   function upgradeBtn(s, i, o) {
     const on = window.DZCArmy.hasUpgrade(s, o.scope, o.weapon.name);
+    // A free one is a choice, not a purchase: the Terror's starred guns
+    // (Bioficer 260925), where the card says "must choose one".
+    const free = !o.points;
     return `<button type="button" class="dzc-buy${on ? ' is-on' : ''}${
       flip('buy|' + s.id + '|' + o.scope + '|' + o.weapon.name, on)}"
       aria-pressed="${on}"
-      aria-label="${on ? 'Remove' : 'Buy'} ${esc(o.weapon.name)}, ${o.points} points"
+      aria-label="${on ? 'Remove' : free ? 'Take' : 'Buy'} ${esc(o.weapon.name)}${free ? '' : `, ${o.points} points`}"
       onclick="DZCBuilder.toggleUpgrade('${s.id}',${i})"
-      >${on ? 'Bought' : '+' + o.points + 'pts'}</button>`;
+      >${free ? (on ? 'Taken' : 'Take') : on ? 'Bought' : '+' + o.points + 'pts'}</button>`;
   }
 
   function optionBtn(s, oi, o) {
@@ -1726,7 +1729,7 @@
       // Nothing to buy and nothing to drop: the row keeps its printed price,
       // or nothing at all if it never had one.
       if (i === -1) {
-        return w.upgradePoints == null ? ''
+        return !w.upgradePoints ? ''
           : `<span class="dzc-wpn-up">+${w.upgradePoints}pts</span>`;
       }
       return upgradeBtn(s, i, list[i]);

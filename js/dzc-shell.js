@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 495;
+  const BUILD = 496;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -617,6 +617,12 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-09-28', title: 'Thirteen new Bioficer Units, and the reissued rulebook', items: [
+      'The 25 September Bioficer cards: Calculi and Cortex Command Skimmers, Tenor Scout Skimmer, Terror Heavy Battle Skimmer, Tremor Destroyer Skimmer, Fury Interceptor, Gauntlet Genitor Circle, and the Generated Beta, Drake, Gamma, Hand, Gun Hand and Spitters.',
+      'The Terror takes exactly one of its six starred guns, as its card says. A Terror with none is refused, and so is a second.',
+      'Epsilon loses Hardy 3+ and the Hulk Blades’ Decon Blades are Ac 2+, as reprinted.',
+      'Rules follow the 23 September rulebook reissue. Field gains “This Weapon’s Ac and R values cannot be modified.”',
+    ] },
     { date: '2026-09-14', title: 'Play mode: a Squad’s own stats, on its card', items: [
       'Every Squad on the Play screen carries the stats you are asked for across the table: Move and Armour on a Vehicle, Move, Offence, Defence and Bravery on Infantry. Reported by reddeth_38.',
       'Damage Points and Power stay out of that row. Both change during a game and both already have a live tracker directly under it.',

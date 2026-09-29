@@ -563,6 +563,11 @@
       if (!canAddUnit(a, g.id, u.id).ok) { removeGroup(a, g.id); continue; }
       const s = addSquad(a, g.id, u.id, u.squadMin || 1);
       if (!s) { removeGroup(a, g.id); continue; }
+      // "Each unit must choose one from the marked selection" (the Terror).
+      if (/must choose one/i.test(u.upgradeNote || '')) {
+        const marked = (u.weapons || []).filter(w => w.box === 'upgrade' && w.exclusive);
+        if (marked.length) toggleUpgrade(a, s.id, ALL_VARIANTS, pick(marked).name);
+      }
 
       // A Transport, but only where it comes out exact and the Group can still
       // afford it. Roughly half the time, so a generated list is not uniformly
@@ -3147,6 +3152,23 @@
      * activated that Round may be activated together with any non-Gate Group"
      * -- so the warning was both wrong and permanent on every Shaltari list
      * that took a Gate at all. */
+    /* "*Each unit must choose one from the marked selection." The Terror
+     * Heavy Battle Skimmer (Bioficer 260925). The scanner reads its starred
+     * guns as free exclusive upgrades, so toggleUpgrade already stops a
+     * second; this is the other half, a Squad that took none. The wording is
+     * the card's own footnote. */
+    army.groups.forEach(g => g.squads.forEach(s => {
+      const u = unitOf(army, s);
+      if (!u || !/must choose one/i.test(u.upgradeNote || '')) return;
+      const marked = (u.weapons || []).filter(w => w.box === 'upgrade' && w.exclusive);
+      const taken = marked.some(w => ((w.variants || []).length ? w.variants : [ALL_VARIANTS])
+        .some(scope => hasUpgrade(s, scope, w.name)));
+      if (marked.length && !taken) {
+        errors.push({ rule: '3.2.3', group: g.id,
+          msg: `${u.name}: each unit must choose one from the marked selection.` });
+      }
+    }));
+
     const transportOnly = army.groups.filter(g => g.squads.length
       && !g.squads.every(s => gateSquad(army, s))
       && g.squads.every(s => {

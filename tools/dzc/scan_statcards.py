@@ -758,6 +758,17 @@ def parse_transport(page) -> Transport:
             continue
         badges.append(g)
 
+    # A FRAME is not a badge. The Bioficer Generated cards (260925) set their
+    # green square inside a gold border, drawn as two filled rects 3pt larger
+    # on every side -- and the gold is the diamond's ink, so read as a badge it
+    # stopped the scan with a symbol mismatch. A hollow badge's own stroke and
+    # body differ by about a line width, so 2pt separates the two cases.
+    def frames(outer, inner):
+        o, i = outer["rect"], inner["rect"]
+        return (i.x0 - o.x0 >= 2 and i.y0 - o.y0 >= 2
+                and o.x1 - i.x1 >= 2 and o.y1 - i.y1 >= 2)
+    badges = [g for g in badges if not any(frames(g, o) for o in badges)]
+
     capacity, fills, claimed, placed = [], [], [], []
     for g in sorted(badges, key=lambda g: g["rect"].x0):
         r = g["rect"]
@@ -1680,7 +1691,15 @@ def parse_weapons(page, lines) -> tuple[list[Weapon], float]:
     if not boxes or not below:
         return [], float(hdr_bottom)
     last_y = max(w[3] for w in below) + 2
-    rules = sorted(set(vertical_rules(page, hdr_bottom, last_y)) | set(doc_rules(page.parent)))
+    # The page's own dividers first, the document's only where the page draws
+    # too few -- the same order parse_stat_table reads them in. Pooled
+    # unconditionally, the 31-page Bioficer release (260925) put a stray edge
+    # at x=123.7 inside the Name column, and column_bounds took it over the
+    # card's real divider at 130.0: "Winnow Web (Gun Hand 2)" lost its "2)" to
+    # Arc and the weapon named no variant.
+    rules = sorted(vertical_rules(page, hdr_bottom, last_y))
+    if len(rules) < len(cols) - 1:
+        rules = sorted(set(rules) | set(doc_rules(page.parent)))
 
     weapons = []
     # Where one row ENDS and the next begins: the middle of the empty band
@@ -1778,6 +1797,17 @@ def parse_weapons(page, lines) -> tuple[list[Weapon], float]:
         # word, and the bracket is the thing that says "pay for this".
         if w["upgradePoints"] is not None and w["box"] == "all":
             w["box"] = "upgrade"
+        # A bare star on the NAME is a free, mandatory choice. The Terror
+        # Heavy Battle Skimmer (Bioficer 260925) prints six starred guns in
+        # orange with no bracket, over "*Each unit must choose one from the
+        # marked selection." That is the Triton's starred-upgrade rule at 0pts
+        # -- only one of them -- plus a must, which dzc-army.js enforces from
+        # the footnote. Read as orange-without-a-variant, all six were carried.
+        if w["name"].endswith("*") and not w["variants"] and w["upgradePoints"] is None:
+            w["name"] = w["name"].rstrip("*").strip()
+            w["box"] = "upgrade"
+            w["upgradePoints"] = 0
+            w["exclusive"] = True
         # An orange box means "restricted to the Variant named in brackets"
         # (rulebook 3.2.2). A few cards print orange with NO bracket -- the
         # Bioficer Surge Gunship's Decon Pulse. That is a source-data quirk,

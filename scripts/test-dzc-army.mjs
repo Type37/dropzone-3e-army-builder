@@ -2112,6 +2112,21 @@ console.log('\nimporting a pasted list');
      'and something that is not a list is refused rather than half-imported');
 }
 
+console.log('\nA marked selection (Terror Heavy Battle Skimmer)');
+{
+  await DZC.loadFaction('bioficer');
+  const a = A.create('bioficer', 'Terror', 1500);
+  const g = A.addGroup(a);
+  const s = A.addSquad(a, g.id, 'terror-heavy-battle-skimmer', 1);
+  const must = () => A.validate(a).errors.filter(e => /marked selection/.test(e.msg)).length;
+  eq(must(), 1, 'a Terror with none of its starred guns is refused');
+  eq(A.toggleUpgrade(a, s.id, '*', 'Winnow Web').ok, true, 'one of them can be taken');
+  eq(must(), 0, 'and that settles it');
+  eq(A.toggleUpgrade(a, s.id, '*', 'Quake Howitzer').ok, false, 'a second is refused');
+  eq(A.upgradeCost(a, s), 0, 'and the choice costs nothing');
+  A.remove(a.id);
+}
+
 console.log('\nSurprise me');
 {
   /* The generator has to produce a LEGAL army, which makes it the only test in

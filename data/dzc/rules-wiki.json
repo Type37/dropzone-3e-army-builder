@@ -1,8 +1,8 @@
 {
  "game": "Dropzone Commander",
  "book": "A5 Dropzone Rulebook",
- "edition": "3.2",
- "source": "A5_Dropzone_3.02_Rulebook.pdf",
+ "edition": "3.0",
+ "source": "A5_Dropzone_3.0_Rulebook_errarted_2.pdf",
  "generator": "tools/dzc/extract_rules_wiki.py",
  "verbatim": true,
  "chapters": [
@@ -625,17 +625,6 @@
        "header": null,
        "rows": [
         [
-         [],
-         [],
-         [
-          {
-           "t": "UCM Main Battle Tank"
-          }
-         ],
-         [],
-         []
-        ],
-        [
          [
           {
            "t": "Type"
@@ -648,7 +637,7 @@
          ],
          [
           {
-           "t": "2-9 Standard A"
+           "t": "UCM Main Battle Tank 2-9 Standard A"
           }
          ],
          [
@@ -841,19 +830,6 @@
        "header": null,
        "rows": [
         [
-         [],
-         [],
-         [
-          {
-           "t": "Legionnaires"
-          }
-         ],
-         [],
-         [],
-         [],
-         []
-        ],
-        [
          [
           {
            "t": "Type"
@@ -866,7 +842,7 @@
          ],
          [
           {
-           "t": "OF"
+           "t": "Legionnaires OF"
           }
          ],
          [
@@ -1324,7 +1300,7 @@
        "kind": "p",
        "runs": [
         {
-         "t": "Points: no more than"
+         "t": "Points: no more than Standard"
         }
        ]
       },
@@ -1340,15 +1316,7 @@
        "kind": "p",
        "runs": [
         {
-         "t": "Standard"
-        }
-       ]
-      },
-      {
-       "kind": "p",
-       "runs": [
-        {
-         "t": "Points: no more than"
+         "t": "Points: no more than Standard"
         }
        ]
       },
@@ -1364,15 +1332,7 @@
        "kind": "p",
        "runs": [
         {
-         "t": "Standard"
-        }
-       ]
-      },
-      {
-       "kind": "p",
-       "runs": [
-        {
-         "t": "Points: no more than"
+         "t": "Points: no more than Standard"
         }
        ]
       },
@@ -1381,14 +1341,6 @@
        "runs": [
         {
          "t": "Support"
-        }
-       ]
-      },
-      {
-       "kind": "p",
-       "runs": [
-        {
-         "t": "Standard"
         }
        ]
       },
@@ -9034,7 +8986,7 @@
        "kind": "p",
        "runs": [
         {
-         "t": "This Weapon does not target anything. Instead, each Zone, Vehicle, and Infantry Unit within its R are assigned attacks equal to its Att. Instead, each Zone, Vehicle, and Infantry Unit within its R are assigned attacks equal to its Att. Since it does not target anything, Line of Sight is not needed and friendlies may be hit."
+         "t": "This Weapon does not target anything. Instead, each Zone, Vehicle, and Infantry Unit within its R are assigned attacks equal to its Att. Since it does not target anything, Line of Sight is not needed and friendlies may be hit."
         }
        ]
       },
@@ -9059,6 +9011,14 @@
        "runs": [
         {
          "t": "If this Weapon places Status Tokens, place one on every Squad within its R that could receive the Token. This counts as placing one of that Token."
+        }
+       ]
+      },
+      {
+       "kind": "p",
+       "runs": [
+        {
+         "t": "This Weapon’s Ac and R values cannot be modified."
         }
        ]
       }
@@ -9435,7 +9395,7 @@
        "kind": "p",
        "runs": [
         {
-         "t": "When attacking during its Unit’s activation, this Weapon may freely split its attacks between Units within 3” of at least one other Unit it targets.. This must be a single chain of targets."
+         "t": "When attacking during its Unit’s activation, this Weapon may freely split its attacks between Units within 3” of at least one other Unit it targets. This must be a single chain of targets."
         }
        ]
       }
