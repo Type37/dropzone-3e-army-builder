@@ -1401,11 +1401,21 @@
       if (!tu || t.carriedBy) return;
       const cap = ((tu.transport || {}).capacity) || [];
       if (!cap.length) return;
-      cap.forEach(c => { slot(c.shape).total += (c.n || 0) * t.models.length; });
       const aboard = cargoOf(army, group, t.id)
         .map(x => ({ unit: unitOf(army, x), count: x.models.length }))
         .filter(x => x.unit);
       const chk = window.DZC.loadCheck(tu, aboard, t.models.length);
+      /* "/" is either, never both (3.2.4.2). Once one of the alternatives is
+       * in use, the others are not room: a Harbinger carrying Warriors has no
+       * triangles left, and the meter was offering four. Before anything is
+       * aboard each alternative is shown, because each is a real option. The
+       * Explorator's fixed 12 stands outside the choice. */
+      const either = (tu.transport || {}).capacityMode === 'either';
+      const chosen = either && cap.find(c => !c.fixed && chk.byShape[c.shape]);
+      cap.forEach(c => {
+        if (chosen && !c.fixed && c.shape !== chosen.shape) return;
+        slot(c.shape).total += (c.n || 0) * t.models.length;
+      });
       Object.keys(chk.byShape).forEach(sh => { slot(sh).used += chk.byShape[sh]; });
     });
     return Object.keys(by).map(k => by[k]);

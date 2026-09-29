@@ -532,7 +532,9 @@
     const ws = U.unitWeapons(u, window.DZCArmy.squadGuns(s));
     if (!ws.length) return '';
     return `<div class="dzc-play-wpn">${
-      ws.map(w => U.wpnCard(w, army.faction)).join('')}</div>`;
+      // No price: these are the guns this Squad HAS, bought or not, and a
+      // "+5pts" on a purchase already made read as an offer.
+      ws.map(w => U.wpnCard(w, army.faction, { buy: () => '' })).join('')}</div>`;
   }
 
   /* THE SQUAD'S OWN RULES, tappable. Jet, 2026-08-17: "Units need all their
@@ -696,6 +698,7 @@
       </div>
       ${rulesHtml(army, s, u)}
       ${weaponsHtml(army, s, u)}
+      ${window.DZCUnits.gearHtml(u, army.faction, s.models.map(m => m.variant))}
       </div>
     </div>`;
   }

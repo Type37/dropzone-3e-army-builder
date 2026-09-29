@@ -114,7 +114,9 @@
     const capStr = (fixed.length ? fixed.join('') + (cap.length ? comma : '') : '')
       + cap.join(joiner ? `<span class="dzc-sep" title="${
         t.capacityMode === 'both' ? 'Carries both at once' : 'Either, never mixed'}">${joiner}</span>` : '')
-      + (scope ? `<span class="dzc-wpn-only">${esc(scope)} only</span>` : '');
+      // The arrow chip a weapon restricted to one Variant wears, so the same
+      // fact reads the same way on a gun, a Gear line and a badge.
+      + (scope ? `<span class="dzc-wc-only">${ARROW}${esc(scope)}</span>` : '');
     return `<span class="dzc-transport">${capStr}${
       all.length && fills.length ? comma : ''}${fills.join('')}</span>`;
   }
@@ -615,6 +617,22 @@
    * The numbers still line up: each pair is a grid with a fixed label column, so
    * every value in a card starts at the same x whatever its label says.
    */
+  /* The card's own marks for a choice, drawn where the card draws them.
+   *
+   * A starred NAME with no price is one of a "choose one" set, footnoted
+   * underneath: the Terror's "Scythe Battery*". A priced one carries its
+   * star in the price, "+5pts*", and is drawn there. A pair tied by an "OR"
+   * row -- the Type 7 Grand Walker's two guns -- gets the row, not a star. */
+  function markOf(w) {
+    return w && w.exclusive && !w.upgradePoints && !w.orPair ? '*' : '';
+  }
+  function orBetween(list, i) {
+    return i > 0 && list[i] && list[i - 1] && list[i].orPair && list[i - 1].orPair;
+  }
+  function orRow(list, i) {
+    return orBetween(list, i) ? '<tr class="pr-or"><td colspan="8">or</td></tr>' : '';
+  }
+
   function wpnCard(w, faction, opts) {
     const fac = faction || state.faction;
     const o = opts || {};
@@ -644,7 +662,7 @@
     const only = o.grouped || !(w.variants || []).length ? '' : w.variants.join(', ');
     return `<article class="dzc-wc${o.cls ? ' ' + o.cls : ''}">
       <header class="dzc-wc-head">
-        <h4 class="dzc-wc-name">${esc(w.name)}</h4>
+        <h4 class="dzc-wc-name">${esc(w.name)}${markOf(w)}</h4>
         ${only ? `<span class="dzc-wc-only">${ARROW}${esc(only)}</span>` : ''}
         ${/* The price is the BUTTON when there is somewhere to buy it. The
              upgrade table under the Squad printed this whole weapon a second
@@ -658,7 +676,7 @@
              has neither. */
           o.buy ? o.buy(w)
           : !w.upgradePoints ? ''
-          : `<span class="dzc-wpn-up">+${w.upgradePoints}pts</span>`}
+          : `<span class="dzc-wpn-up">+${w.upgradePoints}pts${w.exclusive ? '*' : ''}</span>`}
       </header>
       <div class="dzc-wc-body">
         <div class="dzc-wc-arc" title="${esc(window.DZCIcon.arcLabel(w.arc) || '')}">
@@ -695,13 +713,16 @@
     if (!all.length) return '<p class="dzc-none">No weapons.</p>';
     const lens = o.lens === undefined ? state.lens[u.id] : o.lens;
     const gone = marking ? removedByUpgrades(u, o) : {};
-    const cards = all.map((w, i) => [w, i])
-      .filter(([w]) => inLens(w, lens))
-      .map(([w, i]) => {
+    const shown = all.map((w, i) => [w, i]).filter(([w]) => inLens(w, lens));
+    const cards = shown
+      .map(([w, i], k) => {
         const mark = gone[i] ? 'is-swapped' : weaponLive(u, w, o) ? 'is-live' : 'is-off';
         let gained = '';
         if (marking && o.key) {
-          const id = o.key + '|' + w.name;
+          // By position as well as name: the Harrier carries two UM-117
+          // Cannons, one swapped out and one kept, and keyed by name alone the
+          // kept one "flipped" to live and played its animation every render.
+          const id = o.key + '|' + i + '|' + w.name;
           const live = mark === 'is-live';
           if (live && wasLive.get(id) === false) gained = ' is-gained';
           wasLive.set(id, live);
@@ -713,7 +734,9 @@
          * is a different question and the only one still needing an edge. */
         const cls = [w.box === 'upgrade' ? 'is-upgrade' : '']
           .concat(marking ? [mark] : []).filter(Boolean).join(' ') + gained;
-        return wpnCard(w, fac, { cls: cls, buy: o.buy, grouped: !!lens });
+        // The card's own "OR" between the Type 7's two guns.
+        const or = orBetween(shown.map(x => x[0]), k) ? '<div class="dzc-wc-or">or</div>' : '';
+        return or + wpnCard(w, fac, { cls: cls, buy: o.buy, grouped: !!lens });
       }).join('');
     return `<div class="dzc-wcards${marking ? ' dzc-wcards--marked' : ''}">${cards}</div>`;
   }
@@ -728,12 +751,16 @@
    * Each name is run through the rule linker, so "Jump System 18”" is the chip
    * that opens 1.7.2 with its own 18 substituted in.
    */
-  function gearHtml(u, faction) {
+  /* `fielded`, when given, is the Variants a Squad actually has: a Squad's
+   * card lists only the Gear it can spend Power on. */
+  function gearHtml(u, faction, fielded) {
     const fac = u.faction || faction || state.faction;
-    if (!(u.gear || []).length) return '';
+    const gear = (u.gear || []).filter(g => !fielded || !(g.variants || []).length
+      || g.variants.some(v => fielded.indexOf(v) !== -1));
+    if (!gear.length) return '';
     return `<div class="dzc-gear">
-      <span class="dzc-gear-head">Gear, paid in Power, not points</span>
-      <ul class="dzc-gear-list">${u.gear.map(g => `<li>
+      <span class="dzc-gear-head">Gear</span>
+      <ul class="dzc-gear-list">${gear.map(g => `<li>
         <span class="dzc-gear-pt">${esc(g.power)}<small>PT</small></span>
         ${rulesHtml(g.name, fac) || esc(g.name)}${(g.variants || []).length
           /* Which Variant this Gear belongs to, in the same words a weapon
@@ -741,7 +768,7 @@
              pieces are one Variant's or the other's, and every one of them was
              printed against both -- each priced in Power, so a player was
              reading a pool that was not theirs to spend. */
-          ? `<span class="dzc-wpn-only">${esc(g.variants.join(', '))} only</span>` : ''}</li>`).join('')}</ul>
+          ? `<span class="dzc-wc-only">${ARROW}${esc(g.variants.join(', '))}</span>` : ''}</li>`).join('')}</ul>
     </div>`;
   }
 
@@ -1117,9 +1144,12 @@
       const allVartd = o.art && (u.variants || []).length
         && (u.variants || []).every(v => v.art);
 
+      // Scoped the way a weapon row is, "(Tethys)", or a reader cannot tell
+      // which Variant's Power buys it.
       const gear = (u.gear || []).length
         ? `<div class="pr-gear"><b>Gear</b> ${u.gear
-            .map(x => `${esc(x.power)}PT ${esc(x.name)}`).join(', ')}</div>`
+            .map(x => `${esc(x.power)}PT ${esc(x.name)}${(x.variants || []).length
+              ? ` <i>(${esc(x.variants.join(', '))})</i>` : ''}`).join(', ')}</div>`
         : '';
 
       const cap = transportHtml(u);
@@ -1127,8 +1157,9 @@
       const note = String(u.upgradeNote || '').trim();
 
       const wpns = guns.length ? `<table class="pr-wpn">
-        <tr><th>Weapon</th><th>Arc</th><th>Move &amp; Attack</th><th>Range</th><th>Attacks</th><th>Accuracy</th><th>Energy</th><th>Special</th></tr>
-        ${guns.map(w => `<tr><td>${esc(w.name)}${(w.variants || []).length
+        <tr>${['Name', 'Arc', 'MA', 'R', 'Att', 'Ac', 'E', 'Special']
+          .map(k => `<th>${esc(window.DZC.weaponColLabel(k))}</th>`).join('')}</tr>
+        ${guns.map((w, i) => `${orRow(guns, i)}<tr><td>${esc(w.name)}${markOf(w)}${(w.variants || []).length
             ? ` <i>(${esc(w.variants.join(', '))})</i>` : ''}${w.upgradePoints
             ? ` <b>+${w.upgradePoints}pts${w.exclusive ? '*' : ''}</b>` : ''}</td>
           <td class="dzc-arc-cell">${window.DZCIcon.arc(w.arc)}<span>${esc(w.arc || '')}</span></td>
@@ -1216,7 +1247,7 @@
     // Shared with the builder's picker so a unit reads the same in both places.
     statsHtml, rulesHtml, variantRuleFilter, squadHtml, sizeHtml, transportHtml, unitWeapons, weaponLive,
     removedByUpgrades, weaponsHtml, variantsHtml,
-    unitRulesHtml, wpnHead, wpnCells, wpnCard, weaponCardsHtml, variantLensHtml,
+    unitRulesHtml, wpnHead, wpnCells, wpnCard, weaponCardsHtml, variantLensHtml, gearHtml, upgradeNoteHtml,
     pointsHtml, shape: shapeSvg,
     SHAPES: Object.keys(SYMBOL),
     shapeInk: s => (SYMBOL[s] || {}).ink || 'currentColor',

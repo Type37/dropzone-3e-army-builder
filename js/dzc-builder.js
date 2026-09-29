@@ -2302,6 +2302,12 @@
           // The guns go; the purchases stay. See upgradeStrip.
           ? upgradeStrip(a, s)
           : `<div class="dzc-sq-wpn">${variantGuns(a, s, u)}</div>`}
+        <!-- The card's footnote on its upgrades ("Only one of these upgrades
+             may be taken"), beside the buttons it constrains; and a Behemoth's
+             Gear, which it spends Power on every activation. Both were on the
+             unit page and the printed sheet and nowhere in the Squad. -->
+        ${window.DZCUnits.upgradeNoteHtml(u)}
+        ${window.DZCUnits.gearHtml(u, a.faction, s.models.map(m => m.variant))}
       </div>
       <!-- The Variant list that used to sit here is the blocks above now:
            name, count and the guns that Variant fires, in one place instead of
@@ -2555,7 +2561,11 @@
     return `<div class="dzc-facts">
       <div class="dzc-pick-stats">${U.statsHtml(u, opts)}</div>
       ${weapons ? `<div class="dzc-pick-wpns">${weapons}</div>` : ''}
-      ${u.special ? `<div class="dzc-pick-rules">${U.rulesHtml(u.special, u.faction || faction)}</div>` : ''}
+      <!-- The rules every Variant has, as the picker's guns are the ones every
+           Variant shares. Unfiltered, the MBT's "Command Centre" read as every
+           tank's when the card gives it to the Greave. -->
+      ${u.special ? `<div class="dzc-pick-rules">${U.rulesHtml(u.special, u.faction || faction,
+        U.variantRuleFilter(u, null))}</div>` : ''}
     </div>`;
   }
 
@@ -3105,7 +3115,11 @@
       ? (window.DZCArmy.findSquad(current, s.carriedBy) || {}).unitId : '';
 
     const card = o => {
-      const total = (o.unit.points != null ? o.unit.points : 0) * o.need;
+      // What assignTransport will actually add: the first Variant at its own
+      // price. A Transport priced per Variant (Battle Bus, Leviathan, Juno)
+      // has no unit price, and the card showed none at all.
+      const first = ((o.unit.variants || [])[0] || {}).name;
+      const total = window.DZCArmy.modelCost(o.unit, { variant: first }) * o.need;
       return `<button type="button" class="dzc-carry-card${o.unit.id === nowId ? ' is-on' : ''}${
         o.exact ? '' : ' is-partial'}" onclick="DZCBuilder.assignTransport('${s.id}','${esc(o.unit.id)}')">
         ${o.unit.art ? `<img src="${esc(o.unit.art)}" alt="" loading="lazy" onerror="this.remove()">`
@@ -3318,8 +3332,13 @@
        * activation and cannot work out from anything else. What it may spend
        * its Power on and what each costs. On paper it is a price list, so it
        * prints as one. */
-      const gear = (u.gear || []).length
-        ? `<div class="pr-gear"><b>Gear</b> ${u.gear
+      // Only the Gear the fielded Variant has: an Alcyoneus printed the
+      // Porphyrion's Scrambler and Director, the way the weapons below it
+      // are already filtered to this Squad.
+      const fieldedGear = (u.gear || []).filter(x => !(x.variants || []).length
+        || x.variants.some(v => mix[v]));
+      const gear = fieldedGear.length
+        ? `<div class="pr-gear"><b>Gear</b> ${fieldedGear
             .map(x => `${esc(x.power)}PT ${esc(x.name)}`).join(', ')}</div>`
         : '';
 
@@ -3329,13 +3348,17 @@
        * saying what the app says with a glyph. Same renderer as the screen, so
        * cargo comes with it: what a Transport takes up aboard something else
        * is half the question at a table and the sheet never printed it. */
-      const cap = window.DZCUnits.transportHtml(u);
+      // What THIS Squad carries (carrierOf), as the Squad card on screen
+      // draws it: not the card's, which printed "8 circle, Porphyrion only"
+      // on an Alcyoneus and two circles on a Strikehawk that had sold them.
+      const cap = window.DZCUnits.transportHtml(window.DZCArmy.carrierOf(a, s));
 
       // The sheet is the deployment plan, and on paper you cannot expand a row
       // to find out that the gun above it belongs to a Variant you did not
       // take. Same guns as the Squad row, from the same definition.
       const wpns = guns.length ? `<table class="pr-wpn">
-        <tr><th>Weapon</th><th>Arc</th><th>Move &amp; Attack</th><th>Range</th><th>Attacks</th><th>Accuracy</th><th>Energy</th><th>Special</th></tr>
+        <tr>${['Name', 'Arc', 'MA', 'R', 'Att', 'Ac', 'E', 'Special']
+          .map(k => `<th>${esc(window.DZC.weaponColLabel(k))}</th>`).join('')}</tr>
         ${guns.map(w => `<tr><td>${esc(w.name)}${(w.variants || []).length ? ` <i>(${esc(w.variants.join(', '))})</i>` : ''}</td>
           <!-- The arc DRAWN, then named, exactly as the weapon table on screen
                does it. "F/S" is a code you have to already know; the glyph is

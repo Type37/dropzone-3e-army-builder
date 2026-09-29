@@ -1070,7 +1070,8 @@
           "exclusive": true,
           "capacityDelta": [],
           "boxUnresolved": false,
-          "choice": true
+          "choice": true,
+          "orPair": true
         },
         {
           "name": "Dual R7X-66 Incinerators",
@@ -1087,7 +1088,8 @@
           "exclusive": true,
           "capacityDelta": [],
           "boxUnresolved": false,
-          "choice": true
+          "choice": true,
+          "orPair": true
         }
       ],
       "upgradeNote": null,

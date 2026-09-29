@@ -639,7 +639,7 @@
       if ((w.capacityDelta || []).length && taken(w)) deltas.push.apply(deltas, w.capacityDelta);
     });
     if (!deltas.length) return unit;
-    const cap = (((unit.transport || {}).capacity) || []).map(c => ({ shape: c.shape, n: c.n }));
+    const cap = (((unit.transport || {}).capacity) || []).map(c => Object.assign({}, c));
     deltas.forEach(d => {
       const hit = cap.find(c => c.shape === d.shape);
       if (hit) hit.n = Math.max(0, hit.n + d.n);

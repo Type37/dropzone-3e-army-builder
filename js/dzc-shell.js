@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 499;
+  const BUILD = 500;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -617,6 +617,16 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-09-29', title: 'Every view shows the same Squad', items: [
+      'The printed army sheet shows what the Squad carries and the Gear its Variant has, as the builder does. An Alcyoneus printed the Porphyrion’s circles and Gear.',
+      'Behemoth Gear is on the Squad card and in Play mode.',
+      'A card’s upgrade footnote sits on the Squad card beside its buttons.',
+      'Starred choices show their star, and the Type 7’s two guns have the card’s “or” between them.',
+      'A Transport that carries one shape or another counts only the one in use.',
+      'The Transport chooser prices Battle Buses, Leviathans and Junos.',
+      'Play mode no longer prices an upgrade you have already bought.',
+      'The unit picker shows only the rules every Variant has.',
+    ] },
     { date: '2026-09-29', title: 'Rules open the right text', items: [
       'LT and Linked on every Behemoth weapon open Limited Traverse and Linked. They were opening Limited.',
       'The Mining Engine’s Vent Repeater shows its self-damage as part of Capacitors, not as Tracking.',

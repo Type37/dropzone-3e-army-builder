@@ -188,6 +188,7 @@
    drawing a grid the columns already align without. The header keeps its rule
    because that one separates two different KINDS of row. */
 :is(#dzc-print, .pp-paper) .pr-wpn td { padding: 1pt 4pt 1pt 0; vertical-align: top; }
+:is(#dzc-print, .pp-paper) .pr-wpn tr.pr-or td { text-align: center; font-style: italic; padding: 0; }
 
 /* Rules appendix, in TWO COLUMNS and starting wherever the army finished.
    Jet, 2026-08-13: "make rules glossary not need a break and be way more

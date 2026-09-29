@@ -146,6 +146,9 @@ class Weapon(TypedDict):
     # guns, the Type 7's "OR" pair. `exclusive` already stops a second; this
     # is what makes none an error too.
     choice: bool
+    # Tied to its neighbour by a printed "OR" row rather than by a star, so a
+    # view can draw the card's own divider between them.
+    orPair: NotRequired[bool]
 
 
 class Variant(TypedDict):
@@ -1903,6 +1906,7 @@ def parse_weapons(page, lines) -> tuple[list[Weapon], float]:
         for i in ([above[-1]] if above else []) + ([after[0]] if after else []):
             weapons[i]["exclusive"] = True
             weapons[i]["choice"] = True
+            weapons[i]["orPair"] = True
     return weapons, float(last_y)
 
 

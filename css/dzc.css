@@ -433,6 +433,13 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
   font: 600 10px/16px var(--font-ui, 'Jost', system-ui, sans-serif);
 }
 .dzc-wc-only-i { flex: none; }
+/* The card's own "OR" between two guns that share a mount (Type 7 Grand
+   Walker): a full-width row in the grid, where the card prints its divider. */
+.dzc-wcards > .dzc-wc-or {
+  grid-column: 1 / -1; text-align: center;
+  font: 600 11px/18px var(--font-ui, 'Jost', system-ui, sans-serif);
+  color: var(--ink-muted, #6b6258);
+}
 
 /* Energy is the one stat you can press, so it has to look pressable without
    becoming a button in a row of numbers: same type, same place, an underline
