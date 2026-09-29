@@ -2545,9 +2545,26 @@
            that looks like a section and is not. -->
       <ul>${list.map(e =>
         `<li>${e.n > 1 ? `<b class="dzc-issue-n">${e.n} ×</b> ` : ''}${esc(e.msg)
-          }${e.rule === 'data' ? ''
-            : ` <span class="dzc-rulecite">(rule ${esc(e.rule)})</span>`}</li>`).join('')}</ul>
+          }${e.rule === 'data' ? '' : ` ${citeRule(e.rule)}`}</li>`).join('')}</ul>
     </div>`;
+  }
+
+  /* A refusal names its rule; the name should OPEN it. A rulebook section
+   * goes to Interactive Rules at that section, and Back comes home. A faction
+   * rule -- Genitor X, Gate, Cling, the Shaltari Group rule -- is not in the
+   * rulebook at all, and before this the citation was the only place in the
+   * app it was named, as text you could not open. */
+  function citeRule(rule) {
+    const r = String(rule);
+    if (/^\d+(\.\d+)*$/.test(r)) {
+      return `<span class="dzc-rulecite">(rule <a class="dzc-rulelink" href="#rules/${esc(r)}">${esc(r)}</a>)</span>`;
+    }
+    const fac = current ? current.faction : '';
+    if (window.DZC.rule(r, fac)) {
+      return `<span class="dzc-rulecite">(rule <button type="button" class="dzc-rule dzc-rule--inline"
+        onclick="DZCUnits.showRule(this,'${esc(r).replace(/'/g, '&#39;')}','${esc(fac)}')">${esc(r)}</button>)</span>`;
+    }
+    return `<span class="dzc-rulecite">(rule ${esc(r)})</span>`;
   }
 
   /* Stats, shared guns and rules for a unit. Shared by the picker card and the
@@ -3260,8 +3277,19 @@
     // in, and the sheet has to carry the one the model actually has.
     const used = new Map();          // printed keyword -> { token, rule, text }
 
-    function collectRules(u, guns) {
-      [u.special || ''].concat((guns || []).map(w => w.special || '')).forEach(sp => {
+    /* The rules THIS Squad uses: its card's own, the ones its fielded
+     * Variants have, its guns', and its Gear. Three Sabres printed "Scanner
+     * (Greave)" in "Rules used", and a Behemoth's Target Lock and Redundancy
+     * printed as bare names with no text anywhere on the sheet. */
+    function collectRules(u, guns, s) {
+      const fielded = [...new Set(s.models.map(m => m.variant).filter(Boolean))];
+      const filters = [window.DZCUnits.variantRuleFilter(u, null)]
+        .concat(fielded.map(v => window.DZCUnits.variantRuleFilter(u, v)));
+      const own = window.DZC.splitSpecial(u.special || '', a.faction)
+        .filter(tok => filters.some(f => !f || f(tok)));
+      const gear = (u.gear || []).filter(x => !(x.variants || []).length
+        || x.variants.some(v => fielded.indexOf(v) !== -1)).map(x => x.name || '');
+      [own.join(', ')].concat((guns || []).map(w => w.special || ''), gear).forEach(sp => {
         window.DZC.splitSpecial(sp, a.faction).forEach(tok => {
           const r = window.DZC.rule(tok, a.faction);
           if (r && !used.has(tok)) {
@@ -3275,7 +3303,7 @@
       const u = window.DZCArmy.unitOf(a, s);
       if (!u) return '';
       const guns = window.DZCUnits.unitWeapons(u, squadGuns(s));
-      collectRules(u, guns);
+      collectRules(u, guns, s);
       const riders = g.squads.filter(x => x.carriedBy === s.id);
       const cost = window.DZCArmy.squadCost(a, s);
       /* THE SAME STATS THE SCREEN DRAWS. Jet, 2026-08-13: "I'd like if print
@@ -3495,9 +3523,7 @@
              it qualifies) is spliced here rather than on screen, where the
              break is drawn. -->
         <p>${esc(String(e.text || '').split(/\n{2,}/)
-          .map(t => t.trim()).filter(Boolean).join(' '))} <span class="pr-src">${esc(e.rule.faction
-          ? e.rule.faction.toUpperCase()
-          : e.rule.section + (e.rule.page ? `, p.${e.rule.page}` : ''))}</span></p></div>`).join('');
+          .map(t => t.trim()).filter(Boolean).join(' '))} <span class="pr-src">${esc(window.DZCUnits.ruleSource(e.rule))}</span></p></div>`).join('');
 
     /* The faction's own colour, on the sheet, the way every other screen in
      * the app is drawn in it. Set as a variable on the root so headings, the

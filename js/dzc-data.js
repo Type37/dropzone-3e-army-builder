@@ -377,7 +377,9 @@
   function ruleLabel(keyword, faction) {
     const printed = String(keyword == null ? '' : keyword).trim();
     const hit = resolve(printed, faction);
-    if (!hit || !hit.rule.alias) return printed;
+    // A card's typo is corrected on the chip too, not only in the lookup:
+    // "Devastor 1" beside "Devastator 1" on the next card read as two rules.
+    if (!hit || !hit.rule.alias) return hit ? fixTypos(printed) : printed;
     const r = hit.rule;
     if (!r.parameterised) return r.alias;
     // A trailing "(Lynx)" names the variant the rule is restricted to. It is

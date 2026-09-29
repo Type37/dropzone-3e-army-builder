@@ -282,7 +282,9 @@
       // reading the tooltip with the rulebook open wants to turn to it without
       // a second click to find out where.
       const tip = (window.DZC.ruleText(tok, faction) || 'Missing from the glossary, which is a bug in the app.')
-        + (r && r.page ? ` (p.${r.page})` : '');
+        // Which book, when it is not the rulebook: a Behemoth rule's "p.9"
+        // read as the rulebook's p.9, which is the game-size table.
+        + (r && r.page ? ` (${r.source === 'behemoths' ? 'Behemoth rules ' : ''}p.${r.page})` : '');
       // Written out, "Tracking-1", not "T1". The printed token is still what
       // looks it up and still what the popover is opened with.
       //
@@ -861,7 +863,10 @@
     // belongs to one of the six, and its card prints that faction's rules.
     const fac = u.faction || faction || state.faction;
     const used = new Map();
-    [u.special || ''].concat((u.weapons || []).map(w => w.special || '')).forEach(sp => {
+    // Gear too: Target Lock, Redundancy and Decoys are rules like any other,
+    // and the list below the Gear was the one place they were missing.
+    [u.special || ''].concat((u.weapons || []).map(w => w.special || ''),
+      (u.gear || []).map(g => g.name || '')).forEach(sp => {
       window.DZC.splitSpecial(sp, fac).forEach(tok => {
         if (used.has(tok)) return;
         const r = window.DZC.rule(tok, fac);
@@ -965,7 +970,12 @@
    * number says which rule; the page number says where the book falls open,
    * which is the one you want mid-game with the rulebook on the table. */
   function ruleSource(r) {
-    if (r.faction) return r.faction.toUpperCase() + ' rules';
+    // The faction's own name, as the tabs spell it. Sentence case, never
+    // "SHALTARI rules" (CLAUDE.md §3).
+    if (r.faction) {
+      const f = window.DZC.faction(r.faction);
+      return `${(f && f.name) || r.faction} rules`;
+    }
     // Naming the right book. "Rulebook 3.1.8, p.9" for Macro pointed at the
     // core rulebook's page 9, which is the game-size table.
     const book = r.source === 'behemoths' ? 'Behemoth rules' : 'Rulebook';
@@ -1117,6 +1127,7 @@
       const guns = unitWeapons(u);
       collect(u.special);
       guns.forEach(w => collect(w.special));
+      (u.gear || []).forEach(g => collect(g.name));
 
       /* A Variant's rules belong to the Variant (3.2.2), so the Unit's own line
        * prints only what every model in it has -- the same split the builder
@@ -1214,9 +1225,7 @@
         e.label.toLowerCase() !== String(e.token).trim().toLowerCase()
           ? ` (${esc(e.token)})` : ''}</h3>
         <p>${esc(String(e.text || '').split(/\n{2,}/)
-          .map(t => t.trim()).filter(Boolean).join(' '))} <span class="pr-src">${esc(e.rule.faction
-          ? e.rule.faction.toUpperCase()
-          : e.rule.section + (e.rule.page ? `, p.${e.rule.page}` : ''))}</span></p></div>`).join('');
+          .map(t => t.trim()).filter(Boolean).join(' '))} <span class="pr-src">${esc(ruleSource(e.rule))}</span></p></div>`).join('');
 
     return `
       <div class="pr-head" style="${window.DZC.accentStyle(acc)}">
@@ -1247,7 +1256,7 @@
     // Shared with the builder's picker so a unit reads the same in both places.
     statsHtml, rulesHtml, variantRuleFilter, squadHtml, sizeHtml, transportHtml, unitWeapons, weaponLive,
     removedByUpgrades, weaponsHtml, variantsHtml,
-    unitRulesHtml, wpnHead, wpnCells, wpnCard, weaponCardsHtml, variantLensHtml, gearHtml, upgradeNoteHtml,
+    unitRulesHtml, wpnHead, wpnCells, wpnCard, weaponCardsHtml, variantLensHtml, gearHtml, upgradeNoteHtml, ruleSource,
     pointsHtml, shape: shapeSvg,
     SHAPES: Object.keys(SYMBOL),
     shapeInk: s => (SYMBOL[s] || {}).ink || 'currentColor',

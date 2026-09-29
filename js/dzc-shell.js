@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 500;
+  const BUILD = 501;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -617,6 +617,13 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-09-29', title: 'Every rule a refusal names opens', items: [
+      'The rule after a refusal opens it: a rulebook section goes to Interactive Rules, a faction rule like Genitor X, Gate or Cling opens its text.',
+      'Behemoth Gear rules are in the unit page’s rules and on both printed sheets.',
+      'The printed sheet lists only the rules the Squad’s own Variants have.',
+      'A card’s misspelt rule reads correctly on its chip.',
+      'Faction rules name their faction in sentence case, and a Behemoth rule’s page says it is the Behemoth rules’ page.',
+    ] },
     { date: '2026-09-29', title: 'Every view shows the same Squad', items: [
       'The printed army sheet shows what the Squad carries and the Gear its Variant has, as the builder does. An Alcyoneus printed the Porphyrion’s circles and Gear.',
       'Behemoth Gear is on the Squad card and in Play mode.',
