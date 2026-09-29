@@ -2041,8 +2041,11 @@
    * taken with any Units aboard" is not one of them. So an Aux Gate joins a
    * Group and counts like any Squad (isGate stays exact for that), and like a
    * Gate it starts the game empty, its passengers in Holding. Decided
-   * 2026-09-29 on that wording: until then a Firedrake could be listed with
-   * Grav-tanks aboard. The Integrated Gate is the Lion's only (its bracket). */
+   * 2026-09-29 on that wording, and confirmed by Jet the same day: "i feel
+   * like gate overrides aux transport." Until then a Firedrake could be
+   * listed with Grav-tanks aboard, because "These are always Auxiliary
+   * Transports" was read as winning. The Integrated Gate is the Lion's only
+   * (its bracket). */
   function boardsLikeGate(unit, squad) {
     if (!unit) return false;
     const toks = String(unit.special || '').split(',').map(t => t.trim());
