@@ -46,6 +46,10 @@ SCANS = [
                         "--art", "assets/units",
                         "--behemoths"]),
     ("scan rulebook", ["scan_rulebook.py"]),
+    # Interactive Rules' book, which carries the Behemoth and faction rules
+    # out of rules.json as two chapters of its own. Built after the glossary
+    # so it is never a scan behind it.
+    ("rules book", ["build_rules_book.py"]),
     # The offline download lists every unit photo by name and by byte size, so
     # a scan that adds or drops one leaves it describing a set that no longer
     # exists. A path that 404s is not a small loss: Cache.addAll rejects the
@@ -79,7 +83,10 @@ def run(label, argv):
     print(f"\n{'=' * 62}\n  {label}\n{'=' * 62}")
     t0 = time.time()
     script = os.path.normpath(os.path.join(HERE, argv[0]))
-    rc = subprocess.call([sys.executable, script, *argv[1:]])
+    # UTF-8 on every stage: build_rules_book prints the book's own text, and a
+    # Windows console's code page cannot encode its quotes.
+    env = dict(os.environ, PYTHONUTF8="1")
+    rc = subprocess.call([sys.executable, script, *argv[1:]], env=env)
     dt = time.time() - t0
     if rc != 0:
         print(f"\n  FAILED: {label} (exit {rc}, {dt:.0f}s)", file=sys.stderr)

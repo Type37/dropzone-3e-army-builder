@@ -884,7 +884,7 @@
         <h5>${esc(label)}${label.toLowerCase() !== tok.toLowerCase()
           ? ` <i>(${esc(tok)})</i>` : ''}</h5>
         ${ruleParas(window.DZC.ruleText(tok, fac), fac, r.name)}
-        <span class="dzc-ruledef-src">${esc(ruleSource(r))}</span>
+        <span class="dzc-ruledef-src">${ruleSourceHtml(r)}</span>
       </div>`;
     }).join('');
     return `<div class="dzc-ruledefs">${rows}</div>`;
@@ -970,6 +970,22 @@
   /* Where a rule comes from, close enough to go and read it. The section
    * number says which rule; the page number says where the book falls open,
    * which is the one you want mid-game with the rulebook on the table. */
+  /* Where that rule is in Interactive Rules: a rulebook rule by its section,
+   * a Behemoth or faction rule by its glossary id, which is the id of its
+   * section in those chapters (build_rules_book.py). */
+  function ruleHref(r) {
+    if (!r) return '';
+    if (r.faction || r.source === 'behemoths') return '#rules/' + r.id;
+    return r.section ? '#rules/' + r.section : '';
+  }
+  // The source line, opening the rule in full. Screen only: paper keeps text.
+  function ruleSourceHtml(r) {
+    const href = ruleHref(r);
+    return href
+      ? `<a class="dzc-rulelink" href="${esc(href)}">${esc(ruleSource(r))}</a>`
+      : esc(ruleSource(r));
+  }
+
   function ruleSource(r) {
     // The faction's own name, as the tabs spell it. Sentence case, never
     // "SHALTARI rules" (CLAUDE.md §3).
@@ -1004,7 +1020,7 @@
       ? `<h5>${esc(label)}${label.toLowerCase() !== String(token).trim().toLowerCase()
           ? ` <span class="dzc-pop-alias">(${esc(token)})</span>` : ''}</h5>
          ${ruleParas(window.DZC.ruleText(token, fac), fac, r.name)}
-         <span class="dzc-pop-src">${esc(ruleSource(r))}</span>`
+         <span class="dzc-pop-src">${ruleSourceHtml(r)}</span>`
       /* Not "read it from the stat card". Sending someone to a PDF for a rule
          this app is already printing the name of is the app giving up, and it
          is the one thing a rules reference must never do. Every keyword any
@@ -1079,6 +1095,9 @@
     if (p) p.remove();
     document.removeEventListener('click', onDocClick);
   }
+  // A popover belongs to the screen it was opened on. Its source line now
+  // opens Interactive Rules, and the popover rode along on top of the book.
+  if (typeof window.addEventListener === 'function') window.addEventListener('hashchange', hideRule);
 
   // ------------------------------------------------------------ printed sheet
 

@@ -125,7 +125,13 @@
       prio[key] = p;
     };
     const glossary = n => /^1[01]\.1\./.test(n.number || '');
+    const own = {};
     for (const n of walk(book.chapters)) {
+      /* The Behemoth and faction chapters are not the rulebook. Their numbers
+         are the Behemoth supplement's own -- its 1.1 is Taking Behemoths, the
+         rulebook's is Dice -- so they are linked only from inside their own
+         chapter, and their names are not linked into the rulebook's prose. */
+      if (n.book) { if (n.number) (own[n.book] = own[n.book] || {})[n.number] = n.id; continue; }
       if (!n.number) continue;
       numbers.add(n.number);
       if (glossary(n)) ruleNames(n.heading).forEach(nm => add(nm, n.id, 20));
@@ -135,8 +141,11 @@
     const alt = Object.keys(terms).sort((a, b) => b.length - a.length)
       .map(p => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
     const re = new RegExp('‘[^’]{3,60}’|\\b(?:\\d+(?:\\.\\d+)+' + (alt ? '|' + alt : '') + ')(?![\\w-])', 'gi');
-    index = { terms, numbers, re };
+    index = { terms, numbers, re, own };
   }
+
+  // Which book the text being linked belongs to (see buildIndex).
+  let ctxBook = null;
 
   function linkify(html) {
     return html.replace(index.re, m => {
@@ -145,8 +154,13 @@
         id = index.terms[m.slice(1, -1).toLowerCase()];
         if (!id) return m;
       } else if (/^\d+(?:\.\d+)+$/.test(m)) {
-        if (!index.numbers.has(m)) return m;
-        id = m;
+        if (ctxBook) {
+          id = (index.own[ctxBook] || {})[m];
+          if (!id) return m;
+        } else {
+          if (!index.numbers.has(m)) return m;
+          id = m;
+        }
       } else {
         if (!/[\s-]/.test(m) && m[0] !== m[0].toUpperCase()) return m;
         id = index.terms[m.toLowerCase()];
@@ -235,6 +249,7 @@
   /* Depth follows the printed number, so 10.1.1 sits two levels in even
      though the book has no 10.1 heading above it. */
   function sectionHtml(n, parentDepth) {
+    ctxBook = n.book || null;
     const depth = n.number ? Math.max(1, n.number.split('.').length - 1) : parentDepth + 1;
     const lvl = Math.min(depth + 2, 6);
     const num = n.number ? `<span class="rules-h-n">${esc(n.number)}</span>` : '';
@@ -247,10 +262,11 @@
   function chapterHtml(ch) {
     const kids = ch.children || [];
     const cards = kids.filter(c => c.scenario);
-    const search = SEARCH_CHAPTERS.has(ch.number)
+    ctxBook = ch.book || null;
+    const search = SEARCH_CHAPTERS.has(ch.number) || ch.book
       ? `<input class="rules-search" type="search" placeholder="Search special rules…" aria-label="Search special rules" data-chapter="${esc(ch.id)}">`
       : '';
-    return `<section class="rules-chapter" id="rules-sec-${esc(ch.id)}">`
+    return `<section class="rules-chapter" id="rules-sec-${esc(ch.id)}"${ch.book ? ` data-book="${esc(ch.book)}"` : ''}>`
       + `<h2 class="rules-chapter-title"><span class="rules-chapter-n">${esc(ch.number)}</span>${esc(ch.heading)}</h2>`
       + search + bodyHtml(ch) + sectionTokens(ch.number)
       + kids.filter(c => !c.scenario).map(c => sectionHtml(c, 0)).join('')
@@ -267,7 +283,7 @@
       + `${sub ? ` data-chapter="rules-sec-${esc(chapterId)}"` : ''} href="#rules/${esc(n.id)}">`
       + `<span class="rules-nav-n">${esc(n.number)}</span><span class="rules-nav-t">${esc(n.heading)}</span></a>`;
     return chapters.map(ch => {
-      const subs = NAV_FLAT.has(ch.number) ? [] : (ch.children || []).filter(c => c.number);
+      const subs = NAV_FLAT.has(ch.number) ? [] : (ch.children || []).filter(c => c.number || ch.book);
       return item(ch, false) + (subs.length
         ? `<div class="rules-nav-sub">${subs.map(s => item(s, true, ch.id)).join('')}</div>` : '');
     }).join('');
@@ -305,12 +321,23 @@
     setupSpy(el);
   }
 
+  const bookOf = sec => ((sec.closest('.rules-chapter') || {}).dataset || {}).book;
+
   function filter(box) {
     const term = box.value.trim().toLowerCase();
     const chapter = document.getElementById('rules-sec-' + box.dataset.chapter);
     if (!chapter) return;
+    const hit = el => !term || el.textContent.toLowerCase().includes(term);
     chapter.querySelectorAll(':scope > .rules-sub').forEach(sec => {
-      sec.hidden = !!term && !sec.textContent.toLowerCase().includes(term);
+      /* A faction is a group of rules, so the search is over its rules: "gate"
+         leaves Gate showing under Shaltari, not every Shaltari rule. */
+      const inner = [...sec.querySelectorAll(':scope > .rules-sub')];
+      if (inner.length && bookOf(sec) === 'faction') {
+        inner.forEach(r => { r.hidden = !hit(r); });
+        sec.hidden = inner.every(r => r.hidden);
+        return;
+      }
+      sec.hidden = !hit(sec);
     });
   }
 

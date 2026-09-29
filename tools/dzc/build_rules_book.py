@@ -862,6 +862,73 @@ def dump(tree, path):
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
+GLOSSARY = ROOT / "data" / "dzc" / "rules.json"
+
+
+def glossary_chapters() -> list[dict[str, Any]]:
+    """The Behemoth supplement's rules and each faction's own rules, as two
+    chapters after the rulebook's.
+
+    They are rules a player reads at the table -- Macro, Power, Gate, Genitor
+    X -- and until now the only way to one was a chip on a card that prints
+    it. Dropfleet's rules screen carries every rule the app knows; this one
+    carried the rulebook alone, so 81 of them could not be looked up, searched
+    or linked to. Built from data/dzc/rules.json, the same text the chips
+    open, so the two cannot disagree.
+
+    A node's id is the glossary id, so a chip's popover can link straight to
+    it. `book` marks a node as not the rulebook's: its number is the Behemoth
+    supplement's own, and must not be read as a rulebook section.
+    """
+    if not GLOSSARY.exists():
+        return []
+    rules = json.loads(GLOSSARY.read_text(encoding="utf-8"))["rules"]
+
+    def body(text: str) -> list[dict[str, Any]]:
+        return [{"kind": "p", "runs": [{"t": p.strip()}]}
+                for p in str(text or "").split("\n\n") if p.strip()]
+
+    beh = [r for r in rules if r.get("source") == "behemoths"]
+
+    def key(r):
+        return tuple(int(x) for x in str(r["section"]).split(".") if x.isdigit())
+    beh.sort(key=key)
+    nodes: dict[str, dict[str, Any]] = {}
+    top: list[dict[str, Any]] = []
+    for r in beh:
+        n = {"id": r["id"], "number": r["section"], "heading": r["name"],
+             "book": "behemoths", "page": r.get("page"), "body": body(r["text"]),
+             "children": []}
+        nodes[r["section"]] = n
+        # Under the nearest section that exists: 1.4.1.1 Move On Entry sits
+        # in 1.4 Behemoth Entry, because the supplement has no 1.4.1 heading.
+        parts = r["section"].split(".")[:-1]
+        while parts and ".".join(parts) not in nodes:
+            parts.pop()
+        (nodes[".".join(parts)]["children"] if parts else top).append(n)
+    chapters = []
+    if top:
+        chapters.append({"id": "behemoths", "number": "", "heading": "Behemoth rules",
+                         "book": "behemoths", "body": [], "children": top})
+
+    # Each faction as its own file names it: "UCM", "PHR", "Shaltari".
+    names = {}
+    for fp in sorted((ROOT / "data" / "dzc").glob("faction-*.json")):
+        d = json.loads(fp.read_text(encoding="utf-8"))
+        names[d.get("faction") or fp.stem[len("faction-"):]] = d.get("name")
+    groups = []
+    for fac in dict.fromkeys(r["faction"] for r in rules if r.get("faction")):
+        kids = [{"id": r["id"], "number": "", "heading": r["name"], "book": "faction",
+                 "body": body(r["text"]), "children": []}
+                for r in rules if r.get("faction") == fac]
+        groups.append({"id": f"faction-{fac}", "number": "", "heading": names.get(fac) or fac,
+                       "book": "faction", "body": [], "children": kids})
+    if groups:
+        chapters.append({"id": "factions", "number": "", "heading": "Faction rules",
+                         "book": "faction", "body": [], "children": groups})
+    return chapters
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
     ap.add_argument("--dump", type=pathlib.Path)
@@ -895,7 +962,7 @@ def main() -> None:
         "edition": "3.02",
         "source": PDF.name,
         "generator": "tools/dzc/build_rules_book.py",
-        "chapters": tree,
+        "chapters": tree + glossary_chapters(),
     }
     OUT.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     print(

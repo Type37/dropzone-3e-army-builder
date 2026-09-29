@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 506;
+  const BUILD = 507;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -617,6 +617,10 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-09-29', title: 'Behemoth and faction rules in Interactive Rules', items: [
+      'Interactive Rules has two new chapters after the rulebook: Behemoth rules, and Faction rules with a section per faction. Both are searchable, like the special rules.',
+      'A rule’s source line in its popover opens that rule in Interactive Rules.',
+    ] },
     { date: '2026-09-29', title: 'Interactive Rules on a phone, and offline', items: [
       'On a phone the chapter list stays under the top bar and scrolls sideways, so changing chapter no longer means scrolling back to the top.',
       'Every token works offline. Chapter 12, the Feature tokens and the turret tables lost their pictures with no signal.',
