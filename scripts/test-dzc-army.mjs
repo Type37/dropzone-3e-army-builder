@@ -2277,7 +2277,7 @@ console.log('\nOne gun either side of an OR (Type 7 Grand Walker)');
   const s = A.addSquad(a, g.id, 'type-7-grand-walker', 1);
   const u = A.unitOf(a, s);
   const inc = u.weapons.find(w => w.name === 'Dual R7X-66 Incinerators');
-  eq(inc.r, '9"', 'the OR row is not read into the range');
+  eq(inc.r, '9”', 'the OR row is not read into the range');
   const must = () => A.validate(a).errors.filter(e => /takes .* or /.test(e.msg)).length;
   eq(must(), 1, 'a Type 7 with neither gun is refused');
   eq(A.toggleUpgrade(a, s.id, '*', 'Dual R7X-5 Rotary Cannons').ok, true, 'the cannons can be taken');
