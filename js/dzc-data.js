@@ -140,7 +140,10 @@
        * and citing "p.1" would read as a rulebook page it is not. */
       page: r.faction ? null : (r.page || null),
       parameterised: !!r.parameterised,
-      re: new RegExp(r.match, 'i')
+      re: new RegExp(r.match, 'i'),
+      // What a template spells out before its first placeholder: "LT " for
+      // "LT X”", "L" for "LX". See resolve.
+      lit: r.parameterised ? String(r.name).replace(/[XYZ].*$/, '').trim() : String(r.name)
     }));
     return {
       all,
@@ -206,8 +209,25 @@
           if (r.alias && c.toLowerCase() === r.alias.toLowerCase()) return { rule: r, cand: c };
         }
       }
+      /* THE MOST SPECIFIC TEMPLATE, not the first. "LX" (Limited) is
+       * "L" and anything, so it matched "LT 9”" and "Linked 1" before
+       * "LT X”" and "Linked X" were reached, and every Behemoth card showed
+       * "Limited-inked 1" with text about attacking "inked 1 times". The
+       * longest spelled-out part wins within a pool; the pool order (own
+       * faction, core, the rest) still wins over that.
+       *
+       * And a one- or two-letter head is matched in its own case. "TX"
+       * (Tracking) is "T" and anything, case-insensitively, so the Mining
+       * Engine's "this takes D3-1 DP when it attacks" -- the second clause
+       * of its Capacitors rule -- read as Tracking. */
       for (const pool of pools) {
-        for (const r of pool) if (r.re.test(c)) return { rule: r, cand: c };
+        let best = null;
+        for (const r of pool) {
+          if (!r.re.test(c)) continue;
+          if (r.lit.length < 3 && !c.startsWith(r.lit)) continue;
+          if (!best || r.lit.length > best.lit.length) best = r;
+        }
+        if (best) return { rule: best, cand: c };
       }
     }
     return null;
@@ -237,16 +257,23 @@
   function linkKeywords(text, faction, skip) {
     const t = String(text == null ? '' : text);
     if (!state.rules || !t) return esc(t);
-    const pool = (state.rules.byFaction[faction] || []).concat(state.rules.core)
-      .filter(r => !(skip && r.name.toLowerCase() === String(skip).toLowerCase()));
+    const all = (state.rules.byFaction[faction] || []).concat(state.rules.core);
+    const isSkip = r => !!skip && r.name.toLowerCase() === String(skip).toLowerCase();
+    const pool = all.filter(r => !isSkip(r));
     if (!pool.length) return esc(t);
+    /* The rule being read is still MATCHED, and left as plain text. Dropped
+     * from the list, its own "First Strike" was no longer there to be eaten
+     * whole, so the bare "Strike" inside it -- the Disembarking rule -- was
+     * linked twice in First Strike's own popover. */
+    const own = {};
+    all.filter(isSkip).forEach(r => [r.name, r.alias].forEach(n => { if (n) own[n.toLowerCase()] = true; }));
     /* Aliases are in, and they are not a nicety. Prose writes "First Strike",
      * which is the alias of "FS X". And without it the longest-first sort
      * matches the bare "Strike" inside it, which is a DIFFERENT rule about
      * Disembarking. That is the "Pen 6+" failure again: a shorter name eating
      * part of a longer one and confidently showing the wrong text. */
     const seen = {};
-    const names = pool.reduce((out, r) => out.concat([r.name, r.alias]), [])
+    const names = all.reduce((out, r) => out.concat([r.name, r.alias]), [])
       .filter(n => {
         // Longer than three characters, because "UC" and "AA" appear inside
         // ordinary words; and never a name carrying the value placeholder
@@ -264,7 +291,7 @@
     // The faction rides along, same as on the chips rulesHtml draws: an inline
     // keyword inside a Scourge rule must open the Scourge glossary, not
     // whichever one the Unit Reference happens to be sitting on.
-    return esc(t).replace(re, m =>
+    return esc(t).replace(re, m => own[m.toLowerCase()] ? m :
       `<button type="button" class="dzc-rule dzc-rule--inline"`
       + ` onclick="DZCUnits.showRule(this,'${m.replace(/'/g, '&#39;')}','${esc(faction || '')}')">${m}</button>`);
   }
@@ -362,7 +389,9 @@
     // "Pen X+" and "PX+" capture the number without the plus that made it a
     // roll -- it is in the NAME, not the capture, so it is put back here.
     const plus = /\+\s*$/.test(r.name) && v && !/\+$/.test(v) ? '+' : '';
-    return (v ? `${r.alias}-${v}${plus}` : r.alias) + (tail ? ' ' + tail : '');
+    // And the inches, for the same reason: "LT X”" read "Limited Traverse-10".
+    const inch = /[”″"]\s*$/.test(r.name) && v && !/[”″"]$/.test(v) ? '”' : '';
+    return (v ? `${r.alias}-${v}${plus}${inch}` : r.alias) + (tail ? ' ' + tail : '');
   }
 
   // ------------------------------------------------------- damage and Criticals

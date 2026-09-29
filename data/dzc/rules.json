@@ -1399,7 +1399,7 @@
    "alias": null,
    "parameterised": true,
    "match": "^\\s*Drone[\\s:/\\-]*Base[\\s:/\\-]*(.+?)[:/\\-\\s]+[\\s:/\\-]*(.+?)\\s*$",
-   "text": "During this Unit’s activation, it may launch one Squad of X Units of Y. Follow the usual Disembarking rules, treating this Unit as their Transport. Each launched Squad joins this Unit’s Group. This Unit may not launch if 2 Y Squads are already in its Group. If this Unit is destroyed, all Y Squads in its Group are destroyed.",
+   "text": "During this Unit’s activation, it may launch one Squad of X Units of Y. Follow the usual Disembarking rules, treating this Unit as their Transport. Each launched Squad joins this Unit’s Group. This Unit may not launch if 2 Y Squads are already in its Group. If this Unit is destroyed, all Y Squads in its Group are destroyed. At the start of this Unit’s Group’s activation, you may destroy any number of Y Squads in this Group.",
    "page": 1
   },
   {
@@ -1412,7 +1412,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Guard\\s*$",
-   "text": "This Squad gains +2DF in CQBs. In addition, per Squad with two or more Guard Units in a CQB, one friendly Squad of your choosing gains +2DF for that CQB, assigned at the start of step 1 of that CQB.",
+   "text": "This Squad gains +2DF in CQBs. In addition, per Squad with two or more Guard Units in a CQB, one friendly Squad of your choosing without Guard gains +2DF for that CQB, assigned at the start of step 1 of that CQB. If both players have Units with Guard and/or Strong, the player without the Initiative selects all Squads to affect with these abilities first.",
    "page": 1
   },
   {
@@ -1425,7 +1425,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Remote[\\s:/\\-]*Drone\\s*$",
-   "text": "This Squad may not be taken in your Army. During its activation, you may destroy this Squad instead of attacking with it.",
+   "text": "This Squad may not be taken in your Army.",
    "page": 1
   },
   {
@@ -1477,7 +1477,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Behemoth[\\s:/\\-]*Entry\\s*$",
-   "text": "Unless a Scenario specifies an entry requirement for Behemoths, players have two op­ tions. Players must simultaneously reveal which they will be using for each Behemoth before the game begins. 1.4.1.1 Move On Entry This Behemoth begins Reserved and must enter using an Advance Action. 1.4.1.2 Drop Harness Entry This Behemoth begins in Holding and may only enter via Drop Harness from Round 2. At the end of its activation, a friendly Unit that has not Embarked/Disembarked this Round and has Scout, Command Centre, or contains a Commander may designate a point within 12” of itself in Line of Sight. That point must be on open Ground and at least 3” from any Unit or Zone. Next, move that point D6-2” in a random direction. Place that Behemoth with its centre on that point (see ‘Moving and Placing Behemoths’). This counts as a move for the Behe­ moth and it has 2PT remaining that Round.",
+   "text": "Unless a Scenario specifies an entry requirement for Behemoths, players have two options. Players must simultaneously reveal which they will be using for each Behemoth before the game begins. 1.4.1.1 Move On Entry This Behemoth begins Reserved and must enter using an Advance Action. 1.4.1.2 Drop Harness Entry This Behemoth begins in Holding and may only enter via Drop Harness from Round 2. At the end of its activation, a friendly Unit that has not Embarked/Disembarked this Round and has Scout, Command Centre, or contains a Commander may designate a point within 12” of itself in Line of Sight. That point must be on open Ground and at least 3” from any Unit or Zone. Next, move that point D6-2” in a random direction. Place that Behemoth with its centre on that point (see ‘Moving and Placing Behemoths’). This counts as a move for the Behemoth and it has 2PT remaining that Round.",
    "page": 2
   },
   {
@@ -1490,7 +1490,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Vs[\\s:/\\-]*Ground\\s*$",
-   "text": "Behemoths ignore Exceptional and Poor Ground. Impassable Ground only applies for the Behemoth’s centre. Follow the usual rules for moving over protruding details. Most won’t hamper a Be­ hemoth and should be ignored when placing one unless reasonable judgement says otherwise. Players may need to temporarily remove protruding details when placing Behemoths.",
+   "text": "Behemoths ignore Exceptional and Poor Ground. Impassable Ground only applies for the Behemoth’s centre. Follow the usual rules for moving over protruding details. Most won’t hamper a Behemoth and should be ignored when placing one unless reasonable judgement says otherwise. Players may need to temporarily remove protruding details when placing Behemoths.",
    "page": 3
   },
   {
@@ -1646,7 +1646,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Transport[\\s:/\\-]*Behemoths\\s*$",
-   "text": "Some Behemoths are Transports. Except for Behemoths with the Director Gear, Behe­ moths taken with Squads aboard do not share a Group with their transported Squads. Instead, all Squads aboard a Behemoth at the start of the game form a single Group. They may Disembark during their own Activation or while their Behemoth makes a Reposi­ tion Action. A Behemoth’s Mv is not reduced if it Disembarks Units, but no Units may Disembark from a Behemoth during a Round in which it makes an Advance action. Units cannot Embark into Transport Behemoths other than Gate Behemoths. Any Units Embarked in a Behemoth when it is destroyed are destroyed.",
+   "text": "Some Behemoths are Transports. Except for Behemoths with the Director Gear, Behemoths taken with Squads aboard do not share a Group with their transported Squads. Instead, all Squads aboard a Behemoth at the start of the game form a single Group. They may Disembark during their own Activation or while their Behemoth makes a Reposition Action. A Behemoth’s Mv is not reduced if it Disembarks Units, but no Units may Disembark from a Behemoth during a Round in which it makes an Advance action. Units cannot Embark into Transport Behemoths other than Gate Behemoths. Any Units Embarked in a Behemoth when it is destroyed are destroyed.",
    "page": 6
   },
   {
@@ -1672,7 +1672,7 @@
    "alias": null,
    "parameterised": true,
    "match": "^\\s*Director[\\s:/\\-]*(.+?)[:/\\-\\s]+[\\s:/\\-]*(.+?)\\s*$",
-   "text": "This Behemoth has a Transport capacity specifically for Squads with Directed. X states the number of those Squads and Y states the number of Units within them. The Behe­ moth is their Director, and they are Directed by it. A Behemoth with Director begins the game with its Transport capacity filled. When this Behemoth uses this Gear, it may Disembark one Squad of Directed Units. Directed Units are a part of this Behemoth’s Group but can only activate when it uses this Gear, at the end of that Action. Directed Units are destroyed when their Behemoth is destroyed. Otherwise, they act as normal Units.",
+   "text": "This Behemoth has a Transport capacity specifically for Squads with Directed. X states the number of those Squads and Y states the number of Units within them. The Behemoth is their Director, and they are Directed by it. A Behemoth with Director begins the game with its Transport capacity filled. When this Behemoth uses this Gear, it may Disembark one Squad of Directed Units. Directed Units are a part of this Behemoth’s Group but can only activate when it uses this Gear, at the end of that Action. Directed Units are destroyed when their Behemoth is destroyed. Otherwise, they act as normal Units.",
    "page": 6
   },
   {
@@ -1724,7 +1724,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Redundancy\\s*$",
-   "text": "Remove one permanent Effect from Systems Damage on this Behemoth. Weapon De­ stroyed requires double this System’s PT cost to remove. This cannot be used to remove Weapon Destroyed from Integral Weapons. This System may only be used once per game and is ignored for Gear Destroyed results once used.",
+   "text": "Remove one permanent Effect from Systems Damage on this Behemoth. Weapon Destroyed requires double this System’s PT cost to remove. This cannot be used to remove Weapon Destroyed from Integral Weapons. This System may only be used once per game and is ignored for Gear Destroyed results once used.",
    "page": 7
   },
   {
@@ -1750,7 +1750,7 @@
    "alias": null,
    "parameterised": true,
    "match": "^\\s*Scrambler[\\s:/\\-]*\\+(.+?)\\s*$",
-   "text": "One Behemoth in Line of Sight suffers an additional -1 Ac penalty when Aiming for Sys­ tems Damage this Round. In addition, that Behemoth must spend +X PT to Use Gear this Round.",
+   "text": "One Behemoth in Line of Sight suffers an additional -1 Ac penalty when Aiming for Systems Damage this Round. In addition, that Behemoth must spend +X PT to Use Gear this Round.",
    "page": 7
   },
   {
@@ -1802,7 +1802,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Directed\\s*$",
-   "text": "This Unit may not be taken in your Army—it is included with its Behemoth. This Unit cannot activate or Embark/Disembark except when its Behemoth’s Director Gear is used. It does not count towards your Groups when generating pass tokens. It can­ not carry Objects. If this Unit’s Behemoth is destroyed, this Unit is destroyed.",
+   "text": "This Unit may not be taken in your Army—it is included with its Behemoth. This Unit cannot activate or Embark/Disembark except when its Behemoth’s Director Gear is used. It does not count towards your Groups when generating pass tokens. It cannot carry Objects. If this Unit’s Behemoth is destroyed, this Unit is destroyed.",
    "page": 8
   },
   {
@@ -1906,7 +1906,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Integral\\s*$",
-   "text": "This Weapon can receive 2 Weapon Destroyed results from Systems Damage, and it re­ quires 2 results before it cannot attack. It suffers -1E after one Weapon Destroyed result. This Weapon counts as 2 Weapons on the Actions table so can only attack using Volley.",
+   "text": "This Weapon can receive 2 Weapon Destroyed results from Systems Damage, and it requires 2 results before it cannot attack. It suffers -1E after one Weapon Destroyed result. This Weapon counts as 2 Weapons on the Actions table so can only attack using Volley.",
    "page": 9
   },
   {
@@ -1945,7 +1945,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Macro\\s*$",
-   "text": "Macro Weapons have Strafe and may always use their 1st R value against non-Behe­ moths. They ignore Passive Countermeasures on non-Behemoths. Macro Weapons suffer -1Ac against Units with 2 or fewer starting DP. Against non-Behemoth Units, each hit inflicts 2DP without rolling to inflict damage. Since you do not roll to inflict damage, Criticals are not inflicted. However, if this Weapon has Devastator, it’s additional damage is still added—the automatic 2DP counts as one success. Infantry Units hit by Macro Weapons are destroyed. If hits would be assigned to the Squad instead of individual Units, one Unit in the Squad is destroyed per hit, starting with the most damaged. Damage dealt by Macro Weapons with CC does contribute to Systems Damage, but they do suffer the accuracy penalty when aiming for Systems Damage. If a Macro Weapon damaged a Behemoth on the same activation as it was destroyed, add 1 to the Mortal Damage result.",
+   "text": "Macro Weapons have Strafe and may always use their 1st R value against non-Behemoths. They ignore Passive Countermeasures on non-Behemoths. Macro Weapons suffer -1Ac against Units with 2 or fewer starting DP. Against non-Behemoth Units, each hit inflicts 2DP without rolling to inflict damage. Since you do not roll to inflict damage, Criticals are not inflicted. However, if this Weapon has Devastator, it’s additional damage is still added—the automatic 2DP counts as one success. Infantry Units hit by Macro Weapons are destroyed. If hits would be assigned to the Squad instead of individual Units, one Unit in the Squad is destroyed per hit, starting with the most damaged. Damage dealt by Macro Weapons with CC does contribute to Systems Damage, but they do suffer the accuracy penalty when aiming for Systems Damage. If a Macro Weapon damaged a Behemoth on the same activation as it was destroyed, add 1 to the Mortal Damage result.",
    "page": 9
   },
   {
@@ -1971,7 +1971,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Vs[\\s:/\\-]*Shaltari[\\s:/\\-]*‘Confound’[\\s:/\\-]*Command[\\s:/\\-]*Card\\s*$",
-   "text": "Behemoths are still affected by this as the target is the opponent. If the roll in ‘Effect’ is failed when choosing to make an Action with a Behemoth, another Group must be cho­ sen if any remain available.",
+   "text": "Behemoths are still affected by this as the target is the opponent. If the roll in ‘Effect’ is failed when choosing to make an Action with a Behemoth, another Group must be chosen if any remain available.",
    "page": 10
   }
  ]

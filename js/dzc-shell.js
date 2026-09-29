@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 498;
+  const BUILD = 499;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -617,6 +617,13 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-09-29', title: 'Rules open the right text', items: [
+      'LT and Linked on every Behemoth weapon open Limited Traverse and Linked. They were opening Limited.',
+      'The Mining Engine’s Vent Repeater shows its self-damage as part of Capacitors, not as Tracking.',
+      'First Strike no longer links the word Strike inside its own text.',
+      'Guard, Drone Base and Remote Drone carry the 3.02 UCM errata.',
+      'Behemoth rules no longer split words like “Sys tems” and “Behe moth”.',
+    ] },
     { date: '2026-09-29', title: 'List building follows the Transport FAQ and the faction cards', items: [
       'An Auxiliary Transport counts as a Squad in a shared Transport, and so do the Squads it carries. Two Buggy Squads with Legionnaires and Hazard Suits aboard fill a Vulture’s four.',
       'Buggies carrying other Squads go in one Vulture, never split across two Ravens.',

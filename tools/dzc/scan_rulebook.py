@@ -254,7 +254,12 @@ def tidy(s):
     "(Anti-Aircraft-Reactive)" across two lines and the extractor returns
     "Anti-Aircraft- Reactive". Only a hyphen followed by space is joined, so
     genuine spaced compounds are untouched.
+
+    And a SOFT hyphen (U+00AD) is a break the typesetter was allowed to make,
+    not a character: the Behemoth rules set "Sys­ tems" and "Behe­ moth"
+    across lines, and they reached the screen as two words.
     """
+    s = re.sub("­\\s*", "", s)
     return re.sub(r"(\w)-\s+(\w)", r"\1-\2", re.sub(r"\s+", " ", s)).strip()
 
 
@@ -658,6 +663,52 @@ def parse_behemoth_rules(doc, pages) -> list[Rule]:
     return out
 
 
+# Faction RULES the 3.02 errata amends and the cards do not. UCM's cards are
+# still the 260805 file, so for these three the errata is the only current
+# text ("Dropzone_Commander_3.02_Faction_Errata_Updates.pdf", p.2). The four
+# other factions' reissues carry their amendments already. Same bar as the
+# scanner's ERRATA tables: the words are the document's, and every patch
+# checks first so a reissued card turns it into a no-op.
+#   (faction, rule name): (kind, text)
+#     "replace"  the rule's whole text
+#     "append"   a paragraph added at the end
+#     "remove"   a sentence taken out
+FACTION_RULE_ERRATA = {
+    ("ucm", "Guard"): ("replace",
+        "This Squad gains +2DF in CQBs. In addition, per Squad with two or "
+        "more Guard Units in a CQB, one friendly Squad of your choosing "
+        "without Guard gains +2DF for that CQB, assigned at the start of step "
+        "1 of that CQB. If both players have Units with Guard and/or Strong, "
+        "the player without the Initiative selects all Squads to affect with "
+        "these abilities first."),
+    ("ucm", "Drone Base X: Y"): ("append",
+        "At the start of this Unit\u2019s Group\u2019s activation, you may "
+        "destroy any number of Y Squads in this Group."),
+    ("ucm", "Remote Drone"): ("remove",
+        "During its activation, you may destroy this Squad instead of "
+        "attacking with it."),
+}
+
+
+def apply_rule_errata(fac, name, text):
+    kind, words = FACTION_RULE_ERRATA.get((fac, name), ("", ""))
+    if not kind:
+        return text
+
+    def flat(t):
+        return re.sub(r"[\s\u2019']+", " ", t).strip().lower()
+    if kind == "replace" and flat(text) != flat(words):
+        return words
+    if kind == "append" and flat(words) not in flat(text):
+        return f"{text} {words}"
+    if kind == "remove" and flat(words) in flat(text):
+        # Cut the same span out of the real text, found by a pattern as loose
+        # about whitespace as flat() is.
+        pat = r"\s*".join(re.escape(w) for w in words.split())
+        return re.sub(r"\s*" + pat, "", text, count=1).strip()
+    return text
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--pdf", default=None,
@@ -747,7 +798,7 @@ def main():
                 "alias": alias,
                 "parameterised": bool(PLACEHOLDER_RE.search(head)),
                 "match": matcher_pattern(head),
-                "text": dedupe_sentences(tidy(text)),
+                "text": apply_rule_errata(fac, head, dedupe_sentences(tidy(text))),
                 "page": 1,
             })
             found += 1
