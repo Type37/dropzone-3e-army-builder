@@ -535,12 +535,10 @@
    * on the same document. Only the Worker can mint it. */
   const DISCORD_WORKER = 'https://dfc-discord-sync.discord-sync.workers.dev';
 
-  /* Off on the live site until the Worker accepts this app's address: its
-   * allowedReturn() lets through /dropfleet-builder/ and localhost only, so
-   * a button here would send a player to a "Bad request" page. Localhost is
-   * already allowed, which is how this is tested. Set to true once the
-   * Worker is redeployed with /dropzone-3e-army-builder/ in the list. */
-  const DISCORD_LIVE = false;
+  /* The Worker's allowedReturn() admits /dropzone-3e-army-builder/ since
+   * 2026-09-29 (Dropfleet repo 08199c6, deployed). Set this false again to
+   * hide the button everywhere but localhost, should that ever change. */
+  const DISCORD_LIVE = true;
   function discordConfigured() {
     if (!DISCORD_WORKER) return false;
     if (DISCORD_LIVE) return true;
