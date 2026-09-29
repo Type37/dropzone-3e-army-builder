@@ -75,6 +75,10 @@ def rel_files(subdir, exts):
         for fn in sorted(filenames):
             if not fn.lower().endswith(exts):
                 continue
+            # Link-preview cards (og-*.png) are for other sites' crawlers and
+            # are never drawn by the app: 600 KB nobody at a table needs.
+            if fn.startswith('og-'):
+                continue
             full = os.path.join(dirpath, fn)
             out.append(os.path.relpath(full, ROOT).replace(os.sep, '/'))
     return sorted(out)
