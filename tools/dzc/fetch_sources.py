@@ -16,9 +16,13 @@ one would 404 or, worse, quietly serve a stale copy from cache. What is kept
 here is the FILENAME STEM of each source we consume; the date suffix is
 whatever the page is offering today.
 
+Every other PDF on the page is kept too, under rules/Lore, rules/Assembly and
+rules/Extra-Rules, but nothing is scanned out of those.
+
 Exit codes, so a scheduled job can act on them:
     0  everything on disk matches the page
-    1  something is newer (with --check), or a download failed
+    1  a scanned source is newer (with --check), or a download failed
+    2  only unscanned PDFs are new (with --check) -- download, no re-scan
 """
 
 from __future__ import annotations
@@ -65,6 +69,19 @@ SOURCES = [
     ("faction-errata", r"Faction_Errata", "reference"),
 ]
 
+# Everything else the page offers -- lore, assembly guides, starter armies,
+# campaign rules. Nothing in the pipeline reads these; they are kept so that
+# rules/ is the whole of what TTCombat publish, not just the part we scan.
+# First match wins.
+EXTRA_DIRS = [
+    (r"Lore|Primer", "Lore"),
+    (r"Assem|Instructions", "Assembly"),
+    (r".", "Extra-Rules"),
+]
+
+# GitHub refuses a file over 100 MB, and one refused file fails the whole push.
+MAX_BYTES = 95 * 1024 * 1024
+
 PDF_RE = re.compile(r"https://cdn\.shopify\.com/[^\"'>\s]+\.pdf(?:\?[^\"'>\s]*)?")
 DATE_RE = re.compile(r"_(\d{6})(?:\.pdf)?$")
 # A stamp of the wrong LENGTH is a typo in the link, not a date.
@@ -108,6 +125,30 @@ def published(html: str) -> dict[str, tuple[str, str]]:
             if have is None or version_of(name) > version_of(have[0]):
                 out[key] = (name, url)
     return out
+
+
+def extras(html: str) -> list[tuple[str, str, str]]:
+    """[(filename, url, folder)] for every PDF no SOURCES pattern claims."""
+    out = []
+    for url in sorted(set(PDF_RE.findall(html))):
+        name = url.split("/")[-1].split("?")[0]
+        if any(re.search(p, name) for _, p, _ in SOURCES):
+            continue
+        folder = next(d for p, d in EXTRA_DIRS if re.search(p, name))
+        out.append((name, url, os.path.join(DEST, folder)))
+    return out
+
+
+def held() -> set[str]:
+    """Every PDF filename anywhere under rules/."""
+    return {f for _, _, files in os.walk(DEST) for f in files
+            if f.endswith(".pdf")}
+
+
+def undated(name: str) -> str:
+    """A name with its date stamp taken off -- what two releases of one
+    document have in common."""
+    return re.sub(r"_\d{6,8}(?=\.pdf$)", "", name).lower()
 
 
 def version_of(name: str) -> tuple[str, str]:
@@ -218,21 +259,50 @@ def main() -> int:
         else:
             stale.append((have, name, url, feeds))
 
+    have_names = held()
+    new_extras = [e for e in extras(html) if e[0] not in have_names]
+
     for name in fresh:
         print(f"  ok       {name}")
     for have, name, _url, feeds in stale:
         print(f"  NEWER    {name}   (have {have or 'nothing'})  -> {feeds}")
+    for name, _url, folder in new_extras:
+        print(f"  NEW      {name}   -> {os.path.relpath(folder, DEST)}/")
 
-    if not stale and not missing:
-        print(f"\n  rules/ matches the resources page ({len(fresh)} files)")
+    if not stale and not missing and not new_extras:
+        print(f"\n  rules/ matches the resources page ({len(fresh)} scanned, "
+              f"{len(extras(html))} other)")
         return 0
     if args.check:
-        print(f"\n  {len(stale)} newer, {len(missing)} missing.")
+        print(f"\n  {len(stale)} newer, {len(new_extras)} new, "
+              f"{len(missing)} missing.")
         print("  Re-run without --check to download.")
-        return 1
+        # 2 = only files the pipeline does not read, so no re-scan is needed.
+        return 1 if (stale or missing) else 2
 
     os.makedirs(DEST, exist_ok=True)
     failed = 0
+    for name, url, folder in new_extras:
+        os.makedirs(folder, exist_ok=True)
+        try:
+            data = get(url)
+        except Exception as exc:                            # noqa: BLE001
+            print(f"  FAILED   {name}: {exc}")
+            failed += 1
+            continue
+        if len(data) > MAX_BYTES:
+            print(f"  !! {name} is {len(data) // 2**20} MB, over GitHub's "
+                  f"file limit; not kept")
+            continue
+        with open(os.path.join(folder, name), "wb") as fh:
+            fh.write(data)
+        print(f"  got      {name}  ({len(data) // 1024} KB)")
+        # A dated re-release replaces the one before it, as the cards do.
+        for old in os.listdir(folder):
+            if old != name and undated(old) == undated(name):
+                os.remove(os.path.join(folder, old))
+                print(f"  dropped  {old}  (superseded; git history keeps it)")
+
     for have, name, url, _feeds in stale:
         path = os.path.join(DEST, name)
         try:
@@ -255,7 +325,8 @@ def main() -> int:
             except OSError as exc:
                 print(f"  !! could not remove {have}: {exc}")
 
-    print(f"\n  {len(stale) - failed} downloaded, {failed} failed")
+    print(f"\n  {len(stale) + len(new_extras) - failed} downloaded, "
+          f"{failed} failed")
     return 1 if (failed or missing) else 0
 
 

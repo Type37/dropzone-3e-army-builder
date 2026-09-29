@@ -47,6 +47,7 @@ Images and compares go to the system temp folder.
 """
 
 import base64
+import glob
 import io
 import json
 import os
@@ -448,8 +449,10 @@ def draw(sid, scen):
 
 
 PDFS = {
-    "rulebook": os.path.join(ROOT, "rules", "A5_Dropzone_3.02_Rulebook.pdf"),
-    "fauna": os.path.join(ROOT, "rules", "Extra-Rules", "Fauna_Rules_Scenarios_260901.pdf"),
+    # By pattern: fetch_sources.py replaces a reissue in place.
+    "rulebook": max(glob.glob(os.path.join(ROOT, "rules", "A5_Dropzone_*_Rulebook*.pdf"))),
+    "fauna": max(glob.glob(
+        os.path.join(ROOT, "rules", "Extra-Rules", "Fauna_Rules_Scenarios*.pdf"))),
 }
 
 

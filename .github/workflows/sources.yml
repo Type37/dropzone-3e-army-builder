@@ -41,10 +41,15 @@ jobs:
           uv run python tools/dzc/fetch_sources.py --check | tee check.log
           echo "changed=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
 
-      - name: Download and re-scan
+      - name: Download
         if: steps.check.outputs.changed != '0'
+        run: uv run python tools/dzc/fetch_sources.py
+
+      # Exit 2 means only PDFs the pipeline does not read are new -- lore,
+      # assembly guides, campaign rules. Those are kept, not scanned.
+      - name: Re-scan
+        if: steps.check.outputs.changed == '1'
         run: |
-          uv run python tools/dzc/fetch_sources.py
           # The whole pipeline: scan both PDF sets, then all seven audits. The
           # audits are the gate, and audit_construction is the one that can
           # stop THIS job doing harm: every other audit checks the scan against
@@ -77,7 +82,7 @@ jobs:
       # unit arrives as an untracked file in assets/units, which a diff of
       # tracked files does not see.
       - name: Did the data actually change?
-        if: steps.check.outputs.changed != '0'
+        if: steps.check.outputs.changed == '1'
         id: data
         run: |
           if [ -z "$(git status --porcelain -- data assets/units)" ]; then
@@ -96,7 +101,7 @@ jobs:
         run: node scripts/bump-build.mjs
 
       - name: Prove it
-        if: steps.check.outputs.changed != '0'
+        if: steps.check.outputs.changed == '1'
         run: node scripts/test-all.mjs
 
       # Only reached when the scan AND every audit AND the whole suite passed,
@@ -113,13 +118,16 @@ jobs:
             echo "Nothing to commit."
             exit 0
           fi
-          git commit -F - <<'MSG'
-          Re-scan against TTCombat's current PDFs
-
+          {
+          echo "New PDFs from TTCombat's resources page"
+          echo
+          grep -E '^  (NEWER|NEW) ' check.log | sed 's/^  //' || true
+          echo
+          cat <<'MSG'
           Automatic. tools/dzc/fetch_sources.py found the resources page serving
-          something newer than rules/ held, downloaded it, and re-ran the whole
-          pipeline. Committed only because every audit and all of
-          scripts/test-all.mjs passed against the result.
+          something rules/ did not hold and downloaded it. Where a scanned
+          source moved, the whole pipeline was re-run, and this is committed only
+          because every audit and all of scripts/test-all.mjs passed.
 
           The superseded PDFs are dropped rather than kept beside the new
           ones -- rules/ is already hundreds of MB of committed PDF, and git
@@ -129,6 +137,7 @@ jobs:
           No changelog entry. Nobody read this diff — what changed in the
           points is still to be written up by hand.
           MSG
+          } | git commit -F -
           git push
 
       - name: Say what happened

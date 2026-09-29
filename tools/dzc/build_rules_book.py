@@ -53,7 +53,8 @@ sys.path.insert(0, str(HERE))
 import extract_rules_wiki as wiki  # noqa: E402
 
 ROOT = HERE.parents[1]
-PDF = ROOT / "rules" / "A5_Dropzone_3.02_Rulebook.pdf"
+# By pattern: the 2026-09-23 reissue is "A5_Dropzone_3.0_Rulebook_errarted_2".
+PDF = max((ROOT / "rules").glob("A5_Dropzone_*_Rulebook*.pdf"))
 WIKI = ROOT / "data" / "dzc" / "rules-wiki.json"
 OUT = ROOT / "data" / "dzc" / "rules-book.json"
 FIG_DIR = ROOT / "assets" / "rules"

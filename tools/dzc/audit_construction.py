@@ -115,7 +115,12 @@ def main() -> int:
         index = json.load(fh)
 
     print(f"  rulebook   {os.path.basename(book)}")
-    if index.get("rulebook") not in os.path.basename(book):
+    # The edition the book PRINTS, not the one in its filename. The 2026-09-23
+    # reissue is "A5_Dropzone_3.0_Rulebook_errarted_2.pdf" and its first page
+    # says "Dropzone Commander Rulebook 3.02".
+    printed = re.search(r"Dropzone Commander Rulebook (\d+(?:\.\d+)+)", text)
+    edition = printed.group(1) if printed else os.path.basename(book)
+    if index.get("rulebook") not in edition:
         FAILED.append(
             f"index.json says rulebook {index['rulebook']!r}, but rules/ holds "
             f"{os.path.basename(book)}. The constants below were transcribed "

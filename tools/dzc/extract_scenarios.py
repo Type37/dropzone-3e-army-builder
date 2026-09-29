@@ -29,8 +29,10 @@ import fitz
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
-RULEBOOK = ROOT / "rules" / "A5_Dropzone_3.02_Rulebook.pdf"
-FAUNA = ROOT / "rules" / "Extra-Rules" / "Fauna_Rules_Scenarios_260901.pdf"
+# By pattern, not by name: fetch_sources.py replaces a reissue in place, and
+# the 2026-09-23 rulebook came back as "A5_Dropzone_3.0_Rulebook_errarted_2".
+RULEBOOK = max((ROOT / "rules").glob("A5_Dropzone_*_Rulebook*.pdf"))
+FAUNA = max((ROOT / "rules" / "Extra-Rules").glob("Fauna_Rules_Scenarios*.pdf"))
 OUT_ART = ROOT / "assets" / "scenarios"
 OUT_DATA = ROOT / "data" / "dzc" / "scenarios.json"
 
