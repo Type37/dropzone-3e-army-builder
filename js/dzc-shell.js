@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 514;
+  const BUILD = 515;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -645,8 +645,8 @@ const App = (() => {
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
     { date: '2026-09-29', title: 'FAQ answers under their rules', items: [
-      'Each of TTCombat’s 43 FAQ answers also sits under the rule it clarifies in Interactive Rules: Strafe, Infiltrate, the Transport rules, CQB and the rest. Its FAQ tag opens it in the FAQ chapter.',
-      'A rule the errata changed says so under its text, with the errata version. The text is already the errata’s.',
+      'Each FAQ answer also appears under the rule it covers.',
+      'Rules changed by errata show the errata version.',
     ] },
     { date: '2026-09-29', title: 'Four rules calls, by the rulebook’s wording', items: [
       'A Commander can be assigned to a Transport Squad. 3.2.5 says a Commander goes on a Unit, and a Transport is one.',
@@ -655,7 +655,7 @@ const App = (() => {
       'The Porphyrion’s hold is full of its Venus Drones (Director), so nothing else boards it.',
     ] },
     { date: '2026-09-29', title: 'The FAQ in Interactive Rules', items: [
-      'TTCombat’s 43 FAQ answers are a chapter of Interactive Rules, in their seven topics and searchable: Transports, Movement, Attacking, Reaction Attacks, CQBs and the rest.',
+      'TTCombat’s 43 FAQ answers are a searchable chapter of Interactive Rules.',
     ] },
     { date: '2026-09-29', title: 'Sign in with Discord', items: [
       'Sync can use your Discord account instead of a six-word token, as the Dropfleet builder does. Sign in on each device and your armies follow. Your Dropfleet fleets and Dropzone armies stay separate.',

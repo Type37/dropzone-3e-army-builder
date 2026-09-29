@@ -56,17 +56,12 @@ h5.rules-h, h6.rules-h { font-size: 15px; font-family: var(--font-body); font-we
 /* A small editorial NB, set in the muted body colour with a navy label. */
 .rules-nb { margin: calc(-1 * var(--sp-sm)) 0 var(--sp-lg); font-size: 15px; line-height: 1.6; color: var(--ink-muted); }
 .rules-nb b { color: var(--navy); font-weight: 700; }
-/* The errata mark: the text above it is the errata's. */
 .rules-fn { margin: calc(-1 * var(--sp-sm)) 0 var(--sp-lg); font-size: 13px; line-height: 1.4; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
 .rules-scn-btn .rules-fn { margin: 0; }
-/* An FAQ answer under the rule it clarifies: TTCombat's words, set off by a
-   gold rule, square like every panel. */
-.rules-faq { margin: 0 0 var(--sp-lg); padding: var(--sp-xs) 0 var(--sp-xs) var(--sp-md); border-left: 3px solid var(--gold); }
-.rules-faq-q { margin: 0 0 var(--sp-xs); font-size: 15px; line-height: 1.55; font-weight: 600; color: var(--ink); }
-.rules-faq-a { margin: 0 0 var(--sp-xs); font-size: 15px; line-height: 1.6; color: var(--ink-soft); }
-.rules-faq-a:last-child { margin-bottom: 0; }
-.rules-faq-tag { color: var(--navy); font-weight: 700; text-decoration: none; margin-right: 2px; }
-.rules-faq-tag:hover { text-decoration: underline; }
+.rules-faq { margin: 0 0 var(--sp-lg); font-size: 15px; line-height: 1.6; color: var(--ink-muted); }
+.rules-faq p { margin: 0 0 var(--sp-xs); }
+.rules-faq-q { color: var(--ink-soft); }
+.rules-faq-q a { color: var(--navy); font-weight: 700; text-decoration: none; }
 .rules-sym { display: inline-block; vertical-align: -2px; margin: 0 1px; }
 
 .rules-xref { color: inherit; text-decoration: underline; text-decoration-style: dotted; text-decoration-color: var(--navy); text-underline-offset: 2px; }
@@ -174,7 +169,7 @@ h5.rules-h, h6.rules-h { font-size: 15px; font-family: var(--font-body); font-we
   .rules-h, .rules-chapter-title, .rules-tok-head { break-after: avoid; }
   .rules-p, .rules-ol li { font-size: 10pt; line-height: 1.45; color: #000; margin-bottom: 5pt; }
   .rules-eg { font-size: 9.5pt; padding: 4pt 8pt; color: #000; }
-  .rules-nb { font-size: 9pt; margin: 0 0 5pt; color: #000; }
+  .rules-nb, .rules-faq { font-size: 9pt; margin: 0 0 5pt; color: #000; }
   .rules-xref { text-decoration: none; color: inherit; }
   .rules-table-wrap, .rules-fig, .rules-scn-btn, .rules-feat, .rules-tok-list, .rules-ol li { break-inside: avoid; }
   .rules-table { font-size: 8.5pt; }

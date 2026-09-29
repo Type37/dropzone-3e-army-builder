@@ -110,23 +110,19 @@
     return notes ? notes.map(t => `<p class="rules-nb"><b>NB:</b> ${linkify(esc(t))}</p>`).join('') : '';
   }
 
-  /* A section whose text the errata changed. The text above is already the
-     errata's (build_rules_book.py writes it in); this says so, and which
-     version of the errata did it. */
+  // Sections whose text the errata changed (build_rules_book.py).
   function errataNote(n) {
     return n.errata ? `<p class="rules-fn">Errata ${esc(n.errata)}</p>` : '';
   }
 
-  /* TTCombat's FAQ answers, under each rule they clarify, in TTCombat's
-     words -- the same nodes as the FAQ chapter, which the tag links to.
-     Placed by build_rules_book.py (FAQ_AT). */
+  // FAQ answers under the rules they cover (build_rules_book.py FAQ_AT).
   let faqById = {};
   function sectionFaq(n) {
     return (n.faq || []).map(id => {
       const f = faqById[id];
       if (!f) return '';
-      return `<div class="rules-faq"><p class="rules-faq-q"><a class="rules-faq-tag" href="#rules/${esc(id)}">FAQ</a> ${linkify(esc(f.heading))}</p>`
-        + (f.body || []).map(b => `<p class="rules-faq-a">${runsHtml(b.runs)}</p>`).join('') + '</div>';
+      return `<div class="rules-faq"><p class="rules-faq-q"><a href="#rules/${esc(id)}">FAQ:</a> ${linkify(esc(f.heading))}</p>`
+        + (f.body || []).map(b => `<p>${runsHtml(b.runs)}</p>`).join('') + '</div>';
     }).join('');
   }
 

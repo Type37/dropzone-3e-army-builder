@@ -653,10 +653,7 @@ def norm(s: str) -> str:
 # The errata PDF's legend: blue is new in 3.02, green was already in 3.01.
 EDITION = {"new": "3.02", "previous": "3.01"}
 
-# Errata with no quote to test for, read against the 2026-09-23 reissue on
-# 2026-09-29 and found printed: Flak Turret Att 6, Battle Royale Attrition
-# 2 VP, Castles "Score on game end", Surveyor's friendly Units, and chapter
-# 12's Jammed and Excellent Vantage tokens.
+# Errata with no quote to test; checked by hand against the 2026-09-23 reissue.
 HAND_CHECKED = {
     "faq-erratum-8-8-1-weapon-features-table",
     "faq-erratum-battle-royale-scenario-page-38",
@@ -667,7 +664,6 @@ HAND_CHECKED = {
 
 
 def mark_erratum(node, e):
-    """A section whose text an erratum changed, so the screen can say so."""
     ed = EDITION.get(e.get("status") or "", "3.02")
     node["errata"] = max(node.get("errata") or ed, ed)
 
@@ -725,14 +721,11 @@ def apply_errata(by_id, log):
             else:
                 missed = True
                 log.append(f"errata  NOT APPLIED {e['target']}: {instr} {q}")
-        # Printed or written in, the text on screen is the errata's. A step
-        # that did not land leaves the section unmarked: the mark would be a lie.
         if not missed:
             mark_erratum(node, e)
 
 
-# The faction errata name a rule, not a section. Stat-card errata (squad
-# sizes, weapons, Large) live in the faction files, not here.
+# Faction errata by rule id. Stat-card errata are in the faction files.
 FACTION_ERRATA = {
     "faction-erratum-guard": "ucm-guard",
     "faction-erratum-dronebase": "ucm-drone-base-x-y",
@@ -747,8 +740,7 @@ FACTION_ERRATA = {
 
 
 def mark_faction_errata(by_id, log):
-    """rules.json already carries these; each quote is checked against it, and
-    only a rule that says every one of them is marked."""
+    """Mark a faction rule only if rules.json has every quoted change."""
     wiki = json.loads(WIKI.read_text(encoding="utf-8"))
     for e in wiki["errata"]["entries"]:
         rid = FACTION_ERRATA.get(e["id"])
@@ -773,9 +765,7 @@ def mark_faction_errata(by_id, log):
 
 
 # ------------------------------------------------------------------- faq
-# Each FAQ answer shown under the rule it clarifies, as well as in the FAQ
-# chapter. Keyed by the FAQ id without its "faq-faq-" prefix; the values are
-# section ids -- the rulebook's numbers, or a faction rule's glossary id.
+# FAQ id (without "faq-faq-") -> section ids it is shown under.
 FAQ_AT: dict[str, list[str]] = {
     # Transports
     "when-one-squad-shares-multiple-identical-transport": ["3.2.4", "6.1.1"],

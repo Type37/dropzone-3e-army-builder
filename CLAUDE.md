@@ -65,9 +65,8 @@ were all invented from scratch when a better version was already on disk.
 
 - Default to silence over explaining. If a control needs a caption to be
   usable, the control is wrong — not the copy.
-- No explainer sentences under headings, cards, or controls. **One
-  exception:** the landing tiles carry a one-line subtitle each, in Jet's own
-  words (2026-09-29). Do not remove them, and do not add more anywhere else.
+- No explainer sentences under headings, cards, or controls. Exception:
+  the landing tile subtitles (Jet's wording, 2026-09-29).
 - A refusal must name the rule it is enforcing. That is the only copy that
   earns its place.
 - Sentence case always. Never all-caps.

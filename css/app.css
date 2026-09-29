@@ -1752,8 +1752,7 @@ body:not([data-view="landing"]) .dfc-rules-tip { display: none; }
   color: var(--ink);
 }
 
-/* Back on 2026-09-29, in Jet's words (CLAUDE.md §3 names the exception):
-   each landing tile says what is behind it, as the Dropfleet builder's do. */
+/* CLAUDE.md §3 exception. */
 .tool-card-desc {
   font-size: var(--text-sm);
   color: var(--ink-muted);
