@@ -329,6 +329,18 @@
         const chapter = a.dataset.chapter || a.dataset.target;
         items.forEach(i => i.classList.toggle('active', i === a || i.dataset.target === chapter));
         // Keep the lit entry in view inside the rail, without moving the page.
+        // On a phone the rail is a strip that scrolls sideways (see
+        // dzc-rules.css), and what is lit there is the chapter.
+        if (getComputedStyle(nav).flexDirection === 'row') {
+          const lit = items.find(i => i.classList.contains('active') && i.offsetParent);
+          if (lit) {
+            const left = lit.offsetLeft - nav.offsetLeft;
+            if (left < nav.scrollLeft || left + lit.offsetWidth > nav.scrollLeft + nav.clientWidth) {
+              nav.scrollLeft = left - 16;
+            }
+          }
+          return;
+        }
         const top = a.offsetTop - nav.offsetTop;
         if (top < nav.scrollTop || top > nav.scrollTop + nav.clientHeight - a.offsetHeight) {
           nav.scrollTop = top - nav.clientHeight / 3;
@@ -357,11 +369,16 @@
     const el = document.getElementById('view-rules');
     if (!el) return;
     if (!book) {
+      // Dropfleet's line, while the 128 KB book arrives. The screen was blank
+      // until it did, and stayed blank for good if it never did.
+      if (!built) el.innerHTML = '<div class="rules-loading">Loading the rulebook…</div>';
       try {
         const res = await fetch(DATA);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         book = await res.json();
       } catch (e) {
         console.error('Interactive Rules: the rulebook did not load', e);
+        el.innerHTML = '<div class="rules-loading">The rulebook did not load.</div>';
         return;
       }
     }

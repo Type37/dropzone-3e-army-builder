@@ -112,11 +112,14 @@ h5.rules-h, h6.rules-h { font-size: 15px; font-family: var(--font-body); font-we
 /* ── Narrow screens ─────────────────────────────────────────────────────── */
 @media (max-width: 860px) {
   .rules-layout { grid-template-columns: minmax(0, 1fr); gap: var(--sp-md); }
-  /* The rail becomes the chapter list, wrapping onto rows above the book.
-     A section is reached from its chapter; seventy of them would bury it. */
-  .rules-nav { width: auto; justify-self: stretch; position: static; flex-direction: row; flex-wrap: wrap; max-height: none; overflow: visible; padding: 0 0 var(--sp-sm); border-right: 0; }
+  /* The rail becomes the chapter list: one strip that stays under the top bar
+     and scrolls sideways, as Dropfleet's does (app.css, max-width 860px). It
+     wrapped onto rows above the book, and three screens down it was gone, so
+     changing chapter meant scrolling back to the top first. A section is
+     reached from its chapter; seventy of them would bury it. */
+  .rules-nav { width: auto; justify-self: stretch; position: sticky; top: var(--topbar-h); z-index: 4; flex-direction: row; flex-wrap: nowrap; overflow-x: auto; max-height: none; padding: var(--sp-xs) 0; border-right: 0; border-bottom: 1px solid var(--stroke); background: var(--paper-warm); }
   .rules-nav-sub { display: none; }
-  .rules-nav-item { width: auto; }
+  .rules-nav-item { width: auto; white-space: nowrap; flex: none; }
   .rules-nav-item.active { box-shadow: inset 0 -3px 0 var(--navy); }
   .rules-doc { max-width: none; }
 }
@@ -168,3 +171,6 @@ h5.rules-h, h6.rules-h { font-size: 15px; font-family: var(--font-body); font-we
   .rules-hit { animation: none; }
   .rules-sub[hidden] { display: block !important; }
 }
+
+/* Dropfleet's loading line (app.css .rules-loading). */
+.rules-loading { padding: 24px 16px; color: var(--ink-muted, #6b6660); }
