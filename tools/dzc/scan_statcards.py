@@ -1621,6 +1621,17 @@ ERRATA_WEAPONS = {
 }
 
 
+# Squad sizes the errata amends and the card still does not. The 260821
+# Shaltari reissue took four of the five "Amend squad size" lines and missed
+# one: its Support Grav-tank card still prints "Squad Size: 3-6" against
+# "Shaltari Support Grav Tank -- Amend squad size to 3-9".
+ERRATA_SQUAD = {
+    "shaltari": {
+        "Shaltari Support Grav-tank": (3, 9),
+    },
+}
+
+
 def apply_errata(unit, faction_id) -> list[str]:
     """Bring one Unit up to the current errata. Returns what it changed."""
     done = []
@@ -1634,6 +1645,11 @@ def apply_errata(unit, faction_id) -> list[str]:
         # it as an empty string; either way the rule becomes the whole cell.
         unit["special"] = f"{unit['special']}, {rule}" if unit.get("special") else rule
         done.append(f"{name}: +Special {rule}")
+
+    size = ERRATA_SQUAD.get(faction_id, {}).get(name)
+    if size and (unit.get("squadMin"), unit.get("squadMax")) != size:
+        unit["squadMin"], unit["squadMax"] = size
+        done.append(f"{name}: Squad Size {size[0]}-{size[1]}")
 
     for spec in ERRATA_WEAPONS.get(faction_id, {}).get(name, []):
         if any((w.get("name") or "").strip() == spec["name"] for w in unit["weapons"]):
@@ -2133,7 +2149,7 @@ def scan(pdf_path, faction_id, faction_name,
     # dead weight that nobody re-reads -- which is how a table like this drifts
     # into contradicting a card. A patch that finds nothing to do is the signal
     # that its card has caught up, and it is printed rather than left silent.
-    elif faction_id in ERRATA_SPECIAL or faction_id in ERRATA_WEAPONS:
+    elif faction_id in ERRATA_SPECIAL or faction_id in ERRATA_WEAPONS or faction_id in ERRATA_SQUAD:
         print(f"    !! every {faction_id} errata entry is already on the card "
               f"({os.path.basename(pdf_path)}). The table can go.")
     ver = re.search(r"_(\d{6})\.pdf$", os.path.basename(pdf_path))

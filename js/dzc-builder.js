@@ -1196,7 +1196,7 @@
         esc(n > 1 ? nm + 's' : nm)}</span>`).join('');
     const name = esc(window.DZCArmy.groupName(a, g));
     return `<div class="dzc-bb${g.id === selectedGroup ? ' is-on' : ''}${
-      cost > cap ? ' is-over' : ''}${enter('g:' + g.id, armySeen === a.id)}" data-gid="${g.id}">
+      window.DZCArmy.overQuarterCap(a, g) ? ' is-over' : ''}${enter('g:' + g.id, armySeen === a.id)}" data-gid="${g.id}">
       <!-- The grip, and it has to be a separate target: dragging anywhere on
            the card would fight the tap that opens it, which is the commonest
            thing you do to one.
@@ -1315,7 +1315,7 @@
      * you glance at, not the heading -- set at 11px with no bold, they sit
      * beside the name instead of taking a band of their own under it. */
     return `<span class="dzc-g-meters">
-      <span class="dzc-meter${cost > cap ? ' is-over' : ''}">
+      <span class="dzc-meter${window.DZCArmy.overQuarterCap(a, g) ? ' is-over' : ''}">
         ${window.DZCIcon('calculate', { size: 12 })}<b>${cost}</b><i>${a.collection ? '' : `of ${cap}`}pts</i></span>
       <span class="dzc-meter">
         ${window.DZCIcon('groups', { size: 12 })}<b>${squads}</b><i>Squad${squads === 1 ? '' : 's'}</i></span>
@@ -1386,7 +1386,7 @@
     // nesting IS the deployment plan, so it is drawn rather than described.
     const top = carryOrder(a, g.squads.filter(s => !s.carriedBy));
     const rows = top.map(s => squadHtml(a, g, s, 0)).join('');
-    return `<section class="dzc-group-card${cost > cap ? ' is-over' : ''}">
+    return `<section class="dzc-group-card${window.DZCArmy.overQuarterCap(a, g) ? ' is-over' : ''}">
       <header class="dzc-g-head">
         <h2 contenteditable="true" spellcheck="false"
             role="textbox" aria-label="Group name"

@@ -2127,6 +2127,129 @@ console.log('\nA marked selection (Terror Heavy Battle Skimmer)');
   A.remove(a.id);
 }
 
+console.log('\nOnly ONE Transport is shared (3.2.4.1, 3.02 FAQ Transports)');
+{
+  const id = (f, name) => DZC.faction(f).units.find(u => u.name === name).id;
+  await DZC.loadFaction('ucm');
+  {
+    // "They may not be taken in and split across a pair of Raven Light
+    // Dropships ... Those Buggies may then ... be taken in a single Vulture."
+    const a = A.create('ucm', 'FAQ Buggies', 2000);
+    const g = A.addGroup(a);
+    const bug = A.addSquad(a, g.id, id('ucm', 'UCM Troop Buggy'), 4);
+    const leg = A.addSquad(a, g.id, id('ucm', 'Legionnaires'), 2);
+    const haz = A.addSquad(a, g.id, id('ucm', 'Hazard Suits'), 2);
+    A.boardTransport(a, leg.id, bug.id);
+    A.boardTransport(a, haz.id, bug.id);
+    const r = A.assignTransport(a, bug.id, id('ucm', 'Raven Light Dropship'));
+    eq(r.ok, false, 'Buggies carrying two Squads are not split across two Ravens');
+    ok(/ONE Raven Light Dropship/.test(r.reason || ''), 'and the refusal says one, not a shape');
+    eq(A.assignTransport(a, bug.id, id('ucm', 'Vulture Dropship')).ok, true, 'one Vulture takes them');
+    A.remove(a.id);
+  }
+  {
+    // "Two Squads of two UCM Troop Buggies, one carrying two Legionnaires and
+    // the other carrying two Hazard Suits, all embarked in a Vulture Dropship
+    // would be four Squads ... so would be allowed."
+    const a = A.create('ucm', 'FAQ four', 2000);
+    const g = A.addGroup(a);
+    const b1 = A.addSquad(a, g.id, id('ucm', 'UCM Troop Buggy'), 2);
+    const leg = A.addSquad(a, g.id, id('ucm', 'Legionnaires'), 2);
+    A.boardTransport(a, leg.id, b1.id);
+    A.assignTransport(a, b1.id, id('ucm', 'Vulture Dropship'));
+    const vul = g.squads.find(s => s.unitId === id('ucm', 'Vulture Dropship'));
+    const b2 = A.addSquad(a, g.id, id('ucm', 'UCM Troop Buggy'), 2);
+    const haz = A.addSquad(a, g.id, id('ucm', 'Hazard Suits'), 2);
+    A.boardTransport(a, haz.id, b2.id);
+    eq(A.boardTransport(a, b2.id, vul.id).ok, true, 'two Buggy Squads and their riders share a Vulture');
+    eq(A.sharesOf(a, g, vul.id), 4, 'and that is four Squads, the Buggies counted');
+    A.remove(a.id);
+  }
+  await DZC.loadFaction('phr');
+  {
+    // "Multiple Squads can only share one larger non-Auxiliary 'top-level'
+    // Transport."
+    const a = A.create('phr', 'Nested', 2000);
+    const g = A.addGroup(a);
+    const i1 = A.addSquad(a, g.id, id('phr', 'Immortals'), 2);
+    A.assignTransport(a, i1.id, id('phr', 'Type-11 Atlas Quad Walker'));
+    const at = g.squads.find(s => s.unitId === id('phr', 'Type-11 Atlas Quad Walker'));
+    const i2 = A.addSquad(a, g.id, id('phr', 'Immortals'), 2);
+    eq(A.boardTransport(a, i2.id, at.id).ok, true, 'two Squads may share an Atlas at the top');
+    eq(A.assignTransport(a, at.id, id('phr', 'Neptune Dropship')).ok, false,
+       'but that Atlas does not then go inside a Neptune');
+    A.remove(a.id);
+  }
+}
+
+console.log('\nCard rules the list has to obey (2026-09-29 audit)');
+{
+  await DZC.loadFaction('shaltari');
+  {
+    const a = A.create('shaltari', 'Subservient', 1000);
+    const g = A.addGroup(a);
+    const p = A.addSquad(a, g.id, 'pungari', 1);
+    const c = A.addCommander(a, 5).commander;
+    ok(c && c.id, 'a Commander to assign');
+    const r = A.assignCommander(a, c.id, p.id);
+    eq(r.ok, false, 'no Commander on a Subservient Unit');
+    ok(/Subservient/.test(r.reason || ''), 'and the refusal names Subservient');
+    A.remove(a.id);
+  }
+  {
+    // "Gates do not count against your number of allowed Groups": their
+    // holding Group is not measured against the quarter cap either.
+    const a = A.create('shaltari', 'Gates', 1000);
+    const g = A.addGroup(a);
+    for (let i = 0; i < 4; i++) A.addSquad(a, g.id, 'gaia-heavy-gate', 1);
+    eq(A.validate(a).errors.filter(e => /quarter of the limit/.test(e.msg)).length, 0,
+       'four Gaia Gates at 1000pts are not one over-cap Group');
+    A.remove(a.id);
+  }
+  await DZC.loadFaction('resistance');
+  {
+    // "all Squads aboard a Behemoth at the start of the game form a single
+    // Group" -- so the Explorator and its cargo are capped apart.
+    const a = A.create('resistance', 'Explorator', 4000);
+    const g = A.addGroup(a);
+    const ex = A.addSquad(a, g.id, 'explorator', 1);
+    ex.models[0].variant = 'Colossus';
+    const t = A.addSquad(a, g.id, 'resistance-main-battle-tank', 2);
+    eq(A.boardTransport(a, t.id, ex.id).ok, true, 'two tanks board the Explorator');
+    ok(A.groupCompositionCost(a, g) > 1000, 'together they cost more than a quarter of 4000');
+    eq(A.validate(a).errors.filter(e => /quarter of the limit/.test(e.msg)).length, 0,
+       'and neither part does, so the cap is not breached');
+    A.remove(a.id);
+  }
+  await DZC.loadFaction('ucm');
+  {
+    const a = A.create('ucm', 'Empty', 1000);
+    for (let i = 0; i < 9; i++) A.addSquad(a, A.addGroup(a).id, 'legionnaires', 3);
+    A.addGroup(a);
+    eq(A.validate(a).errors.filter(e => /Groups, but/.test(e.msg)).length, 0,
+       'an empty tenth Group is not a tenth Group');
+    A.remove(a.id);
+  }
+  {
+    const a = A.create('ucm', 'Crows', 1000);
+    const t1 = A.addSquad(a, A.addGroup(a).id, 'ucm-light-battle-tank', 2);
+    const t2 = A.addSquad(a, A.addGroup(a).id, 'ucm-light-battle-tank', 2);
+    eq(A.assignTransport(a, t1.id, 'crow-dropship').ok, true, 'one Crow at 1000pts');
+    eq(A.assignTransport(a, t2.id, 'crow-dropship').ok, false, 'a second Rare Crow is refused');
+    A.remove(a.id);
+  }
+  await DZC.loadFaction('bioficer');
+  {
+    const a = A.create('bioficer', 'Puppeteer', 1000);
+    const s = A.addSquad(a, A.addGroup(a).id, 'tusk-main-battle-skimmer', 2);
+    ok(!/Puppeteer/.test(A.unitOf(a, s).special), 'a Tusk has no Puppeteer');
+    const c = A.addCommander(a, 5).commander;
+    eq(A.assignCommander(a, c.id, s.id).ok, true, 'a Commander joins the Tusks');
+    ok(/Puppeteer 9/.test(A.unitOf(a, s).special), 'and gains Puppeteer 9” with a Bioficer Commander in it');
+    A.remove(a.id);
+  }
+}
+
 console.log('\nOne gun either side of an OR (Type 7 Grand Walker)');
 {
   await DZC.loadFaction('phr');

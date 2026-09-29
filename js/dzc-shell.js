@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 497;
+  const BUILD = 498;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -617,6 +617,16 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-09-29', title: 'List building follows the Transport FAQ and the faction cards', items: [
+      'An Auxiliary Transport counts as a Squad in a shared Transport, and so do the Squads it carries. Two Buggy Squads with Legionnaires and Hazard Suits aboard fill a Vulture’s four.',
+      'Buggies carrying other Squads go in one Vulture, never split across two Ravens.',
+      'Only the top Transport is shared. An Atlas carrying two Squads stays at the top of its Group.',
+      'Commanders cannot join Pungari (Subservient).',
+      'A Group of Gates is not held to the quarter-of-the-limit cap, and a Behemoth and the Squads aboard it are capped as the two Groups they are.',
+      'An empty Group no longer counts against the Group limit, and a second Rare Crow Dropship is refused.',
+      'A Bioficer non-Infantry Unit with a Commander in it gains Puppeteer 9”.',
+      'The Shaltari Support Grav-tank takes 3-9, as the errata says.',
+    ] },
     { date: '2026-09-29', title: 'Every stat card checked against the app', items: [
       'The Type 7 Grand Walker takes its Rotary Cannons or its Incinerators, one of the two, as the card’s OR says. The Incinerators’ range read “OR 9””.',
       'The Type 6 Grand Walker carries only as a Porphyrion, and the Siegestrider only as a Lion.',

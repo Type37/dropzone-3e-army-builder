@@ -781,7 +781,7 @@
       "name": "Shaltari Support Grav-tank",
       "category": "Support",
       "squadMin": 3,
-      "squadMax": 6,
+      "squadMax": 9,
       "points": 30,
       "pointsRaw": "30pts",
       "rare": false,

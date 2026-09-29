@@ -1260,6 +1260,8 @@
   const NO_COMMANDER = [
     [/\bFast Mover\b/i, 'a Fast Mover', '10.1.12'],
     [/\bLiving Weapons?\b/i, 'a Living Weapon', '10.1.20'],
+    // "Commanders cannot be assigned to Subservient Units." Shaltari Pungari.
+    [/\bSubservient\b/i, 'Subservient', 'Subservient'],
   ];
 
   function commanderBan(unit) {
@@ -1409,13 +1411,21 @@
     return Object.keys(by).map(k => by[k]);
   }
 
+  /* Why a Unit is never on a list, in its own card's terms. Generated Units
+   * are Spawned in play ("These cannot be taken when building your Army",
+   * Generated X); a Remote Drone or a Directed Unit arrives with whatever
+   * carries it ("This Squad may not be taken in your Army"). */
+  function notTakenReason(u) {
+    return u.category === 'Generated'
+      ? `${u.name} is Generated in play and can never be chosen.`
+      : `${u.name} may not be taken in your Army.`;
+  }
+
   function canAddUnit(army, groupId, unitId) {
     const u = window.DZC.unit(army.faction, unitId);
     if (!u) return { ok: false, reason: 'Unknown unit.' };
 
-    if (u.selectable === false) {
-      return { ok: false, reason: `${u.name} is Generated in play and can never be chosen.` };
-    }
+    if (u.selectable === false) return { ok: false, reason: notTakenReason(u) };
 
     /* What may join a Group is decided by transport and nothing else.
      *
@@ -1599,6 +1609,18 @@
                && eachHolds * opt.n === per),
           fill: fill
         };
+      })
+      /* A Squad that carries others is shared, and only ONE Transport -- one
+       * model, at the top -- is shared (3.2.4.1, 3.02 FAQ): four Buggies
+       * carrying Legionnaires and Hazard Suits go in one Vulture, never two
+       * Ravens. And a Transport carrying two Squads cannot go inside another
+       * at all, because a nested Transport carries one. */
+      .filter(o => {
+        const g = groupOf(army, squadId);
+        const brings = g ? shareOf(army, g, s, s.id) : 1;
+        if (brings <= 1) return true;
+        if (u.category === 'Transport' && !u.auxiliaryTransport) return false;
+        return o.need <= 1;
       });
   }
 
@@ -1681,19 +1703,49 @@
     // outside of an Aircraft. It is in the Group and not in the four.
     return cargoOf(army, group, carrierId)
       .filter(x => x.id !== ignoreId)
-      .reduce((n, x) => {
-        const xu = unitOf(army, x);
-        if (xu && xu.category === 'Transport') {
-          return n + sharesOf(army, group, x.id, ignoreId, mark);
-        }
-        return n + 1;
-      }, 0);
+      .reduce((n, x) => n + shareOf(army, group, x, ignoreId, mark), 0);
   }
 
-  function canShare(carrierUnit, carrierSquad, aboard) {
-    if (!aboard.length) return true;                 // nobody to share with yet
-    if (carrierUnit.auxiliaryTransport) return true;  // 3.2.4.3
-    return carrierSquad.models.length <= 1;           // 3.2.4.1: ONE Transport
+  /* What one Squad brings to the four: itself, and whatever IT carries.
+   *
+   * A Transport brings only its cargo (above). Everything else is a Squad,
+   * and an Auxiliary Transport is one too -- "Auxiliary Transports are
+   * treated as Squads when forming Groups, so count toward the maximum of 4
+   * Squads sharing one large Transport. E.g. Two Squads of two UCM Troop
+   * Buggies, one carrying two Legionnaires and the other carrying two Hazard
+   * Suits, all embarked in a Vulture Dropship would be four Squads" (3.02
+   * FAQ, Transports). This counted the Buggies and not their riders, so six
+   * Squads could ride one Poseidon. */
+  function shareOf(army, group, x, ignoreId, seen) {
+    const xu = unitOf(army, x);
+    const inside = sharesOf(army, group, x.id, ignoreId, seen);
+    return xu && xu.category === 'Transport' ? inside : 1 + inside;
+  }
+
+  /* Who may be SHARED. Two rules from the 3.02 FAQ, both saying that only
+   * ONE Transport -- one model, at the top -- is shared:
+   *
+   *   A Transport Squad of several models carries one Squad. "They may not be
+   *   taken in and split across a pair of Raven Light Dropships", said of an
+   *   Auxiliary Transport Squad that is itself carrying two Squads.
+   *
+   *   A Transport aboard another carries one Squad. "Multiple Squads can only
+   *   share one larger non-Auxiliary 'top-level' Transport. Each Squad in the
+   *   Group must be either directly embarked in the larger Transport, or
+   *   embarked in and filling a Squad of Transports that are in turn embarked
+   *   in the larger transport." Two Immortal Squads in an Atlas in a Neptune
+   *   was being built without a word.
+   *
+   * An Auxiliary Transport Squad may be shared at any size (3.2.4.3). */
+  function sharedOnce(t, tu) {
+    return !tu.auxiliaryTransport && (t.models.length > 1 || !!t.carriedBy);
+  }
+
+  // `incoming` is what the boarding Squad brings (shareOf); 0 asks about the
+  // load already aboard.
+  function canShare(army, group, t, tu, incoming, ignoreId) {
+    if (!sharedOnce(t, tu)) return true;
+    return sharesOf(army, group, t.id, ignoreId) + incoming <= 1;
   }
 
   function boardOptions(army, squadId) {
@@ -1734,8 +1786,12 @@
       // 3.2.4.1 caps the sharing at 4 Squads -- plus their Transport Squads,
       // which is what sharesOf takes off the count.
       const aboard = cargoOf(army, g, t.id).filter(x => x.id !== s.id);
-      if (sharesOf(army, g, t.id, s.id) >= 4) return false;
-      if (!canShare(tu, t, aboard)) return false;
+      const brings = shareOf(army, g, s, s.id);
+      if (sharesOf(army, g, t.id, s.id) + brings > 4) return false;
+      if (!canShare(army, g, t, tu, brings, s.id)) return false;
+      // Boarding makes a Transport a nested one, and a nested one is not
+      // shared (sharedOnce): a Bear with two Squads in it stays at the top.
+      if (u.category === 'Transport' && !u.auxiliaryTransport && brings > 1) return false;
       const load = aboard.map(x => ({ unit: unitOf(army, x), count: x.models.length }))
         .filter(x => x.unit);
       load.push({ unit: u, count: s.models.length });
@@ -1778,10 +1834,17 @@
       const t = findSquad(army, carrierSquadId);
       const tu = t && carrierOf(army, t);
       const g = groupOf(army, squadId);
-      const aboard = t && g ? cargoOf(army, g, t.id).filter(x => x.id !== s.id) : [];
-      if (tu && !canShare(tu, t, aboard)) {
+      const su = unitOf(army, s);
+      const brings = g ? shareOf(army, g, s, s.id) : 1;
+      if (tu && g && !canShare(army, g, t, tu, brings, s.id)) {
         return { ok: false,
-          reason: `${aboard.length + 1} Squads may only share ONE Transport, and this is a Squad of ${t.models.length} (3.2.4.1).` };
+          reason: t.carriedBy
+            ? `${tu.name} is aboard another Transport, so it carries one Squad: only the top Transport is shared (3.2.4.1).`
+            : `Squads may only share ONE Transport, and this is a Squad of ${t.models.length} (3.2.4.1).` };
+      }
+      if (su && su.category === 'Transport' && !su.auxiliaryTransport && brings > 1) {
+        return { ok: false,
+          reason: `${su.name} carries ${brings} Squads, so it stays at the top of the Group: only the top Transport is shared (3.2.4.1).` };
       }
       // Capacity is not why these two refuse, and saying it was sent you off
       // to shrink a Squad that would never have been allowed aboard.
@@ -1844,7 +1907,24 @@
     if (!transportUnitId) { touch(army); return { ok: true, reason: null }; }
 
     const opt = transportOptions(army, squadId).find(o => o.unit.id === transportUnitId);
-    if (!opt) return { ok: false, reason: 'That Transport cannot carry this Squad (3.2.4.2).' };
+    // A Transport is a Squad, so Rare and Unique bite on it too (3.2.1). The
+    // Crow Dropship is Rare, and a second one went on without a word.
+    if (opt) {
+      const room = roomForCopies(army, [opt.unit]);
+      if (!room.ok) return room;
+    }
+    if (!opt) {
+      // Refused for sharing, not for shape: say which.
+      const brings = shareOf(army, g, s, s.id);
+      const su = unitOf(army, s);
+      const tu = window.DZC.unit(army.faction, transportUnitId);
+      if (brings > 1 && tu && window.DZC.canCarry(tu, su)) {
+        return { ok: false, reason: su.category === 'Transport' && !su.auxiliaryTransport
+          ? `${su.name} carries ${brings} Squads, so it stays at the top of the Group: only the top Transport is shared (3.2.4.1).`
+          : `${su.name} carries ${brings - 1} Squad${brings > 2 ? 's' : ''}, so it rides ONE ${tu.name}, not several (3.2.4.1).` };
+      }
+      return { ok: false, reason: 'That Transport cannot carry this Squad (3.2.4.2).' };
+    }
     /* A part-empty Transport is UNFINISHED, not illegal: two Legionnaires in a
      * Bear APC becomes legal the moment you buy a third, and refusing the
      * assignment means you can never get there. It is made, and validate()
@@ -2125,6 +2205,10 @@
 
   function groupsUsed(army) {
     return (army.groups || []).reduce((n, g) => {
+      // An empty Group is one you have not filled yet, not one you are
+      // fielding: "Add Group" at nine of nine read "10 Groups, but Skirmish
+      // allows 9" before anything was in it.
+      if (!(g.squads || []).length) return n;
       /* "Gates do not count against your number of allowed Groups." A Group
        * that is nothing but Gates spends none of the allowance; a Group that
        * mixes them is illegal and is reported rather than discounted here.
@@ -2186,7 +2270,23 @@
    * returns the very same object when there is nothing to add. */
   function unitOf(army, squad) {
     const u = window.DZC.unit(army.faction, squad.unitId);
-    return window.DZC.unitWithOptions(u, sw => hasOption(squad, sw));
+    return withCommanderRules(army, squad,
+      window.DZC.unitWithOptions(u, sw => hasOption(squad, sw)));
+  }
+
+  /* "Any non-Infantry Unit containing a Bioficer Commander gains Puppeteer
+   * 9”" (Puppeteer X”, Bioficer cards p.2). A rule a Squad has because of
+   * who is in it, so it goes on the copy of the Unit this Squad sees, the
+   * way unitWithOptions adds the rules a card option grants. A Unit that
+   * already controls 9” or more keeps its own. */
+  function withCommanderRules(army, squad, u) {
+    if (!u || army.faction !== 'bioficer' || u.type === 'Infantry') return u;
+    if (!commanderFor(army, squad.id)) return u;
+    const had = String(u.special || '').match(/\bPuppeteer\s*(\d+)/i);
+    if (had && Number(had[1]) >= 9) return u;
+    const rest = String(u.special || '').split(',').map(t => t.trim())
+      .filter(t => t && !/^Puppeteer\b/i.test(t));
+    return Object.assign({}, u, { special: rest.concat('Puppeteer 9”').join(', ') });
   }
 
   /* The Unit a Transport Squad IS, with the room its own upgrades cost it
@@ -2523,6 +2623,52 @@
     }, 0);
   }
 
+  /* What the quarter cap (3.2) is measured against, part by part. Empty
+   * where it does not apply at all.
+   *
+   * A Group of Gates is not a Group: "Gates do not count against your number
+   * of allowed Groups", and the app keeps them together only so they have
+   * somewhere to live. Held to the cap as one Group, four Gaia Gates at
+   * 1000pts read 280 against 250 and a legal Shaltari list showed red.
+   * Unarmed Subterranean Units are free of the Group count the same way.
+   *
+   * A Behemoth's cargo is a Group of its own: "Behemoths taken with Squads
+   * aboard do not share a Group with their transported Squads. Instead, all
+   * Squads aboard a Behemoth at the start of the game form a single Group"
+   * (Behemoth rules 1.6). groupsUsed already counts it +1; the cap is
+   * measured on each part, so an Explorator at 920 with two Zhukovs aboard
+   * is 920 and 120, not 1040. Director is the exception there too. */
+  function capParts(army, group) {
+    const squads = group.squads || [];
+    if (squads.length && squads.every(s => gateSquad(army, s) || freeOfGroupCap(army, s))) return [];
+    const composition = s => {
+      const c = commanderFor(army, s.id);
+      return squadCost(army, s) - (c ? levelCost(c.level) : 0);
+    };
+    const host = squads.find(s => {
+      const u = unitOf(army, s);
+      return u && u.groupEquivalent && squads.some(x => x.carriedBy === s.id)
+        && !(u.gear || []).some(x => /^Director\b/.test(String(x.name || '')));
+    });
+    if (!host) return [{ label: null, cost: groupCompositionCost(army, group) }];
+    const aboard = new Set();
+    const walk = id => squads.forEach(x => {
+      if (x.carriedBy === id && !aboard.has(x.id)) { aboard.add(x.id); walk(x.id); }
+    });
+    walk(host.id);
+    const sum = pick => squads.filter(pick).reduce((t, s) => t + composition(s), 0);
+    return [
+      { label: null, cost: sum(s => !aboard.has(s.id)) },
+      { label: `Squads aboard ${unitOf(army, host).name}`, cost: sum(s => aboard.has(s.id)) },
+    ];
+  }
+
+  function overQuarterCap(army, group) {
+    if (army.collection) return false;
+    const cap = window.DZC.maxGroupCost(army.pointsLimit);
+    return capParts(army, group).some(p => p.cost > cap);
+  }
+
   /* A FACTION THAT BUILDS ITS GROUPS DIFFERENTLY.
    *
    * The Shaltari card's last section, under "Shaltari Special Rules":
@@ -2628,10 +2774,12 @@
       army.groups.forEach(g => {
         // Composition cost, not cost: a Commander's points are ignored here
         // (3.2.5). See groupCompositionCost.
-        const c = groupCompositionCost(army, g);
-        if (c > cap) {
-          errors.push({ rule: '3.2', group: g.id, msg: `“${groupName(army, g)}” costs ${c}pts. No Group may exceed a quarter of the limit (${cap}pts).` });
-        }
+        capParts(army, g).forEach(p => {
+          if (p.cost <= cap) return;
+          const who = p.label ? `${p.label} in “${groupName(army, g)}”` : `“${groupName(army, g)}”`;
+          errors.push({ rule: '3.2', group: g.id,
+            msg: `${who} cost${p.label ? '' : 's'} ${p.cost}pts. No Group may exceed a quarter of the limit (${cap}pts).` });
+        });
       });
     }
 
@@ -2718,18 +2866,14 @@
      * of two or more Transport-category models with more than one Squad
      * riding it. boardOptions refuses it now, so nothing you can press builds
      * one -- this is for a link, a backup, or a list built before the check. */
-    army.groups.forEach(g => {
-      const riders = {};
-      g.squads.forEach(s => { if (s.carriedBy) (riders[s.carriedBy] = riders[s.carriedBy] || []).push(s); });
-      Object.keys(riders).forEach(id => {
-        if (riders[id].length < 2) return;
-        const t = g.squads.find(x => x.id === id);
-        const tu = t && carrierOf(army, t);
-        if (!tu || canShare(tu, t, riders[id].slice(1))) return;
-        errors.push({ rule: '3.2.4.1', group: g.id,
-          msg: `${tu.name}: ${riders[id].length} Squads aboard a Squad of ${t.models.length}. Up to 4 Squads may share ONE Transport.` });
-      });
-    });
+    army.groups.forEach(g => g.squads.forEach(t => {
+      const tu = carrierOf(army, t);
+      if (!tu || canShare(army, g, t, tu, 0)) return;
+      const n = sharesOf(army, g, t.id);
+      errors.push({ rule: '3.2.4.1', group: g.id, msg: t.carriedBy
+        ? `${tu.name} is aboard another Transport and carries ${n} Squads. Only the top Transport is shared.`
+        : `${tu.name}: ${n} Squads aboard a Squad of ${t.models.length}. Up to 4 Squads may share ONE Transport.` });
+    }));
 
     /* More RM aboard than the symbol allows. Reachable by a share link, an
      * imported backup, or a card whose capacity has been reduced between
@@ -2746,6 +2890,15 @@
       } else if (held > cap) {
         errors.push({ rule: 'Genitor X', group: g.id,
           msg: `${u.name} holds ${held} RM. It may never have more than ${cap} aboard.` });
+      }
+    }));
+
+    /* A Unit no list may hold, arriving the one way canAddUnit does not see:
+     * a backup or a share link. Two Hulks imported and validated clean. */
+    army.groups.forEach(g => g.squads.forEach(s => {
+      const u = unitOf(army, s);
+      if (u && u.selectable === false) {
+        errors.push({ rule: u.category === 'Generated' ? 'Generated X' : '3.2', group: g.id, msg: notTakenReason(u) });
       }
     }));
 
@@ -3209,7 +3362,7 @@
     setCarrier, moveSquad, setCommander, findSquad, groupOf, unitOf, carrierOf, squadGuns,
     commanders, commanderFor, commanderTargets,
     addCommander, removeCommander, assignCommander, syncCommanders, levelCost,
-    modelCost, squadCost, groupCost, groupCompositionCost, armyCost, categorySpend, validate,
+    modelCost, squadCost, groupCost, groupCompositionCost, overQuarterCap, armyCost, categorySpend, validate,
     // Raw Materials (Genitor X)
     genitorCap, rmOf, rmCost, setRm, RM_POINTS,
     // Cling (Scourge Unit Special Rules)
@@ -3223,7 +3376,7 @@
     upgradesFor, hasUpgrade, toggleUpgrade, upgradeCost,
     optionsFor, hasOption, toggleOption,
     transportOptions, assignTransport, refitTransports, groupSpace, groupsUsed,
-    boardOptions, boardTransport
+    boardOptions, boardTransport, sharesOf
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = window.DZCArmy;
 })();
