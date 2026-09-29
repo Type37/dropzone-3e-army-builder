@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 501;
+  const BUILD = 502;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -617,6 +617,11 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-09-29', title: 'The Behemoth Power and Systems Damage tables read as tables', items: [
+      'Power & Activating Behemoths (1.3) is its own rule, with every action’s PT cost. The costs were missing and the rule was buried in Exceptions.',
+      'The Systems Damage table has its result numbers back, one result per line.',
+      'Move On Entry, Drop Harness Entry and Aiming for Systems Damage are their own rules.',
+    ] },
     { date: '2026-09-29', title: 'Every rule a refusal names opens', items: [
       'The rule after a refusal opens it: a rulebook section goes to Interactive Rules, a faction rule like Genitor X, Gate or Cling opens its text.',
       'Behemoth Gear rules are in the unit page’s rules and on both printed sheets.',

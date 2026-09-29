@@ -1464,8 +1464,21 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Exceptions\\s*$",
-   "text": "Behemoths are so huge that several things cannot affect them: 1. Command Cards cannot target Behemoths. Cards which target ‘all’ of anything which include a Behemoth (e.g. all friendly Units) do not affect the Behemoth directly. 2. Command Abilities cannot target Behemoths. 3. Behemoths cannot receive Status tokens. 4. Behemoths cannot be Obscured, even by special rules. 5. Behemoths cannot carry Objects. 6. Friendly Shield and Repair special rules cannot affect Behemoths. 7. Passive Countermeasures on Behemoths are unmodified by E9 and E10 sources. 8. Criticals on Behemoths with Resilient do not inflict any additional damage, regardless of the Energy of the Weapon. 1.3 Power & Activating Behemoths Behemoths activate differently from normal Groups, and often multiple times per Round. What is possible is governed by their Power stat. Behemoths begin each Round with a number of Power tokens (PT) equal to their Power. When you may activate a normal Group, you may instead activate a Behemoth with PT remaining. It must then complete one Action from the Power Table: PT Cost Action Reposition Move up to half Mv Advance Move up to full Mv Fire Attack with 1 Weapon Volley Attack with 2 Weapons Charge Add 1 to this Behemoth's Power next Round Discharge None Use Gear Varies Use one Gear. See ‘Gear’ You may move each Behemoth up to twice per Round, up to its full Mv each time. Normal Mv limits for Embarking/Disembarking are ignored for Behemoths, but they may only Embark/Disembark Units on Reposition. You may use each Gear once per Round. Each Weapon may attack once per Round. Normal MA limits apply—the total distance from both allowed moves is used.",
+   "text": "Behemoths are so huge that several things cannot affect them: 1. Command Cards cannot target Behemoths. Cards which target ‘all’ of anything which include a Behemoth (e.g. all friendly Units) do not affect the Behemoth directly. 2. Command Abilities cannot target Behemoths. 3. Behemoths cannot receive Status tokens. 4. Behemoths cannot be Obscured, even by special rules. 5. Behemoths cannot carry Objects. 6. Friendly Shield and Repair special rules cannot affect Behemoths. 7. Passive Countermeasures on Behemoths are unmodified by E9 and E10 sources. 8. Criticals on Behemoths with Resilient do not inflict any additional damage, regardless of the Energy of the Weapon.",
    "page": 1
+  },
+  {
+   "id": "power-activating-behemoths",
+   "faction": null,
+   "source": "behemoths",
+   "section": "1.3",
+   "chapter": "Behemoth rules",
+   "name": "Power & Activating Behemoths",
+   "alias": null,
+   "parameterised": false,
+   "match": "^\\s*Power[\\s:/\\-]*\\&[\\s:/\\-]*Activating[\\s:/\\-]*Behemoths\\s*$",
+   "text": "Behemoths activate differently from normal Groups, and often multiple times per Round. What is possible is governed by their Power stat. Behemoths begin each Round with a number of Power tokens (PT) equal to their Power. When you may activate a normal Group, you may instead activate a Behemoth with PT remaining. It must then complete one Action from the Power Table:\n\nReposition (PT Cost 1): Move up to half Mv\n\nAdvance (PT Cost 3): Move up to full Mv\n\nFire (PT Cost 1): Attack with 1 Weapon\n\nVolley (PT Cost 3): Attack with 2 Weapons\n\nCharge (PT Cost 2): Add 1 to this Behemoth's Power next Round\n\nDischarge (PT Cost 1): None\n\nUse Gear (PT Cost Varies): Use one Gear. See ‘Gear’\n\nYou may move each Behemoth up to twice per Round, up to its full Mv each time. Normal Mv limits for Embarking/Disembarking are ignored for Behemoths, but they may only Embark/Disembark Units on Reposition. You may use each Gear once per Round. Each Weapon may attack once per Round. Normal MA limits apply—the total distance from both allowed moves is used.",
+   "page": 2
   },
   {
    "id": "behemoth-entry",
@@ -1477,7 +1490,33 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Behemoth[\\s:/\\-]*Entry\\s*$",
-   "text": "Unless a Scenario specifies an entry requirement for Behemoths, players have two options. Players must simultaneously reveal which they will be using for each Behemoth before the game begins. 1.4.1.1 Move On Entry This Behemoth begins Reserved and must enter using an Advance Action. 1.4.1.2 Drop Harness Entry This Behemoth begins in Holding and may only enter via Drop Harness from Round 2. At the end of its activation, a friendly Unit that has not Embarked/Disembarked this Round and has Scout, Command Centre, or contains a Commander may designate a point within 12” of itself in Line of Sight. That point must be on open Ground and at least 3” from any Unit or Zone. Next, move that point D6-2” in a random direction. Place that Behemoth with its centre on that point (see ‘Moving and Placing Behemoths’). This counts as a move for the Behemoth and it has 2PT remaining that Round.",
+   "text": "Unless a Scenario specifies an entry requirement for Behemoths, players have two options. Players must simultaneously reveal which they will be using for each Behemoth before the game begins.",
+   "page": 2
+  },
+  {
+   "id": "move-on-entry",
+   "faction": null,
+   "source": "behemoths",
+   "section": "1.4.1.1",
+   "chapter": "Behemoth rules",
+   "name": "Move On Entry",
+   "alias": null,
+   "parameterised": false,
+   "match": "^\\s*Move[\\s:/\\-]*On[\\s:/\\-]*Entry\\s*$",
+   "text": "This Behemoth begins Reserved and must enter using an Advance Action.",
+   "page": 2
+  },
+  {
+   "id": "drop-harness-entry",
+   "faction": null,
+   "source": "behemoths",
+   "section": "1.4.1.2",
+   "chapter": "Behemoth rules",
+   "name": "Drop Harness Entry",
+   "alias": null,
+   "parameterised": false,
+   "match": "^\\s*Drop[\\s:/\\-]*Harness[\\s:/\\-]*Entry\\s*$",
+   "text": "This Behemoth begins in Holding and may only enter via Drop Harness from Round 2. At the end of its activation, a friendly Unit that has not Embarked/Disembarked this Round and has Scout, Command Centre, or contains a Commander may designate a point within 12” of itself in Line of Sight. That point must be on open Ground and at least 3” from any Unit or Zone. Next, move that point D6-2” in a random direction. Place that Behemoth with its centre on that point (see ‘Moving and Placing Behemoths’). This counts as a move for the Behemoth and it has 2PT remaining that Round.",
    "page": 2
   },
   {
@@ -1620,7 +1659,20 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Systems[\\s:/\\-]*Damage\\s*$",
-   "text": "If an enemy Behemoth begins a friendly activation Intact, you may roll one D3 against the Systems Damage Table at the end of that activation for every 3 damage it takes directly from non-CC Weapon attacks during that activation. Roll for each 3 damage and apply the effect before rolling again (e.g. if 6 damage was dealt). If it was Degraded at the beginning of that activation, roll 2D3 instead. If it was Crippled at the beginning of that activation, roll 3D3 instead. Result Effect ACM Offline 0-1 Weapons may use their 1st R value against this this Round. Power Fluctuations -1 PT. Cannot use Advance or Charge next Round. Cannot move again this Round. Can only move once next Drive Destabilised Round. Gear Destroyed Cannot use one random Gear (permanent). Drive Damaged Reposition and Advance cost +1PT (permanent). Cell Destroyed -1 PT. Suffers -1 Power (permanent). All Weapons suffer -1Ac. Cannot aim for Systems Damage Optics Damaged (permanent). Internal Explosion Takes D3 damage. One random non-Secondary Weapon* cannot attack Weapon Destroyed (permanent). Armour Cracked Suffers -1A (permanent). Core Rupture Remove all PT. Suffers -2PT and -1A (permanent). Heart Shot Behemoth destroyed. For results 4 and 9, if an already destroyed System/Weapon is chosen, apply results 5 and 8 instead, respectively. Otherwise, duplicate results are cumulative. * For this roll, Weapons with the same Alt value count as a single Weapon. 1.5.6.1 Aiming for Systems Damage Immediately before declaring targets when attacking, you may declare you are aiming for Systems Damage against one or more enemy Behemoths. For that activation, your non-CC Weapons suffer -1 to the roll required to hit that Behemoth. For that activation, you may modify any Systems Damage result against it by up to three, and you choose which System/Weapon is destroyed for results 4 and 9.",
+   "text": "If an enemy Behemoth begins a friendly activation Intact, you may roll one D3 against the Systems Damage Table at the end of that activation for every 3 damage it takes directly from non-CC Weapon attacks during that activation. Roll for each 3 damage and apply the effect before rolling again (e.g. if 6 damage was dealt). If it was Degraded at the beginning of that activation, roll 2D3 instead. If it was Crippled at the beginning of that activation, roll 3D3 instead.\n\nACM Offline (Result 0-1): Weapons may use their 1st R value against this this Round.\n\nPower Fluctuations (Result 2): -1 PT. Cannot use Advance or Charge next Round.\n\nDrive Destabilised (Result 3): Cannot move again this Round. Can only move once next Round.\n\nGear Destroyed (Result 4): Cannot use one random Gear (permanent).\n\nDrive Damaged (Result 5): Reposition and Advance cost +1PT (permanent).\n\nCell Destroyed (Result 6): -1 PT. Suffers -1 Power (permanent).\n\nOptics Damaged (Result 7): All Weapons suffer -1Ac. Cannot aim for Systems Damage (permanent).\n\nInternal Explosion (Result 8): Takes D3 damage.\n\nWeapon Destroyed (Result 9): One random non-Secondary Weapon* cannot attack (permanent).\n\nArmour Cracked (Result 10): Suffers -1A (permanent).\n\nCore Rupture (Result 11): Remove all PT. Suffers -2PT and -1A (permanent).\n\nHeart Shot (Result 12): Behemoth destroyed.\n\nFor results 4 and 9, if an already destroyed System/Weapon is chosen, apply results 5 and 8 instead, respectively. Otherwise, duplicate results are cumulative. * For this roll, Weapons with the same Alt value count as a single Weapon.",
+   "page": 5
+  },
+  {
+   "id": "aiming-for-systems-damage",
+   "faction": null,
+   "source": "behemoths",
+   "section": "1.5.6.1",
+   "chapter": "Behemoth rules",
+   "name": "Aiming for Systems Damage",
+   "alias": null,
+   "parameterised": false,
+   "match": "^\\s*Aiming[\\s:/\\-]*for[\\s:/\\-]*Systems[\\s:/\\-]*Damage\\s*$",
+   "text": "Immediately before declaring targets when attacking, you may declare you are aiming for Systems Damage against one or more enemy Behemoths. For that activation, your non-CC Weapons suffer -1 to the roll required to hit that Behemoth. For that activation, you may modify any Systems Damage result against it by up to three, and you choose which System/Weapon is destroyed for results 4 and 9.",
    "page": 5
   },
   {
@@ -1633,7 +1685,7 @@
    "alias": null,
    "parameterised": false,
    "match": "^\\s*Mortal[\\s:/\\-]*Damage\\s*$",
-   "text": "When a Behemoth is destroyed, it is not immediately removed. Instead, its player must roll 1D6 against the Mortal Damage table at the end of the current activation and apply the result before removing it. Add 1 to the result if that Behemoth had a starting DP of 15 or higher: Result Effect Slumped 1-2 Leave the miniature in place. It is still destroyed. That Behemoth may make a Fire or Volley Action if it has Blaze of Glory sufficient PT. Then, apply result 4. Units and Zones within 6\" suffer an E6 hit. Place a Jammed Cell Burst Status Token on every Squad this damages. Non-Behemoth Vehicles and Infantry within D3+4\" are Structural Collapse destroyed on a 5+ (roll for each). Behemoths and Zones within 6\" take D6 E10 hits. Within 2D6\", Units suffer an E10 hit, Infantry and Units with 1 Magazine Detonation starting DP are destroyed, and Zones suffer D6 damage. Place a Concussed Status Token on every Squad this damages. Core Implosion Units and Zones within D3+5\" are destroyed.",
+   "text": "When a Behemoth is destroyed, it is not immediately removed. Instead, its player must roll 1D6 against the Mortal Damage table at the end of the current activation and apply the result before removing it. Add 1 to the result if that Behemoth had a starting DP of 15 or higher:\n\nSlumped (Result 1-2): Leave the miniature in place. It is still destroyed.\n\nBlaze of Glory (Result 3): That Behemoth may make a Fire or Volley Action if it has sufficient PT. Then, apply result 4.\n\nCell Burst (Result 4): Units and Zones within 6\" suffer an E6 hit. Place a Jammed Status Token on every Squad this damages.\n\nStructural Collapse (Result 5): Non-Behemoth Vehicles and Infantry within D3+4\" are destroyed on a 5+ (roll for each). Behemoths and Zones within 6\" take D6 E10 hits.\n\nMagazine Detonation (Result 6): Within 2D6\", Units suffer an E10 hit, Infantry and Units with 1 starting DP are destroyed, and Zones suffer D6 damage. Place a Concussed Status Token on every Squad this damages.\n\nCore Implosion (Result 7): Units and Zones within D3+5\" are destroyed.",
    "page": 6
   },
   {

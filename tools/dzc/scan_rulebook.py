@@ -627,21 +627,62 @@ def parse_behemoth_rules(doc, pages) -> list[Rule]:
         # preceded it and lost the section entirely -- including "Commanders
         # cannot be assigned to Behemoths" and the 3000-point floor, which are
         # both army-building rules this app is supposed to enforce.
+        # TABLES are read as tables. The Power Table (1.3) and the Systems
+        # Damage Table (1.5.6) came out of the span walk as a stream with
+        # every number missing -- a digit span was taken for a page number --
+        # so "Reposition 1 Move up to half Mv" read "Reposition Move up to
+        # half Mv" and the table said what each action does and not what it
+        # costs. Each row becomes its own paragraph, the cells named by the
+        # table's own header: "Reposition (PT Cost 1): Move up to half Mv".
+        tables = doc[pno].find_tables().tables
         spans = []
         for blk in doc[pno].get_text("dict")["blocks"]:
             for ln in blk.get("lines", []):
                 for sp in ln["spans"]:
-                    if sp["text"].strip():
-                        spans.append(sp)
+                    if not sp["text"].strip():
+                        continue
+                    box = fitz.Rect(sp["bbox"])
+                    if any(fitz.Rect(t.bbox).contains(box) for t in tables):
+                        continue
+                    spans.append(sp)
+        for t in tables:
+            rows = [[re.sub(r"\s+", " ", c or "").strip() for c in r] for r in t.extract()]
+            if len(rows) < 2 or len(rows[0]) != 3:
+                continue
+            head = rows[0]
+            lines = [f"{r[0]} ({head[1]} {r[1]}): {r[2]}" for r in rows[1:] if any(r)]
+            spans.append({"text": "\n\n" + "\n\n".join(lines) + "\n\n", "size": body_size,
+                          "font": "", "bbox": (t.bbox[0], t.bbox[1], t.bbox[2], t.bbox[3]),
+                          "table": True})
         spans.sort(key=lambda sp: (round(sp["bbox"][1], 1), sp["bbox"][0]))
+        # The page number is the only bare digit OUTSIDE a table, and it sits
+        # in the bottom margin.
+        foot = doc[pno].rect.height - 40
+        named = False
         for sp in spans:
+            if sp.get("table"):
+                if cur is not None:
+                    cur["text"] += sp["text"]
+                continue
             txt = sp["text"].strip()
             m = BEHEMOTH_HEAD_RE.match(txt)
-            if m and sp["size"] > body_size + 0.4:
+            # A heading by its TYPEFACE as well as its size. "1.3 Power &
+            # Activating Behemoths" is set in the heading face at body size, so
+            # the size test alone filed the whole of 1.3 under 1.2 Exceptions.
+            heading = sp["size"] > body_size + 0.4 or "MorrisSans" in sp.get("font", "")
+            if named and "MorrisSans" in sp.get("font", "") and not m:
+                # The heading's second line: "Behemoths" under "Power &
+                # Activating".
+                assert cur is not None
+                cur["name"] = f"{cur['name']} {txt}"
+                continue
+            named = False
+            if m and heading:
                 if cur:
                     out.append(cur)
                 cur = {"section": m.group(1), "name": m.group(2),
                        "text": "", "page": pno + 1}
+                named = True
             elif BEHEMOTH_CHAPTER_RE.match(txt) and sp["size"] > body_size + 0.4:
                 # A CHAPTER heading ends the rule above it and starts nothing.
                 # "2. Behemoth Special Rules" has one number where a rule has
@@ -656,7 +697,7 @@ def parse_behemoth_rules(doc, pages) -> list[Rule]:
                 if cur:
                     out.append(cur)
                 cur = None
-            elif cur is not None and not txt.isdigit():
+            elif cur is not None and not (txt.isdigit() and sp["bbox"][1] > foot):
                 cur["text"] = (cur["text"] + " " + txt) if cur["text"] else txt
     if cur:
         out.append(cur)
@@ -846,7 +887,9 @@ def main():
                 "alias": alias,
                 "parameterised": bool(PLACEHOLDER_RE.search(head)),
                 "match": matcher_pattern(head),
-                "text": dedupe_sentences(tidy(r["text"])),
+                # Paragraph by paragraph, so a table's rows stay rows.
+                "text": "\n\n".join(dedupe_sentences(tidy(p))
+                                      for p in r["text"].split("\n\n") if tidy(p)),
                 "page": r["page"],
             })
             beh_count += 1
