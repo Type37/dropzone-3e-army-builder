@@ -2404,9 +2404,19 @@
     const u = unitOf(army, squad);
     if (!u) return [];
     const out = [];
+    /* "All Units of the same Variant within a Squad must be upgraded
+     * equally" (3.2.3) -- equally within a Variant, not across the Squad. A
+     * Squad of an Archangel Interceptor and a Fighter-Bomber may upgrade one
+     * and not the other, and two Terrors of different Variants each choose
+     * their own starred gun. So on a Squad fielding more than one Variant, an
+     * upgrade the card gives every Variant is offered per Variant. A Squad of
+     * one Variant keeps the single whole-Squad offer, and a purchase made at
+     * '*' before this still counts for every Variant (hasUpgrade). */
+    const fielded = [...new Set(squad.models.map(m => m.variant).filter(Boolean))];
+    const each = fielded.length > 1 ? fielded : [ALL_VARIANTS];
     (u.weapons || []).forEach(w => {
       if (w.box !== 'upgrade' || w.upgradePoints == null) return;
-      const scopes = (w.variants || []).length ? w.variants : [ALL_VARIANTS];
+      const scopes = (w.variants || []).length ? w.variants : each;
       scopes.forEach(scope => {
         // Only offer an upgrade for a variant this Squad actually fields.
         const n = scope === ALL_VARIANTS
@@ -2477,7 +2487,11 @@
      * and on a card with an unstarred third upgrade it does not say which two. */
     const starred = n => (u && u.weapons || []).some(w => w.name === n && w.exclusive);
     if (starred(name)) {
+      // Per Variant, for the reason upgradesFor gives: "only one" is one per
+      // model, and a Terror 1 and a Terror 2 may each take their own. A
+      // whole-Squad purchase clashes with every Variant's.
       const clash = Object.keys(s.upgrades)
+        .filter(k => scope === ALL_VARIANTS || k === ALL_VARIANTS || k === scope)
         .reduce((all, k) => all.concat(Object.keys(s.upgrades[k])), [])
         .find(n => n !== name && starred(n));
       if (clash) {
@@ -3334,8 +3348,10 @@
       const u = unitOf(army, s);
       const set = u ? (u.weapons || []).filter(w => w.choice) : [];
       if (!set.length) return;
-      const taken = set.some(w => ((w.variants || []).length ? w.variants : [ALL_VARIANTS])
-        .some(scope => hasUpgrade(s, scope, w.name)));
+      // Each fielded Variant chooses (3.2.3); a whole-Squad choice covers all.
+      const fielded = [...new Set(s.models.map(m => m.variant).filter(Boolean))];
+      const taken = (fielded.length ? fielded : [ALL_VARIANTS]).every(v =>
+        set.some(w => hasUpgrade(s, v, w.name)));
       if (!taken) {
         errors.push({ rule: '3.2.3', group: g.id,
           msg: /must choose one/i.test(u.upgradeNote || '')

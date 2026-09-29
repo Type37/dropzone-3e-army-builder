@@ -2127,6 +2127,25 @@ console.log('\nA marked selection (Terror Heavy Battle Skimmer)');
   A.remove(a.id);
 }
 
+console.log('\nUpgraded equally within a Variant, not across the Squad (3.2.3)');
+{
+  await DZC.loadFaction('bioficer');
+  const a = A.create('bioficer', 'Mixed Terrors', 1500);
+  const g = A.addGroup(a);
+  const s = A.addSquad(a, g.id, 'terror-heavy-battle-skimmer', 2);
+  s.models[0].variant = 'Terror 1';
+  s.models[1].variant = 'Terror 2';
+  const scopes = A.upgradesFor(a, s).filter(o => o.weapon.name === 'Winnow Web').map(o => o.scope);
+  eq(scopes.join(','), 'Terror 1,Terror 2', 'a mixed Squad is offered each starred gun per Variant');
+  const must = () => A.validate(a).errors.filter(e => /marked selection/.test(e.msg)).length;
+  eq(A.toggleUpgrade(a, s.id, 'Terror 1', 'Winnow Web').ok, true, 'Terror 1 takes the Winnow Web');
+  eq(must(), 1, 'and Terror 2 has still to choose');
+  eq(A.toggleUpgrade(a, s.id, 'Terror 2', 'Quake Howitzer').ok, true, 'Terror 2 takes a different gun');
+  eq(must(), 0, 'so every Variant has chosen');
+  eq(A.toggleUpgrade(a, s.id, 'Terror 2', 'Barb Spitter').ok, false, 'and a second for Terror 2 is refused');
+  A.remove(a.id);
+}
+
 console.log('\nOnly ONE Transport is shared (3.2.4.1, 3.02 FAQ Transports)');
 {
   const id = (f, name) => DZC.faction(f).units.find(u => u.name === name).id;

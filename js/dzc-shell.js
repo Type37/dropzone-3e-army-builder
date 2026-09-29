@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 502;
+  const BUILD = 503;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -617,6 +617,10 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-09-29', title: 'Each Variant chooses its own upgrades', items: [
+      'A Squad of more than one Variant is offered its upgrades per Variant, as 3.2.3 has it: all Units of the same Variant are upgraded equally, not the whole Squad. An Archangel Interceptor can take a missile its Fighter-Bomber does not.',
+      'Two Terrors of different Variants each choose their own starred gun, and each must.',
+    ] },
     { date: '2026-09-29', title: 'The Behemoth Power and Systems Damage tables read as tables', items: [
       'Power & Activating Behemoths (1.3) is its own rule, with every action’s PT cost. The costs were missing and the rule was buried in Exceptions.',
       'The Systems Damage table has its result numbers back, one result per line.',
