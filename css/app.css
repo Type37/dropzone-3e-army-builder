@@ -1752,10 +1752,13 @@ body:not([data-view="landing"]) .dfc-rules-tip { display: none; }
   color: var(--ink);
 }
 
-/* .tool-card-desc is gone with the sentences it styled. A landing tile said
-   "Army Builder" and then, underneath, "Build and manage rosters for all six
-   factions". A caption explaining a control that had already named itself
-   (CLAUDE.md §3). The tiles are the title and the icon now. */
+/* Back on 2026-09-29, in Jet's words (CLAUDE.md §3 names the exception):
+   each landing tile says what is behind it, as the Dropfleet builder's do. */
+.tool-card-desc {
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
 
 /* Landing, Stats Bar */
 .landing-stats {
