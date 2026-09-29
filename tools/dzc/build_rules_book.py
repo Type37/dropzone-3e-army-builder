@@ -921,11 +921,37 @@ def glossary_chapters() -> list[dict[str, Any]]:
         kids = [{"id": r["id"], "number": "", "heading": r["name"], "book": "faction",
                  "body": body(r["text"]), "children": []}
                 for r in rules if r.get("faction") == fac]
-        groups.append({"id": f"faction-{fac}", "number": "", "heading": names.get(fac) or fac,
+        groups.append({"id": f"faction-{fac}", "number": "",
+                       "heading": names.get(fac) or fac,
                        "book": "faction", "body": [], "children": kids})
     if groups:
         chapters.append({"id": "factions", "number": "", "heading": "Faction rules",
                          "book": "faction", "body": [], "children": groups})
+
+    # TTCombat's FAQ, from the 3.02 Errata & FAQ PDF, as extract_rules_wiki.py
+    # read it into rules-wiki.json: 43 answers in 7 topics, and until now shown
+    # nowhere. The question is the heading because it is what a reader scans
+    # for; each answer keeps the PDF page it came from.
+    wiki_file = ROOT / "data" / "dzc" / "rules-wiki.json"
+    faq = []
+    if wiki_file.exists():
+        wiki = json.loads(wiki_file.read_text(encoding="utf-8"))
+        faq = (wiki.get("errata") or {}).get("faq") or []
+    topics: dict[str, list[dict[str, Any]]] = {}
+    for f in faq:
+        topics.setdefault(f.get("topic") or "Miscellaneous", []).append(
+            {"id": f["id"], "number": "", "heading": f["question"], "book": "faq",
+             "page": f.get("page"),
+             "body": [{"kind": "p", "runs": [{"t": a.strip()}]}
+                      for a in f.get("answer") or [] if a.strip()],
+             "children": []})
+    if topics:
+        chapters.append({"id": "faq", "number": "", "heading": "Frequently Asked Questions",
+                         "book": "faq", "body": [], "children": [
+                             {"id": "faq-" + re.sub(r"[^a-z0-9]+", "-", t.lower()).strip("-"),
+                              "number": "", "heading": t, "book": "faq", "body": [],
+                              "children": kids}
+                             for t, kids in topics.items()]})
     return chapters
 
 

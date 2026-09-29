@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 510;
+  const BUILD = 511;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -644,6 +644,9 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-09-29', title: 'The FAQ in Interactive Rules', items: [
+      'TTCombat’s 43 FAQ answers are a chapter of Interactive Rules, in their seven topics and searchable: Transports, Movement, Attacking, Reaction Attacks, CQBs and the rest.',
+    ] },
     { date: '2026-09-29', title: 'Sign in with Discord', items: [
       'Sync can use your Discord account instead of a six-word token, as the Dropfleet builder does. Sign in on each device and your armies follow. Your Dropfleet fleets and Dropzone armies stay separate.',
       'A device already on a token keeps it linked when it signs in, so devices still on the token stay in step.',

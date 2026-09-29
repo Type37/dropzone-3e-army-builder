@@ -332,7 +332,7 @@
       /* A faction is a group of rules, so the search is over its rules: "gate"
          leaves Gate showing under Shaltari, not every Shaltari rule. */
       const inner = [...sec.querySelectorAll(':scope > .rules-sub')];
-      if (inner.length && bookOf(sec) === 'faction') {
+      if (inner.length && (bookOf(sec) === 'faction' || bookOf(sec) === 'faq')) {
         inner.forEach(r => { r.hidden = !hit(r); });
         sec.hidden = inner.every(r => r.hidden);
         return;
