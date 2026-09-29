@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 512;
+  const BUILD = 513;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -644,6 +644,10 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-09-29', title: 'FAQ answers under their rules', items: [
+      'Each of TTCombat’s 43 FAQ answers also sits under the rule it clarifies in Interactive Rules: Strafe, Infiltrate, the Transport rules, CQB and the rest. Its FAQ tag opens it in the FAQ chapter.',
+      'A rule the errata changed says so under its text, with the errata version. The text is already the errata’s.',
+    ] },
     { date: '2026-09-29', title: 'Four rules calls, by the rulebook’s wording', items: [
       'A Commander can be assigned to a Transport Squad. 3.2.5 says a Commander goes on a Unit, and a Transport is one.',
       'Aux Gates, and the Siegestrider Lion’s Integrated Gate, are not taken with Units aboard, like any Gate. Their passengers start in Holding.',

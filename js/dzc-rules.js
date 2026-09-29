@@ -110,6 +110,26 @@
     return notes ? notes.map(t => `<p class="rules-nb"><b>NB:</b> ${linkify(esc(t))}</p>`).join('') : '';
   }
 
+  /* A section whose text the errata changed. The text above is already the
+     errata's (build_rules_book.py writes it in); this says so, and which
+     version of the errata did it. */
+  function errataNote(n) {
+    return n.errata ? `<p class="rules-fn">Errata ${esc(n.errata)}</p>` : '';
+  }
+
+  /* TTCombat's FAQ answers, under each rule they clarify, in TTCombat's
+     words -- the same nodes as the FAQ chapter, which the tag links to.
+     Placed by build_rules_book.py (FAQ_AT). */
+  let faqById = {};
+  function sectionFaq(n) {
+    return (n.faq || []).map(id => {
+      const f = faqById[id];
+      if (!f) return '';
+      return `<div class="rules-faq"><p class="rules-faq-q"><a class="rules-faq-tag" href="#rules/${esc(id)}">FAQ</a> ${linkify(esc(f.heading))}</p>`
+        + (f.body || []).map(b => `<p class="rules-faq-a">${runsHtml(b.runs)}</p>`).join('') + '</div>';
+    }).join('');
+  }
+
   // -------------------------------------------------------------- links
   /* The book cites by name ("see page 34 'Entry'") far more than by number,
      so a link comes from a quoted section name, a section number, a section
@@ -261,8 +281,9 @@
   // variants, straight to that scenario in the Scenario Reference.
   function scenarioHtml(n) {
     const rows = (n.body || []).map(b => `<span class="rsb-row">${boldOnly(b.runs)}</span>`).join('');
+    const fn = n.errata ? `<span class="rules-fn">Errata ${esc(n.errata)}</span>` : '';
     return `<a class="rules-scn-btn" id="rules-sec-${esc(n.id)}" href="scenarios/#${esc(n.scenario)}" target="_blank" rel="noopener">`
-      + `<span class="rules-scn-btn-nm">${esc(n.heading)}${CHEVRON}</span><span class="rsb-rows">${rows}</span></a>`;
+      + `<span class="rules-scn-btn-nm">${esc(n.heading)}${CHEVRON}</span><span class="rsb-rows">${rows}</span>${fn}</a>`;
   }
 
   /* Depth follows the printed number, so 10.1.1 sits two levels in even
@@ -275,7 +296,7 @@
     const kids = (n.children || []).map(c => sectionHtml(c, depth)).join('');
     return `<div class="rules-sub rules-sub-d${depth}" id="rules-sec-${esc(n.id)}">`
       + `<h${lvl} class="rules-h">${num}${esc(n.heading)}</h${lvl}>`
-      + `${bodyHtml(n)}${sectionNotes(n)}${sectionTokens(n.number)}${kids}</div>`;
+      + `${bodyHtml(n)}${errataNote(n)}${sectionNotes(n)}${sectionTokens(n.number)}${sectionFaq(n)}${kids}</div>`;
   }
 
   function chapterHtml(ch) {
@@ -287,7 +308,7 @@
       : '';
     return `<section class="rules-chapter" id="rules-sec-${esc(ch.id)}"${ch.book ? ` data-book="${esc(ch.book)}"` : ''}>`
       + `<h2 class="rules-chapter-title"><span class="rules-chapter-n">${esc(ch.number)}</span>${esc(ch.heading)}</h2>`
-      + search + bodyHtml(ch) + sectionTokens(ch.number)
+      + search + bodyHtml(ch) + errataNote(ch) + sectionTokens(ch.number) + sectionFaq(ch)
       + kids.filter(c => !c.scenario).map(c => sectionHtml(c, 0)).join('')
       + (cards.length ? `<div class="rules-scn-grid">${cards.map(scenarioHtml).join('')}</div>` : '')
       + '</section>';
@@ -312,8 +333,10 @@
   function build(el) {
     const chapters = book.chapters || [];
     tokenNames = {};
+    faqById = {};
     for (const n of walk(chapters)) {
       (n.body || []).forEach(b => { if (b.kind === 'tokens') b.items.forEach(t => { tokenNames[t.src] = t.name; }); });
+      if (n.book === 'faq' && !(n.children || []).length) faqById[n.id] = n;
     }
     buildIndex();
     el.innerHTML = `

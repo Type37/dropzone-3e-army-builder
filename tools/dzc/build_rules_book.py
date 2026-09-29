@@ -650,6 +650,28 @@ def norm(s: str) -> str:
     return re.sub(r"\s+", " ", s).strip()
 
 
+# The errata PDF's legend: blue is new in 3.02, green was already in 3.01.
+EDITION = {"new": "3.02", "previous": "3.01"}
+
+# Errata with no quote to test for, read against the 2026-09-23 reissue on
+# 2026-09-29 and found printed: Flak Turret Att 6, Battle Royale Attrition
+# 2 VP, Castles "Score on game end", Surveyor's friendly Units, and chapter
+# 12's Jammed and Excellent Vantage tokens.
+HAND_CHECKED = {
+    "faq-erratum-8-8-1-weapon-features-table",
+    "faq-erratum-battle-royale-scenario-page-38",
+    "faq-erratum-castles-scenario-page-39",
+    "faq-erratum-10-1-33-surveyor",
+    "faq-erratum-12-tokens",
+}
+
+
+def mark_erratum(node, e):
+    """A section whose text an erratum changed, so the screen can say so."""
+    ed = EDITION.get(e.get("status") or "", "3.02")
+    node["errata"] = max(node.get("errata") or ed, ed)
+
+
 def apply_errata(by_id, log):
     wiki = json.loads(WIKI.read_text(encoding="utf-8"))
     for e in wiki["errata"]["entries"]:
@@ -659,6 +681,7 @@ def apply_errata(by_id, log):
         if node is None:
             log.append(f"ERRATA no section {e['resolves_to']} for {e['target']}")
             continue
+        missed = False
         for st in e["steps"]:
             instr = st.get("instruction") or ""
             q = strip_quotes(" ".join(st.get("quote") or []))
@@ -666,6 +689,9 @@ def apply_errata(by_id, log):
                 " ".join(para_text(b) for b in node["body"] if b["kind"] in ("p", "ol", "note"))
             )
             if not q:
+                if e["id"] in HAND_CHECKED:
+                    continue
+                missed = True
                 log.append(f"errata  CHECK BY HAND {e['target']}: {instr}")
                 continue
             # "it targets." is inside "it targets.." -- a match that runs straight
@@ -695,10 +721,132 @@ def apply_errata(by_id, log):
                     paras[0]["runs"] = [{"t": q}]
                     done = True
             if done:
-                node.setdefault("errata", []).append(e["id"])
                 log.append(f"errata  APPLIED     {e['target']}: {instr} {q}")
             else:
+                missed = True
                 log.append(f"errata  NOT APPLIED {e['target']}: {instr} {q}")
+        # Printed or written in, the text on screen is the errata's. A step
+        # that did not land leaves the section unmarked: the mark would be a lie.
+        if not missed:
+            mark_erratum(node, e)
+
+
+# The faction errata name a rule, not a section. Stat-card errata (squad
+# sizes, weapons, Large) live in the faction files, not here.
+FACTION_ERRATA = {
+    "faction-erratum-guard": "ucm-guard",
+    "faction-erratum-dronebase": "ucm-drone-base-x-y",
+    "faction-erratum-remote-drone": "ucm-remote-drone",
+    "faction-erratum-razorworm-pods": "scourge-razorworm-pod",
+    "faction-erratum-gate": "shaltari-gate",
+    "faction-erratum-subterranean": "resistance-subterranean",
+    "faction-erratum-bikes": "resistance-bikes-x",
+    "faction-erratum-1-2-exceptions": "exceptions",
+    "faction-erratum-decon-rule": "bioficer-decon",
+}
+
+
+def mark_faction_errata(by_id, log):
+    """rules.json already carries these; each quote is checked against it, and
+    only a rule that says every one of them is marked."""
+    wiki = json.loads(WIKI.read_text(encoding="utf-8"))
+    for e in wiki["errata"]["entries"]:
+        rid = FACTION_ERRATA.get(e["id"])
+        if not rid:
+            continue
+        node = by_id.get(rid)
+        if node is None:
+            log.append(f"ERRATA no rule {rid} for {e['target']}")
+            continue
+        text = norm(" ".join(para_text(b) for b in node["body"] if b["kind"] == "p"))
+        ok = True
+        for st in e["steps"]:
+            q = norm(strip_quotes(" ".join(st.get("quote") or [])))
+            if not q:
+                continue
+            said = q.rstrip(".") in text
+            if said == (st.get("op") == "remove"):
+                ok = False
+                log.append(f"errata  NOT IN RULE {e['target']}: {st.get('instruction')} {q[:60]}…")
+        if ok:
+            mark_erratum(node, e)
+
+
+# ------------------------------------------------------------------- faq
+# Each FAQ answer shown under the rule it clarifies, as well as in the FAQ
+# chapter. Keyed by the FAQ id without its "faq-faq-" prefix; the values are
+# section ids -- the rulebook's numbers, or a faction rule's glossary id.
+FAQ_AT: dict[str, list[str]] = {
+    # Transports
+    "when-one-squad-shares-multiple-identical-transport": ["3.2.4", "6.1.1"],
+    "can-multiple-squads-share-multiple-transports-pro": ["3.2.4.1"],
+    "can-a-squad-embark-into-any-transport-in-the-group": ["7.2", "7.4"],
+    "can-multiple-transports-together-carry-a-single-la": ["3.2.4", "7.2"],
+    "for-determining-if-a-transport-can-be-reassigned-t": ["5.1", "3.2.4.3"],
+    "how-does-infiltrate-work-with-a-squad-deploying-vi": ["10.1.16"],
+    "what-if-the-transport-is-embarked-in-another-trans": ["10.1.16"],
+    "what-if-the-transport-either-the-transport-belong": ["10.1.16", "3.2.4.3"],
+    "what-if-any-non-transport-units-in-the-group-do-no": ["10.1.16"],
+    "how-do-auxiliary-transports-work-when-sharing-one": ["3.2.4.1", "3.2.4.3"],
+    "can-multiple-squads-form-a-group-embarked-in-a-sin": ["3.2.4.1", "3.2.4.3"],
+    # Movement
+    "in-2-2-placing-units-what-is-meant-by-units-over": ["2.2"],
+    "can-a-unit-enter-the-table-via-the-jump-rule": ["10.1.17", "9.4"],
+    "how-does-movement-work-for-squads-of-multiple-unit": ["6.1", "6.1.1"],
+    "in-6-1-moving-the-rules-say-that-units-may-turn-f": ["6.1"],
+    "if-a-squad-cannot-end-their-movement-in-coherency": ["6.1.1"],
+    "how-does-disembarking-during-a-transport-s-movemen": ["7.1"],
+    # Attacking
+    "can-a-group-benefit-from-a-status-token-placed-dur": ["6.4.5", "11.1.22"],
+    "can-you-attack-with-a-weapon-with-assault-attack": ["11.1.4", "10.1.31", "7.2"],
+    "can-a-squad-with-ma-0-weapons-that-have-assault": ["11.1.4", "10.1.31"],
+    "can-a-weapon-with-cc-range-be-used-to-attack-sited": ["8.4", "8.6"],
+    "how-does-strafe-interact-with-targeting-zones-and": ["11.1.33"],
+    "how-does-strafe-work-with-small-arms-weapons-can": ["11.1.33", "6.4.2"],
+    "and-can-small-arms-weapons-with-pen-x-or-destroye": ["6.4.2", "11.1.27", "11.1.10"],
+    "can-small-arms-weapons-place-status-tokens-with-re": ["6.4.2", "6.4.5"],
+    "if-drive-by-is-used-what-is-the-position-of-the-o": ["11.1.13"],
+    "is-an-aa-s-or-aa-r-weapon-an-aa-weapon-for-the-pu": ["11.1.1.1", "11.1.1.2"],
+    "how-do-articulated-and-large-interact": ["11.1.3", "10.1.18"],
+    "do-weapons-with-devastator-inflict-additional-dama": ["11.1.11"],
+    # Reaction Attacks
+    "how-do-multiple-reaction-attacks-work": ["6.4.1.1"],
+    "how-do-reaction-attacks-and-jump-interact-can-an": ["6.4.1.1", "10.1.17", "11.1.26"],
+    "how-do-reaction-attacks-and-fast-movers-flying-hig": ["6.4.1.1", "10.1.12.1"],
+    "how-does-strafe-and-reaction-attack-work-can-i-wa": ["11.1.33", "6.4.1.1"],
+    # CQBs
+    "can-a-single-squad-suffer-cumulative-1df-penaltie": ["10.1.32"],
+    "in-what-order-are-strong-guard-and-first-strike-r": ["8.7", "10.1.32", "10.1.14", "ucm-guard"],
+    "do-concussed-infantry-squads-with-first-strike-x-r": ["10.1.14", "11.1.7"],
+    "8-7-close-quarter-battle-says-that-infantry-may-vo": ["8.7", "2.6.1"],
+    "if-an-infantry-squad-starts-and-ends-their-activat": ["8.7", "6.4.5"],
+    # Miscellaneous
+    "what-comes-first-end-of-the-end-phase-or-end-o": ["4.3", "4.3.2"],
+    "is-the-2-to-find-an-object-via-mapping-tokens-mod": ["10.1.33", "9.7.1"],
+    "if-a-living-weapons-squad-forms-one-squad-with-ano": ["10.1.20"],
+    # Faction-Specific
+    "do-units-with-bikes-count-as-vehicles-or-infantry": ["resistance-bikes-x", "bioficer-decon"],
+    "aux-gates-cannot-be-targeted-by-command-cards-that": ["shaltari-aux-gate", "5.2.1"],
+}
+
+
+def place_faq(by_id, log):
+    wiki = json.loads(WIKI.read_text(encoding="utf-8"))
+    faq = (wiki.get("errata") or {}).get("faq") or []
+    ids = {f["id"].removeprefix("faq-faq-") for f in faq}
+    for key in sorted(set(FAQ_AT) - ids):
+        raise SystemExit(f"FAQ_AT names an answer the FAQ does not have: {key}")
+    for f in faq:
+        key = f["id"].removeprefix("faq-faq-")
+        if key not in FAQ_AT:
+            raise SystemExit(f"FAQ answer not placed under any rule: {key}")
+        for sid in FAQ_AT[key]:
+            node = by_id.get(sid)
+            if node is None:
+                raise SystemExit(f"FAQ {key} names no section {sid}")
+            node.setdefault("faq", []).append(f["id"])
+    rules = {s for v in FAQ_AT.values() for s in v}
+    log.append(f"faq     {len(faq)} answers placed under {len(rules)} rules")
 
 
 # ---------------------------------------------------------------- tokens
@@ -983,12 +1131,19 @@ def main() -> None:
     if args.dump:
         dump(tree, args.dump)
         print(f"dumped {args.dump}")
+    chapters = tree + glossary_chapters()
+    by_id = {n["id"]: n for n in walk(chapters)}
+    seen = len(log)
+    mark_faction_errata(by_id, log)
+    place_faq(by_id, log)
+    for line in log[seen:]:
+        print(line)
     out = {
         "game": "Dropzone Commander",
         "edition": "3.02",
         "source": PDF.name,
         "generator": "tools/dzc/build_rules_book.py",
-        "chapters": tree + glossary_chapters(),
+        "chapters": chapters,
     }
     OUT.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     print(
