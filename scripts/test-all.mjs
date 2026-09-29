@@ -24,6 +24,7 @@ const SUITES = [
   ['army construction', 'test-dzc-army.mjs'],
   ['share links', 'test-dzc-share.mjs'],
   ['fleet sync', 'test-fleet-sync.mjs'],
+  ['discord sync', 'test-fleet-sync-discord.mjs'],
   ['house rules', 'test-house-rules.mjs'],
   ['render', 'test-dzc-render.mjs'],
   ['shell', 'test-shell.mjs']

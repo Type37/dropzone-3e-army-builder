@@ -67,6 +67,13 @@
   const TOKEN_KEY   = 'dzc_sync_token';
   const DELETED_KEY = 'dzc_sync_deleted';  // { armyId: deletedAt }
   const LASTSYNC_KEY = 'dzc_sync_last';
+  // A Sync Token this device used before it signed in with Discord. It keeps
+  // being synced alongside the Discord copy, so devices still on the token and
+  // devices on Discord share one list instead of drifting apart. (Dropfleet's
+  // fleet-sync.js, LINKED_KEY.)
+  const LINKED_KEY  = 'dzc_sync_linked';
+  const DISCORD_KEY = 'dzc_sync_discord';     // { name, avatar }
+  const DISCORD_STATE = 'dzc_discord_state';  // nonce for the login in flight
 
   /* One-time move off the shared Dropfleet keys, for anyone who turned sync on
    * before the two apps were separated. The phrase carries over -- it is the
@@ -78,7 +85,13 @@
     if (!localStorage.getItem(MIGRATED_KEY)) {
       localStorage.setItem(MIGRATED_KEY, '1');
       const old = localStorage.getItem('dfc_sync_token');
-      if (old && !localStorage.getItem(TOKEN_KEY)) localStorage.setItem(TOKEN_KEY, old);
+      if (old && !localStorage.getItem(TOKEN_KEY)) {
+        localStorage.setItem(TOKEN_KEY, old);
+        // A Dropfleet Discord login is a key, not six words: bring who it
+        // belongs to with it, or the panel shows a 64-letter "token".
+        const who = localStorage.getItem('dfc_sync_discord');
+        if (old.indexOf('discord-') === 0 && who) localStorage.setItem(DISCORD_KEY, who);
+      }
     }
   } catch (e) { /* no storage; nothing to migrate */ }
 
@@ -160,6 +173,10 @@
   }
   function token()   { try { return localStorage.getItem(TOKEN_KEY) || null; } catch (e) { return null; } }
   function enabled() { return !!token(); }
+  function linkedToken() {
+    if (!token()) return null;
+    try { return localStorage.getItem(LINKED_KEY) || null; } catch (e) { return null; }
+  }
   function lastSync() {
     const v = parseInt(localStorage.getItem(LASTSYNC_KEY) || '0', 10);
     return v > 0 ? v : null;
@@ -371,16 +388,33 @@
 
   /* Adopt a token: pull, merge into local, then push the merged result back so
    * every device converges on the same list. */
-  async function join(raw) {
+  async function join(raw, linked) {
     const tok = normaliseToken(raw);
     if (!looksLikeToken(tok)) throw new Error('That does not look like a Sync Token.');
     const remote = (await remoteGet(tok)) || EMPTY;
     const before = readLocal().length;
-    const merged = mergeWith(remote);
+    let merged = mergeWith(remote);
+    // Discord sign-in from a device that had a token: pull that token's copy in
+    // too, so armies saved from other token devices since the last sync are not
+    // left behind, and keep it linked from now on.
+    const link = linked && linked !== tok ? linked : null;
+    let linkedRemote = null;
+    if (link) {
+      linkedRemote = await remoteGet(link);
+      if (linkedRemote) {
+        writeLocal(merged.fleets);
+        writeDeleted(merged.deleted);
+        merged = mergeWith(linkedRemote);
+      }
+    }
     writeLocal(merged.fleets);
     writeDeleted(merged.deleted);
     localStorage.setItem(TOKEN_KEY, tok);
+    localStorage.removeItem(DISCORD_KEY);   // a phrase joined by hand is not a Discord login
+    if (link && linkedRemote) localStorage.setItem(LINKED_KEY, link);
+    else localStorage.removeItem(LINKED_KEY);
     await remotePut(tok, merged);
+    if (link && linkedRemote) await remotePut(link, merged);
     localStorage.setItem(LASTSYNC_KEY, String(Date.now()));
     return {
       token: tok,
@@ -407,10 +441,27 @@
       try {
         const remote = (await remoteGet(tok)) || EMPTY;
         const beforeIds = readLocal().map(f => f && f.id).join(',');
-        const merged = mergeWith(remote);
+        let merged = mergeWith(remote);
+        // The linked token's copy is read and written with the main one, so a
+        // device still on the token sees what this one saved and vice versa. If
+        // that copy has been deleted, the link goes: recreating it would undo
+        // somebody's "Delete online copy".
+        let link = linkedToken();
+        if (link) {
+          const lr = await remoteGet(link);
+          if (lr) {
+            writeLocal(merged.fleets);
+            writeDeleted(merged.deleted);
+            merged = mergeWith(lr);
+          } else {
+            localStorage.removeItem(LINKED_KEY);
+            link = null;
+          }
+        }
         writeLocal(merged.fleets);
         writeDeleted(merged.deleted);
         await remotePut(tok, merged);
+        if (link) await remotePut(link, merged);
         localStorage.setItem(LASTSYNC_KEY, String(Date.now()));
         const changed = merged.fleets.map(f => f && f.id).join(',') !== beforeIds;
         if (changed && typeof api.onChange === 'function') api.onChange(merged.fleets);
@@ -448,6 +499,8 @@
    * the user can rejoin later or keep using it elsewhere. Local fleets are kept. */
   function stop() {
     localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(DISCORD_KEY);
+    localStorage.removeItem(LINKED_KEY);
     localStorage.removeItem(LASTSYNC_KEY);
     clearTimeout(timer);
   }
@@ -461,8 +514,84 @@
     const tok = token();
     if (!tok) return false;
     await remoteDelete(tok);
+    // Both copies: leaving the linked one would hand every army straight back.
+    const link = linkedToken();
+    if (link) await remoteDelete(link);
     stop();
     return true;
+  }
+
+  /* ── Discord sign-in ─────────────────────────────────────────
+   * Ported from the Dropfleet builder's fleet-sync.js, and it uses the same
+   * Cloudflare Worker (Dropfleet repo, worker/discord-sync) and the same
+   * Discord application. Discord's login needs a server holding the client
+   * secret, so the Worker does the Discord side and sends the browser back
+   * here with a sync key in the URL fragment. That key is a token like any
+   * other: it names this user's document, so join() and every sync after it
+   * run unchanged. docId() puts "dzc-" in front of it, so the same Discord
+   * account has one document per game and the two lists never mix.
+   *
+   * The key is derived from the Discord id, so signing in on any device lands
+   * on the same document. Only the Worker can mint it. */
+  const DISCORD_WORKER = 'https://dfc-discord-sync.discord-sync.workers.dev';
+
+  function discordConfigured() { return !!DISCORD_WORKER; }
+  function discordUser() {
+    if (!token()) return null;
+    try { return JSON.parse(localStorage.getItem(DISCORD_KEY) || 'null'); } catch (e) { return null; }
+  }
+  function discordSignIn() {
+    const buf = new Uint8Array(18);
+    crypto.getRandomValues(buf);
+    const nonce = Array.from(buf, b => b.toString(16).padStart(2, '0')).join('');
+    try { localStorage.setItem(DISCORD_STATE, nonce); } catch (e) {}
+    const ret = location.href.split('#')[0];
+    location.href = DISCORD_WORKER + '/login?state=' + nonce + '&return=' + encodeURIComponent(ret);
+  }
+  function discordSignOut() {
+    localStorage.removeItem(DISCORD_KEY);
+    stop();
+  }
+  /* Captured at load, before the shell routes: it routes on the URL hash and
+   * would otherwise read the sync key as a page to open. Wiped from the URL
+   * at once so a reload or a shared link never carries the key. */
+  let discordReturn = null;
+  try {
+    if ((location.hash || '').indexOf('dsync') !== -1) {
+      discordReturn = new URLSearchParams(location.hash.slice(1));
+      history.replaceState(null, '', location.pathname + location.search);
+    }
+  } catch (e) { /* non-browser host */ }
+
+  /* Called once at app start. Null when this load is not a return from
+   * Discord, otherwise a promise of join()'s result (or a rejection saying
+   * why). The nonce check means only a login this tab started is accepted,
+   * so nobody can sign you into their account with a crafted link. */
+  function discordFinish() {
+    const p = discordReturn;
+    if (!p) return null;
+    discordReturn = null;
+    let expected = null;
+    try { expected = localStorage.getItem(DISCORD_STATE); localStorage.removeItem(DISCORD_STATE); } catch (e) {}
+    if (!expected || p.get('ds') !== expected) {
+      return Promise.reject(new Error('Discord sign-in expired. Try again.'));
+    }
+    if (p.get('dsync_error')) {
+      const why = p.get('dsync_error');
+      return Promise.reject(new Error(why === 'access_denied' || why === 'cancelled'
+        ? 'Discord sign-in was cancelled.' : 'Discord sign-in failed. Try again.'));
+    }
+    const key = p.get('dsync');
+    if (!key || !looksLikeToken(key)) return Promise.reject(new Error('Discord sign-in failed. Try again.'));
+    const who = { name: p.get('dn') || 'Discord', avatar: p.get('da') || '' };
+    // A device that was on a Sync Token keeps it linked, see LINKED_KEY. A
+    // token that is itself a Discord key (another account) is not carried over.
+    const prev = token();
+    const keep = prev && prev.indexOf('discord-') !== 0 ? prev : linkedToken();
+    return join(key, keep).then(r => {
+      localStorage.setItem(DISCORD_KEY, JSON.stringify(who));
+      return Object.assign({ name: who.name }, r);
+    });
   }
 
   /* ── Staying in step ─────────────────────────────────────────
@@ -509,7 +638,8 @@
   }
 
   const api = {
-    supported, enabled, token, lastSync, setStorageKey,
+    supported, enabled, token, linkedToken, lastSync, setStorageKey,
+    discordConfigured, discordUser, discordSignIn, discordSignOut, discordFinish,
     randomToken, normaliseToken, looksLikeToken,
     preview, join, start, sync, notifyChanged, maybeAutoSync, stop, deleteRemote, recordDeleted,
     stampChanged,

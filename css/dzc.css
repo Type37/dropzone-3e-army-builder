@@ -3697,3 +3697,35 @@ a.tool-card { display: block; text-decoration: none; color: inherit; }
   /* Settings: the theme pair and the picker's Clear. */
   .dzc-seg button, .dzc-pick-bar button { min-height: 44px; }
 }
+
+/* ── Discord sign-in, from the Dropfleet builder (app.css) ─────────────── */
+.sync-account-row { display: flex; align-items: center; gap: var(--sp-sm, 8px); margin-bottom: var(--sp-sm, 8px); }
+.sync-avatar { width: 36px; height: 36px; border-radius: 50%; flex: none; }
+.sync-account-who { flex: 1; min-width: 0; }
+.sync-account-name { font-weight: 700; overflow-wrap: anywhere; }
+.sync-account-mail { font-size: 12px; color: var(--ink-muted); }
+/* Discord's own blurple is 4.4:1 against white text, a hair under AA, so the
+   button uses Discord's darker hover shade (6:1) at rest and goes darker still. */
+.sync-discord-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-sm);
+  width: 100%;
+  max-width: 320px;
+  min-height: 44px;
+  margin: var(--sp-sm) auto 0;
+  padding: 0 var(--sp-md);
+  border: 0;
+  border-radius: 6px;
+  background: #4752c4;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.sync-discord-btn:hover { background: #3c45a5; }
+.sync-discord-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.sync-discord-btn svg { flex: none; }
+.sync-or { display: flex; align-items: center; gap: 10px; margin: 14px 0; color: var(--ink-muted); font-size: 12px; }
+.sync-or::before, .sync-or::after { content: ''; flex: 1; border-top: 1px solid var(--stroke); }
