@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 504;
+  const BUILD = 505;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -617,6 +617,10 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-09-29', title: 'One inch mark, and what Command Points buy', items: [
+      'Behemoth cards print a straight inch mark and every other card a curly one, so the app showed both side by side. It shows one now.',
+      'In Play, Command Points opens Abilities (5.1) in Interactive Rules: what the points buy.',
+    ] },
     { date: '2026-09-29', title: 'Play mode counts Behemoth cargo and Collector RM', items: [
       'Pass tokens count a Behemoth’s cargo as the Group of its own it is, as the builder does.',
       'Collector Units (Silence, Data Strike, Device) get an RM counter in Play, up to their Collector number.',

@@ -1635,6 +1635,27 @@ ERRATA_SQUAD = {
 }
 
 
+INCH_RE = re.compile(r'(\d)"')
+
+
+def inches(unit) -> None:
+    """One inch mark. The six faction PDFs print the curly one (6”) and the
+    Behemoth PDF the straight one (5"), so a Behemoth's Move read 5" beside a
+    tank's 6” on the same screen. Every field a value with inches reaches is
+    set to the curly mark; nothing else about the text changes."""
+    def fix(v):
+        return INCH_RE.sub(lambda m: m.group(1) + "\u201d", v) if isinstance(v, str) else v
+    unit["special"] = fix(unit.get("special"))
+    unit["stats"] = {k: fix(v) for k, v in (unit.get("stats") or {}).items()}
+    for sv in unit.get("specialVariants") or []:
+        sv["rule"] = fix(sv.get("rule"))
+    for g in unit.get("gear") or []:
+        g["name"] = fix(g.get("name"))
+    for w in unit.get("weapons") or []:
+        for k in ("ma", "r", "special"):
+            w[k] = fix(w.get(k))
+
+
 def apply_errata(unit, faction_id) -> list[str]:
     """Bring one Unit up to the current errata. Returns what it changed."""
     done = []
@@ -2142,6 +2163,7 @@ def scan(pdf_path, faction_id, faction_name,
     errata: list[str] = []
     for u in units:
         errata.extend(apply_errata(u, faction_id))
+        inches(u)
     if errata:
         print(f"    errata ({ERRATA_SOURCE}):")
         for line in errata:
@@ -2261,6 +2283,7 @@ def scan_behemoths(args) -> None:
     placed = classify_faction(units, args.out)
     for u in units:
         u["faction"] = placed[u["id"]]
+        inches(u)
         # The Venus Drone is "included with its Behemoth" and never chosen
         # (2.1.1); everything else is a normal Heavy choice now that it knows
         # whose army it belongs in.

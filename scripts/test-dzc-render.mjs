@@ -842,7 +842,7 @@ console.log('\nevery screen renders');
     await P.open(ma.id);
 
     const cap = () => (els['view-play'].innerHTML
-      .match(/Command Points<\/span>[\s\S]*?<i data-cp-max[^>]*>\/(\d+)<\/i>/) || [])[1];
+      .match(/Command Points(?:<\/a>)?<\/span>[\s\S]*?<i data-cp-max[^>]*>\/(\d+)<\/i>/) || [])[1];
     // Generated, and still in hand: the card shows both, the way the CP card
     // shows what you hold over what you may hold.
     const passCard = () => els['view-play'].innerHTML
@@ -851,7 +851,7 @@ console.log('\nevery screen renders');
     const passLeft = () => passCard()[1];
 
     const held = () => (els['view-play'].innerHTML
-      .match(/Command Points<\/span>[\s\S]*?<b data-cp[^>]*>(\d+)<\/b>/) || [])[1];
+      .match(/Command Points(?:<\/a>)?<\/span>[\s\S]*?<b data-cp[^>]*>(\d+)<\/b>/) || [])[1];
 
     eq(cap(), '0', 'Round 1 caps CP at nothing — every Commander counts as Level 0 (4.1.1)');
     P.round(1);

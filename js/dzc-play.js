@@ -433,7 +433,9 @@
              fold. Name, number and controls now sit on one line and only wrap
              below about 360px. -->
         <div class="dzc-pcard dzc-pcard--row" data-cp-card title="${esc(val.cpWhy(army))}">
-          <span class="dzc-pcard-k">Command Points</span>
+          <!-- What CP buys is 5.1 Abilities, and it was nowhere in Play. The
+               name opens it; Back comes home to the game, which is saved. -->
+          <span class="dzc-pcard-k"><a class="dzc-rulelink" href="#rules/5.1">Command Points</a></span>
           <span class="dzc-pcard-v"><b data-cp>${val.cp()}</b><i data-cp-max>${val.cpMax(army)}</i></span>
           <div class="dzc-pcard-act">
             <button type="button" class="dzc-press" data-step="cp-down" aria-label="One fewer Command Point"
