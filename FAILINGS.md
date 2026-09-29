@@ -246,6 +246,69 @@ than no list.
 
 ---
 
+## Session, 2026-09-28/29
+
+### 14. Downloaded the new Bioficer cards and never scanned them
+
+**What happened.** The 25 September Bioficer stat cards were fetched into
+`rules/`, the scanner was patched for them, and the session ended there. The
+app kept serving the 11 September cards: thirteen new Units, a reprinted
+Epsilon and a reprinted Hulk Blades were missing for a day, until Jet asked
+whether we were up to date.
+
+**What should have happened.** A download is not a delivery. Fetching a
+source means running `rebuild.py` and shipping the result in the same turn.
+`scripts/test-dzc-sources.mjs` now fails whenever a data file was scanned
+from a PDF `rules/` no longer holds.
+
+**Pattern:** deciding for myself what "enough" means.
+
+### 15. Seven audits that checked the data against itself
+
+**What happened.** Every audit but one asked whether the scan was
+consistent with itself. None compared a card image with the data. The first
+time anyone did — seven agents, 205 cards — it found the Type 7's "OR" row
+read into a range cell ("OR 9”"), capacity that only the Porphyrion and the
+Lion have given to both variants, the Explorator's "12, 6 / 8" read as three
+alternatives, the gold Advanced frame thrown away, and a Shieldspire
+override rewriting a misprint TTCombat had already fixed.
+
+**What should have happened.** The scanner should fail on what it does not
+understand instead of dropping it, and a new card set gets looked at against
+its images, not only audited.
+
+**Pattern:** verifying by proxy.
+
+### 16. "Resolves" counted as "resolves correctly"
+
+**What happened.** The glossary test passed 2062 of 2062 keywords while
+every Behemoth's "LT 9”" and "Linked 1" opened Limited, because the first
+template regex to match won and "LX" matches anything starting with L. A
+chip that opens the wrong text is not a dead chip, so the test could not see
+it.
+
+**What should have happened.** Test the answer, not that there is one.
+`scripts/fixtures/rule-resolution.json` now holds every printed keyword and
+the rule it opens; any change fails until it is reviewed.
+
+**Pattern:** verifying by proxy.
+
+### 17. Built list-building from the rulebook and never read the FAQ into it
+
+**What happened.** The 3.02 FAQ settles how Auxiliary Transports count
+toward the four Squads sharing a Transport, that they may not be split
+across two Ravens, and that only the top Transport is shared. The builder
+enforced none of it: a Poseidon took six Squads without a word. The errata
+PDF had been in `rules/` since 2026-08-29, and the UCM faction-rule errata
+on the same page as the unit errata that WERE applied was skipped.
+
+**What should have happened.** When a source document arrives, every line
+of it is either applied or listed as not applied. Half a page is not done.
+
+**Pattern:** deciding for myself what "enough" means.
+
+---
+
 ## Carried in from before this session
 
 Recorded in the handoff at the time, and still the root cause of most rework:

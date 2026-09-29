@@ -20,6 +20,7 @@ const ROOT = path.dirname(HERE);
 
 const SUITES = [
   ['data layer', 'test-dzc-data.mjs'],
+  ['sources', 'test-dzc-sources.mjs'],
   ['army construction', 'test-dzc-army.mjs'],
   ['share links', 'test-dzc-share.mjs'],
   ['fleet sync', 'test-fleet-sync.mjs'],
