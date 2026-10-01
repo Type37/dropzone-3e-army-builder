@@ -31,17 +31,9 @@ window.OfflineSync = (function () {
   // flaky tournament hotspot doesn't drop half the requests at once.
   const PARALLEL = 6;
 
-  // Manifest URLs are repo-root-relative ('./data/…'), so they resolve against
-  // the origin root and not against whichever page is asking.
-  //
-  // The /mobile/ arm is DEAD HERE and inherited: Dropfleet ships a sub-app one
-  // directory down, this app does not. It is left rather than deleted because
-  // the same line is in sw.js and the pair should come out together, tested,
-  // rather than half in a docs pass. Listed in NEXT.md.
-  const ROOT = new URL(
-    location.pathname.includes('/mobile/') ? '../' : './',
-    location.href
-  );
+  // Manifest URLs are repo-root-relative ('./data/…'). Only index.html loads
+  // this file, so the page's own directory is the root.
+  const ROOT = new URL('./', location.href);
   const abs = (u) => new URL(u.replace(/^\.\//, ''), ROOT).href;
 
   const supported = 'caches' in window;
