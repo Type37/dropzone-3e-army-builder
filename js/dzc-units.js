@@ -376,7 +376,7 @@
       </section>`;
     }).join('');
 
-    root.innerHTML = `
+    window.DZC.keepSearchFocus(root, () => { root.innerHTML = `
       <div class="dzc-wrap" style="${window.DZC.accentStyle(acc)}">
         <div class="dzc-tabs">${tabs}</div>
         <div class="dzc-toolbar">
@@ -393,7 +393,7 @@
              search box you never touched. -->
         ${groups || `<p class="dzc-empty">${q ? `Nothing matches “${esc(state.search)}”.`
           : 'Nothing in this category.'}</p>`}
-      </div>`;
+      </div>`; });
   }
 
   /* `faction` is optional: the reference browses one at a time, but the army

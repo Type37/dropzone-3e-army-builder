@@ -575,6 +575,21 @@
     return searchBlob(unit, faction).indexOf(q) !== -1;
   }
 
+  /* The reference and the collection redraw the whole view by innerHTML on
+   * every keystroke, search box included, so the box being typed in is thrown
+   * away after one letter. Put focus and the caret back in its replacement. */
+  function keepSearchFocus(root, paint) {
+    const a = document.activeElement;
+    const was = a && root.contains(a) && a.classList.contains('dzc-search')
+      ? [a.selectionStart, a.selectionEnd] : null;
+    paint();
+    if (!was) return;
+    const box = root.querySelector('.dzc-search');
+    if (!box) return;
+    box.focus({ preventScroll: true });
+    try { box.setSelectionRange(was[0], was[1]); } catch (e) {}
+  }
+
   // --------------------------------------------------------- transport nesting
 
   /* Can `carrier` carry `passenger`, and how much room does it take?
@@ -914,7 +929,7 @@
     get rules() { return state.rules; },
     faction: id => state.factions[id],
     unit: (fid, uid) => (state.factions[fid] || { byId: {} }).byId[uid],
-    rule, ruleText, ruleLabel, linkKeywords, splitSpecial, matches, squadPrice,
+    rule, ruleText, ruleLabel, linkKeywords, splitSpecial, matches, keepSearchFocus, squadPrice,
     damageRoll, damageTable, energyKind,
     capacityFor, fillsOf, fitsIn, canCarry, carrierWithUpgrades, loadCheck, isFull, fillFloor, unitWithOptions,
     gameSizeFor, maxGroups, maxGroupCost, rareLimit, commanderLevels,

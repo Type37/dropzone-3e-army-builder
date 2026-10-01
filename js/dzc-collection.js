@@ -97,7 +97,7 @@
     const totals = f.units.reduce((n, u) => n + count(state.faction, u.id), 0);
     const kinds = f.units.filter(u => count(state.faction, u.id) > 0).length;
 
-    root.innerHTML = `<div class="dzc-wrap" style="${window.DZC.accentStyle(acc)}">
+    window.DZC.keepSearchFocus(root, () => { root.innerHTML = `<div class="dzc-wrap" style="${window.DZC.accentStyle(acc)}">
       <div class="dzc-tabs">${FACTIONS.map(x =>
         `<button type="button" class="dzc-tab${x.id === state.faction ? ' is-active' : ''}"
           style="${window.DZC.accentStyle(x.accent)}" onclick="DZCCollection.setFaction('${x.id}')">${esc(x.name)}</button>`).join('')}</div>
@@ -151,7 +151,7 @@
         : 'Nothing owned in this faction yet.'}</p>`}</div>
     </div>
       </div>
-    </div>`;
+    </div>`; });
   }
 
   window.DZCCollection = {
