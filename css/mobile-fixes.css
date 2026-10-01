@@ -4,6 +4,14 @@
    corrections easy to review and revert.
    ============================================================ */
 
+/* Fast taps must count, not double-tap zoom the page. Every element, not
+   only buttons: a second tap that misses a stepper by a few pixels lands
+   on the row behind it. Samsung Internet, Firefox and Chrome with "Force
+   enable zoom" all double-tap zoom a device-width page. Outside the media
+   query because tablets get it too. Pinch zoom stays. Zero specificity, so
+   a drag handle's own touch-action still wins. */
+html, * { touch-action: manipulation; }
+
 @media (max-width: 768px) {
   /* Ship-select / any modal: the mobile app.css override set the overlay to
      `overflow:visible; align-items:flex-start` while the panel kept
