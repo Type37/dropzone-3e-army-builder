@@ -518,7 +518,7 @@
   // Same section and data hooks as the full Group, so sync() needs no branch.
   function groupTextHtml(army, g) {
     const body = window.DZCBuilder.groupRoster(army, g).map(r =>
-      `<div class="dzc-tx-sq" data-squad="${esc(r.squad.id)}" style="--depth:${r.depth}">${
+      `<div data-squad="${esc(r.squad.id)}" style="--depth:${r.depth}">${
         r.lines.map((l, i) => `<div class="dzc-tx-line"><span><b>${l.n}×</b> ${esc(l.name)}${
           i === 0 && r.squad.commander ? ` <span class="dzc-cmdr-tag">${
             window.DZCIcon('military_tech', { size: 11 })}L${r.squad.commander.level}</span>` : ''}</span>${
