@@ -391,6 +391,15 @@
     render(army);
   }
 
+  /* Groups as text cards: what is in each and how many are still standing,
+   * with the activation box, and nothing else. Asked for to see a whole
+   * army's activations at once (feedback, build 517); the full view is a
+   * screen per two Groups on a phone. Per viewer, not per army: it is how
+   * you like to read this screen, not a fact about the list. */
+  const VIEW_KEY = 'dzc_play_view';
+  let cards = false;
+  try { cards = localStorage.getItem(VIEW_KEY) === 'cards'; } catch (e) { /* storage refused */ }
+
   function render(army) {
     const root = document.getElementById('view-play');
 
@@ -411,7 +420,10 @@
         <div class="dzc-play-vp">
           ${counter('My VP', 'myVP')}
           ${counter('Opp VP', 'oppVP')}
-
+          <button type="button" class="dzc-press dzc-play-view" onclick="DZCPlay.view()"
+                  aria-pressed="${cards}" aria-label="${cards ? 'Show Groups in full' : 'Show Groups as cards'}"
+                  title="${cards ? 'Show Groups in full' : 'Show Groups as cards'}"
+            >${window.DZCIcon(cards ? 'list_alt' : 'grid_view', { size: 16 })}</button>
         </div>
       </header>
 
@@ -478,8 +490,8 @@
         </div>
       </div>
 
-      <div class="dzc-play-main">
-        ${army.groups.map(g => groupHtml(army, g)).join('')}
+      <div class="dzc-play-main${cards ? ' is-cards' : ''}">
+        ${army.groups.map(g => (cards ? groupCardHtml : groupHtml)(army, g)).join('')}
       </div>
       </div>
     </div>`;
@@ -505,6 +517,24 @@
   }
 
   function groupHtml(army, g) {
+    return groupShell(army, g, '', g.squads.map(s => squadHtml(army, s)).join(''));
+  }
+
+  /* The same Group, as the text card. Same section, same activation box and
+   * the same data hooks, so sync() keeps it current without knowing which
+   * view is up: anything the card does not draw, it simply does not find. */
+  function groupCardHtml(army, g) {
+    const body = window.DZCBuilder.groupRoster(army, g).map(r =>
+      `<div class="dzc-gc-sq" data-squad="${esc(r.squad.id)}" style="--depth:${r.depth}">${
+        r.lines.map((l, i) => `<div class="dzc-gc-line"><span><b>${l.n}×</b> ${esc(l.name)}${
+          i === 0 && r.squad.commander ? ` <span class="dzc-cmdr-tag">${
+            window.DZCIcon('military_tech', { size: 11 })}L${r.squad.commander.level}</span>` : ''}</span>${
+          i === 0 ? `<span class="dzc-play-alive" data-alive>${val.alive(r.squad)}</span>` : ''}</div>`).join('')
+      }</div>`).join('');
+    return groupShell(army, g, ' dzc-play-gcard', body);
+  }
+
+  function groupShell(army, g, cls, body) {
     const live = g.squads.filter(s => aliveIn(s) > 0);
     const canAct = activeGroups(army).some(x => x.id === g.id);
     /* Three different things stop a Group activating, and only one of them is
@@ -523,7 +553,7 @@
       : orphaned
         ? 'Cannot be picked for a normal activation (4.2.1); activates in the Orphaned Transport step (4.2.2)'
         : g.squads.length ? 'Nothing left in this Group' : 'No Squads in this Group';
-    return `<section class="dzc-play-group${val.done(army, g) ? ' is-done' : ''}${
+    return `<section class="dzc-play-group${cls}${val.done(army, g) ? ' is-done' : ''}${
       live.length ? '' : ' is-dead'}" data-group="${esc(g.id)}">
       <header>
         <label class="dzc-act">
@@ -537,7 +567,7 @@
         </label>
         ${orphaned ? `<span class="dzc-play-tag" title="${esc(why)}">${window.DZCIcon('local_shipping', { size: 12 })} orphaned transports</span>` : ''}
       </header>
-      ${g.squads.map(s => squadHtml(army, s)).join('')}
+      ${body}
     </section>`;
   }
 
@@ -1068,6 +1098,14 @@
        * like 'concussed!' rising." */
       float(el, at === -1 ? st + '!' : st + ' off', at === -1 ? 'bad' : 'good');
       commit();
+    },
+    view: () => {
+      cards = !cards;
+      try { localStorage.setItem(VIEW_KEY, cards ? 'cards' : 'full'); } catch (e) { /* storage refused */ }
+      render(army());
+      // The button was redrawn under the finger; keep focus on its successor.
+      const b = document.querySelector && document.querySelector('.dzc-play-view');
+      if (b && b.focus) b.focus();
     },
     reset: () => {
       if (!confirm('Reset this game? Damage, VP and Round all go back to the start.')) return;

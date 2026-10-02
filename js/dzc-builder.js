@@ -3269,6 +3269,54 @@
   // for them. The army sheet reads the same object off its own closure.
   const sheetNow = () => (sheetSrc || armySheetHtml)(printOpts);
 
+  /* A Group as a few lines of text: what is in it, how many, and who rides
+   * with whom. Asked for by a player who tracks activations off cut-out
+   * cards beside the table (feedback, build 517): "Group 2 - 7 Hunter Tanks".
+   *
+   * One line per Variant actually fielded, because the model on the table
+   * is the Variant. Carried Squads follow their carrier, one step in, the
+   * same tree the full sheet draws. Play Mode reads this too, so the card on
+   * paper and the card on screen cannot list two different things. */
+  function groupRoster(a, g) {
+    const out = [];
+    const walk = (s, depth) => {
+      const u = window.DZCArmy.unitOf(a, s);
+      if (!u) return;
+      const mix = new Map();
+      s.models.forEach(m => {
+        const k = (u.variants || []).length && m.variant ? m.variant : u.name;
+        mix.set(k, (mix.get(k) || 0) + 1);
+      });
+      out.push({ squad: s, unit: u, depth,
+        lines: [...mix].map(([name, n]) => ({ name, n })),
+        commander: s.commander ? commanderTagName(a, s) : '' });
+      g.squads.filter(x => x.carriedBy === s.id).forEach(r => walk(r, depth + 1));
+    };
+    g.squads.filter(s => !s.carriedBy).forEach(s => walk(s, 0));
+    return out;
+  }
+
+  /* A Group that gets one activation a Round, so its card gets a box per
+   * Round to tick. Not a Group of only Transports (4.2.1, it goes in the
+   * Orphaned Transport step) and not a Behemoth, which activates once per
+   * Power token (1.3). */
+  function tickableGroup(a, g) {
+    const us = g.squads.map(s => window.DZCArmy.unitOf(a, s)).filter(Boolean);
+    return us.some(u => u.category !== 'Transport') && !us.some(u => u.type === 'Behemoth');
+  }
+
+  function groupCardsHtml(a) {
+    return `<div class="pr-gcards" style="${window.DZC.accentStyle(accentOf(a.faction))}">${
+      a.groups.map(g => `<section class="pr-gcard">
+        <h2 class="pr-gc-name">${esc(window.DZCArmy.groupName(a, g))}</h2>
+        ${groupRoster(a, g).map(r => r.lines.map((l, i) => `<div class="pr-gc-line" style="--depth:${r.depth}">
+          <b>${l.n}×</b> ${esc(l.name)}${i === 0 && r.commander
+            ? ` <span class="pr-cmdr">${esc(r.commander)}</span>` : ''}</div>`).join('')).join('')}
+        ${tickableGroup(a, g) ? `<div class="pr-gc-rounds">${
+          [1, 2, 3, 4, 5, 6].map(n => `<span>${n}</span>`).join('')}</div>` : ''}
+      </section>`).join('')}</div>`;
+  }
+
   function armySheetHtml() {
     const a = current;
     if (!a) return '';
@@ -3531,7 +3579,7 @@
      * the app is drawn in it. Set as a variable on the root so headings, the
      * carry line and the category chips all take it from one place -- and so
      * the ink-saver option can override it in one place too. */
-    return `
+    const head = `
       <div class="pr-head" style="${window.DZC.accentStyle(accentOf(a.faction))}">
         <h1 class="pr-title">${esc(a.name)}</h1>
         <p class="pr-sub"><span>${esc((FACTIONS.find(f => f.id === a.faction) || {}).name || a.faction)}</span>
@@ -3542,7 +3590,9 @@
              sheet you hand across the table, and "the UCM half of the starter
              set" is the sort of thing you write there to say what the list IS. -->
         ${a.description ? `<p class="pr-desc">${esc(a.description)}</p>` : ''}
-      </div>
+      </div>`;
+    if (printOpts.cards) return head + groupCardsHtml(a);
+    return `${head}
       ${commanderBlock}
       ${v.errors.length ? `<p class="pr-warn"><b>Not legal:</b> ${
         dedupeAlerts(v.errors).map(e => (e.n > 1 ? e.n + ' × ' : '') + esc(e.msg)).join(' ')}</p>` : ''}
@@ -3592,7 +3642,7 @@
    * there on the preview. Whatever you pick is remembered, so this is the
    * first print only. */
   const PRINT_KEY = 'dzc_print';
-  let printOpts = { compact: true, ink: true, art: false };
+  let printOpts = { compact: true, ink: true, art: false, cards: false };
   try { Object.assign(printOpts, JSON.parse(localStorage.getItem(PRINT_KEY) || '{}')); }
   catch (e) { /* nothing saved, or a browser refusing storage */ }
 
@@ -3627,7 +3677,9 @@
         <span class="pp-title">Print preview</span>
         <span class="pp-count" id="dzc-pp-count"></span>
         <span class="pp-spacer"></span>
-        ${[['compact', 'Compact'], ['ink', 'Ink-saver'], ['art', 'Art']].map(([k, label]) =>
+        ${[['compact', 'Compact'], ['ink', 'Ink-saver'], ['art', 'Art']]
+          // Group cards are an army's; the Unit Reference has no Groups.
+          .concat(fn ? [] : [['cards', 'Group cards']]).map(([k, label]) =>
           `<label class="pp-opt"><input type="checkbox" ${printOpts[k] ? 'checked' : ''}
              onchange="DZCBuilder.printOpt('${k}', this.checked)">${label}</label>`).join('')}
         <button class="btn btn-ghost btn-sm" type="button" onclick="DZCBuilder.closePreview()">Close</button>
@@ -3715,7 +3767,7 @@
      * step with the break-inside: avoid rules in css/dzc-print.css. A block
      * the stylesheet keeps whole and this does not is a break drawn where the
      * printer will not make one. */
-    const atoms = [...paper.querySelectorAll('.pr-group, .pr-cmdrs, .pr-rule, .pr-rules > h2, .pr-head, .pr-ref-unit, .pr-refcat-head')]
+    const atoms = [...paper.querySelectorAll('.pr-group, .pr-cmdrs, .pr-rule, .pr-rules > h2, .pr-head, .pr-ref-unit, .pr-refcat-head, .pr-gcard')]
       .map(el => {
         const r = el.getBoundingClientRect();
         // Distance from the paper's own top edge, unzoomed, then past the
@@ -3933,8 +3985,8 @@
     renderList, renderBuilder, openNew, createArmy, surpriseMe, del, open,
     // Play Mode draws itself in the army's faction colour too, and the list of
     // them lives here. Exported rather than copied into a fourth module.
-    accentOf,
-    sortList: k => { listSort = k; renderList(); },
+    accentOf, groupRoster,
+    sortList:k => { listSort = k; renderList(); },
     // The app's toast. Exported because the shell has things worth saying too
     // (a backup written, a sync finished) and a second toast implementation
     // would be a second thing to keep in step.
