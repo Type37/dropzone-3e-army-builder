@@ -3123,16 +3123,13 @@ button.dzc-sq-name:focus-visible { outline: 2px solid var(--acc); outline-offset
 .dzc-play-stats { margin-top: 5px; max-width: 340px; }
 .dzc-play-stats .dzc-stats { grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); }
 .dzc-play-alive { margin-left: auto; font-size: 12px; font-weight: 700; }
-/* Groups as text cards: a grid of them, so a whole army's activations sit on
-   one screen. Two across on a phone, more as the pane widens. */
-.dzc-play-main.is-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 7px; align-items: start; }
-.dzc-play-main.is-cards .dzc-play-group { margin-bottom: 0; }
-.dzc-play-gcard > header { margin-bottom: 4px; }
-.dzc-gc-sq { padding-left: calc(var(--depth) * 12px); }
-.dzc-gc-line { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 0 6px; font-size: 13px; line-height: 1.35; }
-.dzc-gc-line .dzc-cmdr-tag { margin-left: 2px; vertical-align: 1px; }
+.dzc-play-main.is-text .dzc-play-group { border: 0; background: none; padding: 0; margin-bottom: 14px; }
+.dzc-play-tgroup > header { margin-bottom: 2px; }
+.dzc-tx-line > span:first-child { padding-left: calc(var(--depth) * 16px); }
+.dzc-tx-line { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 0 8px; max-width: 360px; font-size: 14px; line-height: 1.4; }
+.dzc-tx-line .dzc-cmdr-tag { margin-left: 2px; vertical-align: 1px; }
 .dzc-play-view { width: 36px; height: 36px; border-radius: 8px; cursor: pointer; border: 1px solid var(--line, #d8d0c0); background: var(--surface-2, #fff); display: grid; place-items: center; color: var(--ink, inherit); }
-.dzc-play-view[aria-pressed="true"] { background: var(--surface-3, #f2ece0); }
+.dzc-play-view[aria-pressed="true"] { background: var(--acc); border-color: var(--acc); color: var(--acc-on, #fff); }
 .dzc-play-models { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
 /* The guns this Squad fires, at a table. Scrolls sideways in its own box like
    every other weapon table; the page never does. */

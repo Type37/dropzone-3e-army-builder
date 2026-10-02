@@ -391,14 +391,10 @@
     render(army);
   }
 
-  /* Groups as text cards: what is in each and how many are still standing,
-   * with the activation box, and nothing else. Asked for to see a whole
-   * army's activations at once (feedback, build 517); the full view is a
-   * screen per two Groups on a phone. Per viewer, not per army: it is how
-   * you like to read this screen, not a fact about the list. */
+  // Text only: each Group as its activation box and a line per Variant.
   const VIEW_KEY = 'dzc_play_view';
-  let cards = false;
-  try { cards = localStorage.getItem(VIEW_KEY) === 'cards'; } catch (e) { /* storage refused */ }
+  let text = false;
+  try { text = localStorage.getItem(VIEW_KEY) === 'text'; } catch (e) { /* storage refused */ }
 
   function render(army) {
     const root = document.getElementById('view-play');
@@ -421,9 +417,8 @@
           ${counter('My VP', 'myVP')}
           ${counter('Opp VP', 'oppVP')}
           <button type="button" class="dzc-press dzc-play-view" onclick="DZCPlay.view()"
-                  aria-pressed="${cards}" aria-label="${cards ? 'Show Groups in full' : 'Show Groups as cards'}"
-                  title="${cards ? 'Show Groups in full' : 'Show Groups as cards'}"
-            >${window.DZCIcon(cards ? 'list_alt' : 'grid_view', { size: 16 })}</button>
+                  aria-pressed="${text}" aria-label="Text only" title="Text only"
+            >${window.DZCIcon('list_alt', { size: 16 })}</button>
         </div>
       </header>
 
@@ -490,8 +485,8 @@
         </div>
       </div>
 
-      <div class="dzc-play-main${cards ? ' is-cards' : ''}">
-        ${army.groups.map(g => (cards ? groupCardHtml : groupHtml)(army, g)).join('')}
+      <div class="dzc-play-main${text ? ' is-text' : ''}">
+        ${army.groups.map(g => (text ? groupTextHtml : groupHtml)(army, g)).join('')}
       </div>
       </div>
     </div>`;
@@ -520,18 +515,16 @@
     return groupShell(army, g, '', g.squads.map(s => squadHtml(army, s)).join(''));
   }
 
-  /* The same Group, as the text card. Same section, same activation box and
-   * the same data hooks, so sync() keeps it current without knowing which
-   * view is up: anything the card does not draw, it simply does not find. */
-  function groupCardHtml(army, g) {
+  // Same section and data hooks as the full Group, so sync() needs no branch.
+  function groupTextHtml(army, g) {
     const body = window.DZCBuilder.groupRoster(army, g).map(r =>
-      `<div class="dzc-gc-sq" data-squad="${esc(r.squad.id)}" style="--depth:${r.depth}">${
-        r.lines.map((l, i) => `<div class="dzc-gc-line"><span><b>${l.n}×</b> ${esc(l.name)}${
+      `<div class="dzc-tx-sq" data-squad="${esc(r.squad.id)}" style="--depth:${r.depth}">${
+        r.lines.map((l, i) => `<div class="dzc-tx-line"><span><b>${l.n}×</b> ${esc(l.name)}${
           i === 0 && r.squad.commander ? ` <span class="dzc-cmdr-tag">${
             window.DZCIcon('military_tech', { size: 11 })}L${r.squad.commander.level}</span>` : ''}</span>${
           i === 0 ? `<span class="dzc-play-alive" data-alive>${val.alive(r.squad)}</span>` : ''}</div>`).join('')
       }</div>`).join('');
-    return groupShell(army, g, ' dzc-play-gcard', body);
+    return groupShell(army, g, ' dzc-play-tgroup', body);
   }
 
   function groupShell(army, g, cls, body) {
@@ -1100,10 +1093,9 @@
       commit();
     },
     view: () => {
-      cards = !cards;
-      try { localStorage.setItem(VIEW_KEY, cards ? 'cards' : 'full'); } catch (e) { /* storage refused */ }
+      text = !text;
+      try { localStorage.setItem(VIEW_KEY, text ? 'text' : 'full'); } catch (e) { /* storage refused */ }
       render(army());
-      // The button was redrawn under the finger; keep focus on its successor.
       const b = document.querySelector && document.querySelector('.dzc-play-view');
       if (b && b.focus) b.focus();
     },

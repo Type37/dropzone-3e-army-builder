@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 517;
+  const BUILD = 518;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -644,6 +644,9 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-10-02', title: 'Text only Groups', items: [
+      'Print and Play can show each Group as plain text: its units and how many.',
+    ] },
     { date: '2026-09-29', title: 'FAQ answers under their rules', items: [
       'Each FAQ answer also appears under the rule it covers.',
       'Rules changed by errata show the errata version.',
