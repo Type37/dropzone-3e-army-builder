@@ -1,0 +1,45 @@
+name: Retry when GitHub had no runner
+
+# Sometimes GitHub has no machine free. The job sits in the queue for 15
+# minutes, is cancelled without running a single step, and the run is
+# reported as failed — nothing in the repo was ever tested. That is GitHub's
+# outage, not ours, so re-run it here instead of making Jet do it by hand.
+#
+# A real failure got a runner and ran steps. It is left alone: re-running a
+# broken test only fails again.
+on:
+  workflow_run:
+    workflows: ["Test and deploy to GitHub Pages", "Watch TTCombat for new PDFs"]
+    types: [completed]
+
+permissions:
+  actions: write
+
+jobs:
+  retry:
+    runs-on: ubuntu-latest
+    if: >-
+      (github.event.workflow_run.conclusion == 'failure' ||
+       github.event.workflow_run.conclusion == 'cancelled') &&
+      github.event.workflow_run.run_attempt < 4
+    steps:
+      - name: Re-run if no job ever got a runner
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN: ${{ github.event.workflow_run.id }}
+          ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
+        run: |
+          # A job GitHub never handed to a machine has runner_id 0 and no
+          # steps. Count those among the jobs that did not succeed or skip.
+          stranded=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN/attempts/$ATTEMPT/jobs" \
+            --jq '[.jobs[] | select(.conclusion == "cancelled" or .conclusion == "failure")
+                           | select((.runner_id // 0) == 0 and (.steps | length) == 0)] | length')
+          ran=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN/attempts/$ATTEMPT/jobs" \
+            --jq '[.jobs[] | select(.conclusion == "failure")
+                           | select((.runner_id // 0) != 0)] | length')
+          echo "stranded: $stranded, real failures: $ran"
+          if [ "$stranded" -gt 0 ] && [ "$ran" -eq 0 ]; then
+            # Give GitHub a few minutes to find its feet before asking again.
+            sleep 300
+            gh run rerun "$RUN" --repo "$GITHUB_REPOSITORY" --failed
+          fi
