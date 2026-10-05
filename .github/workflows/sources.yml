@@ -41,8 +41,10 @@ jobs:
           uv run python tools/dzc/fetch_sources.py --check | tee check.log
           echo "changed=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
 
+      # 3 is "could not read the page". It must not fall through to the
+      # download as "something changed", which is what a bare != '0' did.
       - name: Download
-        if: steps.check.outputs.changed != '0'
+        if: steps.check.outputs.changed == '1' || steps.check.outputs.changed == '2'
         run: uv run python tools/dzc/fetch_sources.py
 
       # Exit 2 means only PDFs the pipeline does not read are new -- lore,
@@ -109,7 +111,7 @@ jobs:
       # that basis and not on any weaker one — this is the file every number in
       # the app comes out of.
       - name: Commit the new data
-        if: steps.check.outputs.changed != '0'
+        if: steps.check.outputs.changed == '1' || steps.check.outputs.changed == '2'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -144,9 +146,20 @@ jobs:
         run: |
           if [ "${{ steps.check.outputs.changed }}" = "0" ]; then
             echo "### rules/ matches the resources page" >> "$GITHUB_STEP_SUMMARY"
+          elif [ "${{ steps.check.outputs.changed }}" = "3" ]; then
+            echo "### TTCombat's site would not answer, so nothing was checked" >> "$GITHUB_STEP_SUMMARY"
           else
             echo "### TTCombat published something new" >> "$GITHUB_STEP_SUMMARY"
           fi
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           cat check.log >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      # Still a failure, after seven and a half minutes of retries: a page that
+      # stays unreadable is a release nobody will hear about. But it says what
+      # happened instead of ending on a traceback.
+      - name: Fail if the page could not be read
+        if: steps.check.outputs.changed == '3'
+        run: |
+          echo "::error::TTCombat's resources page refused every request. Nothing was downloaded or committed; next Monday's run tries again."
+          exit 1
