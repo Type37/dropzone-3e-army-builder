@@ -23,6 +23,7 @@ Exit codes, so a scheduled job can act on them:
     0  everything on disk matches the page
     1  a scanned source is newer (with --check), or a download failed
     2  only unscanned PDFs are new (with --check) -- download, no re-scan
+    3  the resources page could not be read, so nothing was checked
 """
 
 from __future__ import annotations
@@ -31,6 +32,7 @@ import argparse
 import os
 import re
 import sys
+import time
 import urllib.error
 import urllib.request
 
@@ -180,10 +182,37 @@ def on_disk(key: str, pattern: str) -> str | None:
     return max(got, key=version_of) if got else None
 
 
+# Answers that mean "not now" rather than "no". On 2026-10-05 the page itself
+# answered 429 Too Many Requests on the first request of the run; with no retry
+# that was a traceback, and the workflow read the traceback's exit 1 as "a
+# scanned source is newer" and went on to try a download as well.
+TRANSIENT = {429, 500, 502, 503, 504}
+# About seven and a half minutes in all, which outlasts a Shopify rate limit
+# without holding a runner for long when the site is genuinely down.
+WAITS = (30, 60, 120, 240)
+
+
 def get(url: str) -> bytes:
-    req = urllib.request.Request(url, headers={"User-Agent": "dzc-builder/1.0"})
-    with urllib.request.urlopen(req, timeout=180) as r:
-        return r.read()
+    for wait in (*WAITS, None):
+        req = urllib.request.Request(url, headers={"User-Agent": "dzc-builder/1.0"})
+        try:
+            with urllib.request.urlopen(req, timeout=180) as r:
+                return r.read()
+        except urllib.error.HTTPError as exc:
+            if exc.code not in TRANSIENT or wait is None:
+                raise
+            # Shopify says how long it wants on a 429. Honoured, within reason.
+            after = exc.headers.get("Retry-After", "")
+            if after.isdigit():
+                wait = min(max(wait, int(after)), 600)
+            why = f"HTTP {exc.code}"
+        except (urllib.error.URLError, TimeoutError) as exc:
+            if wait is None:
+                raise
+            why = str(getattr(exc, "reason", exc))
+        print(f"  .. {why}; trying again in {wait}s", flush=True)
+        time.sleep(wait)
+    raise AssertionError("unreachable")
 
 
 
@@ -231,8 +260,12 @@ def main() -> int:
                     help="report what has moved and exit 1; download nothing")
     args = ap.parse_args()
 
-    req = urllib.request.Request(PAGE, headers={"User-Agent": "dzc-builder/1.0"})
-    html = urllib.request.urlopen(req, timeout=120).read().decode("utf-8", "replace")
+    try:
+        html = get(PAGE).decode("utf-8", "replace")
+    except (urllib.error.URLError, TimeoutError) as exc:
+        print(f"  !! could not read the resources page: {exc}")
+        print("  Nothing was checked and nothing in rules/ was touched.")
+        return 3
     live = published(html)
 
     missing = [key for key, _, _ in SOURCES if key not in live]
