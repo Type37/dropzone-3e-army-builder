@@ -63,8 +63,22 @@ jobs:
       - name: The suite
         run: node scripts/test-all.mjs
 
-      # The stat-card PDFs are not in the repo, so the scan cannot run here.
-      # The audits read data/ and assets/ and catch a bad commit of either.
+      # Three audits (card text, Special cells, construction) compare the data with
+      # the PDFs it was scanned from. Those are not in the repo, so fetch exactly
+      # the releases data/dzc/sources.json records, not the page's newest: a
+      # release the monthly update has not taken in yet would fail them against
+      # data that is not wrong. The cache keeps them between deploys, keyed on the
+      # record, so most deploys download nothing.
+      - name: The source PDFs
+        uses: actions/cache@v4
+        with:
+          path: rules
+          key: dzc-sources-${{ hashFiles('data/dzc/sources.json') }}
+
+      - name: Fetch any that are missing
+        run: uv run python tools/dzc/fetch_sources.py --recorded
+
+      # The audits read data/, assets/ and those PDFs, and catch a bad commit.
       - name: Data audits
         run: uv run python tools/dzc/rebuild.py --skip-scan
 

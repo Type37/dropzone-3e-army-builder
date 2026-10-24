@@ -6,6 +6,7 @@ Keep the app in step with what TTCombat currently publish.
     python tools/dzc/fetch_sources.py --check --json   # the same, as JSON for the workflow
     python tools/dzc/fetch_sources.py                  # download the sources into rules/
     python tools/dzc/fetch_sources.py --record         # after a good rebuild: remember what it read
+    python tools/dzc/fetch_sources.py --recorded       # fetch exactly the recorded releases
 
 Every number in this app comes out of these PDFs, so a release we have not
 noticed is an army list priced against last month's rules. That went unnoticed
@@ -43,6 +44,9 @@ import urllib.error
 import urllib.request
 
 PAGE = "https://ttcombat.com/pages/dropzone-commander-resources"
+# Where TTCombat's files live. A file is served here by name alone, without the
+# ?v= the page adds, which is how --recorded fetches a release it names.
+CDN = "https://cdn.shopify.com/s/files/1/0965/1274/files/"
 DEST = os.path.join("rules")
 RECORD = os.path.join("data", "dzc", "sources.json")
 
@@ -249,7 +253,33 @@ def main() -> int:
                     help="with --check: print what moved as JSON")
     ap.add_argument("--record", action="store_true",
                     help="write data/dzc/sources.json from the sources in rules/")
+    ap.add_argument("--recorded", action="store_true",
+                    help="download exactly the releases sources.json names, for the audits")
     args = ap.parse_args()
+
+    if args.recorded:
+        # For deploy.yml's audits, which compare the data with the cards it was
+        # built from. Not the page's newest: a release the monthly update has not
+        # taken in yet would fail them against data that is not wrong.
+        os.makedirs(DEST, exist_ok=True)
+        failed = 0
+        for key, pattern, _ in SOURCES:
+            name = load_record().get(key)
+            if not name:
+                continue
+            if on_disk(key, pattern) == name:
+                continue
+            try:
+                n, name = fetch(CDN + name, os.path.join(DEST, name))
+                print(f"  got      {name}  ({n // 1024} KB)")
+            except Exception as exc:                        # noqa: BLE001
+                print(f"  FAILED   {name}: {exc}")
+                failed += 1
+                continue
+            for old in os.listdir(DEST):
+                if old.endswith(".pdf") and old != name and re.search(pattern, old):
+                    os.remove(os.path.join(DEST, old))
+        return 1 if failed else 0
 
     if args.record:
         # After a rebuild that passed every audit: what it read is now what the
