@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 518;
+  const BUILD = 519;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -319,6 +319,11 @@ const App = (() => {
   // whole Unit, and this is the way out of it for someone scanning a long list.
   function compactView() { return !!settings.compactView; }
 
+  // The Apex: Fauna an army may take under Intelligent, "in casual games"
+  // (Fauna rules 7.1.7). Off unless asked for, so a list for a tournament
+  // is never offered one.
+  function faunaOn() { return !!settings.faunaInArmies; }
+
   function applyCollectionSetting() {
     const card = $('landing-collection');
     if (card) card.classList.toggle('hidden', !collectionOn());
@@ -349,6 +354,8 @@ const App = (() => {
              long when you are scanning ten of them. -->
         ${tog('compactView', 'Compact view',
           'Hide weapon tables in the builder for a denser overview')}
+        ${tog('faunaInArmies', 'Apex in armies',
+          'Offer the three Apex in every army. Fauna rules 7.1.7, casual games only')}
       </div>
       <div class="dzc-set-group">
         <div class="dzc-set-title">Offline use</div>
@@ -644,6 +651,11 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-10-24', title: 'Fauna', items: [
+      'TTCombat’s Fauna supplement (1 October) is in: all 14 Fauna, from Daggers to the Typhon, with their pictures, in a Fauna tab in Unit Reference.',
+      'Interactive Rules has a Fauna rules chapter, and every Fauna rule on a card opens it.',
+      'The three Apex can join any army once Apex in armies is on in Settings. Intelligent allows one Fauna Group, a single Squad that does not count toward your Groups or Pass tokens, in casual games.',
+    ] },
     { date: '2026-10-02', title: 'Text only Groups', items: [
       'Print and Play can show each Group as plain text: its units and how many.',
     ] },
@@ -1189,7 +1201,7 @@ const App = (() => {
 
   return {
     navigate, showView, openModal, closeModal,
-    openSettings, setTheme, toggleSetting, collectionOn, compactView, applyCollectionSetting,
+    openSettings, setTheme, toggleSetting, collectionOn, compactView, faunaOn, applyCollectionSetting,
     renderOfflinePanel, runOfflineSync, deleteOfflineData,
     openSyncModal, syncStart, syncStop, syncNow, syncJoin, syncDiscordSignIn, syncDiscordSignOut,
     openChangelog, openImport, importFile, runImport,

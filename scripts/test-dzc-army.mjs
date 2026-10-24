@@ -3021,5 +3021,42 @@ console.log('\na Commander is ignored by the quarter cap (3.2.5)');
   [a, b, back].forEach(x => x && A.remove(x.id));
 }
 
+/* Fauna (Fauna_Rules_Scenarios_261001.pdf). Only a card printing Intelligent
+ * reaches a list: "You may take up to one Fauna Group with this rule as a part
+ * of your army in casual games. It does not count toward your total number of
+ * Groups for army composition or pass token generation" (7.1.7). And "Each
+ * Fauna Group is a single Squad of Fauna" (1. The Basics). */
+console.log('\nFauna: Intelligent (Fauna rules 7.1.7)');
+{
+  const ucm = DZC.faction('ucm');
+  const fauna = ucm.units.filter(u => A.isFauna(u));
+  eq(fauna.map(u => u.name).sort().join(', '), 'Apex, Ferrum, Apex, Maganum, Apex, New Eden',
+    'every faction lists the three Intelligent Apex and no other Fauna');
+  ok(fauna.every(u => u.category === 'Fauna'), 'filed under Fauna, not a force-organisation category');
+
+  const a = A.create('ucm', 'Fauna', 1000);
+  const g = A.addGroup(a);
+  A.addSquad(a, g.id, 'ucm-main-battle-tank', 3);
+  const before = A.groupsUsed(a);
+  ok(!A.canAddUnit(a, g.id, 'apex-ferrum').ok, 'an Apex cannot join a Group with other Squads in it');
+  const fg = A.addGroup(a);
+  ok(A.canAddUnit(a, fg.id, 'apex-ferrum').ok, 'an Apex can take an empty Group');
+  A.addSquad(a, fg.id, 'apex-ferrum', 1);
+  eq(A.groupsUsed(a), before, 'and that Group spends none of the allowance');
+  ok(!A.canAddUnit(a, fg.id, 'ucm-main-battle-tank').ok, 'nothing else joins the Fauna Group');
+  ok(!A.canAddUnit(a, A.addGroup(a).id, 'apex-maganum').ok, 'a second Fauna Group is refused');
+  eq(A.armyCost(a) >= 135, true, 'its points are spent from the army');
+  const v = A.validate(a);
+  ok(!v.errors.some(e => /Fauna|Intelligent/.test(e.rule)), 'one Apex in its own Group is legal');
+  ok(v.warnings.some(w => w.rule === 'Intelligent' && /casual games/.test(w.msg)),
+    'and the list says it is for casual games');
+
+  // A backup or a share link can carry what canAddUnit refuses.
+  a.groups.push({ id: 'x2', name: null, squads: [{ id: 'sx2', unitId: 'apex-new-eden',
+    models: [{ variant: null }], carriedBy: null, commander: null }] });
+  ok(hasErr(A.validate(a), 'Intelligent allows up to one'), 'two Fauna Groups are an error');
+  A.remove(a.id);
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

@@ -37,6 +37,7 @@ VARIANT_TAIL = re.compile(r"\s*\([^)]*\)\s*$")
 KNOWN_TYPOS = {
     "infliltrate": "Infiltrate",     # Scourge Battle/Support Beetle
     "devastor": "Devastator",        # Remote Bomb Bus, UCM Artillery Vehicle
+    "dev": "Devastator",             # Fauna cards: "Dev 2", "Dev 1d3"
     "precison": "Precision",         # UCM Heavy Tank
     "ineffecive": "Ineffective",     # Scourge Hyperbio Cannon, on the Death Mech
     # Every Behemoth card prints "Weapon Capacitors"; the rulebook heads the
@@ -201,7 +202,8 @@ def main():
     # The Behemoth file too. It prints Macro, Integral, Huge Blast and the
     # rest, none of which is in the core rulebook — an audit that only looked
     # at the six faction files would have called that coverage.
-    sources = [*sorted(glob.glob(FACTIONS)), os.path.join("data", "dzc", "behemoths.json")]
+    sources = [*sorted(glob.glob(FACTIONS)), os.path.join("data", "dzc", "behemoths.json"),
+               os.path.join("data", "dzc", "fauna.json")]
     for path in [p for p in sources if os.path.exists(p)]:
         with open(path, encoding="utf-8") as fh:
             data = json.load(fh)

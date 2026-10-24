@@ -64,6 +64,10 @@ SOURCES = [
     ("resistance-cards", r"^DZC_Resistance_Stat", "scan_statcards"),
     ("bioficer-cards", r"^DZC_Bioficer_Stat", "scan_statcards"),
     ("behemoths", r"^Behemoth_Rules_Stats", "scan_behemoths"),
+    # Fourteen stat cards and the rules that run them. It sat in Extra-Rules
+    # from 2026-10-05 until 10-24 as a PDF nobody read, because this list is
+    # what decides "scanned" and it was not on it.
+    ("fauna", r"^Fauna_Rules", "scan_fauna"),
     ("rulebook", r"^A5_Dropzone_[\d.]+_Rulebook", "scan_rulebook"),
     ("errata", r"^(?:DZC_Errata|Dropzone_Commander_[\d.]+_Errata)", "reference"),
     # New with 3.02, and the only document that says what the errata CHANGED

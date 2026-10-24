@@ -67,7 +67,9 @@
    * "behemoth" and read as one set. Every other path treats them like any
    * other faction file, which is why the id maps to a filename rather than
    * getting a branch of its own everywhere downstream. */
-  const FILE_FOR = id => (id === 'behemoth' ? 'behemoths' : `faction-${id}`);
+  /* Fauna are the same again: a set of their own, from the Fauna PDF. */
+  const FILE_FOR = id => (id === 'behemoth' ? 'behemoths' : id === 'fauna' ? 'fauna' : `faction-${id}`);
+  const SETS = ['behemoth', 'fauna'];
 
   async function loadFaction(id) {
     if (state.factions[id]) return state.factions[id];
@@ -84,10 +86,17 @@
            * printed sheet all ask DZC.faction(id) for a list of Units; a
            * Behemoth that is anything other than an ordinary member of that
            * list is a branch in every one of them. */
-          if (id !== 'behemoth') {
+          if (SETS.indexOf(id) === -1) {
             const b = await getJSON(`${BASE}/behemoths.json`).catch(() => null);
             if (b) f.units = (f.units || []).concat(
               (b.units || []).filter(u => u.faction === id));
+            /* Fauna whose card prints Intelligent: "You may take up to one
+             * Fauna Group with this rule as a part of your army in casual
+             * games" (Fauna rules 7.1.7). Any army, so every faction lists
+             * them, and only them: the rest are a third force no list holds.
+             * What makes one legal on a list is validate's business. */
+            const fa = await getJSON(`${BASE}/fauna.json`).catch(() => null);
+            if (fa) f.units = f.units.concat((fa.units || []).filter(u => u.selectable));
           }
           f.byId = {};
           (f.units || []).forEach(u => { f.byId[u.id] = u; });
@@ -111,6 +120,8 @@
   const KNOWN_TYPOS = {
     infliltrate: 'Infiltrate',
     devastor: 'Devastator',
+    // The Fauna cards shorten it: "Dev 2", "Dev 1d3".
+    dev: 'Devastator',
     precison: 'Precision',
     // Scourge Hyperbio Cannon, on the Death Mech's card.
     ineffecive: 'Ineffective',
@@ -138,7 +149,9 @@
       /* A faction rule's page is not worth printing. It is scanned from that
        * faction's own stat-card PDF where the rules block is always page 1,
        * and citing "p.1" would read as a rulebook page it is not. */
-      page: r.faction ? null : (r.page || null),
+      // The Fauna PDF's rules are faction-scoped for lookup, but they are
+      // a numbered rules section with real pages, like the Behemoth rules.
+      page: r.faction && r.source !== 'fauna' ? null : (r.page || null),
       parameterised: !!r.parameterised,
       re: new RegExp(r.match, 'i'),
       // What a template spells out before its first placeholder: "LT " for

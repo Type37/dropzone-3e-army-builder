@@ -21,7 +21,11 @@
        ten of them and none of the cards says whose they are. Until that is
        known they are a set you can read, not a faction you can build from,
        every one is selectable: false, so they never reach the picker. */
-    { id: 'behemoth', name: 'Behemoths', full: 'Behemoths', accent: '#6b6459' }
+    { id: 'behemoth', name: 'Behemoths', full: 'Behemoths', accent: '#6b6459' },
+    /* Not a faction either: the Fauna PDF's native animals, a third force in
+       a game. The three that print Intelligent also sit in every faction's
+       list, because any army may take one (Fauna rules 7.1.7). */
+    { id: 'fauna', name: 'Fauna', full: 'Fauna', accent: '#5e7a3a' }
   ];
 
   // Force-organisation order (rulebook 3.2). Generated units are produced in
@@ -284,7 +288,7 @@
       const tip = (window.DZC.ruleText(tok, faction) || 'Missing from the glossary, which is a bug in the app.')
         // Which book, when it is not the rulebook: a Behemoth rule's "p.9"
         // read as the rulebook's p.9, which is the game-size table.
-        + (r && r.page ? ` (${r.source === 'behemoths' ? 'Behemoth rules ' : ''}p.${r.page})` : '');
+        + (r && r.page ? ` (${r.source === 'behemoths' ? 'Behemoth rules ' : r.source === 'fauna' ? 'Fauna rules ' : ''}p.${r.page})` : '');
       // Written out, "Tracking-1", not "T1". The printed token is still what
       // looks it up and still what the popover is opened with.
       //
@@ -342,7 +346,11 @@
     const acc = (FACTIONS.find(x => x.id === state.faction) || {}).accent || '#1b3a5c';
 
     const q = state.search.trim().toLowerCase();
-    let units = f.units.slice();
+    /* A faction's tab carries the Apex only when Settings offers them to
+     * armies; the Fauna tab always has all fourteen. */
+    const faunaOn = !!(window.App && window.App.faunaOn && window.App.faunaOn());
+    const own = f.units.filter(u => faunaOn || state.faction === 'fauna' || u.faction !== 'fauna');
+    let units = own.slice();
     if (q) units = units.filter(u => window.DZC.matches(u, q, state.faction));
     if (state.category !== 'All') units = units.filter(u => u.category === state.category);
 
@@ -351,7 +359,12 @@
         style="${window.DZC.accentStyle(x.accent)}" onclick="DZCUnits.setFaction('${x.id}')" title="${esc(x.full)}"
         >${esc(x.name)}</button>`).join('');
 
-    const cats = ['All'].concat(CATEGORIES).map(c =>
+    /* The categories this set has, in book order, then any the book does not
+     * name. Six fixed chips over the Fauna, whose cards all say "Fauna", were
+     * six controls that empty the page. */
+    const have = [...new Set(own.map(u => u.category).filter(Boolean))];
+    const cats = ['All'].concat(CATEGORIES.filter(c => have.indexOf(c) !== -1),
+      have.filter(c => CATEGORIES.indexOf(c) === -1)).map(c =>
       `<button type="button" class="dzc-chip${c === state.category ? ' is-active' : ''}"
         onclick="DZCUnits.setCategory('${c}')">${esc(c)}</button>`).join('');
 
@@ -387,7 +400,7 @@
           <button type="button" class="dzc-sq-btn dzc-ref-print" onclick="DZCUnits.print()"
                   title="Print these units">${window.DZCIcon('print', { size: 15 })}Print</button>
         </div>
-        <p class="dzc-count">${units.length} of ${f.units.length} units${q ? ` matching “${esc(state.search)}”` : ''}</p>
+        <p class="dzc-count">${units.length} of ${own.length} units${q ? ` matching “${esc(state.search)}”` : ''}</p>
         <!-- Named by cause, and worded exactly as the picker words it. "Nothing
              matches that search" over an empty category is the app blaming a
              search box you never touched. -->
@@ -989,6 +1002,9 @@
   function ruleSource(r) {
     // The faction's own name, as the tabs spell it. Sentence case, never
     // "SHALTARI rules" (CLAUDE.md §3).
+    // A supplement's rule names its book, section and page like a rulebook
+    // rule does; it is filed under "fauna" only so lookups find it first.
+    if (r.source === 'fauna') return 'Fauna rules ' + r.section + (r.page ? `, p.${r.page}` : '');
     if (r.faction) {
       const f = window.DZC.faction(r.faction);
       return `${(f && f.name) || r.faction} rules`;
@@ -1129,7 +1145,9 @@
     const acc = fac.accent || '#1b3a5c';
 
     const q = state.search.trim().toLowerCase();
-    let units = f.units.slice();
+    // The same Apex rule as the screen it prints (render).
+    const faunaOn = !!(window.App && window.App.faunaOn && window.App.faunaOn());
+    let units = f.units.filter(u => faunaOn || state.faction === 'fauna' || u.faction !== 'fauna');
     if (q) units = units.filter(u => window.DZC.matches(u, q, state.faction));
     if (state.category !== 'All') units = units.filter(u => u.category === state.category);
 
@@ -1268,7 +1286,9 @@
   window.DZCUnits = {
     render,
     open: () => render(),
-    setFaction: id => { state.faction = id; state.search = ''; render(); },
+    // Category too: the Fauna tab has none of the six, so a chip carried
+    // across from another tab would empty it with nothing lit to say why.
+    setFaction: id => { state.faction = id; state.search = ''; state.category = 'All'; render(); },
     setCategory: c => { state.category = c; render(); },
     setSearch: v => { state.search = v; render(); },
     openDetail, closeDetail, setLens, showRule, showDamage, hideRule,

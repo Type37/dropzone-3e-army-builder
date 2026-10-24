@@ -1026,28 +1026,33 @@ def glossary_chapters() -> list[dict[str, Any]]:
         return [{"kind": "p", "runs": [{"t": p.strip()}]}
                 for p in str(text or "").split("\n\n") if p.strip()]
 
-    beh = [r for r in rules if r.get("source") == "behemoths"]
-
     def key(r):
         return tuple(int(x) for x in str(r["section"]).split(".") if x.isdigit())
-    beh.sort(key=key)
-    nodes: dict[str, dict[str, Any]] = {}
-    top: list[dict[str, Any]] = []
-    for r in beh:
-        n = {"id": r["id"], "number": r["section"], "heading": r["name"],
-             "book": "behemoths", "page": r.get("page"), "body": body(r["text"]),
-             "children": []}
-        nodes[r["section"]] = n
-        # Under the nearest section that exists: 1.4.1.1 Move On Entry sits
-        # in 1.4 Behemoth Entry, because the supplement has no 1.4.1 heading.
-        parts = r["section"].split(".")[:-1]
-        while parts and ".".join(parts) not in nodes:
-            parts.pop()
-        (nodes[".".join(parts)]["children"] if parts else top).append(n)
-    chapters = []
-    if top:
-        chapters.append({"id": "behemoths", "number": "", "heading": "Behemoth rules",
-                         "book": "behemoths", "body": [], "children": top})
+
+    def supplement(source: str, heading: str) -> dict[str, Any] | None:
+        """A supplement's numbered rules as one chapter: the Behemoth PDF's,
+        and the Fauna PDF's, which is numbered the same way."""
+        rs = sorted((r for r in rules if r.get("source") == source), key=key)
+        nodes: dict[str, dict[str, Any]] = {}
+        top: list[dict[str, Any]] = []
+        for r in rs:
+            n = {"id": r["id"], "number": r["section"], "heading": r["name"],
+                 "book": source, "page": r.get("page"), "body": body(r["text"]),
+                 "children": []}
+            nodes[r["section"]] = n
+            # Under the nearest section that exists: 1.4.1.1 Move On Entry sits
+            # in 1.4 Behemoth Entry, because the supplement has no 1.4.1 heading.
+            parts = r["section"].split(".")[:-1]
+            while parts and ".".join(parts) not in nodes:
+                parts.pop()
+            (nodes[".".join(parts)]["children"] if parts else top).append(n)
+        if not top:
+            return None
+        return {"id": source, "number": "", "heading": heading,
+                "book": source, "body": [], "children": top}
+
+    chapters = [c for c in (supplement("behemoths", "Behemoth rules"),
+                            supplement("fauna", "Fauna rules")) if c]
 
     # Each faction as its own file names it: "UCM", "PHR", "Shaltari".
     names = {}
@@ -1055,7 +1060,9 @@ def glossary_chapters() -> list[dict[str, Any]]:
         d = json.loads(fp.read_text(encoding="utf-8"))
         names[d.get("faction") or fp.stem[len("faction-"):]] = d.get("name")
     groups = []
-    for fac in dict.fromkeys(r["faction"] for r in rules if r.get("faction")):
+    # Fauna rules carry a faction for lookup and have a chapter of their own.
+    for fac in dict.fromkeys(r["faction"] for r in rules
+                             if r.get("faction") and r.get("source") != "fauna"):
         kids = [{"id": r["id"], "number": "", "heading": r["name"], "book": "faction",
                  "body": body(r["text"]), "children": []}
                 for r in rules if r.get("faction") == fac]

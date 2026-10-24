@@ -601,8 +601,14 @@ console.log('\nno rule prints the same sentence twice');
   const sentences = t => String(t || '').split(/(?<=[.!?])\s+/)
     .map(s => s.replace(/[^a-z0-9 ]/gi, '').toLowerCase().trim())
     .filter(s => s.length > 25);
+  /* Lists whose every case ends on the same sentence, as printed: Instinct's
+   * five each end "Roll 1d3+3 for its Activation dice.", and three of Fauna
+   * Attacks' five "If none are in range they will target the Prey." (Fauna
+   * rules 7.1.6, 2.3). The book's repetition, checked against the PDF. */
+  const LIST_REPEATS_IN_THE_BOOK = new Set(['Instinct: X', 'Fauna Attacks']);
   const dupes = [];
   for (const r of DZC._state.rules.all) {
+    if (LIST_REPEATS_IN_THE_BOOK.has(r.name)) continue;
     const seen = new Set();
     for (const s of sentences(r.text)) {
       if (seen.has(s)) dupes.push(r.name);
@@ -628,6 +634,9 @@ console.log('\na qualifying rule carries the rule it qualifies');
   for (const fid of ['ucm', 'scourge', 'phr', 'shaltari', 'resistance', 'bioficer']) {
     await DZC.loadFaction(fid);
     for (const u of DZC.faction(fid).units) {
+      // The Apex every faction lists. Fauna rules are printed in paragraphs,
+      // so a paragraph break in theirs is the book's, not a merge.
+      if (u.faction === 'fauna') continue;
       for (const tok of String(u.special || '').split(',').map(s => s.trim()).filter(Boolean)) {
         if ((DZC.ruleText(tok, fid) || '').includes('\n\n')) merged++;
       }

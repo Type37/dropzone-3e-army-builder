@@ -54,7 +54,7 @@ console.log('\nthe data is scanned from the PDFs rules/ holds');
 {
   const held = readdirSync(path.join(ROOT, 'rules')).filter(f => f.endsWith('.pdf'));
   const stem = f => f.replace(/_\d{6,8}(?=\.pdf$)/, '').toLowerCase();
-  for (const file of FACTIONS.map(f => `faction-${f}.json`).concat(['behemoths.json'])) {
+  for (const file of FACTIONS.map(f => `faction-${f}.json`).concat(['behemoths.json', 'fauna.json'])) {
     const src = JSON.parse(readFileSync(path.join(ROOT, 'data', 'dzc', file), 'utf8')).sourcePdf;
     ok(held.indexOf(src) !== -1, `${file} was scanned from ${src}, which rules/ holds`,
       `rules/ has ${held.filter(h => stem(h) === stem(src)).join(', ') || 'no release of it'}`

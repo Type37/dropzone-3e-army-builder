@@ -23,7 +23,10 @@ NEAR_SQUARE = 0.02  # logos are drawn as exact squares
 # be written only when --art ran, so a routine re-scan stripped the image from
 # all 178 units -- invisible in the JSON, and only visible as a blank builder.
 missing_ref, missing_file = [], []
-for dp in sorted(glob.glob(os.path.join("data", "dzc", "faction-*.json"))):
+for dp in [*sorted(glob.glob(os.path.join("data", "dzc", "faction-*.json"))),
+           os.path.join("data", "dzc", "fauna.json")]:
+    if not os.path.exists(dp):
+        continue
     with open(dp, encoding="utf-8") as fh:
         data = json.load(fh)
     for u in data["units"]:

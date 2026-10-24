@@ -13,6 +13,7 @@ a bad glossary would silently leave rule keywords dead on the page.
 
     scan_statcards   PDFs        -> data/dzc/faction-*.json  + assets/units/*
     ...--behemoths               -> data/dzc/behemoths.json
+    ...--fauna                   -> data/dzc/fauna.json
     scan_rulebook    PDFs        -> data/dzc/rules.json
     gen-offline-manifest         -> data/offline-manifest.json
     audit_construction  chapter 3 and the faction Group rules, against the PDFs
@@ -45,6 +46,11 @@ SCANS = [
                         "--out", "data/dzc",
                         "--art", "assets/units",
                         "--behemoths"]),
+    ("scan fauna", ["scan_statcards.py",
+                    "--pdf-dir", "rules",
+                    "--out", "data/dzc",
+                    "--art", "assets/units",
+                    "--fauna"]),
     ("scan rulebook", ["scan_rulebook.py"]),
     # Interactive Rules' book, which carries the Behemoth and faction rules
     # out of rules.json as two chapters of its own. Built after the glossary

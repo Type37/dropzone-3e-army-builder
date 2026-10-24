@@ -1484,9 +1484,20 @@
       if (!isGate(u) && allGates) {
         return { ok: false, reason: 'That Group is Gates, and a Gate is never part of another Group.' };
       }
+      // "Each Fauna Group is a single Squad of Fauna." Same shape as a Gate:
+      // no arrangement of a Fauna and anything else in one Group is legal.
+      if (isFauna(u)) {
+        return { ok: false, reason: `${u.name}: each Fauna Group is a single Squad of Fauna.` };
+      }
+      if (squads.some(s => isFauna(unitOf(army, s)))) {
+        return { ok: false, reason: 'That Group is Fauna, and each Fauna Group is a single Squad of Fauna.' };
+      }
     }
 
     if (army.collection) return { ok: true, reason: null };
+    if (isFauna(u) && faunaSquads(army).length) {
+      return { ok: false, reason: 'Intelligent: up to one Fauna Group may be taken.' };
+    }
     const taken = squadsNamed(army, u.name);
     if (u.unique && taken >= 1) {
       return { ok: false, reason: `${u.name} is Unique: one per Army (3.2.1).` };
@@ -2204,11 +2215,35 @@
       .some(t => /^Subterranean\b/.test(t.trim()));
   }
 
+  /* FAUNA, the Fauna PDF's native animals. The only ones a list can hold
+   * print Intelligent (7.1.7):
+   *
+   *   "You may take up to one Fauna Group with this rule as a part of your
+   *    army in casual games. It does not count toward your total number of
+   *    Groups for army composition or pass token generation."
+   *
+   * and every Fauna Group is shaped the same way (1. The Basics): "Each Fauna
+   * Group is a single Squad of Fauna." Read off the unit's set, not a list of
+   * names, so a reissue that adds an Intelligent card needs no code. */
+  function isFauna(unit) {
+    return !!unit && unit.faction === 'fauna';
+  }
+
+  function faunaSquads(army) {
+    const out = [];
+    (army.groups || []).forEach(g => g.squads.forEach(s => {
+      if (isFauna(unitOf(army, s))) out.push(s);
+    }));
+    return out;
+  }
+
   // "UNARMED Subterranean Units", and only those, are free of the allowance.
-  // An armed one is an ordinary Squad in an ordinary Group.
+  // An armed one is an ordinary Squad in an ordinary Group. An Intelligent
+  // Fauna Group is free of it too, and of the quarter cap with it: both are
+  // army composition, which 7.1.7 says it does not count toward.
   function freeOfGroupCap(army, squad) {
     const u = unitOf(army, squad);
-    return isSubterranean(u) && !(u.weapons || []).length;
+    return (isSubterranean(u) && !(u.weapons || []).length) || isFauna(u);
   }
 
   /* The Group a Gate belongs in, made if it is not there yet.
@@ -2960,6 +2995,25 @@
       }
     }));
 
+    /* Intelligent Fauna (Fauna rules 7.1.7, 1). canAddUnit refuses all three
+     * of the errors; they are here for a share link or a backup. The warning
+     * is the rule's own condition: "in casual games". */
+    const fauna = faunaSquads(army);
+    if (fauna.length > 1) {
+      errors.push({ rule: 'Intelligent',
+        msg: `${fauna.length} Fauna Groups. Intelligent allows up to one.` });
+    }
+    army.groups.forEach(g => {
+      if (g.squads.length > 1 && g.squads.some(s => isFauna(unitOf(army, s)))) {
+        errors.push({ rule: 'Fauna', group: g.id,
+          msg: `“${groupName(army, g)}”: each Fauna Group is a single Squad of Fauna.` });
+      }
+    });
+    if (fauna.length) {
+      warnings.push({ rule: 'Intelligent',
+        msg: `${unitOf(army, fauna[0]).name} may be taken in casual games only.` });
+    }
+
     // Rare / Unique, counted by NAME across the whole army.
     const byName = {};
     army.groups.forEach(g => g.squads.forEach(s => {
@@ -3431,6 +3485,8 @@
     isGate, gateSquad, gateHome,
     // Subterranean (Resistance Unit Special Rules)
     isSubterranean,
+    // Intelligent Fauna (Fauna rules 7.1.7)
+    isFauna, faunaSquads,
     // enforcement
     canAddUnit, canSetCount, squadsNamed, squadFill,
     upgradesFor, hasUpgrade, toggleUpgrade, upgradeCost,

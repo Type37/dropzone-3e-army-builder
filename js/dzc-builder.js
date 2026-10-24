@@ -1458,9 +1458,18 @@
     return window.DZCArmy.canAddUnit(a, groupId, u.id);
   }
 
+  /* What the picker may offer. The Apex only when Settings says so: they are
+   * Intelligent Fauna, legal "in casual games" (Fauna rules 7.1.7). An Army
+   * already holding one keeps it either way; this only decides the offer. */
+  function offered(u) {
+    if (u.selectable === false) return false;
+    if (window.DZCArmy.isFauna(u)) return !!(window.App && window.App.faunaOn && window.App.faunaOn());
+    return true;
+  }
+
   function addButtons(a, g) {
     const f = window.DZC.faction(a.faction);
-    const pool = ((f && f.units) || []).filter(u => u.selectable !== false);
+    const pool = ((f && f.units) || []).filter(offered);
     const open = kind => pool.filter(u =>
       (kind === 'transport') === (u.category === 'Transport')
       && canOffer(a, g.id, u).ok).length;
@@ -2642,7 +2651,7 @@
     /* One side of the split or the other -- never both. Which side is the
      * button you pressed, and it is the only difference between the two
      * lists: same search, same sorts, same filters, same cards. */
-    const pickable = f.units.filter(u => u.selectable !== false
+    const pickable = f.units.filter(u => offered(u)
       && (picker.kind === 'transport') === (u.category === 'Transport'));
     const catCounts = CATEGORY_ORDER
       .map(c => ({ name: c, n: pickable.filter(u => u.category === c).length }))
@@ -2809,7 +2818,8 @@
       test: u => !!(window.DZCCollection
         && window.DZCCollection.count(current.faction, u.id) > 0) }
   ];
-  const CATEGORY_ORDER = ['Standard', 'Vanguard', 'Heavy', 'Support', 'Transport', 'Generated'];
+  // Fauna last: the Intelligent ones every faction lists (Fauna rules 7.1.7).
+  const CATEGORY_ORDER = ['Standard', 'Vanguard', 'Heavy', 'Support', 'Transport', 'Generated', 'Fauna'];
 
   const squadPrice = u => window.DZC.squadPrice(u);
   const span = (lo, hi) => (lo === hi ? `${lo}` : `${lo}–${hi}`);
@@ -2844,7 +2854,7 @@
     if (!f) return;
     const q = picker.search.trim().toLowerCase();
 
-    let units = f.units.filter(u => u.selectable !== false
+    let units = f.units.filter(u => offered(u)
       && (picker.kind === 'transport') === (u.category === 'Transport'));
     if (picker.category !== 'All') units = units.filter(u => u.category === picker.category);
     picker.filters.forEach(k => {

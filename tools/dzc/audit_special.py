@@ -94,7 +94,8 @@ def special_column(page, lines):
 def main():
     data = {}
     paths = [*sorted(glob.glob(os.path.join("data", "dzc", "faction-*.json"))),
-             os.path.join("data", "dzc", "behemoths.json")]
+             os.path.join("data", "dzc", "behemoths.json"),
+             os.path.join("data", "dzc", "fauna.json")]
     for path in paths:
         if not os.path.exists(path):
             continue
@@ -106,6 +107,7 @@ def main():
     problems, checked = [], 0
     pdfs = sorted(glob.glob(os.path.join("rules", "DZC_*_Stat_Cards_*.pdf")))
     pdfs += glob.glob(os.path.join("rules", "Behemoth_Rules_Stats_*.pdf"))
+    pdfs += glob.glob(os.path.join("rules", "Fauna_Rules_*.pdf"))
     for pdf in pdfs:
         doc = fitz.open(pdf)
         src = os.path.basename(pdf)

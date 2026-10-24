@@ -145,6 +145,24 @@ def _newest_behemoth(cards_dir):
     return os.path.join(cards_dir, max(got, key=stamp)) if got else None
 
 
+def heading_spans(page) -> list[str]:
+    """Every line a page sets in the heading face, MorrisSans."""
+    return [sp["text"].strip() for blk in page.get_text("dict")["blocks"]
+            for ln in blk.get("lines", []) for sp in ln["spans"]
+            if "MorrisSans" in sp["font"]]
+
+
+def _newest_fauna(cards_dir):
+    """The newest Fauna rules PDF in cards_dir, by TTCombat's date stamp."""
+    def stamp(f):
+        m = re.search(r"_(\d{6})\.pdf$", f)
+        return m.group(1) if m else ""
+
+    got = [f for f in os.listdir(cards_dir)
+           if f.startswith("Fauna_Rules") and f.endswith(".pdf")]
+    return os.path.join(cards_dir, max(got, key=stamp)) if got else None
+
+
 def _newest_rulebook(cards_dir):
     """The newest rulebook in cards_dir, by its EDITION POINT.
 
@@ -605,7 +623,7 @@ BEHEMOTH_HEAD_RE = re.compile(r"^(\d+(?:\.\d+)+)\s+(\S.*)$")
 BEHEMOTH_CHAPTER_RE = re.compile(r"^\d+\.\s+\S")
 
 
-def parse_behemoth_rules(doc, pages) -> list[Rule]:
+def parse_behemoth_rules(doc, pages, chapter_bodies=False) -> list[Rule]:
     """The Behemoth PDF's own rules pages.
 
     Its own parser rather than parse(), because the typography is different in
@@ -620,6 +638,9 @@ def parse_behemoth_rules(doc, pages) -> list[Rule]:
     body_size = 9.0
     out: list[Rule] = []
     cur: Rule | None = None
+    # Where the last body line started, for chapter_bodies' paragraph breaks.
+    # A new page starts higher up, so the gap goes negative and breaks nothing.
+    last_y: float | None = None
     for pno in range(pages[0], pages[1] + 1):
         # VISUAL order, not the order the spans come out of the PDF. On page 1
         # every paragraph is emitted before any heading, so walking the raw
@@ -697,7 +718,35 @@ def parse_behemoth_rules(doc, pages) -> list[Rule]:
                 if cur:
                     out.append(cur)
                 cur = None
+                # The Fauna PDF's "1. The Basics" is a chapter with no
+                # numbered rule under it: its bullet list -- Fauna cannot be
+                # taken as part of an army, never count for KP, are always
+                # enemy Units -- sits straight under the chapter heading and
+                # was dropped with it. Started as a rule of its own, and a
+                # chapter that holds only numbered rules starts one with no
+                # text, which the caller discards.
+                if chapter_bodies:
+                    num, _, title = txt.partition(".")
+                    cur = {"section": num.strip(), "name": title.strip(),
+                           "text": "", "page": pno + 1}
+            elif (chapter_bodies and cur is not None and heading
+                  and not txt.isdigit()):
+                # A run-in subheading inside a rule: 5.1 Entry is three cases,
+                # "Deployed", "Infesting" and "Underground", each set in the
+                # heading face over its own paragraph.
+                cur["text"] += f"\n\n{txt}: "
             elif cur is not None and not (txt.isdigit() and sp["bbox"][1] > foot):
+                # The Fauna PDF marks a list item with a tab after its "•" or
+                # "1.", and the tab is the only thing that tells a list item
+                # from a number ending a sentence. strip() took it.
+                if chapter_bodies:
+                    txt = sp["text"].strip(" \n")
+                    # A paragraph break is a taller gap than a line break:
+                    # lines are ~11pt apart, paragraphs ~16pt.
+                    y = sp["bbox"][1]
+                    if cur["text"] and last_y is not None and y - last_y > 14:
+                        txt = "\n\n" + txt
+                    last_y = y
                 cur["text"] = (cur["text"] + " " + txt) if cur["text"] else txt
     if cur:
         out.append(cur)
@@ -894,6 +943,56 @@ def main():
             })
             beh_count += 1
         print(f"  {'behemoth':<12} {beh_count:>3} rules  ({os.path.basename(beh_pdf)})")
+
+    # Fauna rules, namespaced like a faction's: "fauna-voracious".
+    #
+    # Unlike the Behemoth rules these are NOT core. Fauna adjust core rules
+    # for themselves alone -- 6.1.1 Focus says "Fauna will always use the
+    # Focus rule to combine all hits into one" -- and a bare "Focus" in the
+    # core pool would be a second answer for every Focus a faction prints.
+    # Scoped to "fauna", a Fauna card finds them first and nothing else
+    # finds them before its own rules and the rulebook's.
+    fauna_pdf = _newest_fauna(args.cards_dir)
+    fauna_count = 0
+    if fauna_pdf:
+        fdoc = fitz.open(fauna_pdf)
+        # The rules run while a page carries a numbered heading. The
+        # scenarios after them are maps with a title and no number, and the
+        # cards after those carry none either.
+        last = -1
+        for pno in range(fdoc.page_count):
+            heads = heading_spans(fdoc[pno])
+            if not any(BEHEMOTH_HEAD_RE.match(h) or BEHEMOTH_CHAPTER_RE.match(h) for h in heads):
+                break
+            last = pno
+        for r in parse_behemoth_rules(fdoc, (0, last), chapter_bodies=True):
+            name = tidy(r["name"])
+            if not name or not tidy(r["text"]):
+                continue
+            head, alias = split_alias(name)
+            # Each bullet and each numbered step is a paragraph, as printed.
+            # The tab after the marker is what tells a list item from a "1."
+            # inside a sentence.
+            raw = re.sub(r"\s*((?:•|\d+\.)\t)", r"\n\n\1", r["text"])
+            out.append({
+                "id": f"fauna-{slug(head)}",
+                "faction": "fauna",
+                "source": "fauna",
+                "section": r["section"],
+                "chapter": "Fauna rules",
+                "name": head,
+                "alias": alias,
+                "parameterised": bool(PLACEHOLDER_RE.search(head)),
+                "match": matcher_pattern(head),
+                # Per paragraph, so Instinct's five cases keep the "Roll 1d3+3
+                # for its Activation dice." each of them ends with. " :" is a
+                # bold case name set apart from its colon: "Skulk : The Squad".
+                "text": "\n\n".join(re.sub(r"\s+:", ":", dedupe_sentences(tidy(p)))
+                                    for p in raw.split("\n\n") if tidy(p)),
+                "page": r["page"],
+            })
+            fauna_count += 1
+        print(f"  {'fauna':<12} {fauna_count:>3} rules  ({os.path.basename(fauna_pdf)})")
 
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
     with open(args.out, "w", encoding="utf-8") as fh:

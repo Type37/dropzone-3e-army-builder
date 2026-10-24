@@ -251,6 +251,9 @@
         && !(u.gear || []).some(x => /^Director\b/.test(String(x.name || '')));
     }).map(s => s.id));
     const alive = squads.filter(s => aliveIn(s) > 0);
+    // An Intelligent Fauna Group "does not count toward your total number of
+    // Groups for army composition or pass token generation" (Fauna rules 7.1.7).
+    if (alive.length && alive.every(s => window.DZCArmy.isFauna(unit(s)))) return 0;
     const cargo = alive.filter(s => hosts.has(s.carriedBy));
     const rest = alive.filter(s => !hosts.has(s.carriedBy));
     const ge = rest.map(s => (unit(s) || {}).groupEquivalent || 0).filter(Boolean);

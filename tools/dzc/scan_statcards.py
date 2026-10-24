@@ -990,6 +990,36 @@ def split_row(line, cols, rules=None):
 TYPE_RE = re.compile(r"^(Vehicle|Aircraft|Infantry|Behemoth)(?:\s*\(([^)]*)\))?$", re.I)
 
 
+def join_wrapped_type(lines, k, row, cols, rules):
+    """A Type cell that wraps, read as one cell.
+
+    The Fauna cards print "Aircraft (20mm Fauna)" in a column too narrow for
+    it, so it breaks after "(20mm" and the two halves sit centred either side
+    of the stat row: three lines where every other card has one. Read line by
+    line, the Type was "Aircraft (20mm", TYPE_RE refused it, and the Feral
+    Vampires and the Harpies were dropped as pages that are not cards.
+
+    Only an open bracket triggers this, so every card that already parsed is
+    untouched. Returns the line holding the stats and the row with the whole
+    Type in it."""
+    head = (row.get("Type") or "").strip()
+    if not head or "(" not in head or ")" in head:
+        return k, row
+    y = min(w[1] for w in lines[k])
+    near = [j for j in (k + 1, k + 2) if j < len(lines)
+            and min(w[1] for w in lines[j]) - y < 14]
+    cells = {j: split_row(lines[j], cols, rules) for j in near}
+    stats = next((j for j in near
+                  if any(v for c, v in cells[j].items() if c != "Type")), None)
+    tail = next((j for j in near if j != stats
+                 and (cells[j].get("Type") or "").strip().endswith(")")), None)
+    if stats is None or tail is None:
+        return k, row
+    out = dict(cells[stats])
+    out["Type"] = f"{head} {cells[tail]['Type'].strip()}"
+    return stats, out
+
+
 def parse_stat_table(page, lines) -> tuple[str, str | None, dict[str, str], str, float] | None:
     """Type, base size, stats, Special, and the y this table ends at — or None.
 
@@ -1036,6 +1066,7 @@ def parse_stat_table(page, lines) -> tuple[str, str | None, dict[str, str], str,
         rules = sorted(set(rules) | set(doc_rules(page.parent)))
     for k, ln in enumerate(lines[i + 1:i + 4], start=i + 1):
         row = split_row(ln, cols, rules)
+        k, row = join_wrapped_type(lines, k, row, cols, rules)
         m = TYPE_RE.match((row.get("Type") or "").strip())
         if m:
             row.pop("Type")
@@ -2305,6 +2336,62 @@ def scan_behemoths(args) -> None:
         print(f"      skipped p{pg}: {why}")
 
 
+def scan_fauna(args) -> None:
+    """The Fauna supplement: native animals, a third force in a game.
+
+    Same card template again -- "Fauna" where the category goes and a Type of
+    "Vehicle (Fauna)" -- so the same parser reads it. Pages 1-13 are the Fauna
+    rules and scenarios and produce nothing.
+
+    "Fauna cannot be taken as part of an army" (1. The Basics), with one
+    exception the cards print themselves: Intelligent, "You may take up to one
+    Fauna Group with this rule as a part of your army in casual games" (7.1.7).
+    So selectable is read off the Special cell, not decided here: the three
+    Apex cards print it today, and a card that gains or loses it in a reissue
+    moves with the scan.
+    """
+    matches = [f for f in os.listdir(args.pdf_dir)
+               if f.startswith("Fauna_Rules") and f.endswith(".pdf")]
+    if not matches:
+        print("  !! no Fauna PDF")
+        return
+    path = os.path.join(args.pdf_dir, max(matches, key=pdf_stamp))
+    doc = fitz.open(path)
+    units: list[Unit] = []
+    skipped: list[tuple[int, str]] = []
+    for page in doc:
+        try:
+            u = parse_page(page, doc, args.art)
+        except Exception as exc:                     # noqa: BLE001
+            skipped.append(((page.number or 0) + 1, f"error: {exc}"))
+            continue
+        if u:
+            units.append(u)
+        elif "Squad Size:" in page.get_text():
+            skipped.append(((page.number or 0) + 1, "has Squad Size but did not parse"))
+    for u in units:
+        u["faction"] = "fauna"
+        inches(u)
+        rules = [s.strip() for s in (u.get("special") or "").split(",")]
+        u["selectable"] = "Intelligent" in rules
+    ver = re.search(r"_(\d{6})\.pdf$", os.path.basename(path))
+    data: FactionFile = {
+        "faction": "fauna",
+        "name": "Fauna",
+        "sourcePdf": os.path.basename(path),
+        "version": ver.group(1) if ver else None,
+        "units": units,
+    }
+    out = os.path.join(args.out, "fauna.json")
+    with open(out, "w", encoding="utf-8") as fh:
+        json.dump(data, fh, indent=2, ensure_ascii=False)
+    print(f"  Fauna       {len(units):3d} units -> {out}")
+    for pg, why in skipped:
+        print(f"      skipped p{pg}: {why}")
+    if skipped:
+        raise SystemExit("a Fauna card did not parse")
+
+
 def carry_variant_art(data: FactionFile, out_path: str) -> int:
     """Keep the variant photographs a card scan cannot know about.
 
@@ -2359,11 +2446,15 @@ def main():
     ap.add_argument("--faction", default=None, help="limit to one faction")
     ap.add_argument("--behemoths", action="store_true",
                     help="scan the Behemoth PDF into behemoths.json instead")
+    ap.add_argument("--fauna", action="store_true",
+                    help="scan the Fauna PDF into fauna.json instead")
     args = ap.parse_args()
 
     os.makedirs(args.out, exist_ok=True)
     if args.behemoths:
         return scan_behemoths(args)
+    if args.fauna:
+        return scan_fauna(args)
     grand = 0
     for fname, fid in FACTIONS.items():
         if args.faction and args.faction.lower() != fid:

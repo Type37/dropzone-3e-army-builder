@@ -92,6 +92,7 @@ for path in sorted(glob.glob(os.path.join("data", "dzc", "faction-*.json"))):
 # of a Squad Size (Behemoth rules 1.1-1.2). Ten of them plus the one Drone that
 # is "included with its Behemoth" and cannot be taken separately (2.1.1).
 BEHEMOTHS = os.path.join("data", "dzc", "behemoths.json")
+FAUNA = os.path.join("data", "dzc", "fauna.json")
 if os.path.exists(BEHEMOTHS):
     with open(BEHEMOTHS, encoding="utf-8") as fh:
         bh = json.load(fh)
@@ -121,6 +122,36 @@ if os.path.exists(BEHEMOTHS):
     if sorted(placed.values()) != [2, 2, 2, 2, 2]:
         problems.append(f"Behemoths are not two per faction across five: {dict(placed)}")
 
+# --- Fauna -----------------------------------------------------------------
+#
+# A third force, not an army (Fauna rules 1). Every card is a Vehicle, Aircraft
+# or Infantry with "(Fauna)" in its Type, a price for its KP and a Squad Size,
+# and only a card printing Intelligent may be taken (7.1.7).
+if os.path.exists(FAUNA):
+    with open(FAUNA, encoding="utf-8") as fh:
+        fa = json.load(fh)
+    stats["fauna"] = len(fa["units"])
+    if not fa["units"]:
+        problems.append("fauna: no cards")
+    for u in fa["units"]:
+        tag = f"fauna/p{u['page']} {u['name']!r}"
+        if u.get("faction") != "fauna":
+            problems.append(f"{tag}: faction {u.get('faction')!r}, expected 'fauna'")
+        if u["category"] != "Fauna":
+            problems.append(f"{tag}: category {u['category']!r}, expected 'Fauna'")
+        if u["type"] not in TYPES:
+            problems.append(f"{tag}: bad type {u['type']!r}")
+        if "Fauna" not in (u.get("base") or ""):
+            problems.append(f"{tag}: Type does not say Fauna ({u.get('base')!r})")
+        if u["points"] is None:
+            problems.append(f"{tag}: no points (Fauna are priced for KP)")
+        if u["squadMin"] is None or u["squadMax"] is None:
+            problems.append(f"{tag}: no squad size")
+        intelligent = "Intelligent" in [s.strip() for s in (u.get("special") or "").split(",")]
+        if u["selectable"] != intelligent:
+            problems.append(f"{tag}: selectable={u['selectable']} "
+                            f"but Intelligent={intelligent} (7.1.7)")
+
 # A weapon's variant bracket must name a variant the unit actually has.
 #
 # weaponLive matches these by exact name against the models a Squad fields, so
@@ -131,7 +162,7 @@ if os.path.exists(BEHEMOTHS):
 # Squads rendered with NO WEAPONS AT ALL, in the builder and on the printed
 # sheet, and nothing in this file noticed. scan_statcards reconciles the two
 # now (reconcile_variant_names); this is the check that says it worked.
-for path in [*sorted(glob.glob(os.path.join("data", "dzc", "faction-*.json"))), BEHEMOTHS]:
+for path in [*sorted(glob.glob(os.path.join("data", "dzc", "faction-*.json"))), BEHEMOTHS, FAUNA]:
     if not os.path.exists(path):
         continue
     with open(path, encoding="utf-8") as fh:
