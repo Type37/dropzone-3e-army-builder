@@ -309,6 +309,27 @@ of it is either applied or listed as not applied. Half a page is not done.
 
 ---
 
+## Session, 2026-10-24
+
+### 18. Stopped tracking rules/ and broke the deploy that read it
+
+**What happened.** Build 520 took the 533 MB of PDFs in `rules/` out of git and
+moved the monthly update onto a record (`data/dzc/sources.json`). I ran the full
+rebuild locally, the whole suite, and the monthly workflow on GitHub, and all
+passed. I did not run `deploy.yml`, whose "Data audits" step calls
+`rebuild.py --skip-scan`: it refused with "no rules/ here", and three of its
+audits read the PDFs anyway. The push did not deploy; the site stayed on Build
+519 for about ten minutes until `fetch_sources.py --recorded` fed the audits.
+
+**What should have happened.** Before removing something from the repo, find
+everything that reads it, workflows included (`grep -rn "rules" .github/`), not
+only the scripts the change was about.
+
+**Pattern:** verifying by proxy. The workflow I had changed passed, and I read
+that as the repo passing.
+
+---
+
 ## Carried in from before this session
 
 Recorded in the handoff at the time, and still the root cause of most rework:
