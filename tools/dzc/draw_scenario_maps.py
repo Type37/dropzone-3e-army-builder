@@ -451,8 +451,10 @@ def draw(sid, scen):
 PDFS = {
     # By pattern: fetch_sources.py replaces a reissue in place.
     "rulebook": max(glob.glob(os.path.join(ROOT, "rules", "A5_Dropzone_*_Rulebook*.pdf"))),
-    "fauna": max(glob.glob(
-        os.path.join(ROOT, "rules", "Extra-Rules", "Fauna_Rules_Scenarios*.pdf"))),
+    # rules/ since 2026-10-24 (it is a scanned source now); Extra-Rules before.
+    "fauna": max(
+        glob.glob(os.path.join(ROOT, "rules", "Fauna_Rules_Scenarios*.pdf"))
+        + glob.glob(os.path.join(ROOT, "rules", "Extra-Rules", "Fauna_Rules_Scenarios*.pdf"))),
 }
 
 

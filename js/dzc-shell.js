@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 519;
+  const BUILD = 520;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -331,6 +331,18 @@ const App = (() => {
 
   function openSettings() {
     const dark = settings.theme === 'dark';
+    // "Updated October 2026 with Fauna_Rules_Scenarios_261001": the newest TTCombat file
+    // the data was built from, written into index.json by the monthly update. The
+    // button says What's new until the index is in.
+    const upd = window.DZC && DZC.indexNow && DZC.indexNow() && DZC.indexNow().updated;
+    const newsLabel = upd ? `Updated ${upd.month} with ${upd.file}` : "What's new";
+    // Not every screen loads the index (the landing page does not), so load it
+    // here and draw Settings again once it is in, if Settings is still open.
+    if (window.DZC && DZC.indexNow && !DZC.indexNow()) {
+      DZC.loadIndex().then(() => {
+        if ($('modal-settings').classList.contains('active')) openSettings();
+      }).catch(() => {});
+    }
     $('settings-body').innerHTML = `
       <div class="dzc-set-group">
         <div class="dzc-set-title">Appearance</div>
@@ -374,7 +386,7 @@ const App = (() => {
                   title="Download every army as one JSON file">Export a backup</button>
           <button class="btn btn-ghost btn-sm" type="button" onclick="App.openImport()"
                   title="Read a backup, an army or a share link back in">Import</button>
-          <button class="btn btn-ghost btn-sm" type="button" onclick="App.openChangelog()">What's new</button>
+          <button class="btn btn-ghost btn-sm dzc-news" type="button" onclick="App.openChangelog()">${esc(newsLabel)}</button>
           <a class="btn btn-ghost btn-sm" href="${FEEDBACK_HREF}">Send feedback</a>
         </div>
         <p class="dzc-set-note">Build ${BUILD}. A WarLore project. Game data and art belong to TTCombat.

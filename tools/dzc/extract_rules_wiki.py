@@ -54,8 +54,8 @@ Unlike Dropfleet, this book sets NO bold anywhere in chapters 1-12 (checked:
 zero bold-flagged or Bold-face spans). The "b" flag on a run is kept in the
 schema so both games share one renderer; here it is simply never set.
 
-The three PDFs are tracked in rules/ (.gitignore re-includes rules/**), so this
-can run anywhere the repo is checked out. Run it when any of them changes.
+The three PDFs are not kept in the repo: python tools/dzc/fetch_sources.py
+downloads them into rules/. Run this when any of them changes.
 """
 
 from __future__ import annotations

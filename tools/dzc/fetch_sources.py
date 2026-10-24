@@ -1,34 +1,40 @@
 #!/usr/bin/env python3
 """
-Keep rules/ in step with what TTCombat currently publish.
+Keep the app in step with what TTCombat currently publish.
 
-    python tools/dzc/fetch_sources.py --check     # say what has moved, download nothing
-    python tools/dzc/fetch_sources.py             # download whatever is newer
+    python tools/dzc/fetch_sources.py --check          # say what has moved, download nothing
+    python tools/dzc/fetch_sources.py --check --json   # the same, as JSON for the workflow
+    python tools/dzc/fetch_sources.py                  # download the sources into rules/
+    python tools/dzc/fetch_sources.py --record         # after a good rebuild: remember what it read
 
 Every number in this app comes out of these PDFs, so a release we have not
 noticed is an army list priced against last month's rules. That went unnoticed
 for a week: the cards on disk were dated 260730 while the resources page had
 been serving 260804 and 260805, and nothing in the pipeline was looking.
 
+What the app was built from is recorded in data/dzc/sources.json, one filename
+per source. --check compares the page with that record, so the PDFs themselves
+need not be kept: rules/ is a download folder (gitignored since 2026-10-24, when
+it was 533 MB of committed PDF), filled when a rebuild needs it and safe to
+delete. Lore, assembly guides and starter sheets are not downloaded at all;
+nothing reads them.
+
 The page is scraped rather than a list of URLs being kept here, because the URL
 carries a Shopify version query that changes on every re-upload and a hardcoded
 one would 404 or, worse, quietly serve a stale copy from cache. What is kept
-here is the FILENAME STEM of each source we consume; the date suffix is
+here is the FILENAME PATTERN of each source we consume; the date suffix is
 whatever the page is offering today.
 
-Every other PDF on the page is kept too, under rules/Lore, rules/Assembly and
-rules/Extra-Rules, but nothing is scanned out of those.
-
 Exit codes, so a scheduled job can act on them:
-    0  everything on disk matches the page
-    1  a scanned source is newer (with --check), or a download failed
-    2  only unscanned PDFs are new (with --check) -- download, no re-scan
+    0  the record matches the page (or, downloading, every source is on disk)
+    1  a scanned source is newer than the record (with --check), or a download failed
     3  the resources page could not be read, so nothing was checked
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import re
 import sys
@@ -38,6 +44,7 @@ import urllib.request
 
 PAGE = "https://ttcombat.com/pages/dropzone-commander-resources"
 DEST = os.path.join("rules")
+RECORD = os.path.join("data", "dzc", "sources.json")
 
 # What the pipeline actually reads. Each entry is (stem, what it feeds).
 #
@@ -74,19 +81,6 @@ SOURCES = [
     # per faction rather than in the core rules.
     ("faction-errata", r"Faction_Errata", "reference"),
 ]
-
-# Everything else the page offers -- lore, assembly guides, starter armies,
-# campaign rules. Nothing in the pipeline reads these; they are kept so that
-# rules/ is the whole of what TTCombat publish, not just the part we scan.
-# First match wins.
-EXTRA_DIRS = [
-    (r"Lore|Primer", "Lore"),
-    (r"Assem|Instructions", "Assembly"),
-    (r".", "Extra-Rules"),
-]
-
-# GitHub refuses a file over 100 MB, and one refused file fails the whole push.
-MAX_BYTES = 95 * 1024 * 1024
 
 PDF_RE = re.compile(r"https://cdn\.shopify\.com/[^\"'>\s]+\.pdf(?:\?[^\"'>\s]*)?")
 DATE_RE = re.compile(r"_(\d{6})(?:\.pdf)?$")
@@ -131,30 +125,6 @@ def published(html: str) -> dict[str, tuple[str, str]]:
             if have is None or version_of(name) > version_of(have[0]):
                 out[key] = (name, url)
     return out
-
-
-def extras(html: str) -> list[tuple[str, str, str]]:
-    """[(filename, url, folder)] for every PDF no SOURCES pattern claims."""
-    out = []
-    for url in sorted(set(PDF_RE.findall(html))):
-        name = url.split("/")[-1].split("?")[0]
-        if any(re.search(p, name) for _, p, _ in SOURCES):
-            continue
-        folder = next(d for p, d in EXTRA_DIRS if re.search(p, name))
-        out.append((name, url, os.path.join(DEST, folder)))
-    return out
-
-
-def held() -> set[str]:
-    """Every PDF filename anywhere under rules/."""
-    return {f for _, _, files in os.walk(DEST) for f in files
-            if f.endswith(".pdf")}
-
-
-def undated(name: str) -> str:
-    """A name with its date stamp taken off -- what two releases of one
-    document have in common."""
-    return re.sub(r"_\d{6,8}(?=\.pdf$)", "", name).lower()
 
 
 def version_of(name: str) -> tuple[str, str]:
@@ -258,112 +228,114 @@ def fetch(url: str, path: str) -> tuple[int, str]:
         return len(data), fixed_name
 
 
+def load_record() -> dict[str, str]:
+    if not os.path.exists(RECORD):
+        return {}
+    with open(RECORD, encoding="utf-8") as fh:
+        return json.load(fh)
+
+
+def save_record(record: dict[str, str]) -> None:
+    text = json.dumps(record, indent=1, ensure_ascii=False) + chr(10)
+    with open(RECORD, "w", encoding="utf-8", newline="") as fh:
+        fh.write(text)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true",
-                    help="report what has moved and exit 1; download nothing")
+                    help="compare the page with data/dzc/sources.json; download nothing")
+    ap.add_argument("--json", action="store_true",
+                    help="with --check: print what moved as JSON")
+    ap.add_argument("--record", action="store_true",
+                    help="write data/dzc/sources.json from the sources in rules/")
     args = ap.parse_args()
+
+    if args.record:
+        # After a rebuild that passed every audit: what it read is now what the
+        # app is built from. Taken from rules/, because that is what was scanned.
+        record = load_record()
+        for key, pattern, _ in SOURCES:
+            have = on_disk(key, pattern)
+            if have:
+                record[key] = have
+        save_record(record)
+        print(f"  recorded {len(record)} sources in {RECORD}")
+        return 0
 
     try:
         html = get(PAGE).decode("utf-8", "replace")
     except (urllib.error.URLError, TimeoutError) as exc:
         print(f"  !! could not read the resources page: {exc}")
-        print("  Nothing was checked and nothing in rules/ was touched.")
+        print("  Nothing was checked and nothing was downloaded.")
         return 3
     live = published(html)
+    record = load_record()
 
     missing = [key for key, _, _ in SOURCES if key not in live]
-    for stem in missing:
-        # Not a warning. Every stem here is something the pipeline reads, so one
-        # the page has stopped offering means either a rename we must follow or
-        # a scrape that has broken -- and both need a human, not a retry.
-        print(f"  !! the resources page no longer offers anything matching {stem!r}")
+    if not args.json:
+        for stem in missing:
+            # Every stem here is something the pipeline reads, so one the page
+            # has stopped offering means either a rename we must follow or a
+            # scrape that has broken -- and both need a person, not a retry.
+            print(f"  !! the resources page no longer offers anything matching {stem!r}")
 
-    stale, fresh = [], []
-    for key, pattern, feeds in SOURCES:
+    if args.check:
+        # Compared on VERSION, not on the filename. The Scourge cards were linked
+        # as "..._2608021.pdf" and saved under the stamp that actually serves,
+        # "..._260821.pdf", so a name-equality test called the same release
+        # newer on every run.
+        stale, fresh = [], []
+        for key, _pattern, feeds in SOURCES:
+            if key not in live:
+                continue
+            name, url = live[key]
+            have = record.get(key)
+            if have and version_of(have) == version_of(name):
+                fresh.append(have)
+            else:
+                stale.append({"key": key, "have": have, "name": name, "url": url, "feeds": feeds})
+        if args.json:
+            print(json.dumps({"stale": stale, "missing": missing, "fresh": fresh}, indent=1))
+        else:
+            for name in fresh:
+                print(f"  ok       {name}")
+            for s in stale:
+                print(f"  NEWER    {s['name']}   (built from {s['have'] or 'nothing'})"
+                      f"  -> {s['feeds']}")
+            if not stale and not missing:
+                print("\n  the app is built from what the resources page serves"
+                      f" ({len(fresh)} sources)")
+            else:
+                print(f"\n  {len(stale)} newer, {len(missing)} missing.")
+        return 1 if (stale or missing) else 0
+
+    # Download: make rules/ hold the page's current release of every source the
+    # rebuild reads. Nothing else is fetched; nothing here is committed.
+    os.makedirs(DEST, exist_ok=True)
+    failed = 0
+    for key, pattern, _feeds in SOURCES:
         if key not in live:
             continue
         name, url = live[key]
         have = on_disk(key, pattern)
-        # Compared on VERSION, not on the filename. The Scourge cards are
-        # linked as "..._2608021.pdf" and saved under the stamp that actually
-        # serves, "..._260821.pdf", so a name-equality test called the same
-        # release newer on every run -- one permanent false positive, which on
-        # a scheduled job is a re-download every week and an exit code
-        # nobody can trust.
         if have and version_of(have) == version_of(name):
-            fresh.append(have)
-        else:
-            stale.append((have, name, url, feeds))
-
-    have_names = held()
-    new_extras = [e for e in extras(html) if e[0] not in have_names]
-
-    for name in fresh:
-        print(f"  ok       {name}")
-    for have, name, _url, feeds in stale:
-        print(f"  NEWER    {name}   (have {have or 'nothing'})  -> {feeds}")
-    for name, _url, folder in new_extras:
-        print(f"  NEW      {name}   -> {os.path.relpath(folder, DEST)}/")
-
-    if not stale and not missing and not new_extras:
-        print(f"\n  rules/ matches the resources page ({len(fresh)} scanned, "
-              f"{len(extras(html))} other)")
-        return 0
-    if args.check:
-        print(f"\n  {len(stale)} newer, {len(new_extras)} new, "
-              f"{len(missing)} missing.")
-        print("  Re-run without --check to download.")
-        # 2 = only files the pipeline does not read, so no re-scan is needed.
-        return 1 if (stale or missing) else 2
-
-    os.makedirs(DEST, exist_ok=True)
-    failed = 0
-    for name, url, folder in new_extras:
-        os.makedirs(folder, exist_ok=True)
-        try:
-            data = get(url)
-        except Exception as exc:                            # noqa: BLE001
-            print(f"  FAILED   {name}: {exc}")
-            failed += 1
+            print(f"  have     {have}")
             continue
-        if len(data) > MAX_BYTES:
-            print(f"  !! {name} is {len(data) // 2**20} MB, over GitHub's "
-                  f"file limit; not kept")
-            continue
-        with open(os.path.join(folder, name), "wb") as fh:
-            fh.write(data)
-        print(f"  got      {name}  ({len(data) // 1024} KB)")
-        # A dated re-release replaces the one before it, as the cards do.
-        for old in os.listdir(folder):
-            if old != name and undated(old) == undated(name):
-                os.remove(os.path.join(folder, old))
-                print(f"  dropped  {old}  (superseded; git history keeps it)")
-
-    for have, name, url, _feeds in stale:
-        path = os.path.join(DEST, name)
         try:
-            n, name = fetch(url, path)
+            n, name = fetch(url, os.path.join(DEST, name))
         except Exception as exc:                            # noqa: BLE001
             print(f"  FAILED   {name}: {exc}")
             failed += 1
             continue
         print(f"  got      {name}  ({n // 1024} KB)")
-        # The superseded file goes. rules/ is already 409 MB of committed PDF,
-        # and keeping both releases of six faction card sets would add a
-        # hundred more every month to hold a copy of something git history
-        # holds already: `git show HEAD~1:rules/<old>.pdf` recovers one, and
-        # `git checkout -- rules/` puts the whole directory back if a scan
-        # against a new release turns out badly.
-        if have and have != name:
-            try:
-                os.remove(os.path.join(DEST, have))
-                print(f"  dropped  {have}  (superseded; git history keeps it)")
-            except OSError as exc:
-                print(f"  !! could not remove {have}: {exc}")
-
-    print(f"\n  {len(stale) + len(new_extras) - failed} downloaded, "
-          f"{failed} failed")
+        # Only the newest release of a source stays, or the scanner could pick
+        # the wrong one.
+        for old in os.listdir(DEST):
+            if old.endswith(".pdf") and old != name and re.search(pattern, old):
+                os.remove(os.path.join(DEST, old))
+                print(f"  dropped  {old}  (superseded)")
+    print(f"\n  {failed} failed")
     return 1 if (failed or missing) else 0
 
 

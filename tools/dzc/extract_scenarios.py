@@ -32,7 +32,9 @@ ROOT = Path(__file__).resolve().parents[2]
 # By pattern, not by name: fetch_sources.py replaces a reissue in place, and
 # the 2026-09-23 rulebook came back as "A5_Dropzone_3.0_Rulebook_errarted_2".
 RULEBOOK = max((ROOT / "rules").glob("A5_Dropzone_*_Rulebook*.pdf"))
-FAUNA = max((ROOT / "rules" / "Extra-Rules").glob("Fauna_Rules_Scenarios*.pdf"))
+# rules/ since 2026-10-24 (it is a scanned source now); Extra-Rules before.
+FAUNA = max([*(ROOT / "rules").glob("Fauna_Rules_Scenarios*.pdf"),
+             *(ROOT / "rules" / "Extra-Rules").glob("Fauna_Rules_Scenarios*.pdf")])
 OUT_ART = ROOT / "assets" / "scenarios"
 OUT_DATA = ROOT / "data" / "dzc" / "scenarios.json"
 

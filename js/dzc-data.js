@@ -46,6 +46,10 @@
     return res.json();
   }
 
+  /* The index if it has loaded, else null. For code that renders synchronously
+   * and only wants a nice-to-have from it (the Settings "Updated ..." label). */
+  function indexNow() { return state.index || null; }
+
   async function loadIndex() {
     if (state.index) return state.index;
     if (!state._loading.index) {
@@ -935,7 +939,7 @@
     `--acc:${accent};--acc-text:${accentInk(accent)};--acc-on:${accentOn(accent)}`;
 
   const api = {
-    loadIndex, loadFaction,
+    loadIndex, indexNow, loadFaction,
     accentInk, accentOn, accentStyle,
     statLabel, weaponColLabel, statHelp, weaponColHelp,
     get index() { return state.index; },

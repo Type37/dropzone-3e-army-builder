@@ -1,21 +1,90 @@
 name: Watch TTCombat for new PDFs
 
-# Every Monday at 09:00 UTC, and on demand.
+# The monthly Dropzone update (2nd weekday of the month). The same process as the
+# Dropfleet builder's:
+#
+#   1. tools/dzc/fetch_sources.py --check   compares TTCombat's resources page with
+#                                           data/dzc/sources.json, the releases the
+#                                           app is built from. Nothing new: done.
+#   2. Download + rebuild                   only when a scanned source moved: the
+#                                           current sources go into rules/ (a
+#                                           download folder, never committed) and
+#                                           tools/dzc/rebuild.py scans them and runs
+#                                           every audit; then scripts/test-all.mjs.
+#   3. Claude (Sonnet)                      only if that fails (a new keyword, a
+#                                           layout the scanner does not read, a
+#                                           renamed file), following
+#                                           docs/AUTO-UPDATE.md.
+#   4. The gate                             rebuild, audits and the whole test suite
+#                                           again; only work that passes is
+#                                           committed, and the commit deploys
+#                                           (deploy.yml runs after this workflow).
+#   5. Email                                only when the gate fails or Claude writes
+#                                           NEEDS_JET.md. A quiet month and a
+#                                           successful update send nothing.
+#
+# The name of this workflow is load-bearing: deploy.yml and retry.yml run after it
+# by name.
+
 on:
+  # The 2nd weekday (Mon-Fri) of each month always falls on the 2nd, 3rd or 4th.
+  # Cron cannot say "2nd weekday", so it fires on all three and the `when` job
+  # lets only the right one through. Run it by hand any time from the Actions tab.
   schedule:
-    - cron: "0 9 * * 1"
+    - cron: "0 9 2-4 * *"
   workflow_dispatch:
+    inputs:
+      test_alert:
+        description: "Open a test issue to prove the email path works"
+        type: boolean
+        default: false
+      test_claude:
+        description: "Run Claude once, changing nothing, to prove the token works"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
+  issues: write
+  id-token: write
+  actions: write
 
 concurrency:
   group: "sources"
   cancel-in-progress: false
 
 jobs:
-  check:
+  when:
     runs-on: ubuntu-latest
+    outputs:
+      go: ${{ steps.day.outputs.go }}
+    steps:
+      - name: Is today the 2nd weekday of the month?
+        id: day
+        run: |
+          if [ "${{ github.event_name }}" != "schedule" ]; then echo "go=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          today=$(date -u +%-d); month=$(date -u +%Y-%m); n=0
+          for d in $(seq 1 "$today"); do
+            [ "$(date -u -d "$month-$d" +%u)" -le 5 ] && n=$((n + 1))
+          done
+          if [ "$(date -u +%u)" -le 5 ] && [ "$n" -eq 2 ]; then echo "go=true"; else echo "go=false"; fi >> "$GITHUB_OUTPUT"
+          echo "weekday number $n of the month"
+
+      # GitHub switches off schedules in a public repo after 60 days without
+      # activity, and a month with nothing new commits nothing. Enabling the
+      # workflow through the API on every firing keeps the schedule alive.
+      - name: Keep the schedule switched on
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/sources.yml/enable" || true
+
+  check:
+    needs: when
+    if: needs.when.outputs.go == 'true'
+    runs-on: ubuntu-latest
+    env:
+      HAS_CLAUDE: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN != '' }}
+      PYTHONUTF8: "1"
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -31,135 +100,160 @@ jobs:
           enable-cache: true
           prune-cache: true
 
-      # Reports what the resources page is serving against what rules/ holds,
-      # and exits 1 when anything has moved. continue-on-error because "there
-      # is a new release" is the interesting outcome, not a failure.
-      - name: What is TTCombat publishing?
-        id: check
+      # A test, so it never fails the run (a failed run emails Jet).
+      - name: Token check
+        id: tokencheck
+        if: inputs.test_claude
         continue-on-error: true
-        run: |
-          uv run python tools/dzc/fetch_sources.py --check | tee check.log
-          echo "changed=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: Read docs/AUTO-UPDATE.md and reply with its first heading. Change no files.
+          claude_args: --max-turns 3 --model claude-sonnet-5-5 --allowedTools "Read"
+          show_full_output: true
 
-      # 3 is "could not read the page". It must not fall through to the
-      # download as "something changed", which is what a bare != '0' did.
-      - name: Download
-        if: steps.check.outputs.changed == '1' || steps.check.outputs.changed == '2'
-        run: uv run python tools/dzc/fetch_sources.py
-
-      # Exit 2 means only PDFs the pipeline does not read are new -- lore,
-      # assembly guides, campaign rules. Those are kept, not scanned.
-      - name: Re-scan
-        if: steps.check.outputs.changed == '1'
+      - name: Token check result
+        if: inputs.test_claude
         run: |
-          # The whole pipeline: scan both PDF sets, then all seven audits. The
-          # audits are the gate, and audit_construction is the one that can
-          # stop THIS job doing harm: every other audit checks the scan against
-          # itself, so a point release that moved a force-construction rule
-          # would pass them all while the builder went on enforcing the last
-          # edition's. It reads chapter 3 out of the rulebook and fails the
-          # run, which is what should happen -- a moved construction rule needs
-          # a person, not a re-scan.
-          #
-          # audits are the gate. They are what caught the 260805 release
-          # renaming a Type cell from "Aircraft" to "Aircraft (40mm)", which
-          # silently dropped every Aircraft card in the game — UCM came back
-          # with 20 units instead of 36 and no dropships at all.
-          #
-          # scan_variant_art is NOT run here and cannot be: it reads the
-          # previous edition's cards out of Pics/, which is gitignored and
-          # exists on one machine. That used to mean an unattended re-scan
-          # deleted all 155 variant photographs; scan_statcards carries them
-          # across a rewrite itself now, so the photos survive a run that
-          # cannot regenerate them.
-          uv run python tools/dzc/rebuild.py
-
-      # A new PDF does not always mean new data — TTCombat reissue files that
-      # scan to the same numbers. This asks about the scan's output, not its
-      # input: rules/ is always dirty here, because fetch_sources.py has just
-      # written the new PDFs into it. Those get committed either way; only a
-      # change in data/ is a reason to raise the build number.
-      #
-      # --porcelain rather than `git diff --quiet` because a genuinely new
-      # unit arrives as an untracked file in assets/units, which a diff of
-      # tracked files does not see.
-      - name: Did the data actually change?
-        if: steps.check.outputs.changed == '1'
-        id: data
-        run: |
-          if [ -z "$(git status --porcelain -- data assets/units)" ]; then
-            echo "New PDFs, but the scan produced identical data."
-            echo "changed=false" >> "$GITHUB_OUTPUT"
+          if [ "${{ steps.tokencheck.outcome }}" = "success" ]; then
+            echo "### Claude token works" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "### Claude token was rejected" >> "$GITHUB_STEP_SUMMARY"
           fi
 
-      # Before the tests, so test-shell.mjs is what proves the two numbers
-      # still match. Data that lands without a new cache name is data nobody
-      # sees: sw.js precaches data/dzc/index.json and rules.json, so an
-      # installed app keeps serving the old points with nothing to say so.
-      - name: Raise the build number
-        if: steps.data.outputs.changed == 'true'
-        run: node scripts/bump-build.mjs
+      # 0 nothing moved, 1 a scanned source moved (or the page stopped offering
+      # one), 3 the page could not be read: next month tries again, no email.
+      - name: What is TTCombat publishing?
+        id: check
+        if: ${{ !inputs.test_alert && !inputs.test_claude }}
+        run: |
+          set +e
+          uv run python tools/dzc/fetch_sources.py --check --json > check.json
+          code=$?
+          set -e
+          cat check.json
+          echo "changed=$code" >> "$GITHUB_OUTPUT"
 
-      - name: Prove it
+      # The whole pipeline, first try. Each stage is written to update.txt and the
+      # first failure stops it: Claude reads that file.
+      - name: Download, rebuild, test
+        id: update
         if: steps.check.outputs.changed == '1'
-        run: node scripts/test-all.mjs
+        run: |
+          set +e
+          (
+            echo "## Download"; uv run python tools/dzc/fetch_sources.py || exit 11
+            echo "## Rebuild and audits"; uv run python tools/dzc/rebuild.py || exit 12
+            uv run python tools/dzc/fetch_sources.py --record
+            echo "## Tests"; node scripts/test-all.mjs || exit 13
+          ) > update.txt 2>&1
+          code=$?
+          set -e
+          tail -60 update.txt
+          if [ "$code" = "0" ]; then echo "ok=true" >> "$GITHUB_OUTPUT"; else echo "ok=false" >> "$GITHUB_OUTPUT"; fi
 
-      # Only reached when the scan AND every audit AND the whole suite passed,
-      # because each step above fails the job. An unattended commit is fine on
-      # that basis and not on any weaker one — this is the file every number in
-      # the app comes out of.
-      - name: Commit the new data
-        if: steps.check.outputs.changed == '1' || steps.check.outputs.changed == '2'
+      - name: Claude, for what the pipeline could not do
+        id: claude
+        if: steps.update.outputs.ok == 'false' && env.HAS_CLAUDE == 'true'
+        continue-on-error: true
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: |
+            Read docs/AUTO-UPDATE.md and do what it says. check.json says what TTCombat
+            published; update.txt is the output of the download, rebuild and tests,
+            and ends where they stopped.
+          claude_args: --max-turns 80 --model claude-sonnet-5-5 --allowedTools "Bash,Read,Write,Edit,Glob,Grep"
+
+      # Everything again, from the top, after Claude: the rebuild, every audit and
+      # the whole suite. Then the What's New entry, the "Updated ..." line and the
+      # build number, and the suite once more over those.
+      - name: Check the work
+        id: gate
+        if: steps.check.outputs.changed == '1'
+        run: |
+          : > gate.txt
+          fail() { echo "- $1" >> gate.txt; }
+          if [ "${{ steps.update.outputs.ok }}" != "true" ]; then
+            [ "$HAS_CLAUDE" = "true" ] || fail "The update failed and the repo has no CLAUDE_CODE_OAUTH_TOKEN secret."
+            [ "${{ steps.claude.outcome }}" = "success" ] || [ "$HAS_CLAUDE" != "true" ] || fail "The Claude step failed; see the run log."
+            uv run python tools/dzc/fetch_sources.py > g-fetch.txt 2>&1 || { fail "Downloading the sources still fails:"; tail -20 g-fetch.txt >> gate.txt; }
+            uv run python tools/dzc/rebuild.py > g-rebuild.txt 2>&1 || { fail "The rebuild or an audit still fails:"; tail -30 g-rebuild.txt >> gate.txt; }
+            uv run python tools/dzc/fetch_sources.py --record > /dev/null 2>&1
+          fi
+          [ -f NEEDS_JET.md ] && fail "Claude asked for a decision (below)."
+          if [ ! -s gate.txt ]; then
+            uv run python tools/dzc/describe_update.py check.json > news.txt 2>&1 || { fail "Writing What's New failed:"; cat news.txt >> gate.txt; }
+            if [ -n "$(git status --porcelain -- data assets/units)" ]; then node scripts/bump-build.mjs; fi
+            node scripts/test-all.mjs > g-tests.txt 2>&1 || { fail "The test suite fails:"; tail -30 g-tests.txt >> gate.txt; }
+            uv run python tools/dzc/fetch_sources.py --check > g-check.txt 2>&1 || { fail "The app is still not built from what the page serves:"; cat g-check.txt >> gate.txt; }
+          fi
+          if [ -s gate.txt ]; then echo "ok=false" >> "$GITHUB_OUTPUT"; cat gate.txt; else echo "ok=true" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Commit and deploy
+        if: steps.gate.outputs.ok == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A rules data assets/units js/dzc-shell.js sw.js
-          if git diff --cached --quiet; then
-            echo "Nothing to commit."
-            exit 0
-          fi
-          {
-          echo "New PDFs from TTCombat's resources page"
-          echo
-          grep -E '^  (NEWER|NEW) ' check.log | sed 's/^  //' || true
-          echo
-          cat <<'MSG'
-          Automatic. tools/dzc/fetch_sources.py found the resources page serving
-          something rules/ did not hold and downloaded it. Where a scanned
-          source moved, the whole pipeline was re-run, and this is committed only
-          because every audit and all of scripts/test-all.mjs passed.
-
-          The superseded PDFs are dropped rather than kept beside the new
-          ones -- rules/ is already hundreds of MB of committed PDF, and git
-          history is the record of what the previous data was built from:
-          `git show HEAD~1:rules/<old>.pdf` recovers one.
-
-          No changelog entry. Nobody read this diff — what changed in the
-          points is still to be written up by hand.
-          MSG
-          } | git commit -F -
+          python - <<'PY'
+          import json
+          check = json.load(open('check.json'))
+          files = [s['name'] for s in check.get('stale', [])]
+          news = [l for l in open('news.txt').read().splitlines() if l.startswith('- ')]
+          body = ['TTCombat update: ' + ', '.join(f.rsplit('.', 1)[0] for f in files), ''] + news
+          body += ['', 'Automatic. Downloaded, rebuilt and committed because every audit and',
+                   'scripts/test-all.mjs passed afterwards. The PDFs are not kept; what the',
+                   'data was built from is recorded in data/dzc/sources.json.']
+          open('msg.txt', 'w').write('\n'.join(body) + '\n')
+          PY
+          git add -A data assets/units assets/rules js sw.js
+          git diff --cached --quiet && { echo "Nothing changed."; exit 0; }
+          git commit -F msg.txt
           git push
 
-      - name: Say what happened
-        run: |
-          if [ "${{ steps.check.outputs.changed }}" = "0" ]; then
-            echo "### rules/ matches the resources page" >> "$GITHUB_STEP_SUMMARY"
-          elif [ "${{ steps.check.outputs.changed }}" = "3" ]; then
-            echo "### TTCombat's site would not answer, so nothing was checked" >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "### TTCombat published something new" >> "$GITHUB_STEP_SUMMARY"
-          fi
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-          cat check.log >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
+      # An open alert from an earlier month is answered by this commit; close it.
+      - name: Close the old alert
+        if: steps.gate.outputs.ok == 'true'
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const { data: open } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: 'dzc-data' });
+            for (const i of open)
+              await github.rest.issues.update({ owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: i.number, state: 'closed', state_reason: 'completed' });
 
-      # Still a failure, after seven and a half minutes of retries: a page that
-      # stays unreadable is a release nobody will hear about. But it says what
-      # happened instead of ending on a traceback.
-      - name: Fail if the page could not be read
-        if: steps.check.outputs.changed == '3'
-        run: |
-          echo "::error::TTCombat's resources page refused every request. Nothing was downloaded or committed; next Monday's run tries again."
-          exit 1
+      - name: Email Jet
+        if: steps.gate.outputs.ok == 'false' || inputs.test_alert
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const fs = require('fs');
+            const has = f => fs.existsSync(f) && fs.statSync(f).size > 0;
+            const read = f => fs.readFileSync(f, 'utf8').trim();
+            const isTest = ${{ inputs.test_alert || false }};
+            const parts = isTest
+              ? ['**Test alert.** Nothing is wrong; this only proves the email path works. Close it.', '']
+              : ['The monthly Dropzone update could not finish on its own. Nothing was committed; the site still has the last good data.', ''];
+            if (!isTest) {
+              if (has('NEEDS_JET.md')) parts.push('## What Claude needs you to decide', '', read('NEEDS_JET.md'), '');
+              if (has('gate.txt')) parts.push('## What did not pass', '', '```', read('gate.txt'), '```', '');
+              if (has('check.json')) parts.push('## What TTCombat published', '', '```', read('check.json'), '```', '');
+            }
+            parts.push(`_[Run log](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`);
+            const body = parts.join('\n');
+            const { data: open } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: 'dzc-data' });
+            if (open.length) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo, issue_number: open[0].number, body });
+            } else {
+              // Assigning the owner is what makes GitHub email it.
+              const { data: issue } = await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title: (isTest ? 'Test alert' : 'Dropzone update needs you') + ` (${new Date().toISOString().slice(0, 10)})`,
+                labels: ['dzc-data'], assignees: [context.repo.owner], body });
+              core.notice(`Opened #${issue.number}: ${issue.html_url}`);
+            }

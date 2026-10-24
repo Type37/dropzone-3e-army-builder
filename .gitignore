@@ -9,10 +9,12 @@ Faction Icons/
 
 # Source archives & reference PDFs
 *.zip
-# Rules PDFs are ignored except the DZC set: TTCombat publish them free and
-# publicly, and tools/dzc/scan_statcards.py reads them to build the data.
+# Every PDF is ignored, rules/ included (since 2026-10-24; it had been 533 MB of
+# committed PDF). rules/ is a download folder: tools/dzc/fetch_sources.py fills it
+# from TTCombat's resources page when a rebuild needs it, and what the app was
+# built from is recorded in data/dzc/sources.json instead.
 *.pdf
-!rules/**
+rules/
 
 # Concept art / reference images in root
 robert-mallinson-*

@@ -1,4 +1,4 @@
-/* The data against its SOURCES: is it scanned from the PDFs rules/ holds, and
+/* The data against its SOURCES: is it scanned from the recorded releases, and
  * does every printed keyword still open the rule it was reviewed opening.
  *
  * Both exist because the other suites check the data against itself, and
@@ -15,7 +15,7 @@
  *   UPDATE_RULE_SNAPSHOT=1 node scripts/test-dzc-sources.mjs
  * and read the diff of scripts/fixtures/rule-resolution.json. */
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import vm from 'node:vm';
@@ -50,15 +50,21 @@ function eq(a, b, label) { ok(a === b, label, `expected ${JSON.stringify(b)}, go
 await DZC.loadIndex();
 const FACTIONS = ['ucm', 'phr', 'scourge', 'shaltari', 'resistance', 'bioficer'];
 
-console.log('\nthe data is scanned from the PDFs rules/ holds');
+// The PDFs are no longer kept (rules/ is a gitignored download folder), so the
+// record of what the app is built from is data/dzc/sources.json, written by
+// fetch_sources.py --record after a rebuild passes. Each data file must have
+// been scanned from exactly the release that record names: a file left behind
+// by a partial rebuild disagrees with it, which is the 2026-09-28 failure
+// (new Bioficer cards downloaded, old ones still served) in its current form.
+console.log('\nthe data is scanned from the releases data/dzc/sources.json records');
 {
-  const held = readdirSync(path.join(ROOT, 'rules')).filter(f => f.endsWith('.pdf'));
-  const stem = f => f.replace(/_\d{6,8}(?=\.pdf$)/, '').toLowerCase();
-  for (const file of FACTIONS.map(f => `faction-${f}.json`).concat(['behemoths.json', 'fauna.json'])) {
-    const src = JSON.parse(readFileSync(path.join(ROOT, 'data', 'dzc', file), 'utf8')).sourcePdf;
-    ok(held.indexOf(src) !== -1, `${file} was scanned from ${src}, which rules/ holds`,
-      `rules/ has ${held.filter(h => stem(h) === stem(src)).join(', ') || 'no release of it'}`
-      + ' -- run python tools/dzc/rebuild.py');
+  const record = JSON.parse(readFileSync(path.join(ROOT, 'data', 'dzc', 'sources.json'), 'utf8'));
+  const scanned = FACTIONS.map(f => [`faction-${f}.json`, `${f}-cards`, 'sourcePdf'])
+    .concat([['behemoths.json', 'behemoths', 'sourcePdf'], ['fauna.json', 'fauna', 'sourcePdf'],
+      ['rules.json', 'rulebook', 'source']]);
+  for (const [file, key, field] of scanned) {
+    const src = JSON.parse(readFileSync(path.join(ROOT, 'data', 'dzc', file), 'utf8'))[field];
+    eq(src, record[key], `${file} was scanned from the recorded ${key} release`);
   }
 }
 
