@@ -1,0 +1,17 @@
+# Old Export [1500pts]
+
+# UCM, Clash, 285 of 1500pts, 3 Groups
+
+# Spearhead, 160pts
+  1 x Bear APC [10pts]
+    3 x Legionnaires [150pts]
+
+# Group 2, 75pts
+  2 x UCM Main Battle Tank [75pts]: Sabre, Tachi
+
+# Air, 50pts
+  1 x Archangel [50pts]: Archangel Interceptor
+  # upgrade: UM-115 Missile Spread
+
+# Commanders
+# Level 5 Commander, with Legionnaires [90pts]

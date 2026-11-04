@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 520;
+  const BUILD = 521;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -663,6 +663,10 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-11-04', title: 'Plain text lists paste cleanly into Discord', items: [
+      'A list copied as plain text has one heading for the army, one for each Group and one for the Commanders, and a • on every Unit, upgrade and Commander. Discord no longer turns every line into a heading.',
+      'A copied list pasted back in keeps every Group, named ones included. Lists copied before this change do too.',
+    ] },
     { date: '2026-10-24', title: 'Fauna', items: [
       'TTCombat’s Fauna supplement (1 October) is in: all 14 Fauna, from Daggers to the Typhon, with their pictures, in a Fauna tab in Unit Reference.',
       'Interactive Rules has a Fauna rules chapter, and every Fauna rule on a card opens it.',

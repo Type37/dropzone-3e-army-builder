@@ -169,9 +169,9 @@ console.log('\nplain text');
   ok(/\[1500pts\]/.test(txt), 'and states the agreed limit');
   // The Transport is the PARENT: a Condor carries Bear APCs which carry
   // Legionnaires, and that tree is the deployment plan (HANDOFF section 3).
-  ok(/^ {2}\d+ x Bear APC \[/m.test(txt), 'the Transport sits at the top of its Group');
-  ok(/^ {4}\d+ x Legionnaires \[/m.test(txt), 'and what it carries is indented under it');
-  ok(/^# Commanders$/m.test(txt), 'the Commander block is there');
+  ok(/^• \d+ x Bear APC \[/m.test(txt), 'the Transport sits at the top of its Group');
+  ok(/^ {4}• \d+ x Legionnaires \[/m.test(txt), 'and what it carries is indented under it');
+  ok(/^## Commanders$/m.test(txt), 'the Commander block is there');
   ok(/Level 5/.test(txt), 'with the level');
   ok(!/Level 5 Commander, Level 5/.test(txt), 'and it does not say the level twice');
   // Every line the parser has to ignore starts with "#", which is the rule
@@ -189,6 +189,47 @@ console.log('\nplain text');
   ok(r.ok, 'and it imports', r.reason);
   eq(r.army.faction, 'ucm', 'onto the right faction');
   eq(r.unmatched.length, 0, 'with nothing unresolved', r.unmatched.join(' | '));
+}
+
+/* It has to paste into Discord, which reads "# " as a big heading and an
+ * indented "-" or "*" as a list that nests deeper every line. The old sheet
+ * started every non-Unit line with "#", so a pasted list was a wall of
+ * headlines (WarLore Discord, 2026-11-04). One title, "##" per Group and for
+ * the Commanders, "•" under them. */
+console.log('\npastes into Discord');
+{
+  const lines = S.text(army).split('\n');
+  eq(lines.filter(l => /^#\s/.test(l)).length, 1, 'one "#" heading, the title');
+  ok(lines.filter(l => /^#/.test(l)).every(l => /^#\s/.test(l) || /^##\s/.test(l)),
+     'every other heading is a "##"', lines.filter(l => /^#/.test(l)).join(' | '));
+  ok(!lines.some(l => /^\s*[-*+]\s/.test(l)), 'no line Discord would turn into a list');
+  ok(!lines.some(l => /^\s+#/.test(l)), 'and no indented "#" line');
+  ok(lines.filter(l => /^\s*\d+ x /.test(l)).length === 0, 'every Unit line has its "•"');
+}
+
+/* A list exported BEFORE that change still has to import whole. The fixture
+ * is what the old DZCShare.text actually wrote (run from git), not a copy of
+ * it by hand: a "# Spearhead, 160pts" Group, a carried Squad, a mixed-variant
+ * Squad, an upgrade line and a "#" Commander. The old parser only knew a Group
+ * called "Group N", so the named ones merged with their neighbours; they come
+ * back as three Groups now. */
+console.log('\na list exported before the Discord change');
+{
+  const old = readFileSync(path.join(ROOT, 'scripts', 'fixtures', 'dzc-text-before-2026-11-04.txt'), 'utf8');
+  const r = A.importList(old);
+  ok(r.ok, 'it imports', r.reason);
+  eq(r.unmatched.length, 0, 'with nothing unresolved', r.unmatched.join(' | '));
+  eq(r.army.groups.length, 3, 'as its three Groups, named ones included');
+  const sq = r.army.groups.flatMap(x => x.squads);
+  const bear = sq.find(s => s.unitId === 'bear-apc');
+  const leg = sq.find(s => s.unitId === 'legionnaires');
+  ok(bear && leg && leg.carriedBy === bear.id, 'the Legionnaires ride in their Bear APC');
+  const tk = sq.find(s => s.unitId === 'ucm-main-battle-tank');
+  ok(tk && tk.models.length === 2, 'the tanks keep their count');
+  ok(sq.some(s => s.unitId === 'archangel'), 'the upgraded Archangel is there');
+  eq((r.army.commanders || []).length, 1, 'and the Commander comes back');
+  eq(r.army.commanders[0] && r.army.commanders[0].level, 5, 'at Level 5');
+  ok(r.army.commanders[0] && leg && r.army.commanders[0].squadId === leg.id, 'with the Legionnaires');
 }
 
 console.log('\nJSON');
@@ -282,7 +323,7 @@ console.log('\nbought upgrades survive the plain-text sheet');
 
   const txt3 = S.text(up);
   ok(/UM-115 Missile Spread/.test(txt3), 'the sheet names it', txt3);
-  ok(/^\s*#\s*upgrade:/m.test(txt3), 'on its own # line', txt3);
+  ok(/^\s*•\s*upgrade:/m.test(txt3), 'on its own upgrade line', txt3);
 
   const back4 = A.parseList(txt3);
   eq(back4.length, 2, 'and both Squads still parse back out of the sheet');

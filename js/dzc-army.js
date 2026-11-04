@@ -320,10 +320,25 @@
   function parseList(text) {
     const lines = listNormalize(String(text || '')).split(/\r?\n/);
     const entries = [];
-    let group = 0;
+    let group = 0, inCommanders = false;
     lines.forEach(raw => {
       const line = raw.trim();
-      if (/^#+\s*Group\b/i.test(line)) { group++; return; }
+      if (/^#+\s*Group\b/i.test(line)) { group++; inCommanders = false; return; }
+      /* THE DISCORD-SAFE SHAPE (DZCShare.text, 2026-11-04). A Group is any
+       * "## <name>, Npts" heading, so a renamed Group or the Gates start one
+       * too. Older exports wrote the same heading with one "#", and only a
+       * Group literally called "Group N" was being read as one: a list with
+       * a Group named Spearhead came back with it merged into its neighbour.
+       * One or two "#" both count. The title ends "[Npts]" and the faction
+       * line ends "N Groups", so neither is caught.
+       * The Commanders sit under their own "##" heading as "•" lines
+       * with a cost, which would read as Units; everything under it is
+       * skipped here and read by importList's Commander pass instead. An
+       * upgrade line is "• upgrade: ..." and has no Unit to resolve. */
+      if (/^#+\s*Commanders?\s*$/i.test(line)) { inCommanders = true; return; }
+      if (/^#{1,2}\s+.+,\s*\d+\s*pts?\s*$/i.test(line)) { group++; inCommanders = false; return; }
+      if (inCommanders) return;
+      if (/^(?:[•\-*]\s*)?upgrade\s*:/i.test(line)) return;
       // A "#" line is a heading, always. The title, a section, a Configuration
       // block. Dropfleet treats it the same way, and without it "## Test Force
       // [500pts]" reads as a Unit called Test Force that resolved to nothing.
@@ -452,6 +467,7 @@
      * keep doing only that. "with <Unit>" puts them back on the first Squad of
      * that Unit; a Commander whose Squad cannot be found stays unassigned,
      * which is a state the app already has and reports. */
+    let underCommanders = false;
     String(text || '').split(/\r?\n/).forEach(raw => {
       const line = raw.trim();
       /* The line is "# <name>[, Level N], with <Unit>|not assigned [Npts]",
@@ -459,15 +475,21 @@
        * reports its Level as its name, which is why the writer does not print
        * the Level twice. So the Level is matched wherever it falls rather than
        * anchored after the name. Every part has to be there: a "#" line with a
-       * Level, a cost, and one of the two placements. */
-      if (!/^#/.test(line)) return;
+       * Level, a cost, and one of the two placements.
+       *
+       * Since 2026-11-04 the writer puts them under "## Commanders" as "•"
+       * lines instead. A "•" line counts only under that heading, so no Unit
+       * line elsewhere can be read as a Commander. */
+      if (/^#+\s*Commanders?\s*$/i.test(line)) { underCommanders = true; return; }
+      if (/^#+\s*Group\b/i.test(line) || /^#{1,2}\s+.+,\s*\d+\s*pts?\s*$/i.test(line)) underCommanders = false;
+      if (!/^#/.test(line) && !(underCommanders && /^•/.test(line))) return;
       const lv = line.match(/\bLevel\s+(\d+)\b/i);
       const place = line.match(/,\s*(?:with\s+(.+?)|not\s+assigned)\s*\[\s*\d+\s*pts?\s*\]\s*$/i);
       if (!lv || !place) return;
       const level = parseInt(lv[1], 10);
       if (!(level > 0)) return;
       const c = { id: uid(), level: level, name: null, squadId: null };
-      const typed = (line.match(/^#+\s*([^,]+)/) || [])[1];
+      const typed = (line.match(/^(?:#+|•)\s*([^,]+)/) || [])[1];
       const head = String(typed || '').trim();
       if (head && !/^Level\s+\d+(\s+Commander)?$/i.test(head) && !/^Commanders?$/i.test(head)) {
         c.name = head;

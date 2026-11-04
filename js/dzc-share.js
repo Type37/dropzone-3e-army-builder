@@ -204,9 +204,19 @@
    *     a flat list cannot say what rode in what, but the Units and their
    *     counts do, and the indentation is still there for the human.
    *
-   * Every line the parser must ignore starts with "#", which is exactly the
-   * rule parseList applies: headings, totals, and the Commander block, which
-   * has no Unit to resolve to.
+   * IT HAS TO PASTE INTO DISCORD, which is where lists get posted. Every
+   * line the parser had to ignore used to start with "#" -- and Discord reads
+   * "# " as a heading, so a pasted list was a wall of headlines: the faction
+   * line, every Group, every upgrade, every Commander. (Dropfleet's export had
+   * the sister bug: indented "-" lines became a markdown list nesting deeper
+   * each line. Both were raised on the WarLore Discord, 2026-11-04.)
+   *
+   * So the shape is now Dropfleet's: one "#" title, a "##" heading per Group
+   * and for the Commanders, and "•" on every line under them, which Discord
+   * leaves as text. The parser tells the lines apart by what they are, not by
+   * a "#": a Unit line has its "[Npts]", an upgrade line says "upgrade:", and
+   * the Commander block sits under its own heading. Lists exported before this
+   * still import; parseList keeps the old "#" rules.
    */
   function text(army) {
     const A = window.DZCArmy, D = window.DZC;
@@ -214,8 +224,8 @@
     const cost = A.armyCost(army);
     const out = [
       `# ${army.name}${army.collection ? '' : ` [${army.pointsLimit}pts]`}`,
-      army.description ? `# ${army.description}` : '',
-      `# ${army.faction.toUpperCase()}, ${army.collection ? 'Collection'
+      army.description ? army.description : '',
+      `${army.faction.toUpperCase()}, ${army.collection ? 'Collection'
         : size ? size.label : 'below the minimum'}`
         + `, ${army.collection ? `${cost}pts` : `${cost} of ${army.pointsLimit}pts`}, ${army.groups.length} Group`
         + `${army.groups.length === 1 ? '' : 's'}`,
@@ -225,7 +235,9 @@
     function squad(g, s, depth) {
       const u = A.unitOf(army, s);
       if (!u) return;
-      const pad = '  '.repeat(depth);
+      // Four spaces a level, as Dropfleet indents its sub-items. The importer
+      // only compares depths, so any consistent step reads back the same.
+      const pad = '    '.repeat(depth - 1);
       // The mix, because Variants are per model (3.2.2) and a Squad may
       // legally hold more than one. A Squad of one Variant names it inline so
       // the line still reads as a single entry.
@@ -248,7 +260,7 @@
        * dropped the entire Squad. Losing the tokens would have been bad; losing
        * the Genitor silently was worse. */
       const rm = A.rmOf(s);
-      out.push(`${pad}${s.models.length} x ${u.name} [${A.squadCost(army, s)}pts]`
+      out.push(`${pad}• ${s.models.length} x ${u.name} [${A.squadCost(army, s)}pts]`
         + (rm ? ` + ${rm} RM` : '') + tail);
 
       /* THE UPGRADES, ON THEIR OWN "#" LINE.
@@ -281,20 +293,21 @@
         .filter(o => A.hasOption(s, o.swap))
         .forEach(o => (o.swap.removes || []).forEach(r =>
           ups.push(`−1 ${r.weapon}${o.scope === '*' ? '' : ` (${o.scope})`}`)));
-      if (ups.length) out.push(`${pad}# upgrade: ${ups.join(', ')}`);
+      // One step in from its Squad, so it reads as that Squad's, not as cargo.
+      if (ups.length) out.push(`${pad}    • upgrade: ${ups.join(', ')}`);
 
       g.squads.filter(x => x.carriedBy === s.id).forEach(r => squad(g, r, depth + 1));
     }
 
     army.groups.forEach(g => {
-      out.push(`# ${A.groupName(army, g)}, ${A.groupCost(army, g)}pts`);
+      out.push(`## ${A.groupName(army, g)}, ${A.groupCost(army, g)}pts`);
       g.squads.filter(s => !s.carriedBy).forEach(s => squad(g, s, 1));
       out.push('');
     });
 
     const cmdrs = A.commanders(army);
     if (cmdrs.length) {
-      out.push('# Commanders');
+      out.push('## Commanders');
       cmdrs.forEach(c => {
         const sq = c.squadId ? A.findSquad(army, c.squadId) : null;
         const cu = sq ? A.unitOf(army, sq) : null;
@@ -302,7 +315,7 @@
         // saying it twice is the line reading "Level 5 Commander, Level 5".
         const nm = A.commanderName(army, c);
         const lvl = `Level ${c.level}`;
-        out.push(`# ${nm}${nm.indexOf(lvl) === -1 ? ', ' + lvl : ''}`
+        out.push(`• ${nm}${nm.indexOf(lvl) === -1 ? ', ' + lvl : ''}`
           + `, ${cu ? 'with ' + cu.name : 'not assigned'} [${A.levelCost(c.level)}pts]`);
       });
     }
