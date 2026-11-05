@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 521;
+  const BUILD = 522;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -663,6 +663,11 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-11-05', title: 'A Battle Bus can ride the Leviathan you already bought', items: [
+      'A Transport in another Group is offered under Linked transport. Choosing it moves the Squad, and everything it carries, into that Group, because everything sharing one Transport is one Group. A Group left empty by the move is removed.',
+      'A Transport carrying two Squads keeps its Linked transport button and says why nothing is offered: only the top Transport is shared (3.2.4.1). The button used to vanish.',
+      'A fifth Squad refused a Transport says it is the four Squad limit, not that there is no room.',
+    ] },
     { date: '2026-11-04', title: 'Plain text lists paste cleanly into Discord', items: [
       'A list copied as plain text has one heading for the army, one for each Group and one for the Commanders, and a • on every Unit, upgrade and Commander. Discord no longer turns every line into a heading.',
       'A copied list pasted back in keeps every Group, named ones included. Lists copied before this change do too.',

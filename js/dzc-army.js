@@ -1863,6 +1863,24 @@
   function boardTransport(army, squadId, carrierSquadId) {
     const s = findSquad(army, squadId);
     if (!s) return { ok: false, reason: 'Unknown Squad.' };
+    /* A Transport in ANOTHER Group. Everything sharing one Transport is one
+     * Group (3.2.4.1), so boarding it moves this Squad, and all it carries,
+     * into that Group. Tried on a copy first: a refusal leaves the army as
+     * it was, and names the rule the copy refused for. */
+    const from = groupOf(army, squadId);
+    const to = (army.groups || []).find(g => g.squads.some(x => x.id === carrierSquadId));
+    if (from && to && from.id !== to.id) {
+      const trial = JSON.parse(JSON.stringify(army));
+      dropSoleCarrier(trial, squadId);
+      moveSquad(trial, squadId, to.id);
+      const r = boardTransport(trial, squadId, carrierSquadId);
+      if (!r.ok) return r;
+      dropSoleCarrier(army, squadId);
+      moveSquad(army, squadId, to.id);
+      // The Group it came from has joined this one if nothing is left in it.
+      if (!from.squads.length) army.groups = army.groups.filter(g => g.id !== from.id);
+      return boardTransport(army, squadId, carrierSquadId);
+    }
     const opt = boardOptions(army, squadId).find(o => o.squad.id === carrierSquadId);
     if (!opt) {
       /* Which rule refused it. "No room" was the only sentence here and it is
@@ -1895,6 +1913,11 @@
         return { ok: false,
           reason: `${tu.name} is Subterranean: it is not taken with any Units aboard.` };
       }
+      // The four, which room is not: a Leviathan with Squads aboard can have
+      // diamonds to spare and still be full of Squads.
+      if (t && g && sharesOf(army, g, t.id, s.id) + brings > 4) {
+        return { ok: false, reason: 'At most 4 Squads may share one Transport (3.2.4.1).' };
+      }
       return { ok: false, reason: 'That Transport has no room for this Squad (3.2.4.2).' };
     }
 
@@ -1923,6 +1946,71 @@
       warn: (opt.full || opt.unit.category !== 'Transport') ? null
         : `${opt.unit.name} still has room for ${opt.room - opt.after}. ${fullRule(opt.unit)}`
     };
+  }
+
+  /* Get out of a Transport that was bought only for this Squad, and take it
+   * off the list, the way boardTransport and assignTransport already do
+   * inside one Group. */
+  function dropSoleCarrier(army, squadId) {
+    const s = findSquad(army, squadId);
+    const g = groupOf(army, squadId);
+    if (!s || !g || !s.carriedBy) return;
+    const old = g.squads.find(x => x.id === s.carriedBy);
+    s.carriedBy = null;
+    if (!old) return;
+    const ou = unitOf(army, old);
+    const others = g.squads.filter(x => x.carriedBy === old.id);
+    if (ou && ou.category === 'Transport' && !others.length) {
+      g.squads = g.squads.filter(x => x.id !== old.id);
+    }
+  }
+
+  /* Transports in OTHER Groups this Squad could board. A player report on
+   * Build 521: a Leviathan already carrying Storm Wagons, and a Battle Bus of
+   * infantry in another Group that could not be put in it. Asked of a copy
+   * with the Squad already moved across, so every rule boardOptions enforces
+   * (the four, the top Transport, the room) is asked of the Group it would
+   * actually be in. */
+  function boardElsewhereOptions(army, squadId) {
+    const from = groupOf(army, squadId);
+    if (!from) return [];
+    const out = [];
+    (army.groups || []).forEach(g => {
+      if (g.id === from.id) return;
+      const has = g.squads.some(t => {
+        const tu = carrierOf(army, t);
+        return tu && (tu.category === 'Transport' || tu.auxiliaryTransport) && !isGate(tu);
+      });
+      if (!has) return;
+      const trial = JSON.parse(JSON.stringify(army));
+      dropSoleCarrier(trial, squadId);
+      if (!moveSquad(trial, squadId, g.id).ok) return;
+      boardOptions(trial, squadId).forEach(o => {
+        const real = g.squads.find(x => x.id === o.squad.id);
+        if (real) out.push(Object.assign({}, o, { squad: real, group: g }));
+      });
+    });
+    return out;
+  }
+
+  /* Why nothing is offered to a Squad that fills a symbol something in this
+   * faction carries. Today there is one such rule: a Transport carrying two
+   * or more Squads is the top of its Group and may not ride in anything
+   * (3.2.4.1, 3.02 FAQ). Without this, its Linked transport button vanished
+   * and the Battle Bus looked like a Unit with no symbol at all. */
+  function carryRefusal(army, squadId) {
+    const s = findSquad(army, squadId);
+    const g = groupOf(army, squadId);
+    const u = s && unitOf(army, s);
+    if (!u || !g || u.category !== 'Transport' || u.auxiliaryTransport) return null;
+    if (!window.DZC.fillsOf(u).length) return null;
+    const brings = shareOf(army, g, s, s.id);
+    if (brings <= 1) return null;
+    const f = window.DZC.faction(army.faction);
+    const could = f && f.units.some(t => (t.category === 'Transport' || t.auxiliaryTransport)
+      && !isGate(t) && window.DZC.canCarry(t, u));
+    if (!could) return null;
+    return `${u.name} carries ${brings} Squads, so it stays at the top of the Group: only the top Transport is shared (3.2.4.1).`;
   }
 
   /* Assign (or clear) the Transport carrying a Squad. Creates the Transport
@@ -3514,7 +3602,7 @@
     upgradesFor, hasUpgrade, toggleUpgrade, upgradeCost,
     optionsFor, hasOption, toggleOption,
     transportOptions, assignTransport, refitTransports, groupSpace, groupsUsed,
-    boardOptions, boardTransport, sharesOf
+    boardOptions, boardTransport, boardElsewhereOptions, carryRefusal, sharesOf
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = window.DZCArmy;
 })();

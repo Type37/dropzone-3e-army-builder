@@ -2104,6 +2104,11 @@
     // A Transport already in the Group may have room even when the faction
     // offers none to buy, so the control has to appear for that case too.
     const board = window.DZCArmy.boardOptions(a, s.id);
+    // A Transport in another Group with room, which boarding moves this into.
+    const elsewhere = window.DZCArmy.boardElsewhereOptions(a, s.id);
+    // Something could carry it and a rule says no: the button stays, so the
+    // panel can say which rule.
+    const refused = window.DZCArmy.carryRefusal(a, s.id);
     /* And the Aircraft a Cling Squad may be chosen aboard, which is neither of
      * those: no symbol matches, no room is spent, and the Aircraft may be in
      * another Group -- "This Squad joins that Aircraft's Group". */
@@ -2178,7 +2183,8 @@
      *
      * The panel says what the bar is and offers Flies on its own, so opening
      * it is always worth something. */
-    const transportPicker = (opts.length || board.length || cling.length || clinger) ? `${carrierUnit
+    const transportPicker = (opts.length || board.length || elsewhere.length || refused
+        || cling.length || clinger) ? `${carrierUnit
       ? `<button type="button" class="dzc-sq-btn" title="${clinger ? 'Fly on its own' : 'Walks on instead'}"
                  onclick="DZCBuilder.${clinger ? 'setCling' : 'assignTransport'}('${s.id}','')"
                  aria-label="${clinger ? 'Let go' : 'Take'} ${esc(u.name)} ${clinger ? 'of' : 'out of'} its ${clinger ? 'Aircraft' : 'Transport'}"
@@ -3223,11 +3229,32 @@
       return;
     }
 
+    /* A Transport in another Group. The Group's name goes where the shapes
+     * are, the way the Cling card does it, because which Group this moves
+     * the Squad into is the thing to read before pressing it. */
+    const elsewhere = window.DZCArmy.boardElsewhereOptions(current, squadId);
+    const elsewhereCard = o => `<button type="button" class="dzc-carry-card dzc-carry-here${
+      o.full ? '' : ' is-partial'}"
+      onclick="DZCBuilder.boardTransport('${s.id}','${o.squad.id}')">
+      ${o.unit.art ? `<img src="${esc(o.unit.art)}" alt="" loading="lazy" onerror="this.remove()">`
+                   : '<span class="dzc-carry-noart"></span>'}
+      <span class="dzc-carry-name">${esc(o.unit.name)}</span>
+      <span class="dzc-carry-caps">${esc(window.DZCArmy.groupName(current, o.group))}</span>
+      <span class="dzc-carry-sum"><b>${o.after}</b><i>of ${o.room} aboard</i></span>
+      <span class="dzc-carry-fit">${o.full
+        ? `${window.DZCIcon('check_circle', { size: 14 })}Fills it`
+        : `${window.DZCIcon('warning', { size: 14 })}${o.room - o.after} still spare`}</span>
+    </button>`;
+    const refused = window.DZCArmy.carryRefusal(current, squadId);
+
     document.getElementById('dzc-carry-body').innerHTML = `
       <p class="dzc-carry-for">${esc(u.name)} <span>fills</span> ${U.transportHtml(u)}</p>
+      ${refused ? `<p class="dzc-empty">${esc(refused)}</p>` : ''}
       ${board.length ? `<p class="dzc-carry-head">Already in this Group</p>
-        <div class="dzc-carry-grid">${board.map(boardCard).join('')}</div>
-        <p class="dzc-carry-head">Or take another</p>` : ''}
+        <div class="dzc-carry-grid">${board.map(boardCard).join('')}</div>` : ''}
+      ${elsewhere.length ? `<p class="dzc-carry-head">In another Group</p>
+        <div class="dzc-carry-grid">${elsewhere.map(elsewhereCard).join('')}</div>` : ''}
+      ${board.length || elsewhere.length ? '<p class="dzc-carry-head">Or take another</p>' : ''}
       <div class="dzc-carry-grid">
         <button type="button" class="dzc-carry-card dzc-carry-walk${nowId ? '' : ' is-on'}"
                 onclick="DZCBuilder.assignTransport('${s.id}','')">
@@ -4229,6 +4256,9 @@
       closeCarry();
       if (!r.ok) return say(r.reason);
       if (r.warn) say(r.warn, 'warning');
+      // Boarding a Transport in another Group moved the Squad there.
+      const g = window.DZCArmy.groupOf(current, id);
+      if (g) selectedGroup = g.id;
       refresh();
     },
     assignTransport: (id, unitId) => {

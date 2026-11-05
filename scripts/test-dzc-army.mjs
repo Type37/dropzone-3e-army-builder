@@ -2778,6 +2778,52 @@ console.log('\nsharing a Transport (3.2.4.1) and an Auxiliary Transport (3.2.4.3
        'under half, the Leviathan names Flexible Capacity, not "taken full"', under.warn);
     ok(hasErr(A.validate(s2), 'Flexible Capacity'),
        'and validate says the same thing about the same Transport');
+
+    /* A player report on Build 521: a Leviathan carrying Storm Wagons, and
+     * Battle Buses of infantry in other Groups that could not be put in it. */
+    const lv = A.create('resistance', 'Leviathan', 3000);
+    const lg = A.addGroup(lv, 'Hover');
+    const wag = A.addSquad(lv, lg.id, 'artillery-wagon', 3);
+    A.assignTransport(lv, wag.id, 'leviathan-heavy-hovercraft');
+    const lev = lg.squads.find(x => x.unitId === 'leviathan-heavy-hovercraft');
+    const busIn = () => {
+      const bg = A.addGroup(lv, 'Bus');
+      const f = A.addSquad(lv, bg.id, 'resistance-fighters', 3);
+      A.assignTransport(lv, f.id, 'battle-bus');
+      return [bg, bg.squads.find(x => x.unitId === 'battle-bus'), f];
+    };
+    const [bg1, bus1, f1] = busIn();
+    eq(A.boardElsewhereOptions(lv, bus1.id).map(o => o.squad.id).join(), lev.id,
+       'a Battle Bus in another Group is offered the Leviathan already bought');
+    eq(A.boardElsewhereOptions(lv, f1.id).length, 0,
+       'its Fighters are not: they fill a square and the Leviathan carries diamonds');
+    ok(A.boardTransport(lv, bus1.id, lev.id).ok, 'and the Bus boards it');
+    ok(A.groupOf(lv, f1.id) === lg, 'taking its Fighters into the Leviathan’s Group (3.2.4.1)');
+    ok(!lv.groups.includes(bg1), 'and the Group it left, now empty, is gone');
+    const [, bus2] = busIn();
+    ok(A.boardTransport(lv, bus2.id, lev.id).ok, 'a second Bus boards too: three Squads in one Leviathan');
+    const [, bus3] = busIn();
+    const four = A.boardTransport(lv, bus3.id, lev.id);
+    ok(four.ok, 'a third Bus makes four Squads, which is the limit');
+    const [, bus5] = busIn();
+    const five = A.boardTransport(lv, bus5.id, lev.id);
+    ok(!five.ok && /At most 4 Squads/.test(five.reason),
+       'a fifth is refused for the four, not for room (3.2.4.1)', five.reason);
+    ok(A.groupOf(lv, bus5.id) !== lg, 'and a refusal leaves it where it was');
+    ok(!hasErr(A.validate(lv), 'Transport'), 'the Leviathan Group validates');
+
+    // Two Squads in one Bus: that Bus is the top Transport and rides nothing.
+    const two = A.create('resistance', 'Two', 3000);
+    const tg = A.addGroup(two, 'G');
+    const a1 = A.addSquad(two, tg.id, 'resistance-fighters', 2);
+    A.assignTransport(two, a1.id, 'battle-bus');
+    const tb = tg.squads.find(x => x.unitId === 'battle-bus');
+    eq(A.carryRefusal(two, tb.id), null, 'a Bus with one Squad aboard is not refused');
+    const a2 = A.addSquad(two, tg.id, 'resistance-fighters', 2);
+    A.boardTransport(two, a2.id, tb.id);
+    eq(A.transportOptions(two, tb.id).length, 0, 'a Bus with two Squads is offered no Transport (3.02 FAQ)');
+    ok(/top Transport is shared \(3\.2\.4\.1\)/.test(A.carryRefusal(two, tb.id) || ''),
+       'and says which rule, so its Linked transport button stays', A.carryRefusal(two, tb.id));
     await DZC.loadFaction('ucm');
   }
 
