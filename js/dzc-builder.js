@@ -1461,7 +1461,14 @@
   /* What the picker may offer. The Apex only when Settings says so: they are
    * Intelligent Fauna, legal "in casual games" (Fauna rules 7.1.7). An Army
    * already holding one keeps it either way; this only decides the offer. */
+  /* Generated Units are listed, locked. They can never be chosen, but they are
+   * the Bioficer stat cards you need at the table, and leaving them out of the
+   * picker left them nowhere in the builder at all (TTCombat, 2026-11-07:
+   * "no way to view your generated units via the builder as Bioficers?").
+   * canAddUnit refuses them with the rule, so the card shows the lock and the
+   * reason instead of Add, and still opens its stat card. */
   function offered(u) {
+    if (u.category === 'Generated') return true;
     if (u.selectable === false) return false;
     if (window.DZCArmy.isFauna(u)) return !!(window.App && window.App.faunaOn && window.App.faunaOn());
     return true;
@@ -2646,9 +2653,8 @@
      *
      * Hardcoding the six meant a faction with no Support units still offered a
      * Support tab that led to an empty list, and every tab was a guess about
-     * how much was behind it. Generated is absent by construction rather than
-     * by being listed: those Units are never selectable, so they never reach
-     * the count.
+     * how much was behind it. Generated gets a tab too: its Units are listed
+     * locked, so their stat cards can be read (see offered).
      *
      * The number is what EXISTS in the category, not what survives the current
      * search. It is fixed at open, which is what lets the bar be built once and
@@ -3375,7 +3381,13 @@
       const guns = window.DZCUnits.unitWeapons(u, squadGuns(s));
       collectRules(u, guns, s);
       const riders = g.squads.filter(x => x.carriedBy === s.id);
-      const cost = window.DZCArmy.squadCost(a, s);
+      /* RM on a line of their own, priced on it. Player report 2026-11-07:
+       * a Genitor's printed cost had its Raw Materials folded in, so the
+       * Unit's own value (what objective scoring asks for) had to be worked
+       * back out at the table. The Group and army totals still count both. */
+      const rmN = window.DZCArmy.rmOf(s);
+      const rmPts = window.DZCArmy.rmCost(s);
+      const cost = window.DZCArmy.squadCost(a, s) - rmPts;
       /* THE SAME STATS THE SCREEN DRAWS. Jet, 2026-08-13: "I'd like if print
        * mode could resemble all the nice work (with icons and shit) we put
        * into builder mode."
@@ -3489,10 +3501,11 @@
                document you read with a model in your hand. -->
           <span class="pr-sq-name">${esc(u.name)}</span>
           ${cap ? `<span class="pr-cap">${cap}</span>` : ''}
-          ${window.DZCArmy.rmOf(s) ? `<span class="pr-rm">${window.DZCArmy.rmOf(s)} RM</span>` : ''}
           ${s.commander ? `<span class="pr-cmdr">${esc(commanderTagName(a, s))}</span>` : ''}
           <span class="pr-sq-cost">${cost}pts</span>
         </div>
+        ${rmN ? `<div class="pr-sq-line pr-rm-line"><span class="pr-rm">${rmN} RM</span>
+          <span class="pr-sq-cost">${rmPts}pts</span></div>` : ''}
         ${mixStr ? `<div class="pr-variants">${mixStr}</div>` : ''}
         <div class="pr-statline">
           <div class="pr-stats">${stats}</div>
@@ -3619,7 +3632,7 @@
       ${dedupeAlerts(v.warnings).map(w =>
         `<p class="pr-warn">${w.n > 1 ? w.n + ' × ' : ''}${esc(w.msg)}</p>`).join('')}
       ${groups}
-      ${rules ? `<section class="pr-rules"><h2>Rules used</h2>${rules}</section>` : ''}`;
+      ${rules && printOpts.rules ? `<section class="pr-rules"><h2>Rules used</h2>${rules}</section>` : ''}`;
   }
 
   /* Print goes through a preview, and the preview is the sheet at A4 with the
@@ -3662,7 +3675,10 @@
    * there on the preview. Whatever you pick is remembered, so this is the
    * first print only. */
   const PRINT_KEY = 'dzc_print';
-  let printOpts = { compact: true, ink: true, art: false, text: false };
+  /* `rules` is the "Rules used" appendix, on by default and switched off with
+   * Dropfleet's own label, Rules text. Player report 2026-11-07: there was no
+   * way to leave it off the sheet. */
+  let printOpts = { compact: true, ink: true, art: false, text: false, rules: true };
   try { Object.assign(printOpts, JSON.parse(localStorage.getItem(PRINT_KEY) || '{}')); }
   catch (e) { /* nothing saved, or a browser refusing storage */ }
 
@@ -3697,7 +3713,7 @@
         <span class="pp-title">Print preview</span>
         <span class="pp-count" id="dzc-pp-count"></span>
         <span class="pp-spacer"></span>
-        ${[['compact', 'Compact'], ['ink', 'Ink-saver'], ['art', 'Art']]
+        ${[['compact', 'Compact'], ['ink', 'Ink-saver'], ['art', 'Art'], ['rules', 'Rules text']]
           .concat(fn ? [] : [['text', 'Text only']]).map(([k, label]) =>
           `<label class="pp-opt"><input type="checkbox" ${printOpts[k] ? 'checked' : ''}
              onchange="DZCBuilder.printOpt('${k}', this.checked)">${label}</label>`).join('')}

@@ -97,6 +97,8 @@
    stat: this many tokens go on the model before Round 1. */
 /* Both ride on the Squad's own line now, so neither opens one. */
 :is(#dzc-print, .pp-paper) .pr-rm { font-size: 8pt; font-weight: 700; white-space: nowrap; }
+/* RM's own priced line, under the Genitor's, so the Unit's cost stands alone. */
+:is(#dzc-print, .pp-paper) .pr-rm-line .pr-sq-cost { font-size: 8pt; }
 :is(#dzc-print, .pp-paper) .pr-cap { display: inline-flex; align-items: center; gap: 3pt; }
 :is(#dzc-print, .pp-paper) .pr-cap .dzc-badge { --badge-px: 13pt; --cargo-px: 11pt; }
 :is(#dzc-print, .pp-paper) .pr-cap .dzc-sep { font-size: 8pt; color: #333; }
@@ -315,14 +317,24 @@
 :is(#dzc-print, .pp-paper).is-ink :is(.pr-cap, .pr-variants, .pr-rule .pr-src) { color: #000; }
 /* Ink-saver: the shapes go black-on-white. Shape alone carries the meaning
    (3.2.4.2), the colour is 1:1 with it and therefore redundant, and a solid
-   coloured fill is the most expensive thing on the sheet. Cargo stays solid so
-   the "drops into the hollow" grammar survives; the digit inside it flips to
-   white against that black. */
+   coloured fill is the most expensive thing on the sheet.
+
+   Cargo is a pale grey fill inside a heavy black outline, with a black digit.
+   It used to be a black fill with a white digit, and a black-and-white
+   printout came back with a solid black box where the number should be
+   (player report, 2026-11-07): with background graphics off the browser
+   prints in economy mode and darkens light text, so the white digit went
+   black on black. Nothing in ink mode may depend on white text surviving the
+   printer. Grey against hollow white still reads as solid. */
 :is(#dzc-print, .pp-paper).is-ink .pr-cap .dzc-badge path { stroke: #000; }
 :is(#dzc-print, .pp-paper).is-ink .pr-cap .dzc-badge:not(.is-cargo) path { fill: none; }
-:is(#dzc-print, .pp-paper).is-ink .pr-cap .dzc-badge.is-cargo path { fill: #000; }
-:is(#dzc-print, .pp-paper).is-ink .pr-cap .dzc-badge:not(.is-cargo) .dzc-badge-n { color: #000 !important; }
-:is(#dzc-print, .pp-paper).is-ink .pr-cap .dzc-badge.is-cargo .dzc-badge-n { color: #fff !important; }
+:is(#dzc-print, .pp-paper).is-ink .pr-cap .dzc-badge.is-cargo path { fill: #c8c8c8; stroke-width: 3.5; }
+:is(#dzc-print, .pp-paper).is-ink .pr-cap .dzc-badge .dzc-badge-n { color: #000 !important; }
+/* Colour mode keeps the card's own white digit on the coloured fill, so the
+   browser must not darken it. */
+:is(#dzc-print, .pp-paper) .pr-cap .dzc-badge :is(svg, .dzc-badge-n) {
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
 :is(#dzc-print, .pp-paper).is-ink .pr-art { display: none; }
 
 /* Art. Off unless asked for: it is what a printer makes the worst mess of, the

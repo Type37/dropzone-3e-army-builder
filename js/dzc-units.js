@@ -1275,7 +1275,7 @@
           ${q ? `<span>matching &ldquo;${esc(state.search)}&rdquo;</span>` : ''}</p>
       </div>
       ${cats || '<p class="pr-warn">Nothing matches what is on screen.</p>'}
-      ${rules ? `<section class="pr-rules"><h2>Rules used</h2>${rules}</section>` : ''}`;
+      ${rules && o.rules !== false ? `<section class="pr-rules"><h2>Rules used</h2>${rules}</section>` : ''}`;
   }
 
   async function printSheet() {

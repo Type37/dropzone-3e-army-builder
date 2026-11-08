@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 522;
+  const BUILD = 523;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -663,6 +663,12 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-11-07', title: 'Generated Units in the builder, and a cleaner printout', items: [
+      'Bioficer Generated Units have their own tab in the unit picker. They are locked, because they are Spawned in play and never chosen, but every stat card opens.',
+      'A black and white printout shows the number inside a solid transport symbol. Ink-saver used to print it white on black, and printers turned the white black too.',
+      'Rules text is a print option. Untick it to leave the Rules used section off the sheet.',
+      'A Genitor’s RM print on a line of their own, with their own points, so the Genitor’s cost is its own. Group and army totals are unchanged.',
+    ] },
     { date: '2026-11-05', title: 'A Battle Bus can ride the Leviathan you already bought', items: [
       'A Transport in another Group is offered under Linked transport. Choosing it moves the Squad, and everything it carries, into that Group, because everything sharing one Transport is one Group. A Group left empty by the move is removed.',
       'A Transport carrying two Squads keeps its Linked transport button and says why nothing is offered: only the top Transport is shared (3.2.4.1). The button used to vanish.',
