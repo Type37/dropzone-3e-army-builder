@@ -2194,8 +2194,10 @@ console.log('\nOnly ONE Transport is shared (3.2.4.1, 3.02 FAQ Transports)');
     const at = g.squads.find(s => s.unitId === id('phr', 'Type-11 Atlas Quad Walker'));
     const i2 = A.addSquad(a, g.id, id('phr', 'Immortals'), 2);
     eq(A.boardTransport(a, i2.id, at.id).ok, true, 'two Squads may share an Atlas at the top');
-    eq(A.assignTransport(a, at.id, id('phr', 'Neptune Dropship')).ok, false,
-       'but that Atlas does not then go inside a Neptune');
+    // Ruling Jet passed on 2026-11-09: a Transport full of whole Squads may
+    // ride one Transport that can carry it.
+    eq(A.assignTransport(a, at.id, id('phr', 'Neptune Dropship')).ok, true,
+       'and that Atlas, both Squads whole inside it, goes in a Neptune');
     A.remove(a.id);
   }
 }
@@ -2689,7 +2691,7 @@ console.log('\nsharing a Transport (3.2.4.1) and an Auxiliary Transport (3.2.4.3
   const haz2 = A.addSquad(b, g2.id, 'hazard-suits', 1);
   const refused = A.boardTransport(b, haz2.id, ravens.id);
   ok(!refused.ok, 'a second Squad may NOT split a Squad of two Ravens (3.2.4.1)');
-  ok(/ONE Transport/.test(refused.reason || ''),
+  ok(/split between Transports/.test(refused.reason || ''),
      'and the refusal names the rule rather than blaming capacity', refused.reason);
   ok(A.boardOptions(b, haz2.id).length === 0, 'so the chooser never offers it either');
 
@@ -2812,7 +2814,9 @@ console.log('\nsharing a Transport (3.2.4.1) and an Auxiliary Transport (3.2.4.3
     ok(A.groupOf(lv, bus5.id) !== lg, 'and a refusal leaves it where it was');
     ok(!hasErr(A.validate(lv), 'Transport'), 'the Leviathan Group validates');
 
-    // Two Squads in one Bus: that Bus is the top Transport and rides nothing.
+    /* Two Squads in one Bus, and the Bus in a Leviathan. Ruling Jet passed on
+     * 2026-11-09: "you can fill it with multiple complete Squads and then
+     * load it onto a transport that can carry it (a Resistance hovercraft)". */
     const two = A.create('resistance', 'Two', 3000);
     const tg = A.addGroup(two, 'G');
     const a1 = A.addSquad(two, tg.id, 'resistance-fighters', 2);
@@ -2821,9 +2825,11 @@ console.log('\nsharing a Transport (3.2.4.1) and an Auxiliary Transport (3.2.4.3
     eq(A.carryRefusal(two, tb.id), null, 'a Bus with one Squad aboard is not refused');
     const a2 = A.addSquad(two, tg.id, 'resistance-fighters', 2);
     A.boardTransport(two, a2.id, tb.id);
-    eq(A.transportOptions(two, tb.id).length, 0, 'a Bus with two Squads is offered no Transport (3.02 FAQ)');
-    ok(/top Transport is shared \(3\.2\.4\.1\)/.test(A.carryRefusal(two, tb.id) || ''),
-       'and says which rule, so its Linked transport button stays', A.carryRefusal(two, tb.id));
+    ok(A.transportOptions(two, tb.id).some(o => o.unit.id === 'leviathan-heavy-hovercraft'),
+       'a Bus with two Squads is offered a Leviathan');
+    eq(A.carryRefusal(two, tb.id), null, 'and is not refused');
+    ok(A.assignTransport(two, tb.id, 'leviathan-heavy-hovercraft').ok, 'and rides it');
+    ok(!hasErr(A.validate(two), 'split'), 'and nothing is split');
     await DZC.loadFaction('ucm');
   }
 
@@ -2834,8 +2840,47 @@ console.log('\nsharing a Transport (3.2.4.1) and an Auxiliary Transport (3.2.4.3
   const rv = A.findSquad(e, l5.carriedBy);
   const h5 = A.addSquad(e, g5.id, 'hazard-suits', 1);
   h5.carriedBy = rv.id;                      // exactly what a share link can do
-  ok(hasErr(A.validate(e), 'share ONE Transport'),
+  ok(hasErr(A.validate(e), 'split between them'),
      'an illegal share arriving from elsewhere is reported (3.2.4.1)');
+
+  /* The ruling Jet passed on 2026-11-09, both halves. Six Legionnaires and
+   * two Bears: "2 Squads of 3 Units each, then each Bear can carry one full
+   * Squad. Entirely legal." "3 Squads of 2 Units each, one of the Squads has
+   * to be split between the Bears. This is always illegal." */
+  {
+    const [h, gh] = mk();
+    const s1 = A.addSquad(h, gh.id, 'legionnaires', 3);
+    A.assignTransport(h, s1.id, 'bear-apc');
+    const bears = A.findSquad(h, s1.carriedBy);
+    const s2 = A.addSquad(h, gh.id, 'legionnaires', 3);
+    ok(A.boardOptions(h, s2.id).some(o => o.squad.id === bears.id),
+       'a second Squad of 3 is offered the Bear');
+    ok(A.boardTransport(h, s2.id, bears.id).ok, 'and boards it');
+    eq(bears.models.length, 2, 'which is now two Bears, one Squad each');
+    eq(A.validate(h).errors.filter(x => /^3\.2\.4/.test(x.rule)).length, 0,
+       'and the Group is legal', JSON.stringify(A.validate(h).errors.map(x => x.msg)));
+
+    const [k, gk] = mk();
+    const t1 = A.addSquad(k, gk.id, 'legionnaires', 2);
+    A.assignTransport(k, t1.id, 'bear-apc');
+    const kb = A.findSquad(k, t1.carriedBy);
+    const t2 = A.addSquad(k, gk.id, 'legionnaires', 2);
+    const t3 = A.addSquad(k, gk.id, 'legionnaires', 2);
+    ok(A.boardTransport(k, t2.id, kb.id).ok, 'two Squads of 2 take two Bears');
+    const third = A.boardTransport(k, t3.id, kb.id);
+    ok(!third.ok && /split between Transports/.test(third.reason || ''),
+       'a third Squad of 2 is refused: it would be split between the Bears', third.reason);
+
+    // Each in its own Bear in one Group: the fix names the move.
+    const [m, gm] = mk();
+    const u1 = A.addSquad(m, gm.id, 'legionnaires', 3);
+    A.assignTransport(m, u1.id, 'bear-apc');
+    const u2 = A.addSquad(m, gm.id, 'legionnaires', 3);
+    A.assignTransport(m, u2.id, 'bear-apc');
+    ok(hasErr(A.validate(m), 'Put both Squads of Legionnaires in one Squad of Bear APC'),
+       'two Bears side by side are told how to become one Group',
+       JSON.stringify(A.validate(m).errors.map(x => x.msg)));
+  }
 
   A.load().slice().forEach(x => A.remove(x.id));
   store.clear();

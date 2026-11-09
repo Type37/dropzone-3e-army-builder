@@ -1153,7 +1153,12 @@
      * with space is one Group and stays one -- and otherwise take a Group of
      * its own, with its own Transport, which is what the rulebook's own worked
      * example of three Legionnaire Squads in three Bear APCs is. */
-    const boarded = ride && boardTransport(army, head.id, ride).ok;
+    // Room means room already there: a second Bear bought to share is legal
+    // (wholeFit), but it is a choice to make, not one Duplicate makes for you.
+    const rideSq = ride && g.squads.find(x => x.id === ride);
+    const rideU = rideSq && carrierOf(army, rideSq);
+    const roomy = !!rideU && grownCount(army, g, rideSq, rideU, head) <= rideSq.models.length;
+    const boarded = roomy && boardTransport(army, head.id, ride).ok;
     if (!boarded) {
       const size = window.DZC.gameSizeFor(army.pointsLimit);
       const maxG = size && !army.collection ? window.DZC.maxGroups(size, army.pointsLimit) : 0;
@@ -1650,17 +1655,14 @@
           fill: fill
         };
       })
-      /* A Squad that carries others is shared, and only ONE Transport -- one
-       * model, at the top -- is shared (3.2.4.1, 3.02 FAQ): four Buggies
-       * carrying Legionnaires and Hazard Suits go in one Vulture, never two
-       * Ravens. And a Transport carrying two Squads cannot go inside another
-       * at all, because a nested Transport carries one. */
+      /* A Squad that carries others rides ONE Transport, never split across
+       * several (3.2.4.1, 3.02 FAQ): four Buggies carrying Legionnaires and
+       * Hazard Suits go in one Vulture, never two Ravens. A Battle Bus full of
+       * Squads goes in one Leviathan (ruling, see wholeFit). */
       .filter(o => {
         const g = groupOf(army, squadId);
         const brings = g ? shareOf(army, g, s, s.id) : 1;
-        if (brings <= 1) return true;
-        if (u.category === 'Transport' && !u.auxiliaryTransport) return false;
-        return o.need <= 1;
+        return brings <= 1 || o.need <= 1;
       });
   }
 
@@ -1762,30 +1764,70 @@
     return xu && xu.category === 'Transport' ? inside : 1 + inside;
   }
 
-  /* Who may be SHARED. Two rules from the 3.02 FAQ, both saying that only
-   * ONE Transport -- one model, at the top -- is shared:
+  /* NO SQUAD IS SPLIT BETWEEN TRANSPORTS. That is the whole sharing rule.
    *
-   *   A Transport Squad of several models carries one Squad. "They may not be
-   *   taken in and split across a pair of Raven Light Dropships", said of an
-   *   Auxiliary Transport Squad that is itself carrying two Squads.
+   * Jet, 2026-11-09, passing on a ruling: six Legionnaires as two Squads of
+   * three in two Bears, "each Bear can carry one full Squad. Entirely legal."
+   * As three Squads of two, "one of the Squads has to be split between the
+   * Bears. This is always illegal." And a Battle Bus can be filled "with
+   * multiple complete Squads and then load it onto a transport that can
+   * carry it (a Resistance hovercraft)".
    *
-   *   A Transport aboard another carries one Squad. "Multiple Squads can only
-   *   share one larger non-Auxiliary 'top-level' Transport. Each Squad in the
-   *   Group must be either directly embarked in the larger Transport, or
-   *   embarked in and filling a Squad of Transports that are in turn embarked
-   *   in the larger transport." Two Immortal Squads in an Atlas in a Neptune
-   *   was being built without a word.
+   * This replaces two limits read off the 3.02 FAQ: a Transport Squad of
+   * several models carries one Squad, and a Transport aboard another carries
+   * one Squad. The FAQ's own examples, three Squads of two in two Bears and
+   * Buggies carrying two Squads across two Ravens, are both splits and are
+   * still refused.
    *
+   * So when a Transport Squad holds two or more Squads, or one Squad that
+   * carries another, each of them has to fit whole in ONE of its models. One
+   * Squad on its own may still fill several identical Transports (Group 3).
    * An Auxiliary Transport Squad may be shared at any size (3.2.4.3). */
-  function sharedOnce(t, tu) {
-    return !tu.auxiliaryTransport && (t.models.length > 1 || !!t.carriedBy);
+  function wholeFit(tu, loads, models) {
+    const bins = Array.from({ length: Math.max(1, models) }, () => []);
+    const place = i => {
+      if (i === loads.length) return true;
+      let triedEmpty = false;
+      for (const bin of bins) {
+        if (!bin.length) { if (triedEmpty) continue; triedEmpty = true; }
+        bin.push(loads[i]);
+        if (window.DZC.loadCheck(tu, bin, 1).ok && place(i + 1)) return true;
+        bin.pop();
+      }
+      return false;
+    };
+    return place(0);
   }
 
-  // `incoming` is what the boarding Squad brings (shareOf); 0 asks about the
-  // load already aboard.
-  function canShare(army, group, t, tu, incoming, ignoreId) {
-    if (!sharedOnce(t, tu)) return true;
-    return sharesOf(army, group, t.id, ignoreId) + incoming <= 1;
+  // `incoming` is the boarding Squad, null to ask about the load already
+  // aboard. `models` is the carrier's count once it is aboard (grownCount).
+  function canShare(army, group, t, tu, incoming, ignoreId, models) {
+    if (tu.auxiliaryTransport) return true;
+    const aboard = cargoOf(army, group, t.id).filter(x => x.id !== ignoreId
+      && (!incoming || x.id !== incoming.id));
+    if (incoming) aboard.push(incoming);
+    const many = aboard.length > 1
+      || aboard.some(x => shareOf(army, group, x, ignoreId) > 1);
+    if (!many) return true;
+    const loads = aboard.map(x => ({ unit: unitOf(army, x), count: x.models.length }))
+      .filter(x => x.unit);
+    return wholeFit(tu, loads, models || t.models.length);
+  }
+
+  /* How many models a Transport Squad has once `s` is aboard. refitTransports
+   * sizes a Transport to its cargo, so a second Squad offered a Bear APC is
+   * offered a second Bear. An Auxiliary Transport is bought as a Squad and
+   * keeps its count, and so does a Transport already aboard another, whose
+   * growing would change a load this check is not looking at. */
+  function grownCount(army, g, t, tu, s) {
+    if (tu.category !== 'Transport' || t.carriedBy) return t.models.length;
+    const riders = cargoOf(army, g, t.id).filter(x => x.id !== s.id).concat([s]);
+    const shape = (window.DZC.fillsOf(unitOf(army, riders[0]) || {})
+      .find(x => window.DZC.capacityFor(tu, x.shape) > 0) || {}).shape;
+    const per = window.DZC.capacityFor(tu, shape);
+    if (!per) return t.models.length;
+    const fill = riders.reduce((n, r) => n + squadFill(army, r, shape), 0);
+    return Math.max(1, Math.ceil(fill / per));
   }
 
   function boardOptions(army, squadId) {
@@ -1827,24 +1869,23 @@
       const aboard = cargoOf(army, g, t.id).filter(x => x.id !== s.id);
       const brings = shareOf(army, g, s, s.id);
       if (sharesOf(army, g, t.id, s.id) + brings > 4) return false;
-      if (!canShare(army, g, t, tu, brings, s.id)) return false;
-      // Boarding makes a Transport a nested one, and a nested one is not
-      // shared (sharedOnce): a Bear with two Squads in it stays at the top.
-      if (u.category === 'Transport' && !u.auxiliaryTransport && brings > 1) return false;
+      const count = grownCount(army, g, t, tu, s);
+      if (!canShare(army, g, t, tu, s, s.id, count)) return false;
       const load = aboard.map(x => ({ unit: unitOf(army, x), count: x.models.length }))
         .filter(x => x.unit);
       load.push({ unit: u, count: s.models.length });
-      return window.DZC.loadCheck(tu, load, t.models.length).ok;
+      return window.DZC.loadCheck(tu, load, count).ok;
     }).map(t => {
       const tu = carrierOf(army, t);
+      const count = grownCount(army, g, t, tu, s);
       const aboard = cargoOf(army, g, t.id).filter(x => x.id !== s.id);
       const load = aboard.map(x => ({ unit: unitOf(army, x), count: x.models.length }))
         .filter(x => x.unit);
-      const before = window.DZC.loadCheck(tu, load, t.models.length);
+      const before = window.DZC.loadCheck(tu, load, count);
       load.push({ unit: u, count: s.models.length });
-      const after = window.DZC.loadCheck(tu, load, t.models.length);
+      const after = window.DZC.loadCheck(tu, load, count);
       const shape = Object.keys(after.byShape)[0];
-      const room = shape ? window.DZC.capacityFor(tu, shape) * t.models.length : 0;
+      const room = shape ? window.DZC.capacityFor(tu, shape) * count : 0;
       return {
         squad: t, unit: tu, shape: shape,
         used: shape ? (before.byShape[shape] || 0) : 0,
@@ -1893,15 +1934,9 @@
       const g = groupOf(army, squadId);
       const su = unitOf(army, s);
       const brings = g ? shareOf(army, g, s, s.id) : 1;
-      if (tu && g && !canShare(army, g, t, tu, brings, s.id)) {
+      if (tu && g && !canShare(army, g, t, tu, s, s.id, grownCount(army, g, t, tu, s))) {
         return { ok: false,
-          reason: t.carriedBy
-            ? `${tu.name} is aboard another Transport, so it carries one Squad: only the top Transport is shared (3.2.4.1).`
-            : `Squads may only share ONE Transport, and this is a Squad of ${t.models.length} (3.2.4.1).` };
-      }
-      if (su && su.category === 'Transport' && !su.auxiliaryTransport && brings > 1) {
-        return { ok: false,
-          reason: `${su.name} carries ${brings} Squads, so it stays at the top of the Group: only the top Transport is shared (3.2.4.1).` };
+          reason: `A Squad may not be split between Transports: each Squad sharing the ${tu.name} has to fit whole in one (3.2.4.1).` };
       }
       // Capacity is not why these two refuse, and saying it was sent you off
       // to shrink a Squad that would never have been allowed aboard.
@@ -1994,10 +2029,11 @@
   }
 
   /* Why nothing is offered to a Squad that fills a symbol something in this
-   * faction carries. Today there is one such rule: a Transport carrying two
-   * or more Squads is the top of its Group and may not ride in anything
-   * (3.2.4.1, 3.02 FAQ). Without this, its Linked transport button vanished
-   * and the Battle Bus looked like a Unit with no symbol at all. */
+   * faction carries. Today there is one such rule: a Transport Squad carrying
+   * two or more Squads rides ONE Transport, so a Squad of them too big for
+   * any single one rides nothing (3.2.4.1). Without this, its Linked
+   * transport button vanished and the Battle Bus looked like a Unit with no
+   * symbol at all. */
   function carryRefusal(army, squadId) {
     const s = findSquad(army, squadId);
     const g = groupOf(army, squadId);
@@ -2006,11 +2042,12 @@
     if (!window.DZC.fillsOf(u).length) return null;
     const brings = shareOf(army, g, s, s.id);
     if (brings <= 1) return null;
+    if (transportOptions(army, squadId).length) return null;
     const f = window.DZC.faction(army.faction);
     const could = f && f.units.some(t => (t.category === 'Transport' || t.auxiliaryTransport)
       && !isGate(t) && window.DZC.canCarry(t, u));
     if (!could) return null;
-    return `${u.name} carries ${brings} Squads, so it stays at the top of the Group: only the top Transport is shared (3.2.4.1).`;
+    return `${u.name} carries ${brings} Squads, so it rides ONE Transport, and none holds all ${s.models.length} (3.2.4.1).`;
   }
 
   /* Assign (or clear) the Transport carrying a Squad. Creates the Transport
@@ -2046,9 +2083,9 @@
       const su = unitOf(army, s);
       const tu = window.DZC.unit(army.faction, transportUnitId);
       if (brings > 1 && tu && window.DZC.canCarry(tu, su)) {
-        return { ok: false, reason: su.category === 'Transport' && !su.auxiliaryTransport
-          ? `${su.name} carries ${brings} Squads, so it stays at the top of the Group: only the top Transport is shared (3.2.4.1).`
-          : `${su.name} carries ${brings - 1} Squad${brings > 2 ? 's' : ''}, so it rides ONE ${tu.name}, not several (3.2.4.1).` };
+        const carried = su.category === 'Transport' && !su.auxiliaryTransport ? brings : brings - 1;
+        return { ok: false,
+          reason: `${su.name} carries ${carried} Squad${carried > 1 ? 's' : ''}, so it rides ONE ${tu.name}, not several (3.2.4.1).` };
       }
       return { ok: false, reason: 'That Transport cannot carry this Squad (3.2.4.2).' };
     }
@@ -3064,18 +3101,17 @@
       });
     });
 
-    /* Two Squads split across a Transport SQUAD. 3.2.4.1 shares ONE Transport
-     * and 3.2.4.3 exempts Auxiliary Transports, so this is only ever a Squad
-     * of two or more Transport-category models with more than one Squad
-     * riding it. boardOptions refuses it now, so nothing you can press builds
-     * one -- this is for a link, a backup, or a list built before the check. */
+    /* A Squad split between the Transports of a shared Transport SQUAD (see
+     * wholeFit). 3.2.4.3 exempts Auxiliary Transports. boardOptions refuses
+     * it, so nothing you can press builds one: this is for a link, a backup,
+     * or a list built before the check. */
     army.groups.forEach(g => g.squads.forEach(t => {
       const tu = carrierOf(army, t);
-      if (!tu || canShare(army, g, t, tu, 0)) return;
-      const n = sharesOf(army, g, t.id);
-      errors.push({ rule: '3.2.4.1', group: g.id, msg: t.carriedBy
-        ? `${tu.name} is aboard another Transport and carries ${n} Squads. Only the top Transport is shared.`
-        : `${tu.name}: ${n} Squads aboard a Squad of ${t.models.length}. Up to 4 Squads may share ONE Transport.` });
+      if (!tu || !(tu.category === 'Transport' || tu.auxiliaryTransport)) return;
+      if (canShare(army, g, t, tu, null)) return;
+      const n = cargoOf(army, g, t.id).length;
+      errors.push({ rule: '3.2.4.1', group: g.id,
+        msg: `${tu.name}: ${n} Squad${n > 1 ? 's' : ''} aboard a Squad of ${t.models.length}, and one is split between them. Each Squad sharing a Transport has to fit whole in one.` });
     }));
 
     /* More RM aboard than the symbol allows. Reachable by a share link, an
@@ -3420,6 +3456,19 @@
           const ru = unitOf(army, rider);
           fix = `Put the ${ru.name} aboard the ${opt.unit.name}.`;
           break;
+        }
+        /* Two Bears, each with its own Squad of Legionnaires, is one Squad of
+         * two Bears away from legal (wholeFit): the second Squad boards the
+         * first Bear, which grows to two, and its own Bear goes. */
+        if (!fix) {
+          for (const top of loose) {
+            const rider = cargoOf(army, g, top.id).find(r => boardOptions(army, r.id)
+              .some(o => o.squad.id !== top.id && loose.some(l => l.id === o.squad.id)));
+            if (!rider) continue;
+            const ru = unitOf(army, rider);
+            fix = `Put both Squads of ${ru.name} in one Squad of ${unitOf(army, top).name}.`;
+            break;
+          }
         }
         /* CLING IS A PAIRING TOO, and for one pair in the game it is the only
          * one. A Scourge Gunship and a Squad of two Vampires beside it is two

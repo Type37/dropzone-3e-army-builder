@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 523;
+  const BUILD = 524;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -663,6 +663,12 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-11-09', title: 'Squads share a Transport as long as none is split', items: [
+      'Two Squads of three Legionnaires can share a Squad of two Bear APCs, one Squad in each. Three Squads of two cannot, because one of them would be split between the Bears.',
+      'A Battle Bus carrying two or more Squads can ride a Leviathan or a Kraken. The same goes for any Transport full of whole Squads riding a Transport that can carry it.',
+      'Boarding a second Squad into a full Transport adds another Transport to its Squad when that keeps every Squad whole.',
+      'Two Squads each in their own Transport in one Group are told how to share one Squad of them instead.',
+    ] },
     { date: '2026-11-07', title: 'Generated Units in the builder, and a cleaner printout', items: [
       'Bioficer Generated Units have their own tab in the unit picker. They are locked, because they are Spawned in play and never chosen, but every stat card opens.',
       'A black and white printout shows the number inside a solid transport symbol. Ink-saver used to print it white on black, and printers turned the white black too.',
