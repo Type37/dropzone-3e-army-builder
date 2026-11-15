@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 529;
+  const BUILD = 530;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -684,521 +684,554 @@ const App = (() => {
       'Settings has a switch to hide Transports in other Groups.',
       'Transport cards show the points and the empty spaces. A card that buys another Transport says so.',
       'Lifthawk Troopship weapons show again, and long upgrade notes no longer squash weapon cards on iPad.',
+      'Warnings and refusals are shorter and plainer, and so is this list.',
     ] },
-    { date: '2026-11-09', title: 'Squads share a Transport as long as none is split', items: [
-      'Two Squads of three Legionnaires can share a Squad of two Bear APCs, one Squad in each. Three Squads of two cannot, because one of them would be split between the Bears.',
-      'A Battle Bus carrying two or more Squads can ride a Leviathan or a Kraken. The same goes for any Transport full of whole Squads riding a Transport that can carry it.',
-      'Boarding a second Squad into a full Transport adds another Transport to its Squad when that keeps every Squad whole.',
-      'Two Squads each in their own Transport in one Group are told how to share one Squad of them instead.',
+    { date: '2026-11-09', title: 'Shared Transports keep every Squad whole', items: [
+      'Two Squads of three Legionnaires can share a Squad of two Bear APCs, one Squad in each. Three Squads of two cannot, because one would be split.',
+      'A Battle Bus carrying two or more Squads can ride a Leviathan or a Kraken. The same goes for any Transport full of whole Squads.',
+      'Boarding a second Squad into a full Transport adds another Transport to its Squad when that keeps everyone whole.',
+      'Two Squads in one Group, each in its own Transport, are told how to share one Transport Squad.',
     ] },
-    { date: '2026-11-07', title: 'Generated Units in the builder, and a cleaner printout', items: [
-      'Bioficer Generated Units have their own tab in the unit picker. They are locked, because they are Spawned in play and never chosen, but every stat card opens.',
-      'A black and white printout shows the number inside a solid transport symbol. Ink-saver used to print it white on black, and printers turned the white black too.',
-      'Rules text is a print option. Untick it to leave the Rules used section off the sheet.',
-      'A Genitor’s RM print on a line of their own, with their own points, so the Genitor’s cost is its own. Group and army totals are unchanged.',
+    { date: '2026-11-07', title: 'Generated Units tab and print fixes', items: [
+      'Bioficer Generated Units have their own tab in the unit picker. They are Spawned in play, so they’re locked, but every stat card opens.',
+      'The number inside a solid transport symbol stays readable on a black and white printout. Printers had turned it solid black.',
+      'Rules text is a print option. Untick it to leave off the Rules used section.',
+      'A Genitor’s RM print on their own line with their own points. Group and army totals are unchanged.',
     ] },
-    { date: '2026-11-05', title: 'A Battle Bus can ride the Leviathan you already bought', items: [
-      'A Transport in another Group is offered under Linked transport. Choosing it moves the Squad, and everything it carries, into that Group, because everything sharing one Transport is one Group. A Group left empty by the move is removed.',
-      'A Transport carrying two Squads keeps its Linked transport button and says why nothing is offered: only the top Transport is shared (3.2.4.1). The button used to vanish.',
-      'A fifth Squad refused a Transport says it is the four Squad limit, not that there is no room.',
+    { date: '2026-11-05', title: 'Ride a Transport from another Group', items: [
+      'Linked transport offers Transports in other Groups. Choosing one moves the Squad and its cargo into that Group, and a Group left empty is removed.',
+      'A Transport carrying two Squads keeps its button and explains why nothing is offered. Only the top Transport is shared (3.2.4.1).',
+      'A fifth Squad refused a Transport names the four Squad limit.',
     ] },
-    { date: '2026-11-04', title: 'Plain text lists paste cleanly into Discord', items: [
-      'A list copied as plain text has one heading for the army, one for each Group and one for the Commanders, and a • on every Unit, upgrade and Commander. Discord no longer turns every line into a heading.',
-      'A copied list pasted back in keeps every Group, named ones included. Lists copied before this change do too.',
+    { date: '2026-11-04', title: 'Plain text lists paste into Discord', items: [
+      'Copied text has one heading for the army, one per Group and one for the Commanders, with a • on every Unit, upgrade and Commander. Discord no longer turns each line into a heading.',
+      'A copied list pasted back in keeps every Group, named ones included, even from before this change.',
     ] },
     { date: '2026-10-24', title: 'Fauna', items: [
-      'TTCombat’s Fauna supplement (1 October) is in: all 14 Fauna, from Daggers to the Typhon, with their pictures, in a Fauna tab in Unit Reference.',
-      'Interactive Rules has a Fauna rules chapter, and every Fauna rule on a card opens it.',
-      'The three Apex can join any army once Apex in armies is on in Settings. Intelligent allows one Fauna Group, a single Squad that does not count toward your Groups or Pass tokens, in casual games.',
+      'TTCombat’s 1 October supplement is in. All 14 Fauna, Daggers to the Typhon, have pictures and their own tab in Unit Reference.',
+      'Interactive Rules has a chapter for their rules, and each one on a card opens it.',
+      'Turn on Apex in armies in Settings to add the three Apex to any army. In casual games Intelligent allows one Group of them, a single Squad that doesn’t count toward your Groups or Pass tokens.',
     ] },
     { date: '2026-10-02', title: 'Text only Groups', items: [
-      'Print and Play can show each Group as plain text: its units and how many.',
+      'Print and Play can show each Group as plain text, listing its units and how many.',
     ] },
     { date: '2026-09-29', title: 'FAQ answers under their rules', items: [
       'Each FAQ answer also appears under the rule it covers.',
       'Rules changed by errata show the errata version.',
     ] },
-    { date: '2026-09-29', title: 'Four rules calls, by the rulebook’s wording', items: [
-      'A Commander can be assigned to a Transport Squad. 3.2.5 says a Commander goes on a Unit, and a Transport is one.',
-      'Aux Gates, and the Siegestrider Lion’s Integrated Gate, are not taken with Units aboard, like any Gate. Their passengers start in Holding.',
-      'Cling is one Squad per Aircraft: a Squad of two Gunships takes two clinging Squads.',
+    { date: '2026-09-29', title: 'Four rules calls', items: [
+      'A Commander can go on a Transport Squad. A Transport is a Unit, and 3.2.5 puts Commanders on Units.',
+      'Aux Gates and the Siegestrider Lion’s Integrated Gate can’t be taken with Units aboard, like any Gate. Their passengers start in Holding.',
+      'Cling is one Squad per Aircraft, so a Squad of two Gunships takes two clinging Squads.',
       'The Porphyrion’s hold is full of its Venus Drones (Director), so nothing else boards it.',
     ] },
     { date: '2026-09-29', title: 'The FAQ in Interactive Rules', items: [
       'TTCombat’s 43 FAQ answers are a searchable chapter of Interactive Rules.',
     ] },
     { date: '2026-09-29', title: 'Sign in with Discord', items: [
-      'Sync can use your Discord account instead of a six-word token, as the Dropfleet builder does. Sign in on each device and your armies follow. Your Dropfleet fleets and Dropzone armies stay separate.',
-      'A device already on a token keeps it linked when it signs in, so devices still on the token stay in step.',
+      'Sync can use your Discord account in place of a six-word token, like the Dropfleet builder. Sign in on each device and your armies follow.',
+      'Dropfleet fleets and Dropzone armies stay separate.',
+      'A device on a token stays linked when it signs in, so your other devices keep in step.',
     ] },
-    { date: '2026-09-29', title: 'Behemoth and faction rules in Interactive Rules', items: [
-      'Interactive Rules has two new chapters after the rulebook: Behemoth rules, and Faction rules with a section per faction. Both are searchable, like the special rules.',
-      'A rule’s source line in its popover opens that rule in Interactive Rules.',
+    { date: '2026-09-29', title: 'Behemoth and faction chapters in Interactive Rules', items: [
+      'Behemoth rules and Faction rules are new searchable chapters after the rulebook. Faction rules has a section per faction.',
+      'The source line in a rule’s popover opens that rule in the book.',
     ] },
-    { date: '2026-09-29', title: 'Interactive Rules on a phone, and offline', items: [
-      'On a phone the chapter list stays under the top bar and scrolls sideways, so changing chapter no longer means scrolling back to the top.',
-      'Every token works offline. Chapter 12, the Feature tokens and the turret tables lost their pictures with no signal.',
-      'The rulebook says it is loading, and says so if it could not load, instead of a blank screen.',
+    { date: '2026-09-29', title: 'Interactive Rules on phones and offline', items: [
+      'On a phone the chapter list stays under the top bar and scrolls sideways. You no longer scroll back up to change chapter.',
+      'Pictures in Chapter 12, the Feature tokens and the turret tables show offline.',
+      'The rulebook shows a loading message, and an error if it fails, in place of a blank screen.',
     ] },
-    { date: '2026-09-29', title: 'One inch mark, and what Command Points buy', items: [
-      'Behemoth cards print a straight inch mark and every other card a curly one, so the app showed both side by side. It shows one now.',
-      'In Play, Command Points opens Abilities (5.1) in Interactive Rules: what the points buy.',
+    { date: '2026-09-29', title: 'Inch marks and Command Points', items: [
+      'Inch marks all use one style. Behemoth cards print a straight one and other cards a curly one.',
+      'In Play, Command Points opens Abilities (5.1) in Interactive Rules.',
     ] },
     { date: '2026-09-29', title: 'Play mode counts Behemoth cargo and Collector RM', items: [
-      'Pass tokens count a Behemoth’s cargo as the Group of its own it is, as the builder does.',
+      'Pass tokens count a Behemoth’s cargo as its own Group, as the builder does.',
       'Collector Units (Silence, Data Strike, Device) get an RM counter in Play, up to their Collector number.',
-      'Aux Transport is flagged on the unit page and in the unit picker, not only on the reference grid.',
+      'Aux Transport is flagged on the unit page and in the unit picker as well as the reference grid.',
     ] },
     { date: '2026-09-29', title: 'Each Variant chooses its own upgrades', items: [
-      'A Squad of more than one Variant is offered its upgrades per Variant, as 3.2.3 has it: all Units of the same Variant are upgraded equally, not the whole Squad. An Archangel Interceptor can take a missile its Fighter-Bomber does not.',
-      'Two Terrors of different Variants each choose their own starred gun, and each must.',
+      'A Squad with several Variants is offered upgrades per Variant (3.2.3). An Archangel Interceptor can take a missile its Fighter-Bomber does not.',
+      'Two Terrors of different Variants each pick their own starred gun, and each must take one.',
     ] },
-    { date: '2026-09-29', title: 'The Behemoth Power and Systems Damage tables read as tables', items: [
-      'Power & Activating Behemoths (1.3) is its own rule, with every action’s PT cost. The costs were missing and the rule was buried in Exceptions.',
-      'The Systems Damage table has its result numbers back, one result per line.',
-      'Move On Entry, Drop Harness Entry and Aiming for Systems Damage are their own rules.',
+    { date: '2026-09-29', title: 'Behemoth Power and Systems Damage tables', items: [
+      'Power & Activating Behemoths (1.3) is its own rule, with every action’s PT cost.',
+      'The Systems Damage table shows its result numbers again, one result per line.',
+      'Move On Entry, Drop Harness Entry and Aiming for Systems Damage are separate rules.',
     ] },
-    { date: '2026-09-29', title: 'Every rule a refusal names opens', items: [
-      'The rule after a refusal opens it: a rulebook section goes to Interactive Rules, a faction rule like Genitor X, Gate or Cling opens its text.',
-      'Behemoth Gear rules are in the unit page’s rules and on both printed sheets.',
-      'The printed sheet lists only the rules the Squad’s own Variants have.',
-      'A card’s misspelt rule reads correctly on its chip.',
-      'Faction rules name their faction in sentence case, and a Behemoth rule’s page says it is the Behemoth rules’ page.',
+    { date: '2026-09-29', title: 'Rules named in refusals open', items: [
+      'The rule named in a refusal opens. A rulebook section goes to Interactive Rules, and a faction rule like Genitor X, Gate or Cling shows its text.',
+      'Behemoth Gear appears in the unit page’s rules list and on both printed sheets.',
+      'The printed sheet lists only what the Squad’s own Variants have.',
+      'Misspelt rules on cards read correctly on their chips.',
+      'Faction rules name their faction in sentence case. A Behemoth rule’s page says it belongs to the Behemoth rules.',
     ] },
-    { date: '2026-09-29', title: 'Every view shows the same Squad', items: [
-      'The printed army sheet shows what the Squad carries and the Gear its Variant has, as the builder does. An Alcyoneus printed the Porphyrion’s circles and Gear.',
-      'Behemoth Gear is on the Squad card and in Play mode.',
-      'A card’s upgrade footnote sits on the Squad card beside its buttons.',
-      'Starred choices show their star, and the Type 7’s two guns have the card’s “or” between them.',
+    { date: '2026-09-29', title: 'Squads match across every view', items: [
+      'The printed army sheet shows what a Squad carries and its Variant’s Gear, matching the builder. An Alcyoneus had printed the Porphyrion’s.',
+      'Behemoth Gear shows on the Squad card and in Play mode.',
+      'A card’s upgrade footnote sits beside the buttons on the Squad card.',
+      'Starred choices show their star. The Type 7’s two guns have the card’s “or” between them.',
       'A Transport that carries one shape or another counts only the one in use.',
       'The Transport chooser prices Battle Buses, Leviathans and Junos.',
-      'Play mode no longer prices an upgrade you have already bought.',
-      'The unit picker shows only the rules every Variant has.',
+      'Play mode stops pricing upgrades you already bought.',
+      'The unit picker shows only rules every Variant has.',
     ] },
     { date: '2026-09-29', title: 'Rules open the right text', items: [
-      'LT and Linked on every Behemoth weapon open Limited Traverse and Linked. They were opening Limited.',
-      'The Mining Engine’s Vent Repeater shows its self-damage as part of Capacitors, not as Tracking.',
-      'First Strike no longer links the word Strike inside its own text.',
+      'LT and Linked on Behemoth weapons open Limited Traverse and Linked. They had opened Limited.',
+      'The Mining Engine’s Vent Repeater lists its self-damage under Capacitors in place of Tracking.',
+      'First Strike no longer links the word Strike in its own text.',
       'Guard, Drone Base and Remote Drone carry the 3.02 UCM errata.',
       'Behemoth rules no longer split words like “Sys tems” and “Behe moth”.',
     ] },
-    { date: '2026-09-29', title: 'List building follows the Transport FAQ and the faction cards', items: [
-      'An Auxiliary Transport counts as a Squad in a shared Transport, and so do the Squads it carries. Two Buggy Squads with Legionnaires and Hazard Suits aboard fill a Vulture’s four.',
+    { date: '2026-09-29', title: 'Transport FAQ and faction card rules', items: [
+      'An Auxiliary Transport counts as a Squad in a shared Transport, and so do its passengers. Two Buggy Squads carrying Legionnaires and Hazard Suits fill a Vulture’s four.',
       'Buggies carrying other Squads go in one Vulture, never split across two Ravens.',
       'Only the top Transport is shared. An Atlas carrying two Squads stays at the top of its Group.',
-      'Commanders cannot join Pungari (Subservient).',
-      'A Group of Gates is not held to the quarter-of-the-limit cap, and a Behemoth and the Squads aboard it are capped as the two Groups they are.',
-      'An empty Group no longer counts against the Group limit, and a second Rare Crow Dropship is refused.',
-      'A Bioficer non-Infantry Unit with a Commander in it gains Puppeteer 9”.',
-      'The Shaltari Support Grav-tank takes 3-9, as the errata says.',
+      'Commanders can’t join Pungari (Subservient).',
+      'A Group of Gates isn’t held to the quarter-of-the-limit cap. A Behemoth and the Squads aboard it are capped as two Groups.',
+      'Empty Groups no longer count toward the Group limit. A second Rare Crow Dropship is refused.',
+      'A Bioficer non-Infantry Unit with a Commander gains Puppeteer 9”.',
+      'The Shaltari Support Grav-tank takes 3 to 9, as the errata says.',
     ] },
-    { date: '2026-09-29', title: 'Every stat card checked against the app', items: [
-      'The Type 7 Grand Walker takes its Rotary Cannons or its Incinerators, one of the two, as the card’s OR says. The Incinerators’ range read “OR 9””.',
+    { date: '2026-09-29', title: 'Every stat card rechecked', items: [
+      'The Type 7 Grand Walker takes its Rotary Cannons or its Incinerators, as the card’s OR says. The Incinerators’ range had read “OR 9””.',
       'The Type 6 Grand Walker carries only as a Porphyrion, and the Siegestrider only as a Lion.',
-      'The Explorator carries 12 squares, and 6 triangles or 8 diamonds. The 12 had been one of three alternatives.',
-      'Advanced Genitors and Generated Units show their gold border: the Gauntlet Genitor Circle, Beta, Drake, Gamma, Hand and Gun Hand.',
-      'The Totem Shieldspire’s Shield is Zones 6” 5+, as reprinted. A fix for the old misprint was still adding Friendly Vehicles and Aircraft.',
+      'The Explorator carries 12 squares, and 6 triangles or 8 diamonds.',
+      'Advanced Genitors and Generated Units show their gold border. That covers the Gauntlet Genitor Circle, Beta, Drake, Gamma, Hand and Gun Hand.',
+      'The Totem Shieldspire’s Shield is Zones 6” 5+, as reprinted. It no longer adds Friendly Vehicles and Aircraft.',
     ] },
-    { date: '2026-09-28', title: 'Thirteen new Bioficer Units, and the reissued rulebook', items: [
-      'The 25 September Bioficer cards: Calculi and Cortex Command Skimmers, Tenor Scout Skimmer, Terror Heavy Battle Skimmer, Tremor Destroyer Skimmer, Fury Interceptor, Gauntlet Genitor Circle, and the Generated Beta, Drake, Gamma, Hand, Gun Hand and Spitters.',
-      'The Terror takes exactly one of its six starred guns, as its card says. A Terror with none is refused, and so is a second.',
-      'Epsilon loses Hardy 3+ and the Hulk Blades’ Decon Blades are Ac 2+, as reprinted.',
-      'Rules follow the 23 September rulebook reissue. Field gains “This Weapon’s Ac and R values cannot be modified.”',
+    { date: '2026-09-28', title: '13 new Bioficer Units and the reissued rulebook', items: [
+      'The 25 September Bioficer cards are in. They add the Calculi and Cortex Command Skimmers, Tenor Scout Skimmer, Terror Heavy Battle Skimmer, Tremor Destroyer Skimmer, Fury Interceptor, Gauntlet Genitor Circle, and the Generated Beta, Drake, Gamma, Hand, Gun Hand and Spitters.',
+      'The Terror must take exactly one of its six starred guns, as its card says.',
+      'Epsilon loses Hardy 3+, and the Hulk Blades’ Decon Blades are Ac 2+, as reprinted.',
+      'Rules follow the 23 September reissue. Field gains “This Weapon’s Ac and R values cannot be modified.”',
     ] },
-    { date: '2026-09-14', title: 'Play mode: a Squad’s own stats, on its card', items: [
-      'Every Squad on the Play screen carries the stats you are asked for across the table: Move and Armour on a Vehicle, Move, Offence, Defence and Bravery on Infantry. Reported by reddeth_38.',
-      'Damage Points and Power stay out of that row. Both change during a game and both already have a live tracker directly under it.',
+    { date: '2026-09-14', title: 'Squad stats in Play mode', items: [
+      'Each Squad in Play shows the stats opponents ask about. Vehicles show Move and Armour, and Infantry show Move, Offence, Defence and Bravery. Reported by reddeth_38.',
+      'Damage Points and Power stay in their live trackers below.',
     ] },
     { date: '2026-09-13', title: 'Landing tip opens this app’s Interactive Rules', items: [
-      'The landing screen’s Interactive Rules tip now opens Dropzone’s own rules instead of the Dropfleet builder’s.',
+      'The landing screen’s Interactive Rules tip opens Dropzone’s own rules. It had opened the Dropfleet builder’s.',
     ] },
-    { date: '2026-09-13', title: 'Interactive Rules: the whole rulebook, on one page', items: [
-      'Interactive Rules is on the home screen: the Dropzone Commander 3.02 rulebook, word for word and with its bold, as one linked page. Rule names, section names and the book’s “see page” references are links, and Back returns you to where you were.',
-      'The contents down the side nest each chapter’s sections under it, the way a book’s contents page does, so 4 Game Rounds holds the Initiation, Activation and End Phases.',
-      'Every table in the book is a real table, Energy vs Armour and both stats bars included. The diagrams are cut from the PDF, tokens sit beside the rules that use them, and each of the twelve scenarios opens in the Scenario Reference.',
-      'The rulebook errata are in. AWACS reads “with a +1Ac bonus”, Strafe loses its doubled full stop, and 7.1 ends its sentence. The rest were already in the 3.02 printing.',
-    ]},
-    { date: '2026-09-13', title: 'Scenarios: Living Weapons and Bloodthirsty go unexplained', items: [
+    { date: '2026-09-13', title: 'The whole 3.02 book in Interactive Rules', items: [
+      'Interactive Rules on the home screen holds the Dropzone Commander 3.02 rulebook word for word, bold included, as one linked page.',
+      'Rule names, section names and “see page” references are links. Back returns you to where you were.',
+      'The contents list nests each chapter’s sections, so 4 Game Rounds holds the Initiation, Activation and End Phases.',
+      'Every table is a real table, Energy vs Armour and both stats bars included. Diagrams come from the PDF, tokens sit beside their rules, and each of the twelve scenarios opens in the Scenario Reference.',
+      'Errata are in. AWACS reads “with a +1Ac bonus”, Strafe loses its doubled full stop, and 7.1 ends its sentence.',
+    ] },
+    { date: '2026-09-13', title: 'Fauna scenarios name Living Weapons and Bloodthirsty', items: [
       'The Fauna scenarios name Living Weapons and Bloodthirsty without writing out their rules.',
     ] },
-    { date: '2026-09-13', title: 'Scenarios: laid out like the Dropfleet scenario pages', items: [
-      'Each scenario reads Entry, Objectives, Variants and Special Rules down the left, with the game size switch, the map and its Map Key on the right. Every objective has its own heading with the rulebook’s rule under the scenario’s line, and every term they name is explained under it.',
-      'The Map Key shows what the book prints beside each line: turret and Feature tokens, the Object token beside Extract, the coloured disc beside each Secure point, and the Centre line. Strategic Points, Demolish, Death From Below and both Hunting Grounds list each keyed thing on its own line.',
-      'Score sheets are written out for all sixteen scenarios and follow the game size and Variant: Crucible’s Hold Variant scores only carried Objects, its Raze line is gone in a Skirmish, Targets of Opportunity’s Data Download gets its own counter, and Death From Below’s first Variant no longer marks Round 4. Protect counts a Zone once: not Compromised, or Compromised but not destroyed.',
-      'Ground Control lists its Zone Placement rule. The Source link above each scenario opens TTCombat’s Dropzone resources page, and the list has no Random button, since players choose a Scenario (3.3).',
+    { date: '2026-09-13', title: 'Scenario pages match Dropfleet’s', items: [
+      'Each scenario shows Entry, Objectives, Variants and Special Rules on the left. The game size switch, map and Map Key sit on the right.',
+      'Every objective has its own heading with the rulebook’s rule and an explanation of each term it names.',
+      'The Map Key shows what the book prints beside each line, such as turret and Feature tokens, Object tokens, Secure discs and the Centre line. Strategic Points, Demolish, Death From Below and both Hunting Grounds list each keyed item separately.',
+      'All sixteen scenarios have score sheets that follow game size and Variant. Crucible’s Hold Variant scores only carried Objects, and Skirmish drops its Raze line.',
+      'Targets of Opportunity’s Data Download has its own counter. Death From Below’s first Variant stops marking Round 4, and Protect counts a Zone once.',
+      'Ground Control lists its Zone Placement rule. The Source link above each scenario opens TTCombat’s Dropzone resources page.',
+      'The Random button is gone, since players choose a Scenario (3.3).',
     ] },
-    { date: '2026-09-13', title: 'Interactive Rules, and room below the landing', items: [
+    { date: '2026-09-13', title: 'Landing screen changes', items: [
       'The landing screen points once to the Dropfleet builder’s Interactive Rules. Close it and it stays closed on that device.',
-      'The landing screen fills the window, so the WarLore footer starts below the fold.',
+      'The landing screen fills the window, with the WarLore footer below the fold.',
     ] },
     { date: '2026-09-13', title: 'Nothing scrolls sideways', items: [
-      'New Army: on a 320px phone the six factions sit two across instead of pushing the dialog sideways.',
-      'Scenarios: on a phone each turret weapon is its name over a grid of Arc, Range, Attacks, Accuracy, Energy and Special, instead of a table you had to scroll sideways.',
+      'On a 320px phone, New Army shows the six factions two across.',
+      'On a phone, Scenarios shows each turret weapon as its name over a grid of Arc, Range, Attacks, Accuracy, Energy and Special.',
     ] },
     { date: '2026-09-13', title: 'WarLore footer', items: [
-      'The shared WarLore footer, with every WarLore tool, sits at the bottom of the landing screen, the armies list, the Unit Reference and the Scenarios page.',
+      'The shared WarLore footer sits at the bottom of the landing screen, the armies list, the Unit Reference and the Scenarios page. It links to every tool.',
     ] },
-    { date: '2026-09-13', title: 'Scenarios: score sheet title line', items: [
-      'The score sheet keeps its rounds and players on the title line when folded, instead of a summary. The VP scored line under the sheet is gone: each player’s total is already on their button.',
+    { date: '2026-09-13', title: 'Score sheet title line', items: [
+      'A folded score sheet keeps its rounds and players on the title line.',
+      'The VP scored line is gone. Each player’s total is on their button.',
     ] },
-    { date: '2026-09-12', title: 'Bioficer: Epsilon, Grubs and Hulk Blades', items: [
-      'TTCombat’s 260911 Bioficer stat cards add three Generated Units. The Epsilon, 30pts, a floating bio-printer with Delayed, Grubsinger, Hardy 3+ and Puppeteer 1”. Grubs, 5pts, Squads of 1-3 with Living Weapons. Hulk Blades, 30pts, Hulks with Decon Blades in place of the Winnow Carbines.',
+    { date: '2026-09-12', title: 'Epsilon, Grubs and Hulk Blades', items: [
+      'TTCombat’s 260911 Bioficer stat cards add three Generated Units.',
+      'The Epsilon costs 30pts. It is a floating bio-printer with Delayed, Grubsinger, Hardy 3+ and Puppeteer 1”.',
+      'Grubs are 5pts and come in Squads of 1 to 3 with Living Weapons.',
+      'Hulk Blades are 30pt Hulks with Decon Blades in place of Winnow Carbines.',
       'Nothing else on the Bioficer cards changed.',
     ] },
-    { date: '2026-09-12', title: 'Scenarios: Skirmish halves points and KP', items: [
-      'Pick Skirmish and every points or KP requirement an objective sets is halved where you read it: Attrition every 200 KP shows 200 struck and 100 beside it, and the same for Displace, Dominate and Secure, on the card, in the hover explanations and on the score sheet (rulebook 9.5).',
+    { date: '2026-09-12', title: 'Skirmish halves points and KP', items: [
+      'In Skirmish every points or KP requirement shows halved, on the card, in hover text and on the score sheet (rulebook 9.5).',
+      'Attrition every 200 KP shows 200 struck through with 100 beside it. Displace, Dominate and Secure work the same way.',
     ] },
-    { date: '2026-09-12', title: 'Scenarios: d66 chart removed', items: [
-      'The d66 chart is gone, along with the short-lived Scenario Generator built on it. The rulebook has no such chart: players choose the Scenario (3.3), its game size and its Variant. The Scenario Reference is the one Dropzone scenario page.',
+    { date: '2026-09-12', title: 'd66 chart removed', items: [
+      'The d66 chart and the Scenario Generator are gone. The rulebook has no such chart, since players choose the Scenario, game size and Variant (3.3).',
+      'The Scenario Reference is the one Dropzone scenario page.',
     ] },
-    { date: '2026-09-11', title: 'Scenarios: game size and Variants change the map', items: [
-      'Every scenario from the rulebook and the Fauna pack has its own page: the map redrawn, every rule it names explained word for word, and a round and VP tracker.',
-      'Pick Skirmish, Clash, Battle or Reconquest and the map drops the Zones that are only used in bigger games. A Skirmish also shows that points and KP requirements are halved.',
-      'Turn a Variant on and the map changes with it: turrets and Features appear in their Zones, removed Objects and points go, and struck objectives are crossed out with the Variant’s own objective added.',
-      'The Fauna scenarios now show their Entry, special rules and Variant, which were missing.',
-      'A d66 chart for the twelve rulebook scenarios.',
-      'Scenario section headings and the index drop their gold diamonds.',
-      'A score sheet replaces the round and VP bar: each objective has counters for its VP as the scenario prints it (Secure and Challenge, Control and Contest, and so on), following the game size and Variant, with rounds, players and a running total.',
+    { date: '2026-09-11', title: 'Scenario pages with live maps', items: [
+      'Every scenario from the rulebook and the Fauna pack has its own page, with a redrawn map and every rule it names, word for word.',
+      'Pick Skirmish, Clash, Battle or Reconquest and the map drops Zones only used in bigger games. Skirmish also shows halved points and KP requirements.',
+      'Turning on a Variant updates the map. Turrets and Features appear, removed Objects and points go, and struck objectives are crossed out beside the Variant’s own.',
+      'Fauna scenarios show their Entry, special rules and Variant.',
+      'There is a d66 chart for the twelve rulebook scenarios.',
+      'Scenario headings and the index lose their gold diamonds.',
+      'A score sheet has counters for each objective’s VP, following game size and Variant, with rounds, players and a running total.',
     ] },
-    { date: '2026-08-31', title: 'Compact view hid every upgrade in the app', items: [
-      'Buying an upgrade happens on the weapon card — the price IS the button — and compact view hides weapon cards. So with compact on there was no way to buy a Vulture’s Defence pods, choose between a Triton’s three missile options or give a Menchit its Foeslayer, and nothing on screen to say the offers existed. Compact now carries the offers as a strip: the name, the Variant it belongs to, and the same button. It still takes away the guns, which is what it is for.',
-      'A Squad with one Variant’s upgrade drew a live button in the OTHER Variant’s block. One Menchit and no Styx put a +5pts Foeslayer under Styx, and pressing it bought the Menchit’s — both then reading “Bought”. Offers are matched to the block they belong to now, and a block for a model you do not field shows the printed price instead of a control.',
-      'Taking the Harrier Gunship’s free option — remove one UM-117 Cannons, gain Scanner and Scout — put a red data error on the army the moment you took it. The check that finds withdrawn upgrades knew only weapon names and read the option’s key as one, so the app reported its own feature as corruption.',
-      'A bracket on a stat card scopes every rule since the last bracket, not just the one in front of it. The UCM Heavy Buggy prints “AWACS 12”, Command Centre, Surveyor (Fox)” and the Wolf, Jackal and Dingo were being handed the first two. Ten Units were wrong the same way, including a PHR Type-2 and a Shaltari Warstrider that were carrying both P5+ and P3+ at once. Reported by Jet.',
+    { date: '2026-08-31', title: 'Upgrades in compact view', items: [
+      'Compact view shows upgrades as a strip with the name, Variant and buy button. It had hidden them along with the weapon cards.',
+      'Upgrade buttons appear only under the Variant they belong to. A block for a model you don’t field shows the printed price.',
+      'Taking the Harrier Gunship’s free option no longer flags a data error.',
+      'A bracket on a stat card covers every rule since the last bracket. The Wolf, Jackal and Dingo lose the AWACS 12” and Command Centre meant for the UCM Heavy Buggy.',
+      'Ten Units are fixed this way, including a PHR Type-2 and a Shaltari Warstrider that had both P5+ and P3+.',
     ] },
-    { date: '2026-08-29', title: 'Rulebook 3.02, and every stat card TTCombat have reissued', items: [
-      'The app is on the 3.02 rulebook and the 21 August cards. Chapter 3 is untouched by the point release — it was diffed page by page, and the only difference is a capital letter — so nothing about building a list has moved. What changed is in play: Assault, AWACS, Field, Infiltrate, Strafe, Strong, Surveyor, Subterranean and seven more carry their 3.02 wording now.',
-      'Scourge changed the most. The Support Beetle is gone and a Ravager AA Beetle stands in its place at 40pts; the Battle Skimmer lost Killer and Bringer, and the Battle Beetle lost Slasher. Shaltari squads grew — Battlestrider and Scoutstrider to 2-6, Main and Support Grav-tanks to 3-9 — and the Gunstrider’s Demo dropped to 2 while the Heavy Grav-tank’s Particle Cannon went to E10. PHR’s Type-3 EM Walker and one Behemoth gun moved too.',
-      'An army holding something TTCombat have withdrawn now says so. A Squad whose Unit is gone used to cost nothing, count for nothing, be checked by no rule and still read “This army is legal” — 80pts of models the printed sheet did not mention. A model still set to a withdrawn Variant was quietly re-priced to the cheapest one left while going on calling itself the old one. An upgrade the card has stopped offering was still bought and no longer charged for. All three are errors now, naming what they cannot find.',
-      'UCM’s cards were NOT reissued, so their four errata changes come from the errata document instead: Large on the Ferrum Drone Base, the Dominion Heavy Bomber and the Super Gunship, and the Twin UM-5 Gatling the Osprey Gunship was missing.'
+    { date: '2026-08-29', title: 'Rulebook 3.02 and the reissued stat cards', items: [
+      'The app uses the 3.02 rulebook and the 21 August cards. List building is unchanged.',
+      'Assault, AWACS, Field, Infiltrate, Strafe, Strong, Surveyor, Subterranean and seven more rules have their 3.02 wording.',
+      'Scourge lose the Support Beetle and gain the Ravager AA Beetle at 40pts. The Battle Skimmer loses Killer and Bringer, and the Battle Beetle loses Slasher.',
+      'Shaltari Battlestrider and Scoutstrider Squads are 2 to 6, and Main and Support Grav-tanks 3 to 9. The Gunstrider’s Demo drops to 2 and the Heavy Grav-tank’s Particle Cannon goes to E10.',
+      'PHR’s Type-3 EM Walker and one Behemoth gun changed too.',
+      'An army holding a withdrawn Unit, Variant or upgrade shows an error naming what is missing.',
+      'UCM cards weren’t reissued, so their four changes come from the errata document. Large goes on the Ferrum Drone Base, the Dominion Heavy Bomber and the Super Gunship, and the Osprey Gunship gains its Twin UM-5 Gatling.',
     ] },
-    { date: '2026-08-23', title: 'Shaltari build their Groups on cost, and the app now knows it', items: [
-      'Two or more non-Gate, non-Aircraft Shaltari Squads may form a Group if their combined cost does not exceed 250pts — the last section of their own card, and the reason a Shaltari army is not one Squad per Group. The builder did not know it and reported every list that used it as “not in correct Groups”. It knows now: under the cap the Group is legal, over it the cost is what is named, and a Group holding an Aircraft answers to 3.2.4 like everyone else’s.',
-      'The rule was missing from the glossary too, and for the same reason it was missing from the builder: a rule on those pages starts at a bold heading, and this one is a section heading with a bare sentence under it, so the scanner dropped it. A Bioficer rule about Generated Squads embarking into Genitor Units was going the same way. Both are in the app now, and the 250 is read out of the rule text rather than typed into the code.'
+    { date: '2026-08-23', title: 'Shaltari Groups by cost', items: [
+      'Two or more non-Gate, non-Aircraft Shaltari Squads can form a Group if they cost 250pts or less together. Over the cap, the cost is named.',
+      'A Shaltari Group holding an Aircraft follows 3.2.4 like any other.',
+      'The glossary has this rule, plus a Bioficer rule on Generated Squads embarking into Genitor Units.',
     ] },
-    { date: '2026-08-22', title: 'Your own exported list imports back as the army it was', items: [
-      'Share writes the text list with a heading per Group and cargo indented under its carrier, and says that text is what Import reads. Import read neither: every line became a Group of its own with nothing linked, so pasting your own export back turned Legionnaires in a Bear APC into two Groups, one of them an empty Transport — an illegal army it then reported at you. It reads both now, three levels deep, and a clinging Squad with them. A list pasted from anywhere else has no Group headings and no indentation, and is still read flat rather than having nesting invented for it.',
-      'The Commander comes back with it. Every line of that block is written commented out so the parser cannot mistake it for a unit, and nothing then read it — so a 1000pt list returned as 910pts with “You haven’t added a Commander” on it. Its level, the Squad it rides with and a name you typed all survive. Measured on 108 generated armies: every one now comes back at the same cost with the same verdict.',
-      'A Vampire Squad always has its Cling control, even when nothing in the Army can carry it. It was drawn only when there was something to offer, which hid the rule from anyone whose list had no Aircraft yet — and worse, a Squad grown past its Aircraft’s DP was reported illegal with no control left to let it go.',
-      'A Group with two tops offers the cling where there is one. A Scourge Gunship and a Squad of Vampires beside it was told to move one to another Group; the move that makes it one Group is the Vampires clinging to the Gunship, and that is what it says.'
+    { date: '2026-08-22', title: 'Exported lists import intact', items: [
+      'Import reads the Share text list with its Group headings and indented cargo, three levels deep, clinging Squads included. Lists from elsewhere are still read flat.',
+      'The Commander imports too, with its level, the Squad it rides with and its name.',
+      'A Vampire Squad always shows its Cling control, even with no Aircraft in the Army.',
+      'A Group with two tops offers the cling that makes it one Group. A Scourge Gunship beside a Squad of Vampires is told the Vampires can cling to it.',
     ] },
-    { date: '2026-08-22', title: 'Vampires can be given an Aircraft to cling to', items: [
-      'Cling is built now. A Vampire Squad’s row has “Cling to”, and it lists every Aircraft in the Army with the same or more initial DP than the Squad — 2 Vampires need 2 DP, so a Scourge Gunship will do; 4 need a Harbinger, a Marauder will not. Picking one moves the Squad into that Aircraft’s Group, which is what the rule says happens.',
-      'Transport Symbols are ignored, in both directions: the Vampires need no room and take none, so a Harbinger with three Battle Beetles inside still reads as full with four Vampires on the outside. An Aircraft that already has a Squad clinging to it is not offered a second, and a Vampire Squad is never offered another Vampire Squad.',
-      'The list was unbuildable before this, and reported illegal for being unbuildable: the Vampires and their Aircraft sat side by side as two tops of one Group. Grow a clinging Squad past its Aircraft’s DP and it says so, with both numbers.'
+    { date: '2026-08-22', title: 'Cling to an Aircraft', items: [
+      'A Vampire Squad has a Cling to button listing every Aircraft in the Army with at least as much initial DP as the Squad.',
+      '2 Vampires need 2 DP, so a Scourge Gunship works. 4 need a Harbinger, and a Marauder won’t do.',
+      'Picking one moves the Squad into that Aircraft’s Group.',
+      'Clinging Squads ignore Transport Symbols. A Harbinger with three Battle Beetles inside still reads as full with four on the outside.',
+      'An Aircraft takes one clinging Squad, and none is ever offered another Vampire Squad.',
+      'A clinging Squad grown past its Aircraft’s DP says so, with both numbers.',
     ] },
-    { date: '2026-08-22', title: 'A Group has one Squad at the top of it', items: [
-      'Two Squads, each in its own dropship, in one Group is two Groups — and the app called it legal. The check counted only the Squads with nothing carrying them, which is the same question on two Squads standing side by side and blind to two Squads that are each aboard something. It counts the Squads nothing else in the Group is carrying now: every one of the five Groups printed on page 10 has exactly one, and a Group with two is named as the two Groups it is.',
-      'The way out it offers is one your faction has. Shaltari Transports are Gates, a Gate is never part of another Group and is never taken with anything aboard — so "give one a Transport" was advice the faction cannot take, and the real answer, a Group each, was third in a list of three. Where no Transport can carry either Squad the sentence no longer mentions one, and it no longer suggests putting one aboard the other where nothing in the game allows it.',
-      'Duplicate, added yesterday, was building that illegal Group in one press: a copy that needs its own Transport now takes a Group of its own, and says so. A copy that fits in the Transport already there still stays where it was.'
+    { date: '2026-08-22', title: 'One top Squad per Group', items: [
+      'Two Squads in one Group, each in its own dropship, are flagged as two Groups.',
+      'The suggested fix is one your faction can use. Shaltari are told to give each Squad its own Group, since a Gate never carries anything in.',
+      'Suggestions no longer mention a Transport where none can carry either Squad, or putting one Squad aboard another where the game forbids it.',
+      'Duplicate gives a copy its own Group when it needs its own Transport. A copy that fits the existing Transport stays put.',
     ] },
     { date: '2026-08-21', title: 'The Unit Reference prints', items: [
-      'A Print button on the Unit Reference puts a whole faction on paper: every Unit under its category heading, with its Variants and their prices, the stat block, every weapon on the card — including the ones only one Variant carries and the upgrades nobody has bought — and the rules glossary at the back. The UCM is nine pages.',
-      'It prints what is on the screen. Filter to Transports or search for Spark and the sheet is that, because the useful version of this is rarely all 38 Units. The head line says which, and the preview says how much paper it is before it costs any.',
-      'Same preview as the army sheet, so Compact, Ink-saver and Art are the same three switches, and Ctrl+P prints the sheet in front of you rather than the app behind it.'
+      'A Print button on the Unit Reference prints a whole faction. Each Unit appears under its category with Variants, prices, stats, every weapon including unbought upgrades, and the glossary at the back.',
+      'It prints what is on screen, so a filter or search narrows the sheet. The head line says which, and the preview shows the page count.',
+      'The preview has the same Compact, Ink-saver and Art switches as the army sheet. Ctrl+P prints the sheet.',
     ] },
-    { date: '2026-08-21', title: 'Duplicate a Squad, and a gun you could see the price of but never buy', items: [
-      'Every Squad has a Duplicate button beside its bin. It copies the models and their Variants, the weapon upgrades, the Raw Materials aboard a Genitor — everything you bought for it.',
-      'The Transport comes too. Several Squads may share only a single Transport (3.2.4.1), so a copy that will not fit in the one already there buys its own: two Legionnaire Squads in Bear APCs are two Bear Squads. Press it on the Transport instead and what it was carrying comes with it, because an empty Bear APC is half a list. A Commander does not come — one is assigned and paid for by the Army (3.2.5).',
-      'A Rare or Unique Squad refuses to duplicate past its limit and says which rule stopped it.',
-      'The Harbinger Dropship’s Mini Arc Caster is +5pts on its stat card and there was no way to pay it. TTCombat printed the row in the blue box that means every model has it rather than the green one that means you buy it, and this app was reading the colour. It is a button now, like the other 28 upgrades in the game.'
+    { date: '2026-08-21', title: 'Duplicate a Squad, and the Mini Arc Caster', items: [
+      'Every Squad has a Duplicate button beside its bin. It copies models, Variants, weapon upgrades and any Raw Materials aboard a Genitor.',
+      'The Transport is copied too. A copy that won’t fit the existing one buys its own (3.2.4.1).',
+      'Duplicating a Transport brings its cargo along. Commanders aren’t copied (3.2.5).',
+      'Rare and Unique Squads won’t duplicate past their limit, and say which rule stopped them.',
+      'The Harbinger Dropship’s Mini Arc Caster can be bought for +5pts.',
     ] },
-    { date: '2026-08-17', title: 'Command Points looked broken because the rules were quietly refusing you', items: [
-      'The + on Command Points did nothing almost every time it was pressed, and nothing on screen said why. CP is generated up to your highest Commander Level at the top of every Round (4.1.1), so + is already at its ceiling the moment a Round begins — and throughout Round 1 that ceiling is zero, because every Commander counts as Level 0 until the Round turns over. Both are the rules working. A live-looking button that answers a press with silence is indistinguishable from a broken one.',
-      'Every stepper on the screen now dims when it has nowhere to go, and still says why if you press it: "Level 0 in Round 1 (4.1.1)", "At your Commander Level", "No CP to spend". Dimmed rather than disabled, because a disabled button cannot answer at all and a tooltip is nothing on a phone.',
-      'Command Points and Pass Tokens are one row each instead of three stacked bands — name, number and controls on a line. That is 56 pixels of phone screen back per card, and it was the army you were pushing below the fold. The opponent Group count lost a whole disabled number field for "Yours": it is counted off your army, so it is a number with a word over it now, not a caret that refuses to blink.',
-      'Category spend printed "110 of 495" across the meter beside it — the word was two thirds of the cell it had to fit in. It reads "110/495" and the column was measured against a 3000pt army rather than the one on screen. The Group count is a ratio too now: "10/16 Groups".',
-      'The Groups screen says how many models the whole army is. Every Group card said its own and the army list said the total, and the screen you actually build in had it nowhere — it is what you count out of the case, and it does not follow from the points.',
-      'The unit behind a Squad in Play Mode is in colour and no longer fades out sideways. Drained to grey under a gradient it was half a ghost of a silhouette: enough to notice, not enough to recognise, which is the one thing it is there for.',
-      'The Play button wore the Group icon, so the one control that leaves the builder was marked with the symbol for the thing you were building. It is a play triangle.'
+    { date: '2026-08-17', title: 'Steppers explain their limits', items: [
+      'Command Points + is often at its limit. CP refills only to your highest Commander Level, and every Commander is Level 0 in Round 1 (4.1.1).',
+      'Steppers dim when they can’t go further. Pressed anyway, they give the reason, such as “At your Commander Level” or “No CP to spend”.',
+      'Command Points and Pass Tokens fit on one row each. Your own Group count shows as plain text.',
+      'Category spend reads “110/495”, and the Group count reads “10/16 Groups”.',
+      'The Groups screen shows the army’s total model count.',
+      'In Play Mode the unit picture behind a Squad is in full colour, without the sideways fade.',
+      'The Play button has a play triangle icon.',
     ] },
-    { date: '2026-08-17', title: 'Play Mode presses back, and nothing on it moves when you do', items: [
-      'A Status Token was a letter — C, S, J, O — that turned into the whole word the moment you set it. The button went from 22 pixels wide to about 110, which shoved the model count on to its own line and moved everything under it. It is the token off page 51 of the rulebook now: the spiral, the ricochets, the struck-out signal, the struck-out eye, the four shapes already sitting beside the models. Same box set or unset, so nothing can move.',
-      'And the name rises off it when you press it. Every control on this screen was a bare glyph or a picture with a tooltip, which a phone never shows — so pressing one changed a number somewhere else on the card and you had to go and find it. Damage says "+1 damage", a repair says "−1 damage", a model that runs out says "Destroyed", and a press that changes nothing says so rather than looking like a press that worked.',
-      'Nothing redraws. Every button used to rebuild the whole screen — a thousand elements thrown away and remade to change one digit, which took the button out from under your finger and orphaned a rule you had open. The numbers are written into the screen that is already there. Measured across every control on the screen: zero pixels of movement.',
-      'A Squad carries its own rules, tappable, the same chips as everywhere else. The guns always had theirs; what the Unit itself was — an Aegis, a Vulnerable, a Stabilised — was on no screen you could reach mid-game without going back to the builder. Rules restricted to one Variant show under the Variants this Squad actually fields.',
-      'The model, washed out, behind its own numbers. On a screen of eleven Squads you are looking for the thing you just picked up off the table, not for its name.',
-      'The Initiative roller is gone. It tracked nothing: you roll a D6 on the table and the app cannot see it, so all it ever did was roll a different one and print a sum you then had to reconcile. What it added — your highest Commander Level — is on the Command Points card, which is where it comes from.',
-      'A rule chip opened the wrong glossary anywhere but the Unit Reference. It looked the keyword up in whichever faction that screen was last left on, so every rule on a Scourge army in Play Mode was read out of the UCM’s. The chip carries its own faction now.',
-      'The wordmark in the top bar was squashed on every phone-width screen in the app — 1600 by 230 drawn at 27 by 20 in the builder, which is 81% off its own shape. It cannot be squeezed any more, and below the phone breakpoint it is not there at all: unsquashed it wants 139 pixels of a bar already carrying the disclaimer, the way back, where you are and two buttons.'
+    { date: '2026-08-17', title: 'Play Mode feedback and a steady layout', items: [
+      'Status Tokens use the rulebook’s icons from page 51 and keep one size set or unset, so nothing shifts.',
+      'Each press shows a label, such as “+1 damage”, “−1 damage” or “Destroyed”. A press that changes nothing says so.',
+      'Numbers update in place. The screen no longer redraws under your finger or closes an open rule.',
+      'Each Squad carries its own tappable rule chips. Rules for one Variant show under the Variants the Squad fields.',
+      'The model picture sits faded behind its numbers.',
+      'The Initiative roller is gone. Your highest Commander Level is on the Command Points card.',
+      'Rule chips open their own faction’s glossary on every screen.',
+      'The top bar wordmark keeps its shape, and is hidden below the phone breakpoint.',
     ] },
-    { date: '2026-08-13', title: 'The app threw you out of your army once a minute on Firefox for iOS', items: [
-      'Reported by a reader on an iPhone: "every 1-2 minutes it will almost refresh the whole thing, taking me out of the list, clearing and reloading to the list page." It was a loop the app built for itself. Every 60 seconds it asked whether a new version had been published; the answer arrived as a new worker that took over the page immediately, and taking over triggered a reload. On browsers that decide the file has not changed, nothing happened and nobody noticed. On Firefox for iOS the answer came back "new" nearly every time, so it reloaded once a minute, forever, out of whatever you were building.',
-      'Nothing reloads the page any more. It was never needed to stay current — the app already fetches its own code and data fresh whenever you are online, so an open tab is running the live version regardless. The reload bought nothing and cost the army you were in the middle of.',
-      'The version check itself stays, because it is what keeps the offline copy current, but every half hour instead of every minute. On a phone that check is a radio wake-up.'
+    { date: '2026-08-13', title: 'No more reloads on Firefox for iOS', items: [
+      'On Firefox for iOS the app reloaded about once a minute and threw you out of your list. It no longer reloads itself.',
+      'You still get the live version whenever you’re online.',
+      'The offline copy checks for updates every half hour.',
     ] },
-    { date: '2026-08-13', title: 'A three-page army list prints on two', items: [
-      'The rules appendix is two columns, packed tight, and starts wherever the army finished instead of forcing a fresh sheet. That break bought the appendix a clean start and cost most of a page of white paper every time. Each keyword now runs into its own text as one paragraph rather than sitting on a line of its own — at this size a line per name was a third of the appendix spent on names.',
-      'The army itself is still one column and that is not going to change: the Group nesting tree is tall and narrow, and splitting it puts a Condor at the foot of one column and the cargo it carries at the head of the next, which loses the one thing the sheet is for. A hundred short independent rules are the opposite shape, which is what columns are for.',
-      'No box round a Group. The heading and the rule under it already say where one starts; a full border round each of nine Groups was nine rectangles of toner drawing what the whitespace draws for free. A Group still never splits across a page — that was never the border’s job.',
-      'No line under every weapon. That was most of the 247 borders on a three-page sheet, drawing a grid the columns already line up without. The header keeps its rule, because that one separates two different kinds of row.',
-      'Fifteen different type sizes became four. Nothing about the hierarchy changed; there were simply four or five sizes doing one job each and ten more that were an accident.',
-      'Measured end to end on a nine-Group army: 4.02 A4 pages down to 2.80, and 16% of the paper under a filled background down to none.'
+    { date: '2026-08-13', title: 'Shorter printed lists', items: [
+      'The rules appendix is two tight columns and starts right after the army. Each keyword runs into its text as one paragraph.',
+      'The army stays in one column, so a Transport and its cargo stay together.',
+      'Groups lose their box and weapons lose the line under each row. A Group still never splits across a page.',
+      'Type sizes are cut from fifteen to four.',
+      'A nine-Group army went from 4.02 A4 pages to 2.80, with no filled backgrounds.',
     ] },
-    { date: '2026-08-13', title: 'Ctrl+P printed a blank page', items: [
-      'Printing from anywhere except the app’s own Print button gave you one blank sheet. The rule that hands the printer the deployment sheet hides the entire app and prints a container the Print button is what fills — so Ctrl+P, the browser menu, File then Print, and every print-to-PDF extension hid the page and printed an empty box. It fills on any route to the printer now.',
-      'And the app is only hidden when there is a sheet to put in its place. Ctrl+P on the Armies list or the Unit Reference used to hide that page too and print the same empty box; those print the page you are looking at.',
-      'The four numbers a Commander’s Level buys were one run-on line — "CP per Round 5, hand 5 cards, Initiative D6 + 5 (4.1). 5 activations (4.2.1)" — four unrelated figures, three of them the same digit, with a rulebook citation wedged in the middle. Each has its own cell now: the number set large, what it is under it, when you use it under that. They are looked up one at a time in the middle of a Round.',
-      'A measured sheet of a nine-Group army went from 4.0 pages to 3.3, and from 16% of the paper covered in a filled background to none. The stat cells were carrying the app’s own panel fill into print, which is a screen surface and on paper is just toner. Ink saver now takes the stat values black as well as their labels; the only colour it leaves is the digit on a cargo symbol, because that colour is which shape it is.'
+    { date: '2026-08-13', title: 'Ctrl+P prints the sheet', items: [
+      'Ctrl+P, the browser menu and print to PDF extensions print the deployment sheet. They had printed a blank page.',
+      'On the Armies list or the Unit Reference, Ctrl+P prints the page you’re looking at.',
+      'The four numbers a Commander’s Level buys each have their own cell. The number is large, with what it is and when you use it underneath.',
+      'Stat cells print with no background fill. A nine-Group sheet went from 4.0 pages to 3.3.',
+      'Ink saver prints stat values black as well as labels. Only cargo symbol digits keep their colour, because it shows the shape.',
     ] },
-    { date: '2026-08-13', title: 'Fewer lines on the sheet, and it saves ink unless you say otherwise', items: [
-      'Print opens with ink saver and compact both on. The sheet had just gained the app’s colour — accent headings, an accent carry line, outlined keyword chips — and defaulting a document whose whole job is to be printed to the expensive version has the trade backwards. Both toggles are on the preview and whatever you pick is remembered, so this is the first print only.',
-      'A Squad was four lines: the name, then its capacity symbols, then how much RM it carried, then its stats. It is two. Capacity and RM sit on the name line where they belong, and the Squad’s own rules share the stat line rather than opening one.',
-      'Stats print vertically — icon, number, what it is. Five stats laid on their side are five label-value pairs to read left to right; stacked they are five numbers on one baseline you take in at a glance. Each stack is narrow, so the block is still one line.',
-      'A Squad no longer says whether it is Standard, Vanguard, Heavy or Support. That decides whether a list is legal, which is settled before the sheet is printed and never asked again, and it was riding on every Squad on the one document you read with a model in your hand.',
-      'And nothing warns that Squads will begin Reserved. True of most Squads in most armies, and it is deployment restated rather than a fault in the list — the warning panel was opening with a line that reads the same every game.'
+    { date: '2026-08-13', title: 'Ink saver and compact on by default', items: [
+      'Print opens with ink saver and compact on. Your choice is remembered after the first print.',
+      'A Squad prints on two lines. Capacity and RM sit on the name line, and the Squad’s rules share the stat line.',
+      'Stats print stacked as icon, number and label, all in one narrow line.',
+      'The sheet no longer shows whether a Squad is Standard, Vanguard, Heavy or Support.',
+      'The warning that Squads will begin Reserved is gone from the sheet.',
     ] },
-    { date: '2026-08-13', title: 'The printed sheet looks like the app now', items: [
-      'The sheet had every fact right and drew none of them the way the builder does. Stats printed as a run-on line — "Move 18” Armour 2 Damage Points 3" — with each value the same weight as its label and no way to read one Squad against the next down the page. They print in the builder’s own grid now: the icon over the number, the label under it, and only the stats the card actually carries, because a tank has no Bravery.',
-      'A weapon’s arc was the letters "F/S", which is a code you have to already know. It is the glyph off the stat card, with the letters beside it. A weapon’s keywords were a comma list; they are the same chips the app draws, outlined rather than filled so a page of them is not a page of toner.',
-      'Variants print their own photograph. 155 of them have one and the sheet only ever printed the unit’s, so a page of Wolverines showed the same buggy four times — which is the complaint that got variants their pictures to begin with. When every line in a Squad has its own, the general photo above them goes.',
-      'The faction’s colour is on the sheet: the Group heading, and the line down the left of a carried Squad, which is the one rule on the page that means something rather than divides something. Ink saver takes all of it back to black — it means one ink, not one ink except where the pretty parts are.',
-      'A Group says what carries it, and the army prints the notes you wrote on it. Both were on screen and neither was on the paper you hand across the table.',
-      'None of this is a second set of markup for print. Every renderer is the screen’s. The sheet spent months printing "carries 2 square" in words because it had its own idea of what a capacity looked like, and that is what having two of them costs.'
+    { date: '2026-08-13', title: 'Printed sheet matches the builder', items: [
+      'Stats print in the builder’s grid, icon over number with the label under it. Only the stats the card carries appear.',
+      'Weapon arcs print as the stat card glyph with letters beside it. Keywords print as outlined chips.',
+      'Variants print their own photograph where one exists. When every line in a Squad has its own, the general photo is dropped.',
+      'The faction colour marks Group headings and the line beside a carried Squad. Ink saver turns it all black.',
+      'A Group shows what carries it, and the army prints your notes.',
+      'Capacity prints as symbols, the way the screen draws it.',
     ] },
-    { date: '2026-08-13', title: 'The carry line stops at the picture, and one toolbar has one left edge', items: [
-      'The Add Units toolbar had five rows and four different left edges: the search field at 25px behind its magnifier, the category tabs at 0, the sort chips at 34 behind the word Sort, the shape chips at 28 behind the shorter word Fits, and the count back at 0. Nothing was wrong with any one row — each simply started wherever its own first child happened to end. There is one gutter now and everything that reads as content starts on it, with the two labels and the magnifier hanging in it. The bar is no wider; the gutter is carved out of the row rather than added to the edge.',
-      'The carry line stopped 22px inside the picture it points at, drawn across the model. It ends at the edge of the box now. And it draws on: the drop grows down out of the carrier’s photograph, the arm follows it sideways into the cargo’s, so the link reads as one stroke turning a corner. Only a link you just made animates — opening an army you built yesterday draws nothing.',
-      'Linked transport and Add Transports have swapped weight. Tying a Squad to what carries it is the commonest move in a Group and it was the quietest control on the row, a small grey chip in the same ink as Take out; meanwhile two solid accent bars sat side by side giving a Transport the same standing as the Squad it exists to carry. Linked transport takes the accent fill and the icon tile, one size down. Add Transports outlines. Neither gained emphasis — they traded it.',
-      'A Group card in the list says what is carrying it, by name. The Transports were on the card already, leading the row of thumbnails, but a picture 26px wide is not a name and the text underneath said "2 Squads, 5 models" without once saying Condor. Which Transports a Group holds is what decides where the next Unit can go, which is why the space meters are on the card at all.',
-      'The pictures are bigger, on the Squad and on every variant block — a fifth up on the desktop and proportionally on a phone. Two of them were wrong rather than small: at 640px and below the photograph carried its own fixed size instead of filling its box, and at 420px that was 96px of picture in a 46px box. It stood twice the height of the thing meant to bound it, hung 50px into the row underneath, and the carry line — which is measured off the box — pointed at 23px into a 96px image. Every Squad, on the narrowest phone, which is the device this app is for.'
+    { date: '2026-08-13', title: 'Toolbar alignment and carry lines', items: [
+      'Every row in the Add Units toolbar starts on one left edge.',
+      'The carry line ends at the edge of the picture. A new link draws itself from the carrier into the cargo, while opening an existing army draws nothing.',
+      'Linked transport has the accent fill and icon tile, and Add Transports is outlined.',
+      'Group cards in the list name the Transports carrying them.',
+      'Pictures on Squads and Variant blocks are a fifth bigger on desktop and scaled up on phones. At 640px and below they stay inside their box.',
     ] },
-    { date: '2026-08-13', title: '57 more variants have their own photograph', items: [
-      'A variant with its own miniature shows it; the rest fall back to the unit’s. That went from 98 of the 199 to 155. Nothing new was found in the previous edition’s cards — the same 275 photographs were there all along, and 177 of them were being read, captioned and thrown away because the matcher could not tell what it was holding.',
-      'Half the variants in this edition are not named, they are lettered. Polecat A, Eagle B, Wolverine D, Juno A1. The previous edition never printed a letter, so a rule that the variant’s name must appear on the old card ruled out 94 of them before their weapons were ever looked at. The letter comes off first now, and the model name is what has to match, which is what the old card is captioned with.',
-      'The weapons decide which photograph, and a plural was stopping them. “UM-88 Cannons” sits under a picture captioned “(Twin Cannon)”, and comparing whole words called that no evidence at all — so the Katana, the Slayer, the Jaguar, the Menchit and the Pizzaro all had a photograph naming them and got none. TTCombat’s own captions carry typos too, “Attila Trackwalkers” one line under “Atilla Trackwalkers”, and each one cost a picture.',
-      'A variant this edition renamed can be found through its siblings. Our Tormentor is the acid-streamer Scourge Heavy Skimmer and the word Tormentor appears nowhere on the old cards; what does appear is “Slayer Heavy Tank (Acid Streamer)”, alongside the Slayer photograph its sibling claimed. The vehicle is identified by the sibling and the guns pick which of its photographs is which, so a keyword is never on its own — that was the fault behind the wrong pictures before, where a Wolverine buggy’s missile shot ended up on a Howitzer, an Eagle and a Harrier.',
-      'Two photographs one variant’s guns cannot separate is still no photograph. The unit’s own picture beats a coin-flip, which is why 44 variants show nothing: the previous edition has no picture of a Styx, a Greave, a Tachi or a Falcon-A, and a wrong photograph is worse than a general one.'
+    { date: '2026-08-13', title: '57 more Variant photographs', items: [
+      'Variants with their own miniature show it, and the rest use the unit’s picture. That count rose from 98 of 199 to 155.',
+      'Lettered Variants like Polecat A, Eagle B, Wolverine D and Juno A1 are matched by model name.',
+      'Photos match despite plurals and caption typos. The Katana, Slayer, Jaguar, Menchit and Pizzaro gained theirs.',
+      'Renamed Variants are found through their siblings, so the Tormentor gets its Slayer Heavy Tank (Acid Streamer) photo.',
+      'Where two photos can’t be told apart, the unit’s own picture shows. 44 Variants have none of their own, including the Styx, Greave, Tachi and Falcon-A.',
     ] },
-    { date: '2026-08-12', title: 'Two buttons about Transports, one word between them', items: [
-      'A Squad’s own button said Transport and the Group’s said Add Transports, and on a phone both were on screen at once, in the same green, a row apart. Jet: “it’s confusing that there’s two add transport buttons.” They do different things — one ties this Squad to something that carries it, the other puts a Transport in the Group and links it to nothing — and the word they shared said neither.',
-      'The Squad’s one is Linked transport now, and it carries a chain instead of a second lorry. The lorry is what a Transport is; this button is not a Transport, it is the tie between a Squad and one. The Group’s button is untouched: Add Transports has always said exactly what it does.',
-      'The name is 38px wider than the word it replaced, which took the Squad’s four controls to 343px of a 314px row at 360 — and what wrapped was the last thing in it, the bin, alone on a line under 270px of nothing. That is the empty line the last build took off the Group header turning up on every Squad in the army instead. The cost and the bin travel as a pair now, so what breaks off is a pair, and a Transport’s own row — no stepper in it — still fits on one line at 320.'
+    { date: '2026-08-12', title: 'Linked transport button', items: [
+      'A Squad’s Transport button is renamed Linked transport and shows a chain icon. The Group’s Add Transports button is unchanged.',
+      'On narrow phones the cost and bin wrap together, and a Transport’s own row fits on one line at 320px.',
     ] },
-    { date: '2026-08-12', title: 'Add Transports opened on the ones that do not fit', items: [
-      'With Legionnaires in a Group, all eight UCM Transports were offered in price order. That put the Condor second and the Crow third, and neither of them can take a square — the three that can, the Bear APC, the Raven Light Troopship and the Vulture Troopship, were first, sixth and eighth. They are the first three now, and the same holds for a Group of tanks, which gets the triangles.',
-      'Ordering, not filtering. 3.2.4 lets a Transport into a Group for a Squad that is not in it yet, so nothing has been taken out of the list — the rest are underneath, in whatever the sort says. A Group whose every Squad is already aboard something has nothing to sort for and is left exactly as it was.'
+    { date: '2026-08-12', title: 'Add Transports lists fitting ones first', items: [
+      'Add Transports lists the ones that fit your Group first. With Legionnaires, the Bear APC, Raven Light Troopship and Vulture Troopship lead, and a Group of tanks gets triangle carriers first.',
+      'The rest stay below in sort order (3.2.4). A Group with every Squad already aboard keeps the normal order.',
     ] },
-    { date: '2026-08-12', title: 'The picker’s toolbar was seven rows of chips', items: [
-      'Measured at 390 by 844 with Sort and filter open: 369px of toolbar over seven rows, and the first unit card 383px down. It is 234px over five now, and 118px over two the way it opens. Every chip went from 44px tall to 36 — a category tab, a sort, a filter and a Fits shape are a strip you read across, not the thing you press to do something, and Add, Clear and the two toolbar buttons are all still 44.',
-      'Two of the rows were nobody’s. Sort, the filters and Fits had a line each, which left the Fits line two thirds empty; they are one wrapping flow now, so seventeen chips and their two labels pack onto three rows instead of four. And the two buttons on the tab line moved up beside the search field, which gives the tabs a line of their own — all five of a faction’s fit it, 332px of chips against 348 of column.',
-      'Below 390 the old layout is kept, because the sum stops working: at 360 those two buttons would leave the search field 238px to set a 242px placeholder in, and the tabs want 348px of a 320px column anyway, so the top of the toolbar is three lines there whatever happens on the first one. Measured at 320, 360, 375, 390, 412 and 430 — every one of them is shorter than it was, 417 down to 314 at the narrowest and 369 down to 234 at 390.'
+    { date: '2026-08-12', title: 'Shorter picker toolbar', items: [
+      'With Sort and filter open at 390px, the picker toolbar is five rows, down from seven. Closed, it is two.',
+      'Chips are 36px tall. Add, Clear and the two toolbar buttons stay at 44px.',
+      'Sort, filters and Fits share one wrapping row, and the toolbar buttons sit beside the search field.',
+      'Below 390px the old layout stays, still shorter than before.',
     ] },
-    { date: '2026-08-12', title: 'A Group’s buttons had a whole empty line to themselves', items: [
-      'On a phone the duplicate and remove buttons sat alone on a second line, thrown to the far right with 246px of nothing beside them. The name and the three numbers came to 307px of the 344 available, which left 37px for two 44px squares, so the pair wrapped — and being pinned right is what turned a wrap into a band of dead space.',
-      'Self-inflicted and recent: those buttons were 24px until the touch-target pass took every icon button to 44, which is the size they should be and is also more than the line had spare. So the numbers take the second line now and the buttons stay up with the name they act on — title on the left, actions on the right, which is where the bin already sits on every Squad row underneath. Desktop has room for all of it on one line and is untouched, to the pixel.'
+    { date: '2026-08-12', title: 'Group buttons stay by the name', items: [
+      'On a phone the duplicate and remove buttons stay beside the Group name, and the three numbers move to the second line. Desktop is unchanged.',
     ] },
-    { date: '2026-08-12', title: 'One big vehicle was being carried by three small ones', items: [
-      'A Ferrum Drone Base fills 18 and a Condor carries 6, and the Transport chooser was offering three Condors — one vehicle cut into three pieces. Nine Crows too. The number on a solid symbol is what ONE Unit fills, and a Transport “may not carry more than their number indicates” (3.2.4.2), so a Unit bigger than a Transport’s whole capacity cannot ride in it: not in two of them, not in nine. Only the Albatross, which carries 18, can take a Ferrum.',
-      'It was not one card. Fifteen pairs across five factions were on offer that the rules forbid: a Type-4 Battle Scorpion at 6 was offered three Neptunes at 2 and two Njords at 4, a Grievance Genitor Ark at 4 was offered two Digits at 2, a Resistance Super Heavy Tank at 6 was offered two Carryhawks at 3, and every UCM tank at 3 was offered two Crows at 2. The check was on the symbol’s SHAPE and never on its number; the count was then the Squad’s total divided by the Transport’s capacity, which is the arithmetic that let a model be halved.',
-      'Nothing legal moved. Every unit at every Squad size against every Transport it is offered — 740 pairings — was measured either side of the change: 27 disappear, all of them a model being split, and not one that remains changed its count or whether it is full. Three Sabres still exactly fill one Condor and six still fill two, which are the rulebook’s own worked examples. An army already saved with one of the forbidden pairings still opens and is now named illegal on the Group it is on, rather than being quietly repaired or quietly allowed.'
+    { date: '2026-08-12', title: 'No splitting one model across Transports', items: [
+      'A Unit bigger than a Transport’s whole capacity can’t ride in it (3.2.4.2). A Ferrum Drone Base fills 18, so only the Albatross can take it, never three Condors or nine Crows.',
+      'Fifteen such pairs across five factions are gone. They include a Type-4 Battle Scorpion in Neptunes or Njords, a Grievance Genitor Ark in Digits, a Resistance Super Heavy Tank in Carryhawks and UCM tanks in Crows.',
+      'Legal pairings are unchanged. Three Sabres still fill one Condor and six fill two.',
+      'A saved army using a forbidden pairing still opens, with that Group marked illegal.',
     ] },
-    { date: '2026-08-12', title: 'The last two controls under 44px, found by measuring instead of reading', items: [
-      'Buying a weapon upgrade was a 62 by 32 button pinned to a corner of the weapon card, and it is the only control on that card. And the opponent’s Group count in Play Mode was 56 by 25, typed into while standing at a table, on the one screen where everything else had already been taken to 44. Both clear it now.',
-      'These were found by walking every route and every modal at 390 and measuring every button, link and field on each, rather than by reading the rules and judging what looked covered. What is left under 44 is under it on purpose and says so where it is set: a rule chip, which would be a wall of them, the footer links, and the Energy number on a weapon card, which is a number in a line of numbers that happens to be pressable.'
+    { date: '2026-08-12', title: 'Last small controls enlarged', items: [
+      'The weapon upgrade buy button and the Play Mode opponent Group count are at least 44px.',
+      'Rule chips, footer links and the Energy number on a weapon card stay smaller on purpose.',
     ] },
-    { date: '2026-08-12', title: 'Category spend ran its own labels out of their column', items: [
-      'Two of the four words in Category spend did not fit their own column. The numbers are lined up under each other on purpose, so the column holding Standard, Vanguard, Heavy and Support is a fixed 60px, and Standard wanted 62 of it and Vanguard 64. It is 68 now. It only bites when the webfont has not arrived, which is a phone at a table with no signal.'
+    { date: '2026-08-12', title: 'Category spend labels fit', items: [
+      'Standard and Vanguard fit their column in Category spend, even before the webfont loads.',
     ] },
-    { date: '2026-08-12', title: 'Add Units opened on a screenful of its own controls', items: [
-      'On a phone the picker showed no units. Measured at 390 by 844: the toolbar was 363px tall and the first unit card began 467px down, so more than half the screen was search, tabs, sorts, filters and Fits before a single thing you could add. The tabs had wrapped to two rows and the sorts and filters to three, because every chip is 44px tall now so a finger can hit it. Sort, the filters and Fits fold behind one button on the tab line, and the first card starts 275px down. The button carries a count and lights up when a filter is on, so nothing can be cutting the list from behind a closed row without saying so. Nothing changed on a desktop: every control in that toolbar lands on the same pixel it did.',
-      'A modal on a phone was giving up a sixth of the screen to its own margins. 12px of overlay padding and 20px of panel padding each side left a unit card 324px of a 390px phone, and a unit card carries a three-column stat grid. 348 now, and the search field holds its full placeholder again at every width down to 320.',
-      'Search boxes are in the app’s own typeface. An input inherits no font, so all three of them had been drawing their placeholder in the browser’s Arial while everything around them was Jost.'
+    { date: '2026-08-12', title: 'Units first in Add Units', items: [
+      'On a phone, Sort, filters and Fits fold behind one button. The first unit card starts 275px down, up from 467px.',
+      'That button shows a count and lights up when a filter is on. Desktop is unchanged.',
+      'Phone modals have slimmer margins, giving unit cards 348px of a 390px screen. The search placeholder fits down to 320px.',
+      'Search boxes use the app’s typeface, Jost.',
     ] },
-    { date: '2026-08-11', title: 'Your Dropfleet fleets were turning up in your army list', items: [
-      'Both builders are pages on type37.github.io, so a browser treats them as one site and hands them one pile of storage, and both were syncing to the same place under the same name. Turning sync on in either app turned it on in the other, on the same token, and the two games were merged into a single list: fleets appeared here as armies with no Groups, and armies appeared over there as fleets with no ships. Sync carries your lists without ever looking inside them, which is exactly why it could not tell one game from the other. The two are separated now at both ends. This app keeps its own record of whether sync is on, and the same six words name a different list in each game, so nothing has to change about the token you already have. Any fleets that had already landed in your army list are removed the first time this app opens.',
-      'Every edit is timestamped again. Sync settles a disagreement between two devices by keeping whichever copy was edited last, and the call that stamps the time was being handed nothing, so no army here carried one. Two devices holding the same army both looked equally undated, and which one won was down to the order they happened to sync in. An edit on a phone now also pushes itself up rather than waiting for you to leave the app and come back.'
+    { date: '2026-08-11', title: 'Dropfleet fleets kept out of your armies', items: [
+      'Dropfleet and Dropzone sync separately. Turning on sync in one app no longer turns it on in the other or merges their lists.',
+      'Your existing token still works, and names a different list in each game.',
+      'Fleets that landed in your army list are removed the first time this app opens.',
+      'Every edit is timestamped again, so sync keeps the latest copy across devices.',
+      'An edit on a phone syncs straight away.',
     ] },
-    { date: '2026-08-11', title: 'Two Squads were showing no weapons at all', items: [
-      'Resistance ATVs and the UCM Archangel Fighter-Bomber rendered with an empty weapon table, in the builder and on the printed sheet. A gun that belongs to one loadout names it in brackets, and on those two cards the bracket does not match the name in the price line: the ATV card says “25pts (Recon ATVs)” but labels the gun “(Recon ATV)”, and the Archangel’s bracket wraps mid-word across a line. Neither is a scan error, both are on the card, and nothing reconciled the two. All four loadouts show their guns now.'
+    { date: '2026-08-11', title: 'ATV and Archangel weapons show', items: [
+      'Resistance ATVs and the UCM Archangel Fighter-Bomber show their weapons in the builder and on the printed sheet. All four loadouts have their guns.',
     ] },
-    { date: '2026-08-11', title: 'A Commander no longer pushes its Group over the quarter cap', items: [
-      'No Group may cost more than a quarter of your points, and a Commander’s points were being counted against that. 3.2.5 says they are “ignored during Army composition besides counting towards your total allowed points”, so 430pts of tanks with a Level 6 Commander read 580 against a 500 cap and a legal list was refused. The category ratios already left Commanders out; the Group cap does now too. The Group meter shows the same figure the rule uses, and your army total still counts every point.'
+    { date: '2026-08-11', title: 'Commanders don’t count toward the Group cap', items: [
+      'A Commander’s points no longer count toward a Group’s quarter of your points cap (3.2.5).',
+      'The Group meter matches the rule. Your army total still counts every point.',
     ] },
-    { date: '2026-08-11', title: 'Nothing sends you to the PDF any more', items: [
-      'A keyword with no glossary entry used to answer “No glossary entry for this keyword. Read it from the stat card.” Five did: Nanomachines on the Type 7 Grand Walker, Particle on the Dragon, Razorworm Pod on the Terror Mech, and Scrambler on the UCM Light Battle Mech twice over. A Behemoth’s card never says whose faction it is, so its faction rules were out of reach, and the Light Battle Mech’s card prints “Scrambler 2+” where the rulebook heads the rule “Scrambler +X”. All 2,062 keywords the app can print now resolve, and a test walks every one of them so it stays that way.',
-      'A Unit no longer tells you which page of the stat card PDF it came from. A rule’s page number is worth printing because the app shows a summary and the book has more; a Unit’s was a pointer to a card whose every field is already on the screen in front of you.'
+    { date: '2026-08-11', title: 'Every keyword has a rule', items: [
+      'Nanomachines on the Type 7 Grand Walker, Particle on the Dragon, Razorworm Pod on the Terror Mech and Scrambler on the UCM Light Battle Mech open their rules.',
+      'All 2,062 keywords the app prints have a glossary entry.',
+      'Unit pages no longer cite a stat card PDF page.',
     ] },
-    { date: '2026-08-11', title: 'Raw Materials are bought one at a time', items: [
-      'The Raw Materials stepper said "3 of 12", which is the shape of a ration you are drawing down. RM is not that. "RM tokens cost 5pts each and are assigned to those Genitor Units": you buy them one at a time and each adds 5pts to the army, the same as buying a model. So it is a count with its price beside it now. The 12 has not gone anywhere, it is the rule the plus button enforces and it still says itself when it refuses, but it is no longer the frame.',
-      'The Raw Materials control is in the screenshot walk. It is drawn on two Units in one faction, so a walk through UCM had never once seen it and it had been changed twice with nobody looking at it.'
+    { date: '2026-08-11', title: 'Raw Materials as a count', items: [
+      'The Raw Materials stepper shows a count with its price, in place of “3 of 12”. Each RM token costs 5pts.',
+      'The limit of 12 still applies, and the plus button says so when it refuses.',
     ] },
-    { date: '2026-08-11', title: 'Measured in a real browser: 30 controls too small to press, and four faction colours nobody could read', items: [
-      'Every screen was walked in a real Chrome at 390 by 844 and every control on it measured. Thirty came back under 44px. Play Mode had almost all of them, which is the screen used entirely with a finger while standing at a table: the damage stepper at 26px square, the four Status Tokens at 22, Victory Points at 28, and Command Points, Pass tokens, Initiative and the Round counter around 32. So did the variant stepper in the builder, which is how a Squad gets its models, and the Add button in the picker, which is the thing the picker is for. All of them clear 44 now, and the two Victory Point counters still share one row, which they stopped doing until the padding gave way instead of the buttons.',
-      'An unset Status Token was a letter drawn at 40% opacity, about 1.9:1 against the card. Not faint, unreadable, on one of the four controls that screen exists to press.',
-      'Four of the six faction colours failed as text. Measured on the white card: Scourge purple 7.2:1 and Bioficer red 8.2:1 are fine, UCM green is 4.05:1, Resistance blue 4.00, Shaltari orange 3.50, and PHR gold is 2.28:1, which is gold on white. The colours themselves do not move, because they are the faction and they sit on fills, borders and rules where the bar is 3:1 and all six clear it. What changed is the ink they imply: where the accent was set as small type it is now a darkened cut of the same hue, and where small type sits ON a fill of it, the ink is black or white depending on which one reads. A PHR chip is still gold; its label went from 1.9:1 to 8:1.',
-      'Play Mode is drawn in the army’s colour. Every other view has taken the faction accent since it was written and this one never did, so a Scourge game and a PHR game were the same navy.',
-      'Four more inks that were below the line: the changelog headings you are reading at 2.90:1, the variant chip on a weapon card at 3.30, "just now" on an army card at 3.11, and the Rare and Aux Transport flags at 3.81, which were painted on a border colour rather than on a background.'
+    { date: '2026-08-11', title: 'Bigger controls and readable faction colours', items: [
+      'Thirty small controls are at least 44px. Most were in Play Mode, plus the Variant stepper and the picker’s Add button.',
+      'The two Victory Point counters still share one row.',
+      'Unset Status Tokens are readable.',
+      'UCM, Resistance, Shaltari and PHR use a darker shade for small text, and labels on coloured fills switch to black or white. A PHR chip label went from 1.9:1 to 8:1.',
+      'Play Mode uses the army’s faction colour.',
+      'Changelog headings, the Variant chip, “just now” on army cards, and the Rare and Aux Transport flags meet contrast.',
     ] },
-    { date: '2026-08-11', title: 'Tokens that never came off, and Pass tokens you could not spend', items: [
-      'Status Tokens come off at the end of a Squad’s activation (6.4.5), and nothing was taking them off. A Squad Concussed in Round 1 was still carrying -2Ac in Round 6, and Suppressed and Jammed did the same. Ticking a Group activated clears them now, which is the end of the activation; a token you place after ticking was placed that activation and stays, which is the exception in the same rule. Un-ticking hands them back, because that box is also how you undo a mis-tap.',
-      'Obscured is a Status Token on the Squad, not a note on one model. It was put on the model on the strength of Obscurer X”, which really does Obscure individual Units by where they are standing. But that places no token and this app does not know where anything is standing. The two rules that hand out the token, Smoke and Stealth, both say “on that Squad”, and Large turns on the distinction: a Large Vehicle cannot be Obscured except by the token. A Stealth Squad had nowhere to record what Stealth had just given it.',
-      'Pass tokens are spent. The card showed how many you were dealt and had no way to use one, so from your second pass onward the number on screen was a token you had already handed over. It now reads what is left over what you were given, the way the Command Point card does, and the count starts again every Round because the leftovers are discarded rather than banked.'
+    { date: '2026-08-11', title: 'Tokens clear and Pass tokens can be spent', items: [
+      'Ticking a Group activated clears its Status Tokens (6.4.5). A token placed after ticking stays, and unticking restores them.',
+      'Obscured is set on the Squad, as Smoke and Stealth say.',
+      'Pass tokens can be spent. The card shows what is left of what you were given, and the count resets every Round.',
     ] },
-    { date: '2026-08-11', title: 'Five icons that were shapes typed into a file, replaced with real ones', items: [
-      'Damage Points, Power, Defence and the grid/list toggle were not icons. They were geometry written straight into the source: a seven-point hexagon, a lightning bolt in eight integer moves, a shield whose curves were picked by eye, and four bare rectangles. Not one of them contained a single curve command, which is what gave them away. All four come from Phosphor now, and the list half of that toggle moved with the grid half so the two states are from one set rather than two.',
-      'The Damage Points hexagon is an outline rather than a solid. Both filled hexagons on offer came out as a black blob at the size the stat block actually draws them, close enough to a house shape to be misread; only the outline still says hexagon at 17px.',
-      'The icon file said "the six stat_* paths are NOT Material, they are drawn for this app". That was wrong in both directions and covered for exactly the three that were the problem. Every path states its own source now.'
+    { date: '2026-08-11', title: 'New stat icons', items: [
+      'Damage Points, Power, Defence and the grid and list toggle use Phosphor icons.',
+      'The Damage Points hexagon is an outline so it stays readable at small sizes.',
     ] },
-    { date: '2026-08-10', title: 'A photo per variant, the Triton’s real upgrade rule, and Behemoths that were never banned', items: [
-      'Every variant that has a picture now shows its own. A Sabre and a Rapier are a tracked tank with a chainsaw gun and a hover tank with a long AA barrel, and the app showed the same photograph for both, because art was per unit and a unit holds up to four variants. 98 of the 199 variants have their own miniature now, on the block where you choose how many of them to take. They come from the previous edition’s cards, which printed as separate units what this edition lists as variants, so they are older sculpts; a variant whose model that edition never pictured shows nothing rather than something that is not it.',
-      'The Triton’s upgrades. Its card offers three and stars two of them, and the star is what the footnote means: you may take the RM-1 Stealth Missile Battery alongside either the Twin RX-20 Miniguns or the RM-7 Skyhammer Missiles, just not the Miniguns and the Skyhammers together. The app was reading the footnote and refusing any second upgrade at all, which made the Triton’s commonest loadout unbuildable. It is the only card in the game with that note, and it is on both Tritons.',
-      'Behemoths are not banned below 3000pts. They were being refused in any smaller game, on the strength of a line in the Behemoth introduction saying some of them are that big. It is not a rule, it says some, and nothing anywhere says which. What actually limits a Behemoth is the one rule 1.1 points at: it counts as a single Group against the quarter-of-your-points cap. So a 410pt Light Battle Mech in a 1750pt game, where a Group may cost 437, is legal, and it was being called illegal.'
+    { date: '2026-08-10', title: 'Variant photos, Triton upgrades and Behemoths', items: [
+      'Variants with a picture show their own. 98 of the 199 have one, taken from the previous edition’s cards, so some are older sculpts.',
+      'The Triton can take the RM-1 Stealth Missile Battery with either the Twin RX-20 Miniguns or the RM-7 Skyhammer Missiles. The Miniguns and Skyhammers still can’t go together.',
+      'Behemoths are allowed below 3000pts. Each counts as one Group against the quarter of your points cap (1.1), so a 410pt Light Battle Mech fits a 1750pt game.',
     ] },
-    { date: '2026-08-10', title: 'Things arrive and leave, refusals that name the move, and a lot fewer dashes', items: [
-      'Squads, Groups and armies animate on when you add them and off when you delete them. Only the thing that actually arrived moves: adding a Squad does not re-deal the rest of the army, and pressing a stepper animates nothing at all. It is built out of transform and opacity alone so a phone can hand it to the compositor instead of re-running the layout of a dozen Squads every frame, and it does nothing at all if your system asks for reduced motion.',
-      'A refusal tells you what to do about it. Two Squads in a Group with nothing carrying either of them used to quote rule 3.2.4 and stop, which reads as the app breaking rather than the list being half finished. It now names which Squad goes aboard which, worked out from the same list the Transport button offers, so it can only ever suggest something that will work.',
-      'The M&A Max icon is gone from the weapon table and the weapon card. It was three fixed colours at 13px in a 57px column, so it read as a smudge and could not follow the dark theme. The words stayed.',
-      'The writing lost most of its dashes. Several hundred of them across every message, tooltip and note in the app, rewritten into full stops, colons and commas rather than swapped for a shorter dash.'
+    { date: '2026-08-10', title: 'Animations and helpful refusals', items: [
+      'Squads, Groups and armies animate in and out as you add and delete them. Reduced motion turns this off.',
+      'A refusal for two unconnected Squads in a Group names which Squad goes aboard which.',
+      'The M&A Max icon is gone from weapons. The words stay.',
+      'Messages, tooltips and notes lost several hundred dashes.',
     ] },
-    { date: '2026-08-10', title: 'A handle you can see, a button with a word on it, and the Foeslayer put back where the card has it', items: [
-      'The drag handle was invisible. Two players decided the app had no drag and drop at all, and one of them only found the six dots at 200% zoom. Three things were wrong: the dots drew at about a seventh of the contrast a control needs, the Group card used a glyph whose dots came out half a pixel wide, and the two handles for the same gesture sat at opposite ends of the screen. There is now one handle, one glyph, at the leading edge of both a Group card and a Squad row, dark enough to see in either theme without hovering, and the Group card gets back the space it was holding for a grip that is no longer in its corner.',
-      'A Squad’s Transport chooser says “Transport”. It was a small lorry beside a bin, and nobody found it. The panel it opens has always done the thing people were dragging to achieve: a Medusa put aboard a Triton X Gunship in one tap, with the capacity drawn and “Fills it” underneath. Its partner says “Take out”.',
-      'The refusal for two Squads with nothing carrying them now names the move. It used to quote rule 3.2.4 and stop, which reads as the app breaking rather than the list being half built. It says which Squad goes aboard which, worked out from the same list the Transport button opens, so it can only suggest something that will work. Where nothing in the Group fits anything else, it offers a Transport or a second Group instead of inventing a pairing.',
-      'RM-4 Foeslayer Missiles are a Menchit and Styx upgrade, and the app was selling them to an Ares for 5pts with nothing traded in. The card’s sentence had been read into the swap and not onto the gun itself. It is on the gun now, and a re-scan of the stat cards will keep it there. If you had already bought one, it stays bought and reprices to the models that may actually carry it.',
-      'Groups and Squads move without a drag. Focus a handle and the arrow keys shift a Group one place, or send a Squad to the Group before or after it. Left and right as well as up and down, because the cards sit in a row on a computer and a column on a phone.',
-      'Settings shows the build number, and a feedback mail arrives with it filled in. A live tab already updates itself within the minute, so this is not a prompt to reload; it is so a report can say which build it came from.'
+    { date: '2026-08-10', title: 'Drag handles, Transport button and Foeslayer', items: [
+      'Group cards and Squad rows have one visible drag handle at the leading edge, in both themes.',
+      'A Squad’s Transport chooser button is labelled “Transport”, and its partner “Take out”.',
+      'Two Squads with nothing carrying them get a suggested move, or an offer of a Transport or second Group when nothing fits.',
+      'RM-4 Foeslayer Missiles are a Menchit and Styx upgrade only. One already bought on an Ares reprices to the models allowed it.',
+      'Focus a handle and use the arrow keys to move a Group, or send a Squad to the next or previous Group.',
+      'Settings shows the build number, and feedback mail includes it.',
     ] },
-    { date: '2026-08-08', title: 'Raw Materials, rules on the loadout that has them, and a phone that stopped scrolling sideways', items: [
-      'Shaltari Gates are not part of your Group structure, because the rulebook says so three times: they are not taken with any Units aboard, they do not count against your allowed Groups, and a Gate is never part of another Group. The builder was breaking all three. It offered a Gate as a Squad’s Transport, spent a Group on every Gate you took, and printed “carries nothing” on a Gate that was correctly empty. A Group of Gates is now called Gates, is numbered apart from your Groups, and costs you none of them. And a Squad with no Transport in a list with Gates starts in Holding, which is the whole point of the faction, rather than being warned that it begins Reserved.',
-      'Raw Materials. A Genitor Unit, anything with a hollow green square, may begin the game with RM tokens aboard, 5pts each up to the number in its symbol, and now you can buy them: 12 on a Grievance Genitor Ark, 8 on a Gyro Aero-Genitor. Their points count toward the army and toward their Group, and toward no category at all, which is what the rule says and the only place in this app where that is true. They travel in a share link, in a backup and on the printed sheet, where they print as tokens rather than as the points they cost: points are what you paid, tokens are what you put on the table before Round 1.',
-      'A rule that belongs to one loadout is written on that loadout. “Scanner (Greave)” printed against the whole Squad, so a Sabre, a Tachi and a Rapier all looked like they had a Scanner only the Greave has. Nineteen rules across the game move onto their own Variant (in the builder, in the Unit Reference and on the printed sheet), and the Squad keeps only what every model in it has. Inside the Greave’s own block the chip just reads “Scanner”, because the block is already called Greave.',
-      'The builder scrolled sideways on a phone. Three faults stacked: a grid whose columns had a hard 232px floor in a 170px space, every level of carry spending 96px on indent before a single stat was drawn, and a row of controls that could neither shrink nor wrap. A 320px screen measured 455px of page; it measures 312 now, and nothing runs off the edge at any width. The photograph on a Squad also shrinks properly on a phone at last. It had been sitting in the corner of a box a third bigger than itself, with 37px of blank paper beside it, on every Squad.',
-      'An alert on a Squad stops repeating the Squad’s name. “UCM Troop Buggy”, and twenty pixels below it, “UCM Troop Buggy: 1 model, minimum is 2.”',
-      'Play Mode counts your RM. A Genitor walks into the game holding what you bought and the count moves both ways from there: down 4 for Drones and 6 for Hulks as you Spawn them, up 2 or 4 every time a Decon weapon finishes something off. It stops at the number in the symbol, because any above that are discarded.',
-      'The +/- on a Squad with Variants is gone. It was the sum of the ones on the blocks underneath it, and pressing it had to guess which Variant you meant. A Unit with no Variants keeps its own. 93 of the 178 have none.'
+    { date: '2026-08-08', title: 'Gates, Raw Materials and Variant rules', items: [
+      'Shaltari Gates sit in their own Group called Gates. It is numbered apart and uses none of your allowance.',
+      'A Gate is never offered as a Squad’s Transport. Squads without one in a list with Gates start in Holding.',
+      'Genitor Units can buy RM tokens at 5pts each, up to the number in their symbol. That is 12 on a Grievance Genitor Ark and 8 on a Gyro Aero-Genitor.',
+      'RM points count toward the army and its Group but no category. They travel in share links and backups, and print as tokens.',
+      'Rules for one Variant sit on that Variant. Nineteen moved, like Scanner (Greave).',
+      'The builder no longer scrolls sideways on a phone, and Squad photos shrink properly.',
+      'Squad alerts no longer repeat the Squad’s name.',
+      'Play Mode tracks RM. Spawning takes 4 for Drones and 6 for Hulks, and Decon kills add 2 or 4, up to the symbol’s number.',
+      'Squads with Variants lose their overall +/-. Units with no Variants keep theirs.',
     ] },
-    { date: '2026-08-07', title: 'A theme that hid the app, and a download with no app in it', items: [
-      'Dark mode was white text on white cards. Six of the tokens the builder is written against (its surfaces, its lines, its second ink) were never defined anywhere, so that whole layer stayed hardcoded to paper while the ink dutifully flipped to near-white. The builder, the picker, the reference and Play Mode all went unreadable the moment you touched a switch that has sat in Settings since the beginning. The printed sheet and its preview went with them. Every screenshot is taken in both themes now, which is how this survived as long as it did.',
-      'A phone had no rail at all. Points left, Groups used and issues outstanding were switched on by one stylesheet rule and off by a later one, so no phone ever saw them, and with nothing drawn there, nobody saw the fault underneath: the army was sitting in a grid column that no longer existed, pushed off a dead gutter down the left.',
-      '“Download for offline use” fetched 26 MB of art and no app. The list it works from named files belonging to a different game, and none of the twelve modules this one is made of, so the group labelled for the rules and the app contained neither. It reads the list the service worker actually caches now, because two lists that have to agree is one list too many. A re-scan would have left that same download describing photos that were gone, and one missing file takes the whole offline copy down rather than one picture, so regenerating it is part of the scan.',
-      'The printable faction references were unreachable. Six sheets and an index, already cached for a table with no signal, and nothing anywhere linked to any of them.',
-      'Every variant printed the unit’s stats back at you, three and four times over. A Polecat Buggy gave you Move 9”, Armour 4, Damage Points 1 four times in one card. Not one of the 218 variants in the game changes a stat, so that copy had never once said anything.',
-      'Import’s one line of instruction was cut to “…or a pas” on a phone, and it is the only line that tells you a pasted list will do. It wraps now. Its label also rested three rows down the middle of an empty box instead of on the line where you type.',
-      'A new Round capped your Command Points and never handed you any. Replenishing up to your highest Commander Level is half of 4.1.1, and the losing half was the half that worked, so a Level 5 Commander started Round 2 on nothing. The Initiative roll prints its total on a six as well, and that is the one roll with a case that needs it.',
-      'Behemoths reached Play Mode a week after they reached the builder, and four of their rules had not travelled with them. One counted as a single Group when Pass tokens are worked out off Group counts and a Dragon is worth five, so every token in the game came out wrong for anyone fielding one. You could Concuss one, and Obscure one, neither of which the game allows. And the biggest model on the table was marked finished for the Round after one activation, when a Behemoth goes once per Power token, four to ten times, and that track was nowhere in the app. Every Behemoth Squad carries it now, refilled at the start of each Round.',
-      'Every Behemoth also said “Squad 1”, which is a number its printed card does not carry: they have a Groups Equivalent instead, and that is the one that decides how much of your Group allowance one eats. It is on the reference card, the picker, the Collection and the unit’s own page now, and the rail counts your Groups in it. That meter was counting cards against an allowance counted in Groups, so it read 3 of 16 on a list already spending fifteen.',
-    ]},
-    { date: '2026-08-06', title: 'Behemoths, and a weapon table you can read on a phone', items: [
-      'Ten Behemoths and the Venus Drone are scanned and read in the Unit Reference, under a seventh tab that is deliberately not a faction: the cards do not say whose they are. Their 39 rules are in the glossary, and their Gear is on the card and on the printed sheet.',
-      'They can be built with, and they cost the Groups they are worth. A Behemoth counts as several Groups when you build, and without that a Battle list could field three Dragons and a Siegestrider on four cards, inside an allowance they alone are worth eighteen of.',
-      'Play Mode gave a Dragon 9 damage points instead of 18. A Behemoth prints several values and the last one is the real one; the first was being taken, so every Behemoth walked in with half its life or less and would have been called destroyed at a fraction of what it takes to kill one. Degraded and Crippled are read off the same line and said outright, because they change what the model may do rather than only how close it is to dying.',
-      'A weapon is a card. Eight columns wanted 620px and got them by scrolling sideways inside their own box, so on a phone the column carrying the rules was the one you never saw without dragging. Nothing is dropped; the same eight fields are laid out to be read instead of to line up.',
-      'An upgrade that sells transport capacity now spends it. Two cards in the game trade room for guns, and the builder would load two circles into a Strikehawk that had already sold them and call the army legal.',
-      'The four categories have a colour, and it can be read. The whole of 3.2 turns on which category a Unit is in, and it was the same grey word on every card, tile, row and sheet. The swatch and the word carry different inks: the vivid colour on the square, the word darkened until it clears on paper.',
-      'No Commander on a Fast Mover or a Living Weapon. A swap takes the weapon it replaces off the sheet. The top bar says what this is, and Play Mode stopped running off the side of a phone.',
-    ]},
-    { date: '2026-08-02', title: 'Nothing on a phone was big enough to press', items: [
-      'Measured at 390 by 844, every control the app draws: the way back was 18px square, the card menu 24, Settings and the modal close 32, the filter and sort chips 28 high, the search field 36. A finger pad is about 45px across, so all of those were aimed at rather than pressed. Everything clears 44 now, and the model stepper (the most-pressed control here, and two of them sat 2px apart) got the gap as well as the size.',
-      'One failed Create killed Create for the rest of the session. The button disabled itself for the length of the work and re-enabled after a render that a throw could step straight over, so it stayed pressed and silent and no click after it built anything until you reloaded.',
-      'The number inside a transport symbol sits on the shape’s real centre of mass rather than the middle of its box, which is not the same place on a triangle.',
-    ]},
-    { date: '2026-08-01', title: 'A run spent looking at it', items: [
-      'The print preview was telling a phone that a one-page army was three pages, and drawing a page break through the middle of a Squad, through a Group, which is the one thing the whole sheet is built to keep whole. The sheet was being stretched to the height of your window and then measured, and the measuring itself was mixing what you can see with what the paper actually is. Both fixed; a phone and a desktop now agree, and they agree with the paper.',
-      'On a phone there was no way back. The back arrow lives in a strip that had been hidden below 768px since the days of a separate mobile build, so the only way out of an army was the wordmark, which goes to the front page rather than back, and Play Mode’s Reset game could not be reached at all.',
-      'Status Tokens go on the Squad, which is what the rulebook says three separate times. Concussed, Suppressed and Jammed were on every model, so a Squad of five had five of each and you could record a state the game cannot produce. Obscured stays on the model, because that one is about where a model is standing. A status you have set now says its whole name instead of its first letter.',
-      'Every Group card was printing its cost with the last digits under the drag grip: 100/50, with the rest of the ceiling hidden. That number is how you tell whether a Group is legal.',
-      'Category spend drew the Standard line in the same green as the card it sits on, so the one row that explains what the other three mean was a smudge beside a number.',
-      'The Unit Reference was cutting the ends off its own stats, 5+ DEFENC, 5+ BRAVE, on nearly every card in the grid.',
-      'A Commander you have not named reports its Level as its name, and then both the rail and the printed sheet said the Level again beside it. The unit page did the same with the unit’s name.',
-      'A Group with nothing in it was tagged “orphaned transports” in Play Mode and told a rule about transports it did not contain.',
-      'The search box on the Collection was cutting off the line that tells you what you can type. On a phone the magnifying glass beside it gives way instead of the words.',
-    ]},
-    { date: '2026-08-01', title: 'What a Level buys, and guns nobody was firing', items: [
-      'A Commander Level says what it is worth. CP replenishes up to your highest Level, your Command Card hand is that many cards, and Initiative is D6 plus it (4.1). Play Mode has run on those three numbers since it was written; the screen where you choose a Level had never been told. They are on every option in the chooser, once in the rail for the army, and on the printable reference.',
-      'A Level a smaller game cannot reach says which game reaches it, instead of not being there. At Skirmish there was no way to learn that Levels 6 and 7 exist.',
-      'A Squad’s weapon table is the guns that Squad fires. It was printing the whole card: the gun only a Rapier carries, on a Squad with no Rapier in it, and every paid upgrade whether or not you had bought one. The printed sheet does the same now, where it matters more, and its rules appendix stops printing rules for guns nobody in the army can fire.',
-      'Compact view, in Settings. A Squad reads as its whole stat card by default; this drops the weapon table and the stat grid repeated under every Variant, and takes away no control.',
-      'Every Unit says which stat card page it came off, with the release named beside it. Every rule already cited its rulebook page; the Unit, whose printed card is the one thing this cannot replace, cited nothing.',
-      'The sentence that qualifies an upgrade reads on the unit page as well as over the buttons, and four cards had it wrong in the data. Two stopped mid-clause at “May replace transport capacity of” and two held a paragraph of lore.',
-      '“A save of 4++”, on every Infantry Unit with Hardy. The rulebook heads the rule “Hardy X” and then reads “a save of X+”, while every card prints “Hardy 4+”, so the value took the plus with it.',
-    ]},
-    { date: '2026-08-01', title: 'A blank builder, and everything that was never pressed', items: [
-      'The builder was drawing nothing at all for any Squad with a Transport, and had been for a day. A helper was used two hundred lines above the line that declares it, which throws rather than coming back empty, so the whole pane stayed blank. Nothing caught it because nothing had ever drawn the builder in a test, only the pieces it is made of.',
-      'Every screen is driven by the tests now, and so is every control on them: the army list, the builder, the picker, both choosers, Share, the print preview, the unit reference, Collection and Play, about seventy controls pressed in turn.',
-      'Drag a Group to reorder it. The order is the order on your printed sheet, and that is the deployment plan, and until now it was whatever order you happened to add them in.',
-      'An army can say what it is for. Set it when you make one, edit it in the builder, and it travels in the link, the JSON and the text.',
-      'Play, Share and Print moved into the topbar, which on a phone costs no vertical space at all. On a phone the rail also collapses behind the two numbers you keep glancing at.',
-      'One menu on an army card instead of two loose icons crowding the thing you are trying to tap. The picker can show only what you own. Missing art removes itself rather than leaving a broken icon and a hole.',
-    ]},
-    { date: '2026-08-01', title: 'A sheet for the table, and corners that were never sharp', items: [
-      'A printable quick reference for each faction: every game size with its Group cap and Rare limit, the Commander ladder, the category and Group-cost rules, the transport symbols, the whole roster as one table, and the special rules those units actually print. It reads the same data the app reads, so a re-scanned points value cannot leave it lying. Linked from the landing page and the footer.',
-      'Sharp cards, actually. The rule was written into the stylesheet above the rules that round the picker cards, the rail and the Commander chooser, so those had been rounded the whole time. Nine more surfaces are square now, including the landing tiles and both grids in the New Army dialog.',
-      'Share is three things: a link for someone who will open it, plain text for a message or a forum, and JSON for this app’s own Import. The text keeps the Group nesting indented, and pastes back in as an army.',
-      'Feedback asks the four questions instead of opening a blank message.',
-    ]},
-    { date: '2026-08-01', title: 'Surprise me, and a bug that called legal armies illegal', items: [
-      'A Squad that needed more than one Transport was being reported illegal. Six Legionnaires in two Bear APCs is a Group the rulebook itself illustrates, and the app measured them against ONE vehicle\'s capacity, so it said "needs 6, has 3" and there was nothing you could do about it. Fixed, and pinned by six tests.',
-      '"Surprise me" builds a whole army to the faction, size and points you have chosen, legal when it stops. It spends the Commander first, Standard before the categories Standard has to pay for, and takes a Transport only where it comes out exactly full.',
-      'A rule links to the rules it names. Grav says it ignores Resilient; Resilient is now one tap away, where before you had to know it existed and go looking. Twenty-three of those cross-references were dead ends.',
-      'Every rule a Unit uses prints in full under its weapon table, not only behind a hover, because on a phone there is no hover, so a tooltip-only rule was simply missing.',
-      'A list pasted out of New Recruit imports. It cannot give you back the Group nesting (a flat list does not record what rode in what) and it says so rather than pretending.',
-      'Sort your armies by Recent, Name, Faction or Points, and an empty list is a grid with a tile in it instead of a sentence saying it is empty.',
-    ]},
-    { date: '2026-08-01', title: 'Print what you can see first, and get your armies back', items: [
-      'Print opens a preview: your sheet at A4 with the page breaks drawn on it and the page count in the bar. The breaks are measured rather than spaced every 273mm: a Group is kept whole by the stylesheet, so the preview pushes one that would straddle a boundary onto the next page exactly as the printer will, and then it agrees with the paper.',
-      'Compact, ink-saver and art, decided in the preview where you can see what each costs you in pages. Art on the sheet is new; it stays off unless you ask, because it is the biggest thing between a two-page list and a four-page one.',
-      'Import. There was an Export button and nothing to put it into, which made the backup a file rather than a backup. A whole backup, one army, a share link or a list pasted from New Recruit all go in through the same box, and the report says what came in and what it could not match. Nothing is overwritten: importing twice adds twice.',
-      'A pasted list will not give you back the Group nesting, and says so: a flat list does not record what rode in what.',
-      'The agreed points limit can be changed after you make the army. The size in the rail opens it. This mattered more than it sounds: the per-Group ceiling is a quarter of the AGREED number, so agreeing 1500 on the day instead of the 2000 you built at moves what is legal, and there was no way to tell the app.',
-      'The per-model variant dropdowns are gone. A Squad of eight was eight dropdowns, and you could not see the mix without opening every one. The variant blocks, which already said what each variant is, which gun makes it that and what it costs, now carry the count, so the thing you read is the thing you press.',
-      'An upgrade reads as the weapon it is: the same columns as the table above it, arc, range, attacks, accuracy, energy and every special, with the price as the button. The question an upgrade asks is whether the new gun beats the old one, and a name cannot answer it.',
-    ]},
-    { date: '2026-08-01', title: 'Commanders, Groups you can copy, and tests that read the markup', items: [
-      'Commanders have names, the same way Groups do. An unnamed one reports its Level, so deleting one from the middle can never leave two things called the same thing.',
-      'Duplicate a Group, with every Squad, its models and their variants, the upgrades and the nesting, with every id reissued so the copy rides its own Transports rather than the original\'s.',
-      'Every army as one JSON file you keep. Armies live in your browser, which is free to clear them; sync moves them between your devices but propagates a deletion just as happily.',
-      'On a phone a Group is a screen you drill into rather than another slab in a long column; on a desktop the builder keeps its three panes.',
-      'A test suite that reads the rendered markup. Three regressions in one night were caught by looking at a screenshot and none by the tests, which was an argument that nothing was testing the markup rather than an argument for screenshots.',
-    ]},
-    { date: '2026-08-01', title: 'Rules say what they mean, and the Albatross is reachable', items: [
-      'A rule reads back the number your card printed. "Aegis 6”" says "within 6” of this Unit" instead of "within X”", and it works for words as well as numbers, so "Ineffective: Zones" names Zones. Substituting the value also exposed three keywords the app had been reading wrongly. "Pen 6+" was resolving to Passive Countermeasures, which meant every weapon with Penetrator showed the wrong rule.',
-      'Every rule now says which page of the rulebook it is on, in the tooltip and on the printed sheet, so the book falls open in the right place mid-game.',
-      'You can build an Albatross. A Transport Squad is a Squad, so it can be carried too: you give an Albatross to a Bear APC exactly as you gave the Bear to the Legionnaires. The rules always allowed it and the builder was refusing.',
-      'The picker prices the Squad rather than one model: 70pts over "2 × 35". A third of the list has a minimum above one model, so a third of the list had been quietly halving its own price.',
-      'Category tabs say how many units are behind them, and a tab or a filter only appears if it can match something. That adds a filter for units with a paid weapon upgrade (18 in the whole game) and removes Unique, which could never match anything, because no Unique Unit has been published.',
-      'Search reaches further: category and type, the rules on a weapon rather than only on the Unit, and glossary aliases, so "evasion" finds a Unit whose card only ever prints "Ev1".',
-      'A control that refuses you says why. The model stepper used to go dead under your finger with nothing on screen; it now quotes the squad size that stopped it. An empty list names which of your choices emptied it.',
-      'Renaming an army or a Group looks renameable, and Enter commits while Escape puts it back. Escape used to do nothing, so once you started typing there was no way to change your mind.',
-    ]},
-    { date: '2026-07-31', title: 'A Squad reads like the Unit it is', items: [
-      'A Squad in your army now shows what the unit page shows: the art, the capacity symbol beside the name, every stat, the rules, a block per variant with its own price, and the whole weapon table with arcs and Move & Attack. The numbers you argue over across a table are on the page instead of behind a modal.',
-      'Choosing a Transport is a chooser, not a dropdown. Every option shows what it offers, how many the cargo needs, what it costs, and whether the fit comes out exact. A part-empty fit is offered and marked rather than refused, because one more model fixes it.',
-      'The weapon table scrolls inside its own box, so a phone gets every column rather than a squeezed version, and the nesting indent tightens as the screen narrows instead of the tree being flattened.',
-    ]},
-    { date: '2026-07-31', title: 'Add Squad, and the transport symbols', items: [
-      'Add Squad is the widest thing in a Group card now, in your faction\'s colour, and adding closes the picker and puts you back on your army.',
-      'The transport symbols are on the picker card. Which shape a unit fills and which it offers is what decides whether two things can share a Group (3.2.4.2), so it should not be the fact you have to open the unit to find.',
-      'Capacity has its own band in the Group header, the shape drawn large with the count beside it, instead of one more small grey pill in a row of them.',
-    ]},
+    { date: '2026-08-07', title: 'Dark mode, phone rail and offline download', items: [
+      'Dark mode is readable. It had drawn white text on white cards across the builder, picker, reference, Play Mode and print preview.',
+      'Phones show the rail with points left, Groups used and issues.',
+      '“Download for offline use” fetches the app itself as well as the art.',
+      'The printable faction references are linked.',
+      'Variants no longer repeat the unit’s stats.',
+      'Import’s instruction line wraps on a phone, and its label sits on the input line.',
+      'A new Round refills Command Points up to your highest Commander Level (4.1.1). The Initiative roll shows its total on a six.',
+      'In Play Mode a Behemoth counts as its full Groups for Pass tokens and can’t be Concussed or Obscured. It activates once per Power token, refilled each Round.',
+      'Behemoths show their Groups Equivalent in place of “Squad 1”, and the rail counts Groups with it.',
+    ] },
+    { date: '2026-08-06', title: 'Behemoths and weapon cards', items: [
+      'Ten Behemoths and the Venus Drone are in the Unit Reference under their own tab. Their 39 rules are in the glossary, and their Gear shows on the card and printed sheet.',
+      'They can join armies, and each counts as the Groups it is worth.',
+      'Play Mode reads a Behemoth’s full damage points, 18 for a Dragon. Degraded and Crippled are shown.',
+      'Weapons show as cards, with all eight fields readable on a phone.',
+      'An upgrade that trades transport capacity removes that capacity.',
+      'Each of the four categories has its own colour.',
+      'Fast Movers and Living Weapons can’t take a Commander. A swap removes the weapon it replaces from the sheet.',
+      'Play Mode fits a phone screen.',
+    ] },
+    { date: '2026-08-02', title: 'Bigger touch targets', items: [
+      'Every control is at least 44px on a phone, and the two model steppers have a gap between them.',
+      'A failed Create no longer disables the button for the session.',
+      'Numbers in transport symbols sit at the shape’s centre of mass.',
+    ] },
+    { date: '2026-08-01', title: 'Print preview and phone fixes', items: [
+      'The print preview counts pages correctly on a phone and never breaks a Group across pages.',
+      'Phones have a back arrow, and Play Mode’s Reset game is reachable.',
+      'Concussed, Suppressed and Jammed go on the Squad. Obscured stays on the model, and set statuses show their full name.',
+      'Group card costs show in full.',
+      'The Standard line in Category spend is readable.',
+      'Unit Reference stats are no longer cut off.',
+      'Unnamed Commanders no longer repeat their Level, and unit pages no longer repeat the unit name.',
+      'Empty Groups in Play Mode lose the “orphaned transports” tag.',
+      'The Collection search hint fits on a phone.',
+    ] },
+    { date: '2026-08-01', title: 'Commander Levels and fielded weapons', items: [
+      'Each Commander Level shows its CP, Command Card hand and Initiative bonus (4.1). They appear in the chooser, the rail and the printable reference.',
+      'Levels a smaller game can’t reach say which game size reaches them.',
+      'A Squad’s weapon table lists only the guns it fields, on screen and in print. The rules appendix skips rules for unfielded guns.',
+      'Compact view in Settings hides the weapon table and repeated stat grids.',
+      'Every Unit names its stat card page and release.',
+      'Upgrade conditions show on the unit page, and four cards had theirs fixed.',
+      'Hardy reads “a save of 4+”.',
+    ] },
+    { date: '2026-08-01', title: 'Builder fix, Group order and army notes', items: [
+      'The builder draws Squads with a Transport again.',
+      'Drag Groups to reorder them. The order matches your printed sheet.',
+      'An army can say what it is for. Set it on creation or in the builder, and it travels with links, JSON and text.',
+      'Play, Share and Print are in the top bar. On a phone the rail collapses to two numbers.',
+      'Army cards have one menu. The picker can show only what you own, and missing art hides itself.',
+    ] },
+    { date: '2026-08-01', title: 'Faction quick references', items: [
+      'Each faction has a printable quick reference with game sizes, Group caps, Rare limits, the Commander ladder, category rules, transport symbols, the roster and its special rules. It is linked from the landing page and footer.',
+      'Nine more surfaces have square corners, including the picker cards, rail, Commander chooser, landing tiles and New Army grids.',
+      'Share offers a link, plain text with indented Groups, or JSON for Import.',
+      'Feedback asks four questions.',
+    ] },
+    { date: '2026-08-01', title: 'Surprise me and multi Transport Squads', items: [
+      'A Squad that needs more than one Transport is no longer called illegal. Six Legionnaires in two Bear APCs is legal.',
+      '“Surprise me” builds a legal army for your faction, size and points.',
+      'Rules link to the rules they name, so Grav opens Resilient.',
+      'Every rule a Unit uses prints in full under its weapon table.',
+      'Lists pasted from New Recruit import, without Group nesting.',
+      'Sort armies by Recent, Name, Faction or Points.',
+    ] },
+    { date: '2026-08-01', title: 'Print preview and Import', items: [
+      'Print opens an A4 preview with page breaks and a page count. A Group is never split across pages.',
+      'Compact, ink-saver and art are set in the preview. Art is off by default.',
+      'Import takes a backup, an army, a share link or a New Recruit list, and reports what it couldn’t match. Importing never overwrites.',
+      'Pasted lists lose their Group nesting.',
+      'Change the points limit by tapping the size in the rail. The per-Group cap follows it.',
+      'Variant blocks carry the model count, replacing the per-model dropdowns.',
+      'Upgrades show as weapons with arc, range, attacks, accuracy, energy and specials, and the price is the button.',
+    ] },
+    { date: '2026-08-01', title: 'Commander names, Group copies and backups', items: [
+      'Commanders can be named. An unnamed one shows its Level.',
+      'Duplicate a Group with every Squad, model, Variant, upgrade and Transport link.',
+      'Export every army as one JSON file to keep as a backup.',
+      'On a phone a Group opens as its own screen. Desktop keeps three panes.',
+    ] },
+    { date: '2026-08-01', title: 'Rule values, page numbers and the Albatross', items: [
+      'Rules show the value your card prints. “Aegis 6”” reads “within 6” of this Unit”, and “Ineffective: Zones” names Zones.',
+      '“Pen 6+” opens Penetrator. It had opened Passive Countermeasures.',
+      'Every rule shows its rulebook page in the tooltip and on the printed sheet.',
+      'Transport Squads can be carried, so an Albatross can carry a Bear APC.',
+      'The picker prices the whole Squad, such as 70pts over “2 × 35”.',
+      'Category tabs show counts, and filters appear only when they match something. A paid weapon upgrade filter is added and Unique is removed.',
+      'Search covers category, type, weapon rules and glossary aliases, so “evasion” finds Ev1.',
+      'Refused controls say why. The model stepper quotes the squad size, and an empty list names the choice that emptied it.',
+      'Renaming an army or Group looks editable. Enter saves and Escape cancels.',
+    ] },
+    { date: '2026-07-31', title: 'Full Squad stats in the army', items: [
+      'A Squad in your army shows what the unit page shows, with art, capacity symbol, stats, rules, Variant blocks and the full weapon table.',
+      'Choosing a Transport opens a chooser showing each option’s fit, cost and need. Part-empty fits are offered and marked.',
+      'The weapon table scrolls in its own box on a phone, and the nesting indent narrows with the screen.',
+    ] },
+    { date: '2026-07-31', title: 'Add Squad and transport symbols', items: [
+      'Add Squad is the widest button in a Group card, in your faction’s colour. Adding closes the picker.',
+      'Picker cards show transport symbols (3.2.4.2).',
+      'Capacity has its own band in the Group header, with the shape drawn large beside the count.',
+    ] },
     { date: '2026-07-31', title: 'The picker holds still', items: [
-      'Sorting or filtering used to rebuild the whole bar and throw you back to the top of the list. Nothing moves now, and the list keeps its place across a re-sort.',
-      'Filter by transport symbol. The six shapes are the whole grammar of what fits with what, drawn as the stat cards print them, and a shape matches whether a unit offers it or fills it.',
-      'The Group header meters itself: points against the quarter-army ceiling, Squads, models, and for every Transport how much of each shape it has used against what it offers. Green when full, red when overloaded.',
-      'Add Group leaves you an empty Group rather than opening the picker on you.',
-    ]},
+      'Sorting or filtering keeps your place in the list.',
+      'Filter by transport symbol. A shape matches whether a unit offers or fills it.',
+      'The Group header shows points against the quarter army cap, Squads, models and each Transport’s used space. Full is green and overloaded is red.',
+      'Add Group creates an empty Group without opening the picker.',
+    ] },
     { date: '2026-07-31', title: 'Sort, filter and search the picker', items: [
-      'Sort by Price, Name, Category, Squad or Capacity, each reversible. Filters for Rare, Unique, Variants, Carries and Auxiliary. Search covers names, variants, weapons and rules. A list view sits beside the card grid for scanning rather than comparing.',
-      'A Group that does not yet make sense is reported when you stop building, not blocked while you build. A lone Transport is unfinished, not illegal: you are probably about to fill it. A second Rare Squad is still refused, because nothing you add later puts it right.',
-      'The active filter pill was painting white on white, and typing in the search box replaced the box under your caret. Both fixed.',
-    ]},
-    { date: '2026-07-31', title: 'Groups form by transport', items: [
-      'Rulebook 3.2.4: a Transport may only be chosen alongside a Squad it can carry, and those two form one Group, and up to four Squads plus their own Transport Squads may share one larger Transport. Nothing else puts a second Squad in a Group, so Add Squad no longer offers all 178 units. An empty Group takes any fighting Unit; after that, only a Transport for something already there, or a Squad that fits inside a Transport already there. Everything else greys out quoting the rule that refuses it.',
-      'Transports are in the picker rather than hidden behind a dropdown. Picking one builds the Transport Squad, links it, and works out how many models it takes to fill.',
-      'With Infantry in the Group the picker offers Troopships and refuses Dropships, because a Transport may only carry matching shapes (3.2.4.2).',
-    ]},
+      'Sort by Price, Name, Category, Squad or Capacity, each reversible.',
+      'Filter by Rare, Unique, Variants, Carries and Auxiliary.',
+      'Search covers names, Variants, weapons and rules. A list view sits beside the card grid.',
+      'Unfinished Groups are reported when you stop building. A second Rare Squad is still refused.',
+      'The active filter pill is readable, and the search box keeps your typing.',
+    ] },
+    { date: '2026-07-31', title: 'Groups form around Transports', items: [
+      'A Transport can only join a Group alongside a Squad it can carry. Up to four Squads with their own Transports can share a larger one (3.2.4).',
+      'An empty Group takes any fighting Unit. After that the picker offers only matching Transports or Squads that fit, and greys out the rest with the rule.',
+      'Transports are in the picker. Picking one builds the Transport Squad, links it and sizes it to fill.',
+      'With Infantry in the Group the picker offers Troopships and refuses Dropships (3.2.4.2).',
+    ] },
     { date: '2026-07-31', title: 'Play Mode, Collection and share links', items: [
-      'Play Mode tracks a Round the way chapter 4 defines it: CP replenishing up to your highest Commander Level, Pass tokens from having fewer Groups than your opponent, Initiative as D6 + Level, and damage per model.',
-      'Collection counts models, not Squads, and stays advisory. Owning too few is a shopping list, not a rules violation, so it never blocks a legal choice.',
-      'Share links carry the whole army in the URL. There is no server, so a shared list cannot rot.',
-      'Two data faults found by chasing an odd firing arc: every paid weapon upgrade was costing nothing, and eight weapons had arcs made out of footnote text.',
-    ]},
+      'Play Mode tracks a Round per chapter 4, with CP up to your highest Commander Level, Pass tokens, Initiative as D6 + Level, and damage per model.',
+      'Collection counts models and never blocks a legal choice.',
+      'Share links carry the whole army in the URL.',
+      'Every paid weapon upgrade has its cost, and eight weapons have their correct arcs.',
+    ] },
     { date: '2026-07-30', title: 'The army builder', items: [
-      'Groups, Squads and per-model variants, with transport nesting drawn as a tree, a Bear APC with its Legionnaires indented beneath it, because that is the deployment plan.',
-      'Illegal choices are unreachable rather than flagged after you have made them.',
-      'The print sheet keeps the nesting and appends the verbatim text of every rule your list uses. Groups never split across a page and no rule breaks mid-sentence.',
-      'All 178 units are readable on their own, with a 106-rule glossary taken from the rulebook and the faction front matter.',
-    ]},
+      'Build Groups, Squads and per-model Variants, with transport nesting drawn as a tree.',
+      'Illegal choices can’t be picked.',
+      'The print sheet keeps the nesting and adds the full text of every rule your list uses. Groups never split across a page.',
+      'All 178 units have their own page, with a 106-rule glossary from the rulebook and faction front matter.',
+    ] },
   ];
 
   function openChangelog() {
