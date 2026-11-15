@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 527;
+  const BUILD = 528;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -682,6 +682,7 @@ const App = (() => {
       'Full Transports in other Groups are no longer offered. Picking one bought a second Transport and deleted the Squad’s own.',
       'Moving a Squad into another Group now says what was removed.',
       'Settings has a switch to hide Transports in other Groups.',
+      'Transport cards show the points and the empty spaces. A card that buys another Transport says so.',
       'Lifthawk Troopship weapons show again, and long upgrade notes no longer squash weapon cards on iPad.',
     ] },
     { date: '2026-11-09', title: 'Squads share a Transport as long as none is split', items: [

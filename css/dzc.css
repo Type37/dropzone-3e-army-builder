@@ -2076,8 +2076,8 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
 }
 .dzc-carry-name { font: 700 14px/1.25 var(--font-display, 'Roboto Slab', serif); overflow-wrap: anywhere; }
 .dzc-carry-caps .dzc-badge { --badge-px: 34px; --cargo-px: 27px; }
-.dzc-carry-sum { display: inline-flex; align-items: baseline; gap: 7px; font-family: var(--font-numeric, 'Outfit', sans-serif); }
-.dzc-carry-sum b { font-size: 17px; font-weight: 700; }
+.dzc-carry-sum { display: inline-flex; flex-wrap: wrap; align-items: baseline; column-gap: 7px; font-family: var(--font-numeric, 'Outfit', sans-serif); }
+.dzc-carry-sum b { font-size: 15px; font-weight: 700; }
 .dzc-carry-sum i { font-style: normal; font-size: 13px; color: var(--ink-2, #6b6459); }
 .dzc-carry-fit {
   display: flex; align-items: flex-start; gap: 4px;

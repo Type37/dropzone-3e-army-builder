@@ -3161,25 +3161,38 @@
     const nowId = s.carriedBy
       ? (window.DZCArmy.findSquad(current, s.carriedBy) || {}).unitId : '';
 
+    /* EVERY CARD SAYS THE SAME TWO THINGS, the same way: what pressing it
+     * costs, and how full the Transport ends up. Jet, 2026-11-15, on "4 of 4
+     * aboard, fills it": "isn't clear what it means". The three kinds of card
+     * each had their own wording, and the boarding ones never showed a cost
+     * at all, even when boarding bought a second Transport. */
+    const costLine = (pts, buys) => buys
+      ? `<b>Buys ${buys}</b><i>+${pts} pts</i>`
+      : `<i>${pts ? `+${pts} pts` : '0 pts'}</i>`;
+    // `legal`: full enough for the rules (3.2.4, or half for Flexible Capacity).
+    const fitLine = (empty, legal) => empty <= 0
+      ? `${window.DZCIcon('check_circle', { size: 14 })}Full`
+      : `${legal ? '' : window.DZCIcon('warning', { size: 14 })}${empty} ${empty === 1 ? 'space' : 'spaces'} empty`;
+    // A Transport priced per Variant has no unit price, so price the Variant
+    // the model actually has (or the first, for a new one).
+    const priceOf = (unit, variant) => window.DZCArmy.modelCost(unit,
+      { variant: variant || ((unit.variants || [])[0] || {}).name });
+
     const card = o => {
-      // What assignTransport will actually add: the first Variant at its own
-      // price. A Transport priced per Variant (Battle Bus, Leviathan, Juno)
-      // has no unit price, and the card showed none at all.
-      const first = ((o.unit.variants || [])[0] || {}).name;
-      const total = window.DZCArmy.modelCost(o.unit, { variant: first }) * o.need;
+      const total = priceOf(o.unit) * o.need;
       return `<button type="button" class="dzc-carry-card${o.unit.id === nowId ? ' is-on' : ''}${
         o.exact ? '' : ' is-partial'}" onclick="DZCBuilder.assignTransport('${s.id}','${esc(o.unit.id)}')">
         ${o.unit.art ? `<img src="${esc(o.unit.art)}" alt="" loading="lazy" onerror="this.remove()">`
                      : '<span class="dzc-carry-noart"></span>'}
         <span class="dzc-carry-name">${esc(o.unit.name)}</span>
         <span class="dzc-carry-caps">${U.transportHtml(o.unit)}</span>
-        <span class="dzc-carry-sum"><b>${o.need > 1 ? `× ${o.need}` : ''}</b>${
-          total ? `<i>${total}pts</i>` : ''}</span>
-        <span class="dzc-carry-fit">${o.exact
-          ? `${window.DZCIcon('check_circle', { size: 14 })}Exactly full`
-          : `${window.DZCIcon('warning', { size: 14 })}Carries ${o.per}, this Squad fills ${o.fill}`}</span>
+        <span class="dzc-carry-sum">${costLine(total, o.need > 1 ? o.need : 0)}</span>
+        <span class="dzc-carry-fit">${fitLine(o.per * o.need - o.fill, o.exact)}</span>
       </button>`;
     };
+    // Boarding one already bought: free, unless it needs another model of it.
+    const boardSum = o => costLine(o.grows ? priceOf(o.unit, (o.squad.models[0] || {}).variant) * o.grows : 0,
+      o.grows ? `${o.grows} more` : 0);
 
     /* Transports already in this Group come FIRST, and they cost nothing.
      * Without this, a Vulture Troopship can never be filled: it carries 4
@@ -3194,10 +3207,8 @@
                    : '<span class="dzc-carry-noart"></span>'}
       <span class="dzc-carry-name">${esc(o.unit.name)}</span>
       <span class="dzc-carry-caps">${U.transportHtml(o.unit)}</span>
-      <span class="dzc-carry-sum"><b>${o.after}</b><i>of ${o.room} aboard</i></span>
-      <span class="dzc-carry-fit">${o.full
-        ? `${window.DZCIcon('check_circle', { size: 14 })}Fills it`
-        : `${window.DZCIcon('warning', { size: 14 })}${o.room - o.after} still spare`}</span>
+      <span class="dzc-carry-sum">${boardSum(o)}</span>
+      <span class="dzc-carry-fit">${fitLine(o.room - o.after, o.full)}</span>
     </button>`;
 
     /* CLING IS ITS OWN LIST, and it is the whole panel when the Squad has it.
@@ -3252,10 +3263,8 @@
                    : '<span class="dzc-carry-noart"></span>'}
       <span class="dzc-carry-name">${esc(o.unit.name)}</span>
       <span class="dzc-carry-caps">${esc(window.DZCArmy.groupName(current, o.group))}</span>
-      <span class="dzc-carry-sum"><b>${o.after}</b><i>of ${o.room} aboard</i></span>
-      <span class="dzc-carry-fit">${o.full
-        ? `${window.DZCIcon('check_circle', { size: 14 })}Fills it`
-        : `${window.DZCIcon('warning', { size: 14 })}${o.room - o.after} still spare`}</span>
+      <span class="dzc-carry-sum">${boardSum(o)}</span>
+      <span class="dzc-carry-fit">${fitLine(o.room - o.after, o.full)}</span>
     </button>`;
     const refused = window.DZCArmy.carryRefusal(current, squadId);
 
