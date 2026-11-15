@@ -1627,6 +1627,14 @@ html[data-theme="dark"] .dzc-pick-add { background: #2e6db5; }
    supposed to remove. */
 .dzc-sq-body > .dzc-sq-stats { flex: 0 1 auto; margin-top: 0; }
 .dzc-sq-body > .dzc-sq-wpn { flex: 1 1 0; min-width: 0; margin-top: 0; }
+/* The card's upgrade note and a Behemoth's Gear are siblings of the guns in
+   this row, so they were columns too. A note is one long sentence, its
+   max-content width won the row, and the guns (basis 0) were left nothing:
+   the Lifthawk Troopship drew no weapons at all, and at iPad width the Type-1
+   Battle Walker's cards were squeezed to one letter a line. They get a line of
+   their own under the stats and guns. */
+.dzc-sq-body { flex-wrap: wrap; }
+.dzc-sq-body > .dzc-upg-note, .dzc-sq-body > .dzc-gear { flex: 0 0 100%; min-width: 0; }
 /* A phone has no room for two of anything. Stats first, then the guns. */
 /* AND THE GUNS MUST STILL BE THERE. `flex: 1 1 0` above sets the basis on the
    MAIN axis, and the main axis is the HEIGHT the moment this row turns into a
