@@ -2405,7 +2405,7 @@
                ${targets.map(t => `<option value="${t.squad.id}"${t.squad.id === c.squadId ? ' selected' : ''}
                  >${esc(t.unit.name)}, ${esc(window.DZCArmy.groupName(a, t.group))}</option>`).join('')}
              </select></label>`
-        : '<p class="dzc-cmdr-hint">Add a squad that this Commander can join.</p>';
+        : '<p class="dzc-cmdr-hint">Add a Squad this Commander can join.</p>';
       return `<div class="dzc-rail-card dzc-cmdr-card${c.squadId ? '' : ' is-loose'}">
         <div class="dzc-cmdr-head">
           ${insignia}
@@ -3269,7 +3269,8 @@
     const refused = window.DZCArmy.carryRefusal(current, squadId);
 
     document.getElementById('dzc-carry-body').innerHTML = `
-      <p class="dzc-carry-for">${esc(u.name)} <span>fills</span> ${U.transportHtml(u)}</p>
+      <p class="dzc-carry-for"><span>Each model takes</span> ${
+        U.transportHtml({ transport: { fills: (u.transport || {}).fills || [] } })}</p>
       ${refused ? `<p class="dzc-empty">${esc(refused)}</p>` : ''}
       ${board.length ? `<p class="dzc-carry-head">Already in this Group</p>
         <div class="dzc-carry-grid">${board.map(boardCard).join('')}</div>` : ''}

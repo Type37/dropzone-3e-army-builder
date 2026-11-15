@@ -113,7 +113,7 @@ console.log('\ntwo loose Squads: the error says which one goes aboard which');
   A.addSquad(a, g.id, 'triton-x-gunship', 1);
   const e = A.validate(a).errors.find(x => x.rule === '3.2.4' && /is 2 Groups/.test(x.msg));
   ok(!!e, 'two Squads walking on is still an error');
-  ok(/Medusa and Triton X Gunship are each the top of one/.test(e.msg),
+  ok(/Medusa and Triton X Gunship don’t share a Transport/.test(e.msg),
      'and names both, so it reads on a Group whose Squads are all aboard something', e.msg);
   // Case-insensitive: the clause opens the sentence now that the em-dash
   // before it became a full stop, so it reads "A Group", not "a Group".
@@ -1015,7 +1015,7 @@ console.log('\nwhat can only be checked when the list is finished (3.2.5)');
   const a = army(1000);
   const g = A.addGroup(a);
   const s = A.addSquad(a, g.id, 'ucm-main-battle-tank', 2);
-  ok(hasErr(A.validate(a), "haven't added a Commander"), 'an Army with no Commander is reported, not blocked');
+  ok(hasErr(A.validate(a), 'No Commander yet'), 'an Army with no Commander is reported, not blocked');
   A.setCommander(a, s.id, 5);
   ok(!hasErr(A.validate(a), 'Commander'), 'and the error clears once one is assigned');
   A.remove(a.id);
@@ -1374,7 +1374,7 @@ console.log('\nthe five Groups on p.10, and the one that is two Groups');
   eq(bg.squads.filter(s => !s.carriedBy).length, 2, 'two of them tops');
   const e = A.validate(bad).errors.find(x => top.test(x.msg));
   ok(!!e, 'two Squads in two dropships in one Group is refused', JSON.stringify(shape(bad)));
-  ok(/2 × Bear APC are each the top of one/.test(e ? e.msg : ''),
+  ok(/2 × Bear APC don’t share a Transport/.test(e ? e.msg : ''),
      'and names them counted, not repeated', e && e.msg);
   ok(/3\.2\.4/.test(e ? e.rule : ''), 'quoting 3.2.4');
 
@@ -1443,7 +1443,7 @@ console.log('\nCling: a ride that ignores the symbols');
   ok(!A.clingOptions(a, v.id).some(o => o.squad.id === gun.id), 'so it is not offered');
   const r = A.setCling(a, v.id, gun.id);
   eq(r.ok, false, 'and it is refused');
-  ok(/same or more initial DP/.test(r.reason || ''), 'quoting the rule', r.reason);
+  ok(/at least as much starting DP/.test(r.reason || ''), 'quoting the rule', r.reason);
 
   // A Marauder Dropship is 3 DP and takes them.
   const mar = A.addSquad(a, A.addGroup(a).id, 'marauder-dropship', 1);
@@ -1465,7 +1465,7 @@ console.log('\nCling: a ride that ignores the symbols');
   A.setModelCount(a, v.id, 3);
   const e = A.validate(a).errors.find(x => x.rule === 'Cling');
   ok(!!e, 'a third Vampire makes it 3 DP against 2, and that is reported');
-  ok(/3 DP clinging to 2 DP/.test(e ? e.msg : ''), 'with both numbers in it', e && e.msg);
+  ok(/has 3 DP and .* has 2\./.test(e ? e.msg : ''), 'with both numbers in it', e && e.msg);
   A.remove(a.id);
 }
 
@@ -1615,9 +1615,9 @@ console.log('\na Unit or Variant the data no longer has');
   const errs = A.validate(a).errors.filter(x => x.rule === 'data');
   eq(errs.length, 1, 'one message for the Squad, not one per model',
      JSON.stringify(errs.map(x => x.msg)));
-  ok(/Killer is not a Variant this Unit has any more/.test(errs[0] ? errs[0].msg : ''),
+  ok(/Killer is no longer one of its Variants/.test(errs[0] ? errs[0].msg : ''),
      'naming the Variant', errs[0] && errs[0].msg);
-  ok(/priced as \d+pts/.test(errs[0] ? errs[0].msg : ''),
+  ok(/priced at \d+pts/.test(errs[0] ? errs[0].msg : ''),
      'and what it is being charged instead', errs[0] && errs[0].msg);
 
   // Two models on the same dead Variant is still one message.
@@ -2161,7 +2161,7 @@ console.log('\nOnly ONE Transport is shared (3.2.4.1, 3.02 FAQ Transports)');
     A.boardTransport(a, haz.id, bug.id);
     const r = A.assignTransport(a, bug.id, id('ucm', 'Raven Light Dropship'));
     eq(r.ok, false, 'Buggies carrying two Squads are not split across two Ravens');
-    ok(/ONE Raven Light Dropship/.test(r.reason || ''), 'and the refusal says one, not a shape');
+    ok(/rides one Raven Light Dropship/.test(r.reason || ''), 'and the refusal says one, not a shape');
     eq(A.assignTransport(a, bug.id, id('ucm', 'Vulture Dropship')).ok, true, 'one Vulture takes them');
     A.remove(a.id);
   }

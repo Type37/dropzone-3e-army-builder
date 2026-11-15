@@ -1274,7 +1274,7 @@
           ${state.category !== 'All' ? `<span>${esc(state.category)}</span>` : ''}
           ${q ? `<span>matching &ldquo;${esc(state.search)}&rdquo;</span>` : ''}</p>
       </div>
-      ${cats || '<p class="pr-warn">Nothing matches what is on screen.</p>'}
+      ${cats || '<p class="pr-warn">No units match.</p>'}
       ${rules && o.rules !== false ? `<section class="pr-rules"><h2>Rules used</h2>${rules}</section>` : ''}`;
   }
 

@@ -2113,7 +2113,7 @@
       if (brings > 1 && tu && window.DZC.canCarry(tu, su)) {
         const carried = su.category === 'Transport' && !su.auxiliaryTransport ? brings : brings - 1;
         return { ok: false,
-          reason: `${su.name} carries ${carried} Squad${carried > 1 ? 's' : ''}, so it rides ONE ${tu.name}, not several (3.2.4.1).` };
+          reason: `${su.name} carries ${carried} Squad${carried > 1 ? 's' : ''}, so it rides one ${tu.name}, not several (3.2.4.1).` };
       }
       return { ok: false, reason: 'That Transport cannot carry this Squad (3.2.4.2).' };
     }
@@ -2343,15 +2343,15 @@
       const tu = t && unitOf(army, t);
       if (!tu) return { ok: false, reason: 'Unknown Squad.' };
       if (tu.type !== 'Aircraft') {
-        return { ok: false, reason: `${tu.name} is not an Aircraft. Cling is aboard an Aircraft (Cling).` };
+        return { ok: false, reason: `${tu.name} is not an Aircraft, and Cling needs one (Cling).` };
       }
       if (hasCling(tu)) {
         return { ok: false, reason: `${tu.name} has Cling itself, so nothing may cling to it (Cling).` };
       }
       if (unitDp(tu) < squadDp(army, s)) {
         return { ok: false,
-          reason: `${tu.name} has ${unitDp(tu)} DP and this Squad is ${squadDp(army, s)}. `
-            + `Cling needs an Aircraft with the same or more initial DP.` };
+          reason: `${tu.name} has ${unitDp(tu)} DP and this Squad has ${squadDp(army, s)}. `
+            + `Cling needs an Aircraft with at least as much starting DP.` };
       }
       return { ok: false, reason: `Every ${tu.name} already has a Squad clinging to it. One Squad with Cling per Aircraft (Cling).` };
     }
@@ -2845,7 +2845,7 @@
         reason: `${u ? u.name : 'This Unit'} is not a Genitor: RM tokens are assigned to Units with a hollow green square.` };
     }
     const want = Math.floor(Number(n) || 0);
-    if (want < 0) return { ok: false, reason: 'A Genitor may begin empty, but not below zero.' };
+    if (want < 0) return { ok: false, reason: 'RM tokens can’t go below zero.' };
     if (want > cap) {
       return { ok: false,
         reason: `${u.name} may never have more than ${cap} RM tokens aboard.` };
@@ -3111,13 +3111,13 @@
         if (!tu) return;                       // orphaned, and not this rule's business
         if (tu.type !== 'Aircraft' || hasCling(tu)) {
           errors.push({ rule: 'Cling', group: g.id,
-            msg: `${xu.name}: Cling is aboard an Aircraft without Cling, and ${tu.name} is not one.` });
+            msg: `${xu.name} can only cling to an Aircraft without Cling. ${tu.name} isn’t one.` });
           return;
         }
         if (unitDp(tu) < squadDp(army, x)) {
           errors.push({ rule: 'Cling', group: g.id,
-            msg: `${xu.name}: ${squadDp(army, x)} DP clinging to ${unitDp(tu)} DP of ${tu.name}. `
-              + `Cling needs an Aircraft with the same or more initial DP.` });
+            msg: `${xu.name} has ${squadDp(army, x)} DP and ${tu.name} has ${unitDp(tu)}. `
+              + `Cling needs an Aircraft with at least as much starting DP.` });
         }
         // One Squad with Cling per Aircraft, so more than the Squad has
         // models is too many.
@@ -3226,8 +3226,8 @@
     army.groups.forEach(g => g.squads.forEach(s => {
       if (unitOf(army, s)) return;
       errors.push({ rule: 'data', group: g.id,
-        msg: `A Squad here is a Unit this app no longer has (${s.unitId}). `
-          + `It costs nothing and no rule can check it. Remove it and add what replaced it.` });
+        msg: `This Squad’s Unit (${s.unitId}) is no longer in the app, so it costs 0 pts and can’t be checked. `
+          + `Replace it.` });
     }));
 
     /* AND A MODEL SET TO A VARIANT THE CARD NO LONGER PRINTS.
@@ -3250,8 +3250,8 @@
         .filter(v => v && known.indexOf(v) === -1))];
       gone.forEach(v => {
         errors.push({ rule: 'data', group: g.id,
-          msg: `${u.name}: ${v} is not a Variant this Unit has any more. `
-            + `It is being priced as ${modelCost(u, { variant: v })}pts. Pick one the card prints.` });
+          msg: `${u.name}: ${v} is no longer one of its Variants. `
+            + `It is priced at ${modelCost(u, { variant: v })}pts until you pick a current one.` });
       });
     }));
 
@@ -3544,7 +3544,7 @@
         errors.push({
           rule: '3.2.4',
           group: g.id,
-          msg: `“${groupName(army, g)}” is ${loose.length} Groups: ${names.join(' and ')} are each the top of one. `
+          msg: `“${groupName(army, g)}” is ${loose.length} Groups, because ${names.join(' and ')} don’t share a Transport. `
             + `A Group is one Squad and its Transports, or up to 4 Squads sharing one larger Transport. ${fix}`
         });
       }
@@ -3563,7 +3563,7 @@
     // Commanders.
     const cmdrs = (army.commanders || []).slice();
     if (!cmdrs.length) {
-      errors.push({ rule: '3.2.5', msg: 'You haven\'t added a Commander. Your army must contain at least one.' });
+      errors.push({ rule: '3.2.5', msg: 'No Commander yet. Every army needs one.' });
     }
     if (size) {
       const allowed = window.DZC.commanderLevels(size.id).map(l => l.level);
