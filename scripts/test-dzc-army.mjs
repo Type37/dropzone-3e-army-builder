@@ -2844,7 +2844,7 @@ console.log('\nsharing a Transport (3.2.4.1) and an Auxiliary Transport (3.2.4.3
     A.assignTransport(lw, lb.id, 'lifthawk-troopship');
     const into = l1.squads.find(x => x.unitId === 'lifthawk-troopship');
     const said = A.boardTransport(lw, lb.id, into.id);
-    ok(said.ok && /Lifthawk Troopship was removed/.test(said.warn || '') && /Two is gone/.test(said.warn || ''),
+    ok(said.ok && /Lifthawk Troopship removed/.test(said.warn || '') && /Two removed/.test(said.warn || ''),
        'and a move that removes a Transport and a Group says so', said.warn);
 
     /* Two Squads in one Bus, and the Bus in a Leviathan. Ruling Jet passed on

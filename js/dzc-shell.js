@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 526;
+  const BUILD = 527;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -382,7 +382,7 @@ const App = (() => {
         ${tog('faunaInArmies', 'Apex in armies',
           'Offer the three Apex in every army. Fauna rules 7.1.7, casual games only')}
         ${tog('otherGroupTransports', 'Transports in other Groups',
-          'Offer Transports from other Groups under Linked transport. Choosing one moves the Squad into that Group', true)}
+          'Show Transports from other Groups under Linked transport', true)}
       </div>
       <div class="dzc-set-group">
         <div class="dzc-set-title">Offline use</div>
@@ -678,11 +678,11 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
-    { date: '2026-11-15', title: 'Transports in other Groups stop buying things for you', items: [
-      'Linked transport offered a full Transport from another Group as if it had room. Pressing it moved the Squad, took its own Transport off the list, removed its Group and bought a second Transport over there, all without a word. Only a Transport with room right now is offered from another Group.',
-      'A move into another Group says what it took with it: the Transport it no longer needs, and the Group it left behind.',
-      'Settings has Transports in other Groups. Switch it off and Linked transport offers only your own Group and new Transports.',
-      'A long upgrade note no longer squeezes a Squad’s weapons off its card. The Lifthawk Troopship showed none at all, and on an iPad the Type-1 Battle Walker’s were one letter a line.',
+    { date: '2026-11-15', title: 'Transports in other Groups', items: [
+      'Full Transports in other Groups are no longer offered. Picking one bought a second Transport and deleted the Squad’s own.',
+      'Moving a Squad into another Group now says what was removed.',
+      'Settings has a switch to hide Transports in other Groups.',
+      'Lifthawk Troopship weapons show again, and long upgrade notes no longer squash weapon cards on iPad.',
     ] },
     { date: '2026-11-09', title: 'Squads share a Transport as long as none is split', items: [
       'Two Squads of three Legionnaires can share a Squad of two Bear APCs, one Squad in each. Three Squads of two cannot, because one of them would be split between the Bears.',

@@ -1929,11 +1929,11 @@
       /* Say what went with it. The builder has no undo, and a move that took
        * a 60pt Lifthawk off the list and a Group off the count was reported
        * by nothing at all. */
-      const lost = [dropped && `its ${dropped} was removed`, emptied && `${fromName} is gone`]
+      const lost = [dropped && `${dropped} removed.`, emptied && `${fromName} removed.`]
         .filter(Boolean);
       if (done.ok && lost.length) {
-        const name = (unitOf(army, s) || {}).name || 'The Squad';
-        const said = `${name} moved to ${groupName(army, to)}: ${lost.join(' and ')}.`;
+        const name = (unitOf(army, s) || {}).name || 'Squad';
+        const said = `${name} moved to ${groupName(army, to)}. ${lost.join(' ')}`;
         done.warn = done.warn ? `${said} ${done.warn}` : said;
       }
       return done;
