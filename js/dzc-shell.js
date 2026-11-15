@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 525;
+  const BUILD = 526;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -290,10 +290,14 @@ const App = (() => {
   /* A setting is a name and a switch. The explanation lives in the tooltip,
    * not in a sentence under the control. Same as the Dropfleet builder, where
    * no toggle carries a caption. */
-  function tog(key, name, desc) {
+  // `on` is for the one setting that starts switched on: its key holds false
+  // only once someone turns it off, so a stored list from before it existed
+  // keeps the behaviour it had.
+  function tog(key, name, desc, on = false) {
+    const checked = settings[key] === undefined ? on : !!settings[key];
     return `<label class="dzc-set-toggle" title="${esc(desc)}">
       <span>${esc(name)}</span>
-      <input type="checkbox" ${settings[key] ? 'checked' : ''}
+      <input type="checkbox" ${checked ? 'checked' : ''}
              onchange="App.toggleSetting('${key}', this.checked)">
     </label>`;
   }
@@ -323,6 +327,15 @@ const App = (() => {
   // (Fauna rules 7.1.7). Off unless asked for, so a list for a tournament
   // is never offered one.
   function faunaOn() { return !!settings.faunaInArmies; }
+
+  /* Transports in other Groups, offered in the Linked transport panel. On
+   * unless turned off. A player asked for the switch, 2026-11-15: "there's now
+   * a 'link to transport in another group' option in the builder which has
+   * been causing problems for me. Any chance we can get a toggle option to
+   * turn that off?" Off takes the "In another Group" cards out of the panel.
+   * Drag is not affected: it only ever boards a Transport in the Squad's own
+   * Group, and dropping on another Group's brief is a plain move. */
+  function otherGroupTransportsOn() { return settings.otherGroupTransports !== false; }
 
   function applyCollectionSetting() {
     const card = $('landing-collection');
@@ -368,6 +381,8 @@ const App = (() => {
           'Hide weapon tables in the builder for a denser overview')}
         ${tog('faunaInArmies', 'Apex in armies',
           'Offer the three Apex in every army. Fauna rules 7.1.7, casual games only')}
+        ${tog('otherGroupTransports', 'Transports in other Groups',
+          'Offer Transports from other Groups under Linked transport. Choosing one moves the Squad into that Group', true)}
       </div>
       <div class="dzc-set-group">
         <div class="dzc-set-title">Offline use</div>
@@ -663,6 +678,12 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-11-15', title: 'Transports in other Groups stop buying things for you', items: [
+      'Linked transport offered a full Transport from another Group as if it had room. Pressing it moved the Squad, took its own Transport off the list, removed its Group and bought a second Transport over there, all without a word. Only a Transport with room right now is offered from another Group.',
+      'A move into another Group says what it took with it: the Transport it no longer needs, and the Group it left behind.',
+      'Settings has Transports in other Groups. Switch it off and Linked transport offers only your own Group and new Transports.',
+      'A long upgrade note no longer squeezes a Squad’s weapons off its card. The Lifthawk Troopship showed none at all, and on an iPad the Type-1 Battle Walker’s were one letter a line.',
+    ] },
     { date: '2026-11-09', title: 'Squads share a Transport as long as none is split', items: [
       'Two Squads of three Legionnaires can share a Squad of two Bear APCs, one Squad in each. Three Squads of two cannot, because one of them would be split between the Bears.',
       'A Battle Bus carrying two or more Squads can ride a Leviathan or a Kraken. The same goes for any Transport full of whole Squads riding a Transport that can carry it.',
@@ -1234,7 +1255,7 @@ const App = (() => {
 
   return {
     navigate, showView, openModal, closeModal,
-    openSettings, setTheme, toggleSetting, collectionOn, compactView, faunaOn, applyCollectionSetting,
+    openSettings, setTheme, toggleSetting, collectionOn, compactView, faunaOn, otherGroupTransportsOn, applyCollectionSetting,
     renderOfflinePanel, runOfflineSync, deleteOfflineData,
     openSyncModal, syncStart, syncStop, syncNow, syncJoin, syncDiscordSignIn, syncDiscordSignOut,
     openChangelog, openImport, importFile, runImport,

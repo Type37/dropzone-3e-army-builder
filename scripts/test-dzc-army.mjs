@@ -2814,6 +2814,39 @@ console.log('\nsharing a Transport (3.2.4.1) and an Auxiliary Transport (3.2.4.3
     ok(A.groupOf(lv, bus5.id) !== lg, 'and a refusal leaves it where it was');
     ok(!hasErr(A.validate(lv), 'Transport'), 'the Leviathan Group validates');
 
+    /* A player, 2026-11-15: the option "has been causing problems for me".
+     * Berserkers in a Lifthawk Troopship were offered a Patton in another
+     * Group that was already full, and pressing it dropped the Lifthawk,
+     * removed their Group and bought a second Patton, silently. */
+    const fx = A.create('resistance', 'Full', 3000);
+    const pg = A.addGroup(fx, 'Patton');
+    const rf = A.addSquad(fx, pg.id, 'resistance-fighters', 2);
+    A.assignTransport(fx, rf.id, 'patton-ifv');
+    const pat = pg.squads.find(x => x.unitId === 'patton-ifv');
+    const hg = A.addGroup(fx, 'Hawk');
+    const bz = A.addSquad(fx, hg.id, 'berserkers', 2);
+    A.assignTransport(fx, bz.id, 'lifthawk-troopship');
+    eq(A.boardElsewhereOptions(fx, bz.id).some(o => o.squad.id === pat.id), false,
+       'a full Transport in another Group is not offered: boarding it would buy a second one');
+    const sg2 = A.addGroup(fx, 'Sappers');
+    const sp = A.addSquad(fx, sg2.id, 'sappers', 1);
+    const hawk = hg.squads.find(x => x.unitId === 'lifthawk-troopship');
+    ok(A.boardElsewhereOptions(fx, sp.id).some(o => o.squad.id === hawk.id),
+       'one with room still is');
+    const mv = A.boardTransport(fx, bz.id, hawk.id);
+    ok(mv.ok, 'boarding within reach still works');
+    const lw = A.create('resistance', 'Lost', 3000);
+    const l1 = A.addGroup(lw, 'One');
+    const lf = A.addSquad(lw, l1.id, 'resistance-fighters', 3);
+    A.assignTransport(lw, lf.id, 'lifthawk-troopship');
+    const l2 = A.addGroup(lw, 'Two');
+    const lb = A.addSquad(lw, l2.id, 'berserkers', 2);
+    A.assignTransport(lw, lb.id, 'lifthawk-troopship');
+    const into = l1.squads.find(x => x.unitId === 'lifthawk-troopship');
+    const said = A.boardTransport(lw, lb.id, into.id);
+    ok(said.ok && /Lifthawk Troopship was removed/.test(said.warn || '') && /Two is gone/.test(said.warn || ''),
+       'and a move that removes a Transport and a Group says so', said.warn);
+
     /* Two Squads in one Bus, and the Bus in a Leviathan. Ruling Jet passed on
      * 2026-11-09: "you can fill it with multiple complete Squads and then
      * load it onto a transport that can carry it (a Resistance hovercraft)". */

@@ -1888,6 +1888,9 @@
       const room = shape ? window.DZC.capacityFor(tu, shape) * count : 0;
       return {
         squad: t, unit: tu, shape: shape,
+        // Models boarding would ADD to the Transport Squad (wholeFit: a second
+        // Bear bought so two Squads each ride one whole). 0 when there is room.
+        grows: Math.max(0, count - t.models.length),
         used: shape ? (before.byShape[shape] || 0) : 0,
         after: shape ? after.byShape[shape] : 0,
         room: room,
@@ -1916,11 +1919,24 @@
       moveSquad(trial, squadId, to.id);
       const r = boardTransport(trial, squadId, carrierSquadId);
       if (!r.ok) return r;
-      dropSoleCarrier(army, squadId);
+      const fromName = groupName(army, from);
+      const dropped = dropSoleCarrier(army, squadId);
       moveSquad(army, squadId, to.id);
       // The Group it came from has joined this one if nothing is left in it.
-      if (!from.squads.length) army.groups = army.groups.filter(g => g.id !== from.id);
-      return boardTransport(army, squadId, carrierSquadId);
+      const emptied = !from.squads.length;
+      if (emptied) army.groups = army.groups.filter(g => g.id !== from.id);
+      const done = boardTransport(army, squadId, carrierSquadId);
+      /* Say what went with it. The builder has no undo, and a move that took
+       * a 60pt Lifthawk off the list and a Group off the count was reported
+       * by nothing at all. */
+      const lost = [dropped && `its ${dropped} was removed`, emptied && `${fromName} is gone`]
+        .filter(Boolean);
+      if (done.ok && lost.length) {
+        const name = (unitOf(army, s) || {}).name || 'The Squad';
+        const said = `${name} moved to ${groupName(army, to)}: ${lost.join(' and ')}.`;
+        done.warn = done.warn ? `${said} ${done.warn}` : said;
+      }
+      return done;
     }
     const opt = boardOptions(army, squadId).find(o => o.squad.id === carrierSquadId);
     if (!opt) {
@@ -1985,19 +2001,21 @@
 
   /* Get out of a Transport that was bought only for this Squad, and take it
    * off the list, the way boardTransport and assignTransport already do
-   * inside one Group. */
+   * inside one Group. Returns the name of the Transport it took off, if any. */
   function dropSoleCarrier(army, squadId) {
     const s = findSquad(army, squadId);
     const g = groupOf(army, squadId);
-    if (!s || !g || !s.carriedBy) return;
+    if (!s || !g || !s.carriedBy) return null;
     const old = g.squads.find(x => x.id === s.carriedBy);
     s.carriedBy = null;
-    if (!old) return;
+    if (!old) return null;
     const ou = unitOf(army, old);
     const others = g.squads.filter(x => x.carriedBy === old.id);
     if (ou && ou.category === 'Transport' && !others.length) {
       g.squads = g.squads.filter(x => x.id !== old.id);
+      return ou.name;
     }
+    return null;
   }
 
   /* Transports in OTHER Groups this Squad could board. A player report on
@@ -2020,7 +2038,17 @@
       const trial = JSON.parse(JSON.stringify(army));
       dropSoleCarrier(trial, squadId);
       if (!moveSquad(trial, squadId, g.id).ok) return;
+      /* ONLY ROOM THAT IS THERE. A player, 2026-11-15: the "link to transport
+       * in another group" option "has been causing problems for me". It was
+       * offering Transports that were already full, priced as if they were
+       * not: boardOptions counts a second Patton bought to share (wholeFit),
+       * so Berserkers in a Lifthawk Troopship were shown "Patton IFV, 4 of 4
+       * aboard, Fills it" from another Group. Pressing it dropped their
+       * Lifthawk, removed their Group and bought a second Patton there, with
+       * no warning, and the builder has no undo. Buying a Transport in
+       * somebody else's Group is never what "ride that one" means. */
       boardOptions(trial, squadId).forEach(o => {
+        if (o.grows) return;
         const real = g.squads.find(x => x.id === o.squad.id);
         if (real) out.push(Object.assign({}, o, { squad: real, group: g }));
       });

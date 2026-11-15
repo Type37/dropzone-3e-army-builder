@@ -2112,7 +2112,8 @@
     // offers none to buy, so the control has to appear for that case too.
     const board = window.DZCArmy.boardOptions(a, s.id);
     // A Transport in another Group with room, which boarding moves this into.
-    const elsewhere = window.DZCArmy.boardElsewhereOptions(a, s.id);
+    // Not offered when Settings has Transports in other Groups switched off.
+    const elsewhere = otherGroupsOffered() ? window.DZCArmy.boardElsewhereOptions(a, s.id) : [];
     // Something could carry it and a rule says no: the button stays, so the
     // panel can say which rule.
     const refused = window.DZCArmy.carryRefusal(a, s.id);
@@ -2355,6 +2356,11 @@
         ${riders.map(r => squadHtml(a, g, r, depth + 1)).join('')}
       </div>` : ''}
     </div>`;
+  }
+
+  // Settings > Builder > Transports in other Groups. On unless switched off.
+  function otherGroupsOffered() {
+    return !(window.App && App.otherGroupTransportsOn) || App.otherGroupTransportsOn();
   }
 
   /* Only the guns every variant carries. Listing all of them was misleading:
@@ -3238,7 +3244,7 @@
     /* A Transport in another Group. The Group's name goes where the shapes
      * are, the way the Cling card does it, because which Group this moves
      * the Squad into is the thing to read before pressing it. */
-    const elsewhere = window.DZCArmy.boardElsewhereOptions(current, squadId);
+    const elsewhere = otherGroupsOffered() ? window.DZCArmy.boardElsewhereOptions(current, squadId) : [];
     const elsewhereCard = o => `<button type="button" class="dzc-carry-card dzc-carry-here${
       o.full ? '' : ' is-partial'}"
       onclick="DZCBuilder.boardTransport('${s.id}','${o.squad.id}')">
