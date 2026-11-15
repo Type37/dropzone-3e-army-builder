@@ -37,8 +37,22 @@ jobs:
           ran=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN/attempts/$ATTEMPT/jobs" \
             --jq '[.jobs[] | select(.conclusion == "failure")
                            | select((.runner_id // 0) != 0)] | length')
-          echo "stranded: $stranded, real failures: $ran"
-          if [ "$stranded" -gt 0 ] && [ "$ran" -eq 0 ]; then
+          # The other outage: the tests passed, the site was built and
+          # uploaded, and only GitHub's own Pages hand-off failed (Build 525,
+          # "Found 0 artifact(s)" 0.4s after the upload). Nothing of ours is
+          # broken, so it is re-run like a stranded job. A failure in any other
+          # step, or in the test job, is still left alone.
+          pages_only=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN/attempts/$ATTEMPT/jobs" \
+            --jq '[.jobs[] | select(.conclusion == "failure") | select((.runner_id // 0) != 0)] as $f
+                  | ($f | length) > 0 and
+                    ($f | all(.name == "deploy" and
+                      ([.steps[] | select(.conclusion == "failure") | .name]
+                       | length > 0 and all(startswith("Deploy to GitHub Pages")))))')
+          echo "stranded: $stranded, real failures: $ran, Pages hand-off only: $pages_only"
+          if [ "$pages_only" = "true" ]; then
+            sleep 120
+            gh run rerun "$RUN" --repo "$GITHUB_REPOSITORY" --failed
+          elif [ "$stranded" -gt 0 ] && [ "$ran" -eq 0 ]; then
             # Give GitHub a few minutes to find its feet before asking again.
             sleep 300
             gh run rerun "$RUN" --repo "$GITHUB_REPOSITORY" --failed

@@ -15,6 +15,8 @@ on:
 
 permissions:
   contents: read
+  # write, not read: the deploy job deletes an earlier attempt's upload.
+  actions: write
   pages: write
   id-token: write
 
@@ -87,7 +89,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment_retry.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -129,10 +131,53 @@ jobs:
 
       - name: Configure Pages
         uses: actions/configure-pages@v6
+      # A re-run keeps the run's earlier artifacts, so attempt 2 uploads a
+      # second github-pages and deploy-pages refuses: "Multiple artifacts
+      # named github-pages were unexpectedly found" (Build 525's re-run,
+      # 2026-11-15). Clear an earlier attempt's upload first, so a re-run, by
+      # hand or by retry.yml, can actually deploy.
+      - name: Clear an earlier attempt's upload
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for id in $(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts?name=github-pages" \
+                        --jq '.artifacts[].id'); do
+            echo "deleting earlier github-pages artifact $id"
+            gh api -X DELETE "repos/$GITHUB_REPOSITORY/actions/artifacts/$id"
+          done
+
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v5
         with:
           path: "_site"
+
+      # Build 525 (2026-11-15) never reached Pages. The upload finalized at
+      # 05:16:59.87, deploy-pages asked for it 0.4s later, GitHub's artifact
+      # list had not caught up ("Found 0 artifact(s)"), and the job failed
+      # with the site still on 524. Ask the same API deploy-pages asks, and do
+      # not go on until it answers.
+      - name: Wait until GitHub lists the upload
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in $(seq 1 24); do
+            n=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts?name=github-pages" \
+                  --jq '.total_count' 2>/dev/null || echo 0)
+            if [ "${n:-0}" -gt 0 ]; then echo "listed after $i check(s)"; exit 0; fi
+            sleep 5
+          done
+          echo "::warning::github-pages artifact still not listed after 2 minutes; trying the deploy anyway"
+
+      # And if it still says no, once more after a pause, in this job, rather
+      # than leaving the site behind until someone notices.
       - name: Deploy to GitHub Pages
         id: deployment
+        continue-on-error: true
+        uses: actions/deploy-pages@v5
+      - name: Pause before the second attempt
+        if: steps.deployment.outcome == 'failure'
+        run: sleep 60
+      - name: Deploy to GitHub Pages (second attempt)
+        id: deployment_retry
+        if: steps.deployment.outcome == 'failure'
         uses: actions/deploy-pages@v5
