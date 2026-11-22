@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 531;
+  const BUILD = 532;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -678,6 +678,11 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-11-22', title: 'Two new Fauna scenarios', items: [
+      'Scenarios: Stranded and Cold Blooded from the Fauna pack, with redrawn maps and score sheets. Stranded has an Attacker and a Defender who score different objectives. In Cold Blooded every Object has Data Download, and an Aeternae arrives in the busiest empty table quarter each Cleanup Phase.',
+      'Scenarios: the Typhon scenario is called Slumbering Giants now, as the pack prints it, and the other one is just Hunting Grounds. Old links still open them.',
+      'Scenarios: Field weapons say their Ac and R values cannot be modified, as the corrected rulebook does.',
+    ] },
     { date: '2026-11-21', title: 'New Bioficer and Fauna units', items: [
       'Bioficer: new unit, Delta Pack (40 pts).',
       'Bioficer: new unit, Scuttlers (20 pts).',

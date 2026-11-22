@@ -1,4 +1,4 @@
-/* Score sheets written out by hand for all sixteen Dropzone scenarios, as the Dropfleet pages do
+/* Score sheets written out by hand for all eighteen Dropzone scenarios, as the Dropfleet pages do
    (scenarios/dropfleet/scenario-sheets.js there). Each follows its scenario's objective lines and the
    rulebook's 9.6 Scenario Objectives, with the game size and the Variant that is on:
 
@@ -117,5 +117,15 @@
       H('Secure','Rounds 2, 4 and game end',[2,4,6]),secure(3,1,'Zone'),
       ...explore(1,'Zone'),
       ...dominate(3,1,'Table half, measured diagonally','Rounds 2, 4 and game end',[2,4,6])],
+
+    // Attacker and Defender score different objectives; Y is 0, so a carried Object scores nothing
+    'stranded':({size})=>[
+      H('Attrition','Attacker only, game end',[6]),R(`Every ${kp(size)} KP you have scored`,c(1)),
+      H('Extract','Defender only',[6]),R('Object Extracted',c(2))],
+
+    'cold-blooded':()=>[
+      H('Extract','',[6]),R('Object Extracted',c(1)),
+      // every Object has Data Download (9.7.8.1)
+      H('Data Download'),R('Cleanup Phase a found Object spends inside the Zone it was found in',c(1))],
   };
 })();

@@ -14,7 +14,7 @@ Each fix adds "keys" to an entry: [{"at": line, "token"|"square"|"circle"|
 "outline"|"line": ...}], one key per printed line that has one. The page shows
 each key with the lines under it. Entries keep their index, so the map specs
 and hotspots that point at them need no change. Checked against the printed
-pages (rulebook pp.38-43, Fauna pack pp.9-12) on 2026-09-13.
+pages (rulebook pp.38-43, Fauna pack pp.9-12) on 2026-09-13, Fauna pp.13-14 on 2026-11-22.
 
 Also adds the one special rule the extraction dropped: Ground Control's Zone
 Placement (rulebook p.42). Run after extract_scenarios.py; running twice is safe.
@@ -139,6 +139,25 @@ FIXES: dict[str, dict[str, list[Key]]] = {
             tok(3, FAUNA),
         ],
     },
+    "stranded": {
+        "3 Medium Zones": [
+            sq(0, [0.25, 0.68, 0.29]),
+            tok(2, "flak-turret"),
+            tok(3, "basement"),
+            tok(4, FAUNA),
+        ],
+        "Extract (defender only) for 2/0 VP": [tok(0, OBJECT)],
+    },
+    "cold-blooded": {
+        "Extract these Objects from Friendly": [tok(0, OBJECT)],
+    },
+}
+
+# Cold Blooded prints its Variant in the key column, unnumbered, where the page
+# reads it as a key. Moved to the notes, where the Fauna pack's other Variants
+# are, joining its lines and the "Un-/Countered" break back into one word.
+TO_NOTES = {
+    "cold-blooded": "Variant: A Blizzard rages at the start",
 }
 
 NOTES = {
@@ -167,6 +186,20 @@ def main():
         missing = set(fixes) - placed
         if missing:
             raise SystemExit(f"{sid}: no legend entry for {sorted(missing)}")
+    for sid, first in TO_NOTES.items():
+        s = by_id[sid]
+        found = [e for e in s["legend"] if e["lines"][0] == first]
+        if found:
+            if found[0] is not s["legend"][-1]:
+                raise SystemExit(f"{sid}: {first!r} is not the last key; map specs index the rest")
+            text = ""
+            for line in found[0]["lines"]:
+                text += line if text.endswith("-") or not text else " " + line
+            s["legend"].remove(found[0])
+            s.setdefault("notes", [])
+            s["notes"].insert(0, text)
+        elif not any(n.startswith(first) for n in s.get("notes", [])):
+            raise SystemExit(f"{sid}: no legend entry {first!r}")
     for sid, note in NOTES.items():
         s = by_id[sid]
         s.setdefault("notes", [])

@@ -1,5 +1,5 @@
 {
- "source": "Dropzone Commander 3.02 rulebook pp.34-43; Fauna Rules & Scenarios 260901 pp.9-12",
+ "source": "Dropzone Commander 3.02 rulebook pp.34-43; Fauna Rules & Scenarios 261101 pp.9-14",
  "scenarios": [
   {
    "id": "battle-royale",
@@ -1426,7 +1426,7 @@
   },
   {
    "id": "hunting-grounds-nest",
-   "name": "Hunting Grounds (Nest)",
+   "name": "Hunting Grounds",
    "source": "fauna",
    "page": 11,
    "map": "assets/scenarios/hunting-grounds-nest.webp",
@@ -1530,7 +1530,7 @@
   },
   {
    "id": "hunting-grounds-typhon",
-   "name": "Hunting Grounds (Typhon)",
+   "name": "Slumbering Giants",
    "source": "fauna",
    "page": 12,
    "map": "assets/scenarios/hunting-grounds-typhon.webp",
@@ -1611,6 +1611,146 @@
    "notes": [
     "The Typhon treats all of the green Areas as its Nest. While it is 6\u201d or more from all green Areas it has Aggressive and Frenzied.",
     "Variant: Add a second Typhon. Both always treat the other Typhon as an Enemy Unit and Preferred Prey."
+   ]
+  },
+  {
+   "id": "stranded",
+   "name": "Stranded",
+   "source": "fauna",
+   "page": 13,
+   "map": "assets/scenarios/stranded.webp",
+   "legend": [
+    {
+     "colour": "green",
+     "rgb": [
+      0.251,
+      0.68,
+      0.286
+     ],
+     "lines": [
+      "3 Medium Zones",
+      "Each contains 1 Object",
+      "Flak Turret",
+      "Basement",
+      "1 Keres per full 500pts of game size"
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "square": [
+        0.25,
+        0.68,
+        0.29
+       ]
+      },
+      {
+       "at": 2,
+       "token": "flak-turret"
+      },
+      {
+       "at": 3,
+       "token": "basement"
+      },
+      {
+       "at": 4,
+       "token": "hive"
+      }
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Attrition (attacker only) for 1 VP"
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Extract (defender only) for 2/0 VP"
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "token": "object"
+      }
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Entry: Ready or Reserved."
+     ]
+    }
+   ],
+   "notes": [
+    "Variant 1: Remove the Objects from the Zones. Instead, each Keres starts the game carrying an Object. They only drop the Objects when destroyed.",
+    "Variant 2: Replace each Keres with any other non-Infantry Fauna Squad without Burrowing.",
+    "This Scenario has an Attacker and a Defender. The Defender may Deploy up to two Infantry Squads in each marked Zone. Those Squads\u2019 Transports, any Transports capable of transporting Infantry and any Transports carrying Units capable of transporting Infantry start Reserved.",
+    "Neither player may Deploy Units via Infiltrate. Bioficer armies are never the Defender for this Scenario.",
+    "For the purpose of Instinct: Skulk, the Keres treat the Zone with the Flak Turret as an enemy Unit with Line of Sight from every point along its edges while that Zone contains any Infantry."
+   ]
+  },
+  {
+   "id": "cold-blooded",
+   "name": "Cold Blooded",
+   "source": "fauna",
+   "page": 14,
+   "map": "assets/scenarios/cold-blooded.webp",
+   "legend": [
+    {
+     "colour": "green",
+     "rgb": [
+      0.251,
+      0.68,
+      0.286
+     ],
+     "lines": [
+      "1 Bunker Entrance",
+      "Contains 1 Object with Data",
+      "Download"
+     ]
+    },
+    {
+     "colour": "red",
+     "rgb": [
+      0.823,
+      0.136,
+      0.163
+     ],
+     "lines": [
+      "2 Medium Zones",
+      "Each contains 1 Object with Data",
+      "Download"
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Extract these Objects from Friendly",
+      "Lines for 1/0 VP"
+     ],
+     "keys": [
+      {
+       "at": 0,
+       "token": "object"
+      }
+     ]
+    },
+    {
+     "colour": null,
+     "rgb": null,
+     "lines": [
+      "Entry: Ready or Reserved."
+     ]
+    }
+   ],
+   "notes": [
+    "Variant: A Blizzard rages at the start of the battle. All Units lose Un-Countered and are Obscured while the Blizzard is in effect. At the end of each Cleanup Phase, roll a dice. On a 5+, the Blizzard clears.",
+    "Drawn to Heat: At the end of each Cleanup phase, of the table quarters that have no Aeternae in them, determine which has the highest total number of Vehicle Squads present, randomising in the case of ties. A Squad in multiple table quarters counts for both of them. Place an Aeternae in or as close as possible to the outer corner of that table quarter and roll an activation dice for it."
    ]
   }
  ]

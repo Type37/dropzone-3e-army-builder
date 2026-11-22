@@ -48,14 +48,17 @@ CORE_PAGES = {
     43: ["Strategic Points", "Targets of Opportunity"],
 }
 
-# One scenario per page in the Fauna pack, and the source titles collide: pages
-# 11 and 12 are both printed "Hunting Grounds". Disambiguated by their fauna,
-# because two identical rows in a list is not a list.
+# One scenario per page in the Fauna pack: page -> (id, printed title). The
+# September pack printed "Hunting Grounds" on both pages 11 and 12; from the
+# October pack page 12 is "Slumbering Giants". The ids stay as they were so
+# saved trackers and shared links still open the same scenario.
 FAUNA_PAGES = {
-    9: "Pest Control",
-    10: "Death From Below",
-    11: "Hunting Grounds (Nest)",
-    12: "Hunting Grounds (Typhon)",
+    9: ("pest-control", "Pest Control"),
+    10: ("death-from-below", "Death From Below"),
+    11: ("hunting-grounds-nest", "Hunting Grounds"),
+    12: ("hunting-grounds-typhon", "Slumbering Giants"),
+    13: ("stranded", "Stranded"),
+    14: ("cold-blooded", "Cold Blooded"),
 }
 
 # The rulebook's muted palette and the Fauna pack's brighter one, resolved to
@@ -236,13 +239,12 @@ def main():
             print(f"{name:24} p{pageno} {size[0]}x{size[1]}")
 
     pack = fitz.open(FAUNA)
-    for pageno, name in FAUNA_PAGES.items():
+    for pageno, (key, name) in FAUNA_PAGES.items():
         page = pack[pageno - 1]
         found = maps_on(page, max_x=300)
         if len(found) != 1:
             problems.append(f"Fauna p{pageno}: {len(found)} maps, expected 1")
             continue
-        key = slug(name)
         size = save_map(pack, found[0], OUT_ART / f"{key}.webp")
         scenarios.append(
             {
@@ -261,7 +263,7 @@ def main():
         json.dumps(
             {
                 "source": "Dropzone Commander 3.02 rulebook pp.34-43; "
-                "Fauna Rules & Scenarios 260901 pp.9-12",
+                "Fauna Rules & Scenarios " + FAUNA.stem.rsplit("_", 1)[-1] + " pp.9-14",
                 "scenarios": scenarios,
             },
             indent=1,
