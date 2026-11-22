@@ -1,8 +1,8 @@
 {
   "faction": "bioficer",
   "name": "Bioficer",
-  "sourcePdf": "DZC_Bioficer_Stat_Cards_260925.pdf",
-  "version": "260925",
+  "sourcePdf": "DZC_Bioficer_Stat_Cards_261030.pdf",
+  "version": "261030",
   "units": [
     {
       "id": "calculi-command-skimmer",
@@ -1762,6 +1762,67 @@
       "art": "assets/units/beta.webp"
     },
     {
+      "id": "delta-pack",
+      "faction": null,
+      "name": "Delta Pack",
+      "category": "Generated",
+      "squadMin": 1,
+      "squadMax": 2,
+      "points": 40,
+      "pointsRaw": "40pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "base": null,
+      "stats": {
+        "Mv": "8”",
+        "OF": "3",
+        "DF": "4+",
+        "B": "2+",
+        "DP": "6"
+      },
+      "special": "Agile 2, Ev2, FS2, Puppeteer 6”, Scout",
+      "variants": [],
+      "specialVariants": [],
+      "transport": {
+        "capacity": [],
+        "capacityMode": null,
+        "fills": [
+          {
+            "shape": "square",
+            "n": 8
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Decon Rifles, Intelligence",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "18”",
+          "att": "6",
+          "ac": "3+",
+          "e": "S5",
+          "special": "T1, Decon",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "exclusive": false,
+          "capacityDelta": [],
+          "boxUnresolved": false,
+          "choice": false
+        }
+      ],
+      "upgradeNote": null,
+      "swaps": [],
+      "groupEquivalent": null,
+      "gear": [],
+      "page": 22,
+      "auxiliaryTransport": false,
+      "selectable": false,
+      "art": "assets/units/delta-pack.webp"
+    },
+    {
       "id": "drake",
       "faction": null,
       "name": "Drake",
@@ -1905,7 +1966,7 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 22,
+      "page": 23,
       "auxiliaryTransport": false,
       "selectable": false,
       "art": "assets/units/drake.webp"
@@ -1966,7 +2027,7 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 23,
+      "page": 24,
       "auxiliaryTransport": false,
       "selectable": false,
       "art": "assets/units/drones.webp"
@@ -2014,7 +2075,7 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 24,
+      "page": 25,
       "auxiliaryTransport": true,
       "selectable": false,
       "art": "assets/units/epsilon.webp"
@@ -2163,7 +2224,7 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 25,
+      "page": 26,
       "auxiliaryTransport": false,
       "selectable": false,
       "art": "assets/units/gamma.webp"
@@ -2206,7 +2267,7 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 26,
+      "page": 27,
       "auxiliaryTransport": false,
       "selectable": false,
       "art": "assets/units/grubs.webp"
@@ -2336,7 +2397,7 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 27,
+      "page": 28,
       "auxiliaryTransport": false,
       "selectable": false,
       "art": "assets/units/gun-hand.webp"
@@ -2396,7 +2457,7 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 28,
+      "page": 29,
       "auxiliaryTransport": false,
       "selectable": false,
       "art": "assets/units/hand.webp"
@@ -2457,7 +2518,7 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 29,
+      "page": 30,
       "auxiliaryTransport": false,
       "selectable": false,
       "art": "assets/units/hulk-blades.webp"
@@ -2518,10 +2579,71 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 30,
+      "page": 31,
       "auxiliaryTransport": false,
       "selectable": false,
       "art": "assets/units/hulks.webp"
+    },
+    {
+      "id": "scuttlers",
+      "faction": null,
+      "name": "Scuttlers",
+      "category": "Generated",
+      "squadMin": 2,
+      "squadMax": 3,
+      "points": 20,
+      "pointsRaw": "20pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "base": null,
+      "stats": {
+        "Mv": "6”",
+        "OF": "3",
+        "DF": "5+",
+        "B": "A",
+        "DP": "3"
+      },
+      "special": "Bloodthirsty, Lethal, Puppet, Terror",
+      "variants": [],
+      "specialVariants": [],
+      "transport": {
+        "capacity": [],
+        "capacityMode": null,
+        "fills": [
+          {
+            "shape": "square",
+            "n": 4
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Prying Fingers",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "CC",
+          "att": "6",
+          "ac": "2+",
+          "e": "S2",
+          "special": "Assault",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "exclusive": false,
+          "capacityDelta": [],
+          "boxUnresolved": false,
+          "choice": false
+        }
+      ],
+      "upgradeNote": null,
+      "swaps": [],
+      "groupEquivalent": null,
+      "gear": [],
+      "page": 32,
+      "auxiliaryTransport": false,
+      "selectable": false,
+      "art": "assets/units/scuttlers.webp"
     },
     {
       "id": "spitters",
@@ -2579,10 +2701,71 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 31,
+      "page": 33,
       "auxiliaryTransport": false,
       "selectable": false,
       "art": "assets/units/spitters.webp"
+    },
+    {
+      "id": "swoops",
+      "faction": null,
+      "name": "Swoops",
+      "category": "Generated",
+      "squadMin": 1,
+      "squadMax": 3,
+      "points": 15,
+      "pointsRaw": "15pts",
+      "rare": false,
+      "unique": false,
+      "type": "Infantry",
+      "base": null,
+      "stats": {
+        "Mv": "4”",
+        "OF": "1",
+        "DF": "5+",
+        "B": "A",
+        "DP": "3"
+      },
+      "special": "Ev1, Jump 12”, Living Weapons, Puppet, Scout, Skimmer",
+      "variants": [],
+      "specialVariants": [],
+      "transport": {
+        "capacity": [],
+        "capacityMode": null,
+        "fills": [
+          {
+            "shape": "square",
+            "n": 3
+          }
+        ]
+      },
+      "weapons": [
+        {
+          "name": "Atomiser Bombs",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "3”",
+          "att": "1",
+          "ac": "3+",
+          "e": "7",
+          "special": "Demo 0, Self-Destruct",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "exclusive": false,
+          "capacityDelta": [],
+          "boxUnresolved": false,
+          "choice": false
+        }
+      ],
+      "upgradeNote": null,
+      "swaps": [],
+      "groupEquivalent": null,
+      "gear": [],
+      "page": 34,
+      "auxiliaryTransport": false,
+      "selectable": false,
+      "art": "assets/units/swoops.webp"
     }
   ]
 }

@@ -1,8 +1,8 @@
 {
   "faction": "fauna",
   "name": "Fauna",
-  "sourcePdf": "Fauna_Rules_Scenarios_261001.pdf",
-  "version": "261001",
+  "sourcePdf": "Fauna_Rules_Scenarios_261101.pdf",
+  "version": "261101",
   "units": [
     {
       "id": "apex-ferrum",
@@ -70,7 +70,7 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 14,
+      "page": 15,
       "auxiliaryTransport": false,
       "selectable": true,
       "art": "assets/units/apex-ferrum.webp"
@@ -141,7 +141,7 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 15,
+      "page": 16,
       "auxiliaryTransport": false,
       "selectable": true,
       "art": "assets/units/apex-maganum.webp"
@@ -212,7 +212,7 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 16,
+      "page": 17,
       "auxiliaryTransport": false,
       "selectable": true,
       "art": "assets/units/apex-new-eden.webp"
@@ -266,7 +266,7 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 17,
+      "page": 18,
       "auxiliaryTransport": false,
       "selectable": false,
       "art": "assets/units/bullhorn.webp"
@@ -304,7 +304,7 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 18,
+      "page": 19,
       "auxiliaryTransport": false,
       "selectable": false,
       "art": "assets/units/daggers.webp"
@@ -342,7 +342,7 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 19,
+      "page": 20,
       "auxiliaryTransport": false,
       "selectable": false,
       "art": "assets/units/feral-razorworms.webp"
@@ -396,7 +396,7 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 20,
+      "page": 21,
       "auxiliaryTransport": false,
       "selectable": false,
       "art": "assets/units/feral-vampires.webp"
@@ -484,7 +484,7 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 21,
+      "page": 22,
       "auxiliaryTransport": false,
       "selectable": false,
       "art": "assets/units/gorgon-queen.webp"
@@ -555,7 +555,7 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 22,
+      "page": 23,
       "auxiliaryTransport": false,
       "selectable": false,
       "art": "assets/units/harpies.webp"
@@ -626,7 +626,7 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 23,
+      "page": 24,
       "auxiliaryTransport": false,
       "selectable": false,
       "art": "assets/units/mauler.webp"
@@ -714,7 +714,7 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 24,
+      "page": 25,
       "auxiliaryTransport": false,
       "selectable": false,
       "art": "assets/units/minotaur.webp"
@@ -768,7 +768,7 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 25,
+      "page": 26,
       "auxiliaryTransport": false,
       "selectable": false,
       "art": "assets/units/sphinx.webp"
@@ -856,7 +856,7 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 26,
+      "page": 27,
       "auxiliaryTransport": false,
       "selectable": false,
       "art": "assets/units/typhon.webp"
@@ -927,10 +927,81 @@
       "swaps": [],
       "groupEquivalent": null,
       "gear": [],
-      "page": 27,
+      "page": 28,
       "auxiliaryTransport": false,
       "selectable": false,
       "art": "assets/units/keres.webp"
+    },
+    {
+      "id": "aeternae",
+      "faction": "fauna",
+      "name": "Aeternae",
+      "category": "Fauna",
+      "squadMin": 1,
+      "squadMax": 1,
+      "points": 130,
+      "pointsRaw": "130pts",
+      "rare": false,
+      "unique": false,
+      "type": "Vehicle",
+      "base": "Fauna",
+      "stats": {
+        "Mv": "6”",
+        "A": "6",
+        "DP": "7"
+      },
+      "special": "Aegis 0”, Living Artillery, Stealth, Instinct: Hunt",
+      "variants": [],
+      "specialVariants": [],
+      "transport": {
+        "capacity": [],
+        "capacityMode": null,
+        "fills": []
+      },
+      "weapons": [
+        {
+          "name": "Freezing Plasma",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "15”",
+          "att": "1",
+          "ac": "3+",
+          "e": "8",
+          "special": "Blast, Demo 1, Dev 1, Ignores Cover, Precision 1",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "exclusive": false,
+          "capacityDelta": [],
+          "boxUnresolved": false,
+          "choice": false
+        },
+        {
+          "name": "Claws and Tail",
+          "arc": "F/S/R",
+          "ma": "Full",
+          "r": "CC",
+          "att": "3",
+          "ac": "3+",
+          "e": "6",
+          "special": "Dev 1, Focus 2",
+          "box": "all",
+          "variants": [],
+          "upgradePoints": null,
+          "exclusive": false,
+          "capacityDelta": [],
+          "boxUnresolved": false,
+          "choice": false
+        }
+      ],
+      "upgradeNote": null,
+      "swaps": [],
+      "groupEquivalent": null,
+      "gear": [],
+      "page": 29,
+      "auxiliaryTransport": false,
+      "selectable": false,
+      "art": "assets/units/aeternae.webp"
     }
   ]
 }

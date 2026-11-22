@@ -14,7 +14,9 @@ Faction Icons/
 # from TTCombat's resources page when a rebuild needs it, and what the app was
 # built from is recorded in data/dzc/sources.json instead.
 *.pdf
-rules/
+# Anchored: unanchored, it also matched assets/rules/ (the rulebook figures),
+# and the 3 November update failed on `git add assets/rules`.
+/rules/
 
 # Concept art / reference images in root
 robert-mallinson-*

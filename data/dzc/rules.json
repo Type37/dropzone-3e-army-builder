@@ -2404,6 +2404,19 @@
    "page": 8
   },
   {
+   "id": "fauna-living-artillery",
+   "faction": "fauna",
+   "source": "fauna",
+   "section": "7.1.11",
+   "chapter": "Fauna rules",
+   "name": "Living Artillery",
+   "alias": null,
+   "parameterised": false,
+   "match": "^\\s*Living[\\s:/\\-]*Artillery\\s*$",
+   "text": "After this Fauna has selected Prey, if it has Line of Sight to that Unit and is within range with all of its non-CC weapons, and its Mv is not sufficient to move into CC range of that Unit, it moves 0”. Otherwise it moves normally.",
+   "page": 8
+  },
+  {
    "id": "fauna-eruption",
    "faction": "fauna",
    "source": "fauna",

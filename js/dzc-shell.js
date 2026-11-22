@@ -47,7 +47,7 @@ const App = (() => {
    * and reloads on controllerchange)". That reload is gone as of 2026-08-13:
    * on Firefox for iOS it fired every poll and threw the user out of the army
    * they were building, once a minute. See the note in index.html. */
-  const BUILD = 530;
+  const BUILD = 531;
 
   /* Feedback goes to the maker's inbox through the reader's own mail app. The
    * body is prefilled with the four questions, because a bare mailto returns
@@ -678,6 +678,13 @@ const App = (() => {
    * reading the commits. No interpunct between date and title: the footer
    * already spends the app's budget for that glyph. */
   const CHANGELOG = [
+    { date: '2026-11-21', title: 'New Bioficer and Fauna units', items: [
+      'Bioficer: new unit, Delta Pack (40 pts).',
+      'Bioficer: new unit, Scuttlers (20 pts).',
+      'Bioficer: new unit, Swoops (15 pts).',
+      'Fauna: new unit, Aeternae (130 pts).',
+      'Fauna: new rule, Living Artillery (7.1.11). A Fauna with Line of Sight to its Prey, in range with all its non-CC weapons and too slow to reach it in CC, moves 0”.',
+    ] },
     { date: '2026-11-15', title: 'Transports in other Groups', items: [
       'Full Transports in other Groups are no longer offered. Picking one bought a second Transport and deleted the Squad’s own.',
       'Moving a Squad into another Group now says what was removed.',
